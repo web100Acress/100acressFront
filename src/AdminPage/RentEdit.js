@@ -33,7 +33,7 @@ const RentEdit = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://acre.onrender.com/property/rent/${id}`
+          `https://api.100acress.com/property/rent/${id}`
         );
         setViewDetails(res.data.data);
       } catch (error) {
@@ -45,7 +45,7 @@ const RentEdit = () => {
 
   const handleDataUpdate = async () => {
     try {
-      const response = await fetch(`https://acre.onrender.com/project/Update/123`, {
+      const response = await fetch(`https://api.100acress.com/project/Update/123`, {
         method: 'POST', 
         headers: {
           'Content-Type': 'application/json', 

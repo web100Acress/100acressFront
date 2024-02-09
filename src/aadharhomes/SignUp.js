@@ -75,7 +75,7 @@ export default function SignUp() {
     const { name, email, mobile, password, cpassword } = userSignUp;
     if (name && email && mobile && password && password === cpassword) {
       axios
-        .post("https://acre.onrender.com/postPerson/register", userSignUp)
+        .post("https://api.100acress.com/postPerson/register", userSignUp)
         .then((response) => {
           // alert(response.data.message);
           history("/SignIn");

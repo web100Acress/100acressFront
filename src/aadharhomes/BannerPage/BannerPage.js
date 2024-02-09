@@ -43,7 +43,7 @@ const BannerPage = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://acre.onrender.com/projectView/${pUrl}`
+          `https://api.100acress.com/projectView/${pUrl}`
         );
         setProjectViewDetails(res.data.dataview[0]);
         console.log(res, "Response");
@@ -73,7 +73,7 @@ const BannerPage = () => {
 
     if (mobile) {
       axios
-        .post("https://acre.onrender.com/userInsert", {
+        .post("https://api.100acress.com/userInsert", {
           ...userDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
@@ -107,7 +107,7 @@ const BannerPage = () => {
 
     if (mobile) {
       axios
-        .post("https://acre.onrender.com/userInsert", {
+        .post("https://api.100acress.com/userInsert", {
           ...popDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,

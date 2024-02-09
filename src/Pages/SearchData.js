@@ -25,7 +25,7 @@ const SearchData = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://acre.onrender.com/property/search/${key}`
+          `https://api.100acress.com/property/search/${key}`
         );
         setSearchData(res.data.searchdata);
         // console.log(searchData, "search data");

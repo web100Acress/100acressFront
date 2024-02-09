@@ -55,7 +55,7 @@ const ProjectsAddBhk = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`https://acre.onrender.com/bhk_view/${id}`);
+        const res = await axios.get(`https://api.100acress.com/bhk_view/${id}`);
         setViewAll(res.data.data);
       } catch (error) {
         console.log(error);
@@ -75,7 +75,7 @@ const ProjectsAddBhk = () => {
   const submitBHKFromData = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`https://acre.onrender.com/bhk_insert/${id}`,editFromData);
+      const response = await axios.post(`https://api.100acress.com/bhk_insert/${id}`,editFromData);
       alert("User data inserted successfully");
       resetData();
     } catch (error) {
@@ -92,10 +92,10 @@ const ProjectsAddBhk = () => {
   }
  
   const handleDeleteUser = async (id) => {
-    const urlDelete = `https://acre.onrender.com/bhk_delete/${id}`;
+    const urlDelete = `https://api.100acress.com/bhk_delete/${id}`;
     console.log(urlDelete)
     try {
-      const response = await axios.delete(`https://acre.onrender.com/bhk_delete/${id}`);
+      const response = await axios.delete(`https://api.100acress.com/bhk_delete/${id}`);
       if (response.status >= 200 && response.status < 300) {
         window.location.reload();
       } else {

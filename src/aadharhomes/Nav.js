@@ -24,7 +24,7 @@ import logoImage from "../Images/100acress.png";
 import axios from "axios";
 import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
-import {ScaleLoader} from 'react-spinners'
+import { ScaleLoader } from "react-spinners";
 const PropertyBox = ({ text }) => (
   <Box
     bg="red"
@@ -431,8 +431,9 @@ export default function Nav() {
                       </button>
                     </Link>
                     <div
-                      className={`absolute  bg-white py-2 text-gray-800 w-90  rounded-md shadow-lg z-10 ${isMenuOpen ? "block" : "hidden"
-                        }`}
+                      className={`absolute  bg-white py-2 text-gray-800 w-90  rounded-md shadow-lg z-10 ${
+                        isMenuOpen ? "block" : "hidden"
+                      }`}
                     >
                       <div className="flex">
                         <div className="w-48">
@@ -440,7 +441,8 @@ export default function Nav() {
                             to="#"
                             className="block px-4 py-1 text-black  text-lg hover:bg-gray-200"
                           >
-                            Popular Choices<hr className="mt-1" />
+                            Popular Choices
+                            <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
@@ -479,7 +481,8 @@ export default function Nav() {
                             to="#"
                             className="block text-black  text-lg px-2 py-1 hover:bg-gray-200"
                           >
-                            Property Types<hr className="mt-1" />
+                            Property Types
+                            <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
@@ -517,15 +520,15 @@ export default function Nav() {
                           >
                             Commercial Space in Faridabad
                           </Link>
-
                         </div>
 
                         <div className="w-40">
                           <Link
                             to="#"
                             className="block text-black text-lg px-2 py-1 hover:bg-gray-200"
-                          >Budget<hr className="mt-1" />
-
+                          >
+                            Budget
+                            <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
@@ -538,7 +541,6 @@ export default function Nav() {
                             className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
                           >
                             ₹10000 - ₹15000
-
                           </Link>
                           <Link
                             to="#"
@@ -558,7 +560,8 @@ export default function Nav() {
                             to="#"
                             className="block text-black text-lg px-4 py-1 hover:bg-gray-200"
                           >
-                            Explore<hr className="mt-1" />
+                            Explore
+                            <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
@@ -601,12 +604,22 @@ export default function Nav() {
                     </div>
                   </div>
 
-                  <Link
-                    to={"/SignIn"}
-                    className="text-white font-semibold text-lg"
-                  >
-                    Sell
-                  </Link>
+                  {token ? (
+                    <Link
+                      to={"/postproperty"}
+                      className="text-white font-semibold text-lg"
+                    >
+                      <span onClick={checkUserAuth}>Sell</span>
+                    </Link>
+                  ) : (
+                    <Link
+                      to={"/SignIn"}
+                      className="text-white font-semibold text-lg"
+                    >
+                      Sell
+                    </Link>
+                  )}
+
                   <Link
                     to={"/projects"}
                     className="text-white font-semibold text-lg"
@@ -682,39 +695,78 @@ export default function Nav() {
               </Menu>
             </Flex> */}
 
-<Flex alignItems="center">
+            <Flex alignItems="center">
               <div className="" style={{ marginRight: "-69px" }}>
                 {token ? (
                   <Link to="/postproperty">
                     <button className="btn flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
-                      <strong onClick={checkUserAuth} className="text-red-600 mr-2">
+                      <strong
+                        onClick={checkUserAuth}
+                        className="text-red-600 mr-2"
+                      >
                         Post Property
                       </strong>
                       <Link className="d-none d-xl-inline d-md-inline">
-
-                        <button className="btn btn-danger p-0 text-bold" style={{ position: 'relative', overflow: 'hidden', width: '50px', height: '20px' }}>
-                          <div style={{ position: 'absolute', top: 0, left: 0, overflow: 'hidden', whiteSpace: 'nowrap', animation: 'moveHorizontal 1s linear infinite', backdropFilter: 'blur(5px)', filter: 'blur(5px)' }}>
+                        <button
+                          className="btn btn-danger p-0 text-bold"
+                          style={{
+                            position: "relative",
+                            overflow: "hidden",
+                            width: "50px",
+                            height: "20px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              animation: "moveHorizontal 1s linear infinite",
+                              backdropFilter: "blur(5px)",
+                              filter: "blur(5px)",
+                            }}
+                          >
                             <ScaleLoader color="#FFFFFF" />
                           </div>
-
                           FREE
                           <style>{keyframes}</style>
                         </button>
-
                       </Link>
                     </button>
                   </Link>
                 ) : (
                   <Link to="/SignIn">
                     <button className="btn flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
-                      <strong onClick={checkUserAuth} className="text-red-600 mr-2">
+                      <strong
+                        onClick={checkUserAuth}
+                        className="text-red-600 mr-2"
+                      >
                         Post Property
                       </strong>
                       <Link className="d-none d-xl-inline d-md-inline">
-
-
-                        <button className="btn btn-danger p-0 text-bold" style={{ position: 'relative', overflow: 'hidden', width: '50px', height: '20px' }}>
-                          <div style={{ position: 'absolute', top: 0, left: 0, overflow: 'hidden', whiteSpace: 'nowrap', animation: 'moveHorizontal 1s linear infinite', backdropFilter: 'blur(5px)', filter: 'blur(5px)' }}>
+                        <button
+                          className="btn btn-danger p-0 text-bold"
+                          style={{
+                            position: "relative",
+                            overflow: "hidden",
+                            width: "50px",
+                            height: "20px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              animation: "moveHorizontal 1s linear infinite",
+                              backdropFilter: "blur(5px)",
+                              filter: "blur(5px)",
+                            }}
+                          >
                             <ScaleLoader color="#FFFFFF" />
                           </div>
                           FREE
@@ -799,13 +851,20 @@ export default function Nav() {
                 >
                   Buy
                 </Link>
+          
 
-                <Link
+                {token ? <Link
+                  to={"/postproperty"}
+                  className="text-white font-semibold text-lg mx-3"
+                >
+                  <span onClick={checkUserAuth}>Sell</span>
+                </Link> :      <Link
                   to={"/SignIn"}
                   className="text-white font-semibold text-lg mx-3"
                 >
                   Sell
-                </Link>
+                </Link>}
+               
 
                 <Link
                   to={"/projects"}

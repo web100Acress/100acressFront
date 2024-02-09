@@ -28,7 +28,7 @@ const RentViewDetails = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://acre.onrender.com/property/rent/${id}`
+          `https://api.100acress.com/property/rent/${id}`
         );
           if (res.data.data) {
             setRentViewDetails(res.data.data);

@@ -62,7 +62,7 @@ const ViewPropertyAdmin = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://acre.onrender.com/postPerson/propertyView/${id}`
+          `https://api.100acress.com/postPerson/propertyView/${id}`
         );
         setViewAllProperty(res.data.data.postProperty);
   
@@ -79,7 +79,7 @@ const ViewPropertyAdmin = () => {
 
   const handleDeleteUser = async(id) =>{
     try {
-      const res = axios.delete(`https://acre.onrender.com/postPerson/propertyDelete/${id}`)
+      const res = axios.delete(`https://api.100acress.com/postPerson/propertyDelete/${id}`)
       if(res.status >= 200 && res.status < 300){
         window.location.reload();
       }else{

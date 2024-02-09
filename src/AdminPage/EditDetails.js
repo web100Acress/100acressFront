@@ -50,7 +50,7 @@ const EditDetails = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://acre.onrender.com/postPerson/propertyoneEdit/${id}`
+          `https://api.100acress.com/postPerson/propertyoneEdit/${id}`
         );
         setValues(res.data.data.postProperty[0]);
         console.log(values, "Value edit client")
@@ -63,7 +63,7 @@ const EditDetails = () => {
 
   const handleUpdateUser = async () => {
     try {
-      const response = await axios.post(`https://acre.onrender.com/postPerson/propertyoneUpdate/${id}`, values);
+      const response = await axios.post(`https://api.100acress.com/postPerson/propertyoneUpdate/${id}`, values);
       if (response.ok) {
         alert("Data updated successfully");
         console.log("User updated successfully");

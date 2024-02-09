@@ -56,7 +56,7 @@ const avatars = [
   },
 ];
 
-let loginAPI = "https://acre.onrender.com/postPerson/Role/";
+let loginAPI = "https://api.100acress.com/postPerson/Role/";
 export default function SignUp() {
   const [token, setToken] = useState(""); //token
   const [userIdNew, setUserIdNew] = useState(""); //token
@@ -91,7 +91,7 @@ export default function SignUp() {
     if (email && password) {
       try {
         const loginResponse = await axios.post(
-          "https://acre.onrender.com/postPerson/verify_Login",
+          "https://api.100acress.com/postPerson/verify_Login",
           { email, password }
         );
         
@@ -108,7 +108,7 @@ export default function SignUp() {
 
         if (loginResponse.status === 200) {
           const roleResponse = await axios.get(
-            `https://acre.onrender.com/postPerson/Role/${email}`
+            `https://api.100acress.com/postPerson/Role/${email}`
           );
            
           if (roleResponse.status === 200) {

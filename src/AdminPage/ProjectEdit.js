@@ -41,7 +41,7 @@ const ProjectEdit = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://acre.onrender.com/project/Edit/${id}`
+          `https://api.100acress.com/project/Edit/${id}`
         );
         setValues(res.data.dataedit);
       } catch (error) {
@@ -54,7 +54,7 @@ const ProjectEdit = () => {
   const handleUpdateUser = async () => {
     try {
       const response = await axios.post(
-        `https://acre.onrender.com/project/Update/${id}`,
+        `https://api.100acress.com/project/Update/${id}`,
         values
       );
       if (response.status === 200) {

@@ -43,7 +43,7 @@ function Home() {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://acre.onrender.com/project/trending"
+          "https://api.100acress.com/project/trending"
         );
         setTrendingProject(res.data.data);
       } catch (error) {
@@ -59,7 +59,7 @@ function Home() {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://acre.onrender.com/project/featured"
+          "https://api.100acress.com/project/featured"
         );
         setFeaturedProject(res.data.data);
       } catch (error) {

@@ -108,7 +108,7 @@ const NewSellProperty = () => {
 
   // const submitSellPropertyDetails = async (e) => {
   //   e.preventDefault();
-  //   const apiEndpoint = `https://acre.onrender.com/postPerson/propertyInsert/${sellerId}`;
+  //   const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
 
   //   const formDataAPI = new FormData();
 
@@ -150,7 +150,7 @@ const NewSellProperty = () => {
 
   const submitSellPropertyDetails = async (e) => {
     e.preventDefault();
-    const apiEndpoint = `https://acre.onrender.com/postPerson/propertyInsert/${sellerId}`;
+    const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
 
     const formDataAPI = new FormData();
 

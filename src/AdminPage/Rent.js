@@ -41,7 +41,7 @@ const Rent = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://acre.onrender.com/property/viewAll"
+          "https://api.100acress.com/property/viewAll"
         );
         setViewAll(res.data.data);
       } catch (error) {
@@ -58,7 +58,7 @@ const Rent = () => {
   const handleDeleteClick = async (ids) => {
     try {
       const response = await axios.delete(
-        `https://acre.onrender.com/property/${id}/delete`
+        `https://api.100acress.com/property/${id}/delete`
       );
       console.log(response, "Response");
   

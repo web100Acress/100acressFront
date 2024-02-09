@@ -18,7 +18,7 @@ const ProjectEditBHK = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`https://acre.onrender.com/bhk_edit/${id}`);
+        const res = await axios.get(`https://api.100acress.com/bhk_edit/${id}`);
         setViewBHK(res.data.data.BhK_Details[0]);
       } catch (error) {
         console.log(error);
@@ -30,7 +30,7 @@ const ProjectEditBHK = () => {
   const submitBHKFromData = async (e) => {
     try {
       const res = axios.post(
-        `https://acre.onrender.com/bhk_update/${id}`,
+        `https://api.100acress.com/bhk_update/${id}`,
         viewBHK
       );
       if (res.ok) {

@@ -13,7 +13,7 @@ function RentPropViewCard() {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://acre.onrender.com/property/viewAll"
+          "https://api.100acress.com/property/viewAll"
         );
         setRentData(res.data.data);
         setPostPropertyData(res.data.done);

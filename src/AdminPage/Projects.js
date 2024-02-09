@@ -41,7 +41,7 @@ const Projects = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("https://acre.onrender.com/project/viewAll");
+        const res = await axios.get("https://api.100acress.com/project/viewAll");
         setViewAll(res.data.data);
       } catch (error) {
         console.log(error);
@@ -52,7 +52,7 @@ const Projects = () => {
 
   const handleDeleteUser = async (id) => {
     try {
-      const response = await axios.delete(`https://acre.onrender.com/project/Delete/${id}`);
+      const response = await axios.delete(`https://api.100acress.com/project/Delete/${id}`);
       if (response.status >= 200 && response.status < 300) {
         window.location.reload();
       } else {
@@ -256,7 +256,7 @@ export default Projects;
 //   useEffect(() => {
 //     const fetchData = async () => {
 //       try {
-//         const res = await axios.get("https://acre.onrender.com/project/viewAll");
+//         const res = await axios.get("https://api.100acress.com/project/viewAll");
 //         setViewAll(res.data.data);
 //       } catch (error) {
 //         console.log(error);
@@ -289,7 +289,7 @@ export default Projects;
 //       if (result.isConfirmed) {
 //         if (id) {
 //           try {
-//             await axios.delete(`https://acre.onrender.com/property/${projectName}/delete`);
+//             await axios.delete(`https://api.100acress.com/property/${projectName}/delete`);
 //             console.log('Delete request successful');
 //             Swal.fire({
 //               title: 'Deleted!',

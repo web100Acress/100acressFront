@@ -35,7 +35,7 @@ const UserAdmin = () => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const res = await axios.get("https://acre.onrender.com/postPerson/view");
+          const res = await axios.get("https://api.100acress.com/postPerson/view");
           setViewAll(res.data.data);
         } catch (error) {
           console.log(error);

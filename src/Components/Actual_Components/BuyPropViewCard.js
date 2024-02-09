@@ -14,7 +14,7 @@ function BuyPropViewCard() {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://acre.onrender.com/property/buy/ViewAll"
+          "https://api.100acress.com/property/buy/ViewAll"
         );
         setBuytData(res.data.data);
         setPostPropertyData(res.data.data1);

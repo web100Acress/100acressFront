@@ -10,7 +10,7 @@ function Properties() {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://acre.onrender.com/project/viewAll"
+          "https://api.100acress.com/project/viewAll"
         );
         setRentData(res.data.data);
         // console.log(res, "response status")

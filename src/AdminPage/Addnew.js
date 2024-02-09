@@ -135,7 +135,7 @@ const AddNew = () => {
 
   const handleSubmitProject = async (e) => {
     e.preventDefault();
-    const apiEndpoint = "https://acre.onrender.com/projectInsert";
+    const apiEndpoint = "https://api.100acress.com/projectInsert";
 
     const formDataAPI = new FormData();
 

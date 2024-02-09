@@ -14,7 +14,7 @@ const UserViewProperty = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://acre.onrender.com/postPerson/propertyView/${userId}`
+          `https://api.100acress.com/postPerson/propertyView/${userId}`
         );
         setUserViewProperty(res.data.data.postProperty);
   
