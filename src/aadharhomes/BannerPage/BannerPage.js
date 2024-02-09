@@ -585,7 +585,7 @@ const BannerPage = () => {
               <div className="mx-4 pb-2">
                 <p className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
                   BUSINESS AND COMMERCIAL
-                </p>
+                </p>    
 
                 {projectRedefine_Business &&
                   Array.isArray(projectRedefine_Business) &&
