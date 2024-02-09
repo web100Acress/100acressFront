@@ -1,0 +1,37 @@
+@media (min-width: 1152px){
+    .ieuNB{display:flex;}
+    .ulfx{list-style: none;display: flex;align-items: center;font-size: large;height:100%;margin-bottom: 5px; margin-top: 0px;}
+    .NBflx{display: flex;color:red;font-weight:600;width: 100%;}
+    .Mflx{display: flex;width: 100%;align-items:center;background: linear-gradient(white,white,white,white,rgb(231, 231, 231));height: 100%;}
+    ._1grx>li,._2grx>li{font-weight: 600;position: relative;padding:0px 12px}
+    ._2grx{justify-content: flex-end;flex-grow: 1;padding-right: 20px;margin-top: 2px;}
+    ._1grx>li>ul{opacity: 0;visibility: hidden;transition-timing-function:ease-in-out;transition-duration: 0.15s;transition-property: visibility;transition-delay: 0s;border-radius: 8px;display: flex;flex-direction: row;font-weight: 500;height: auto;left:-12px;padding: 8px;position: absolute;top: 140%;z-index:20;}
+    ._2emBLM li{align-items: inherit;min-width: 260px;width: auto;}
+    ._2emBLM{background-color: white;box-shadow: 0 4px 16px 0 rgba(11,17,52,.2);}
+    ._2kdSPM{font-size: medium;font-weight: 600;color:red}
+    ._3euEM{display: block;padding-left: 0px;}
+    ._3emBLMe li{list-style-type:none;}
+    ._3euEM>li{padding: 10px;color:red}
+    ._3euEM>li:hover{background-color: pink;color:white; border-radius: 10px;cursor: pointer;}
+    ._2uef{padding-left: 10px;}
+    ._2emBLM{list-style-type: none;}
+    .ulfx{position: relative;}
+    .pxrE{height: 100%;}
+    .ulfx>li:after{content: "";height:3px;width: 50%;background-color: red;position: absolute;left:25%;bottom: -10px;opacity: 0;border-radius: 12px;}
+    .ulfx>li:hover:after{opacity: 1;cursor: pointer;}
+    .pxrETXT:hover +._2emBLM ,._2emBLM:hover{opacity: 1;cursor: pointer;visibility: visible;}
+    .ulfx:hover{cursor: pointer;}
+    ._exJRE{border-right:1px solid red};
+    ._elm{color:grey;font-size: small;}
+    ._lmxE{display: flex;align-items: center;}
+    ._2hduom{margin-bottom: 0px;}
+    .amidd{padding-top: 5px;padding-right: 10px;}
+    ._2hduom{font-size: large;}
+    .main1{width:100%;height:auto;}
+    .pxiArt{width: 100%;position: center;height: 700px;position: relative;}
+    .dbcsjn{position: absolute;left:17%;bottom:20px;}
+    .main5{margin-top: 8%;width: 100%;display: flex;justify-content: center;}
+    ._nEXRT li{align-items: inherit;min-width: 340px;width: auto;}
+    ._6bnYTum{display: inline;background-color: white;color: red;border-radius: 8px;}
+    ._73exMP{background-color: red;color: white;padding: 1px 3px;font-size: small;border-radius: 5px;}
+}

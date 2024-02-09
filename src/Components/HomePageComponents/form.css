@@ -1,0 +1,15 @@
+.container {
+    background-color: #ffffff; /* White container background */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+  }
+
+  .btn-primary {
+    background-color: #dc3545; /* Red button color */
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background-color: #c82333; /* Darker red on hover */
+  }
