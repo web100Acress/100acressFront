@@ -25,6 +25,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
+    "react-helmet-async": "^2.0.4",
     "react-icons": "^4.10.1",
     "react-loader-spinner": "^5.4.5",
     "react-modal": "^3.16.1",

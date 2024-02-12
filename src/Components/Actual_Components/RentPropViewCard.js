@@ -33,7 +33,7 @@ function RentPropViewCard() {
   }, [postPropertyData]);
 
   return (
-    <>
+    <div style={{overflowX:"hidden"}}>
       <Nav />
       <section className="flex flex-col items-center bg-white">
        
@@ -168,7 +168,7 @@ function RentPropViewCard() {
         <SmallPopForm/>
       </section>
       <Footer />
-    </>
+    </div>
   );
 }
 

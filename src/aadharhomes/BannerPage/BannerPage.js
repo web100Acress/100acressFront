@@ -8,11 +8,30 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-
+import { Helmet } from "react-helmet-async";
 const BannerPage = () => {
   const sliderRef = React.createRef();
   const { pUrl } = useParams();
   const [projectViewDetails, setProjectViewDetails] = useState([]);
+  const [pageTitle, setPageTitle] = useState('Default Page Title');
+
+
+  // // useEffect to update the page title when the component mounts or when pageTitle changes
+  // useEffect(() => {
+  //   // You can fetch new data or perform any logic to determine the new title
+  //   // For this example, let's assume you have a function that fetches the new title
+  //   const fetchNewTitle = async () => {
+  //     try {
+  //       const newTitle = await fetchDataForNewTitle();
+  //       setPageTitle(newTitle);
+  //     } catch (error) {
+  //       console.error('Error fetching new title:', error);
+  //     }
+  //   };
+
+  //   fetchNewTitle();
+  // }, []); // You can add dependencies here if needed
+
   const [showPopup, setShowPopup] = useState(false);
   const settings = {
     dots: false,
@@ -144,6 +163,8 @@ const BannerPage = () => {
 
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
+          
+
       <>
         <header className="text-slate-700 container relative mx-auto flex flex-col overflow-hidden px-4 py-2 lg:flex-row lg:items-center">
           <div>
@@ -336,13 +357,6 @@ const BannerPage = () => {
           </h3>
         </div>
 
-        <div className="text-center text-black font-semibold m-4 md:m-8 lg:m-10 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl pt-0">
-          <span className="pr-12">
-            Your dream home right across an iconic{" "}
-            {projectViewDetails.projectName}
-          </span>
-        </div>
-
         <div className=" lg:text-justify md:text-center  text-gray-700 m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl pt-0 mt-4">
           <span className="leading-relaxed">
             {projectViewDetails.project_discripation}
@@ -442,7 +456,7 @@ const BannerPage = () => {
                 <>
                   <div className="flex flex-shrink-0" key={index}>
                     <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b border-l border-black">
-                      <span>{item.bhk_Area} Sq.ft</span>
+                      <span>{item.bhk_Area}</span>
                     </div>
                     <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b border-l border-black">
                       <span> {item.bhk_type}</span>
@@ -585,7 +599,7 @@ const BannerPage = () => {
               <div className="mx-4 pb-2">
                 <p className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
                   BUSINESS AND COMMERCIAL
-                </p>    
+                </p>
 
                 {projectRedefine_Business &&
                   Array.isArray(projectRedefine_Business) &&
@@ -606,7 +620,7 @@ const BannerPage = () => {
             <div className="border-2 lg:mx-2 md:mx-2 border-[#d9a253] lg:w-full lg:h-[300] sm:h-[100] sm:w-full md:w-[200] md:h-[200] rounded-lg bg-[#f1eadf] overflow-hidden">
               <div className="mx-4 pb-2">
                 <p className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
-                Connectivity
+                  Connectivity
                 </p>
 
                 {projectRedefine_Connectivity &&
@@ -628,7 +642,7 @@ const BannerPage = () => {
             <div className="border-2 lg:mx-2 md:mx-2 border-[#d9a253] lg:w-full lg:h-[300] sm:h-[100] sm:w-full md:w-[200] md:h-[200] rounded-lg bg-[#f1eadf] overflow-hidden">
               <div className="mx-4 pb-2">
                 <p className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
-                EDUCATION AND HEALTHCARE
+                  EDUCATION AND HEALTHCARE
                 </p>
 
                 {projectRedefine_Education &&
@@ -650,7 +664,7 @@ const BannerPage = () => {
             <div className="border-2 lg:mx-2 md:mx-2 border-[#d9a253] lg:w-full lg:h-[300] sm:h-[100] sm:w-full md:w-[200] md:h-[200] rounded-lg bg-[#f1eadf] overflow-hidden">
               <div className="mx-4 pb-2">
                 <p className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
-                ENTERTAINMENT GALORE
+                  ENTERTAINMENT GALORE
                 </p>
 
                 {projectRedefine_Entertainment &&

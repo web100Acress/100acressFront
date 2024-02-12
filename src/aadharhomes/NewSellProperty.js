@@ -5,7 +5,7 @@ import axios from "axios";
 const NewSellProperty = () => {
   const storedSellerId = localStorage.getItem("mySellerId");
   const sellerId = JSON.parse(storedSellerId);
-  const propertyTypes = ["Select Property Type", "Commercial", "Residential"];
+  const propertyType = ["Select Property Type", "Commercial", "Residential"];
   const subTypes = {
     Commercial: [
       "Office",
@@ -37,12 +37,12 @@ const NewSellProperty = () => {
     price: "",
     area: "",
     description: "",
-    landmark: "",
+    landMark: "",
     amenities: [],
-    builtyear: "",
+    builtYear: "",
     furnishing: "",
     type: "",
-    availabledate: "",
+    availableDate: "",
     selectoption: "Select Property Type",
     subType: "",
   });
@@ -57,12 +57,12 @@ const NewSellProperty = () => {
       price: "",
       area: "",
       description: "",
-      landmark: "",
+      landMark: "",
       amenities: [],
-      builtyear: "",
+      builtYear: "",
       furnishing: "",
       type: "",
-      availabledate: "",
+      availableDate: "",
       selectoption: "Select Property Type",
       subType: "",
     });
@@ -219,7 +219,7 @@ const NewSellProperty = () => {
   };
 
   return (
-    <>
+    <div style={{overflowX:"hidden"}}>
       <Nav />
       <section className=" py-12 text-gray-800 ">
         <div className="mx-auto flex max-w-md flex-col rounded-lg lg:max-w-screen-xl lg:flex-row">
@@ -284,7 +284,7 @@ const NewSellProperty = () => {
                     value={sellProperty.selectoption}
                     onChange={handleChangeValue}
                   >
-                    {propertyTypes.map((type, index) => (
+                    {propertyType.map((type, index) => (
                       <option key={index} value={type}>
                         {type}
                       </option>
@@ -394,8 +394,8 @@ const NewSellProperty = () => {
                   <input
                     type="text"
                     placeholder="Landmark"
-                    name="landmark"
-                    value={sellProperty.landmark}
+                    name="landMark"
+                    value={sellProperty.landMark}
                     onChange={handleChangeValue}
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
                   />
@@ -418,8 +418,8 @@ const NewSellProperty = () => {
                   <input
                     type="text"
                     placeholder="Built year"
-                    name="builtyear"
-                    value={sellProperty.builtyear}
+                    name="builtYear"
+                    value={sellProperty.builtYear}
                     onChange={handleChangeValue}
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
                   />
@@ -451,8 +451,8 @@ const NewSellProperty = () => {
                   <input
                     type="text"
                     placeholder="Available date"
-                    name="availabledate"
-                    value={sellProperty.availabledate}
+                    name="availableDate"
+                    value={sellProperty.availableDate}
                     onChange={handleChangeValue}
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
                   />
@@ -501,7 +501,7 @@ const NewSellProperty = () => {
         </div>
       </section>
       <Footer />
-    </>
+    </div>
   );
 };
 

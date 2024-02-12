@@ -28,14 +28,18 @@ const BuyViewDetails = () => {
         const res = await axios.get(
           `https://api.100acress.com/property/view/${id}`
         );
-        setRentViewDetails(res.data.data);
-        console.log("Rent view Details", res);
+        setRentViewDetails(res.data.postData.postProperty[0]);
+        console.log(rentViewDetails, "Response")
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
   }, []);
+
+  useEffect(()=>{
+    console.log(rentViewDetails, "rent view details")
+  },[rentViewDetails])
 
   return (
     <div style={{ overflowX: "hidden" }}>
@@ -58,29 +62,29 @@ const BuyViewDetails = () => {
                     )}
                   </div>
                   <div className="article-title">
-                    <span className="text-2xl font-bold text-red-500 m-0">
+                    <span className="text-lg  text-red-500 m-0">
                       Project Name:{" "}
-                      <span className="text-gray-600">
+                      <span className="text-gray-600 text-md ml-1">
                         {rentViewDetails.propertyName}
                       </span>
                     </span>
 
                     <p className="text-xl font-medium mx-10 text-justify"></p>
-                    <span className="text-2xl font-bold text-red-500 m-0">
+                    <span className="text-lg  text-red-500 m-0 ml-1">
                       Description:{" "}
                     </span>
-                    <p className="text-xl font-medium text-justify">
+                    <p className="text-xl font-medium text-justify ml-1">
                       {rentViewDetails.descripation}
                     </p>
 
-                    <span className="text-2xl font-bold text-red-500 m-0">
+                    <span className="text-lg  text-red-500 m-0 ml-1">
                       Address:{" "}
                     </span>
-                    <p className="text-xl font-medium text-justify">
+                    <span className="text-xl font-medium text-justify ml-1">
                       {rentViewDetails.address}
-                    </p>
+                    </span>
                   </div>
-                  <span className="text-2xl font-bold text-red-500 m-0">
+                  <span className="text-lg  text-red-500 m-0 ml-1">
                     Properties Images:{" "}
                   </span>
 
@@ -100,7 +104,7 @@ const BuyViewDetails = () => {
                   </Slider>
 
                   <br />
-                  <span className="text-2xl font-bold text-red-500 m-0">
+                  <span className="text-lg  text-red-500 m-0">
                     Amenities:{" "}
                   </span>
 
@@ -115,7 +119,7 @@ const BuyViewDetails = () => {
                           >
                             <div className="  hover:bg-red-300 w-full text-center overflow-hidden rounded-lg shadow">
                               <div className="ml-auto">
-                                <p className="font-medium text-lg pt-2 text-black">
+                                <p className="font-medium text-md pt-2 text-black">
                                   {amenity}
                                 </p>
                               </div>
@@ -126,24 +130,24 @@ const BuyViewDetails = () => {
                     )}
                   <SmallPopForm />
                   <div className="article-title">
-                    <span className="text-2xl font-bold text-red-500 m-0">
+                    <span className="text-lg  text-red-500 m-0">
                       Property Type:{" "}
                     </span>
-                    <span>{rentViewDetails.propertyType}</span>
+                    <span className="ml-1">{rentViewDetails.propertyType}</span>
                     <br />
-                    <span className="text-2xl font-bold text-red-500 m-0">
+                    <span className="text-lg  text-red-500 m-0">
                       State:{" "}
                     </span>
-                    <span>{rentViewDetails.state}</span>
+                    <span className="ml-1">{rentViewDetails.state}</span>
                     <br />
-                    <span className="text-2xl font-bold text-red-500 m-0">
+                    <span className="text-lg  text-red-500 m-0">
                       Built Year:{" "}
                     </span>
-                    <span>{rentViewDetails.builtYear}</span>
+                    <span className="ml-1">{rentViewDetails.builtYear}</span>
                   </div>
                 </article>
                 <div className="article-comment">
-                  <h4 className="text-2xl font-bold text-red-500 m-0">
+                  <h4 className="text-lg  text-red-500 m-0">
                     Contact Us
                   </h4>
                   <form id="contact-form" method="POST">
@@ -228,7 +232,7 @@ const BuyViewDetails = () => {
               <div className="col-lg-4 m-15 px-tb blog-aside">
                 <div className="widget widget-author">
                   <div className="widget-title">
-                    <h3>Price: {rentViewDetails.price}</h3>
+                    <p>Price: {rentViewDetails.price}</p>
                   </div>
 
                   <div className="widget-title">
@@ -351,14 +355,14 @@ const BuyViewDetails = () => {
 
                 <div className="widget widget-post">
                   <div className="widget-title">
-                    <h3>Trending Properties</h3>
+                    <p className="text-lg text-red-500">Trending Properties</p>
                   </div>
                   <div className="widget-body"></div>
                 </div>
 
                 <div className="widget widget-latest-post">
                   <div className="widget-title">
-                    <h3>Upcoming Projects</h3>
+                    <p className="text-lg text-red-500">Upcoming Projects</p>
                   </div>
                   <div className="widget-body"></div>
                   {/* <div className="widget-body">

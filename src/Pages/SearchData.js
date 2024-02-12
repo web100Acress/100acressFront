@@ -28,7 +28,7 @@ const SearchData = () => {
           `https://api.100acress.com/property/search/${key}`
         );
         setSearchData(res.data.searchdata);
-        // console.log(searchData, "search data");
+        console.log(searchData, "search data");
       } catch (error) {
         console.log(error.message);
       }
@@ -73,7 +73,7 @@ const SearchData = () => {
                             <div className="p-4">
                               <div className="pb-2">
                                 <a className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
-                                  {property.propertyName}
+                                 <span> {property.propertyName}</span>
                                 </a>
                                 <br />
                                 <a className="text-sm hover:text-red-600 duration-500 ease-in-out">
@@ -88,28 +88,28 @@ const SearchData = () => {
                                 </li>
 
                                 {item.schema_type == "rent" ? (
-                              <li className="text-left">
-                                <Link to={`/rent/${item._id}`}>
-                                  <button
-                                    type="button"
-                                    className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"
-                                  >
-                                    View Details
-                                  </button>
-                                </Link>
-                              </li>
-                            ) : (
-                              <li className="text-left">
-                                <Link to={`/buy${item._id}`}>
-                                  <button
-                                    type="button"
-                                    className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"
-                                  >
-                                    View Details
-                                  </button>
-                                </Link>
-                              </li>
-                            )}
+                                  <li className="text-left">
+                                    <Link to={`/rent/${item._id}`}>
+                                      <button
+                                        type="button"
+                                        className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"
+                                      >
+                                        View Details
+                                      </button>
+                                    </Link>
+                                  </li>
+                                ) : (
+                                  <li className="text-left">
+                                    <Link to={`/buy${item._id}`}>
+                                      <button
+                                        type="button"
+                                        className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"
+                                      >
+                                        View Details
+                                      </button>
+                                    </Link>
+                                  </li>
+                                )}
                               </ul>
                             </div>
                           </article>
@@ -163,7 +163,7 @@ const SearchData = () => {
                               </li>
                             ) : (
                               <li className="text-left">
-                                <Link to={`/${item.projectName}`}>
+                                <Link to={`/${item.project_url}/`}>
                                   <button
                                     type="button"
                                     className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"
@@ -173,18 +173,6 @@ const SearchData = () => {
                                 </Link>
                               </li>
                             )}
-
-                            {/* <li className="text-left">
-                            <Link to={`${item.schema_type}`}>
-                              <button
-                                type="button"
-                                className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"
-                              >
-                                View Details
-                              </button>
-                            </Link>
-                          </li> */}
-
                           </ul>
                         </div>
                       </article>

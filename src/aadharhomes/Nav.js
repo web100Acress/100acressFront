@@ -230,13 +230,15 @@ export default function Nav() {
               flex="1"
             >
               <Box>
-                <Image
+               <Link to={'/'}>
+               <Image
                   maxW={["100px", "200px"]}
                   minW={["50px", "70px"]}
                   width={["xs", "sm", "md", "lg"]}
                   src={logoImage}
                   alt="100acress logo"
                 />
+               </Link>
               </Box>
 
               {!isSmallerThan768 && (

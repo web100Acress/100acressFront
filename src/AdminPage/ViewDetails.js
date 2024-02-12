@@ -377,7 +377,7 @@ const ViewDetails = () => {
                       LandMark :{" "}
                       <span
                         style={{ color: "black", fontWeight: "normal" }}
-                      > {viewDetails.landmark}</span>
+                      > {viewDetails.landMark}</span>
                     </span>
                   </th>
                 </tr>
@@ -404,25 +404,13 @@ const ViewDetails = () => {
                   </th>
                 </tr>
 
-
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
-                     Type :{" "}
+                    AvailableDate :{" "}
                       <span
                         style={{ color: "black", fontWeight: "normal" }}
-                      > {viewDetails.type}</span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                    Availabledate :{" "}
-                      <span
-                        style={{ color: "black", fontWeight: "normal" }}
-                      > {viewDetails.availabledate}</span>
+                      > {viewDetails.availableDate}</span>
                     </span>
                   </th>
                 </tr>

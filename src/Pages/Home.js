@@ -196,7 +196,7 @@ function Home() {
           className="xjUWI "
           style={{
             fontSize: "xx-large",
-            margin: "20px 40px 5px",
+            margin: "20px 40px 5px 40px",
             fontWeight: "600",
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -204,14 +204,15 @@ function Home() {
           }}
         >
           Trending Properties
+          <Link to={'/projects'}><span className="float-right text-sm text-red-600 hidden sm:block">View All </span></Link>
         </div>
         {
-          <section className="flex flex-col bg-white ">
-            <div className="grid max-w-md grid-cols-1 p-4  sm:max-w-lg  md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 sm:gap-2 lg:gap-4">
+           <section className="flex flex-col bg-white items-center">
+           <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {trendingProject.map((item, index) => {
                 const pUrl = item.project_url;
                 return (
-                  <Link to={`/${pUrl}`} target="_blank">
+                  <Link to={`/${pUrl}/`} target="_blank">
                     <article
                       key={index}
                       className="mb-4  overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
@@ -283,16 +284,17 @@ function Home() {
         }}
       >
         Featured Projects
+        <Link to={'/projects'}><span className="float-right text-sm text-red-600 hidden sm:block">View All </span></Link>
       </div>
       {/* <FeaturedSection /> */}
 
       {
-        <section className="flex flex-col  bg-white">
-          <div className="grid max-w-md grid-cols-1 p-4  sm:max-w-lg  md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 sm:gap-2 lg:gap-4">
+         <section className="flex flex-col bg-white items-center">
+         <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
             {featuredProject.map((item, index) => {
               const pUrl = item.project_url;
               return (
-                <Link to={`/${pUrl}`} target="_blank">
+                <Link to={`/${pUrl}/`} target="_blank">
                   <article
                     key={index}
                     className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"

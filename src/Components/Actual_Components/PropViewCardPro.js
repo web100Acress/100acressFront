@@ -27,34 +27,35 @@ function PropViewCardPro() {
   }, [rentData]);
 
   return (
-    <section className="flex flex-col items-center bg-white">
-      <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
-        {rentData.map((item, index) => {
-          return (
-            <article
-              key={index}
-              className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-            >
-              <div>
-                <img
-                  src={item.frontImage.url}
-                  alt=""
-                  className="w-full h-48 object-fit"
-                />
-              </div>
-              <div className="p-4">
-                <div className="pb-6">
-                <a className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
-                    {item.projectName}
-                  </a>
-                  <br/>
-                  <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                    {item.address}
-                  </a>
+    <div style={{ overflowX: "hidden" }}>
+      <section className="flex flex-col items-center bg-white">
+        <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
+          {rentData.map((item, index) => {
+            return (
+              <article
+                key={index}
+                className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+              >
+                <div>
+                  <img
+                    src={item.frontImage.url}
+                    alt=""
+                    className="w-full h-48 object-fit"
+                  />
                 </div>
-                <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-6">
-                  <li className="mr-4 flex items-center text-left">
-                    {/* <i className="mr-2 text-2xl text-green-600">
+                <div className="p-4">
+                  <div className="pb-6">
+                    <a className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
+                      {item.projectName}
+                    </a>
+                    <br />
+                    <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                      {item.address}
+                    </a>
+                  </div>
+                  <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-6">
+                    <li className="mr-4 flex items-center text-left">
+                      {/* <i className="mr-2 text-2xl text-green-600">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         aria-hidden="true"
@@ -68,12 +69,14 @@ function PropViewCardPro() {
                         />
                       </svg>
                     </i> */}
-                    <li className="text-left">
-                    <span className="text-sm text-gray-400">{item.builtYear}</span>
-                    <p className="m-0 text-base font-medium">{item.type}</p>
-                  </li>
-                  </li>
-                  {/* <li className="mr-4 flex items-center text-left">
+                      <li className="text-left">
+                        <span className="text-sm text-gray-400">
+                          {item.builtYear}
+                        </span>
+                        <p className="m-0 text-base font-medium">{item.type}</p>
+                      </li>
+                    </li>
+                    {/* <li className="mr-4 flex items-center text-left">
                     <i className="mr-2 text-2xl text-green-600">
                      
                       <svg
@@ -108,15 +111,22 @@ function PropViewCardPro() {
                     </i>
                     <span className="text-sm">4 Baths</span>
                   </li> */}
-                </ul>
-                <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
-                  <li className="text-left">
-                    <span className="text-sm font-extrabold text-black">Price: {item.price}</span>
-                    {/* <p className="m-0 text-base font-medium"></p> */}
-                  </li>
-                  <li className="text-left">
-                  <button type="button" className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2 mb-2">View Details</button>
-                    {/* <ul className="m-0 flex items-center p-0 font-medium">
+                  </ul>
+                  <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+                    <li className="text-left">
+                      <span className="text-sm font-extrabold text-black">
+                        Price: {item.price}
+                      </span>
+                      {/* <p className="m-0 text-base font-medium"></p> */}
+                    </li>
+                    <li className="text-left">
+                      <button
+                        type="button"
+                        className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2 mb-2"
+                      >
+                        View Details
+                      </button>
+                      {/* <ul className="m-0 flex items-center p-0 font-medium">
                       <li className="inline text-yellow-500">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -175,14 +185,15 @@ function PropViewCardPro() {
                       </li>
                       <li className="ml-2 inline text-base">5.0(30)</li>
                     </ul> */}
-                  </li>
-                </ul>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </section>
+                    </li>
+                  </ul>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    </div>
   );
 }
 

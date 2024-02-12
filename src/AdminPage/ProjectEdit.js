@@ -511,7 +511,7 @@ const ProjectEdit = () => {
                           name="type"
                           value={values.type}
                           onChange={(e) =>
-                            setValues({ ...values, Amenities: e.target.value })
+                            setValues({ ...values, type: e.target.value })
                           }
                         />
                       </span>

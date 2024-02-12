@@ -53,7 +53,7 @@ const EditDetails = () => {
           `https://api.100acress.com/postPerson/propertyoneEdit/${id}`
         );
         setValues(res.data.data.postProperty[0]);
-        console.log(values, "Value edit client")
+        console.log(values, "Value edit client");
       } catch (error) {
         console.log(error);
       }
@@ -63,7 +63,10 @@ const EditDetails = () => {
 
   const handleUpdateUser = async () => {
     try {
-      const response = await axios.post(`https://api.100acress.com/postPerson/propertyoneUpdate/${id}`, values);
+      const response = await axios.post(
+        `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
+        values
+      );
       if (response.ok) {
         alert("Data updated successfully");
         console.log("User updated successfully");
@@ -79,7 +82,22 @@ const EditDetails = () => {
     <>
       <Sidebar />
       <div style={customStyle}>
+       
         <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
+        <div className="flex items-center mb-4  ">
+          <input
+            id="default-checkbox"
+            type="checkbox"
+            defaultValue=""
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600  dark:bg-gray-700 dark:border-gray-600"
+          />
+          <label
+            htmlFor="default-checkbox"
+            className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+          >
+            Verify
+          </label>
+        </div>
           <div className="card-body">
             <table className="table table-striped table-bordered">
               <tbody>
@@ -125,19 +143,17 @@ const EditDetails = () => {
                           ))}
                       </div>
                       <br />
-                        <input
-                          type="file"
-                          name="otherImage"
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-                            setValues({ ...values, otherImage: file });
-                          }}
-                        />
+                      <input
+                        type="file"
+                        name="otherImage"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          setValues({ ...values, otherImage: file });
+                        }}
+                      />
                     </section>
                   </td>
                 </tr>
-
-  
 
                 <tr>
                   <th>
@@ -315,8 +331,6 @@ const EditDetails = () => {
                   </th>
                 </tr>
 
-            
-
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
@@ -338,7 +352,6 @@ const EditDetails = () => {
                     </span>
                   </th>
                 </tr>
-
 
                 <tr>
                   <th>
@@ -362,8 +375,6 @@ const EditDetails = () => {
                   </th>
                 </tr>
 
-
-
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
@@ -386,12 +397,10 @@ const EditDetails = () => {
                             })
                           }
                         />
-                       
                       </span>
                     </span>
                   </th>
                 </tr>
-
 
                 <tr>
                   <th>
@@ -414,7 +423,6 @@ const EditDetails = () => {
                     </span>
                   </th>
                 </tr>
-
 
                 <tr>
                   <th>
@@ -459,11 +467,10 @@ const EditDetails = () => {
                   </th>
                 </tr>
 
-
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
-                    Select Property Type:{" "}
+                      Select Property Type:{" "}
                       <span style={{ color: "black", fontWeight: "normal" }}>
                         <input
                           type="text"

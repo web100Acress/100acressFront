@@ -5,7 +5,7 @@ import Nav from '../aadharhomes/Nav';
 
 const ContactUs = () => {
   return (
-    <>
+    <div style={{overflowX:"hidden"}}>
     <Nav/>
     <div className='overflow-x-hidden'>
      
@@ -80,7 +80,7 @@ const ContactUs = () => {
 
    </div>
    <Footer/>
-    </>
+    </div>
   );
 };
 

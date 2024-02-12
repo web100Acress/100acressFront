@@ -81,6 +81,7 @@ import UserViewProperty from "./Pages/UserViewProperty";
 import CareerWithUs from "./Pages/CareerWithUs";
 import About from "./Pages/About";
 import UserEditProperty from "./Pages/UserEditProperty";
+import PrivateRoute from "./PrivateRoute";
 
 
 function App() {
@@ -89,16 +90,17 @@ function App() {
     email: "johndoe@example.com",
     mobile: "1234567890",
   };
-
+  const isAuthenticated = true;
   return (
     <Wrapper className="section">
+      
       <Router>
         <Routes>
           {/* <Route path='/' element={<Navigate to='/Home' />} /> */}
           <Route path="/" element={<Home />} />
           <Route path="/SignUP" element={<SignUp />} />
           <Route path="/SignIn" element={<SignIn />} />
-          <Route path="/ashishrough" element={<AshishRoughPage />} />
+          {/* <Route path="/ashishrough" element={<AshishRoughPage />} /> */}
           {/* <Route path='/login' element={<LoginMain />} /> */}
           <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<Privacy />} />
@@ -169,6 +171,11 @@ function App() {
           <Route path="/Admin/ProjectsAddBhk/:id" element={<ProjectsAddBhk/>}/>
           <Route path="/Admin/adminProperty" element={<Adminproperty/>}/>
           
+
+          {/* <PrivateRoute path="/protected"
+          element={<SignIn/>}
+          isAuthenticated={isAuthenticated}/> */}
+
         </Routes>
       </Router>
     </Wrapper>

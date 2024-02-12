@@ -4,7 +4,7 @@ import Footer from "../Components/Actual_Components/Footer";
 
 const CareerWithUs = () => {
   return (
-    <>
+    <div style={{overflowX:"hidden"}}>
     <Nav/>
       <div className="overflow-x-hidden">
         <section className="relative">
@@ -287,7 +287,7 @@ const CareerWithUs = () => {
         </div>
       </div>
       <Footer/>
-    </>
+    </div>
   );
 };
 export default CareerWithUs;
