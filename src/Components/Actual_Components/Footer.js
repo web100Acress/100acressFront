@@ -376,55 +376,55 @@ export default function Footer() {
 
              
                 <div className="flex mt-4 mx-2 lg:mx-1 md:mx-2 sm:mx-2" style={{justifyContent:'space-around'}}>
-                  <a
-                    href="#"
+                  <Link
+                    to="https://www.facebook.com/100Acress"
                     className="flex items-center justify-center text-white bg-blue-500 w-10 h-10 rounded-full"
 
                   >
                     <FaFacebook size={20} />
-                  </a>
+                  </Link>
 
-                  <a
-                    href="#"
+                  <Link
+                    to="https://twitter.com/100acressdotcom"
                     className="flex items-center justify-center text-white bg-blue-400 w-10 h-10 rounded-full "
 
                   >
                     <i className="fa-brands fa-x-twitter text-sm" ></i>
-                  </a>
+                  </Link>
 
-                  <a
-                    href="#"
+                  <Link
+                    to="https://www.instagram.com/100acress_com/"
                     className="flex items-center justify-center text-white bg-purple-500 w-10 h-10 rounded-full"
 
                   >
                     <FaInstagram size={20} />
-                  </a>
+                  </Link>
 
-                  <a
-                    href="#"
+                  <Link
+                    to="https://www.linkedin.com/company/100acress/"
                     className="flex justify-center items-center text-white bg-blue-700 w-10 h-10 rounded-full"
 
                   >
                     <FaLinkedin size={20} />
-                  </a>
+                  </Link>
 
-                  <a
-                    href="#"
+                  <Link
+                    to="https://www.youtube.com/c/100Acress"
                     className="flex items-center justify-center text-white rounded-full bg-red-600 w-10 h-10"
 
                   >
                     <FaYoutube size={20} />
-                  </a>
+                  </Link>
                 </div>
              
             </div>
           </div>
           <div className="text-center py-4">
-            Copyright © 2024,
-            <a className="text-reset" href="https://100acress.com/">
+            Copyright © 2024,{" "}
+            <Link className="text-reset" to="https://100acress.com/">
 
-              100acress.com.
-            </a>
+              100acress.com.{" "}
+            </Link>
             All Rights Reserved
           </div>
         </div>

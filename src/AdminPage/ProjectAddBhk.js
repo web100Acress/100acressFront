@@ -97,7 +97,7 @@ const ProjectsAddBhk = () => {
     try {
       const response = await axios.delete(`https://api.100acress.com/bhk_delete/${id}`);
       if (response.status >= 200 && response.status < 300) {
-        window.location.reload();
+        // window.location.reload();
       } else {
         console.error('Failed to delete user. Server returned an error.');
       }
@@ -156,7 +156,7 @@ const ProjectsAddBhk = () => {
               <tbody>
                 {viewAll.map((item, index) => {
                   
-                  const id = item._id;
+                  const id1 = item._id;
                   
                   return (
                     <tr key={index} className="bg-white-500 border-b border-red-400">
@@ -179,7 +179,7 @@ const ProjectsAddBhk = () => {
                           
                           <button
                             type="button"
-                             onClick={()=>handleDeleteButtonClick(id)}
+                             onClick={()=>handleDeleteButtonClick(id1)}
                             className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
                           >
                             Delete

@@ -8,13 +8,13 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "react-helmet";
+
 const BannerPage = () => {
   const sliderRef = React.createRef();
   const { pUrl } = useParams();
   const [projectViewDetails, setProjectViewDetails] = useState([]);
-  const [pageTitle, setPageTitle] = useState('Default Page Title');
-
+  const [pageTitle, setPageTitle] = useState("Default Page Title");
 
   // // useEffect to update the page title when the component mounts or when pageTitle changes
   // useEffect(() => {
@@ -163,7 +163,17 @@ const BannerPage = () => {
 
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
-          
+      <Helmet>
+        <meta
+          name="description"
+          content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential & Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon"
+        />
+        <title>{projectViewDetails.meta_title}</title>
+        <meta
+          name="description"
+          content={projectViewDetails.meta_description}
+        />
+      </Helmet>
 
       <>
         <header className="text-slate-700 container relative mx-auto flex flex-col overflow-hidden px-4 py-2 lg:flex-row lg:items-center">
@@ -257,26 +267,17 @@ const BannerPage = () => {
           </nav>
         </header>
 
-        <div className="h-[32rem] w-full relative overflow-hidden bg-cover bg-no-repeat p-12 text-center">
-          <div
-            className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-fixed object-fit "
-            style={{
-              backgroundImage: frontImage ? `url(${frontImage.url})` : "",
-              backgroundPosition: "center",
-              backgroundSize: "cover",
-              opacity: "0.8",
-            }}
-          >
-            {/* <div className="flex h-full items-center justify-center">
-              <div className="relative">
-                <h2 className="mb-4 text-sm lg:text-4xl md:text-2xl sm:text-sm font-extrabold text-white">
-                  {projectViewDetails.projectBgContent}
-                </h2>
-                <h4 className="mb-6 text-sm lg:text-3xl md:text-xl sm:text-sm font-extrabold text-[#ffc067]">
-                  {projectViewDetails.projectName}
-                </h4>
-              </div>
-            </div> */}
+        <div className="w-full relative overflow-hidden bg-cover bg-no-repeat text-center">
+          <div className="w-full  overflow-hidden  object-fit">
+            <div className="d-flex justify-content-center">
+              {frontImage?.url && (
+                <img
+                  className="img-fluid max-width-100 max-height-100 h-auto w-full"
+                  src={frontImage.url}
+                  alt="front Image"
+                />
+              )}
+            </div>
           </div>
         </div>
 
@@ -357,7 +358,7 @@ const BannerPage = () => {
           </h3>
         </div>
 
-        <div className=" lg:text-justify md:text-center  text-gray-700 m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl pt-0 mt-4">
+        <div className=" lg:text-justify md:text-center text-justify  text-gray-700 m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl pt-0 mt-4">
           <span className="leading-relaxed">
             {projectViewDetails.project_discripation}
           </span>
@@ -429,7 +430,7 @@ const BannerPage = () => {
         </ReactModal>
       </div> */}
 
-        <div className="text-center pt-4">
+        <div className="text-center">
           <strong className="font-semibold text-2xl md:text-xl sm:text-base text-[#012e29]">
             {projectViewDetails.projectName} Sizes & Prices
           </strong>
@@ -682,7 +683,6 @@ const BannerPage = () => {
                   )}
               </div>
             </div>
-
             {/* ... (other divs) */}
           </div>
         </div>
@@ -715,7 +715,7 @@ const BannerPage = () => {
           <img
             src={projectViewDetails?.project_locationImage?.url}
             alt="location image"
-            className="w-screen h-screen"
+            className="w-screen h-auto"
           />
         </div>
 
@@ -725,16 +725,16 @@ const BannerPage = () => {
           </strong>
         </div>
 
-        <div class="flex items-center justify-center pt-2" id="about">
-          {/* <img
+        {/* <div class="flex items-center justify-center pt-2" id="about">
+          <img
             class="object-cover object-center rounded-xl w-24 h-auto"
             src={projectViewDetails?.logo?.url}
             alt="logo"
-          /> */}
-        </div>
+          />
+        </div> */}
 
         <div className="flex flex-col lg:flex-row items-center justify-center lg:space-x-8 mx-4 pt-2 lg:mx-0">
-          <div className="lg:w-full sm:w-full text-justify mb-8 lg:mb-0 ">
+          <div className="lg:w-full sm:w-full text-justify mb-1">
             <p>
               At <b>{projectViewDetails.projectName}</b>,{" "}
               {projectViewDetails.AboutDeveloper}
@@ -781,34 +781,12 @@ const BannerPage = () => {
               />
             </div>
 
-            {/* <div>
-              <input
-                placeholder="Project Name*"
-                name="projectName"
-                value={projectViewDetails.projectName}
-                onChange={handleChange}
-                type="hidden"
-                className="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <input
-                placeholder="Project Address*"
-                name="address"
-                onChange={handleChange}
-                value={projectViewDetails.projectAddress}
-               
-                type="hidden"
-                className="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
-              />
-            </div> */}
-
-            <div className="flex justify-center md:mt-2 p-4">
+            {/* <div className="flex justify-center md:mt-2 p-4">
               <strong className="text-white text-center">
                 Rera No. {projectViewDetails.projectReraNo}
               </strong>
-            </div>
+            </div> */}
+
             <div className="flex justify-center ">
               <button
                 onClick={userSubmitDetails}

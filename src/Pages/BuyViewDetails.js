@@ -28,8 +28,12 @@ const BuyViewDetails = () => {
         const res = await axios.get(
           `https://api.100acress.com/property/view/${id}`
         );
-        setRentViewDetails(res.data.postData.postProperty[0]);
-        console.log(rentViewDetails, "Response")
+
+        if(res.data.data){
+          setRentViewDetails(res.data.data)
+        }else{
+          setRentViewDetails(res.data.postData.postProperty[0]);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -38,7 +42,6 @@ const BuyViewDetails = () => {
   }, []);
 
   useEffect(()=>{
-    console.log(rentViewDetails, "rent view details")
   },[rentViewDetails])
 
   return (
@@ -146,11 +149,110 @@ const BuyViewDetails = () => {
                     <span className="ml-1">{rentViewDetails.builtYear}</span>
                   </div>
                 </article>
-                <div className="article-comment">
+
+                {
+                  rentViewDetails.email ? (<>
+                  <div className="article-comment">
                   <h4 className="text-lg  text-red-500 m-0">
                     Contact Us
                   </h4>
-                  <form id="contact-form" method="POST">
+                  <form id="contact-form">
+                    <div className="row pt-3">
+                      <div className="widget widget-tags">
+                        <div className="widget-body">
+                          <div className="row">
+                            <div className="col-md-12">
+                              <div className="form-group">
+                                <input
+                                  name="Name"
+                                  id="name"
+                                  placeholder="Agent Email *"
+                                  className="form-control"
+                                  type="text"
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="Email"
+                                  id="email"
+                                  placeholder="Agent Number *"
+                                  className="form-control"
+                                  type="email"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="Cus Name*"
+                                  id="email"
+                                  placeholder="Cus Name *"
+                                  className="form-control"
+                                  type="email"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="Cus Email*"
+                                  id="email"
+                                  placeholder="Cus Email *"
+                                  className="form-control"
+                                  type="email"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="Cus Number*"
+                                  id="email"
+                                  placeholder="Cus Number *"
+                                  className="form-control"
+                                  type="email"
+                                />
+                              </div>
+                            </div>
+
+
+                            <div className="col-md-12 pt-2  ">
+                              <div className="form-group">
+                                <input
+                                  name="addresss"
+                                  id="address"
+                                  placeholder="Property Address *"
+                                  className="form-control"
+                                  type="text"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="send">
+                                <button className="px-btn theme bg-red-500 text-red-500">
+                                  <span className="text-red-500">Submit</span>{" "}
+                                  <i className="arrow text-red-500" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                  </>)  :(<>
+                  <div className="article-comment">
+                  <h4 className="text-lg  text-red-500 m-0">
+                    Contact Us
+                  </h4>
+                  <form id="contact-form">
                     <div className="row pt-3">
                       <div className="widget widget-tags">
                         <div className="widget-body">
@@ -190,7 +292,7 @@ const BuyViewDetails = () => {
                               </div>
                             </div>
 
-                            <div className="col-md-12 pt-2 hidden">
+                            <div className="col-md-12 pt-2 ">
                               <div className="form-group">
                                 <input
                                   name="projectName"
@@ -202,7 +304,7 @@ const BuyViewDetails = () => {
                               </div>
                             </div>
 
-                            <div className="col-md-12 pt-2 hidden ">
+                            <div className="col-md-12 pt-2  ">
                               <div className="form-group">
                                 <input
                                   name="addresss"
@@ -227,7 +329,92 @@ const BuyViewDetails = () => {
                       </div>
                     </div>
                   </form>
-                </div>
+                </div></>)
+                }
+
+                {/* <div className="article-comment">
+                  <h4 className="text-lg  text-red-500 m-0">
+                    Contact Us
+                  </h4>
+                  <form id="contact-form">
+                    <div className="row pt-3">
+                      <div className="widget widget-tags">
+                        <div className="widget-body">
+                          <div className="row">
+                            <div className="col-md-12">
+                              <div className="form-group">
+                                <input
+                                  name="Name"
+                                  id="name"
+                                  placeholder="Name *"
+                                  className="form-control"
+                                  type="text"
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="Email"
+                                  id="email"
+                                  placeholder="Email *"
+                                  className="form-control"
+                                  type="email"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="mobile"
+                                  id="mobile"
+                                  placeholder="Mobile *"
+                                  className="form-control"
+                                  type="text"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2 ">
+                              <div className="form-group">
+                                <input
+                                  name="projectName"
+                                  id="projectName"
+                                  placeholder="Project Name *"
+                                  className="form-control"
+                                  type="text"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2  ">
+                              <div className="form-group">
+                                <input
+                                  name="addresss"
+                                  id="address"
+                                  placeholder="Address *"
+                                  className="form-control"
+                                  type="text"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="send">
+                                <button className="px-btn theme bg-red-500 text-red-500">
+                                  <span className="text-red-500">Submit</span>{" "}
+                                  <i className="arrow text-red-500" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div> */}
+                
               </div>
               <div className="col-lg-4 m-15 px-tb blog-aside">
                 <div className="widget widget-author">
@@ -270,11 +457,187 @@ const BuyViewDetails = () => {
                       services and online stores
                     </p>
                   </div> */}
+
                   <p className="text-lg text-justify p-2">
                     Let us create unique opportunities to help make any
                     disability into an ability.
                   </p>
                 </div>
+
+                {
+                  rentViewDetails.email ? (
+                  <>
+                  <div className="widget widget-tags">
+                  <div className="widget-title">
+                    <h3>Contact Us</h3>
+                  </div>
+                  <div className="widget-body">
+                    <div className="row">
+                      <div className="col-md-12">
+                        <div className="form-group">
+                          <input
+                            name="Name"
+                            id="name"
+                            placeholder="Agent Email *"
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-12 pt-2">
+                        <div className="form-group">
+                          <input
+                            name="Email"
+                            id="email"
+                            placeholder="Agent Number *"
+                            className="form-control"
+                            type="email"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-12 pt-2">
+                        <div className="form-group">
+                          <input
+                            name="mobile"
+                            id="mobile"
+                            placeholder="Cus Name *"
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-12 pt-2">
+                        <div className="form-group">
+                          <input
+                            name="projectName"
+                            id="projectName"
+                            placeholder="Cus Email *"
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-12 pt-2">
+                        <div className="form-group">
+                          <input
+                            name="addresss"
+                            id="address"
+                            placeholder="Cus Number *"
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-12 pt-2">
+                        <div className="form-group">
+                          <input
+                            name="addresss"
+                            id="address"
+                            placeholder="Property Address *"
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-12 pt-2">
+                        <div className="send">
+                          <button className="px-btn theme bg-red-500 text-red-500">
+                            <span className="text-red-500">Submit</span>{" "}
+                            <i className="arrow text-red-500" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                  </>) :(
+                    //Ispe Mujhe abhi work nhi krna hai
+                  <>
+                  <div className="widget widget-tags">
+                  <div className="widget-title">
+                    <h3>Contact Us</h3>
+                  </div>
+                  <div className="widget-body">
+                    <div className="row">
+                      <div className="col-md-12">
+                        <div className="form-group">
+                          <input
+                            name="Name"
+                            id="name"
+                            placeholder="Name *"
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-md-12 pt-2">
+                        <div className="form-group">
+                          <input
+                            name="Email"
+                            id="email"
+                            placeholder="Email *"
+                            className="form-control"
+                            type="email"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-12 pt-2">
+                        <div className="form-group">
+                          <input
+                            name="mobile"
+                            id="mobile"
+                            placeholder="Mobile *"
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-12 pt-2">
+                        <div className="form-group">
+                          <input
+                            name="projectName"
+                            id="projectName"
+                            placeholder="Project Name *"
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-12 pt-2">
+                        <div className="form-group">
+                          <input
+                            name="addresss"
+                            id="address"
+                            placeholder="Address *"
+                            className="form-control"
+                            type="text"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-md-12 pt-2">
+                        <div className="send">
+                          <button className="px-btn theme bg-red-500 text-red-500">
+                            <span className="text-red-500">Submit</span>{" "}
+                            <i className="arrow text-red-500" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                  </>
+                  )
+                }
 
                 <div className="widget widget-tags">
                   <div className="widget-title">
@@ -317,7 +680,7 @@ const BuyViewDetails = () => {
                         </div>
                       </div>
 
-                      <div className="col-md-12 pt-2 hidden">
+                      <div className="col-md-12 pt-2">
                         <div className="form-group">
                           <input
                             name="projectName"
@@ -329,7 +692,7 @@ const BuyViewDetails = () => {
                         </div>
                       </div>
 
-                      <div className="col-md-12 pt-2 hidden ">
+                      <div className="col-md-12 pt-2">
                         <div className="form-group">
                           <input
                             name="addresss"

@@ -62,6 +62,7 @@ function Home() {
           "https://api.100acress.com/project/featured"
         );
         setFeaturedProject(res.data.data);
+
       } catch (error) {
         console.log(error || error.message);
       }
@@ -229,6 +230,7 @@ function Home() {
                           <a className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
+                          <span style={{float:"right"}}>{item.builderName}</span>
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
                             {item.city}

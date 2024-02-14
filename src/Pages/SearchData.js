@@ -100,7 +100,7 @@ const SearchData = () => {
                                   </li>
                                 ) : (
                                   <li className="text-left">
-                                    <Link to={`/buy${item._id}`}>
+                                    <Link to={`/buy${item._id}`} >
                                       <button
                                         type="button"
                                         className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"
@@ -152,7 +152,7 @@ const SearchData = () => {
                             </li>
                             {item.schema_type == "rent" ? (
                               <li className="text-left">
-                                <Link to={`/rent/${item._id}`}>
+                                <Link to={`/rent/${item._id}`} target="_top">
                                   <button
                                     type="button"
                                     className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"
@@ -163,7 +163,7 @@ const SearchData = () => {
                               </li>
                             ) : (
                               <li className="text-left">
-                                <Link to={`/${item.project_url}/`}>
+                                <Link to={`/${item.project_url}/`}  target="_top">
                                   <button
                                     type="button"
                                     className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"

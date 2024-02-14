@@ -58,6 +58,7 @@ const ViewPropertyAdmin = () => {
   };
 
   const { id } = useParams();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -79,7 +80,7 @@ const ViewPropertyAdmin = () => {
 
   const handleDeleteUser = async(id) =>{
     try {
-      const res = axios.delete(`https://api.100acress.com/postPerson/propertyDelete/${id}`)
+      const res =await axios.delete(`https://api.100acress.com/postPerson/propertyDelete/${id}`)
       if(res.status >= 200 && res.status < 300){
         window.location.reload();
       }else{
@@ -216,7 +217,7 @@ const ViewPropertyAdmin = () => {
                     
                             <button
                               type="button"
-                              onClick={()=>handleDeleteButtonClicked(id)}
+                              onClick={()=>handleDeleteButtonClicked(userId)}
                               className="text-white  bg-red-700 hover:bg-red-700 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-2 py-1.5 text-center"
                             >
                               Delete
