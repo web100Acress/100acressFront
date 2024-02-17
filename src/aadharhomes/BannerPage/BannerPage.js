@@ -16,21 +16,6 @@ const BannerPage = () => {
   const [projectViewDetails, setProjectViewDetails] = useState([]);
   const [pageTitle, setPageTitle] = useState("Default Page Title");
 
-  // // useEffect to update the page title when the component mounts or when pageTitle changes
-  // useEffect(() => {
-  //   // You can fetch new data or perform any logic to determine the new title
-  //   // For this example, let's assume you have a function that fetches the new title
-  //   const fetchNewTitle = async () => {
-  //     try {
-  //       const newTitle = await fetchDataForNewTitle();
-  //       setPageTitle(newTitle);
-  //     } catch (error) {
-  //       console.error('Error fetching new title:', error);
-  //     }
-  //   };
-
-  //   fetchNewTitle();
-  // }, []); // You can add dependencies here if needed
 
   const [showPopup, setShowPopup] = useState(false);
   const settings = {
@@ -65,7 +50,6 @@ const BannerPage = () => {
           `https://api.100acress.com/projectView/${pUrl}`
         );
         setProjectViewDetails(res.data.dataview[0]);
-        console.log(res, "Response");
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -162,7 +146,7 @@ const BannerPage = () => {
   } = projectViewDetails;
 
   return (
-    <Wrapper className="section" style={{ overflowX: "hidden" }}>
+    <Wrapper className="section" style={{ overflowY: "hidden",overflowX: "hidden" }}>
       <Helmet>
         <meta
           name="description"
@@ -352,10 +336,10 @@ const BannerPage = () => {
           style={{ marginLeft: "38px", paddingTop: "28px" }}
           id="overview"
         >
-          <h3 className="w-full lg:w-3/4 lg:mx-4 sm:mx-2 text-2xl lg:text-4xl font-semibold text-[#012e29]">
+          <h1 className="w-full lg:w-3/4 lg:mx-4 sm:mx-2 text-2xl lg:text-4xl font-semibold text-[#012e29]">
             {projectViewDetails.projectName} -{" "}
             {projectViewDetails.projectAddress}, {projectViewDetails.city}
-          </h3>
+          </h1>
         </div>
 
         <div className=" lg:text-justify md:text-center text-justify  text-gray-700 m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl pt-0 mt-4">
@@ -431,9 +415,9 @@ const BannerPage = () => {
       </div> */}
 
         <div className="text-center">
-          <strong className="font-semibold text-2xl md:text-xl sm:text-base text-[#012e29]">
+          <h2 className="font-semibold text-2xl md:text-xl sm:text-base text-[#012e29]">
             {projectViewDetails.projectName} Sizes & Prices
-          </strong>
+          </h2>
         </div>
 
         <div className="flex flex-col w-full   border-black pt-4">
@@ -472,10 +456,74 @@ const BannerPage = () => {
         </div>
 
         <div className="text-center   text-black font-semibold m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-3xl mt-4">
-          <span className="leading-relaxed">
+          <h3 className="leading-relaxed font-bold">
             {projectViewDetails.projectName} Floor Plan
-          </span>
+          </h3>
         </div>
+                {/* Extra Code */}
+                
+        {/* <div className="flex justify-center items-centerrounded pt-5">
+          <div className="text-white w-full rounded-lg overflow-hidden">
+            <div className="flex flex-col md:flex-row">
+              <div className="w-full md:w-1/2 p-4 text-black">
+                <h2 className="px-4">Highlights of Pioneer Advait</h2>
+                <div className="mt-4">
+                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
+                  <li className="mb-2">
+                    Wider door width and large windows and Panic alarms for emergency
+                  </li>
+                </ul>
+                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
+                  <li className="mb-2">
+                    Anti-skid flooring to prevent trips and falls
+                  </li>
+                </ul>
+                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
+                  <li className="mb-2">
+                    Electrical controls and locks at convenient heights
+                  </li>
+                </ul>
+
+                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
+                  <li className="mb-2">
+                    Two-way switches to support easier movements
+                  </li>
+                </ul>
+
+                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
+                  <li className="mb-2">
+                    False ceiling with ambient lighting and Rounded corners to ensure smooth edges
+                  </li>
+                </ul>
+
+                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
+                  <li className="mb-2">
+                    Raised seat heights and grab bars in toilets
+                  </li>
+                </ul>
+
+                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
+                  <li className="mb-2">
+                    Heat Pumps for instant hot water in every washroom
+                  </li>
+                </ul>
+                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
+                  <li className="mb-2">
+                    LED lights across lift lobbies, apartments and balconies
+                  </li>
+                </ul>
+              </div>
+              </div>
+              <div className="md:block w-1/2 overflow-hidden">
+                <img
+                  src="https://res.cloudinary.com/dm5yrsqdc/image/upload/v1707561714/100acre/project/e6wlza2egyraxiejymdp.jpg"
+                  alt="expertImage"
+                  className="w-full h-full object-cover "
+                />
+              </div>
+            </div>
+          </div>
+        </div> */}
 
         <div className="relative mb-2 max-w-screen-lg max-h-screen-lg mx-auto lg:mx-4 xl:mx-8 sm:w-full lg:pt-1 sm:pt-0 overflow-hidden">
           <Slider ref={sliderRef} {...settings} className="overflow-hidden">
@@ -592,10 +640,8 @@ const BannerPage = () => {
           </div>
         </div> */}
 
-        <div className="px-5 mb-0 lg:pt-3">
+        {/* <div className="px-5 mb-0 lg:pt-3">
           <div className="grid  md:pt-3 lg:grid-cols-4 sm:pt-1 sm:grid-cols-1 md:grid-cols-2 sm:mx-2 gap-3 m-2 sm:m-2 md:m-4 lg:m-4">
-            {/* ... (other divs) */}
-
             <div className="border-2 lg:mx-2 md:mx-2 border-[#d9a253] lg:w-full lg:h-[300] sm:h-[100] sm:w-full md:w-[200] md:h-[200] rounded-lg bg-[#f1eadf] overflow-hidden">
               <div className="mx-4 pb-2">
                 <p className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
@@ -683,20 +729,17 @@ const BannerPage = () => {
                   )}
               </div>
             </div>
-            {/* ... (other divs) */}
+           
           </div>
-        </div>
+        </div> */}
 
         <div className="text-center text-[#012e29] font-semibold mt-2 lg:pt-4 md:pt-3  text-sm sm:text-base md:text-lg lg:text-3xl sm:pt-0 px-3">
-          <p className="leading-relaxed">
+          <h3 className="leading-relaxed font-bold">
             {projectViewDetails.projectName} Amenities
-          </p>
+          </h3>
         </div>
 
-        <div
-          className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2 px-4 pt-4 "
-          id="amenities"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2 px-4 pt-4">
           {Amenities &&
             Array.isArray(Amenities) &&
             Amenities.length > 0 &&
@@ -742,16 +785,23 @@ const BannerPage = () => {
           </div>
         </div>
 
-        <div className="sm:h-auto lg:h-[400px] xl:h-[450px] w-full sm:w-auto bg-[#012e29]">
-          <div className="text-center text-white m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl lg:pt-4 mt-4"></div>
-          <form className="mx-auto max-w-2xl h-auto">
-            <div className="lg:pt-6 mb-5 border-b border-white">
+        <div className="sm:h-auto lg:h-[400px] xl:h-[430px] w-full sm:w-auto bg-[#012e29]">
+          <p className="text-center pt-4 text-white m-2 md:m-4 lg:m-6 xl:m-10 sm:text-sm   md:text-lg lg:text-2xl  lg:pt-2 mt-2">
+            Make an Inquiry
+          </p>
+          <p className="text-white text-center md:text-lg lg:text-2xl sm:text-sm  mt-1">
+            Or Call <span>+91 8527134491</span>
+          </p>
+
+          <form className="mx-auto max-w-2xl h-auto p-4">
+            <div className="lg:pt-2 mb-5 border-b border-white">
               <input
                 row="6"
                 type="text"
                 name="name"
                 onChange={handleChange}
                 value={userDetails.name}
+                required
                 placeholder="Enter Your Name*"
                 className="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
               ></input>
@@ -787,13 +837,12 @@ const BannerPage = () => {
               </strong>
             </div> */}
 
-            <div className="flex justify-center ">
+            <div className="flex justify-center">
               <button
                 onClick={userSubmitDetails}
                 className="inline-flex gap-1  text-white bg-[#012e29] border focus:outline-none px-3 py-2 rounded"
               >
-                Make an Inquiry{" "}
-                <i className="fa-solid fa-arrow-right pt-1 "></i>
+                Submit <i className="fa-solid fa-arrow-right pt-1 "></i>
               </button>
             </div>
           </form>

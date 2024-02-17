@@ -75,7 +75,7 @@ const MenuListContainer = ({ isOpen, onClose }) => {
         <>
           <Box
             position="absolute"
-            mt={{ base: "212px", md: "212px", sm: "150px" }}
+            mt={{ base: "212px", md: "234px", sm: "150px" }}
             right={0}
             zIndex={1}
             bg="white"

@@ -90,6 +90,8 @@ function App() {
     email: "johndoe@example.com",
     mobile: "1234567890",
   };
+  const data = "";
+
   const isAuthenticated = true;
   return (
     <Wrapper className="section">
@@ -98,7 +100,7 @@ function App() {
         <Routes>
           {/* <Route path='/' element={<Navigate to='/Home' />} /> */}
           <Route path="/" element={<Home />} />
-          <Route path="/SignUP" element={<SignUp />} />
+          <Route path="/SignUP" element={<SignUp />}/>
           <Route path="/SignIn" element={<SignIn />} />
           {/* <Route path="/ashishrough" element={<AshishRoughPage />} /> */}
           {/* <Route path='/login' element={<LoginMain />} /> */}

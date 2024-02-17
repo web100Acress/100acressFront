@@ -32,11 +32,11 @@ const ProjectEdit = () => {
     AboutDeveloper: "",
     Amenities: [],
     type: "",
+    project_url: "",
   });
 
   const { id } = useParams();
   const { project_floorplan_Image, otherImage, frontImage } = values;
-  console.log(frontImage, "FrontImage");
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -92,30 +92,29 @@ const ProjectEdit = () => {
                 <tr>
                   {/* Front Image code here */}
                   <td>
-  <img
-    src={values.frontImage ? values.frontImage.url : ""}
-    alt="frontImage"
-    style={{ maxWidth: "20%" }}
-    id="previewImage"
-  />
-  <br />
-  <input
-    type="file"
-    name="frontImage"
-    onChange={(e) => {
-      const file = e.target.files[0];
+                    <img
+                      src={values.frontImage ? values.frontImage.url : ""}
+                      alt="frontImage"
+                      style={{ maxWidth: "20%" }}
+                      id="previewImage"
+                    />
+                    <br />
+                    <input
+                      type="file"
+                      name="frontImage"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
 
-      setValues((prevValues) => ({
-        ...prevValues,
-        frontImage: {
-          public_id: "your_public_id", // update with the correct value if needed
-          url: URL.createObjectURL(file),
-        },
-      }));
-    }}
-  />
-</td>
-
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          frontImage: {
+                            public_id: "your_public_id", // update with the correct value if needed
+                            url: URL.createObjectURL(file),
+                          },
+                        }));
+                      }}
+                    />
+                  </td>
                 </tr>
 
                 <tr>
@@ -237,6 +236,28 @@ const ProjectEdit = () => {
                             setValues({
                               ...values,
                               projectName: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold">
+                      Project Description :
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <textarea
+                          type="text"
+                          className="outline-none w-full"
+                          value={values.project_discripation}
+                          name="project_discripation"
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              project_discripation: e.target.value,
                             })
                           }
                         />
@@ -512,6 +533,28 @@ const ProjectEdit = () => {
                           value={values.type}
                           onChange={(e) =>
                             setValues({ ...values, type: e.target.value })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Project URL :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          name="project_url"
+                          value={values.project_url}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              project_url: e.target.value,
+                            })
                           }
                         />
                       </span>

@@ -18,9 +18,12 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { InputGroup, InputRightElement } from "@chakra-ui/react";
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import React from "react";
+import { Radio, RadioGroup,Checkbox } from "@chakra-ui/react";
+
 const avatars = [
   {
     name: "Ryan Florence",
@@ -53,15 +56,32 @@ export default function SignUp() {
     mobile: "",
     password: "",
     cpassword: "",
+    role: "propertyOwner",
   });
 
-  const [passwordHide, setpasswordHide] = useState(true)
-  const handleHideUnHide = () =>{
-    setpasswordHide(!passwordHide)
-  }
+ 
+
+  const resetData = () => {
+    setUserSignUp({
+      name: "",
+      email: "",
+      mobile: "",
+      password: "",
+      cpassword: "",
+    });
+  };
+
+  const [passwordHide, setpasswordHide] = useState(true);
+  const handleHideUnHide = () => {
+    setpasswordHide(!passwordHide);
+  };
   const handleRegisterChange = (e) => {
     const { name, value } = e.target;
     setUserSignUp({ ...userSignUp, [name]: value });
+  };
+
+  const handleSelectedValue = (selectedValue) => {
+    setUserSignUp({ ...userSignUp, value: selectedValue });
   };
 
   const showToastMessage = () => {
@@ -77,10 +97,10 @@ export default function SignUp() {
       axios
         .post("https://api.100acress.com/postPerson/register", userSignUp)
         .then((response) => {
-          // alert(response.data.message);
           history("/SignIn");
-          // resetForm();
+          resetData();
         })
+        
         .catch((error) => {
           console.error("Registration failed:", error);
           if (error.response) {
@@ -91,6 +111,7 @@ export default function SignUp() {
             alert(`Error setting up the request: ${error.message}`);
           }
         });
+        console.log(userSignUp, "userSignUp");
     } else {
       alert("Please filled all data");
     }
@@ -111,7 +132,11 @@ export default function SignUp() {
   const { name, email, mobile, password, cpassword } = userSignUp;
   return (
     <Box position={"relative"}>
-      {name !== '' && email !== '' && mobile !== '' && password !== '' &&  cpassword !== '' && <ToastContainer/>}
+      {name !== "" &&
+        email !== "" &&
+        mobile !== "" &&
+        password !== "" &&
+        cpassword !== "" && <ToastContainer />}
       <Container
         as={SimpleGrid}
         maxW={"7xl"}
@@ -218,6 +243,24 @@ export default function SignUp() {
           <Stack spacing={4}></Stack>
           <Box as={"form"}>
             <Stack spacing={4}>
+              <Stack direction="row" isRequired spacing={4}>
+                <RadioGroup
+                  onChange={handleSelectedValue}
+                  value={userSignUp.value}
+                  isRequired
+                  spacing={4}
+                >
+                   <Checkbox  colorScheme="red" value="propertyAgent" isRequired>
+                    Property Agent
+                  </Checkbox >
+                  
+                  <Checkbox  colorScheme="red" value="propertyOwner" isRequired >
+                    Property Owner
+                  </Checkbox >
+                 
+                </RadioGroup>
+              </Stack>
+
               <Input
                 placeholder="Full Name"
                 name="name"
@@ -254,23 +297,27 @@ export default function SignUp() {
                   color: "gray.500",
                 }}
               />
-                <InputGroup>
-              <Input
-                placeholder="Enter password"
-                name="password"
-                type={passwordHide ? "password" : "text"}
-                onChange={handleRegisterChange}
-                value={userSignUp.password}
-                bg={"gray.100"}
-                border={0}
-                color={"gray.500"}
-                _placeholder={{
-                  color: "gray.500",
-                }}
-              />
-              <InputRightElement>
-                  {passwordHide ? <FaEyeSlash  onClick={handleHideUnHide} /> : <FaEye  onClick={handleHideUnHide}/>}
-              </InputRightElement>
+              <InputGroup>
+                <Input
+                  placeholder="Enter password"
+                  name="password"
+                  type={passwordHide ? "password" : "text"}
+                  onChange={handleRegisterChange}
+                  value={userSignUp.password}
+                  bg={"gray.100"}
+                  border={0}
+                  color={"gray.500"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                />
+                <InputRightElement>
+                  {passwordHide ? (
+                    <FaEyeSlash onClick={handleHideUnHide} />
+                  ) : (
+                    <FaEye onClick={handleHideUnHide} />
+                  )}
+                </InputRightElement>
               </InputGroup>
               <Input
                 placeholder="Confirm password"

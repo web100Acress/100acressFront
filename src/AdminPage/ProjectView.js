@@ -148,6 +148,18 @@ const ProjectView = () => {
                     </span>
                   </th>
                 </tr>
+
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Project Description :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails.project_discripation}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
@@ -314,6 +326,17 @@ const ProjectView = () => {
                       <span
                         style={{ color: "black", fontWeight: "normal" }}
                       >{viewDetails.type}</span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Project URL :{" "}
+                      <span
+                        style={{ color: "black", fontWeight: "normal" }}
+                      >{viewDetails.project_url}</span>
                     </span>
                   </th>
                 </tr>

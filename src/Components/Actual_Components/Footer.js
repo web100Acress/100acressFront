@@ -18,7 +18,7 @@
 //               <p className=" fw-bold mt-2 text-white items-center text-justify mx-10 ">100acress</p>
 //               <div className="items-center text-justify mx-10 ">
 //               <p className="mt-2 mb-1 text-white ">
-//                 <Link to={'/'} target="blank" className="hover:text-white"  >
+//                 <Link to={'/'} target="blank" className="hover:text-white hover:underline "  >
 //                   Home
 //                 </Link>
 //               </p>
@@ -236,42 +236,42 @@ export default function Footer() {
               <p className=" fw-bold mt-2 text-white items-center text-justify mx-10 ">100acress</p>
               <div className="items-center text-justify mx-10 ">
               <p className="mt-2 mb-1 text-white ">
-                <Link to={'/'} target="_blank" className="hover:text-white"  >
+                <Link to={'/'}  className="hover:text-white hover:underline  " target="_top" >
                   Home
                 </Link>
               </p>
               <p className="mb-1 text-white">
-                <Link to='/about' className="hover:text-white"  target="_top"  >
+                <Link to='/about' className="hover:text-white hover:underline "  target="_top"  >
                   About Us
                 </Link>
               </p>
               <p className="mb-1 text-white">
-                <Link  className="hover:text-white">
+                <Link  className="hover:text-white hover:underline ">
                   Blog
                 </Link>
               </p>
 
               <p className="mb-1 text-white">
-                <Link to="/contactus" className="hover:text-white" target="_top">
+                <Link to="/contactus" className="hover:text-white hover:underline " target="_top">
 
                   Contact Us
                 </Link>
               </p>
 
               <p className="mb-1 text-white">
-                <Link to="/privacy" className="hover:text-white"  target="_top" >
+                <Link to="/privacy" className="hover:text-white hover:underline "  target="_top" >
 
                   Privacy
                 </Link>
               </p>
               <p className="mb-1 text-white">
-                <Link to="/careerwithus" className="hover:text-white" target="_top">
+                <Link to="/careerwithus" className="hover:text-white hover:underline " target="_top">
 
                   Careers with us
                 </Link>
               </p>
               <p className="mb-1 text-white">
-                <Link to="/termsandconditions" className="hover:text-white" target="_top">
+                <Link to="/termsandconditions" className="hover:text-white hover:underline " target="_top">
 
                   Terms And Conditions
                 </Link>
@@ -285,41 +285,41 @@ export default function Footer() {
               <p className="fw-bold mt-2 items-center text-justify mx-10">REAL ESTATE</p>
               <div className="items-center text-justify mx-10">
               <p className="mb-1">
-                <Link to="#!" className="text-reset text-white hover:text-white">
+                <Link to="#!" className="text-reset text-white hover:text-white hover:underline " target="_top">
                   Residential Property
                 </Link>
               </p>
               <p className="mb-1">
-                <Link to="#!" className="text-reset text-white hover:text-white">
+                <Link to="#!" className="text-reset text-white hover:text-white hover:underline " target="_top">
                   Commercial Property
                 </Link>
               </p>
 
               <p className="mb-1">
-                <Link to="#!" className="text-reset text-white hover:text-white">
+                <Link to="#!" className="text-reset text-white hover:text-white hover:underline " target="_top">
                   Floors in Gurgaon
                 </Link>
               </p>
               <p className="mb-1">
-                <Link to="#!" className="text-reset text-white hover:text-white">
+                <Link to="#!" className="text-reset text-white hover:text-white hover:underline " target="_top">
                   Plots in Gurgaon
                 </Link>
               </p>
               <p className="mb-1">
                 {" "}
-                <Link to="#!" className="text-reset text-white hover:text-white">
+                <Link to="#!" className="text-reset text-white hover:text-white hover:underline " target="_top">
                   SCO in Gurgaon
                 </Link>
               </p>
               <p className="mb-1">
                 {" "}
-                <Link to="#!" className="text-reset text-white hover:text-white">
+                <Link to="#!" className="text-reset text-white hover:text-white hover:underline " target="_top">
                   Circle Rates
                 </Link>
               </p>
               <p className="mb-1">
                 {" "}
-                <Link to="#!" className="text-reset text-white hover:text-white">
+                <Link to="#!" className="text-reset text-white hover:text-white hover:underline " target="_top">
                   Gurgaon Master Plan in 2031
                 </Link>
               </p>
@@ -332,32 +332,32 @@ export default function Footer() {
               <p className="fw-bold mt-2 mx-10">CATEGORIES</p>
               <div className="items-center text-justify mx-10">
                 <p className=" mb-1">
-                  <Link to="#!" className="text-white hover:text-white ">
+                  <Link to="#!" className="text-white hover:text-white hover:underline"   target="_top">
                     New Projects
                   </Link>
                 </p>
                 <p className="mb-1">
-                  <Link to="#!" className="text-white hover:text-white">
+                  <Link to="#!" className="text-white hover:text-white hover:underline " target="_top">
                     Ready to Move Homes
                   </Link>
                 </p>
                 <p className="mb-1">
-                  <Link to="#!" className="text-white hover:text-white">
+                  <Link to="#!" className="text-white hover:text-white hover:underline " target="_top">
                     Projects Possession
                   </Link>
                 </p>
                 <p className="mb-1">
-                  <Link to="#!" className="text-white hover:text-white">
+                  <Link to="#!" className="text-white hover:text-white hover:underline " target="_top">
                     Best Sellers
                   </Link>
                 </p>
                 <p className="mb-1">
-                  <Link to="#!" className="text-white hover:text-white">
+                  <Link to="#!" className="text-white hover:text-white hover:underline " target="_top">
                     Property in Dubai
                   </Link>
                 </p>
                 <p className="mb-1">
-                  <Link to="#!" className="text-white hover:text-white">
+                  <Link to="#!" className="text-white hover:text-white hover:underline " target="_top">
                     Property in Goa
                   </Link>
                 </p>

@@ -139,6 +139,7 @@ const resetData = () =>{
                   name="name"
                   value={formDataInquiry.name}
                   onChange={handleInquiryDataChange}
+                  required
                   placeholder="Name"
                   className="w-full text-white placeholder-white outline-none p-2 border-b-2 bg-red-600 border-white mobile-input"
                 />
@@ -148,6 +149,7 @@ const resetData = () =>{
                   placeholder="Mobile"
                   value={formDataInquiry.mobile}
                   onChange={handleInquiryDataChange}
+                  required
                   className="w-full outline-none text-white placeholder-white p-2 border-b-2 bg-red-600 border-white mobile-input"
                 />
               </div>
@@ -186,7 +188,7 @@ const resetData = () =>{
             <img
               src="../../Images/homepageexpert.jpg"
               alt="expertImage"
-              className="w-full h-full object-cover bg-white "
+              className="w-full h-full object-fit bg-white "
             />
           </div>
         </div>

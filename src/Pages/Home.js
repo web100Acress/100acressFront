@@ -46,6 +46,7 @@ function Home() {
           "https://api.100acress.com/project/trending"
         );
         setTrendingProject(res.data.data);
+        
       } catch (error) {
         console.log(error || error.message);
       }
@@ -62,7 +63,6 @@ function Home() {
           "https://api.100acress.com/project/featured"
         );
         setFeaturedProject(res.data.data);
-
       } catch (error) {
         console.log(error || error.message);
       }
@@ -213,7 +213,7 @@ function Home() {
               {trendingProject.map((item, index) => {
                 const pUrl = item.project_url;
                 return (
-                  <Link to={`/${pUrl}/`} target="_blank">
+                  <Link to={`/${pUrl}/`} target="_top">
                     <article
                       key={index}
                       className="mb-4  overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
@@ -227,19 +227,19 @@ function Home() {
                       </div>
                       <div className="p-4">
                         <div className="pb-2">
-                          <a className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
+                          <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          <span style={{float:"right"}}>{item.builderName}</span>
+                          <span style={{float:"right"}} className="text-sm">{item.builderName}</span>
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.city}
+                            {item.projectAddress}
                           </a>
                         </div>
                         <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                           <li className="text-left">
                             <span className="text-sm font-extrabold text-black">
-                              {item.state}
+                              {item.city}
                             </span>
                           </li>
 
@@ -261,6 +261,74 @@ function Home() {
           </section>
         }
       </div>
+
+
+
+      <div
+        className="xjUWI "
+        style={{
+          fontSize: "xx-large",
+          margin: "20px 60px",
+          fontWeight: "600",
+        }}
+      >
+        UpComing Projects in Gurugram
+        <Link to={'/projects'}><span className="float-right text-sm text-red-600 hidden sm:block">View All </span></Link>
+      </div>
+     
+
+      {
+         <section className="flex flex-col bg-white items-center">
+         <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+            {featuredProject.map((item, index) => {
+              const pUrl = item.project_url;
+              return (
+                <Link to={`/${pUrl}/`} target="_top">
+                  <article
+                    key={index}
+                    className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                  >
+                    <div>
+                      <img
+                        src={item.frontImage.url}
+                        alt="image"
+                        className="w-full h-48 object-fit"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <div className="pb-2">
+                        <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                          {item.projectName}
+                        </a>
+                        <br />
+                        <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                          {item.projectAddress}
+                        </a>
+                      </div>
+                      <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+                        <li className="text-left">
+                          <span className="text-sm font-extrabold text-black">
+                            {item.city}
+                          </span>
+                        </li>
+
+                        <li className="text-left">
+                          <button
+                            type="button"
+                            className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
+                          >
+                            View Details
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </article>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      }
 
       {/* <div
         className="xjUWI"
@@ -296,7 +364,7 @@ function Home() {
             {featuredProject.map((item, index) => {
               const pUrl = item.project_url;
               return (
-                <Link to={`/${pUrl}/`} target="_blank">
+                <Link to={`/${pUrl}/`} target="_top">
                   <article
                     key={index}
                     className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
@@ -310,18 +378,86 @@ function Home() {
                     </div>
                     <div className="p-4">
                       <div className="pb-2">
-                        <a className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
+                        <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                           {item.projectName}
                         </a>
                         <br />
                         <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                          {item.city}
+                          {item.projectAddress}
                         </a>
                       </div>
                       <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                         <li className="text-left">
                           <span className="text-sm font-extrabold text-black">
-                            {item.state}
+                            {item.city}
+                          </span>
+                        </li>
+
+                        <li className="text-left">
+                          <button
+                            type="button"
+                            className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
+                          >
+                            View Details
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </article>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      }
+
+
+
+<div
+        className="xjUWI "
+        style={{
+          fontSize: "xx-large",
+          margin: "20px 60px",
+          fontWeight: "600",
+        }}
+      >
+        Projects In Delhi
+        <Link to={'/projects'}><span className="float-right text-sm text-red-600 hidden sm:block">View All </span></Link>
+      </div>
+      {/* <Projects In Delhi /> */}
+
+      {
+         <section className="flex flex-col bg-white items-center">
+         <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+            {featuredProject.map((item, index) => {
+              const pUrl = item.project_url;
+              return (
+                <Link to={`/${pUrl}/`} target="_top">
+                  <article
+                    key={index}
+                    className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                  >
+                    <div>
+                      <img
+                        src={item.frontImage.url}
+                        alt="image"
+                        className="w-full h-48 object-fit"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <div className="pb-2">
+                        <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                          {item.projectName}
+                        </a>
+                        <br />
+                        <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                          {item.projectAddress}
+                        </a>
+                      </div>
+                      <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+                        <li className="text-left">
+                          <span className="text-sm font-extrabold text-black">
+                            {item.city}
                           </span>
                         </li>
 
@@ -528,6 +664,8 @@ const Wrapper = styled.section`
       background-position: center;
     }
   }
+
+  
 
   .sticky-quote-cta {
     height: auto;
