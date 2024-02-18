@@ -319,7 +319,7 @@ export default function Footer() {
               </p>
               <p className="mb-1">
                 {" "}
-                <Link to="#!" className="text-reset text-white hover:text-white hover:underline " target="_top">
+                <Link to="" className="text-reset text-white hover:text-white hover:underline " target="_blank">
                   Gurgaon Master Plan in 2031
                 </Link>
               </p>
