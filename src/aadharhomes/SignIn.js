@@ -57,7 +57,7 @@ const avatars = [
 ];
 
 let loginAPI = "https://api.100acress.com/postPerson/Role/";
-export default function SignUp() {
+export default function SignIn() {
   const [token, setToken] = useState(""); //token
   const [userIdNew, setUserIdNew] = useState(""); //token
   const history = useNavigate();

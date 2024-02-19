@@ -250,13 +250,13 @@ export default function SignUp() {
                   isRequired
                   spacing={4}
                 >
-                   <Checkbox  colorScheme="red" value="propertyAgent" isRequired>
-                    Property Agent
-                  </Checkbox >
+                   <Radio  colorScheme="red" value="Agent" isRequired>
+                     Agent
+                  </Radio >
                   
-                  <Checkbox  colorScheme="red" value="propertyOwner" isRequired >
-                    Property Owner
-                  </Checkbox >
+                  <Radio  colorScheme="red" value="Owner" isRequired >
+                     Owner
+                  </Radio >
                  
                 </RadioGroup>
               </Stack>
