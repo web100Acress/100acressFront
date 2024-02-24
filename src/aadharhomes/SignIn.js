@@ -119,7 +119,7 @@ export default function SignIn() {
               
               history("/");
             } else {
-              history("/Admin/dashboard");
+              history("/");
             }
           } else {
             console.error("Role fetch failed:", roleResponse);
