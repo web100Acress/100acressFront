@@ -1736,7 +1736,7 @@ function Home() {
       <div>
         <div>
           <a
-            href="https://api.whatsapp.com/send?phone=9811750130"
+            href="https://api.whatsapp.com/send?phone=9711139812"
             className="dd-m-whatsapp"
             target="_blank"
           >
