@@ -111,7 +111,7 @@ export default function SignIn() {
               history("/Admin/dashboard");
             } else {
               const sellerId = roleResponse.data.User._id;
-              console.log(sellerId, "fsdfsf")
+          
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
               history("/");
             }
