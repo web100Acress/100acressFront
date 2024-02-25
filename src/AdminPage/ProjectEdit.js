@@ -33,6 +33,8 @@ const ProjectEdit = () => {
     Amenities: [],
     type: "",
     project_url: "",
+    meta_title:"",
+    meta_description:""
   });
 
   const { id } = useParams();
@@ -554,6 +556,54 @@ const ProjectEdit = () => {
                             setValues({
                               ...values,
                               project_url: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Meta Title :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          name="meta_title"
+                          value={values.meta_title}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              meta_title: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+
+
+                
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Meta Description :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          name="meta_description"
+                          value={values.meta_description}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              meta_description: e.target.value,
                             })
                           }
                         />

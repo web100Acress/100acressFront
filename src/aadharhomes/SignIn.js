@@ -94,32 +94,26 @@ export default function SignIn() {
           "https://api.100acress.com/postPerson/verify_Login",
           { email, password }
         );
+
+        console.log(loginResponse, "Login Respos")
         
 
         const newToken = loginResponse.data.token;
         localStorage.setItem("myToken", JSON.stringify(newToken));
         setToken(newToken);
 
-        // const newUserId = loginResponse.data._id;
-        // localStorage.setItem("newUserId", JSON.stringify(newUserId));
-        // setUserIdNew(newUserId);
-
-        
-
         if (loginResponse.status === 200) {
           const roleResponse = await axios.get(
             `https://api.100acress.com/postPerson/Role/${email}`
           );
-           
           if (roleResponse.status === 200) {
-            if (roleResponse.data.User.role === "Seller") {
-              const sellerId = roleResponse.data.User._id;
-              localStorage.setItem("mySellerId", JSON.stringify(sellerId));
-              
-              
-              history("/");
-            } else {
+            if (roleResponse.data.User.role == "admin") {
               history("/Admin/dashboard");
+            } else {
+              const sellerId = roleResponse.data.User._id;
+              console.log(sellerId, "fsdfsf")
+              localStorage.setItem("mySellerId", JSON.stringify(sellerId));
+              history("/");
             }
           } else {
             console.error("Role fetch failed:", roleResponse);

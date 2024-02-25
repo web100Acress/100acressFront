@@ -48,7 +48,7 @@ const ForgetPassword = () => {
   };
 
   return (
-    <div style={{overflowX:"hidden"}}>
+    <div>
       <div className="w-screen h-72 bg-red-600 relative">
         <>
           <div className="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl absolute top-1/2 mt-48 left-1/2 transform -translate-x-2/4 -translate-y-2/4 shadow shadow-slate-300">

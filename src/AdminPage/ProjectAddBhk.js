@@ -4,7 +4,7 @@ import axios from "axios";
 import Modal from "react-modal";
 import Sidebar from "./Sidebar";
 import { Link, useParams } from "react-router-dom";
-import Swal from 'sweetalert2';
+
 
 const customStyle = {
   position: "absolute",

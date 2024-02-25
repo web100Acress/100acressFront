@@ -714,8 +714,8 @@ const BuyViewDetails = () => {
                     {showForm && (
                       <div className=" widget-tags">
                         <div className="widget-title text-center items-center">
-                          <p className="text-red-500">Fill out this one-time form  </p>
-                          <span>Get details over email</span>
+                          <p className="text-red-500">Fill out form only one - time   </p>
+                          <span>After get the contact number </span>
                         </div>
                         <div className="widget-body">
                           <div className="row">

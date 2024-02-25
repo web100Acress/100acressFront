@@ -22,7 +22,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React from "react";
-import { Radio, RadioGroup,Checkbox } from "@chakra-ui/react";
+import { Radio, RadioGroup, Checkbox } from "@chakra-ui/react";
 
 const avatars = [
   {
@@ -58,8 +58,6 @@ export default function SignUp() {
     cpassword: "",
     role: "propertyOwner",
   });
-
- 
 
   const resetData = () => {
     setUserSignUp({
@@ -100,7 +98,7 @@ export default function SignUp() {
           history("/SignIn");
           resetData();
         })
-        
+
         .catch((error) => {
           console.error("Registration failed:", error);
           if (error.response) {
@@ -111,7 +109,7 @@ export default function SignUp() {
             alert(`Error setting up the request: ${error.message}`);
           }
         });
-        console.log(userSignUp, "userSignUp");
+      console.log(userSignUp, "userSignUp");
     } else {
       alert("Please filled all data");
     }
@@ -245,19 +243,20 @@ export default function SignUp() {
             <Stack spacing={4}>
               <Stack direction="row" isRequired spacing={4}>
                 <RadioGroup
-                  onChange={handleSelectedValue}
-                  value={userSignUp.value}
+                  onChange={(value) =>
+                    setUserSignUp({ ...userSignUp, role: value })
+                  }
+                  value={userSignUp.role}
                   isRequired
                   spacing={4}
                 >
-                   <Radio  colorScheme="red" value="Agent" isRequired>
-                     Agent
-                  </Radio >
-                  
-                  <Radio  colorScheme="red" value="Owner" isRequired >
-                     Owner
-                  </Radio >
-                 
+                  <Radio colorScheme="red" value="Agent" isRequired>
+                    Agent
+                  </Radio>
+
+                  <Radio colorScheme="red" value="Owner" isRequired>
+                    Owner
+                  </Radio>
                 </RadioGroup>
               </Stack>
 

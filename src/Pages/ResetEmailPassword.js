@@ -40,7 +40,7 @@ const ResetEmailPassword = () => {
   };
 
   return (
-    <div style={{overflowX:"hidden"}}>
+    <div >
       {email !== "" && <ToastContainer />}
       <div className="w-screen h-72 bg-red-600 relative">
         <>

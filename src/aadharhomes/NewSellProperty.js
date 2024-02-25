@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import Nav from "./Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
+import { RadioGroup, Radio } from "@chakra-ui/react";
 const NewSellProperty = () => {
   const storedSellerId = localStorage.getItem("mySellerId");
   const sellerId = JSON.parse(storedSellerId);
+  // console.log(sellerId, "dsgfdgdgf")
   const propertyType = ["Select Property Type", "Commercial", "Residential"];
   const subTypes = {
     Commercial: [
@@ -219,7 +221,7 @@ const NewSellProperty = () => {
   };
 
   return (
-    <div style={{overflowX:"hidden"}}>
+    <div style={{ overflowX: "hidden" }}>
       <Nav />
       <section className=" py-12 text-gray-800 ">
         <div className="mx-auto flex max-w-md flex-col rounded-lg lg:max-w-screen-xl lg:flex-row">
@@ -246,7 +248,7 @@ const NewSellProperty = () => {
           </div>
 
           <div className="mt-8 mb-8 max-w-3/4  shadow-2xl sm:rounded-lg sm:shadow-lg lg:mt-0  bg-red-400 px-1">
-            <div className="m-2">
+            {/* <div className="m-2">
               <p className="text-2xl mx-2 text-white">
                 You're looking to<span>....</span>
               </p>
@@ -273,7 +275,39 @@ const NewSellProperty = () => {
                   Rent/Lease
                 </span>{" "}
               </p>
-            </div>
+            </div> */}
+            <RadioGroup
+              onChange={(value) => handleOptionClick(value)}
+              value={sellProperty.propertyLooking}
+              className="m-2"
+              
+            >
+              <p className="text-2xl mx-2 text-white">
+                You're looking to<span>....</span>
+              </p>
+
+              <p>
+                <Radio
+                  value="Sell"
+                  className={`mx-2 bg-white `}
+                  colorScheme="blue"
+                  size="lg"
+                  text="white"
+                  spacing={-1}
+                >
+                  Sell
+                </Radio>{" "}{" "}
+                <Radio
+                  value="rent"
+                  className={`bg-white `}
+                  colorScheme="blue"
+                  size="lg"
+                  spacing={1}
+                >
+                  Rent/Lease
+                </Radio>
+              </p>
+            </RadioGroup>
 
             <div className="p-1 sm:p-8">
               <div className="grid gap-3 md:grid-cols-2">
@@ -436,7 +470,7 @@ const NewSellProperty = () => {
                 </div>
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2">
+              {/* <div className="grid gap-3 md:grid-cols-2">
                 <div>
                   <input
                     type="text"
@@ -457,7 +491,7 @@ const NewSellProperty = () => {
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="grid gap-3 md:grid-cols-2 text-gray-500">
                 <div>

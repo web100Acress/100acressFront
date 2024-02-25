@@ -32,7 +32,8 @@ const ProjectView = () => {
     projectRedefine_Business,
     projectRedefine_Education,
     projectRedefine_Entertainment,
-    Amenities
+    Amenities,
+    projectGallery
   } = viewDetails;
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const ProjectView = () => {
   }, []);
 
   return (
-    <>
+    <div style={{overflowX:"hidden"}}>
       <Sidebar />
       <div style={customStyle}>
         <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
@@ -139,6 +140,69 @@ const ProjectView = () => {
                 </tr>
 
                 <tr>
+                  <th>Project highlight Image</th>
+                </tr>
+                <tr>
+                  <td>
+                    <img
+                      src={
+                        viewDetails.highlightImage
+                          ? viewDetails.highlightImage.url
+                          : ""
+                      }
+                      alt=""
+                      style={{ maxWidth: "20%" }}
+                      id="previewImage"
+                    />
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>Project project_Brochure Image</th>
+                </tr>
+                <tr>
+                  <td>
+                    <img
+                      src={
+                        viewDetails.project_Brochure
+                          ? viewDetails.project_Brochure.url
+                          : ""
+                      }
+                      alt=""
+                      style={{ maxWidth: "20%" }}
+                      id="previewImage"
+                    />
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>Project projectGallery Image</th>
+                </tr>
+                <tr>
+                  <td>
+                    <section className="w-full mx-4">
+                      <div className="flex flex-wrap max-w-screen-md ">
+                        {projectGallery &&
+                          Array.isArray(projectGallery) &&
+                          projectGallery.length > 0 &&
+                          projectGallery.map((image, index) => (
+                            <article
+                              key={index}
+                              className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
+                            >
+                              <img
+                                src={image.url}
+                                alt={`Image ${index + 1}`}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                            </article>
+                          ))}
+                      </div>
+                    </section>
+                  </td>
+                </tr>
+
+                <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
                       Property Name :{" "}
@@ -156,6 +220,17 @@ const ProjectView = () => {
                       Project Description :{" "}
                       <span style={{ color: "black", fontWeight: "normal" }}>
                         {viewDetails.project_discripation}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Project Status :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails.project_status}
                       </span>
                     </span>
                   </th>
@@ -341,12 +416,35 @@ const ProjectView = () => {
                   </th>
                 </tr>
 
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Meta Title :{" "}
+                      <span
+                        style={{ color: "black", fontWeight: "normal" }}
+                      >{viewDetails.meta_title}</span>
+                    </span>
+                  </th>
+                </tr>
+
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Meta Description :{" "}
+                      <span
+                        style={{ color: "black", fontWeight: "normal" }}
+                      >{viewDetails.meta_description}</span>
+                    </span>
+                  </th>
+                </tr>
+
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

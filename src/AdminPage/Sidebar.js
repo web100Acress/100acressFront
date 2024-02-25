@@ -26,7 +26,7 @@ const Sidebar = () => {
   };
 
   return (
-    <>
+    <div style={{overflowX:"hidden"}}>
       <Header toggleSidebar={toggleSidebar} />
       <div className="flex h-screen">
         <div className={`w-64 bg-black overflow-auto ${sidebarOpen ? '' : 'hidden'}`}>
@@ -78,7 +78,7 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -2,29 +2,132 @@ import React, { useEffect, useState, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
+import Glide from "@glidejs/glide";
 import Modal from "react-modal";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/free-mode";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+// import { Carousel } from "react-responsive-carousel";
+
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
 const BannerPage = () => {
-  const sliderRef = React.createRef();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+
+  const openImage = (imageUrl) => {
+    setImageUrl(imageUrl);
+    setIsOpen(true);
+
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  }
+
+  const pop = {
+    /* Modal container */
+    modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'fixed',
+      // left: 0,
+      // top: 0,
+      width: '100%',
+      height: '100%',
+      overflow: 'auto',
+      padding:"0px",
+      backgroundColor: 'red',
+      border:"none"
+    }
+  };
+    
+
+  const customStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '0%',
+      transform: 'translate(-50%, -50%)',
+      padding: '0px',
+      width: '500px',
+      marginTop: "0px",
+      height: "80%",
+      backgroundColor: 'rgba(1, 63, 0, 0.4)'
+    }
+    }
+
+
+
+    
+ const gallery = {
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 1,
+    slidesToSlide: 1, // optional, default to 1.
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 1,
+    slidesToSlide: 1// optional, default to 1.
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+    slidesToSlide: 1 // optional, default to 1.
+  }   
+}
+
+  const [isNavOpen, setIsNavOpen] = useState(false);
+
+  const toggleNav = () => {
+    setIsNavOpen(!isNavOpen);
+  };
+
   const { pUrl } = useParams();
+  const sliderRef = React.createRef();
   const [projectViewDetails, setProjectViewDetails] = useState([]);
-  const [pageTitle, setPageTitle] = useState("Default Page Title");
-
-
   const [showPopup, setShowPopup] = useState(false);
-  const settings = {
+
+  const settings1 = {
+    showStatus: false,
     dots: false,
     infinite: true,
+    showThumbs: false,
+    autoPlay: true,
+    interval: 1000,
     speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    variableHeight: false,
+  };
+
+  const responsive = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3,
+      slidesToSlide: 3, // optional, default to 1.
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2,
+      slidesToSlide: 2, // optional, default to 1.
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+      slidesToSlide: 1, // optional, default to 1.
+    },
   };
 
   const resetData = () => {
@@ -33,14 +136,6 @@ const BannerPage = () => {
       email: "",
       mobile: "",
     });
-  };
-
-  const goToPrev = () => {
-    sliderRef.current.slickPrev();
-  };
-
-  const goToNext = () => {
-    sliderRef.current.slickNext();
   };
 
   useEffect(() => {
@@ -143,10 +238,15 @@ const BannerPage = () => {
     projectRedefine_Connectivity,
     projectRedefine_Education,
     projectRedefine_Entertainment,
+    highlight,
   } = projectViewDetails;
+  const sliderImages = project_floorplan_Image || [];
 
   return (
-    <Wrapper className="section" style={{ overflowY: "hidden",overflowX: "hidden" }}>
+    <Wrapper
+      className="section"
+      style={{ overflowY: "hidden", overflowX: "hidden" }}
+    >
       <Helmet>
         <meta
           name="description"
@@ -160,25 +260,29 @@ const BannerPage = () => {
       </Helmet>
 
       <>
-        <header className="text-slate-700 container relative mx-auto flex flex-col overflow-hidden px-4 py-2 lg:flex-row lg:items-center">
-          <div>
-            <a
-              class="  flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900"
-              to="#"
-            >
-              <img
-                src={projectViewDetails?.logo?.url}
-                style={{ height: "40px", width: "200px" }}
-                alt="project logo"
-                loading="lazy"
-              />
-            </a>
-          </div>
+        <header className="text-slate-700 container relative flex flex-col overflow-hidden px-4 py-2 lg:flex-row lg:items-center">
+          <a
+            className="flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900"
+            href="#"
+          >
+            <img
+              src={projectViewDetails?.logo?.url}
+              style={{ height: "40px", width: "200px" }}
+              alt="project logo"
+              loading="lazy"
+            />
+          </a>
 
-          <input type="checkbox" className="peer hidden" id="navbar-open" />
+          <input
+            type="checkbox"
+            className="peer hidden"
+            id="navbar-open"
+            checked={isNavOpen}
+            onChange={toggleNav}
+          />
           <label
             className="absolute top-3 right-5 cursor-pointer lg:hidden"
-            for="navbar-open"
+            htmlFor="navbar-open"
           >
             <svg
               className="h-7 w-7"
@@ -188,67 +292,37 @@ const BannerPage = () => {
               stroke="currentColor"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                d="M4 6h16M4 12h16M4 18h16"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d={
+                  isNavOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"
+                }
               ></path>
             </svg>
           </label>
 
           <nav
             aria-label="Header Navigation"
-            className="peer-checked:pt-8  peer-checked:max-h-60 flex max-h-0 w-full flex-col items-center transition-all lg:ml-24 lg:max-h-full lg:flex-row"
+            className={`${
+              isNavOpen ? " justify-end" : "max-h-0"
+            } w-full flex flex-col  transition-all lg:ml-24 lg:max-h-full lg:flex-row`}
           >
-            <ul className="flex w-full flex-col items-center space-y-2 lg:flex-row lg:justify-center lg:space-y-0">
-              <li className="lg:mr-12  lg:pt-3">
-                <Link
-                  className="rounded  text-gray-700  lg:text-lg md:text-xs sm:text-sm transition focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-offset-2"
-                  to="#"
+            <ul className="flex justify-end w-full mx-auto  ">
+              <li className="lg:ml-10 md:ml-4 lg:pt-3">
+                <a
+                  href="tel:+919811750130"
+                  className="rounded text-gray-700 lg:text-lg md:text-xs transition focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-offset-2"
                 >
-                  Overview
-                </Link>
-              </li>
-              <li className="lg:mr-12 lg:pt-3">
-                <Link
-                  className="rounded text-gray-700   lg:text-lg md:text-xs transition focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-offset-2"
-                  to="#"
-                >
-                  Location
-                </Link>
-              </li>
-              <li className="lg:mr-12 lg:pt-3">
-                <Link
-                  className="rounded text-gray-700  lg:text-lg md:text-xs transition focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-offset-2"
-                  to="#"
-                >
-                  Experience
-                </Link>
-              </li>
-              <li className="lg:mr-12 lg:pt-3">
-                <Link
-                  className="rounded text-gray-700  lg:text-lg md:text-xs transition focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-offset-2"
-                  to="#"
-                >
-                  FloorPlan
-                </Link>
-              </li>
-              <li className="lg:mr-12 lg:pt-3">
-                <Link
-                  className="rounded text-gray-700  lg:text-lg md:text-xs transition focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-offset-2"
-                  to="#"
-                >
-                  Amenties
-                </Link>
-              </li>
-              <li className="lg:mr-10 hidden md:block lg:pt-3">
-                <Link className="rounded text-gray-700 lg:text-lg md:text-xs transition focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-offset-2">
-                  <span className="text-blue-700 ">+91 </span>9811750130
-                </Link>
+                  <span class="text-blue-700 text-3xl sm:text-xl lg:text-3xl md:text-2xl sm:pt-2 md:m-2 text-right">
+                    <i class="fa-solid fa-phone"></i> 9811750130
+                  </span>
+                </a>
               </li>
             </ul>
-            <hr className="mt-4 w-full lg:hidden" />
+            <hr className="w-full pt-1 lg:hidden" />
           </nav>
+
         </header>
 
         <div className="w-full relative overflow-hidden bg-cover bg-no-repeat text-center">
@@ -336,417 +410,225 @@ const BannerPage = () => {
           style={{ marginLeft: "38px", paddingTop: "28px" }}
           id="overview"
         >
-          <h1 className="w-full lg:w-3/4 lg:mx-4 sm:mx-2 text-2xl lg:text-4xl font-semibold text-[#012e29]">
+          <h1 className="w-full lg:w-3/4 md:pr-10 text-justify lg:mx-4 sm:mx-2 text-2xl lg:text-4xl font-semibold text-gray-600">
             {projectViewDetails.projectName} -{" "}
             {projectViewDetails.projectAddress}, {projectViewDetails.city}
           </h1>
         </div>
 
-        <div className=" lg:text-justify md:text-center text-justify  text-gray-700 m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl pt-0 mt-4">
+        <div className=" text-justify    text-gray-700 m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl pt-0 mt-4">
           <span className="leading-relaxed">
             {projectViewDetails.project_discripation}
           </span>
         </div>
 
-        {/* <div className="sticky-quote-cta ">
-        <a onClick={handleShow}>For any Queries</a>
-        <ReactModal isOpen={modalIsOpen} style={customStyles}>
-          <strong className="text-black font-semibold  not-italic lg:text-2xl ml-2 sm:text-sm text-justify ">
-            ENQUIRE NOW
-          </strong>
+        <div class="w-48 cursor-pointer mx-3">
+          {projectViewDetails?.project_Brochure?.url && (
+            <a href={projectViewDetails.project_Brochure.url} target="_blank">
+              <p class="border-2 border-blue-500 hover:bg-blue-800 hover:text-white rounded-xl px-2 py-2 text-center text-lg">
+                Download Brochure
+              </p>
+            </a>
+          )}
+        </div>
 
-          <button onClick={handleClose}>
-            <i class="fa-regular fa-rectangle-xmark lg:text-3xl sm:text-xl lg:ml-72 sm:ml:2"></i>
-          </button>
+        {/* Extra Code */}
 
-          <form className="px-2 pt-2 ">
-            <input
-              type="text"
-              name="name"
-              id="validationCustom01"
-              placeholder="Full Name"
-              required
-              className="mb-2 me-2 w-100 p-2 px-3 "
-              style={{
-                outline: "none",
-                border: "1px solid #ced4da",
-                color: "#495057",
-                borderRadius: "0.25rem",
-              }}
-            />
-            <input
-              className="mb-2 me-2 w-100 p-2 px-3"
-              type="number"
-              name="mobile"
-              min={0}
-              id="validationCustom02"
-              placeholder="Mobile Number"
-              onKeyPress={(e) => {
-                if (e.target.value.length > 9) {
-                  e.preventDefault();
-                }
-              }}
-              required
-              style={{
-                outline: "none",
-                border: "1px solid #ced4da",
-                color: "#495057",
-                borderRadius: "0.25rem",
-              }}
-            />
-            <input
-              type="email"
-              name="email"
-              id="validationCustom03"
-              placeholder="Email Address"
-              className="mb-2 me-2 w-100 p-2 px-3"
-              style={{
-                outline: "none",
-                border: "1px solid #ced4da",
-                color: "#495057",
-                borderRadius: "0.25rem",
-              }}
-            />
-            <button type="submit" className="btn btn-danger font-semibold">
-              Submit
-            </button>
-          </form>
-        </ReactModal>
-      </div> */}
+        <div className="pt-3">
+          <div className="flex justify-center items-center rounded h-auto bg-[#F1F1FE]">
+            <div
+              className="text-black w-full overflow-hidden"
+              style={{ maxHeight: "500px" }}
+            >
+              <div className="flex flex-col md:flex-row">
+                <div className="w-full md:w-1/2 sm:w-full p-4 text-black">
+                  <span class="lg:text-3xl md:text-2xl sm:text-base text-justify text-gray-600 font-semibold">
+                    Highlights of {projectViewDetails.projectName}
+                  </span>
 
-        <div className="text-center">
-          <h2 className="font-semibold text-2xl md:text-xl sm:text-base text-[#012e29]">
+                  <div className="mt-4">
+                    {highlight &&
+                      Array.isArray(highlight) &&
+                      highlight.length > 0 &&
+                      highlight.map((item, index) => (
+                        <ul
+                          className="list-disc"
+                          style={{ listStyleType: "circle" }}
+                          key={index}
+                        >
+                          <li className="mb-2 text-black">
+                            {item.highlight_Point}
+                          </li>
+                        </ul>
+                      ))}
+                  </div>
+                </div>
+
+                <div className="md:block w-1/2 overflow-hidden hidden sm:block max-h-screen">
+                  {projectViewDetails?.highlightImage?.url && (
+                    <img
+                      src={projectViewDetails.highlightImage.url}
+                      alt="expertImage"
+                      className="w-full h-full object-fit"
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center pt-4">
+          <h2 className="font-semibold lg:text-3xl mx-4 md:text-xl sm:text-base text-gray-600">
             {projectViewDetails.projectName} Sizes & Prices
           </h2>
         </div>
 
-        <div className="flex flex-col w-full   border-black pt-4">
-          <div className="flex flex-shrink-0 bg-black text-white">
-            <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b border-l border-black">
-              <span>Unit Size</span>
+        <div className="pt-4 mx-4">
+          <div className="flex flex-col w-full border-black ">
+            <div className="flex flex-shrink-0 bg-gray-600 text-white ">
+              <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+                <span>Unit Size</span>
+              </div>
+              <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+                <span>Unit Type</span>
+              </div>
+              <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+                <span>Unit Price</span>
+              </div>
             </div>
-            <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b border-l border-black">
-              <span>Unit Type</span>
-            </div>
-            <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b border-l border-black">
-              <span>Unit Price</span>
-            </div>
-          </div>
 
-          <div className="overflow-auto">
-            {BhK_Details &&
-              Array.isArray(BhK_Details) &&
-              BhK_Details.length > 0 &&
-              BhK_Details.map((item, index) => (
-                <>
-                  <div className="flex flex-shrink-0" key={index}>
-                    <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b border-l border-black">
-                      <span>{item.bhk_Area}</span>
+            <div className="overflow-auto">
+              {BhK_Details &&
+                Array.isArray(BhK_Details) &&
+                BhK_Details.length > 0 &&
+                BhK_Details.map((item, index) => (
+                  <>
+                    <div className="flex flex-shrink-0" key={index}>
+                      <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+                        <span>{item.bhk_Area}</span>
+                      </div>
+                      <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+                        <span> {item.bhk_type}</span>
+                      </div>
+                      <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+                        <span>{item.price}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b border-l border-black">
-                      <span> {item.bhk_type}</span>
-                    </div>
-                    <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b border-l border-black">
-                      <span>{item.price}</span>
-                    </div>
-                  </div>
-                </>
-              ))}
+                  </>
+                ))}
+            </div>
           </div>
         </div>
 
-        <div className="text-center   text-black font-semibold m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-3xl mt-4">
-          <h3 className="leading-relaxed font-bold">
+        <div>
+        <div className="text-center pt-4">
+          <h2 className="font-semibold mx-4 lg:text-3xl md:text-xl sm:text-base text-gray-600">
             {projectViewDetails.projectName} Floor Plan
-          </h3>
+          </h2>
         </div>
-                {/* Extra Code */}
-                
-        {/* <div className="flex justify-center items-centerrounded pt-5">
-          <div className="text-white w-full rounded-lg overflow-hidden">
-            <div className="flex flex-col md:flex-row">
-              <div className="w-full md:w-1/2 p-4 text-black">
-                <h2 className="px-4">Highlights of Pioneer Advait</h2>
-                <div className="mt-4">
-                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
-                  <li className="mb-2">
-                    Wider door width and large windows and Panic alarms for emergency
-                  </li>
-                </ul>
-                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
-                  <li className="mb-2">
-                    Anti-skid flooring to prevent trips and falls
-                  </li>
-                </ul>
-                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
-                  <li className="mb-2">
-                    Electrical controls and locks at convenient heights
-                  </li>
-                </ul>
 
-                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
-                  <li className="mb-2">
-                    Two-way switches to support easier movements
-                  </li>
-                </ul>
-
-                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
-                  <li className="mb-2">
-                    False ceiling with ambient lighting and Rounded corners to ensure smooth edges
-                  </li>
-                </ul>
-
-                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
-                  <li className="mb-2">
-                    Raised seat heights and grab bars in toilets
-                  </li>
-                </ul>
-
-                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
-                  <li className="mb-2">
-                    Heat Pumps for instant hot water in every washroom
-                  </li>
-                </ul>
-                <ul className="list-disc" style={{ listStyleType: 'circle' }}>
-                  <li className="mb-2">
-                    LED lights across lift lobbies, apartments and balconies
-                  </li>
-                </ul>
-              </div>
-              </div>
-              <div className="md:block w-1/2 overflow-hidden">
-                <img
-                  src="https://res.cloudinary.com/dm5yrsqdc/image/upload/v1707561714/100acre/project/e6wlza2egyraxiejymdp.jpg"
-                  alt="expertImage"
-                  className="w-full h-full object-cover "
-                />
-              </div>
-            </div>
-          </div>
-        </div> */}
-
-        <div className="relative mb-2 max-w-screen-lg max-h-screen-lg mx-auto lg:mx-4 xl:mx-8 sm:w-full lg:pt-1 sm:pt-0 overflow-hidden">
-          <Slider ref={sliderRef} {...settings} className="overflow-hidden">
-            {project_floorplan_Image &&
-              Array.isArray(project_floorplan_Image) &&
-              project_floorplan_Image.length > 0 &&
-              project_floorplan_Image.map((item, index) => (
-                <div
-                  key={index}
-                  className="mr-2 sm:mr-1 md:mr-2 lg:mr-4 xl:mr-6"
-                >
-                  <img
-                    className="w-full h-full object-fit rounded-xl"
-                    src={item.url}
-                    alt={`floorPlan-${index}`}
-                  />
+        <div className="pt-8 mb-6">
+          <Carousel
+            swipeable={false}
+            draggable={false}
+            showDots={false}
+            responsive={responsive}
+            ssr={true}
+            infinite={true}
+            autoPlay={false}
+            autoPlaySpeed={1000}
+            keyBoardControl={true}
+            customTransition="all .5"
+            transitionDuration={500}
+            containerClass="carousel-container"
+            removeArrowOnDeviceType={["tablet", "mobile"]}
+            deviceType="desktop" // assuming you're not passing the device type as a prop
+            dotListClass="custom-dot-list-style"
+            itemClass="carousel-item-padding-40-px"
+          >
+            {Array.isArray(sliderImages) &&
+              sliderImages.length > 0 &&
+              sliderImages.map((item, index) => (
+                <div key={index} className="slider-item">
+                  <div onClick={() => openImage(item.url)}>
+                    <img src={item.url} alt={`Image ${index + 1}`} />
+                  </div>
                 </div>
               ))}
-          </Slider>
 
-          <div className="pt-4 absolute inset-y-0 left-0 flex items-center">
-            <button
-              className="text-black text-4xl lg:text-6xl focus:outline-none"
-              onClick={goToPrev}
+            <Modal
+              isOpen={isOpen}
+              style={customStyles}
+              contentLabel="Example Modal"
             >
-              <i className="fa-solid fa-circle-arrow-left"></i>
-            </button>
-          </div>
-
-          <div className="pt-4 absolute inset-y-0 right-0 flex items-center">
-            <button
-              className="text-black text-4xl lg:text-6xl focus:outline-none"
-              onClick={goToNext}
-            >
-              <i className="fa-solid fa-circle-arrow-right"></i>
-            </button>
-          </div>
+              <span className="close">&times;</span>
+              <div
+                onClick={() => closeModal()}
+                className="modal"
+                style={pop.modal}
+              >
+                <div className="modal-content">
+                  <img src={imageUrl} alt="Image 1" />
+                </div>
+              </div>
+            </Modal>
+          </Carousel>
+        </div>
         </div>
 
-        {/* <div className="px-5 mb-0 lg:pt-3">
-          <div className="grid  md:pt-3 lg:grid-cols-4 sm:pt-1 sm:grid-cols-1 md:grid-cols-2 sm:mx-2 gap-3 m-2 sm:m-2 md:m-4 lg:m-4">
-            <div className="border-2 lg:mx-2 md:mx-2 border-[#d9a253] lg:w-full lg:h-[300] sm:h-[100] sm:w-full md:w-[200] md:h-[200] rounded-lg bg-[#f1eadf]">
-              <div className="mx-4 pb-2">
-                <p className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
-                  BUSINESS AND COMMERCIAL
-                </p>
 
-                {projectRedefine_Business &&
-                  Array.isArray(projectRedefine_Business) &&
-                  projectRedefine_Business.length > 0 &&
-                  projectRedefine_Business.map((item, index) => (
-                    <table className="w-full">
-                      <tr>
-                        <td>{item}</td>
-                      </tr>
-                    </table>
-                  ))}
-              </div>
-            </div>
 
-            <div className="border-2 lg:mx-2 md:mx-2 border-[#d9a253] lg:w-full lg:h-[300] sm:h-[100] sm:w-full md:w-[200] md:h-[200] rounded-lg ">
-              <div className="mx-4 pb-2">
-                <h3 className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
-                  Connectivity
-                </h3>
-                {projectRedefine_Connectivity &&
-                  Array.isArray(projectRedefine_Connectivity) &&
-                  projectRedefine_Connectivity.length > 0 &&
-                  projectRedefine_Connectivity.map((item, index) => (
-                    <table className="w-full">
-                      <tr>
-                        <td>{item}</td>
-                      </tr>
-                    </table>
-                  ))}
-              </div>
-            </div>
+        {/*Gallery Slider container */}
 
-            <div className="border-2 lg:mx-2 md:mx-2 border-[#d9a253] lg:w-full lg:h-[300] sm:h-[100] sm:w-full md:w-[200] md:h-[200] rounded-lg">
-              <div className="mx-4 pb-2">
-                <h3 className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
-                  EDUCATION AND HEALTHCARE
-                </h3>
-                {projectRedefine_Education &&
-                  Array.isArray(projectRedefine_Education) &&
-                  projectRedefine_Education.length > 0 &&
-                  projectRedefine_Education.map((item, index) => (
-                    <table className="w-full">
-                      <tr>
-                        <td>{item}</td>
-                      </tr>
-                    </table>
-                  ))}
-              </div>
-            </div>
-
-            <div className="border-2 lg:mx-2 md:mx-2 border-[#d9a253] lg:w-full lg:h-[300] sm:h-[100] sm:w-full md:w-[200] md:h-[200] rounded-lg">
-              <div className="mx-4 pb-2">
-                <h3 className="m-0 text-sm  lg:pt-3 sm:pt-1 font-semibold text-center">
-                  ENTERTAINMENT GALORE
-                </h3>
-                {projectRedefine_Entertainment &&
-                  Array.isArray(projectRedefine_Entertainment) &&
-                  projectRedefine_Entertainment.length > 0 &&
-                  projectRedefine_Entertainment.map((item, index) => (
-                    <table className="w-full">
-                      <tr>
-                        <td>{item}</td>
-                      </tr>
-                    </table>
-                  ))}
-              </div>
-            </div>
+        <Carousel
+          swipeable={true}
+          draggable={true}
+          showDots={true}
+          responsive={gallery}
+          ssr={true}
+          infinite={true}
+          autoPlay={true}
+          autoPlaySpeed={1500}
+          keyBoardControl={true}
+          customTransition="all .5"
+          transitionDuration={500}
+          containerClass="carousel-container"
+          removeArrowOnDeviceType={["tablet", "mobile"]}
+          deviceType="desktop" // assuming you're not passing the device type as a prop
+          dotListClass="custom-dot-list-style"
+          itemClass="carousel-item-padding-40-px"
+        >
+          
+       <div>
+            <img src="https://res.cloudinary.com/dm5yrsqdc/image/upload/v1707645279/100acre/project/zj8rxu0etw0cqrmookte.jpg" alt="Image 2"  className="w-screen h-screen"/>
           </div>
-        </div> */}
-
-        {/* <div className="px-5 mb-0 lg:pt-3">
-          <div className="grid  md:pt-3 lg:grid-cols-4 sm:pt-1 sm:grid-cols-1 md:grid-cols-2 sm:mx-2 gap-3 m-2 sm:m-2 md:m-4 lg:m-4">
-            <div className="border-2 lg:mx-2 md:mx-2 border-[#d9a253] lg:w-full lg:h-[300] sm:h-[100] sm:w-full md:w-[200] md:h-[200] rounded-lg bg-[#f1eadf] overflow-hidden">
-              <div className="mx-4 pb-2">
-                <p className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
-                  BUSINESS AND COMMERCIAL
-                </p>
-
-                {projectRedefine_Business &&
-                  Array.isArray(projectRedefine_Business) &&
-                  projectRedefine_Business.length > 0 && (
-                    <table className="w-full">
-                      <tbody>
-                        {projectRedefine_Business.map((item, index) => (
-                          <tr key={index}>
-                            <td>{item}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
-              </div>
-            </div>
-
-            <div className="border-2 lg:mx-2 md:mx-2 border-[#d9a253] lg:w-full lg:h-[300] sm:h-[100] sm:w-full md:w-[200] md:h-[200] rounded-lg bg-[#f1eadf] overflow-hidden">
-              <div className="mx-4 pb-2">
-                <p className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
-                  Connectivity
-                </p>
-
-                {projectRedefine_Connectivity &&
-                  Array.isArray(projectRedefine_Connectivity) &&
-                  projectRedefine_Connectivity.length > 0 && (
-                    <table className="w-full">
-                      <tbody>
-                        {projectRedefine_Connectivity.map((item, index) => (
-                          <tr key={index}>
-                            <td>{item}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
-              </div>
-            </div>
-
-            <div className="border-2 lg:mx-2 md:mx-2 border-[#d9a253] lg:w-full lg:h-[300] sm:h-[100] sm:w-full md:w-[200] md:h-[200] rounded-lg bg-[#f1eadf] overflow-hidden">
-              <div className="mx-4 pb-2">
-                <p className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
-                  EDUCATION AND HEALTHCARE
-                </p>
-
-                {projectRedefine_Education &&
-                  Array.isArray(projectRedefine_Education) &&
-                  projectRedefine_Education.length > 0 && (
-                    <table className="w-full">
-                      <tbody>
-                        {projectRedefine_Education.map((item, index) => (
-                          <tr key={index}>
-                            <td>{item}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
-              </div>
-            </div>
-
-            <div className="border-2 lg:mx-2 md:mx-2 border-[#d9a253] lg:w-full lg:h-[300] sm:h-[100] sm:w-full md:w-[200] md:h-[200] rounded-lg bg-[#f1eadf] overflow-hidden">
-              <div className="mx-4 pb-2">
-                <p className="m-0 text-sm lg:pt-3 sm:pt-1 font-semibold text-center">
-                  ENTERTAINMENT GALORE
-                </p>
-
-                {projectRedefine_Entertainment &&
-                  Array.isArray(projectRedefine_Entertainment) &&
-                  projectRedefine_Entertainment.length > 0 && (
-                    <table className="w-full">
-                      <tbody>
-                        {projectRedefine_Entertainment.map((item, index) => (
-                          <tr key={index}>
-                            <td>{item}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
-              </div>
-            </div>
-           
+          <div>
+            <img src="https://fastly.picsum.photos/id/590/536/354.jpg?hmac=MTWs2RHTled85txj1Gzavxbv320nZS8_8OWl98tvJXk" alt="Image 4" className="w-screen h-screen"/>
           </div>
-        </div> */}
 
-        <div className="text-center text-[#012e29] font-semibold mt-2 lg:pt-4 md:pt-3  text-sm sm:text-base md:text-lg lg:text-3xl sm:pt-0 px-3">
+        </Carousel> 
+
+        <div
+          className="text-center  text-gray-600 pt-2 font-semibold mt-2 lg:pt-4 md:pt-3  text-sm sm:text-base md:text-lg lg:text-3xl sm:pt-0 px-3 h-6"
+          style={{ backgroundColor: "#f7f1ec" }}
+        >
           <h3 className="leading-relaxed font-bold">
             {projectViewDetails.projectName} Amenities
           </h3>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2 px-4 pt-4">
+        
+        <div
+          className="grid grid-cols-1 md:grid-cols-3  lg:grid-cols-6 gap-2 px-4 pt-8"
+          style={{ backgroundColor: "#f7f1ec" }}
+        >
           {Amenities &&
             Array.isArray(Amenities) &&
             Amenities.length > 0 &&
             Amenities.map((item, index) => (
               <div
                 key={index}
-                className="uppercase p-4 m-4  text-center border-[#d9a253]  rounded-lg border-2 hover:bg-[#d9a253]"
+                className="uppercase p-4 m-4  text-black text-center border-[#d9a253]  rounded-lg border-2 hover:bg-[#d9a253]"
               >
                 {" "}
                 {item}
@@ -754,45 +636,111 @@ const BannerPage = () => {
             ))}
         </div>
 
-        <div className="max-w-full">
-          <img
-            src={projectViewDetails?.project_locationImage?.url}
-            alt="location image"
-            className="w-screen h-auto"
-          />
+        <div className="flex flex-col items-center justify-center mt-2 md:mt-8 lg:h-32 sm:h-28 shadow-xl">
+          <span className="font-semibold lg:text-xl md:text-xl sm:text-base text-gray-600 text-center mb-2">
+            CALL NOW TO SPEAK TO AN EXPERT
+          </span>
+          <a
+            href="tel:+918527134491"
+            className="font-semibold lg:text-3xl md:text-xl sm:text-base text-gray-600"
+          >
+            <i className="fa-solid fa-phone mb-2"></i> +91 8527134491
+          </a>
+        </div>
+
+        {/* Master Plan */}
+
+        <div className="">
+          <div className="h-auto bg-[#F1F1FE]">
+            <div className="flex justify-center items-center rounded">
+              <div className="text-black w-full overflow-hidden">
+                <div className="flex flex-col md:flex-row">
+                  <div
+                    className="md:w-1/2 w-full overflow-hidden"
+                    style={{ maxHeight: "500px" }}
+                  >
+                    {projectViewDetails.project_locationImage?.url && (
+                      <img
+                        src={projectViewDetails.project_locationImage.url}
+                        alt="expertImage"
+                        className="w-full h-full object-fit"
+                      />
+                    )}
+                  </div>
+
+                  <div className="w-full md:w-1/2 p-4 text-black">
+                    <span className=" text-gray-600 font-semibold lg:text-2xl md:text-xl">
+                      Connectivity of {projectViewDetails.projectName}
+                    </span>
+                    <div className="mt-4">
+                      <ul
+                        className="list-disc"
+                        style={{ listStyleType: "circle" }}
+                      >
+                        <li className="mb-2 text-black">
+                          Wider door width and large windows and Panic alarms
+                          for emergency
+                        </li>
+                      </ul>
+                      <ul
+                        className="list-disc"
+                        style={{ listStyleType: "circle" }}
+                      >
+                        <li className="mb-2 text-black">
+                          Anti-skid flooring to prevent trips and falls
+                        </li>
+                      </ul>
+                      <ul
+                        className="list-disc"
+                        style={{ listStyleType: "circle" }}
+                      >
+                        <li className="mb-2 text-black">
+                          Electrical controls and locks at convenient heights
+                        </li>
+                      </ul>
+                      <ul
+                        className="list-disc"
+                        style={{ listStyleType: "circle" }}
+                      >
+                        <li className="mb-2 text-black">
+                          Two-way switches to support easier movements
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-4">
+          {projectViewDetails.projectMaster_plan?.url && (
+            <img
+              src={projectViewDetails.projectMaster_plan.url}
+              className="w-full max-h-screen object-fit"
+              alt="Project Master Plan"
+            />
+          )}
         </div>
 
         <div className="text-center pt-4">
-          <strong className=" text-justify lg:text-3xl sm:text-sm font-extrabold lg:p-8 sm:p-0 text-[#012e29]">
+          <strong className=" text-justify lg:text-3xl sm:text-sm md:text-sm font-extrabold lg:p-8 sm:p-0 text-gray-600">
             About {projectViewDetails.builderName}
           </strong>
         </div>
 
-        {/* <div class="flex items-center justify-center pt-2" id="about">
-          <img
-            class="object-cover object-center rounded-xl w-24 h-auto"
-            src={projectViewDetails?.logo?.url}
-            alt="logo"
-          />
-        </div> */}
-
-        <div className="flex flex-col lg:flex-row items-center justify-center lg:space-x-8 mx-4 pt-2 lg:mx-0">
-          <div className="lg:w-full sm:w-full text-justify mb-1">
-            <p>
-              At <b>{projectViewDetails.projectName}</b>,{" "}
-              {projectViewDetails.AboutDeveloper}
-            </p>
-          </div>
+        <div className=" text-justify  text-gray-700 m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl pt-0 mt-4">
+          <span className="leading-relaxed">
+            At <b>{projectViewDetails.projectName}</b>,{" "}
+            {projectViewDetails.AboutDeveloper}
+          </span>
         </div>
 
         <div className="sm:h-auto lg:h-[400px] xl:h-[430px] w-full sm:w-auto bg-[#012e29]">
           <p className="text-center pt-4 text-white m-2 md:m-4 lg:m-6 xl:m-10 sm:text-sm   md:text-lg lg:text-2xl  lg:pt-2 mt-2">
-            Make an Inquiry
+            Make an Enquiry
           </p>
-          <p className="text-white text-center md:text-lg lg:text-2xl sm:text-sm  mt-1">
-            Or Call <span>+91 8527134491</span>
-          </p>
-
           <form className="mx-auto max-w-2xl h-auto p-4">
             <div className="lg:pt-2 mb-5 border-b border-white">
               <input
@@ -888,5 +836,28 @@ const Wrapper = styled.section`
     right: -70px;
     transition: position 0.2s, right 0.2s;
     cursor: pointer;
+  }
+
+  .Carousel {
+    max-height: 600px; /* Set your desired maximum height */
+  }
+
+  @media screen and (max-width: 768px) {
+    .Carousel {
+      max-height: 300px; /* Adjust for smaller screens */
+    }
+  }
+
+  .pdf-dwn a {
+    color: #000;
+    text-decoration: none;
+  }
+
+  .pdf-dwn .dwn-text:hover {
+    color: #fff;
+    text-decoration: none;
+    border: 2px solid #fbea08;
+    background-color: #f5070b;
+    transition: all 1s ease-in-out;
   }
 `;

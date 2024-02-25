@@ -33,7 +33,7 @@ function Properties() {
           {rentData.map((item, index) => {
             const pUrl = item.project_url;
             return (
-              <Link to={`/${pUrl}/`} target="_top">
+              <Link to={`/${pUrl}/`} target="_blank">
                 <article
                   key={index}
                   className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"

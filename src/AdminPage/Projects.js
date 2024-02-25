@@ -111,8 +111,17 @@ const Projects = () => {
                   Name
                 </th>
                 <th scope="col" className="px-6 py-3">
+                  Type
+                </th>
+
+                <th scope="col" className="px-6 py-3">
+                  City
+                </th>
+
+                <th scope="col" className="px-6 py-3 text-center">
                   Action
                 </th>
+
               </tr>
             </thead>
             <tbody>
@@ -148,7 +157,16 @@ const Projects = () => {
                           type="button"
                           className="text-white bg-yellow-600 hover:bg-yellow-800 focus:ring-4 focus:ring-yellow-500 dark:bg-yellow-600 dark:hover:bg-yellow-500 focus:outline-none dark:focus:ring-yellow-600 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
                         >  ADD BHK
-                        </button></Link>
+                        </button>
+                        </Link>
+
+                        <Link to={`/Admin/ProjectAddHighlights/${id}`}>
+                        <button
+                          type="button"
+                          className="text-white bg-pink-600 hover:bg-pink-800 focus:ring-4 focus:pink-yellow-500 dark:bg-pink-600 dark:hover:bg-pink-500 focus:outline-none dark:focus:ring-pink-600 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                        >  ADD Highlights
+                        </button>
+                        </Link>
 
                       <button
                         type="button"

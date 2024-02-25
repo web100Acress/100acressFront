@@ -59,6 +59,8 @@ const MenuListContainer = ({ isOpen, onClose }) => {
       );
       history("/");
       localStorage.removeItem("myToken");
+      localStorage.removeItem("mySellerId");
+      console.log(localStorage.removeItem("mySellerId"),"check");
     } catch (error) {
       console.error("Logout failed:", error);
     }

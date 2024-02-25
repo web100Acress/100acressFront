@@ -20,7 +20,8 @@ const AddNew = () => {
     type: "",
     city: "",
     projectOverview: "",
-    project_url:""
+    project_url:"",
+    project_status:"",
   });
 
   const resetData = () => {
@@ -43,7 +44,8 @@ const AddNew = () => {
       type: "",
       city: "",
       projectOverview: "",
-      project_url:""
+      project_url:"",
+      project_status:""
     });
   };
 
@@ -68,6 +70,10 @@ const AddNew = () => {
     logo: null,
     project_locationImage: null,
     project_floorplan_Image: [null],
+    highlightImage:null,
+    project_Brochure:null,
+    projectGallery:[null],
+    projectMaster_plan:null,
   });
 
   const handleChangeProjectData = (e) => {
@@ -131,7 +137,25 @@ const AddNew = () => {
     }
   };
 
+  const handleGalleryImageChange = (e) => {
+    var files = e.target.files;
+    if (files) {
+      const updatedOtherImage = [];
+      for (let i = 0; i < files.length; i++) {
+        updatedOtherImage.push(files[i]);
+      }
+      setFileData({
+        ...fileData,
+        projectGallery:updatedOtherImage
+      });
+      console.log(updatedOtherImage, "Update other")
+    } else {
+      console.error("No files selected");
+    }
+  };
+
   const otherImageLength = fileData.project_floorplan_Image.length;
+  const GalleryImageLength = fileData.projectGallery.length;
 
   const handleSubmitProject = async (e) => {
     e.preventDefault();
@@ -142,16 +166,23 @@ const AddNew = () => {
     for (const key in editFromData) {
       formDataAPI.append(key, editFromData[key]);
     }
+    
     for (let i = 0; i < otherImageLength; i++) {
-      formDataAPI.append(
-        "project_floorplan_Image",
-        fileData.project_floorplan_Image[i]
-      );
+      formDataAPI.append("project_floorplan_Image", fileData.project_floorplan_Image[i]);
+    }
+
+    for (let i = 0; i < GalleryImageLength; i++) {
+      formDataAPI.append("projectGallery", fileData.projectGallery[i]);
     }
 
     formDataAPI.append("logo", fileData.logo);
     formDataAPI.append("project_locationImage", fileData.project_locationImage);
     formDataAPI.append("frontImage", fileData.frontImage);
+    formDataAPI.append("project_Brochure", fileData.project_Brochure);
+    formDataAPI.append("highlightImage", fileData.highlightImage);
+    formDataAPI.append("projectMaster_plan", fileData.projectMaster_plan);
+
+    
 
     try {
       const response = await axios.post(apiEndpoint, formDataAPI);
@@ -164,10 +195,7 @@ const AddNew = () => {
     }
   };
 
-
-
   
-
   const handleFileChange = (e, key) => {
     const newFileData = { ...fileData };
     newFileData[key] = e.target.files[0];
@@ -376,6 +404,17 @@ const AddNew = () => {
             />
           </label>
 
+          <label className="block" for="name">
+            <input
+              className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+              type="text"
+              placeholder="Project Status"
+              name="project_status"
+              value={editFromData.project_status}
+              onChange={handleChangeProjectData}
+            />
+          </label>
+
           <p className="mt-2 font-medium mb-1 grid grid-cols-4 text-gray-500">
             Project Logo
           </p>
@@ -423,6 +462,55 @@ const AddNew = () => {
           </div>
 
           <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
+            Project Master Plan
+          </p>
+          <div className="flex mt-3 ring-black">
+            <div class="relative h-10 w-40 min-w-[160px] ring-black">
+              <input
+                type="file"
+                name="projectMaster_plan"
+                accept="image/*"
+                // value={editFromData.project_locationImage}
+                onChange={(e) => handleFileChange(e, "projectMaster_plan")}
+              />
+            </div>
+          </div>
+
+          <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
+            Project Brochure
+          </p>
+          <div className="flex mt-3 ring-black">
+            <div class="relative h-10 w-40 min-w-[160px] ring-black">
+              <input
+                type="file"
+                name="project_Brochure"
+                accept="image/*"
+                // value={editFromData.project_locationImage}
+                onChange={(e) => handleFileChange(e, "project_Brochure")}
+              />
+            </div>
+          </div>
+
+
+
+          <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
+            Highlight Image
+          </p>
+          <div className="flex mt-3 ring-black">
+            <div class="relative h-10 w-40 min-w-[160px] ring-black">
+              <input
+                type="file"
+                name="highlightImage"
+                accept="image/*"
+                // value={editFromData.project_locationImage}
+                onChange={(e) => handleFileChange(e, "highlightImage")}
+              />
+            </div>
+          </div>
+
+         
+
+          <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
             Project Floor plan Image
           </p>
           <div className="flex mt-3 ring-black">
@@ -436,6 +524,24 @@ const AddNew = () => {
               />
             </div>
           </div>
+
+          <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
+            Project Gallery
+          </p>
+          <div className="flex mt-3 ring-black">
+            <div class="relative h-10 w-40 min-w-[160px] ring-black">
+              <input
+                type="file"
+                name="projectGallery"
+                accept="image/*"
+                multiple
+                onChange={handleGalleryImageChange}
+              />
+            </div>
+          </div>
+
+
+
 
           <input
             className="w-full mt-4 rounded-md border bg-white px-2 py-2 outline-none ring-black focus:ring-1"

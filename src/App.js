@@ -82,6 +82,7 @@ import CareerWithUs from "./Pages/CareerWithUs";
 import About from "./Pages/About";
 import UserEditProperty from "./Pages/UserEditProperty";
 import PrivateRoute from "./PrivateRoute";
+import ProjectAddHighligths from "./AdminPage/ProjectAddHighligths";
 
 
 function App() {
@@ -133,7 +134,7 @@ function App() {
           <Route path="/blog/:name" element={<SingleBlog />} />
           <Route path="/knowabouts" element={<PropertyKnow />} />
           <Route path="/profile/:id" element={<Profile />} />
-          <Route path="/:pUrl" element={<BannerPage />} />
+          <Route path="/:pUrl" element={<BannerPage/>} />
           {/* <Route path="/aboutus" element={<AboutPage />} /> */}
           <Route path="/about" element={<About />} />
           <Route path="/userviewproperty/:id" element = {<UserViewProperty/>}/>
@@ -172,6 +173,7 @@ function App() {
           <Route path="/Admin/projecteditbhk/:id" element={<ProjectEditBHK/>}/>
           <Route path="/Admin/ProjectsAddBhk/:id" element={<ProjectsAddBhk/>}/>
           <Route path="/Admin/adminProperty" element={<Adminproperty/>}/>
+          <Route path="Admin/ProjectAddHighlights/:id" element={<ProjectAddHighligths/>}/>
           
 
           {/* <PrivateRoute path="/protected"
