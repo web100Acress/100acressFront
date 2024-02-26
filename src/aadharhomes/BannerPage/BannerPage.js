@@ -21,75 +21,68 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
 const BannerPage = () => {
-
   const [isOpen, setIsOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState("");
 
   const openImage = (imageUrl) => {
     setImageUrl(imageUrl);
     setIsOpen(true);
-
   };
 
   const closeModal = () => {
     setIsOpen(false);
-  }
+  };
 
   const pop = {
     /* Modal container */
     modal: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'fixed',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      position: "fixed",
       // left: 0,
       // top: 0,
-      width: '100%',
-      height: '100%',
-      overflow: 'auto',
-      padding:"0px",
-      backgroundColor: 'red',
-      border:"none"
-    }
+      width: "100%",
+      height: "100%",
+      overflow: "auto",
+      padding: "0px",
+      border: "none",
+    },
   };
-    
 
   const customStyles = {
     content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '0%',
-      transform: 'translate(-50%, -50%)',
-      padding: '0px',
-      width: '500px',
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "0%",
+      transform: "translate(-50%, -50%)",
+      padding: "0px",
+      width: "70%",
       marginTop: "0px",
-      height: "80%",
-      backgroundColor: 'rgba(1, 63, 0, 0.4)'
-    }
-    }
+      height:"80%",
+      backgroundColor:'red',
+    },
+  };
 
-
-
-    
- const gallery = {
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 1,
-    slidesToSlide: 1, // optional, default to 1.
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 1,
-    slidesToSlide: 1// optional, default to 1.
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    slidesToSlide: 1 // optional, default to 1.
-  }   
-}
+  const gallery = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 1,
+      slidesToSlide: 1, // optional, default to 1.
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 1,
+      slidesToSlide: 1, // optional, default to 1.
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+      slidesToSlide: 1, // optional, default to 1.
+    },
+  };
 
   const [isNavOpen, setIsNavOpen] = useState(false);
 
@@ -239,6 +232,7 @@ const BannerPage = () => {
     projectRedefine_Education,
     projectRedefine_Entertainment,
     highlight,
+    projectGallery,
   } = projectViewDetails;
   const sliderImages = project_floorplan_Image || [];
 
@@ -263,7 +257,7 @@ const BannerPage = () => {
         <header className="text-slate-700 container relative flex flex-col overflow-hidden px-4 py-2 lg:flex-row lg:items-center">
           <a
             className="flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900"
-            href="#"
+           
           >
             <img
               src={projectViewDetails?.logo?.url}
@@ -322,7 +316,6 @@ const BannerPage = () => {
             </ul>
             <hr className="w-full pt-1 lg:hidden" />
           </nav>
-
         </header>
 
         <div className="w-full relative overflow-hidden bg-cover bg-no-repeat text-center">
@@ -340,6 +333,7 @@ const BannerPage = () => {
         </div>
 
         {/* //PopUp Form */}
+
         <div className="relative  ">
           {showPopup && (
             <div className="relative">
@@ -405,18 +399,12 @@ const BannerPage = () => {
           )}
         </div>
 
-        <div
-          className="lg:flex sm:text-center lg:mx-20 lg:flex-col lg:items-center"
-          style={{ marginLeft: "38px", paddingTop: "28px" }}
-          id="overview"
-        >
-          <h1 className="w-full lg:w-3/4 md:pr-10 text-justify lg:mx-4 sm:mx-2 text-2xl lg:text-4xl font-semibold text-gray-600">
-            {projectViewDetails.projectName} -{" "}
-            {projectViewDetails.projectAddress}, {projectViewDetails.city}
-          </h1>
-        </div>
+        <h1 className="-mx-4 px-4 pt-4 pb-6  font-semibold text-center text-gray-700  sm:text-lg lg:text-3xl">
+          {projectViewDetails.projectName} - {projectViewDetails.projectAddress}
+          , <span class="font-bold">{projectViewDetails.city}</span>
+        </h1>
 
-        <div className=" text-justify    text-gray-700 m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl pt-0 mt-4">
+        <div className=" text-justify text-gray-700 m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl pt-0 mt-1">
           <span className="leading-relaxed">
             {projectViewDetails.project_discripation}
           </span>
@@ -487,12 +475,13 @@ const BannerPage = () => {
         <div className="pt-4 mx-4">
           <div className="flex flex-col w-full border-black ">
             <div className="flex flex-shrink-0 bg-gray-600 text-white ">
+            <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+                <span>Unit Type</span>
+              </div>
               <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
                 <span>Unit Size</span>
               </div>
-              <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
-                <span>Unit Type</span>
-              </div>
+             
               <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
                 <span>Unit Price</span>
               </div>
@@ -505,12 +494,14 @@ const BannerPage = () => {
                 BhK_Details.map((item, index) => (
                   <>
                     <div className="flex flex-shrink-0" key={index}>
+                    <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+                        <span> {item.bhk_type}</span>
+                      </div>
+
                       <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
                         <span>{item.bhk_Area}</span>
                       </div>
-                      <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
-                        <span> {item.bhk_type}</span>
-                      </div>
+                     
                       <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
                         <span>{item.price}</span>
                       </div>
@@ -522,69 +513,67 @@ const BannerPage = () => {
         </div>
 
         <div>
-        <div className="text-center pt-4">
-          <h2 className="font-semibold mx-4 lg:text-3xl md:text-xl sm:text-base text-gray-600">
-            {projectViewDetails.projectName} Floor Plan
-          </h2>
-        </div>
+          <div className="text-center pt-4">
+            <h2 className="font-semibold mx-4 lg:text-3xl md:text-xl sm:text-base text-gray-600">
+              {projectViewDetails.projectName} Floor Plan
+            </h2>
+          </div>
 
-        <div className="pt-8 mb-6">
-          <Carousel
-            swipeable={false}
-            draggable={false}
-            showDots={false}
-            responsive={responsive}
-            ssr={true}
-            infinite={true}
-            autoPlay={false}
-            autoPlaySpeed={1000}
-            keyBoardControl={true}
-            customTransition="all .5"
-            transitionDuration={500}
-            containerClass="carousel-container"
-            removeArrowOnDeviceType={["tablet", "mobile"]}
-            deviceType="desktop" // assuming you're not passing the device type as a prop
-            dotListClass="custom-dot-list-style"
-            itemClass="carousel-item-padding-40-px"
-          >
-            {Array.isArray(sliderImages) &&
-              sliderImages.length > 0 &&
-              sliderImages.map((item, index) => (
-                <div key={index} className="slider-item">
-                  <div onClick={() => openImage(item.url)}>
-                    <img src={item.url} alt={`Image ${index + 1}`} />
+          <div className="pt-8 mb-6">
+            <Carousel
+              swipeable={false}
+              draggable={false}
+              showDots={false}
+              responsive={responsive}
+              ssr={true}
+              infinite={true}
+              autoPlay={false}
+              autoPlaySpeed={1000}
+              keyBoardControl={true}
+              customTransition="all .5"
+              transitionDuration={500}
+              containerClass="carousel-container"
+              removeArrowOnDeviceType={["tablet", "mobile"]}
+              deviceType="desktop" 
+              dotListClass="custom-dot-list-style"
+              itemClass="carousel-item-padding-40-px"
+              
+            >
+              {Array.isArray(sliderImages) &&
+                sliderImages.length > 0 &&
+                sliderImages.map((item, index) => (
+                  <div key={index} className="slider-item">
+                    <div onClick={() => openImage(item.url)}>
+                      <img src={item.url} alt={`Image ${index + 1}`} />
+                    </div>
+                  </div>
+                ))}
+              <Modal
+                isOpen={isOpen}
+                style={customStyles}
+                contentLabel="Example Modal"
+              >
+                <span className="close">&times;</span>
+                <div
+                  onClick={() => closeModal()}
+                  className="modal"
+                  style={pop.modal}
+                >
+                  <div className="modal-content">
+                    <img src={imageUrl} alt="Image 1" />
                   </div>
                 </div>
-              ))}
-
-            <Modal
-              isOpen={isOpen}
-              style={customStyles}
-              contentLabel="Example Modal"
-            >
-              <span className="close">&times;</span>
-              <div
-                onClick={() => closeModal()}
-                className="modal"
-                style={pop.modal}
-              >
-                <div className="modal-content">
-                  <img src={imageUrl} alt="Image 1" />
-                </div>
-              </div>
-            </Modal>
-          </Carousel>
+              </Modal>
+            </Carousel>
+          </div>
         </div>
-        </div>
-
-
 
         {/*Gallery Slider container */}
 
         <Carousel
           swipeable={true}
           draggable={true}
-          showDots={true}
+          showDots={false}
           responsive={gallery}
           ssr={true}
           infinite={true}
@@ -599,15 +588,22 @@ const BannerPage = () => {
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item-padding-40-px"
         >
-          
-       <div>
-            <img src="https://res.cloudinary.com/dm5yrsqdc/image/upload/v1707645279/100acre/project/zj8rxu0etw0cqrmookte.jpg" alt="Image 2"  className="w-screen h-screen"/>
-          </div>
-          <div>
-            <img src="https://fastly.picsum.photos/id/590/536/354.jpg?hmac=MTWs2RHTled85txj1Gzavxbv320nZS8_8OWl98tvJXk" alt="Image 4" className="w-screen h-screen"/>
-          </div>
-
-        </Carousel> 
+          {console.log(projectGallery, "projectGallery")}
+          {projectGallery &&
+            Array.isArray(projectGallery) &&
+            projectGallery.length > 0 &&
+            projectGallery.map((item, index) => (
+              <div key={index}>
+                {item && (
+                  <img
+                    src={item.url}
+                    alt={`Image ${index}`}
+                    className="w-screen max-h-40vh object-fit"
+                  />
+                )}
+              </div>
+            ))}
+        </Carousel>
 
         <div
           className="text-center  text-gray-600 pt-2 font-semibold mt-2 lg:pt-4 md:pt-3  text-sm sm:text-base md:text-lg lg:text-3xl sm:pt-0 px-3 h-6"
@@ -617,7 +613,7 @@ const BannerPage = () => {
             {projectViewDetails.projectName} Amenities
           </h3>
         </div>
-        
+
         <div
           className="grid grid-cols-1 md:grid-cols-3  lg:grid-cols-6 gap-2 px-4 pt-8"
           style={{ backgroundColor: "#f7f1ec" }}
@@ -648,8 +644,6 @@ const BannerPage = () => {
           </a>
         </div>
 
-        {/* Master Plan */}
-
         <div className="">
           <div className="h-auto bg-[#F1F1FE]">
             <div className="flex justify-center items-center rounded">
@@ -677,34 +671,54 @@ const BannerPage = () => {
                         className="list-disc"
                         style={{ listStyleType: "circle" }}
                       >
-                        <li className="mb-2 text-black">
-                          Wider door width and large windows and Panic alarms
-                          for emergency
-                        </li>
+                        {projectRedefine_Connectivity &&
+                          Array.isArray(projectRedefine_Connectivity) &&
+                          projectRedefine_Connectivity.length > 0 &&
+                          projectRedefine_Connectivity.map((item, index) => (
+                            <li className="text-lg" key={index}>
+                              {item}
+                            </li>
+                          ))}
+                      </ul>
+
+                      <ul
+                        className="list-disc"
+                        style={{ listStyleType: "circle" }}
+                      >
+                        {projectRedefine_Entertainment &&
+                          Array.isArray(projectRedefine_Entertainment) &&
+                          projectRedefine_Entertainment.length > 0 &&
+                          projectRedefine_Entertainment.map((item, index) => (
+                            <li className="text-lg" key={index}>
+                              {item}
+                            </li>
+                          ))}
                       </ul>
                       <ul
                         className="list-disc"
                         style={{ listStyleType: "circle" }}
                       >
-                        <li className="mb-2 text-black">
-                          Anti-skid flooring to prevent trips and falls
-                        </li>
+                        {projectRedefine_Education &&
+                          Array.isArray(projectRedefine_Education) &&
+                          projectRedefine_Education.length > 0 &&
+                          projectRedefine_Education.map((item, index) => (
+                            <li className="text-lg" key={index}>
+                              {item}
+                            </li>
+                          ))}
                       </ul>
                       <ul
                         className="list-disc"
                         style={{ listStyleType: "circle" }}
                       >
-                        <li className="mb-2 text-black">
-                          Electrical controls and locks at convenient heights
-                        </li>
-                      </ul>
-                      <ul
-                        className="list-disc"
-                        style={{ listStyleType: "circle" }}
-                      >
-                        <li className="mb-2 text-black">
-                          Two-way switches to support easier movements
-                        </li>
+                        {projectRedefine_Business &&
+                          Array.isArray(projectRedefine_Business) &&
+                          projectRedefine_Business.length > 0 &&
+                          projectRedefine_Business.map((item, index) => (
+                            <li className="text-lg" key={index}>
+                              {item}
+                            </li>
+                          ))}
                       </ul>
                     </div>
                   </div>
@@ -712,6 +726,12 @@ const BannerPage = () => {
               </div>
             </div>
           </div>
+        </div>
+        {/* Master Plan */}
+        <div className="text-center pt-4">
+          <h2 className="font-semibold mx-4 lg:text-3xl md:text-xl sm:text-base text-gray-600">
+            {projectViewDetails.projectName} Master Plan
+          </h2>
         </div>
 
         <div className="pt-4">

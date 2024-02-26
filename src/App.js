@@ -81,9 +81,8 @@ import UserViewProperty from "./Pages/UserViewProperty";
 import CareerWithUs from "./Pages/CareerWithUs";
 import About from "./Pages/About";
 import UserEditProperty from "./Pages/UserEditProperty";
-import PrivateRoute from "./PrivateRoute";
 import ProjectAddHighligths from "./AdminPage/ProjectAddHighligths";
-
+import PrivateRoute from "./PrivateRoute";
 
 function App() {
   const registeredData = {
@@ -91,63 +90,59 @@ function App() {
     email: "johndoe@example.com",
     mobile: "1234567890",
   };
-  const data = "";
-
-  const isAuthenticated = true;
   return (
     <Wrapper className="section">
-      
       <Router>
         <Routes>
-          {/* <Route path='/' element={<Navigate to='/Home' />} /> */}
           <Route path="/" element={<Home />} />
-          <Route path="/SignUP" element={<SignUp />}/>
+          <Route path="/SignUP" element={<SignUp />} />
           <Route path="/SignIn" element={<SignIn />} />
-          {/* <Route path="/ashishrough" element={<AshishRoughPage />} /> */}
-          {/* <Route path='/login' element={<LoginMain />} /> */}
           <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/termsandconditions" element={<TermsAndConditions />} />
           <Route path="/projects" element={<Properties />} />
-          {/* <Route path = '/rent' element = {<PropertyRent/>}/> */}
           <Route path="/rent" element={<RentPropViewCard />} />
           <Route path="/buy" element={<BuyPropViewCard />} />
           <Route path="/rent/:id" element={<RentViewDetails />} />
           <Route path="/buy/:id" element={<BuyViewDetails />} />
           <Route path="/propviewcard" element={<PropViewCardPro />} />
-          {/* <Route path='/:url/' element={<MiddleMain />} /> */}
+          
           <Route path="/middlemain" element={<MiddleMain />} />
           <Route path="/blog" element={<BlogMain />} />
           <Route path="/viewallproperty" element={<ViewAllProperty />} />
-          {/* <Route path='/postproperty' element={<SellProperty />} /> */}
+        
           <Route path="/postproperty" element={<NewSellProperty />} />
-          {/* <Route path="/contact" element={<Contact />} /> */}
+          
           <Route path="/contactus" element={<ContactUs />} />
-          <Route path="/careerwithus" element ={<CareerWithUs />} />
+          <Route path="/careerwithus" element={<CareerWithUs />} />
           <Route path="/resetpassword/:token" element={<ForgetPassword />} />
-          {/* <Route path="/aboutus" element={< AboutUs/>} /> */}
+          
           <Route path="/forgetpassword" element={<ResetEmailPassword />} />
           <Route path="/form" element={<Form registeredData={registeredData} />}/>
           <Route path="/protected/private/admin" element={<AdminMain />} />
           <Route path="/protected/private/admin/editProject/:url" element={<EditableProperty />}/>
-          {/* <Route path='/rough' element={<ProfilePage />} /> */}
+         
           <Route path="/blog/:name" element={<SingleBlog />} />
           <Route path="/knowabouts" element={<PropertyKnow />} />
           <Route path="/profile/:id" element={<Profile />} />
-          <Route path="/:pUrl" element={<BannerPage/>} />
-          {/* <Route path="/aboutus" element={<AboutPage />} /> */}
+          <Route path="/:pUrl" element={<BannerPage />} />
           <Route path="/about" element={<About />} />
-          <Route path="/userviewproperty/:id" element = {<UserViewProperty/>}/>
-          <Route path="/usereditproperty" element= {<UserEditProperty/>}/>
+          <Route path="/userviewproperty/:id" element={<UserViewProperty />} />
+          <Route path="/usereditproperty" element={<UserEditProperty />} />
 
           <Route path="*" element={<PageNotFound />} />
           <Route path="/contactmainpage" element={<ContactPage />} />
-          <Route path="/admin/addnew" element={<Addnew />} />
-          <Route path="/admin/adminproperty" element={<Adminproperty />} />
+
+
+
+          
+          {/* <Route path="/Admin" element= {<PrivateRoute/>}>  */}
           <Route path="/Admin/dashboard" element={<Dashboard />} />
-          <Route path="/Admin/viewproperty/:id" element={<ViewPropertyAdmin />} />
+          <Route path="/Admin/viewproperty/:id" element={<ViewPropertyAdmin/>}/>
           <Route path="/Admin/viewproperty/viewdetails/:id" element={<ClientDetails/>}/>
-          <Route path="/Admin/viewproperty/editdetails/:id" element={<EditDetails />}/>
+          <Route path="/Admin/viewproperty/editdetails/:id" element={<EditDetails/>}/>
+          <Route path="/admin/addnew" element={<Addnew />} />
+          <Route path="/admin/adminproperty" element={<Adminproperty />}/>
           <Route path="/Admin/blog" element={<Blog />} />
           <Route path="/Admin/user" element={<UserAdmin />} />
           <Route path="/Admin/contact" element={<AdminContact />} />
@@ -163,23 +158,16 @@ function App() {
           <Route path="/Admin/buy/view/:id" element={<BuyView />} />
           <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
           <Route path="/Admin/contactpage" element={<ContactPage />} />
-          <Route path="/Admin/ContactUs/UserProfile" element={<UserProfile />}/>
-          {/* <Route path="/contactUs/ContactUser" element={<ContactUser />} /> 
-           <Route path="/contactUs/UserProperty" element={<UserProperty />} /> */}
-
-           <Route path="/searchdata/:key" element = {<SearchData/>}/>
-          <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView/>}/>
-          <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit/>}/>
-          <Route path="/Admin/projecteditbhk/:id" element={<ProjectEditBHK/>}/>
-          <Route path="/Admin/ProjectsAddBhk/:id" element={<ProjectsAddBhk/>}/>
-          <Route path="/Admin/adminProperty" element={<Adminproperty/>}/>
-          <Route path="Admin/ProjectAddHighlights/:id" element={<ProjectAddHighligths/>}/>
-          
-
-          {/* <PrivateRoute path="/protected"
-          element={<SignIn/>}
-          isAuthenticated={isAuthenticated}/> */}
-
+          <Route path="/Admin/ContactUs/UserProfile"element={<UserProfile />}/>
+          <Route path="/searchdata/:key" element={<SearchData />} />
+          <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
+          <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
+          <Route path="/Admin/projecteditbhk/:id" element={<ProjectEditBHK />}/>
+          <Route path="/Admin/ProjectsAddBhk/:id"element={<ProjectsAddBhk />}/>
+          <Route path="/Admin/adminProperty" element={<Adminproperty />} />
+          <Route path="Admin/ProjectAddHighlights/:id" element={<ProjectAddHighligths/>} />
+          <Route path="/dashboard" element={<PrivateRoute element={<Dashboard/>}/>}/>  
+          {/* </Route> */}
         </Routes>
       </Router>
     </Wrapper>

@@ -3,7 +3,6 @@ import axios from "axios";
 import Nav from "../../aadharhomes/Nav";
 import Footer from "./Footer";
 import { Link } from "react-router-dom";
-import SmallPopForm from "./SmallPopForm";
 function RentPropViewCard() {
 
   const [rentData, setRentData] = useState([]);
@@ -15,9 +14,9 @@ function RentPropViewCard() {
         const res = await axios.get(
           "https://api.100acress.com/property/viewAll"
         );
-        setRentData(res.data.data);
+        console.log(res, "fsdfsfsdf rent")
+        setRentData(res.data.collectdata);
         setPostPropertyData(res.data.done);
-        // console.log(res, "postPropertyData New Data ");
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -33,142 +32,153 @@ function RentPropViewCard() {
   }, [postPropertyData]);
 
   return (
-    <div style={{overflowX:"hidden"}}>
-      <Nav />
+    <div style={{ overflowX: "hidden" }}>
+    <Nav />
+    {/* <SmallPopForm/> */}
+    <div>
       <section className="flex flex-col items-center bg-white">
-       
         <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
-          {rentData.map((item, index) => {
-            const userId = item._id;
-            return (
-              <article
-                key={index}
-                className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-              >
-                <div>
-                  <img
-                    src={item.frontImage.url}
-                    alt=""
-                    className="w-full h-48 object-fit"
-                  />
-                </div>
-                <div className="p-4">
-                  <div className="pb-2">
-                    <a className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
-                      {item.projectName}
-                    </a>
-                    <br />
-                    <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                      {item.address}
-                    </a>
-                  </div>
-                  <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
-                    <li className="mr-4 flex items-center text-left">
-                      <li className="text-left">
-                        <span className="text-sm text-gray-400">
-                          {item.builtYear}
-                        </span>
-                        <p className="m-0 text-base font-medium">{item.type}</p>
-                      </li>
-                    </li>
-                  </ul>
-                  <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
-                    <li className="text-left">
-                      <span className="text-sm font-extrabold text-black">
-                        Price: {item.price}
-                      </span>
-                    </li>
-                    <li className="text-left">
-                      <Link to={`/rent/${userId}`}>
-                        <button
-                          type="button"
-                          className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
-                        >
-                          View Details
-                        </button>
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </article>
-            );
-          })}
-
-          {postPropertyData.map((item, index) => {
-            const filterPostData = item.postProperty;
-            return (
-              <div key={index}>
-                {filterPostData.map((nestedData, nestedIndex) => {
-                  const filterUserId = nestedData._id
+          {rentData && rentData.length > 0 ? (
+            <>
+              {rentData.map((item, index) => {
+                if (item.name) {
                   return (
-                    <article
-                    key={nestedIndex}
-                    className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                  >
-                    <div>
-                      {nestedData.frontImage && nestedData.frontImage.url && (
-                        <img
-                        src={nestedData.frontImage.url}
-                        alt=""
-                        className="w-full h-48 object-fit"
-                      />
+                    <>
+                      {" "}
+                      {item.postProperty && item.postProperty.length > 0 ? (
+                        <>
+                          {item.postProperty.map(
+                            (property, propertyIndex) => (
+                              <Link to={`/rent/${property._id}`}>
+                              <article
+                                className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                                key={propertyIndex}
+                              >
+                                <div>
+                                  {property.frontImage &&
+                                  property.frontImage.url ? (
+                                    <img
+                                      src={property.frontImage.url}
+                                      alt="frontImage"
+                                      className="w-full h-48 object-fit"
+                                    />
+                                  ) : (
+                                    <span>Image not available</span>
+                                  )}
+                                </div>
+
+                                <div className="p-4">
+                                  <div className="pb-2">
+                                    <a className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
+                                      {property.propertyName}
+                                    </a>
+                                    <span style={{ float: "right" }}>
+                                      {property.price}
+                                    </span>
+                                    <br />
+                                    <a className="text-sm hover:text-red-600 duration-500 ease-in-out">
+                                      {property.city}, {property.state}
+                                    </a>
+                                  </div>
+                                  <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+                                    <li className="text-left">
+                                      <span className="text-sm font-extrabold  text-black">
+                                        {property.propertyType}
+                                      </span>
+                                    </li>
+                                    <li className="text-left">
+                                     
+                                        <button
+                                          type="button"
+                                          style={{ width: "122px" }}
+                                          className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"
+                                        >
+                                          View Details
+                                        </button>
+                                     
+                                    </li>
+                                  </ul>
+                                </div>
+                              </article>
+                              </Link>
+                            )
+                          )}
+                        </>
+                      ) : (
+                        <></>
                       )}
+                    </>
+                  );
+                } else {
+                  return (
+                    <>
+                      {
+                         <Link to={`/rent/${item._id}`}>
+                        <article
+                          className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                          key={index}
+                        >
+                          <div>
+                            {item.frontImage && item.frontImage.url ? (
+                              <img
+                                src={item.frontImage.url}
+                                alt="frontImage"
+                                className="w-full h-48 object-fit"
+                              />
+                            ) : (
+                              <span>Image not available</span>
+                            )}
+                          </div>
 
-                      
-                    </div>
+                          <div className="p-4">
+                            <div className="pb-2">
+                              <a className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
+                                {item.propertyName}
+                              </a>
+                              <span style={{ float: "right" }}>
+                                {item.price}
+                              </span>
+                              <br />
+                              <a className="text-sm hover:text-red-600 duration-500 ease-in-out">
+                                {item.city}, {item.state}
+                              </a>
+                            </div>
+                            <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+                              <li className="text-left">
+                                <span className="text-sm font-extrabold text-black">
+                                  {item.propertyType}
+                                </span>
+                              </li>
 
-                    
-
-                    <div className="p-4">
-                      <div className="pb-2">
-                        <a className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
-                          {nestedData.propertyName}
-                        </a>
-                        <br />
-                        <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                          {nestedData.address}
-                        </a>
-                      </div>
-                      <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
-                        <li className="mr-4 flex items-center text-left">
-                          <li className="text-left">
-                            <span className="text-sm text-gray-400">
-                              {nestedData.builtYear}
-                            </span>
-                            <p className="m-0 text-base font-medium">{nestedData.type}</p>
-                          </li>
-                        </li>
-                      </ul>
-                      <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
-                        <li className="text-left">
-                          <span className="text-sm font-extrabold text-black">
-                            Price: {nestedData.price}
-                          </span>
-                        </li>
-                        <li className="text-left">
-                          <Link to={`/rent/${filterUserId}`}>
-                            <button
-                              type="button"
-                              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
-                            >
-                              View Details
-                            </button>
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
-                   
-                  </article>
-                  )
-                })}
-              </div>
-            );
-          })}
+                              <li className="text-left">
+                               
+                                  <button
+                                    type="button"
+                                    style={{ width: "122px" }}
+                                    className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"
+                                  >
+                                    View Details
+                                  </button>
+                               
+                              </li>
+                            </ul>
+                          </div>
+                        </article>
+                        </Link>
+                      }
+                    </>
+                  );
+                }
+              })}
+            </>
+          ) : (
+            <>Loading...</>
+          )}
         </div>
-        <SmallPopForm/>
       </section>
-      <Footer />
     </div>
+    <Footer />
+  </div>
   );
 }
 

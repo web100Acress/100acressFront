@@ -225,7 +225,7 @@ const AddNew = () => {
             <option value="featured">Featured</option>
             <option value="underconstruction">Under Construction</option>
             <option value="comingsoon">Coming Soon</option>
-            <option value="newlunch">New Lunch</option>
+            <option value="newlunch">New Launch</option>
             <option value="readytomove">Ready To Move</option>
           </select>
 

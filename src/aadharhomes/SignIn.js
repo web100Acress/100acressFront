@@ -28,7 +28,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { json, useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { InputGroup, InputRightElement } from "@chakra-ui/react";
@@ -85,7 +85,7 @@ export default function SignIn() {
     const { name, value } = e.target;
     setuserLogin({ ...userLogin, [name]: value });
   };
-  
+
   const handleUserLogin = async () => {
     const { email, password } = userLogin;
     if (email && password) {
@@ -94,10 +94,6 @@ export default function SignIn() {
           "https://api.100acress.com/postPerson/verify_Login",
           { email, password }
         );
-
-        console.log(loginResponse, "Login Respos")
-        
-
         const newToken = loginResponse.data.token;
         localStorage.setItem("myToken", JSON.stringify(newToken));
         setToken(newToken);
@@ -106,12 +102,15 @@ export default function SignIn() {
           const roleResponse = await axios.get(
             `https://api.100acress.com/postPerson/Role/${email}`
           );
+          
+
           if (roleResponse.status === 200) {
             if (roleResponse.data.User.role == "admin") {
-              history("/Admin/dashboard");
+              localStorage.setItem("userRole",JSON.stringify(roleResponse.data.User.role))
+              history("Admin/dashboard");
             } else {
               const sellerId = roleResponse.data.User._id;
-          
+
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
               history("/");
             }
@@ -145,7 +144,6 @@ export default function SignIn() {
   };
 
   const handleClick = () => {
-    
     handleUserLogin();
   };
   const { email, password } = userLogin;

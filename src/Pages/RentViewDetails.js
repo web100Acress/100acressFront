@@ -18,11 +18,227 @@ const RentViewDetails = () => {
   };
 
   const [rentViewDetails, setRentViewDetails] = useState([]);
-
+  const [showContact, setShowContact] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [getContact, setGetContact] = useState("");
   const { frontImage, otherImage, propertyName, amenities } = rentViewDetails;
 
   const { id } = useParams();
 
+  const [agentFrom1, setAgentForm1] = useState({
+    custName: "",
+    custEmail: "",
+    custNumber: "",
+  });
+
+  const handleChangeAgentForm1 = (e) => {
+    const { name, value } = e.target;
+    setAgentForm1({ ...agentFrom1, [name]: value });
+  };
+
+  const handleSubmitAgentForm1 = (e) => {
+    e.preventDefault();
+    const { custEmail, custNumber } = agentFrom1;
+    if (custEmail && custNumber) {
+      axios
+        .post("https://api.100acress.com/postEnquiry", {
+          ...agentFrom1,
+          propertyAddress: rentViewDetails.city,
+          agentEmail: rentViewDetails.email,
+          agentNumber: rentViewDetails.number,
+        })
+
+        .then((response) => {
+          alert("Data Submitted Successfully");
+          resetData1();
+        })
+        .catch((error) => {
+          console.error("Registration failed:", error);
+          if (error.response) {
+            alert(`Server responded with an error: ${error.response.status}`);
+          } else if (error.request) {
+            alert("No response received from the server");
+          } else {
+            alert(`Error setting up the request: ${error.message}`);
+          }
+        });
+    } else {
+      alert("Please fill the data");
+    }
+    setShowContact(true);
+  };
+
+  const [agentFrom, setAgentForm] = useState({
+    agentEmail: "",
+    agentNumber: "",
+    custName: "",
+    custEmail: "",
+    custNumber: "",
+    propertyAddress: "",
+  });
+
+  const handleChangeAgentForm = (e) => {
+    const { name, value } = e.target;
+    setAgentForm({ ...agentFrom, [name]: value });
+  };
+
+  const handleSubmitAgentForm = (e) => {
+    e.preventDefault();
+
+    const { custName, custNumber } = agentFrom;
+
+    if (custName && custNumber) {
+      axios
+        .post("https://acre.onrender.com/postEnquiry", {
+          ...agentFrom,
+          propertyAddress: rentViewDetails.city,
+          agentEmail: rentViewDetails.email,
+          agentNumber: rentViewDetails.number,
+        })
+        .then((response) => {
+          alert("Data Submitted Successfully");
+          resetData();
+        })
+        .catch((error) => {
+          console.error("Registration failed:", error);
+          if (error.response) {
+            alert(`Server responded with an error: ${error.response.status}`);
+          } else if (error.request) {
+            alert("No response received from the server");
+          } else {
+            alert(`Error setting up the request: ${error.message}`);
+          }
+        });
+    } else {
+      alert("Please fill the data");
+    }
+    setShowContact(true);
+  };
+
+  const resetData = () => {
+    setAgentForm({
+      agentEmail: "",
+      agentNumber: "",
+      custName: "",
+      custEmail: "",
+      custNumber: "",
+      propertyAddress: "",
+    });
+  };
+
+  const resetData1 = () => {
+    setAgentForm1({
+      agentEmail: "",
+      agentNumber: "",
+      custName: "",
+      custEmail: "",
+      custNumber: "",
+      propertyAddress: "",
+    });
+  };
+
+  const [userForm, setUserForm] = useState({
+    custName: "",
+    custEmail: "",
+    custNumber: "",
+  });
+
+  const resetUser = () => {
+    setUserForm({
+      custName: "",
+      custEmail: "",
+      custNumber: "",
+    });
+  };
+
+  const handleUserFormChange = (e) => {
+    const { name, value } = e.target;
+    setUserForm({ ...userForm, [name]: value });
+  };
+
+  const handleSubmitFormData = async (e) => {
+    e.preventDefault();
+
+    const { custName, custNumber } = userForm;
+
+    if (custNumber && custName) {
+      try {
+        const response = await axios.post(
+          "https://api.100acress.com/postEnquiry",
+          {
+            ...userForm,
+            propertyAddress: rentViewDetails.address,
+          }
+        );
+
+        alert(response.data.message);
+        resetUser();
+      } catch (error) {
+        console.error("Registration failed:", error);
+
+        if (error.response) {
+          alert(`Server responded with an error: ${error.response.status}`);
+        } else if (error.request) {
+          alert("No response received from the server");
+        } else {
+          alert(`Error setting up the request: ${error.message}`);
+        }
+      }
+    } else {
+      alert("Please fill the data");
+    }
+  };
+
+  const [userForm1, setUserForm1] = useState({
+    custName: "",
+    custEmail: "",
+    custNumber: "",
+  });
+
+  const handleUserFormChange1 = (e) => {
+    const { name, value } = e.target;
+    setUserForm1({ ...userForm1, [name]: value });
+  };
+
+  const handleSubmitFormData1 = async (e) => {
+    e.preventDefault();
+    const { custName, custNumber } = userForm1;
+    if (custNumber && custName) {
+      try {
+        const response = await axios.post(
+          "https://api.100acress.com/postEnquiry",
+          {
+            ...userForm1,
+            propertyAddress: rentViewDetails.address,
+          }
+        );
+
+        alert(response.data.message);
+        resetUser1();
+      } catch (error) {
+        console.error("Registration failed:", error);
+
+        if (error.response) {
+          alert(`Server responded with an error: ${error.response.status}`);
+        } else if (error.request) {
+          alert("No response received from the server");
+        } else {
+          alert(`Error setting up the request: ${error.message}`);
+        }
+      }
+    } else {
+      alert("Please fill the data");
+    }
+    setShowContact(true);
+  };
+
+  const resetUser1 = () => {
+    setUserForm1({
+      custName: "",
+      custEmail: "",
+      custNumber: "",
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,7 +261,7 @@ const RentViewDetails = () => {
   }, []);
 
   return (
-    <>
+    <div style={{ overflowX: "hidden" }}>
       <Nav />
       <Wrapper>
         <div className="blog-single gray-bg">
@@ -58,37 +274,36 @@ const RentViewDetails = () => {
                       <div>
                         <img
                           src={frontImage.url}
-                          alt="Front View"
+                          alt="FrontView"
                           className="w-full h-60 object-fit"
                         />
                       </div>
                     )}
                   </div>
                   <div className="article-title">
-                    <span className="text-2xl font-bold text-red-500 m-0">
+                    <span className="text-lg  text-red-500 m-0">
                       Project Name:{" "}
-                      <span className="text-gray-600">
-                        {rentViewDetails.projectName} {rentViewDetails.propertyName}
+                      <span className="text-gray-600 text-md ml-1">
+                        {rentViewDetails.propertyName}
                       </span>
-                      
                     </span>
 
                     <p className="text-xl font-medium mx-10 text-justify"></p>
-                    <span className="text-2xl font-bold text-red-500 m-0">
+                    <span className="text-lg  text-red-500 m-0 ml-1">
                       Description:{" "}
                     </span>
-                    <p className="text-xl font-medium text-justify">
+                    <p className="text-xl font-medium text-justify ml-1">
                       {rentViewDetails.descripation}
                     </p>
 
-                    <span className="text-2xl font-bold text-red-500 m-0">
+                    <span className="text-lg  text-red-500 m-0 ml-1">
                       Address:{" "}
                     </span>
-                    <p className="text-xl font-medium text-justify">
+                    <span className="text-xl font-medium text-justify ml-1">
                       {rentViewDetails.address}
-                    </p>
+                    </span>
                   </div>
-                  <span className="text-2xl font-bold text-red-500 m-0">
+                  <span className="text-lg  text-red-500 m-0 ml-1">
                     Properties Images:{" "}
                   </span>
 
@@ -108,22 +323,17 @@ const RentViewDetails = () => {
                   </Slider>
 
                   <br />
-                  <span className="text-2xl font-bold text-red-500 m-0">
-                    Amenities:{" "}
-                  </span>
+                  <span className="text-lg  text-red-500 m-0">Amenities: </span>
 
                   {amenities &&
                     Array.isArray(amenities) &&
                     amenities.length > 0 && (
-                      <div className="flex flex-wrap ">
+                      <div className="flex flex-wrap">
                         {amenities.map((amenity, index) => (
-                          <div
-                            className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 my-2 mx-2"
-                            key={index}
-                          >
-                            <div className="  hover:bg-red-300 w-full text-center overflow-hidden rounded-lg shadow">
+                          <div className="my-2 mx-2" key={index}>
+                            <div className="hover:bg-red-300 w-full text-center overflow-hidden rounded-lg shadow">
                               <div className="ml-auto">
-                                <p className="font-medium text-lg pt-2 text-black">
+                                <p className="font-medium text-md pt-2 px-3 text-black">
                                   {amenity}
                                 </p>
                               </div>
@@ -133,33 +343,241 @@ const RentViewDetails = () => {
                       </div>
                     )}
 
+      
                   <div className="article-title">
-                    <span className="text-2xl font-bold text-red-500 m-0">
+                    <span className="text-lg  text-red-500 m-0">
                       Property Type:{" "}
                     </span>
-                    <span>{rentViewDetails.propertyType} </span>
+                    <span className="ml-1">{rentViewDetails.propertyType}</span>
                     <br />
-                    <span className="text-2xl font-bold text-red-500 m-0 ">
-                      Furnishing:{" "}
-                    </span>
-                    <span>{rentViewDetails.furnishing}</span>
+                    <span className="text-lg  text-red-500 m-0">State: </span>
+                    <span className="ml-1">{rentViewDetails.state}</span>
                     <br />
-                    <span className="text-2xl font-bold text-red-500 m-0">
-                      State:{" "}
-                    </span>
-                    <span>{rentViewDetails.state}</span>
-                    <br />
-                    <span className="text-2xl font-bold text-red-500 m-0">
+                    <span className="text-lg  text-red-500 m-0">
                       Built Year:{" "}
                     </span>
-                    <span>{rentViewDetails.builtYear}</span>
+                    <span className="ml-1">{rentViewDetails.builtYear}</span>
                   </div>
                 </article>
-                <div className="article-comment">
-                  <h4 className="text-2xl font-bold text-red-500 m-0">
+
+                {/* Down Form Agent */}
+
+                {rentViewDetails.email ? (
+                  <>
+                    {/* {showForm && (
+                      <div className="article-comment">
+                        <h4 className="text-lg  text-red-500 m-0">Contact</h4>
+                        <form id="contact-form">
+                          <div className="row pt-3">
+                            <div className="widget widget-tags">
+                              <div className="widget-body">
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <div className="form-group">
+                                      <input
+                                        name="custName"
+                                        value={agentFrom.custName}
+                                        required
+                                        onChange={handleChangeAgentForm}
+                                        placeholder="Name *"
+                                        className="form-control"
+                                        type="text"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="col-md-12 pt-2">
+                                    <div className="form-group">
+                                      <input
+                                        name="custNumber"
+                                        value={agentFrom.custNumber}
+                                        required
+                                        onChange={handleChangeAgentForm}
+                                        placeholder="Number *"
+                                        className="form-control"
+                                        type="text"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="col-md-12 pt-2">
+                                    <div className="form-group">
+                                      <input
+                                        name="custEmail"
+                                        value={agentFrom.custEmail}
+                                        onChange={handleChangeAgentForm}
+                                        placeholder="Email *"
+                                        className="form-control"
+                                        type="email"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="col-md-12 pt-2">
+                                    <div className="form-group">
+                                      <input
+                                        name="propertyAddress"
+                                        value={agentFrom.propertyAddress}
+                                        onChange={handleChangeAgentForm}
+                                        placeholder="Property Address *"
+                                        className="form-control"
+                                        type="hidden"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="col-md-12 pt-2">
+                                    <div className="form-group">
+                                      <input
+                                        name="agentEmail"
+                                        value={agentFrom.agentEmail}
+                                        onChange={handleChangeAgentForm}
+                                        placeholder="Agent Email *"
+                                        className="form-control"
+                                        type="hidden"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="col-md-12 pt-2  ">
+                                    <div className="form-group">
+                                      <input
+                                        name="agentNumber"
+                                        value={agentFrom.agentNumber}
+                                        onChange={handleChangeAgentForm}
+                                        placeholder="Agent Number*"
+                                        className="form-control"
+                                        type="hidden"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="col-md-12 pt-2">
+                                    <div className="send">
+                                      <button
+                                        className="px-btn theme bg-red-500 text-red-500"
+                                        onClick={(e) => {
+                                          handleSubmitAgentForm(e);
+                                        }}
+                                      >
+                                        <span className="text-red-500">
+                                          Submit 
+                                        </span>{" "}
+                                        <i className="arrow text-red-500" />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    )} */}
+                  </>
+                ) : (
+                  <>
+                    {/* Done*/}
+                    {showForm && (
+                      <div className="article-comment">
+                        <h4 className="text-lg  text-red-500 m-0">
+                          Contact Us{" "}
+                        </h4>
+                        <form id="contact-form">
+                          <div className="row pt-3">
+                            <div className="widget widget-tags">
+                              <div className="widget-body">
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <div className="form-group">
+                                      <input
+                                        name="custName"
+                                        value={userForm.custName}
+                                        onChange={handleUserFormChange}
+                                        placeholder="Name *"
+                                        className="form-control"
+                                        type="text"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="col-md-12 pt-2">
+                                    <div className="form-group">
+                                      <input
+                                        name="custEmail"
+                                        value={userForm.custEmail}
+                                        onChange={handleUserFormChange}
+                                        placeholder="Email *"
+                                        className="form-control"
+                                        type="email"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="col-md-12 pt-2">
+                                    <div className="form-group">
+                                      <input
+                                        name="custNumber"
+                                        value={userForm.custNumber}
+                                        onChange={handleUserFormChange}
+                                        placeholder="Mobile *"
+                                        className="form-control"
+                                        type="text"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="col-md-12 pt-2 ">
+                                    <div className="form-group">
+                                      <input
+                                        name="projectName"
+                                        id="projectName"
+                                        placeholder="Project Name *"
+                                        className="form-control"
+                                        type="hidden"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="col-md-12 pt-2  ">
+                                    <div className="form-group">
+                                      <input
+                                        name="addresss"
+                                        id="address"
+                                        placeholder="Address *"
+                                        className="form-control"
+                                        type="hidden"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="col-md-12 pt-2">
+                                    <div className="send">
+                                      <button
+                                        className="px-btn theme bg-red-500 text-red-500"
+                                        onClick={handleSubmitFormData}
+                                      >
+                                        <span className="text-red-500">
+                                          Submit
+                                        </span>{" "}
+                                        <i className="arrow text-red-500" />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* <div className="article-comment">
+                  <h4 className="text-lg  text-red-500 m-0">
                     Contact Us
                   </h4>
-                  <form id="contact-form" method="POST">
+                  <form id="contact-form">
                     <div className="row pt-3">
                       <div className="widget widget-tags">
                         <div className="widget-body">
@@ -199,7 +617,7 @@ const RentViewDetails = () => {
                               </div>
                             </div>
 
-                            <div className="col-md-12 pt-2 hidden">
+                            <div className="col-md-12 pt-2 ">
                               <div className="form-group">
                                 <input
                                   name="projectName"
@@ -211,7 +629,7 @@ const RentViewDetails = () => {
                               </div>
                             </div>
 
-                            <div className="col-md-12 pt-2 hidden ">
+                            <div className="col-md-12 pt-2  ">
                               <div className="form-group">
                                 <input
                                   name="addresss"
@@ -236,13 +654,246 @@ const RentViewDetails = () => {
                       </div>
                     </div>
                   </form>
-                </div>
+                </div> */}
               </div>
               <div className="col-lg-4 m-15 px-tb blog-aside">
                 <div className="widget widget-author">
                   <div className="widget-title">
-                    <h3>Price: {rentViewDetails.price}</h3>
+                    <p><span className="text-red-500">Price:</span> {rentViewDetails.price}</p>
                   </div>
+
+
+                  <div className="widget-title ">
+                    <p>
+                      <div className="flex justify-center items-center">
+                        <div className="text-red-500 font-semibold text-xl text-center">
+                        {rentViewDetails.role}  {"-"}  {rentViewDetails.agentName} 
+                        </div>
+                      </div>
+
+                      <div
+                        style={{ color: "red", textAlign: "left" }}
+                        className="flex justify-center items-center pt-2"
+                      >
+                        {" "}
+                        {getContact.length !== null ? (
+                          <>
+                            {showContact && rentViewDetails.number
+                              ? rentViewDetails.number
+                              : "+91-97xx-xx-xx89"}
+                          </>
+                        ) : (
+                          <>{"+91-XXXX"}</>
+                        )}
+                      </div>
+
+                      <div className="flex justify-center items-center pt-2">
+                        <button
+                          onClick={() => setShowForm(true)}
+                          className="bg-red-500 px-2 py-2 rounded-full text-center text-white w-60 "
+                        >
+                          Get Phone Number
+                        </button>
+                      </div>
+                    </p>
+                  </div>
+
+
+
+                  {rentViewDetails.email ? (
+                  <>
+                    {showForm && (
+                      <div className=" widget-tags">
+                        <div className="widget-title text-center items-center">
+                          <p className="text-red-500">Fill out form only one - time   </p>
+                          <span>After get the contact number </span>
+                        </div>
+                        <div className="widget-body">
+                          <div className="row">
+                            <div className="col-md-12">
+                              <div className="form-group">
+                                <input
+                                  name="custName"
+                                  value={agentFrom1.custName}
+                                  required
+                                  onChange={handleChangeAgentForm1}
+                                  placeholder="Name *"
+                                  className="form-control"
+                                  type="text"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="custNumber"
+                                  value={agentFrom1.custNumber}
+                                  onChange={handleChangeAgentForm1}
+                                  required
+                                  placeholder="Number *"
+                                  className="form-control"
+                                  type="text"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="custEmail"
+                                  value={agentFrom1.custEmail}
+                                  onChange={handleChangeAgentForm1}
+                                  placeholder="Email *"
+                                  className="form-control"
+                                  type="email"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="propertyAddress"
+                                  value={agentFrom1.propertyAddress}
+                                  onChange={handleChangeAgentForm1}
+                                  placeholder="Property Address *"
+                                  className="form-control"
+                                  type="hidden"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="agentEmail"
+                                  value={agentFrom1.agentEmail}
+                                  onChange={handleChangeAgentForm1}
+                                  placeholder="Agent Email *"
+                                  className="form-control"
+                                  type="hidden"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="agentNumber"
+                                  value={agentFrom1.agentNumber}
+                                  onChange={handleChangeAgentForm1}
+                                  placeholder="Agent Number *"
+                                  className="form-control"
+                                  type="hidden"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="send">
+                                <button
+                                  className="px-btn theme bg-red-500 text-red-500"
+                                  onClick={(event) => {
+                                    handleSubmitAgentForm1(event);
+                                  }}
+                                >
+                                  <span className="text-red-500">Submit</span>{" "}
+                                  <i className="arrow text-red-500" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {showForm && (
+                      <div className="widget widget-tags">
+                        <div className="widget-title">
+                          <h3>Contact</h3>
+                        </div>
+                        <div className="widget-body">
+                          <div className="row">
+                            <div className="col-md-12">
+                              <div className="form-group">
+                                <input
+                                  name="custName"
+                                  value={setUserForm.custName}
+                                  onChange={handleUserFormChange1}
+                                  placeholder="Name *"
+                                  className="form-control"
+                                  type="text"
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="custEmail"
+                                  value={setUserForm1.custEmail}
+                                  onChange={handleUserFormChange1}
+                                  placeholder="Email *"
+                                  className="form-control"
+                                  type="email"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="custNumber"
+                                  value={setAgentForm1.custNumber}
+                                  onChange={handleUserFormChange1}
+                                  placeholder="Mobile *"
+                                  className="form-control"
+                                  type="text"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="projectName"
+                                  placeholder="Project Name *"
+                                  className="form-control"
+                                  type="hidden"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="form-group">
+                                <input
+                                  name="addresss"
+                                  placeholder="Address *"
+                                  className="form-control"
+                                  type="hidden"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 pt-2">
+                              <div className="send">
+                                <button
+                                  className="px-btn theme bg-red-500 text-red-500"
+                                  onClick={handleSubmitFormData1}
+                                >
+                                  <span className="text-red-500">Submit </span>{" "}
+                                  <i className="arrow text-red-500" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
 
                   <div className="widget-title">
                     <p>
@@ -257,209 +908,31 @@ const RentViewDetails = () => {
                       {rentViewDetails.landmark}
                     </p>
                   </div>
-                  {/* <div className="widget-body">
-                    <div className="media align-items-center">
-                      <div className="avatar">
-                        <img
-                          src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                          title=""
-                          alt=""
-                        />
-                      </div>
-                    
-                        <h6>
-                          
-                        Let us create unique opportunities to help make any disability into an ability.
-                        </h6>
-                   
-                    </div>
-                    <p>
-                      I design and develop services for customers of all sizes,
-                      specializing in creating stylish, modern websites, web
-                      services and online stores
-                    </p>
-                  </div> */}
-                  <p className="text-lg text-justify p-2">
-                    Let us create unique opportunities to help make any
-                    disability into an ability.
-                  </p>
-                </div>
 
-                <div className="widget widget-tags">
                   <div className="widget-title">
-                    <h3>Contact Us</h3>
+                    <p className="text-lg text-justify">
+                      Let us create unique opportunities to help make any
+                      disability into an ability.
+                    </p>
                   </div>
-                  <div className="widget-body">
-                    <div className="row">
-                      <div className="col-md-12">
-                        <div className="form-group">
-                          <input
-                            name="Name"
-                            id="name"
-                            placeholder="Name *"
-                            className="form-control"
-                            type="text"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-12 pt-2">
-                        <div className="form-group">
-                          <input
-                            name="Email"
-                            id="email"
-                            placeholder="Email *"
-                            className="form-control"
-                            type="email"
-                          />
-                        </div>
-                      </div>
 
-                      <div className="col-md-12 pt-2">
-                        <div className="form-group">
-                          <input
-                            name="mobile"
-                            id="mobile"
-                            placeholder="Mobile *"
-                            className="form-control"
-                            type="text"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-md-12 pt-2 hidden">
-                        <div className="form-group">
-                          <input
-                            name="projectName"
-                            id="projectName"
-                            placeholder="Project Name *"
-                            className="form-control"
-                            type="text"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-md-12 pt-2 hidden ">
-                        <div className="form-group">
-                          <input
-                            name="addresss"
-                            id="address"
-                            placeholder="Address *"
-                            className="form-control"
-                            type="text"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="col-md-12 pt-2">
-                        <div className="send">
-                          <button className="px-btn theme bg-red-500 text-red-500">
-                            <span className="text-red-500">Submit</span>{" "}
-                            <i className="arrow text-red-500" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  
                 </div>
+
+               
 
                 <div className="widget widget-post">
                   <div className="widget-title">
-                    <h3>Trending Properties</h3>
+                    <p className="text-lg text-red-500">Trending Properties</p>
                   </div>
                   <div className="widget-body"></div>
                 </div>
 
                 <div className="widget widget-latest-post">
                   <div className="widget-title">
-                    <h3>Upcoming Projects</h3>
+                    <p className="text-lg text-red-500">Upcoming Projects</p>
                   </div>
                   <div className="widget-body"></div>
-                  {/* <div className="widget-body">
-                    <div className="latest-post-aside media">
-                      <div className="lpa-left media-body">
-                        <div className="lpa-title">
-                          <h5>
-                            <a href="#">
-                              Prevent 75% of visitors from google analytics
-                            </a>
-                          </h5>
-                        </div>
-                        <div className="lpa-meta">
-                          <a className="name" href="#">
-                            Rachel Roth
-                          </a>
-                          <a className="date" href="#">
-                            26 FEB 2020
-                          </a>
-                        </div>
-                      </div>
-                      <div className="lpa-right">
-                        <a href="#">
-                          <img
-                            src="https://www.bootdey.com/image/400x200/FFB6C1/000000"
-                            title=""
-                            alt=""
-                          />
-                        </a>
-                      </div>
-                    </div>
-                    <div className="latest-post-aside media">
-                      <div className="lpa-left media-body">
-                        <div className="lpa-title">
-                          <h5>
-                            <a href="#">
-                              Prevent 75% of visitors from google analytics
-                            </a>
-                          </h5>
-                        </div>
-                        <div className="lpa-meta">
-                          <a className="name" href="#">
-                            Rachel Roth
-                          </a>
-                          <a className="date" href="#">
-                            26 FEB 2020
-                          </a>
-                        </div>
-                      </div>
-                      <div className="lpa-right">
-                        <a href="#">
-                          <img
-                            src="https://www.bootdey.com/image/400x200/FFB6C1/000000"
-                            title=""
-                            alt=""
-                          />
-                        </a>
-                      </div>
-                    </div>
-                    <div className="latest-post-aside media">
-                      <div className="lpa-left media-body">
-                        <div className="lpa-title">
-                          <h5>
-                            <a href="#">
-                              Prevent 75% of visitors from google analytics
-                            </a>
-                          </h5>
-                        </div>
-                        <div className="lpa-meta">
-                          <a className="name" href="#">
-                            Rachel Roth
-                          </a>
-                          <a className="date" href="#">
-                            26 FEB 2020
-                          </a>
-                        </div>
-                      </div>
-                      <div className="lpa-right">
-                        <a href="#">
-                          <img
-                            src="https://www.bootdey.com/image/400x200/FFB6C1/000000"
-                            title=""
-                            alt=""
-                          />
-                        </a>
-                      </div>
-                    </div>
-                  </div> */}
                 </div>
               </div>
             </div>
@@ -467,7 +940,7 @@ const RentViewDetails = () => {
         </div>
       </Wrapper>
       <Footer />
-    </>
+    </div>
   );
 };
 
