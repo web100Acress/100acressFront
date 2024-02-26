@@ -27,22 +27,22 @@ const Footer = () => {
 
             <div className="mt-4 lg:mt-0 lg:ml-8 lg:w-1/2 lg:col-span-6">
               <nav>
-                <p className="font-bold text-xl pr-2 text-white">Useful Links</p>
+                <p className="font-bold text-xl pr-2 text-white ">Useful Links</p>
 
                 <p className="space-x-2 text-md text-justify">
-                  <span className="hover:text-white hover:underline"><Link>Property in Gurugram</Link></span> |
-                  <span className="hover:text-white hover:underline"><Link>Property in Delhi</Link></span> |
-                  <span className="hover:text-white hover:underline"><Link>Property in Noida</Link></span> |
-                  <span className="hover:text-white hover:underline"><Link>Property in Goa</Link></span> |
-                  <span className="hover:text-white hover:underline"><Link>Affordable Homes in Gurugram</Link></span> |
-                  <span className="hover:text-white hover:underline"><Link>M3M India Projects</Link></span> |
-                  <span className="hover:text-white hover:underline"><Link>Raheja Developers Projects</Link></span> |
-                  <span className="hover:text-white hover:underline"><Link>Max Estate Projects</Link></span> |
-                  <span className="hover:text-white hover:underline"><Link>Krisumi Projects</Link></span> |
-                  <span className="hover:text-white hover:underline"><Link>Luxury Flats</Link></span> |
-                  <span className="hover:text-white hover:underline"><Link>Builder Floors</Link></span> |
-                  <span className="hover:text-white hover:underline"><Link>SCO Plots in Gurugram</Link></span> |
-                  <span className="hover:text-white hover:underline"><Link>Deen Dayal Plots</Link></span>
+                  <span className="hover:underline "><Link className=''style={{color:'white'}}>Property in Gurugram</Link></span> |
+                  <span className=" hover:underline"><Link className=''style={{color:'white'}}>Property in Delhi</Link></span> |
+                  <span className=" hover:underline"><Link className=''style={{color:'white'}}>Property in Noida</Link></span> |
+                  <span className=" hover:underline"><Link className=''style={{color:'white'}}>Property in Goa</Link></span> |
+                  <span className=" hover:underline"><Link className=''style={{color:'white'}}>Affordable Homes in Gurugram</Link></span> |
+                  <span className=" hover:underline"><Link className=''style={{color:'white'}}>M3M India Projects</Link></span> |
+                  <span className=" hover:underline"><Link className=''style={{color:'white'}}>Raheja Developers Projects</Link></span> |
+                  <span className=" hover:underline"><Link className=''style={{color:'white'}}>Max Estate Projects</Link></span> |
+                  <span className=" hover:underline"><Link className=''style={{color:'white'}}>Krisumi Projects</Link></span> |
+                  <span className=" hover:underline"><Link className=''style={{color:'white'}}>Luxury Flats</Link></span> |
+                  <span className=" hover:underline"><Link className=''style={{color:'white'}}>Builder Floors</Link></span> |
+                  <span className=" hover:underline"><Link className=''style={{color:'white'}}>SCO Plots in Gurugram</Link></span> |
+                  <span className=" hover:underline"><Link className=''style={{color:'white'}}>Deen Dayal Plots</Link></span>
                 </p>
 
               </nav>
@@ -101,38 +101,38 @@ const Footer = () => {
               <div className="flex flex-row sm:flex-row sm:justify-center flex-wrap">
 
                 <li className=" sm:mb-0">
-                  <Link to="/" className="text-left px-1 text-md">
+                  <Link to="/" className="text-left px-1 text-md hover:underline" style={{color:'white'}}>
                     Home
                   </Link>
                 </li>
                 <li className=" sm:mb-0">
-                  <Link to="#" className="text-left px-1 text-md">
+                  <Link to="#" className="text-left px-1 text-md hover:underline" style={{color:'white'}}>
                     About Us
                   </Link>
                 </li>
                 <li className=" sm:mb-0">
-                  <Link to="/blog" className="text-left px-1 text-md">
+                  <Link to="/blog" className="text-left px-1 text-md hover:underline" style={{color:'white'}}>
                     Blog
                   </Link>
                 </li>
 
                 <li className=" sm:mb-0">
-                  <Link to="/contactus" className="text-left px-1 text-md">
+                  <Link to="/contactus" className="text-left px-1 text-md hover:underline" style={{color:'white'}}>
                     Contact Us
                   </Link>
                 </li>
                 <li className=" sm:mb-0">
-                  <Link to="/privacy" className="text-left px-1 text-md">
+                  <Link to="/privacy" className="text-left px-1 text-md hover:underline" style={{color:'white'}}>
                     Privacy
                   </Link>
                 </li>
                 <li className=" sm:mb-0">
-                  <Link to="/careerwithus" className="text-left px-1 text-md">
+                  <Link to="/careerwithus" className="text-left px-1 text-md hover:underline" style={{color:'white'}}>
                     Careers With Us
                   </Link>
                 </li>
                 <li className=" sm:mb-0">
-                  <Link to="/termsandconditions" className="text-left px-1 text-md">
+                  <Link to="/termsandconditions" className="text-left px-1 text-md hover:underline" style={{color:'white'}}>
                     Terms And Conditions
                   </Link>
                 </li>
