@@ -133,9 +133,6 @@ function App() {
           <Route path="*" element={<PageNotFound />} />
           <Route path="/contactmainpage" element={<ContactPage />} />
 
-
-
-          
           {/* <Route path="/Admin" element= {<PrivateRoute/>}>  */}
           <Route path="/Admin/dashboard" element={<Dashboard />} />
           <Route path="/Admin/viewproperty/:id" element={<ViewPropertyAdmin/>}/>

@@ -61,8 +61,8 @@ const BannerPage = () => {
       padding: "0px",
       width: "70%",
       marginTop: "0px",
-      height:"80%",
-      backgroundColor:'red',
+      height: "80%",
+      backgroundColor: "red",
     },
   };
 
@@ -254,11 +254,8 @@ const BannerPage = () => {
       </Helmet>
 
       <>
-        <header className="text-slate-700 container relative flex flex-col overflow-hidden px-4 py-2 lg:flex-row lg:items-center">
-          <a
-            className="flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900"
-           
-          >
+        <header className="fixed shadow-2xl top-0 z-50 text-slate-700 flex flex-col overflow-hidden px-4 lg:flex-row lg:items-center bg-white w-full">
+          <a className="flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900">
             <img
               src={projectViewDetails?.logo?.url}
               style={{ height: "40px", width: "200px" }}
@@ -303,12 +300,16 @@ const BannerPage = () => {
             } w-full flex flex-col  transition-all lg:ml-24 lg:max-h-full lg:flex-row`}
           >
             <ul className="flex justify-end w-full mx-auto  ">
-              <li className="lg:ml-10 md:ml-4 lg:pt-3">
+              <li className="lg:ml-10 md:ml-4 ">
                 <a
                   href="tel:+919811750130"
                   className="rounded text-gray-700 lg:text-lg md:text-xs transition focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-offset-2"
                 >
-                  <span class="text-blue-700 text-3xl sm:text-xl lg:text-3xl md:text-2xl sm:pt-2 md:m-2 text-right">
+                  <span class="text-blue-700 text-3xl sm:text-xl lg:text-3xl md:text-2xl sm:pt-2 md:m-2 text-right hidden lg:inline-block">
+                    <i class="fa-solid fa-phone"></i> 9811750130
+                  </span>
+
+                  <span class="text-blue-700 text-xl pt-2 md:text-2xl lg:hidden block text-right">
                     <i class="fa-solid fa-phone"></i> 9811750130
                   </span>
                 </a>
@@ -318,7 +319,7 @@ const BannerPage = () => {
           </nav>
         </header>
 
-        <div className="w-full relative overflow-hidden bg-cover bg-no-repeat text-center">
+        <div className="w-full mt-16 relative overflow-hidden bg-cover bg-no-repeat text-center">
           <div className="w-full  overflow-hidden  object-fit">
             <div className="d-flex justify-content-center">
               {frontImage?.url && (
@@ -348,7 +349,7 @@ const BannerPage = () => {
                     >
                       <i className="fa-solid fa-xmark text-4xl"></i>
                     </button>
-                    <form className=" rounded-lg px-6 py-3 w-96 shadow-md bg-white xs:px-3 ">
+                    <form className=" rounded-lg px-6 py-5 w-96 shadow-md bg-white xs:px-3 ">
                       <div className="mb-2">
                         <h2 class="text-xl font-semibold text-black ">
                           GET A CALLBACK
@@ -475,13 +476,13 @@ const BannerPage = () => {
         <div className="pt-4 mx-4">
           <div className="flex flex-col w-full border-black ">
             <div className="flex flex-shrink-0 bg-gray-600 text-white ">
-            <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+              <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
                 <span>Unit Type</span>
               </div>
               <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
                 <span>Unit Size</span>
               </div>
-             
+
               <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
                 <span>Unit Price</span>
               </div>
@@ -494,14 +495,14 @@ const BannerPage = () => {
                 BhK_Details.map((item, index) => (
                   <>
                     <div className="flex flex-shrink-0" key={index}>
-                    <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+                      <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
                         <span> {item.bhk_type}</span>
                       </div>
 
                       <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
                         <span>{item.bhk_Area}</span>
                       </div>
-                     
+
                       <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
                         <span>{item.price}</span>
                       </div>
@@ -534,10 +535,9 @@ const BannerPage = () => {
               transitionDuration={500}
               containerClass="carousel-container"
               removeArrowOnDeviceType={["tablet", "mobile"]}
-              deviceType="desktop" 
+              deviceType="desktop"
               dotListClass="custom-dot-list-style"
               itemClass="carousel-item-padding-40-px"
-              
             >
               {Array.isArray(sliderImages) &&
                 sliderImages.length > 0 &&

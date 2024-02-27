@@ -89,27 +89,25 @@ export default function SignUp() {
   };
 
   const handleUserRegister = () => {
-    // console.log(userSignUp);
     const { name, email, mobile, password, cpassword } = userSignUp;
     if (name && email && mobile && password && password === cpassword) {
       axios
         .post("https://api.100acress.com/postPerson/register", userSignUp)
         .then((response) => {
+          alert("Your accout is created.")
           history("/SignIn");
           resetData();
         })
-
         .catch((error) => {
           console.error("Registration failed:", error);
           if (error.response) {
-            alert(`Server responded with an error: ${error.response.status}`);
+            alert("The email is already registered.");
           } else if (error.request) {
             alert("No response received from the server");
           } else {
             alert(`Error setting up the request: ${error.message}`);
           }
         });
-      console.log(userSignUp, "userSignUp");
     } else {
       alert("Please filled all data");
     }
@@ -120,7 +118,7 @@ export default function SignUp() {
   };
 
   const handleClick = () => {
-    showToastMessage();
+    // showToastMessage();
     handleUserRegister();
   };
 

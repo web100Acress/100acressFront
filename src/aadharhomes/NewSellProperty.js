@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Nav from "./Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import { RadioGroup, Radio } from "@chakra-ui/react";
+import { event } from "jquery";
+const { Country, State, City } = require("country-state-city");
 const NewSellProperty = () => {
   const storedSellerId = localStorage.getItem("mySellerId");
   const sellerId = JSON.parse(storedSellerId);
-  // console.log(sellerId, "dsgfdgdgf")
+
   const propertyType = ["Select Property Type", "Commercial", "Residential"];
+
   const subTypes = {
     Commercial: [
       "Office",
@@ -34,8 +37,8 @@ const NewSellProperty = () => {
     propertyType: "",
     propertyName: "",
     address: "",
-    city: "",
-    state: "",
+    city: "DefaultCityValue",
+    state: "DefaultStateValue",
     price: "",
     area: "",
     description: "",
@@ -48,6 +51,8 @@ const NewSellProperty = () => {
     selectoption: "Select Property Type",
     subType: "",
   });
+
+  
 
   const resetData = () => {
     setSellProperty({
@@ -149,7 +154,7 @@ const NewSellProperty = () => {
   //     console.error("Error submitting form:", error);
   //   }
   // };
-
+  console.log(sellerId,"sellerId")
   const submitSellPropertyDetails = async (e) => {
     e.preventDefault();
     const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
@@ -165,9 +170,10 @@ const NewSellProperty = () => {
     }
 
     formDataAPI.append("frontImage", fileData.frontImage);
-
+    
     try {
       const response = await axios.post(apiEndpoint, formDataAPI);
+      
       alert("Submit Successfully, Under Review");
       resetData();
       resetImageData();
@@ -218,6 +224,32 @@ const NewSellProperty = () => {
     } else {
       console.error("No files selected");
     }
+  };
+
+  const handleProjectfurnishing = (event) => {
+    setSellProperty({ ...sellProperty, furnishing: event.target.value });
+  };
+
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+
+  // Get states of a country (e.g., India)
+  const countryCode = "IN";
+  const states = State.getStatesOfCountry(countryCode);
+
+  // Get cities of a state (e.g., Rajasthan)
+  const stateCode = "RA";
+  const cities = selectedState
+    ? City.getCitiesOfState(countryCode, selectedState)
+    : [];
+
+  const handleChangeStateValue = (event) => {
+    setSelectedState(event.target.value);
+    setSellProperty({ ...sellProperty, state: event.target.value });
+  };
+
+  const handleChangeCityValue = (event) => {
+    setSellProperty({ ...sellProperty, city: event.target.value });
   };
 
   return (
@@ -280,7 +312,6 @@ const NewSellProperty = () => {
               onChange={(value) => handleOptionClick(value)}
               value={sellProperty.propertyLooking}
               className="m-2"
-              
             >
               <p className="text-2xl mx-2 text-white">
                 You're looking to<span>....</span>
@@ -296,7 +327,7 @@ const NewSellProperty = () => {
                   spacing={-1}
                 >
                   Sell
-                </Radio>{" "}{" "}
+                </Radio>{" "}
                 <Radio
                   value="rent"
                   className={`bg-white `}
@@ -344,6 +375,42 @@ const NewSellProperty = () => {
                 )}
               </div>
 
+              <div className="grid gap-3 md:grid-cols-2">
+                <div>
+                  <select
+                    value={sellProperty.state}
+                    onChange={handleChangeStateValue}
+                    className="mt-2 h-10 w-full rounded-md text-gray-500 bg-white border px-3 outline-none"
+                  >
+                    <option value="">Select State</option>
+                    {states.map((state) => (
+                      <option key={state.isoCode} value={state.isoCode}>
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  {selectedState && (
+                    <div>
+                      <select
+                        value={sellProperty.city}
+                        onChange={handleChangeCityValue}
+                        className="mt-2 h-10 w-full text-gray-500 rounded-md bg-white border px-3 outline-none"
+                      >
+                        <option value="Select City">Select City</option>
+                        {cities.map((city) => (
+                          <option key={city.name} value={city.name}>
+                            {city.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div>
                 <input
                   type="text"
@@ -364,29 +431,6 @@ const NewSellProperty = () => {
                   onChange={handleChangeValue}
                   className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
                 />
-              </div>
-
-              <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="City"
-                    name="city"
-                    value={sellProperty.city}
-                    onChange={handleChangeValue}
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="State"
-                    name="state"
-                    value={sellProperty.state}
-                    onChange={handleChangeValue}
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
               </div>
 
               <div className="grid gap-3 md:grid-cols-2">
@@ -459,14 +503,16 @@ const NewSellProperty = () => {
                   />
                 </div>
                 <div>
-                  <input
-                    type="text"
-                    placeholder="Furnishing"
-                    name="furnishing"
+                  <select
+                    className="mt-2 h-10 w-full rounded-md text-gray-500 border px-3 outline-none"
                     value={sellProperty.furnishing}
-                    onChange={handleChangeValue}
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
+                    onChange={handleProjectfurnishing}
+                  >
+                    <option value="">Furnish</option>
+                    <option value="Semifurnishing">Semi furnish</option>
+                    <option value="Fullyfurnishing">Fully furnish</option>
+                    <option value="UnFurnishing">Un furnish</option>
+                  </select>
                 </div>
               </div>
 

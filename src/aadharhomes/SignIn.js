@@ -102,15 +102,12 @@ export default function SignIn() {
           const roleResponse = await axios.get(
             `https://api.100acress.com/postPerson/Role/${email}`
           );
-          
-
           if (roleResponse.status === 200) {
             if (roleResponse.data.User.role == "admin") {
               localStorage.setItem("userRole",JSON.stringify(roleResponse.data.User.role))
-              history("Admin/dashboard");
+              history("/Admin/dashboard");
             } else {
               const sellerId = roleResponse.data.User._id;
-
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
               history("/");
             }

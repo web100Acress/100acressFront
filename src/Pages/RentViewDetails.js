@@ -915,12 +915,9 @@ const RentViewDetails = () => {
                       disability into an ability.
                     </p>
                   </div>
-
-                  
                 </div>
 
-               
-
+        
                 <div className="widget widget-post">
                   <div className="widget-title">
                     <p className="text-lg text-red-500">Trending Properties</p>
@@ -945,7 +942,6 @@ const RentViewDetails = () => {
 };
 
 export default RentViewDetails;
-
 const Wrapper = styled.section`
   body {
     margin-top: 20px;

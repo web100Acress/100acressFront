@@ -20,8 +20,8 @@ const AddNew = () => {
     type: "",
     city: "",
     projectOverview: "",
-    project_url:"",
-    project_status:"",
+    project_url: "",
+    project_status: "",
   });
 
   const resetData = () => {
@@ -44,8 +44,8 @@ const AddNew = () => {
       type: "",
       city: "",
       projectOverview: "",
-      project_url:"",
-      project_status:""
+      project_url: "",
+      project_status: "",
     });
   };
 
@@ -65,15 +65,19 @@ const AddNew = () => {
     });
   };
 
+  const handleProjectType = (event) => {
+    setEditFromData({ ...editFromData, type: event.target.value });
+  };
+
   const [fileData, setFileData] = useState({
     frontImage: null,
     logo: null,
     project_locationImage: null,
     project_floorplan_Image: [null],
-    highlightImage:null,
-    project_Brochure:null,
-    projectGallery:[null],
-    projectMaster_plan:null,
+    highlightImage: null,
+    project_Brochure: null,
+    projectGallery: [null],
+    projectMaster_plan: null,
   });
 
   const handleChangeProjectData = (e) => {
@@ -87,9 +91,8 @@ const AddNew = () => {
     let newArray = [];
 
     if (event.target.name === category) {
-      newArray = event.target.value.split(" ");
+      newArray = event.target.value;
     }
-    console.log(newArray, "shkhs");
     setEditFromData((prevState) => ({
       ...prevState,
       [category]: newArray.length > 0 ? newArray : event.target.value,
@@ -146,16 +149,20 @@ const AddNew = () => {
       }
       setFileData({
         ...fileData,
-        projectGallery:updatedOtherImage
+        projectGallery: updatedOtherImage,
       });
-      console.log(updatedOtherImage, "Update other")
+      console.log(updatedOtherImage, "Update other");
     } else {
       console.error("No files selected");
     }
   };
 
-  const otherImageLength = fileData.project_floorplan_Image.length;
-  const GalleryImageLength = fileData.projectGallery.length;
+  const otherImageLength = fileData.project_floorplan_Image
+    ? fileData.project_floorplan_Image.length
+    : 0;
+  const GalleryImageLength = fileData.projectGallery
+    ? fileData.projectGallery.length
+    : 0;
 
   const handleSubmitProject = async (e) => {
     e.preventDefault();
@@ -166,9 +173,12 @@ const AddNew = () => {
     for (const key in editFromData) {
       formDataAPI.append(key, editFromData[key]);
     }
-    
+
     for (let i = 0; i < otherImageLength; i++) {
-      formDataAPI.append("project_floorplan_Image", fileData.project_floorplan_Image[i]);
+      formDataAPI.append(
+        "project_floorplan_Image",
+        fileData.project_floorplan_Image[i]
+      );
     }
 
     for (let i = 0; i < GalleryImageLength; i++) {
@@ -182,20 +192,16 @@ const AddNew = () => {
     formDataAPI.append("highlightImage", fileData.highlightImage);
     formDataAPI.append("projectMaster_plan", fileData.projectMaster_plan);
 
-    
-
     try {
       const response = await axios.post(apiEndpoint, formDataAPI);
-      alert("Data Posted")
+      alert("Data Posted");
       resetData();
       resetImageData();
-
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
-  
   const handleFileChange = (e, key) => {
     const newFileData = { ...fileData };
     newFileData[key] = e.target.files[0];
@@ -223,10 +229,7 @@ const AddNew = () => {
             <option value="">Select Project Overview</option>
             <option value="trending">Trending</option>
             <option value="featured">Featured</option>
-            <option value="underconstruction">Under Construction</option>
-            <option value="comingsoon">Coming Soon</option>
-            <option value="newlunch">New Launch</option>
-            <option value="readytomove">Ready To Move</option>
+            <option value="none">None</option>
           </select>
 
           <label className="block" for="name">
@@ -300,7 +303,7 @@ const AddNew = () => {
               type="text"
               placeholder="Connectivity"
               name="projectRedefine_Connectivity"
-              value={editFromData.projectRedefine_Connectivity.join(" ")}
+              value={editFromData.projectRedefine_Connectivity}
               onChange={handleChangeValueprojectRedefine_Connectivity}
             />
           </label>
@@ -311,7 +314,7 @@ const AddNew = () => {
               type="text"
               placeholder="Education"
               name="projectRedefine_Education"
-              value={editFromData.projectRedefine_Education.join(" ")}
+              value={editFromData.projectRedefine_Education}
               onChange={handleChangeValueprojectRedefine_Education}
             />
           </label>
@@ -322,7 +325,7 @@ const AddNew = () => {
               type="text"
               placeholder="Business"
               name="projectRedefine_Business"
-              value={editFromData.projectRedefine_Business.join(" ")}
+              value={editFromData.projectRedefine_Business}
               onChange={handleChangeValueprojectRedefine_Business}
             />
           </label>
@@ -333,7 +336,7 @@ const AddNew = () => {
               type="text"
               placeholder="Entertainment"
               name="projectRedefine_Entertainment"
-              value={editFromData.projectRedefine_Entertainment.join(" ")}
+              value={editFromData.projectRedefine_Entertainment}
               onChange={handleChangeValueprojectRedefine_Entertainment}
             />
           </label>
@@ -344,7 +347,7 @@ const AddNew = () => {
               type="text"
               placeholder="Amenities"
               name="Amenities"
-              value={editFromData.Amenities.join(" ")}
+              value={editFromData.Amenities}
               onChange={handleChangeValueAmenities}
             />
           </label>
@@ -371,16 +374,17 @@ const AddNew = () => {
             />
           </label>
 
-          <label className="block" for="name">
-            <input
-              className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-              type="text"
-              placeholder="type"
-              name="type"
-              value={editFromData.type}
-              onChange={handleChangeProjectData}
-            />
-          </label>
+          <select
+            className="text-gray-600 border px-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
+            value={editFromData.type}
+            onChange={handleProjectType}
+          >
+            <option value="">Property Status</option>
+            <option value="underconstruction">Under Construction</option>
+            <option value="comingsoon">Coming Soon</option>
+            <option value="newlunch">New Launch</option>
+            <option value="readytomove">Ready To Move</option>
+          </select>
 
           <label className="block" for="name">
             <input
@@ -491,8 +495,6 @@ const AddNew = () => {
             </div>
           </div>
 
-
-
           <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
             Highlight Image
           </p>
@@ -507,8 +509,6 @@ const AddNew = () => {
               />
             </div>
           </div>
-
-         
 
           <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
             Project Floor plan Image
@@ -540,9 +540,6 @@ const AddNew = () => {
             </div>
           </div>
 
-
-
-
           <input
             className="w-full mt-4 rounded-md border bg-white px-2 py-2 outline-none ring-black focus:ring-1"
             type="email"
@@ -563,7 +560,7 @@ const AddNew = () => {
 
           <button
             className="mt-4 rounded-full bg-red-500 px-5
-             py-2 font-semibold text-white"
+             py-2 font-semibold text-white hover:bg-blue-600"
             onClick={(e) => handleSubmitProject(e)}
           >
             Update

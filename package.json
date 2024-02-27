@@ -18,6 +18,7 @@
     "axios": "^1.5.1",
     "bootstrap": "^5.3.1",
     "chart.js": "^4.4.0",
+    "country-state-city": "^3.2.1",
     "framer-motion": "^10.15.2",
     "jquery": "^3.7.1",
     "lucide-react": "^0.307.0",
