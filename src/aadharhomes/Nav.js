@@ -264,38 +264,38 @@ export default function Nav() {
                         <div className="w-48">
                           <Link
                             to="#"
-                            className="block px-4 py-1  text-black text-lg hover:bg-gray-200"
+                            className="block px-4 py-1  text-black text-lg "
                           >
                             Popular Choices
                             <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4  hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Ready to Move
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Owner Choices
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Budget Homes
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Premium homes
                           </Link>
                           <Link
                             to="#"
-                            className=" text-sm px-4 py-2 hover:bg-gray-200 hover:text-red-600 flex items-center"
+                            className=" text-sm px-4 py-2  hover:text-red-600 flex items-center"
                           >
                             NewlyLaunched
                             <span className="flex border rounded-md text-white bg-red-600 py-0 px-1 ">
@@ -307,118 +307,119 @@ export default function Nav() {
                         <div className="w-52">
                           <Link
                             to="#"
-                            className="block text-black  text-lg px-2 py-1 hover:bg-gray-200"
+                            className="block text-black  text-lg px-2 py-1 "
                           >
                             Property Types <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2  hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2   hover:text-red-600"
                           >
-                            Flats in Faridabad
+                            Flats in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            House For Sale in Faridabad
+                            House For Sale in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            Villa in Faridabad
+                            Villa in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            Plots in Faridabad
+                            Plots in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            Office Place in Faridabad
+                            Office Place in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            Commercial Space in Faridabad
+                            Commercial Space in Gurugram
                           </Link>
                         </div>
                         <div className="w-40">
                           <Link
                             to="#"
-                            className="block text-black  text-lg px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-black  text-lg px-4 py-1  hover:text-red-600"
                           >
                             Budget
                             <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4  hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             under ₹50 Lac
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             ₹50 Lac - ₹1 Cr
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
-                            ₹1 Cr - ₹1.5 Cr
+                            ₹1 Cr - ₹2.5 Cr
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
-                            Above ₹1.5 Cr
+                            ₹2.5 Cr - ₹5 Cr
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            Above ₹5 Cr
                           </Link>
                         </div>
                         <div className="w-48">
                           <Link
                             to="#"
-                            className="block text-black  text-lg px-2 py-1 hover:bg-gray-200"
+                            className="block text-black  text-lg px-2 py-1 "
                           >
                             Explore
                             <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2  hover:text-red-600"
                           >
-                            Localities in Faridabad
+                            Localities in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            Projects in Faridabad
+                            Projects in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
                             Investment Hotspot
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
                             Find an Agent
                           </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
-                          >
-                            Residential Property Dubai
-                          </Link>
+                         
                         </div>
                       </div>
                     </div>
@@ -443,38 +444,38 @@ export default function Nav() {
                         <div className="w-48">
                           <Link
                             to="#"
-                            className="block px-4 py-1 text-black  text-lg hover:bg-gray-200"
+                            className="block px-4 py-1 text-black  text-lg "
                           >
                             Popular Choices
                             <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4  hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Owner Properties
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Verified Properties
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Furnished Homes
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Bachelor Friendly Homes
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Immediately Available
                           </Link>
@@ -483,123 +484,118 @@ export default function Nav() {
                         <div className="w-52">
                           <Link
                             to="#"
-                            className="block text-black  text-lg px-2 py-1 hover:bg-gray-200"
+                            className="block text-black  text-lg px-2 py-1 "
                           >
                             Property Types
                             <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2  hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2   hover:text-red-600"
                           >
-                            Flats for rent in Faridabad
+                            Flats for rent in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            House for rent in Faridabad
+                            House for rent in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            Villa for rent in Faridabad
+                            Villa for rent in Gurugram
+                          </Link>
+                      
+                          <Link
+                            to="#"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
+                          >
+                            Office Space in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            PG in Faridabad
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
-                          >
-                            Office Space in Faridabad
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
-                          >
-                            Commercial Space in Faridabad
+                            Commercial Space in Gurugram
                           </Link>
                         </div>
 
                         <div className="w-40">
                           <Link
                             to="#"
-                            className="block text-black text-lg px-2 py-1 hover:bg-gray-200"
+                            className="block text-black text-lg px-2 py-1 "
                           >
                             Budget
                             <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2  hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2   hover:text-red-600"
                           >
-                            under ₹10000
+                            under ₹25000
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            ₹10000 - ₹15000
+                            ₹25000 - ₹50000
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            ₹15000 - ₹25000
+                            ₹50000 - ₹75000
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            Above ₹25000
+                            Above ₹7=5000
                           </Link>
                         </div>
                         <div className="w-48">
                           <Link
                             to="#"
-                            className="block text-black text-lg px-4 py-1 hover:bg-gray-200"
+                            className="block text-black text-lg px-4 py-1 "
                           >
                             Explore
                             <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4  hover:text-red-600"
                           >
                             Localities
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Buy vs Rent
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Find an Agent
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Share Requirement
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Property Services
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1 hover:bg-gray-200 hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Rent Agreement
                           </Link>

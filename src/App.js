@@ -134,7 +134,7 @@ function App() {
           <Route path="/contactmainpage" element={<ContactPage />} />
 
           {/* <Route path="/Admin" element= {<PrivateRoute/>}>  */}
-          <Route path="/Admin/dashboard" element={<Dashboard />} />
+          <Route path="/Admin/acress/dashboard" element={<Dashboard />} />
           <Route path="/Admin/viewproperty/:id" element={<ViewPropertyAdmin/>}/>
           <Route path="/Admin/viewproperty/viewdetails/:id" element={<ClientDetails/>}/>
           <Route path="/Admin/viewproperty/editdetails/:id" element={<EditDetails/>}/>

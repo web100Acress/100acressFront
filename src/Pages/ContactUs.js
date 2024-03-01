@@ -12,7 +12,7 @@ const ContactUs = () => {
    
      <div className='w-full'>
        <img
-         src='../../images/contact-us(1).jpg'
+         src='../../images/contact.jpg'
          alt='About Us'
          className='w-full h-60 sm:h-30 object-fit'
        />
@@ -65,7 +65,7 @@ const ContactUs = () => {
                </div>
                <div className='my-4 flex items-center'>
                  <i className="fa-solid fa-envelope text-orange-300  text-2xl"></i>
-                 <a href="mailto:hr@100acress.com" target="_blank" className='mx-2 text-red-600 text-lg font-bold '>cs@100acress.com</a>
+                 <a href="mailto:hr@100acress.com" target="_blank" className='mx-2 text-red-600 text-lg font-bold '>seo@100acress.com</a>
                </div>
                <div className='my-4 flex items-center'>
                  <i className="fa-solid fa-location-dot text-orange-300 text-2xl"></i>

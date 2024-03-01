@@ -10,7 +10,7 @@ const CareerWithUs = () => {
         <section className="relative">
           <div className="w-full">
             <img
-              src="../../images/careerwithus.jpg"
+              src="../../images/career.jpg"
               alt="Career With Us"
               className="w-full h-60 sm:h-30 object-fit"
             />
@@ -51,7 +51,7 @@ const CareerWithUs = () => {
             come join us!
           </p>
         </div>
-        <div className="bg-gray-100">
+        <div className="bg-gray-100 pb-5">
           <div className="bg-gray-100  sm:mx-10 md:mx-16 lg:mx-20 xl:mx-24 2xl:mx-20 ">
             <h3 className="lg:text-2xl sm:text:sm text-center font-bold text-black py-3 pt-3">
               Open Positions
@@ -238,27 +238,12 @@ const CareerWithUs = () => {
                 </div>
               </div>
             </div>
-
-            <p className="lg:text-xl sm:text:sm text-center pt-2 text-gray-500 ">
-              Submit your CV to{" "}
-              <a
-                href="mailto:hr@100acress.com"
-                target="_blank"
-                className="text-red-600 lg:text-lg"
-              >
-                hr@100acress.com
-              </a>
-            </p>
-            <p className="lg:text-xl sm:text:sm text-center pb-5 text-gray-500">
-              Call HR@{" "}
-              <span className="text-red-600 lg:text-lg">+919811750130</span>
-            </p>
           </div>
         </div>
-        <div className="lg:text-xl sm:text:sm text-justify  mt-10 p-2 ">
+        <div className="lg:text-xl   sm:text:sm text-justify  mt-10 p-2">
           <p className="text-center text-gray-500">
             If you looking for an opening check our current openings or write to
-            us at careers@aadharhomes.com
+            us at hr@100acress.com
           </p>
 
           <div className=" d-flex justify-center text-justify lg:text-xl sm:text:sm">
@@ -281,7 +266,7 @@ const CareerWithUs = () => {
             <p>
               {" "}
               <i class="fa-solid fa-mobile-screen-button mr-10 justify-center text-blue-500"></i>
-              <span className="text-red-600">+91-9811750130 </span>
+              <span className="text-red-600">+91-97111-39812 </span>
             </p>
           </div>
         </div>

@@ -69,6 +69,10 @@ const AddNew = () => {
     setEditFromData({ ...editFromData, type: event.target.value });
   };
 
+  const handleProjectStatus = (event) =>{
+    setEditFromData({ ...editFromData, project_status: event.target.value });
+  }
+
   const [fileData, setFileData] = useState({
     frontImage: null,
     logo: null,
@@ -379,11 +383,9 @@ const AddNew = () => {
             value={editFromData.type}
             onChange={handleProjectType}
           >
-            <option value="">Property Status</option>
-            <option value="underconstruction">Under Construction</option>
-            <option value="comingsoon">Coming Soon</option>
-            <option value="newlunch">New Launch</option>
-            <option value="readytomove">Ready To Move</option>
+            <option value="" className="text-gray-600">Project Type</option>
+            <option value="Commercial">Commercial</option>
+            <option value="Residential">Residential</option>
           </select>
 
           <label className="block" for="name">
@@ -408,16 +410,19 @@ const AddNew = () => {
             />
           </label>
 
-          <label className="block" for="name">
-            <input
-              className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-              type="text"
-              placeholder="Project Status"
-              name="project_status"
-              value={editFromData.project_status}
-              onChange={handleChangeProjectData}
-            />
-          </label>
+      
+
+          <select
+            className="text-gray-600 border px-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
+            value={editFromData.project_status}
+            onChange={handleProjectStatus}
+          >
+            <option value="" className="text-gray-600">Project Status</option>
+            <option value="underconstruction">Under Construction</option>
+            <option value="comingsoon">Coming Soon</option>
+            <option value="newlunch">New Lunch</option>
+            <option value="readytomove">Ready To Move</option>
+          </select>
 
           <p className="mt-2 font-medium mb-1 grid grid-cols-4 text-gray-500">
             Project Logo

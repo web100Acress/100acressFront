@@ -12,6 +12,9 @@ import {
   AvatarGroup,
   useBreakpointValue,
   Icon,
+  FormControl,
+  FormLabel,
+  FormHelperText
   //   useBreakpoint,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -48,6 +51,13 @@ const avatars = [
 ];
 
 export default function SignUp() {
+  const [isValidEmail, setIsValidEmail] = useState(true); // Step 2
+
+  // Step 3
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
   const history = useNavigate();
 
   const [userSignUp, setUserSignUp] = useState({
@@ -73,11 +83,17 @@ export default function SignUp() {
   const handleHideUnHide = () => {
     setpasswordHide(!passwordHide);
   };
+
   const handleRegisterChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "email") {
+      setIsValidEmail(validateEmail(value));
+    }
+
+    // Update the state for other fields
     setUserSignUp({ ...userSignUp, [name]: value });
   };
-
   const handleSelectedValue = (selectedValue) => {
     setUserSignUp({ ...userSignUp, value: selectedValue });
   };
@@ -94,7 +110,7 @@ export default function SignUp() {
       axios
         .post("https://api.100acress.com/postPerson/register", userSignUp)
         .then((response) => {
-          alert("Your accout is created.")
+          alert("Your accout is created.");
           history("/SignIn");
           resetData();
         })
@@ -228,6 +244,7 @@ export default function SignUp() {
             </Flex>
           </Stack>
         </Stack>
+
         <Stack
           bg={"gray.50"}
           rounded={"xl"}
@@ -238,125 +255,147 @@ export default function SignUp() {
         >
           <Stack spacing={4}></Stack>
           <Box as={"form"}>
-            <Stack spacing={4}>
-              <Stack direction="row" isRequired spacing={4}>
-                <RadioGroup
-                  onChange={(value) =>
-                    setUserSignUp({ ...userSignUp, role: value })
-                  }
-                  value={userSignUp.role}
-                  isRequired
-                  spacing={4}
-                >
-                  <Radio colorScheme="red" value="Agent" isRequired>
-                    Agent
-                  </Radio>
+            <form>
+              <Stack spacing={4}>
+                <Stack direction="row" isRequired spacing={4}>
+                  <RadioGroup
+                    onChange={(value) =>
+                      setUserSignUp({ ...userSignUp, role: value })
+                    }
+                    value={userSignUp.role}
+                    isRequired
+                    spacing={4}
+                  >
+                    <Radio colorScheme="red" value="Agent" isRequired>
+                      Agent
+                    </Radio>
 
-                  <Radio colorScheme="red" value="Owner" isRequired>
-                    Owner
-                  </Radio>
-                </RadioGroup>
+                    <Radio colorScheme="red" value="Owner" isRequired>
+                      Owner
+                    </Radio>
+                  </RadioGroup>
+                </Stack>
+
+                <FormControl>
+                  <Input
+                    placeholder="Full Name"
+                    name="name"
+                    type="text"
+                    onChange={handleRegisterChange}
+                    value={userSignUp.name}
+                    bg={"gray.100"}
+                    border={0}
+                    color={"gray.500"}
+                    _placeholder={{
+                      color: "gray.500",
+                    }}
+                  />
+                </FormControl>
+                
+                <FormControl>
+                  <Input
+                    placeholder="Email@provider.com"
+                    name="email"
+                    type="email"
+                    value={userSignUp.email}
+                    onChange={handleRegisterChange}
+                    bg={"gray.100"}
+                    border={0}
+                    color={"gray.500"}
+                    _placeholder={{
+                      color: "gray.500",
+                    }}
+                  />
+                  {!isValidEmail && (
+                    <FormHelperText color="red.500">
+                      Invalid email format
+                    </FormHelperText>
+                  )}
+                </FormControl>
+
+                <FormControl>
+                  <Input
+                    placeholder="+91 ____"
+                    name="mobile"
+                    type="number"
+                    onChange={handleRegisterChange}
+                    value={userSignUp.mobile}
+                    bg={"gray.100"}
+                    border={0}
+                    color={"gray.500"}
+                    _placeholder={{
+                      color: "gray.500",
+                    }}
+                  />
+                </FormControl>
+                <FormControl>
+                  <InputGroup>
+                    <Input
+                      placeholder="Enter password"
+                      name="password"
+                      type={passwordHide ? "password" : "text"}
+                      onChange={handleRegisterChange}
+                      value={userSignUp.password}
+                      bg={"gray.100"}
+                      border={0}
+                      color={"gray.500"}
+                      _placeholder={{
+                        color: "gray.500",
+                      }}
+                    />
+                    <InputRightElement>
+                      {passwordHide ? (
+                        <FaEyeSlash onClick={handleHideUnHide} />
+                      ) : (
+                        <FaEye onClick={handleHideUnHide} />
+                      )}
+                    </InputRightElement>
+                  </InputGroup>
+                </FormControl>
+
+                <FormControl>
+                  <Input
+                    placeholder="Confirm password"
+                    name="cpassword"
+                    type="password"
+                    onChange={handleRegisterChange}
+                    value={userSignUp.cpassword}
+                    bg={"gray.100"}
+                    border={0}
+                    color={"gray.500"}
+                    _placeholder={{
+                      color: "gray.500",
+                    }}
+                  />
+                </FormControl>
               </Stack>
 
-              <Input
-                placeholder="Full Name"
-                name="name"
-                onChange={handleRegisterChange}
-                value={userSignUp.name}
-                bg={"gray.100"}
-                border={0}
-                color={"gray.500"}
-                _placeholder={{
-                  color: "gray.500",
+              <Button
+                fontFamily={"heading"}
+                onClick={handleClick}
+                mt={8}
+                w={"full"}
+                bgGradient="linear(to-r, red.400,pink.400)"
+                color={"white"}
+                _hover={{
+                  bgGradient: "linear(to-r, red.400,pink.400)",
+                  boxShadow: "xl",
                 }}
-              />
-              <Input
-                placeholder="Email@provider.com"
-                name="email"
-                onChange={handleRegisterChange}
-                value={userSignUp.email}
-                bg={"gray.100"}
-                border={0}
-                color={"gray.500"}
-                _placeholder={{
-                  color: "gray.500",
-                }}
-              />
-              <Input
-                placeholder="+91 ____"
-                name="mobile"
-                onChange={handleRegisterChange}
-                value={userSignUp.mobile}
-                bg={"gray.100"}
-                border={0}
-                color={"gray.500"}
-                _placeholder={{
-                  color: "gray.500",
-                }}
-              />
-              <InputGroup>
-                <Input
-                  placeholder="Enter password"
-                  name="password"
-                  type={passwordHide ? "password" : "text"}
-                  onChange={handleRegisterChange}
-                  value={userSignUp.password}
-                  bg={"gray.100"}
-                  border={0}
-                  color={"gray.500"}
-                  _placeholder={{
-                    color: "gray.500",
-                  }}
-                />
-                <InputRightElement>
-                  {passwordHide ? (
-                    <FaEyeSlash onClick={handleHideUnHide} />
-                  ) : (
-                    <FaEye onClick={handleHideUnHide} />
-                  )}
-                </InputRightElement>
-              </InputGroup>
-              <Input
-                placeholder="Confirm password"
-                name="cpassword"
-                type="password"
-                onChange={handleRegisterChange}
-                value={userSignUp.cpassword}
-                bg={"gray.100"}
-                border={0}
-                color={"gray.500"}
-                _placeholder={{
-                  color: "gray.500",
-                }}
-              />
-            </Stack>
+              >
+                Create your Account
+              </Button>
 
-            <Button
-              fontFamily={"heading"}
-              // onClick={handleUserRegister}
-              onClick={handleClick}
-              mt={8}
-              w={"full"}
-              bgGradient="linear(to-r, red.400,pink.400)"
-              color={"white"}
-              _hover={{
-                bgGradient: "linear(to-r, red.400,pink.400)",
-                boxShadow: "xl",
-              }}
-            >
-              Create your Account
-            </Button>
-
-            <Button
-              onClick={handleUserSignIn}
-              fontFamily={"heading"}
-              bg={"gray.200"}
-              color={"gray.800"}
-              mt={4}
-              w={"full"}
-            >
-              Sign In
-            </Button>
+              <Button
+                onClick={handleUserSignIn}
+                fontFamily={"heading"}
+                bg={"gray.200"}
+                color={"gray.800"}
+                mt={4}
+                w={"full"}
+              >
+                Sign In
+              </Button>
+            </form>
           </Box>
         </Stack>
       </Container>

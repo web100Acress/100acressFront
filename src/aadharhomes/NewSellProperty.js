@@ -7,6 +7,7 @@ import { event } from "jquery";
 const { Country, State, City } = require("country-state-city");
 const NewSellProperty = () => {
   const storedSellerId = localStorage.getItem("mySellerId");
+  const [showSteps, setShowSteps] = useState(false);
   const sellerId = JSON.parse(storedSellerId);
 
   const propertyType = ["Select Property Type", "Commercial", "Residential"];
@@ -154,7 +155,7 @@ const NewSellProperty = () => {
   //     console.error("Error submitting form:", error);
   //   }
   // };
-  console.log(sellerId,"sellerId")
+  
   const submitSellPropertyDetails = async (e) => {
     e.preventDefault();
     const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
@@ -173,9 +174,8 @@ const NewSellProperty = () => {
     
     try {
       const response = await axios.post(apiEndpoint, formDataAPI);
-      
       alert("Submit Successfully, Under Review");
-      resetData();
+      resetData()
       resetImageData();
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -257,7 +257,9 @@ const NewSellProperty = () => {
       <Nav />
       <section className=" py-12 text-gray-800 ">
         <div className="mx-auto flex max-w-md flex-col rounded-lg lg:max-w-screen-xl lg:flex-row">
-          <div className="max-w-xl px-4 lg:pr-24 lg:pt-20">
+        
+
+<div className="max-w-xl px-4 lg:pr-24 lg:pt-20">
             <h3 className="lg:text-5xl md:text-3xl  font-semibold">
               Post your property
             </h3>
@@ -270,13 +272,48 @@ const NewSellProperty = () => {
               your needs. you can expect us every time. All that is for you!
             </p>
             <div className="flex flex-col space-x-2 sm:flex-row space-y-4 sm:space-y-0 ml-[-10px] lg:pt-12">
-              <button className="rounded-full text-white text-md sm:text-lg md:text-md font-normal px-3 sm:px-6 py-2 sm:py-4 bg-red-400 hover:bg-red-500">
-                Get started
-              </button>
-              <button className="rounded-full text-md sm:text-lg md:text-md font-normal text-white px-3 sm:px-6 py-2 sm:py-4 bg-gray-400 hover:bg-gray-500">
+              <button
+                className="rounded-full text-white text-md sm:text-lg md:text-md font-normal px-3 sm:px-6 py-2 sm:py-4 bg-red-400 hover:bg-red-500"
+                onClick={() => setShowSteps(!showSteps)}
+              >
                 How It Works
               </button>
             </div>
+            {showSteps && (
+              <div className="fixed inset-0 hidden sm:block md:block lg:flex items-center  justify-center bg-gray-800 bg-opacity-75 ">
+                <div className="shadow-2xl rounded-xl px-4 py-4 bg-white relative w-1/2 h-70">
+                  <button
+                    className="text-red-400 text-2xl absolute right-6 top-5 cursor-pointer"
+                    onClick={() => setShowSteps(false)}
+                  >
+                    ✖
+                  </button>
+                  <h5 className="text-red-400">Steps given Below to post your property Free</h5>
+                  <span className="mt-2">Step 1:</span>
+                  <span className="ml-4 text-red-400">Post Your Property for Free</span>
+                  <p className="text-justify">Please first check the options if you are a selling or renting owner, then select the appropriate choice.</p>
+
+                  <span className="mt-2">Step 2:</span>
+                  <span className="ml-4 text-red-400">Select Property Type</span>
+                  <p className="text-justify">Please choose between Commercial or Residential property.</p>
+
+                  <span>Step 3:</span>
+                  <span className="ml-4 text-red-400">Enter Details of Your Property</span>
+                  <p className="text-justify">Afterward, input all details such as property name, address, city, state, price, area, description, landmark, amenities, built year and furnishing.
+                    Get access to buyer/tenant contact details and connect easily.</p>
+
+                  <span>Step 4:</span>
+                  <span className="ml-4 text-red-400">Upload Images of Your Property</span>
+                  <p className="text-justify">Please upload one image for the front view and three to four additional images.</p>
+
+                  <span>Step 5:</span>
+                  <span className="ml-4 text-red-400">Submit Your Property Information</span>
+                  <p className="text-justify">Submit the form after filling up the fields.</p>
+                </div>
+
+              </div>
+
+            )}
           </div>
 
           <div className="mt-8 mb-8 max-w-3/4  shadow-2xl sm:rounded-lg sm:shadow-lg lg:mt-0  bg-red-400 px-1">
@@ -516,28 +553,6 @@ const NewSellProperty = () => {
                 </div>
               </div>
 
-              {/* <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Type"
-                    name="type"
-                    value={sellProperty.type}
-                    onChange={handleChangeValue}
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Available date"
-                    name="availableDate"
-                    value={sellProperty.availableDate}
-                    onChange={handleChangeValue}
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-              </div> */}
 
               <div className="grid gap-3 md:grid-cols-2 text-gray-500">
                 <div>

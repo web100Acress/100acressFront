@@ -14,13 +14,21 @@ import "slick-carousel/slick/slick-theme.css";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/free-mode";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-// import { Carousel } from "react-responsive-carousel";
-
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
 const BannerPage = () => {
+  //Side Form
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const handleShow = () => {
+    setModalIsOpen(true);
+  };
+
+  const handleClose = () => {
+    setModalIsOpen(false);
+  };
+
   const [isOpen, setIsOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
 
@@ -235,7 +243,7 @@ const BannerPage = () => {
     projectGallery,
   } = projectViewDetails;
   const sliderImages = project_floorplan_Image || [];
-
+  const device = "desktop";
   return (
     <Wrapper
       className="section"
@@ -254,77 +262,44 @@ const BannerPage = () => {
       </Helmet>
 
       <>
-        <header className="fixed shadow-2xl top-0 z-50 text-slate-700 flex flex-col overflow-hidden px-4 lg:flex-row lg:items-center bg-white w-full">
-          <a className="flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900">
-            <img
-              src={projectViewDetails?.logo?.url}
-              style={{ height: "40px", width: "200px" }}
-              alt="project logo"
-              loading="lazy"
-            />
-          </a>
-
-          <input
-            type="checkbox"
-            className="peer hidden"
-            id="navbar-open"
-            checked={isNavOpen}
-            onChange={toggleNav}
+        <div
+          className="px-4"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            padding: "10px",
+            backgroundColor: "#fff", // Set your desired background color
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)", // Add a subtle box shadow
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            zIndex: 1000, // Set a high z-index to make sure it's above other content
+          }}
+        >
+          <img
+            src={projectViewDetails?.logo?.url}
+            style={{ height: "40px", width: "200px" }}
+            alt="projectlogo"
+            loading="lazy"
           />
-          <label
-            className="absolute top-3 right-5 cursor-pointer lg:hidden"
-            htmlFor="navbar-open"
-          >
-            <svg
-              className="h-7 w-7"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d={
-                  isNavOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"
-                }
-              ></path>
-            </svg>
-          </label>
 
-          <nav
-            aria-label="Header Navigation"
-            className={`${
-              isNavOpen ? " justify-end" : "max-h-0"
-            } w-full flex flex-col  transition-all lg:ml-24 lg:max-h-full lg:flex-row`}
-          >
-            <ul className="flex justify-end w-full mx-auto  ">
-              <li className="lg:ml-10 md:ml-4 ">
-                <a
-                  href="tel:+919811750130"
-                  className="rounded text-gray-700 lg:text-lg md:text-xs transition focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-offset-2"
-                >
-                  <span class="text-blue-700 text-3xl sm:text-xl lg:text-3xl md:text-2xl sm:pt-2 md:m-2 text-right hidden lg:inline-block">
-                    <i class="fa-solid fa-phone"></i> 9811750130
-                  </span>
+          <span className="text-[#012e29] text-3xl sm:text-xl lg:text-3xl md:text-2xl sm:pt-2 md:m-2 text-right hidden lg:inline-block">
+            <i className="fa-solid fa-phone "></i> 9811750130
+          </span>
 
-                  <span class="text-blue-700 text-xl pt-2 md:text-2xl lg:hidden block text-right">
-                    <i class="fa-solid fa-phone"></i> 9811750130
-                  </span>
-                </a>
-              </li>
-            </ul>
-            <hr className="w-full pt-1 lg:hidden" />
-          </nav>
-        </header>
+          <span className="text-[#012e29] text-xl pt-2 md:text-2xl lg:hidden block text-right">
+            <i className="fa-solid fa-phone "></i> 9811750130
+          </span>
+        </div>
 
-        <div className="w-full mt-16 relative overflow-hidden bg-cover bg-no-repeat text-center">
-          <div className="w-full  overflow-hidden  object-fit">
-            <div className="d-flex justify-content-center">
+        <div className="w-full mt-10 lg:mt-20 md:mt-14 sm:mt-24 relative overflow-hidden bg-cover bg-no-repeat text-center">
+          <div className="w-full overflow-hidden object-fit">
+            <div className="flex justify-center">
               {frontImage?.url && (
                 <img
-                  className="img-fluid max-width-100 max-height-100 h-auto w-full"
+                  className="img-fluid max-w-full h-auto"
                   src={frontImage.url}
                   alt="front Image"
                 />
@@ -335,80 +310,156 @@ const BannerPage = () => {
 
         {/* //PopUp Form */}
 
-        <div className="relative  ">
+        <div className="relative">
           {showPopup && (
-            <div className="relative">
-              {/* Popup */}
-              {showPopup && (
-                <div className="fixed top-50 left-0 w-full h-full flex items-center justify-center transform -translate-y-1/2  ">
-                  <div className="absolute top-0 left-0 w-full h-full  bg-opacity-50 p-5 xs:overflow-hidden" />
-                  <div className="relative  ">
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
+              <div className="absolute top-0 left-0 w-full h-full bg-opacity-50 p-5 overflow-hidden" />
+              <div className="relative sm:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-white shadow-lg sm:max-w-lg">
+                <div className="bg-[#012e29] px-10 py-3 text-center text-white">
+                  <p className="font-serif text-xl mb-0 text-center font-semibold tracking-wider">
+                    GET A CALLBACK
+                  </p>
+                  <button
+                    className="text-white text-2xl absolute right-3 top-2 cursor-pointer"
+                    onClick={() => setShowPopup(false)}
+                  >
+                    ✖
+                  </button>
+                </div>
+                <div className="space-y-4 px-8 py-4">
+                  <label className="block" htmlFor="name">
+                    <input
+                      className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
+                      type="text"
+                      placeholder="Enter your Name"
+                      onChange={handlePopChange}
+                      value={popDetails.name}
+                    />
+                  </label>
+                  <label className="block" htmlFor="email">
+                    <input
+                      className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
+                      type="email"
+                      placeholder="Enter your Email"
+                      onChange={handlePopChange}
+                      value={popDetails.email}
+                    />
+                  </label>
+                  <label className="block" htmlFor="mobile">
+                    <input
+                      className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
+                      type="tel"
+                      placeholder="Enter your Mobile"
+                      onChange={handlePopChange}
+                      value={popDetails.mobile}
+                    />
+                  </label>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
                     <button
-                      className="absolute top-0 right-0  text-black rounded-lg"
-                      onClick={() => setShowPopup(false)}
+                      className="mt-2 rounded-full bg-[#012e29] px-10 py-2 font-semibold text-white"
+                      onClick={popSubmitDetails}
                     >
-                      <i className="fa-solid fa-xmark text-4xl"></i>
+                      Send
                     </button>
-                    <form className=" rounded-lg px-6 py-5 w-96 shadow-md bg-white xs:px-3 ">
-                      <div className="mb-2">
-                        <h2 class="text-xl font-semibold text-black ">
-                          GET A CALLBACK
-                        </h2>
-                        <input
-                          className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          type="text"
-                          placeholder="Enter your name"
-                          name="name"
-                          onChange={handlePopChange}
-                          value={popDetails.name}
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <input
-                          class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          type="email"
-                          placeholder="Enter your email"
-                          name="email"
-                          onChange={handlePopChange}
-                          value={popDetails.email}
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <input
-                          class="appearance-none border  rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          rows="2"
-                          placeholder="Enter your mobile"
-                          name="mobile"
-                          onChange={handlePopChange}
-                          value={popDetails.mobile}
-                        ></input>
-                      </div>
-                      <div class="flex justify-center">
-                        <button
-                          class="bg-black  text-white font-bold py-2 px-[150px] rounded focus:outline-none focus:shadow-outline"
-                          type="button"
-                          onClick={popSubmitDetails}
-                        >
-                          Send
-                        </button>
-                      </div>
-                    </form>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           )}
         </div>
 
         <h1 className="-mx-4 px-4 pt-4 pb-6  font-semibold text-center text-gray-700  sm:text-lg lg:text-3xl">
           {projectViewDetails.projectName} - {projectViewDetails.projectAddress}
-          , <span class="font-bold">{projectViewDetails.city}</span>
+          , <span className="font-bold">{projectViewDetails.city}</span>
         </h1>
 
         <div className=" text-justify text-gray-700 m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl pt-0 mt-1">
           <span className="leading-relaxed">
             {projectViewDetails.project_discripation}
           </span>
+        </div>
+
+      
+
+        <div>
+          <div className="sticky-quote-cta">
+            <a className="text-lg mx-2 text-white" onClick={handleShow} style={{backgroundColor:"#012e29"}}>
+              Enquire Now
+            </a>
+          </div>
+
+          {modalIsOpen && (
+            <div className="relative">
+              <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
+                <div className="absolute top-0 left-0 w-full h-full bg-opacity-50 p-5 overflow-hidden" />
+                <div className="relative sm:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-white shadow-lg sm:max-w-lg">
+                  <div className="bg-[#012e29] px-10 py-3 text-center text-white">
+                    <p className="font-serif text-xl mb-0 text-center font-semibold tracking-wider">
+                      GET A CALLBACK
+                    </p>
+                    <button
+                      className="text-white text-2xl absolute right-3 top-2 cursor-pointer"
+                      onClick={handleClose}
+                    >
+                      ✖
+                    </button>
+                  </div>
+                  <div className="space-y-4 px-8 py-4">
+                    <label className="block" htmlFor="name">
+                      <input
+                        className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
+                        type="text"
+                        name="name"
+                        placeholder="Enter your Name"
+                        onChange={handlePopChange}
+                        value={popDetails.name}
+                      />
+                    </label>
+                    <label className="block" htmlFor="email">
+                      <input
+                        className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
+                        type="email"
+                        name="email"
+                        placeholder="Enter your Email"
+                        onChange={handlePopChange}
+                        value={popDetails.email}
+                      />
+                    </label>
+                    <label className="block" htmlFor="mobile">
+                      <input
+                        className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
+                        type="tel"
+                        name="mobile"
+                        placeholder="Enter your Mobile"
+                        onChange={handlePopChange}
+                        value={popDetails.mobile}
+                      />
+                    </label>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <button
+                        className="mt-2 rounded-full bg-[#012e29] px-10 py-2 font-semibold text-white"
+                        onClick={popSubmitDetails}
+                      >
+                        Send
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div class="w-48 cursor-pointer mx-3">
@@ -495,15 +546,15 @@ const BannerPage = () => {
                 BhK_Details.map((item, index) => (
                   <>
                     <div className="flex flex-shrink-0" key={index}>
-                      <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+                      <div className="flex items-center justify-center flex-grow w-0 lg:h-10 sm:h-auto px-2 border-b  border-black">
                         <span> {item.bhk_type}</span>
                       </div>
 
-                      <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+                      <div className="flex items-center justify-center flex-grow w-0 lg:h-10 sm:h-auto px-2 border-b  border-black">
                         <span>{item.bhk_Area}</span>
                       </div>
 
-                      <div className="flex items-center justify-center flex-grow w-0 h-10 px-2 border-b  border-black">
+                      <div className="flex items-center justify-center flex-grow w-0 lg:h-10 sm:h-auto px-2 border-b  border-black">
                         <span>{item.price}</span>
                       </div>
                     </div>
@@ -528,14 +579,15 @@ const BannerPage = () => {
               responsive={responsive}
               ssr={true}
               infinite={true}
-              autoPlay={false}
+              // autoPlay={true}
+              autoPlay={device !== "mobile" ? true : false}
               autoPlaySpeed={1000}
               keyBoardControl={true}
               customTransition="all .5"
               transitionDuration={500}
               containerClass="carousel-container"
               removeArrowOnDeviceType={["tablet", "mobile"]}
-              deviceType="desktop"
+              deviceType={device}
               dotListClass="custom-dot-list-style"
               itemClass="carousel-item-padding-40-px"
             >
@@ -598,7 +650,7 @@ const BannerPage = () => {
                   <img
                     src={item.url}
                     alt={`Image ${index}`}
-                    className="w-screen max-h-40vh object-fit"
+                    className="w-screen max-h-40vh object-fit z-1"
                   />
                 )}
               </div>
@@ -879,5 +931,40 @@ const Wrapper = styled.section`
     border: 2px solid #fbea08;
     background-color: #f5070b;
     transition: all 1s ease-in-out;
+  }
+
+  .sticky-quote-cta {
+    height: auto;
+    position: fixed;
+    border-radius: 15px 0 15px 0;
+    right: 0;
+    top: 400px;
+    top: 40vh;
+    z-index: 10000;
+  }
+
+  .sticky-quote-cta a {
+    color: white;
+    text-decoration: none;
+    background: #333;
+    padding: 15px 20px 35px;
+    display: block;
+    font-weight: bold;
+    font-size: 15px;
+    border-radius: 5px;
+    -ms-transform: rotate(-90deg) translate(0, -20px);
+    -webkit-transform: rotate(-90deg) translate(0, -20px);
+    transform: rotate(-90deg) translate(0, -20px);
+    position: relative;
+    right: -85px;
+    transition: position 0.2s, right 0.2s;
+    background: rgb(251, 183, 39);
+    background: red;
+  }
+
+  .sticky-quote-cta a:hover {
+    right: -70px;
+    transition: position 0.2s, right 0.2s;
+    cursor: pointer;
   }
 `;

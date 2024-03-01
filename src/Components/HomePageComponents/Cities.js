@@ -25,7 +25,7 @@ function Cities() {
           </div>
           <div className="cvBMLN">
             <div className="asdDRsfVN bg-four ">
-              <p className=''>Sikanderpur</p>
+              <p className=''>Northern Peripheral Road</p>
             </div>
           </div>
           <div className="cvBMLN text-justify">
@@ -40,12 +40,12 @@ function Cities() {
           </div>
           <div className="cvBMLN">
             <div className="asdDRsfVN bg-seven">
-              <p>Central Gurgaon</p>
+              <p>Sohna (South of Gurugram)</p>
             </div>
           </div>
           <div className="cvBMLN">
             <div className="asdDRsfVN bg-eight ">
-              <p className=''> Peripheral Road</p>
+              <p className=''>Southern Pheriphery Road</p>
             </div>
           </div>
           <div className="cvBMLN text-justify">
@@ -55,7 +55,7 @@ function Cities() {
           </div>
           <div className="cvBMLN">
             <div className="asdDRsfVN bg-ten">
-              <p>Golf Course Road</p>
+              <p>Golf Course Extn Road</p>
             </div>
           </div>
         </div>
