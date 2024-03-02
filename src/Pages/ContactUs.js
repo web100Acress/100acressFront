@@ -12,7 +12,7 @@ const ContactUs = () => {
    
      <div className='w-full'>
        <img
-         src='../../images/contact.jpg'
+         src='../../Images/contact.jpg'
          alt='About Us'
          className='w-full h-60 sm:h-30 object-fit'
        />

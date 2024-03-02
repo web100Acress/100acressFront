@@ -5,8 +5,7 @@ function Cities() {
   return (
     <Wrapper className="section ">
       <div className="dffasPL">
-        <p className="px-10 font-semibold text-xl xl:text-4xl lg:text-3xl pt-4 md:text-2xl">Gurgaon Prime Locations</p>
-
+        <p className="px-10 font-semibold text-xl xl:text-4xl lg:text-3xl pt-4 md:text-2xl">Gurugram Prime Locations</p>
         <div className="gdmJO d-flex justify-content-between px-4 text-center align-items-center">
           <div className="cvBMLN text-justify">
             <div className="asdDRsfVN bg-one ">
@@ -45,7 +44,7 @@ function Cities() {
           </div>
           <div className="cvBMLN">
             <div className="asdDRsfVN bg-eight ">
-              <p className=''>Southern Pheriphery Road</p>
+              <p className=''>Southern Peripheral Road</p>
             </div>
           </div>
           <div className="cvBMLN text-justify">
@@ -128,7 +127,7 @@ const Wrapper = styled.section`
   }
 
   .bg-one {
-    background-image: url(../../OtherImages/Sohnaroad.webp);
+    background-image: url(../../OtherImages/Sohnaroad.png);
     background-position: center;
   }
 
@@ -138,7 +137,7 @@ const Wrapper = styled.section`
   }
 
   .bg-three {
-    background-image: url(../../OtherImages/mgRoad.jpg);
+    background-image: url(../../OtherImages/mgRoad.png);
     background-position: center;
   }
 
@@ -164,7 +163,7 @@ const Wrapper = styled.section`
   }
 
   .bg-eight {
-    background-image: url(../../OtherImages/capture4.PNG);
+    background-image: url(../../OtherImages/bgseven.PNG);
     background-position: center;
   }
 

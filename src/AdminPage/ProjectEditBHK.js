@@ -19,6 +19,7 @@ const ProjectEditBHK = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(`https://api.100acress.com/bhk_edit/${id}`);
+        console.log(res,"fdfdfg")
         setViewBHK(res.data.data.BhK_Details[0]);
       } catch (error) {
         console.log(error);

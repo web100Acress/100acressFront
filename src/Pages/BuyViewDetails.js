@@ -342,7 +342,7 @@ const BuyViewDetails = () => {
                           <div className="my-2 mx-2" key={index}>
                             <div className="hover:bg-red-300 w-full text-center overflow-hidden rounded-lg shadow">
                               <div className="ml-auto">
-                                <p className="font-medium text-md pt-2 text-black">
+                                <p className="font-medium text-md pt-2 px-2 text-black">
                                   {amenity}
                                 </p>
                               </div>

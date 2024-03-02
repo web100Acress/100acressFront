@@ -22,6 +22,8 @@ const Footer = () => {
                 property in Gurgaon to managing and connecting with the
                 apartment complex.
               </p>
+
+              
             </div>
 
             <div className="mt-4 lg:mt-0 lg:ml-8 lg:w-1/2 lg:col-span-6">
@@ -109,8 +111,19 @@ const Footer = () => {
                     </Link>
                   </span>
                 </p>
+
+
+                {/* <div className='font-bold text-xl'><p> Registered Address </p></div>
+                <ul className='px-0 pt-0 '>
+                  <li className="text-sm ">Property in Gurugram</li>
+                  <li className="text-sm ">Property in Delhi</li>
+                  <li className="text-sm " >Property in Noida</li>
+                  <li className="text-sm " >Property in Goa</li>
+                </ul> */}
               </nav>
             </div>
+
+            
           </div>
           <div className="lg:w-1/2">
             <nav

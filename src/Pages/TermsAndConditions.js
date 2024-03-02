@@ -8,7 +8,7 @@ const TermsAndConditions = () => {
     <div className='overflow-x-hidden'>
      <div className='w-full'>
        <img
-         src='../../images/term.jpg'
+         src='../../Images/term.jpg'
          alt='About Us'
          className='w-full h-60 sm:h-30 object-fit'
        />

@@ -10,7 +10,7 @@ const CareerWithUs = () => {
         <section className="relative">
           <div className="w-full">
             <img
-              src="../../images/career.jpg"
+              src="../../Images/career.jpg"
               alt="Career With Us"
               className="w-full h-60 sm:h-30 object-fit"
             />

@@ -117,17 +117,21 @@ const BannerPage = () => {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
       items: 3,
-      slidesToSlide: 3, // optional, default to 1.
+      partialVisibilityGutter: 30,
+      // optional, default to 1.
     },
     tablet: {
       breakpoint: { max: 1024, min: 464 },
       items: 2,
-      slidesToSlide: 2, // optional, default to 1.
+      partialVisibilityGutter: 30,
+      // optional, default to 1.
     },
     mobile: {
       breakpoint: { max: 464, min: 0 },
       items: 1,
-      slidesToSlide: 1, // optional, default to 1.
+      partialVisibilityGutter: 30,
+
+      // optional, default to 1.
     },
   };
 
@@ -161,9 +165,20 @@ const BannerPage = () => {
     mobile: "",
   });
 
+  const [sideDetails, setSideDetails] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserDetails({ ...userDetails, [name]: value });
+  };
+
+  const handleChangeSide = (e) => {
+    const { name, value } = e.target;
+    setSideDetails({ ...sideDetails, [name]: value });
   };
 
   const userSubmitDetails = (e) => {
@@ -223,6 +238,31 @@ const BannerPage = () => {
       alert("Please fill in the data");
     }
   };
+
+  const SideSubmitDetails = (e) => {
+    e.preventDefault();
+    const { mobile } = sideDetails;
+
+    if (mobile) {
+      axios
+        .post("https://api.100acress.com/userInsert", {
+          ...sideDetails,
+          projectName: projectViewDetails.projectName,
+          address: projectViewDetails.projectAddress,
+        })
+        .then((res) => {
+          alert("Data submitted");
+          resetData();
+        })
+
+        .catch((error) => {
+          alert(error.message);
+        });
+    } else {
+      alert("Please fill in the data");
+    }
+  };
+
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       setShowPopup(true);
@@ -266,10 +306,10 @@ const BannerPage = () => {
           className="px-4"
           style={{
             position: "fixed",
-            top: 0,
+            top:-4,
             left: 0,
             right: 0,
-            padding: "10px",
+            padding: "5px",
             backgroundColor: "#fff", // Set your desired background color
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)", // Add a subtle box shadow
             display: "flex",
@@ -286,15 +326,19 @@ const BannerPage = () => {
           />
 
           <span className="text-[#012e29] text-3xl sm:text-xl lg:text-3xl md:text-2xl sm:pt-2 md:m-2 text-right hidden lg:inline-block">
-            <i className="fa-solid fa-phone "></i> 9811750130
+            <a href="tel:9811750130">
+              <i className="fa-solid fa-phone"></i> 9811750130
+            </a>
           </span>
 
           <span className="text-[#012e29] text-xl pt-2 md:text-2xl lg:hidden block text-right">
-            <i className="fa-solid fa-phone "></i> 9811750130
+            <a href="tel:9811750130">
+              <i className="fa-solid fa-phone"></i> 9811750130
+            </a>
           </span>
         </div>
 
-        <div className="w-full mt-10 lg:mt-20 md:mt-14 sm:mt-24 relative overflow-hidden bg-cover bg-no-repeat text-center">
+        <div className="w-full mt-10 lg:mt-16 md:mt-10 sm:mt-24 relative overflow-hidden bg-cover bg-no-repeat text-center">
           <div className="w-full overflow-hidden object-fit">
             <div className="flex justify-center">
               {frontImage?.url && (
@@ -365,7 +409,7 @@ const BannerPage = () => {
                       className="mt-2 rounded-full bg-[#012e29] px-10 py-2 font-semibold text-white"
                       onClick={popSubmitDetails}
                     >
-                      Send
+                      Submit
                     </button>
                   </div>
                 </div>
@@ -385,12 +429,16 @@ const BannerPage = () => {
           </span>
         </div>
 
-      
+        {/* Side Form  */}
 
         <div>
           <div className="sticky-quote-cta">
-            <a className="text-lg mx-2 text-white" onClick={handleShow} style={{backgroundColor:"#012e29"}}>
-              Enquire Now
+            <a
+              className="text-white"
+              onClick={handleShow}
+              style={{ backgroundColor: "#012e29", padding: "18px" }}
+            >
+              Download Brochure
             </a>
           </div>
 
@@ -417,8 +465,8 @@ const BannerPage = () => {
                         type="text"
                         name="name"
                         placeholder="Enter your Name"
-                        onChange={handlePopChange}
-                        value={popDetails.name}
+                        onChange={handleChangeSide}
+                        value={sideDetails.name}
                       />
                     </label>
                     <label className="block" htmlFor="email">
@@ -427,8 +475,8 @@ const BannerPage = () => {
                         type="email"
                         name="email"
                         placeholder="Enter your Email"
-                        onChange={handlePopChange}
-                        value={popDetails.email}
+                        onChange={handleChangeSide}
+                        value={sideDetails.email}
                       />
                     </label>
                     <label className="block" htmlFor="mobile">
@@ -437,8 +485,8 @@ const BannerPage = () => {
                         type="tel"
                         name="mobile"
                         placeholder="Enter your Mobile"
-                        onChange={handlePopChange}
-                        value={popDetails.mobile}
+                        onChange={handleChangeSide}
+                        value={sideDetails.mobile}
                       />
                     </label>
                     <div
@@ -450,9 +498,9 @@ const BannerPage = () => {
                     >
                       <button
                         className="mt-2 rounded-full bg-[#012e29] px-10 py-2 font-semibold text-white"
-                        onClick={popSubmitDetails}
+                        onClick={SideSubmitDetails}
                       >
-                        Send
+                        Submit
                       </button>
                     </div>
                   </div>
@@ -462,7 +510,7 @@ const BannerPage = () => {
           )}
         </div>
 
-        <div class="w-48 cursor-pointer mx-3">
+        {/* <div class="w-48 cursor-pointer mx-3">
           {projectViewDetails?.project_Brochure?.url && (
             <a href={projectViewDetails.project_Brochure.url} target="_blank">
               <p class="border-2 border-blue-500 hover:bg-blue-800 hover:text-white rounded-xl px-2 py-2 text-center text-lg">
@@ -470,7 +518,7 @@ const BannerPage = () => {
               </p>
             </a>
           )}
-        </div>
+        </div> */}
 
         {/* Extra Code */}
 
@@ -570,35 +618,39 @@ const BannerPage = () => {
               {projectViewDetails.projectName} Floor Plan
             </h2>
           </div>
+          {/* //floor plan? */}
 
           <div className="pt-8 mb-6">
             <Carousel
-              swipeable={false}
+              partialVisibilityGutter={true}
+              swipeable={true}
               draggable={false}
               showDots={false}
               responsive={responsive}
               ssr={true}
               infinite={true}
-              // autoPlay={true}
-              autoPlay={device !== "mobile" ? true : false}
-              autoPlaySpeed={1000}
+              autoPlay={true}
+              autoPlaySpeed={4000}
               keyBoardControl={true}
               customTransition="all .5"
-              transitionDuration={500}
+              transitionDuration={4000}
               containerClass="carousel-container"
               removeArrowOnDeviceType={["tablet", "mobile"]}
-              deviceType={device}
+              deviceType="desktop" // assuming you're not passing the device type as a prop
               dotListClass="custom-dot-list-style"
               itemClass="carousel-item-padding-40-px"
             >
-              {Array.isArray(sliderImages) &&
+              {sliderImages &&
+                Array.isArray(sliderImages) &&
                 sliderImages.length > 0 &&
                 sliderImages.map((item, index) => (
-                  <div key={index} className="slider-item">
-                    <div onClick={() => openImage(item.url)}>
-                      <img src={item.url} alt={`Image ${index + 1}`} />
-                    </div>
-                  </div>
+                  <img
+                    src={item.url}
+                    alt="floorPlan"
+                    key={index}
+                    onClick={() => openImage(item.url)}
+                    className="p-3"
+                  />
                 ))}
               <Modal
                 isOpen={isOpen}
@@ -676,7 +728,7 @@ const BannerPage = () => {
             Amenities.map((item, index) => (
               <div
                 key={index}
-                className="uppercase p-4 m-4  text-black text-center border-[#d9a253]  rounded-lg border-2 hover:bg-[#d9a253]"
+                className="uppercase p-3 m-4  text-black text-center border-[#d9a253]  rounded-lg border-2 hover:bg-[#d9a253]"
               >
                 {" "}
                 {item}
@@ -779,7 +831,9 @@ const BannerPage = () => {
             </div>
           </div>
         </div>
+
         {/* Master Plan */}
+
         <div className="text-center pt-4">
           <h2 className="font-semibold mx-4 lg:text-3xl md:text-xl sm:text-base text-gray-600">
             {projectViewDetails.projectName} Master Plan
@@ -790,8 +844,8 @@ const BannerPage = () => {
           {projectViewDetails.projectMaster_plan?.url && (
             <img
               src={projectViewDetails.projectMaster_plan.url}
-              className="w-full max-h-screen object-fit"
-              alt="Project Master Plan"
+              className="w-full max-h-auto object-fit"
+              alt="ProjectMasterPlan"
             />
           )}
         </div>
@@ -804,7 +858,6 @@ const BannerPage = () => {
 
         <div className=" text-justify  text-gray-700 m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl pt-0 mt-4">
           <span className="leading-relaxed">
-            At <b>{projectViewDetails.projectName}</b>,{" "}
             {projectViewDetails.AboutDeveloper}
           </span>
         </div>

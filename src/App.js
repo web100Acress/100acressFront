@@ -175,7 +175,6 @@ export default App;
 
 const Wrapper = styled.section`
   font-family: "DM Sans", sans-serif;
-
   h1,
   h2,
   h3,

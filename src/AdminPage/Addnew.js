@@ -236,6 +236,36 @@ const AddNew = () => {
             <option value="none">None</option>
           </select>
 
+          <select
+            className="text-gray-600 border px-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
+            value={editFromData.type}
+            onChange={handleProjectType}
+          >
+            <option value="" className="text-gray-600">Project Type</option>
+            <option value="CommercialProperty">Commercial Property</option>
+            <option value="ResidentialFlats">Residential Flats</option>
+            <option value="ScoPlots">SCO Plots</option>
+            <option value="DeendayalPlots">Deen Dayal Plots</option>
+            <option value="ResidentialPlots">Residential Plots</option>
+            <option value="IndependentFloors">Independent Floors</option>
+            <option value="AffordableHomes">Affordable Homes</option>
+          </select>
+
+          
+          <select
+            className="text-gray-600 border px-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
+            value={editFromData.project_status}
+            onChange={handleProjectStatus}
+          >
+            <option value="" className="text-gray-600">Project Status</option>
+            <option value="underconstruction">Under Construction</option>
+            <option value="comingsoon">Coming Soon</option>
+            <option value="newlunch">New Lunch</option>
+            <option value="readytomove">Ready To Move</option>
+          </select>
+
+
+
           <label className="block" for="name">
             <input
               className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
@@ -247,6 +277,20 @@ const AddNew = () => {
             />
           </label>
 
+          
+          <label className="block" for="name">
+            <input
+              className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+              type="text"
+              placeholder="Project URL"
+              name="project_url"
+              value={editFromData.project_url}
+              onChange={handleChangeProjectData}
+            />
+          </label>
+
+
+
           <label className="block" for="name">
             <input
               className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
@@ -257,6 +301,19 @@ const AddNew = () => {
               onChange={handleChangeProjectData}
             />
           </label>
+
+          <label className="block" for="name">
+            <input
+              className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+              type="text"
+              placeholder="City"
+              name="city"
+              value={editFromData.city}
+              onChange={handleChangeProjectData}
+            />
+          </label>
+
+
           <label className="block" for="name">
             <input
               className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
@@ -378,51 +435,13 @@ const AddNew = () => {
             />
           </label>
 
-          <select
-            className="text-gray-600 border px-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
-            value={editFromData.type}
-            onChange={handleProjectType}
-          >
-            <option value="" className="text-gray-600">Project Type</option>
-            <option value="Commercial">Commercial</option>
-            <option value="Residential">Residential</option>
-          </select>
+        
 
-          <label className="block" for="name">
-            <input
-              className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-              type="text"
-              placeholder="City"
-              name="city"
-              value={editFromData.city}
-              onChange={handleChangeProjectData}
-            />
-          </label>
+          
 
-          <label className="block" for="name">
-            <input
-              className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-              type="text"
-              placeholder="Project URL"
-              name="project_url"
-              value={editFromData.project_url}
-              onChange={handleChangeProjectData}
-            />
-          </label>
 
       
 
-          <select
-            className="text-gray-600 border px-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
-            value={editFromData.project_status}
-            onChange={handleProjectStatus}
-          >
-            <option value="" className="text-gray-600">Project Status</option>
-            <option value="underconstruction">Under Construction</option>
-            <option value="comingsoon">Coming Soon</option>
-            <option value="newlunch">New Lunch</option>
-            <option value="readytomove">Ready To Move</option>
-          </select>
 
           <p className="mt-2 font-medium mb-1 grid grid-cols-4 text-gray-500">
             Project Logo

@@ -77,6 +77,7 @@ const ProjectsAddBhk = () => {
     try {
       const response = await axios.post(`https://api.100acress.com/bhk_insert/${id}`,editFromData);
       alert("User data inserted successfully");
+
       resetData();
     } catch (error) {
       console.error('Error inserting user data:', error.message);
