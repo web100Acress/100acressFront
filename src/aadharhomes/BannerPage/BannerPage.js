@@ -117,19 +117,21 @@ const BannerPage = () => {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
       items: 3,
-      partialVisibilityGutter: 30,
-      // optional, default to 1.
+      // partialVisibilityGutter: 30,
+      slidesToSlide: 1,
     },
     tablet: {
       breakpoint: { max: 1024, min: 464 },
       items: 2,
       partialVisibilityGutter: 30,
+      slidesToSlide: 1,
       // optional, default to 1.
     },
     mobile: {
       breakpoint: { max: 464, min: 0 },
       items: 1,
       partialVisibilityGutter: 30,
+      slidesToSlide: 1,
 
       // optional, default to 1.
     },
@@ -622,18 +624,17 @@ const BannerPage = () => {
 
           <div className="pt-8 mb-6">
             <Carousel
-              partialVisibilityGutter={true}
               swipeable={true}
-              draggable={false}
+              draggable={true}
               showDots={false}
               responsive={responsive}
               ssr={true}
               infinite={true}
               autoPlay={true}
-              autoPlaySpeed={4000}
+              autoPlaySpeed={1500}
               keyBoardControl={true}
               customTransition="all .5"
-              transitionDuration={4000}
+              transitionDuration={500}
               containerClass="carousel-container"
               removeArrowOnDeviceType={["tablet", "mobile"]}
               deviceType="desktop" // assuming you're not passing the device type as a prop

@@ -242,13 +242,14 @@ const AddNew = () => {
             onChange={handleProjectType}
           >
             <option value="" className="text-gray-600">Project Type</option>
-            <option value="CommercialProperty">Commercial Property</option>
-            <option value="ResidentialFlats">Residential Flats</option>
-            <option value="ScoPlots">SCO Plots</option>
-            <option value="DeendayalPlots">Deen Dayal Plots</option>
-            <option value="ResidentialPlots">Residential Plots</option>
-            <option value="IndependentFloors">Independent Floors</option>
-            <option value="AffordableHomes">Affordable Homes</option>
+            <option value="Commercial Property">Commercial Property</option>
+            <option value="Residential Flats">Residential Flats</option>
+            <option value="SCO Plots">SCO Plots</option>
+            <option value="Deendayal Plots">Deen Dayal Plots</option>
+            <option value="Residential Plots">Residential Plots</option>
+            <option value="Independent Floors">Independent Floors</option>
+            <option value="Builder Floors">Builder Floors</option>
+            <option value="Affordable Homes">Affordable Homes</option>
           </select>
 
           

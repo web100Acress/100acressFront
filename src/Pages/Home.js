@@ -14,8 +14,8 @@ import SimilarCarousel from "../Components/HomePageComponents/SimiliarCarousel";
 import { Helmet } from "react-helmet";
 import axios from "axios";
 import ReactDOM from "react-dom";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Carousel } from "react-responsive-carousel";
+// import "react-responsive-carousel/lib/styles/carousel.min.css";
+
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import ReactModal from "react-modal";
@@ -38,8 +38,27 @@ const customStyles = {
 function Home() {
   const [trendingProject, setTrendingProject] = useState([]);
   const [featuredProject, setFeaturedProject] = useState([]);
-  const [upcoming,setUpcoming] = useState([]);
-  const [city,setCity] = useState([])
+  const [affordable, setAffordable] = useState([]);
+  const [upcoming, setUpcoming] = useState([]);
+  const [city, setCity] = useState([]);
+
+
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(
+        "https://api.100acress.com/project/affordable"
+      );
+      setAffordable(res.data.data);
+    
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(()=>{
+    fetchData();
+  },[])
+console.log(affordable)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -47,7 +66,6 @@ function Home() {
           "https://api.100acress.com/project/trending"
         );
         setTrendingProject(res.data.data);
-
       } catch (error) {
         console.log(error || error.message);
       }
@@ -55,7 +73,7 @@ function Home() {
     fetchData();
   }, []);
 
-  useEffect(() => { }, [trendingProject]);
+  useEffect(() => {}, [trendingProject]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,7 +89,7 @@ function Home() {
     fetchData();
   }, []);
 
-  useEffect(() => { }, [featuredProject]);
+  useEffect(() => {}, [featuredProject]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -80,7 +98,6 @@ function Home() {
         );
         setUpcoming(res.data.data);
         // console.log(res.data.data,"yufyuguguggg");
-
       } catch (error) {
         console.log(error || error.message);
       }
@@ -88,15 +105,13 @@ function Home() {
     fetchData();
   }, []);
 
-  useEffect(() => { }, [upcoming]);
+  useEffect(() => {}, [upcoming]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          "https://api.100acress.com/project/city"
-        );
-        setCity(res.data.data)
+        const res = await axios.get("https://api.100acress.com/project/city");
+        setCity(res.data.data);
       } catch (error) {
         console.log(error || error.message);
       }
@@ -104,7 +119,7 @@ function Home() {
     fetchData();
   }, []);
 
-  useEffect(() => { }, [city]);
+  useEffect(() => {}, [city]);
 
   const {
     PreLaunchProperties,
@@ -145,7 +160,6 @@ function Home() {
       </div>
       <div className="">
         {" "}
-
         <div
           className="xjUWI "
           style={{
@@ -155,11 +169,14 @@ function Home() {
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-
           }}
         >
           Trending Properties
-          <Link to={'/projects'}><span className="float-right text-sm text-red-600 hidden sm:block">View All </span></Link>
+          <Link to={"/projects"}>
+            <span className="float-right text-sm text-red-600 hidden sm:block">
+              View All{" "}
+            </span>
+          </Link>
         </div>
         {
           <section className="flex flex-col bg-white items-center">
@@ -184,7 +201,9 @@ function Home() {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          <span style={{ float: "right" }} className="text-sm">{item.builderName}</span>
+                          <span style={{ float: "right" }} className="text-sm">
+                            {item.builderName}
+                          </span>
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
                             {item.projectAddress}
@@ -217,7 +236,6 @@ function Home() {
       </div>
       <div className="bg-orange-100 py-3 ">
         {" "}
-
         <div
           className="xjUWI"
           style={{
@@ -230,7 +248,6 @@ function Home() {
           }}
         >
           Upcoming Projects
-         
         </div>
         {
           <section className="flex flex-col items-center bg-orange-100">
@@ -255,7 +272,9 @@ function Home() {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          <span style={{ float: "right" }} className="text-sm">{item.builderName}</span>
+                          <span style={{ float: "right" }} className="text-sm">
+                            {item.builderName}
+                          </span>
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
                             {item.projectAddress}
@@ -287,7 +306,7 @@ function Home() {
         }
       </div>
       <SpacesAvailable />
-      
+
       <div
         className="xjUWI "
         style={{
@@ -297,9 +316,12 @@ function Home() {
         }}
       >
         Featured Projects
-        <Link to={'/projects'}><span className="float-right text-sm text-red-600 hidden sm:block">View All </span></Link>
+        <Link to={"/projects"}>
+          <span className="float-right text-sm text-red-600 hidden sm:block">
+            View All{" "}
+          </span>
+        </Link>
       </div>
-
 
       {
         <section className="flex flex-col  items-center">
@@ -355,7 +377,6 @@ function Home() {
       }
       <div className="py-3" style={{ backgroundColor: "#00314f" }}>
         {" "}
-
         <div
           className="xjUWI text-white "
           style={{
@@ -365,17 +386,20 @@ function Home() {
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-
-
-
           }}
         >
           Projects in Delhi
-          <Link to={'/projects'}><span className="float-right text-sm text-white hidden sm:block pt-3">View All </span></Link>
+          <Link to={"/projects"}>
+            <span className="float-right text-sm text-white hidden sm:block pt-3">
+              View All{" "}
+            </span>
+          </Link>
         </div>
         {
-          <section className="flex flex-col pt-4 
-           items-center">
+          <section
+            className="flex flex-col pt-4 
+           items-center"
+          >
             <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {city.map((item, index) => {
                 const pUrl = item.project_url;
@@ -397,7 +421,9 @@ function Home() {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          <span style={{ float: "right" }} className="text-sm">{item.builderName}</span>
+                          <span style={{ float: "right" }} className="text-sm">
+                            {item.builderName}
+                          </span>
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
                             {item.projectAddress}
@@ -432,81 +458,92 @@ function Home() {
       <Cities />
       <StarCarousel />
       <FormHome />
-    
-    {/* <div className="pt-8">
-    <div  style={{ backgroundColor: "#00314f"}}>
-        {" "}
-        <div
-          className="xjUWI text-white pt-3 "
-          style={{
-            fontSize: "xx-large",
-            margin: "10px 40px 5px 40px",
-            fontWeight: "600",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          Affordable Home
-          <Link to={'/projects'}><span className="float-right text-sm text-white hidden sm:block pt-3">View All </span></Link>
-        </div>
-        {
-          <section className="flex flex-col pt-4
-           items-center">
-            <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-              {city.map((item, index) => {
-                const pUrl = item.project_url;
-                return (
-                  <Link to={`/${pUrl}/`} target="_top">
-                    <article
-                      key={index}
-                      className="mb-4  bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                    >
-                      <div>
-                        <img
-                          src={item.frontImage.url}
-                          alt="image"
-                          className="w-full h-48 object-fit"
-                        />
-                      </div>
 
-                      <div className="p-4">
-                        <div className="pb-2">
-                          <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectName}
-                          </a>
-                          <span style={{ float: "right" }} className="text-sm">{item.builderName}</span>
-                          <br />
-                          <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectAddress}
-                          </a>
+      <div className="pt-8">
+        <div style={{ backgroundColor: "#00314f" }}>
+          {" "}
+          <div
+            className="xjUWI text-white pt-3 "
+            style={{
+              fontSize: "xx-large",
+              margin: "10px 40px 5px 40px",
+              fontWeight: "600",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            Affordable Home
+            <Link to={"/projects"}>
+              <span className="float-right text-sm text-white hidden sm:block pt-3">
+                View All{" "}
+              </span>
+            </Link>
+          </div>
+          {
+            <section
+              className="flex flex-col pt-4
+           items-center"
+            >
+              <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+                {affordable.map((item, index) => {
+                  const pUrl = item.project_url;
+                  return (
+                    <Link to={`/${pUrl}/`} target="_top">
+                      <article
+                        key={index}
+                        className="mb-4  bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                      >
+                        <div>
+                          <img
+                            src={item.frontImage.url}
+                            alt="image"
+                            className="w-full h-48 object-fit"
+                          />
                         </div>
-                        <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
-                          <li className="text-left">
-                            <span className="text-sm font-extrabold text-black">
-                              {item.city}
-                            </span>
-                          </li>
 
-                          <li className="text-left">
-                            <button
-                              type="button"
-                              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
+                        <div className="p-4">
+                          <div className="pb-2">
+                            <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                              {item.projectName}
+                            </a>
+                            <span
+                              style={{ float: "right" }}
+                              className="text-sm"
                             >
-                              View Details
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                    </article>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-        }
+                              {item.builderName}
+                            </span>
+                            <br />
+                            <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                              {item.projectAddress}
+                            </a>
+                          </div>
+                          <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+                            <li className="text-left">
+                              <span className="text-sm font-extrabold text-black">
+                                {item.city}
+                              </span>
+                            </li>
+
+                            <li className="text-left">
+                              <button
+                                type="button"
+                                className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
+                              >
+                                View Details
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                      </article>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          }
+        </div>
       </div>
-    </div> */}
 
       <div
         className="xjUWI "
@@ -671,8 +708,6 @@ const Wrapper = styled.section`
       background-position: center;
     }
   }
-
-  
 
   .sticky-quote-cta {
     height: auto;
