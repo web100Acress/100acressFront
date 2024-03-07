@@ -35,8 +35,8 @@ import { InputGroup, InputRightElement } from "@chakra-ui/react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 const avatars = [
   {
-    name: "Ryan Florence",
-    url: "https://media.licdn.com/dms/image/D4D03AQFj9UYIZygoyw/profile-displayphoto-shrink_200_200/0/1697560567355?e=1709769600&v=beta&t=byQs73I7WKTOkS77J73eRxteUrrxEFql8YZjzlrEo48",
+    name: "Ashish Bhadauriya",
+    url: "../../Images/ashish.jpg",
   },
   {
     name: "Segun Adebayo",

@@ -14,7 +14,7 @@ import {
   Icon,
   FormControl,
   FormLabel,
-  FormHelperText
+  FormHelperText,
   //   useBreakpoint,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -29,8 +29,8 @@ import { Radio, RadioGroup, Checkbox } from "@chakra-ui/react";
 
 const avatars = [
   {
-    name: "Ryan Florence",
-    url: "https://bit.ly/ryan-florence",
+    name: "Ashish Bhadauriya",
+    url: "../../Images/ashish.jpg",
   },
   {
     name: "Segun Adebayo",
@@ -91,7 +91,6 @@ export default function SignUp() {
       setIsValidEmail(validateEmail(value));
     }
 
-    // Update the state for other fields
     setUserSignUp({ ...userSignUp, [name]: value });
   };
   const handleSelectedValue = (selectedValue) => {
@@ -291,7 +290,7 @@ export default function SignUp() {
                     }}
                   />
                 </FormControl>
-                
+
                 <FormControl>
                   <Input
                     placeholder="Email@provider.com"
@@ -317,7 +316,8 @@ export default function SignUp() {
                   <Input
                     placeholder="+91 ____"
                     name="mobile"
-                    type="number"
+                    type="tel"
+                    required
                     onChange={handleRegisterChange}
                     value={userSignUp.mobile}
                     bg={"gray.100"}
@@ -326,8 +326,11 @@ export default function SignUp() {
                     _placeholder={{
                       color: "gray.500",
                     }}
+                    pattern="^[0-9]{10,}$"
+                    title="Please enter a valid numeric mobile number with at least 10 digits"
                   />
                 </FormControl>
+
                 <FormControl>
                   <InputGroup>
                     <Input

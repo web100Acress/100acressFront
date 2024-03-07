@@ -21,25 +21,36 @@ const resetData = () =>{
 }
   
 
+const [isLoading, setIsLoading] = useState(false);
 
-  const handleInquirySubmitDta = async(e) =>{
-           e.preventDefault();
-           const {mobile} =  formDataInquiry;
-           try {
-            const res = await axios.post('https://acre.onrender.com/contact_Insert', formDataInquiry);
-            alert("Data submitted successfully");
-            resetData();
-          } catch (error) {
-            if (error.response) {
-              console.error("Server error:", error.response.data);
-            } else if (error.request) {
-              console.error("Request error:", error.request);
-            } else {
-              console.error("Error:", error.message);
-            }
-          }
-              
+const handleInquirySubmitData = async (e) => {
+  e.preventDefault();
+
+  if (isLoading) {
+    return;
   }
+
+  const { mobile } = formDataInquiry;
+  setIsLoading(true);
+
+  try {
+    const res = await axios.post('https://acre.onrender.com/contact_Insert', formDataInquiry);
+    alert("Data submitted successfully");
+    resetData();
+  } catch (error) {
+    if (error.response) {
+      console.error("Server error:", error.response.data);
+    } else if (error.request) {
+      console.error("Request error:", error.request);
+    } else {
+      console.error("Error:", error.message);
+    }
+  } finally {
+    // Set loading state to false when the API call is complete (success or error)
+    setIsLoading(false);
+  }
+};
+
 
 
   const handleInquiryDataChange = (e) =>{
@@ -106,7 +117,7 @@ const resetData = () =>{
                 paddingTop:"27px"
               }}
             >
-              <button onClick={handleInquirySubmitDta} className="rounded-lg text-white text-md sm:text-lg md:text-md border-2 pt-16 font-normal px-3 sm:px-6 py-1 sm:py-4 bg-red-600">
+              <button onClick={handleInquirySubmitData} className="rounded-lg text-white text-md sm:text-lg md:text-md border-2 pt-16 font-normal px-3 sm:px-6 py-1 sm:py-4 bg-red-600">
                 Submit
               </button>
             </div>

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Nav from "./Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
-import { RadioGroup, Radio } from "@chakra-ui/react";
+import { RadioGroup, Radio, Stack } from "@chakra-ui/react";
 import { event } from "jquery";
 const { Country, State, City } = require("country-state-city");
 const NewSellProperty = () => {
@@ -52,8 +52,6 @@ const NewSellProperty = () => {
     selectoption: "Select Property Type",
     subType: "",
   });
-
-  
 
   const resetData = () => {
     setSellProperty({
@@ -123,41 +121,31 @@ const NewSellProperty = () => {
   //   for (const key in sellProperty) {
   //     formDataAPI.append(key, sellProperty[key]);
   //   }
+
   //   for (let i = 0; i < otherImageLength; i++) {
-  //     formDataAPI.append("otherImage", fileData.otherImage[i]);
+  //     formDataAPI.append(`otherImage_${i}`, fileData.otherImage[i]);
   //   }
 
   //   formDataAPI.append("frontImage", fileData.frontImage);
 
   //   try {
   //     const response = await axios.post(apiEndpoint, formDataAPI);
-  //     alert("Property posted")
-  //     setSellProperty({
-  //       propertyType: null,
-  //       propertyName: null,
-  //       address: null,
-  //       city: null,
-  //       state: null,
-  //       price: null,
-  //       area: null,
-  //       description: null,
-  //       landmark: null,
-  //       amenities: null,
-  //       builtyear: null,
-  //       furnishing: null,
-  //       type: null,
-  //       availabledate: null,
-  //       selectoption: null,
-  //       subType: null,
-  //     });
-
+  //     alert("Submit Successfully, Under Review");
+  //     resetData();
+  //     resetImageData();
   //   } catch (error) {
   //     console.error("Error submitting form:", error);
   //   }
   // };
-  
+  const [isLoading, setIsLoading] = useState(false);
+
   const submitSellPropertyDetails = async (e) => {
     e.preventDefault();
+
+    if (isLoading) {
+      return;
+    }
+
     const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
 
     const formDataAPI = new FormData();
@@ -171,14 +159,18 @@ const NewSellProperty = () => {
     }
 
     formDataAPI.append("frontImage", fileData.frontImage);
-    
+
     try {
+      setIsLoading(true);
       const response = await axios.post(apiEndpoint, formDataAPI);
       alert("Submit Successfully, Under Review");
-      resetData()
+      resetData();
       resetImageData();
     } catch (error) {
       console.error("Error submitting form:", error);
+    } finally {
+      // Set loading state to false when the API call is complete (success or error)
+      setIsLoading(false);
     }
   };
 
@@ -257,9 +249,7 @@ const NewSellProperty = () => {
       <Nav />
       <section className=" py-12 text-gray-800 ">
         <div className="mx-auto flex max-w-md flex-col rounded-lg lg:max-w-screen-xl lg:flex-row">
-        
-
-<div className="max-w-xl px-4 lg:pr-24 lg:pt-20">
+          <div className="max-w-xl px-4 lg:pr-24 lg:pt-20">
             <h3 className="lg:text-5xl md:text-3xl  font-semibold">
               Post your property
             </h3>
@@ -288,31 +278,55 @@ const NewSellProperty = () => {
                   >
                     ✖
                   </button>
-                  <h5 className="text-red-400">Steps given Below to post your property Free</h5>
+                  <h5 className="text-red-400">
+                    Steps given Below to post your property Free
+                  </h5>
                   <span className="mt-2">Step 1:</span>
-                  <span className="ml-4 text-red-400">Post Your Property for Free</span>
-                  <p className="text-justify">Please first check the options if you are a selling or renting owner, then select the appropriate choice.</p>
+                  <span className="ml-4 text-red-400">
+                    Post Your Property for Free
+                  </span>
+                  <p className="text-justify">
+                    Please first check the options if you are a selling or
+                    renting owner, then select the appropriate choice.
+                  </p>
 
                   <span className="mt-2">Step 2:</span>
-                  <span className="ml-4 text-red-400">Select Property Type</span>
-                  <p className="text-justify">Please choose between Commercial or Residential property.</p>
+                  <span className="ml-4 text-red-400">
+                    Select Property Type
+                  </span>
+                  <p className="text-justify">
+                    Please choose between Commercial or Residential property.
+                  </p>
 
                   <span>Step 3:</span>
-                  <span className="ml-4 text-red-400">Enter Details of Your Property</span>
-                  <p className="text-justify">Afterward, input all details such as property name, address, city, state, price, area, description, landmark, amenities, built year and furnishing.
-                    Get access to buyer/tenant contact details and connect easily.</p>
+                  <span className="ml-4 text-red-400">
+                    Enter Details of Your Property
+                  </span>
+                  <p className="text-justify">
+                    Afterward, input all details such as property name, address,
+                    city, state, price, area, description, landmark, amenities,
+                    built year and furnishing. Get access to buyer/tenant
+                    contact details and connect easily.
+                  </p>
 
                   <span>Step 4:</span>
-                  <span className="ml-4 text-red-400">Upload Images of Your Property</span>
-                  <p className="text-justify">Please upload one image for the front view and three to four additional images.</p>
+                  <span className="ml-4 text-red-400">
+                    Upload Images of Your Property
+                  </span>
+                  <p className="text-justify">
+                    Please upload one image for the front view and three to four
+                    additional images.
+                  </p>
 
                   <span>Step 5:</span>
-                  <span className="ml-4 text-red-400">Submit Your Property Information</span>
-                  <p className="text-justify">Submit the form after filling up the fields.</p>
+                  <span className="ml-4 text-red-400">
+                    Submit Your Property Information
+                  </span>
+                  <p className="text-justify">
+                    Submit the form after filling up the fields.
+                  </p>
                 </div>
-
               </div>
-
             )}
           </div>
 
@@ -345,11 +359,13 @@ const NewSellProperty = () => {
                 </span>{" "}
               </p>
             </div> */}
-            <RadioGroup
+
+            {/* <RadioGroup
               onChange={(value) => handleOptionClick(value)}
               value={sellProperty.propertyLooking}
               className="m-2"
             >
+               <Stack spacing={5}>
               <p className="text-2xl mx-2 text-white">
                 You're looking to<span>....</span>
               </p>
@@ -358,7 +374,8 @@ const NewSellProperty = () => {
                 <Radio
                   value="Sell"
                   className={`mx-2 bg-white `}
-                  colorScheme="blue"
+                  bgColor="blue"
+                  colorScheme='red'
                   size="lg"
                   text="white"
                   spacing={-1}
@@ -368,15 +385,36 @@ const NewSellProperty = () => {
                 <Radio
                   value="rent"
                   className={`bg-white `}
-                  colorScheme="blue"
+                  bgColor="blue"
+                  
                   size="lg"
                   spacing={1}
                 >
                   Rent/Lease
                 </Radio>
               </p>
-            </RadioGroup>
+              </Stack>
+            </RadioGroup> */}
 
+            <RadioGroup
+              onChange={(value) => handleOptionClick(value)}
+              value={sellProperty.propertyLooking}
+              className="m-2"
+              defaultValue="2"
+            >
+              <p className="text-2xl  text-white">
+                You're looking to<span>....</span>
+              </p>
+
+              <Stack spacing={5} direction="row">
+                <Radio colorScheme="blue" value="Sell" size="lg">
+                  Sell
+                </Radio>
+                <Radio colorScheme="blue" value="rent" size="lg">
+                Rent/Lease
+                </Radio>
+              </Stack>
+            </RadioGroup>
             <div className="p-1 sm:p-8">
               <div className="grid gap-3 md:grid-cols-2">
                 <div>
@@ -552,7 +590,6 @@ const NewSellProperty = () => {
                   </select>
                 </div>
               </div>
-
 
               <div className="grid gap-3 md:grid-cols-2 text-gray-500">
                 <div>

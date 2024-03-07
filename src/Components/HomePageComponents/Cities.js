@@ -127,7 +127,7 @@ const Wrapper = styled.section`
   }
 
   .bg-one {
-    background-image: url(../../OtherImages/Sohnaroad.png);
+    background-image: url(../../OtherImages/sohnaRoad.png);
     background-position: center;
   }
 

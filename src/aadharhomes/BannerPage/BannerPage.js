@@ -93,7 +93,7 @@ const BannerPage = () => {
   };
 
   const [isNavOpen, setIsNavOpen] = useState(false);
-
+  
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);
   };
@@ -145,6 +145,22 @@ const BannerPage = () => {
     });
   };
 
+  const resetData1 = () => {
+    setPopDetails({
+      name: "",
+      email: "",
+      mobile: "",
+    });
+  };
+
+  const resetData2 = () => {
+    setSideDetails({
+      name: "",
+      email: "",
+      mobile: "",
+    });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -183,11 +199,18 @@ const BannerPage = () => {
     setSideDetails({ ...sideDetails, [name]: value });
   };
 
+  const [isLoading, setIsLoading] = useState(false);
   const userSubmitDetails = (e) => {
     e.preventDefault();
+
+    if (isLoading) {
+      return;
+    }
+
     const { mobile } = userDetails;
 
     if (mobile) {
+      setIsLoading(true)
       axios
         .post("https://api.100acress.com/userInsert", {
           ...userDetails,
@@ -201,11 +224,15 @@ const BannerPage = () => {
 
         .catch((error) => {
           alert(error.message);
+        }).finally(() => {
+          // Set loading state to false when the API call is complete (success or error)
+          setIsLoading(false);
         });
     } else {
       alert("Please fill in the data");
     }
   };
+
   const [popDetails, setPopDetails] = useState({
     name: "",
     email: "",
@@ -217,11 +244,22 @@ const BannerPage = () => {
     setPopDetails({ ...popDetails, [name]: value });
   };
 
+  const [isLoading1, setIsLoading1] = useState(false);
+
   const popSubmitDetails = (e) => {
     e.preventDefault();
+  
+    // Check if a request is already in progress
+    if (isLoading1) {
+      return;
+    }
+  
     const { mobile } = popDetails;
-
+  
     if (mobile) {
+      // Set loading state to true before making the API call
+      setIsLoading1(true);
+  
       axios
         .post("https://api.100acress.com/userInsert", {
           ...popDetails,
@@ -230,22 +268,32 @@ const BannerPage = () => {
         })
         .then((res) => {
           alert("Data submitted");
-          resetData();
+          resetData1();
         })
-
         .catch((error) => {
           alert(error.message);
+        })
+        .finally(() => {
+          // Set loading state to false when the API call is complete (success or error)
+          setIsLoading1(false);
         });
     } else {
       alert("Please fill in the data");
     }
   };
+  
+  const [isLoading2, setIsLoading2] = useState(false);
 
   const SideSubmitDetails = (e) => {
     e.preventDefault();
+     // Check if a request is already in progress
+     if (isLoading2) {
+      return;
+    }
     const { mobile } = sideDetails;
 
     if (mobile) {
+      setIsLoading2(true);
       axios
         .post("https://api.100acress.com/userInsert", {
           ...sideDetails,
@@ -254,11 +302,14 @@ const BannerPage = () => {
         })
         .then((res) => {
           alert("Data submitted");
-          resetData();
+          resetData2();
         })
 
         .catch((error) => {
           alert(error.message);
+        }).finally(() => {
+          // Set loading state to false when the API call is complete (success or error)
+          setIsLoading2(false);
         });
     } else {
       alert("Please fill in the data");
@@ -292,15 +343,13 @@ const BannerPage = () => {
       style={{ overflowY: "hidden", overflowX: "hidden" }}
     >
       <Helmet>
-        <meta
-          name="description"
-          content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential & Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon"
-        />
         <title>{projectViewDetails.meta_title}</title>
         <meta
           name="description"
           content={projectViewDetails.meta_description}
         />
+       <link rel="canonical" to={`https://www.100acress.com/${projectViewDetails.project_url}`} />
+
       </Helmet>
 
       <>
@@ -308,7 +357,7 @@ const BannerPage = () => {
           className="px-4"
           style={{
             position: "fixed",
-            top:-4,
+            top: -4,
             left: 0,
             right: 0,
             padding: "5px",
@@ -377,6 +426,7 @@ const BannerPage = () => {
                     <input
                       className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
                       type="text"
+                      name="name"
                       placeholder="Enter your Name"
                       onChange={handlePopChange}
                       value={popDetails.name}
@@ -386,6 +436,7 @@ const BannerPage = () => {
                     <input
                       className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
                       type="email"
+                      name="email"
                       placeholder="Enter your Email"
                       onChange={handlePopChange}
                       value={popDetails.email}
@@ -395,6 +446,7 @@ const BannerPage = () => {
                     <input
                       className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
                       type="tel"
+                      name="mobile"
                       placeholder="Enter your Mobile"
                       onChange={handlePopChange}
                       value={popDetails.mobile}
@@ -512,15 +564,7 @@ const BannerPage = () => {
           )}
         </div>
 
-        {/* <div class="w-48 cursor-pointer mx-3">
-          {projectViewDetails?.project_Brochure?.url && (
-            <a href={projectViewDetails.project_Brochure.url} target="_blank">
-              <p class="border-2 border-blue-500 hover:bg-blue-800 hover:text-white rounded-xl px-2 py-2 text-center text-lg">
-                Download Brochure
-              </p>
-            </a>
-          )}
-        </div> */}
+        
 
         {/* Extra Code */}
 

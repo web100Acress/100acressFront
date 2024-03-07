@@ -780,32 +780,44 @@ export default function Nav() {
 
               <SpacerComponent />
               <Menu>
-                <MenuButton
+              <MenuButton
                   as={Button}
                   borderRadius="l"
                   variant="unstyled"
                   aria-label="Profile"
-                  onMouseEnter={toggleDropdown}
+                  onMouseEnter={toggleDropdown} 
+                  // onClick={toggleDropdown}
+                
                 >
                   <Avatar
-                    name="User"
-                    boxSize="1.7em"
+                    boxSize={{ base: "1.7em", md: "1.8em" }}
                     bgColor="white"
-                    marginLeft={7}
+                    marginLeft={{ base: 0, md: "9" }}
                     icon={
                       <AvatarBadge
-                        boxSize={{ base: "0", md: "1em", sm: "0.8em" }}
-                        bg="green.500"
+                        boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
+                        bg="red.500"
+                        border="2px"
+                        borderColor="white"
+                        darkBorderColor="gray.800"
+                        rounded="full"
                       />
                     }
-                  />
+                  >
+                    <img
+                      className="w-16 h-10 rounded-full"
+                      src="../../Images/Avtar.png"
+                      alt=""
+                    />
+                  </Avatar>
+
                 </MenuButton>
-                <IconButton
+                {/* <IconButton
                   icon={<ChevronDownIcon color="white" boxSize="2em" />}
                   variant="unstyled"
                   aria-label="Toggle Dropdown"
                   onMouseEnter={toggleDropdown}
-                />
+                /> */}
 
                 <MenuListContainer
                   isOpen={isDropdownOpen}
