@@ -127,7 +127,7 @@ const Wrapper = styled.section`
   }
 
   .bg-one {
-    background-image: url(../../OtherImages/sohnaRoad.png);
+    background-image: url(../../OtherImages/Sohnaroad.png);
     background-position: center;
   }
 
@@ -137,7 +137,7 @@ const Wrapper = styled.section`
   }
 
   .bg-three {
-    background-image: url(../../OtherImages/mgRoad.png);
+    background-image: url(../../OtherImages/mgRoad.PNG);
     background-position: center;
   }
 

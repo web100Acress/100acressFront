@@ -472,7 +472,7 @@ console.log(affordable)
               textOverflow: "ellipsis",
             }}
           >
-            Affordable Home
+            Affordable Homes
             <Link to={"/projects"}>
               <span className="float-right text-sm text-white hidden sm:block pt-3">
                 View All{" "}
