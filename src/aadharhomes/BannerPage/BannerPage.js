@@ -93,7 +93,7 @@ const BannerPage = () => {
   };
 
   const [isNavOpen, setIsNavOpen] = useState(false);
-  
+
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);
   };
@@ -210,7 +210,7 @@ const BannerPage = () => {
     const { mobile } = userDetails;
 
     if (mobile) {
-      setIsLoading(true)
+      setIsLoading(true);
       axios
         .post("https://api.100acress.com/userInsert", {
           ...userDetails,
@@ -224,7 +224,8 @@ const BannerPage = () => {
 
         .catch((error) => {
           alert(error.message);
-        }).finally(() => {
+        })
+        .finally(() => {
           // Set loading state to false when the API call is complete (success or error)
           setIsLoading(false);
         });
@@ -248,18 +249,18 @@ const BannerPage = () => {
 
   const popSubmitDetails = (e) => {
     e.preventDefault();
-  
+
     // Check if a request is already in progress
     if (isLoading1) {
       return;
     }
-  
+
     const { mobile } = popDetails;
-  
+
     if (mobile) {
       // Set loading state to true before making the API call
       setIsLoading1(true);
-  
+
       axios
         .post("https://api.100acress.com/userInsert", {
           ...popDetails,
@@ -281,13 +282,13 @@ const BannerPage = () => {
       alert("Please fill in the data");
     }
   };
-  
+
   const [isLoading2, setIsLoading2] = useState(false);
 
   const SideSubmitDetails = (e) => {
     e.preventDefault();
-     // Check if a request is already in progress
-     if (isLoading2) {
+    // Check if a request is already in progress
+    if (isLoading2) {
       return;
     }
     const { mobile } = sideDetails;
@@ -307,7 +308,8 @@ const BannerPage = () => {
 
         .catch((error) => {
           alert(error.message);
-        }).finally(() => {
+        })
+        .finally(() => {
           // Set loading state to false when the API call is complete (success or error)
           setIsLoading2(false);
         });
@@ -348,8 +350,10 @@ const BannerPage = () => {
           name="description"
           content={projectViewDetails.meta_description}
         />
-       <link rel="canonical" to={`https://www.100acress.com/${projectViewDetails.project_url}`} />
-
+        <link
+          rel="canonical"
+          to={`https://www.100acress.com/${projectViewDetails.project_url}`}
+        />
       </Helmet>
 
       <>
@@ -382,7 +386,7 @@ const BannerPage = () => {
             </a>
           </span>
 
-          <span className="text-[#012e29] text-xl pt-2 md:text-2xl lg:hidden block text-right">
+          <span className="text-[#012e29] text-lg pt-2 md:text-2xl lg:hidden block text-right">
             <a href="tel:9811750130">
               <i className="fa-solid fa-phone"></i> 9811750130
             </a>
@@ -396,7 +400,7 @@ const BannerPage = () => {
                 <img
                   className="img-fluid max-w-full h-auto"
                   src={frontImage.url}
-                  alt="front Image"
+                  alt={projectViewDetails.projectName}
                 />
               )}
             </div>
@@ -564,17 +568,45 @@ const BannerPage = () => {
           )}
         </div>
 
-        
-
         {/* Extra Code */}
 
         <div className="pt-3">
           <div className="flex justify-center items-center rounded h-auto bg-[#F1F1FE]">
-            <div
-              className="text-black w-full overflow-hidden"
-              style={{ maxHeight: "500px" }}
-            >
+            <div className="text-black w-full overflow-hidden">
               <div className="flex flex-col md:flex-row">
+                {/* <div className="w-full md:w-1/2 sm:w-full p-4 text-black">
+                  <span class="lg:text-3xl md:text-2xl sm:text-base text-justify text-gray-600 font-semibold">
+                    Highlights of {projectViewDetails.projectName}
+                  </span>
+
+                  <div className="mt-4">
+                    {highlight &&
+                      Array.isArray(highlight) &&
+                      highlight.length > 0 &&
+                      highlight.map((item, index) => (
+                        <ul
+                          className="list-disc"
+                          style={{ listStyleType: "circle" }}
+                          key={index}
+                        >
+                          <li className="mb-2 text-black">
+                            {item.highlight_Point}
+                          </li>
+                        </ul>
+                      ))}
+                  </div>
+                </div>
+
+                <div className="md:block w-1/2 overflow-hidden hidden sm:block h-auto">
+                  {projectViewDetails?.highlightImage?.url && (
+                    <img
+                      src={projectViewDetails.highlightImage.url}
+                      alt={`${projectViewDetails.projectName}`}
+                      className="w-full  object-fit"
+                    />
+                  )}
+                </div> */}
+
                 <div className="w-full md:w-1/2 sm:w-full p-4 text-black">
                   <span class="lg:text-3xl md:text-2xl sm:text-base text-justify text-gray-600 font-semibold">
                     Highlights of {projectViewDetails.projectName}
@@ -598,12 +630,12 @@ const BannerPage = () => {
                   </div>
                 </div>
 
-                <div className="md:block w-1/2 overflow-hidden hidden sm:block max-h-screen">
+                <div className="md:block w-1/2 overflow-hidden hidden sm:block">
                   {projectViewDetails?.highlightImage?.url && (
                     <img
                       src={projectViewDetails.highlightImage.url}
-                      alt="expertImage"
-                      className="w-full h-full object-fit"
+                      alt={`${projectViewDetails.projectName}`}
+                      className="w-full h-auto object-fit"
                     />
                   )}
                 </div>
@@ -691,7 +723,7 @@ const BannerPage = () => {
                 sliderImages.map((item, index) => (
                   <img
                     src={item.url}
-                    alt="floorPlan"
+                    alt={`${projectViewDetails.projectName} ${index}`}
                     key={index}
                     onClick={() => openImage(item.url)}
                     className="p-3"
@@ -746,7 +778,7 @@ const BannerPage = () => {
                 {item && (
                   <img
                     src={item.url}
-                    alt={`Image ${index}`}
+                    alt={`${projectViewDetails.projectName} ${index}`}
                     className="w-screen max-h-40vh object-fit z-1"
                   />
                 )}
@@ -805,7 +837,7 @@ const BannerPage = () => {
                     {projectViewDetails.project_locationImage?.url && (
                       <img
                         src={projectViewDetails.project_locationImage.url}
-                        alt="expertImage"
+                        alt={`${projectViewDetails.projectName}`}
                         className="w-full h-full object-fit"
                       />
                     )}
@@ -890,7 +922,7 @@ const BannerPage = () => {
             <img
               src={projectViewDetails.projectMaster_plan.url}
               className="w-full max-h-auto object-fit"
-              alt="ProjectMasterPlan"
+              alt={`${projectViewDetails.projectName}`}
             />
           )}
         </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import {
   BrowserRouter as Router,
@@ -11,11 +11,9 @@ import LoginMain from "./Components/Actual_Components/LoginMain";
 import AboutPage from "./Components/AboutPageComponents/AboutPage";
 import Properties from "./Pages/Properties";
 import MiddleMain from "./Components/PropertyViewComponents/MiddleMain";
-import BlogMain from "./Components/Blog_Components/BlogMain";
 import VerificationForm from "./Components/Forms.js/SignUpForm/VerificationForm";
 import AdminMain from "./Components/AdminPanelComponents/AdminMain";
 import ProfilePage from "./Components/ProfilePage";
-import SingleBlog from "./Components/Blog_Components/SingleBlog";
 import PropertyKnow from "./Components/KnowAbouts/PropertyKnow";
 import Profile from "./Components/ProfileSec_Components/Profile";
 import FinalNavBar from "./Components/HomePageComponents/NavBar";
@@ -83,91 +81,116 @@ import About from "./Pages/About";
 import UserEditProperty from "./Pages/UserEditProperty";
 import ProjectAddHighligths from "./AdminPage/ProjectAddHighligths";
 import PrivateRoute from "./PrivateRoute";
-
+import Blogging from "./Pages/Blogging";
+import { DataProvider } from "./MyContext";
 function App() {
   const registeredData = {
     name: "John Doe",
     email: "johndoe@example.com",
     mobile: "1234567890",
   };
+  const token = localStorage.getItem("myToken");
+  // const [data, setData] = useState('');
+
+  // useEffect(() => {
+  //   const storedData = localStorage.getItem('userRole');
+  //   if (storedData) {
+  //     setData(storedData);
+  //   }
+  // }, []);
+  // console.log(data, "ole")
   return (
-    <Wrapper className="section">
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/SignUP" element={<SignUp />} />
-          <Route path="/SignIn" element={<SignIn />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/termsandconditions" element={<TermsAndConditions />} />
-          <Route path="/projects" element={<Properties />} />
-          <Route path="/rent" element={<RentPropViewCard />} />
-          <Route path="/buy" element={<BuyPropViewCard />} />
-          <Route path="/rent/:id" element={<RentViewDetails />} />
-          <Route path="/buy/:id" element={<BuyViewDetails />} />
-          <Route path="/propviewcard" element={<PropViewCardPro />} />
-          
-          <Route path="/middlemain" element={<MiddleMain />} />
-          <Route path="/blog" element={<BlogMain />} />
-          <Route path="/viewallproperty" element={<ViewAllProperty />} />
-        
-          <Route path="/postproperty" element={<NewSellProperty />} />
-          
-          <Route path="/contactus" element={<ContactUs />} />
-          <Route path="/careerwithus" element={<CareerWithUs />} />
-          <Route path="/resetpassword/:token" element={<ForgetPassword />} />
-          
-          <Route path="/forgetpassword" element={<ResetEmailPassword />} />
-          <Route path="/form" element={<Form registeredData={registeredData} />}/>
-          <Route path="/protected/private/admin" element={<AdminMain />} />
-          <Route path="/protected/private/admin/editProject/:url" element={<EditableProperty />}/>
-         
-          <Route path="/blog/:name" element={<SingleBlog />} />
-          <Route path="/knowabouts" element={<PropertyKnow />} />
-          <Route path="/profile/:id" element={<Profile />} />
-          <Route path="/:pUrl" element={<BannerPage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/userviewproperty/:id" element={<UserViewProperty />} />
-          <Route path="/usereditproperty" element={<UserEditProperty />} />
+    <DataProvider>
+      <Wrapper className="section">
+        <Router>
+          <Routes>
+            <Route
+              path="/postproperty"
+              element={
+                token !== null ? <NewSellProperty /> : <Navigate to="/SignIn" />
+              }
+            />
+            <Route path="/SignIn" element={<SignIn />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/SignUP" element={<SignUp />} />
+            <Route path="/SignIn" element={<SignIn />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/termsandconditions" element={<TermsAndConditions/>}/>
+            <Route path="/projects" element={<Properties />} />
+            <Route path="/rent" element={<RentPropViewCard />} />
+            <Route path="/buy" element={<BuyPropViewCard />} />
+            <Route path="/rent/:id" element={<RentViewDetails />} />
+            <Route path="/buy/:id" element={<BuyViewDetails />} />
+            <Route path="/propviewcard" element={<PropViewCardPro />} />
 
-          <Route path="*" element={<PageNotFound />} />
-          <Route path="/contactmainpage" element={<ContactPage />} />
+            <Route path="/middlemain" element={<MiddleMain />} />
+            <Route path="/viewallproperty" element={<ViewAllProperty />} />
+            <Route path="/contactus" element={<ContactUs />} />
+            <Route path="/careerwithus" element={<CareerWithUs />} />
+            <Route path="/blog" element={<Blogging />} />
+            <Route path="/resetpassword/:token" element={<ForgetPassword />} />
 
-          {/* <Route path="/Admin" element= {<PrivateRoute/>}>  */}
-          <Route path="/Admin/acress/dashboard" element={<Dashboard />} />
-          <Route path="/Admin/viewproperty/:id" element={<ViewPropertyAdmin/>}/>
-          <Route path="/Admin/viewproperty/viewdetails/:id" element={<ClientDetails/>}/>
-          <Route path="/Admin/viewproperty/editdetails/:id" element={<EditDetails/>}/>
-          <Route path="/admin/addnew" element={<Addnew />} />
-          <Route path="/admin/adminproperty" element={<Adminproperty />}/>
-          <Route path="/Admin/blog" element={<Blog />} />
-          <Route path="/Admin/user" element={<UserAdmin />} />
-          <Route path="/Admin/contact" element={<AdminContact />} />
-          <Route path="/Admin/editProject" element={<EditProject />} />
-          <Route path="/Admin/enquiries" element={<Enquiries />} />
-          <Route path="/Admin/header" element={<Header />} />
-          <Route path="/Admin/Projects" element={<Projects />} />
-          <Route path="/Admin/rent" element={<Rent />} />
-          <Route path="/Admin/rent/view/:id" element={<RentView />} />
-          <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
-          <Route path="/admin/dashboard" element={<Sidebar />} />
-          <Route path="/Admin/buy" element={<Buy />} />
-          <Route path="/Admin/buy/view/:id" element={<BuyView />} />
-          <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
-          <Route path="/Admin/contactpage" element={<ContactPage />} />
-          <Route path="/Admin/ContactUs/UserProfile"element={<UserProfile />}/>
-          <Route path="/searchdata/:key" element={<SearchData />} />
-          <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
-          <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
-          <Route path="/Admin/projecteditbhk/:id" element={<ProjectEditBHK />}/>
-          <Route path="/Admin/ProjectsAddBhk/:id"element={<ProjectsAddBhk />}/>
-          <Route path="/Admin/adminProperty" element={<Adminproperty />} />
-          <Route path="Admin/ProjectAddHighlights/:id" element={<ProjectAddHighligths/>} />
-          <Route path="/dashboard" element={<PrivateRoute element={<Dashboard/>}/>}/>  
-          {/* </Route> */}
-        </Routes>
-      </Router>
-    </Wrapper>
+            <Route path="/forgetpassword" element={<ResetEmailPassword />} />
+            <Route path="/form" element={<Form registeredData={registeredData} />} />
+            <Route path="/protected/private/admin" element={<AdminMain />} />
+            <Route  path="/protected/private/admin/editProject/:url" element={<EditableProperty/>}/>
+
+            <Route path="/knowabouts" element={<PropertyKnow />} />
+            <Route path="/profile/:id" element={<Profile />} />
+            <Route path="/:pUrl" element={<BannerPage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/userviewproperty/:id" element={<UserViewProperty/>}/>
+            <Route path="/usereditproperty" element={<UserEditProperty />} />
+
+            <Route path="*" element={<PageNotFound />} />
+            <Route path="/contactmainpage" element={<ContactPage />} />
+
+            <Route path="/Admin/acress/dashboard" element={<Dashboard />} />
+            <Route path="/Admin/viewproperty/:id" element={<ViewPropertyAdmin />}/>
+            <Route path="/Admin/viewproperty/viewdetails/:id" element={<ClientDetails/>}/>
+            <Route path="/Admin/viewproperty/editdetails/:id" element={<EditDetails />}/>
+            <Route path="/admin/addnew" element={<Addnew />} />
+            <Route path="/admin/adminproperty" element={<Adminproperty />} />
+            <Route path="/Admin/blog" element={<Blog />} />
+            <Route path="/Admin/user" element={<UserAdmin />} />
+            <Route path="/Admin/contact" element={<AdminContact />} />
+            <Route path="/Admin/editProject" element={<EditProject />} />
+            <Route path="/Admin/enquiries" element={<Enquiries />} />
+            <Route path="/Admin/header" element={<Header />} />
+            <Route path="/Admin/Projects" element={<Projects />} />
+            <Route path="/Admin/rent" element={<Rent />} />
+            <Route path="/Admin/rent/view/:id" element={<RentView />} />
+            <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
+
+            {/* <Route
+              path="/admin/dashboard"
+              element={role !== "admin" ? <Sidebar /> : <Navigate to="/" />}
+            /> */}
+
+            {/* <Route
+              path="/admin/dashboard"
+              element={data !== "admin" ?<Navigate to="/" /> :<Sidebar />  }
+            /> */}
+            <Route path="/admin/dashboard" element={<Sidebar />} />
+            <Route path="/Admin/buy" element={<Buy />} />
+            <Route path="/Admin/buy/view/:id" element={<BuyView />} />
+            <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
+            <Route path="/Admin/contactpage" element={<ContactPage />} />
+            <Route path="/Admin/ContactUs/UserProfile" element={<UserProfile />}/>
+            <Route path="/searchdata/:key" element={<SearchData />} />
+            <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
+            <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
+            <Route path="/Admin/projecteditbhk/:id" element={<ProjectEditBHK />}/>
+            <Route path="/Admin/ProjectsAddBhk/:id"  element={<ProjectsAddBhk />}/>
+            <Route path="/Admin/adminProperty" element={<Adminproperty/>}/>
+            <Route path="Admin/ProjectAddHighlights/:id" element={<ProjectAddHighligths/>}/>
+            <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />}/>}/>
+            
+          </Routes>
+        </Router>
+      </Wrapper>
+    </DataProvider>
   );
 }
 

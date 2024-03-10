@@ -1,36 +1,18 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useContext} from "react";
 import { Link } from "react-router-dom";
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
+import {DataContext} from '../MyContext'
 function Properties() {
-  const [rentData, setRentData] = useState([]);
+  const {allProjectData} = useContext(DataContext);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          "https://api.100acress.com/project/viewAll"
-        );
-        setRentData(res.data.data);
-        // console.log(res, "response status")
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    console.log(rentData, "Updated data");
-  }, [rentData]);
 
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
       <section className="flex flex-col items-center bg-white">
         <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
-          {rentData.map((item, index) => {
+          {allProjectData.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">

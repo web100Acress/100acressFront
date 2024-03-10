@@ -18,7 +18,7 @@ const SearchData = () => {
 
   const { key1, key2 } = getFormDataValues(decodedFormData);
   const key = `${key1}${key2}`;
-
+  localStorage.setItem('myKey', key);
   const [searchData, setSearchData] = useState([]);
 
   useEffect(() => {
@@ -28,7 +28,6 @@ const SearchData = () => {
           `https://api.100acress.com/property/search/${key}`
         );
         setSearchData(res.data.searchdata);
-        console.log(searchData, "search data");
       } catch (error) {
         console.log(error.message);
       }
@@ -70,7 +69,7 @@ const SearchData = () => {
                               )}
                             </div>
 
-                            <div className="p-4">
+                            {/* <div className="p-4">
                               <div className="pb-2">
                                 <a className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
                                   <span> {property.propertyName}</span>
@@ -111,7 +110,40 @@ const SearchData = () => {
                                   </li>
                                 )}
                               </ul>
-                            </div>
+                            </div> */}
+                            
+                             <div className="p-4">
+                        <div className="pb-2">
+                          <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                          {item.projectName
+                                ? item.projectName
+                                : item.propertyName}
+                          </a>
+                          <span style={{ float: "right" }} className="text-sm">
+                            {item.builderName}
+                          </span>
+                          <br />
+                          <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                            {item.projectAddress}
+                          </a>
+                        </div>
+                        <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+                          <li className="text-left">
+                            <span className="text-sm font-extrabold text-black">
+                              {item.city}
+                            </span>
+                          </li>
+
+                          <li className="text-left">
+                            <button
+                              type="button"
+                              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
+                            >
+                              View Details
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
                           </article>
                         </>
                       ))}
@@ -134,52 +166,38 @@ const SearchData = () => {
                           )}
                         </div>
 
-                        <div className="p-4">
-                          <div className="pb-2">
-                            <a className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
-                              {item.projectName
+                         <div className="p-4">
+                        <div className="pb-2">
+                          <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                          {item.projectName
                                 ? item.projectName
                                 : item.propertyName}
-                            </a>
-                            <br />
-                            <a className="text-sm hover:text-red-600 duration-500 ease-in-out">
-                              {item.city}, {item.state}
-                            </a>
-                          </div>
-                          <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
-                            <li className="text-left">
-                              <span className="text-sm font-extrabold text-black">
-                                {item.price}
-                              </span>
-                            </li>
-                            {item.schema_type == "rent" ? (
-                              <li className="text-left">
-                                <Link to={`/rent/${item._id}`} target="_top">
-                                  <button
-                                    type="button"
-                                    className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"
-                                  >
-                                    View Details
-                                  </button>
-                                </Link>
-                              </li>
-                            ) : (
-                              <li className="text-left">
-                                <Link
-                                  to={`/${item.project_url}/`}
-                                  target="_top"
-                                >
-                                  <button
-                                    type="button"
-                                    className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2 text-center me-2"
-                                  >
-                                    View Details
-                                  </button>
-                                </Link>
-                              </li>
-                            )}
-                          </ul>
+                          </a>
+                          <span style={{ float: "right" }} className="text-sm">
+                            {item.builderName}
+                          </span>
+                          <br />
+                          <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                            {item.projectAddress}
+                          </a>
                         </div>
+                        <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+                          <li className="text-left">
+                            <span className="text-sm font-extrabold text-black">
+                              {item.city}
+                            </span>
+                          </li>
+
+                          <li className="text-left">
+                            <button
+                              type="button"
+                              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
+                            >
+                              View Details
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
                       </article>
                     </>
                   )}

@@ -28,11 +28,14 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import axios from "axios";
-import { json, useNavigate, useParams } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { InputGroup, InputRightElement } from "@chakra-ui/react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Footer from "../Components/Actual_Components/Footer";
+import Nav from "./Nav";
+import Free from '../../src/Pages/Free'
 const avatars = [
   {
     name: "Ashish Bhadauriya",
@@ -103,14 +106,16 @@ export default function SignIn() {
             `https://api.100acress.com/postPerson/Role/${email}`
           );
           if (roleResponse.status === 200) {
-            if (roleResponse.data.User.role == "admin") {
+          
               localStorage.setItem("userRole",JSON.stringify(roleResponse.data.User.role))
-              history("/Admin/acress/dashboard");
-            } else {
               const sellerId = roleResponse.data.User._id;
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
-              history("/");
-            }
+            
+              if(roleResponse.data.User.role==="admin"){
+                history("/Admin/dashboard");
+              }else{
+                history("/");
+              }
           } else {
             console.error("Role fetch failed:", roleResponse);
             alert(
@@ -151,6 +156,8 @@ export default function SignIn() {
   };
 
   return (
+   <>
+   <Nav/>
     <Box position={"relative"}>
       {password !== "" && email !== "" && <ToastContainer />}
       <Container
@@ -408,5 +415,8 @@ export default function SignIn() {
         </ModalContent>
       </Modal>
     </Box>
+        <Free/>
+    <Footer/>
+   </>
   );
 }

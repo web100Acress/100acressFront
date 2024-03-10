@@ -6,7 +6,7 @@ function SpacesAvailable() {
   return (
     <Wrapper className="section">
     <div style={{boxShadow:"0px 0px 30px 0px #0000001a"}}>
-    <div className="px-10 font-semibold text-xl xl:text-4xl lg:text-3xl pt-4 md:text-2xl" >Choose the Best For you</div>
+    <div className="px-14 font-semibold text-xl xl:text-4xl lg:text-3xl pt-4 md:text-2xl" >Choose the Best For you</div>
       <div className="_6sknMP">
         
         <div className="_ksjMM _1fe2" title="Residential Projects">

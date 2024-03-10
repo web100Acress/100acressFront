@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import Cities from "../Components/HomePageComponents/Cities";
 import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
@@ -6,139 +6,15 @@ import StarCarousel from "../Components/HomePageComponents/Carousel";
 import SpacesAvailable from "../Components/HomePageComponents/Spaces";
 import SearchBar from "../Components/HomePageComponents/SearchBar";
 import styled from "styled-components";
-import FeaturedSection from "../Components/HomePageComponents/featured";
-import DeveloperSlider from "../Components/HomePageComponents/DeveloperSlider";
 import OurServices from "../Components/HomePageComponents/ourServices";
-import { useProductContext } from "../Context/productContext";
-import SimilarCarousel from "../Components/HomePageComponents/SimiliarCarousel";
+import Free from '../../src/Pages/Free'
 import { Helmet } from "react-helmet";
-import axios from "axios";
-import ReactDOM from "react-dom";
-// import "react-responsive-carousel/lib/styles/carousel.min.css";
-
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
-import ReactModal from "react-modal";
-import SmallPopForm from "../Components/Actual_Components/SmallPopForm";
 import { Link } from "react-router-dom";
-const customStyles = {
-  content: {
-    top: "35%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    width: "40%",
-    height: "47%",
-    transform: "translate(-40%, -10%)",
-    text: "white",
-  },
-};
-
+import { DataContext } from "../MyContext";
 function Home() {
-  const [trendingProject, setTrendingProject] = useState([]);
-  const [featuredProject, setFeaturedProject] = useState([]);
-  const [affordable, setAffordable] = useState([]);
-  const [upcoming, setUpcoming] = useState([]);
-  const [city, setCity] = useState([]);
-
-
-  const fetchData = async () => {
-    try {
-      const res = await axios.get(
-        "https://api.100acress.com/project/affordable"
-      );
-      setAffordable(res.data.data);
-    
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(()=>{
-    fetchData();
-  },[])
-console.log(affordable)
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          "https://api.100acress.com/project/trending"
-        );
-        setTrendingProject(res.data.data);
-      } catch (error) {
-        console.log(error || error.message);
-      }
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {}, [trendingProject]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          "https://api.100acress.com/project/featured"
-        );
-        setFeaturedProject(res.data.data);
-      } catch (error) {
-        console.log(error || error.message);
-      }
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {}, [featuredProject]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          "https://api.100acress.com/project/upcoming"
-        );
-        setUpcoming(res.data.data);
-        // console.log(res.data.data,"yufyuguguggg");
-      } catch (error) {
-        console.log(error || error.message);
-      }
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {}, [upcoming]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("https://api.100acress.com/project/city");
-        setCity(res.data.data);
-      } catch (error) {
-        console.log(error || error.message);
-      }
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {}, [city]);
-
-  const {
-    PreLaunchProperties,
-    isPreLaunchLoading,
-    getPreLaunchProducts,
-    PreLuanchFeatProperties,
-    PreLuanchSimilarProperties,
-  } = useProductContext();
-
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  const handleShow = () => {
-    setModalIsOpen(true);
-  };
-
-  const handleClose = () => {
-    setModalIsOpen(false);
-  };
-
+  const {trendingProject, featuredProject, affordable, upcoming, city} = useContext(DataContext)
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
@@ -157,13 +33,14 @@ console.log(affordable)
           <SearchBar />
         </div>
       </div>
+      
       <div className="">
         {" "}
-        <div
+        <h1
           className="xjUWI "
           style={{
             fontSize: "xx-large",
-            margin: "20px 40px 5px 40px",
+            margin: "20px 40px 5px 60px",
             fontWeight: "600",
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -176,7 +53,7 @@ console.log(affordable)
               View All{" "}
             </span>
           </Link>
-        </div>
+        </h1>
         {
           <section className="flex flex-col bg-white items-center">
             <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
@@ -191,7 +68,7 @@ console.log(affordable)
                       <div>
                         <img
                           src={item.frontImage.url}
-                          alt="image"
+                          alt="property In Gurugram"
                           className="w-full h-48 object-fit"
                         />
                       </div>
@@ -235,11 +112,11 @@ console.log(affordable)
       </div>
       <div className="bg-orange-100 py-3 ">
         {" "}
-        <div
+        <h1
           className="xjUWI"
           style={{
             fontSize: "xx-large",
-            margin: "10px 40px 5px 40px",
+            margin: "10px 40px 5px 60px",
             fontWeight: "600",
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -247,7 +124,7 @@ console.log(affordable)
           }}
         >
           Upcoming Projects
-        </div>
+        </h1>
         {
           <section className="flex flex-col items-center bg-orange-100">
             <div className="grid max-w-md bg-orange-100 grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
@@ -262,7 +139,7 @@ console.log(affordable)
                       <div>
                         <img
                           src={item.frontImage.url}
-                          alt="image"
+                          alt="property In Gurugram"
                           className="w-full h-48 object-fit"
                         />
                       </div>
@@ -306,7 +183,7 @@ console.log(affordable)
       </div>
       <SpacesAvailable />
 
-      <div
+      <h1
         className="xjUWI "
         style={{
           fontSize: "xx-large",
@@ -320,7 +197,7 @@ console.log(affordable)
             View All{" "}
           </span>
         </Link>
-      </div>
+      </h1>
 
       {
         <section className="flex flex-col  items-center">
@@ -336,7 +213,7 @@ console.log(affordable)
                     <div>
                       <img
                         src={item.frontImage.url}
-                        alt="image"
+                        alt="property In Gurugram"
                         className="w-full h-48 object-fit"
                       />
                     </div>
@@ -376,11 +253,11 @@ console.log(affordable)
       }
       <div className="py-3" style={{ backgroundColor: "#00314f" }}>
         {" "}
-        <div
+        <h1
           className="xjUWI text-white "
           style={{
             fontSize: "xx-large",
-            margin: "10px 40px 5px 40px",
+            margin: "10px 40px 5px 60px",
             fontWeight: "600",
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -393,7 +270,7 @@ console.log(affordable)
               View All{" "}
             </span>
           </Link>
-        </div>
+        </h1>
         {
           <section
             className="flex flex-col pt-4 
@@ -411,7 +288,7 @@ console.log(affordable)
                       <div>
                         <img
                           src={item.frontImage.url}
-                          alt="image"
+                          alt="property In Gurugram"
                           className="w-full h-48 object-fit"
                         />
                       </div>
@@ -461,11 +338,11 @@ console.log(affordable)
       <div className="pt-8">
         <div style={{ backgroundColor: "#00314f" }}>
           {" "}
-          <div
+          <h1
             className="xjUWI text-white pt-3 "
             style={{
               fontSize: "xx-large",
-              margin: "10px 40px 5px 40px",
+              margin: "10px 40px 5px 60px",
               fontWeight: "600",
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -478,7 +355,7 @@ console.log(affordable)
                 View All{" "}
               </span>
             </Link>
-          </div>
+          </h1>
           {
             <section
               className="flex flex-col pt-4
@@ -496,7 +373,7 @@ console.log(affordable)
                         <div>
                           <img
                             src={item.frontImage.url}
-                            alt="image"
+                            alt="property In Gurugrame"
                             className="w-full h-48 object-fit"
                           />
                         </div>
@@ -544,7 +421,7 @@ console.log(affordable)
         </div>
       </div>
 
-      <div
+      <h1
         className="xjUWI "
         style={{
           fontSize: "xx-large",
@@ -553,7 +430,7 @@ console.log(affordable)
         }}
       >
         Services We Offer
-      </div>
+      </h1>
 
       <OurServices />
       <WhyChoose />
@@ -569,7 +446,7 @@ console.log(affordable)
           </a>
         </div>
       </div>
-      
+      <Free/>
       <Footer />
     </Wrapper>
   );

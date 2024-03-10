@@ -9,7 +9,7 @@ const TermsAndConditions = () => {
      <div className='w-full'>
        <img
          src='../../Images/term.jpg'
-         alt='About Us'
+         alt='AboutUs'
          className='w-full h-60 sm:h-30 object-fit'
        />
      </div>
@@ -29,7 +29,7 @@ const TermsAndConditions = () => {
 
      <div className="flex items-center pt-2 px-3">
        <img src="../../Images/housefooter.jpg"
-         alt="image"
+         alt="housefooter"
          className='h-10 w-10 ' />
        <h3 className="pt-1 text-red-600 sm:text-xs md:text-xl lg:text-2xl xl:text-3xl">Why 100Acress.com ?</h3>
      </div>
@@ -46,7 +46,7 @@ const TermsAndConditions = () => {
      <div className="flex items-center pt-6 px-3">
        <img
          src="../../Images/Houseaward.PNG"
-         alt="img"
+         alt="houseaward"
          className="h-10 w-10 "
        />
        <h3 className="pt-1 text-red-600 md:text-xl  lg:text-2xl xl:text-3xl">Our Responsibility</h3>

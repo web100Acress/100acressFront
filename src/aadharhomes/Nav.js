@@ -20,7 +20,6 @@ import {
 import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import logoImage from "../Images/100acress.png";
-// import { useNavigate  } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
@@ -42,9 +41,8 @@ const PropertyBox = ({ text }) => (
 
 const SpacerComponent = () => <Box width="60px" />;
 
-const MenuListContainer = ({ isOpen, onClose }) => {
+const MenuListContainer = ({ isOpen }) => {
   const history = useNavigate();
-
   const showToastMessage = () => {
     toast.success("Logging out!", {
       position: toast.POSITION.TOP_RIGHT,
@@ -60,15 +58,13 @@ const MenuListContainer = ({ isOpen, onClose }) => {
       history("/");
       localStorage.removeItem("myToken");
       localStorage.removeItem("mySellerId");
-      console.log(localStorage.removeItem("mySellerId"),"check");
+      localStorage.removeItem("userRole");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
   const token = localStorage.getItem("myToken");
-  // console.log(token, "dropdown");
-
   const { id } = useParams();
 
   return (
@@ -149,10 +145,8 @@ const MenuListContainer = ({ isOpen, onClose }) => {
 
 export default function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [mobileNumber, setMobileNumber] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
 
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -193,10 +187,7 @@ export default function Nav() {
     checkUserAuth();
   }, []);
 
-  // const customCSS = {
-  //   backgroundColor: "red",
-  //   background: "linear-gradient(to bottom, #9baac2, #ff0000)",
-  // };
+
 
   const keyframes = `
   @keyframes moveHorizontal {
@@ -232,15 +223,15 @@ export default function Nav() {
               flex="1"
             >
               <Box>
-               <Link to={'/'}>
-               <Image
-                  maxW={["100px", "200px"]}
-                  minW={["50px", "70px"]}
-                  width={["xs", "sm", "md", "lg"]}
-                  src={logoImage}
-                  alt="100acress logo"
-                />
-               </Link>
+                <Link to={"/"}>
+                  <Image
+                    maxW={["100px", "200px"]}
+                    minW={["50px", "70px"]}
+                    width={["xs", "sm", "md", "lg"]}
+                    src={logoImage}
+                    alt="100acress logo"
+                  />
+                </Link>
               </Box>
 
               {!isSmallerThan768 && (
@@ -419,7 +410,6 @@ export default function Nav() {
                           >
                             Find an Agent
                           </Link>
-                         
                         </div>
                       </div>
                     </div>
@@ -507,7 +497,7 @@ export default function Nav() {
                           >
                             Villa for rent in Gurugram
                           </Link>
-                      
+
                           <Link
                             to="#"
                             className="block text-sm px-2 py-1  hover:text-red-600"
@@ -629,74 +619,9 @@ export default function Nav() {
                 </>
               )}
             </HStack>
-            {/* <Flex alignItems="center">
-              <div className="" style={{ marginRight: "-69px" }}>
-                {token ? (
-                  <Link to="/postproperty">
-                    <button className="btn flex btn-light text-black   btn-sm  sm:p-1 sm:text-sm ">
-                      <strong onClick={checkUserAuth} className="text-red-600">
-                        {" "}
-                        Post Property{" "}
-                      </strong>
-                      <Link className="d-none d-xl-inline d-md-inline">
-                        <button className="btn btn-danger p-0  ">Free</button>
-                      </Link>
-                    </button>
-                  </Link>
-                ) : (
-                  <Link to="/SignIn">
-                    <button className="btn flex btn-light text-black   btn-sm  sm:p-1 sm:text-sm ">
-                      <strong onClick={checkUserAuth} className="text-red-600">
-                        {" "}
-                        Post Property{" "}
-                      </strong>
-                      <Link className="d-none d-xl-inline d-md-inline">
-                        <button className="btn btn-danger p-0 ">Free</button>
-                      </Link>
-                    </button>
-                  </Link>
-                )}
-              </div>
-
-              <SpacerComponent />
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  borderRadius="l"
-                  variant="unstyled"
-                  aria-label="Profile"
-                  onMouseEnter={toggleDropdown}
-                >
-                  <Avatar
-                    name="User"
-                    boxSize="1.7em"
-                    bgColor="white"
-                    marginLeft={7}
-                    icon={
-                      <AvatarBadge
-                        boxSize={{ base: "0", md: "1em", sm: "0.8em" }}
-                        bg="green.500"
-                      />
-                    }
-                  />
-                </MenuButton>
-                <IconButton
-                  icon={<ChevronDownIcon color="white" boxSize="2em" />}
-                  variant="unstyled"
-                  aria-label="Toggle Dropdown"
-                  onMouseEnter={toggleDropdown}
-                />
-
-                <MenuListContainer
-                  isOpen={isDropdownOpen}
-                  onClose={onClose}
-                  onLoginRegisterClick={handleLoginRegisterClick}
-                />
-              </Menu>
-            </Flex> */}
 
             <Flex alignItems="center">
-              <div className="" style={{ marginRight: "-69px" }}>
+              <div className="" style={{ marginRight: "-56px" }}>
                 {token ? (
                   <Link to="/postproperty">
                     <button className="btn flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
@@ -777,16 +702,16 @@ export default function Nav() {
                   </Link>
                 )}
               </div>
-
               <SpacerComponent />
-              <Menu>
+
+              {/* <Menu>
               <MenuButton
                   as={Button}
                   borderRadius="l"
                   variant="unstyled"
                   aria-label="Profile"
                   onMouseEnter={toggleDropdown} 
-                  // onClick={toggleDropdown}
+                 
                 
                 >
                   <Avatar
@@ -812,19 +737,50 @@ export default function Nav() {
                   </Avatar>
 
                 </MenuButton>
-                {/* <IconButton
-                  icon={<ChevronDownIcon color="white" boxSize="2em" />}
-                  variant="unstyled"
-                  aria-label="Toggle Dropdown"
-                  onMouseEnter={toggleDropdown}
-                /> */}
+                <MenuListContainer
+                  isOpen={isDropdownOpen}
+                  onClose={onClose}
+                  onLoginRegisterClick={handleLoginRegisterClick}
+                />
+              </Menu> */}
 
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  borderRadius="l"
+                  variant="unstyled"
+                  aria-label="Profile"
+                  onMouseEnter={toggleDropdown}
+                >
+                  <Avatar
+                    boxSize={{ base: "1.7em", md: "1.8em" }}
+                    bgColor="white"
+                    marginLeft={{ base: 0, md: "9" }}
+                    icon={
+                      <AvatarBadge
+                        boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
+                        bg="red.500"
+                        border="2px"
+                        borderColor="white"
+                        darkBorderColor="gray.800"
+                        rounded="full"
+                      />
+                    }
+                  >
+                    <img
+                      className="w-16 h-10 rounded-full"
+                      src="https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001882.png"
+                      alt=""
+                    />
+                  </Avatar>
+                </MenuButton>
                 <MenuListContainer
                   isOpen={isDropdownOpen}
                   onClose={onClose}
                   onLoginRegisterClick={handleLoginRegisterClick}
                 />
               </Menu>
+
             </Flex>
           </Flex>
 
@@ -863,20 +819,22 @@ export default function Nav() {
                 >
                   Buy
                 </Link>
-          
 
-                {token ? <Link
-                  to={"/postproperty"}
-                  className="text-white font-semibold text-lg mx-3"
-                >
-                  <span onClick={checkUserAuth}>Sell</span>
-                </Link> :      <Link
-                  to={"/SignIn"}
-                  className="text-white font-semibold text-lg mx-3"
-                >
-                  Sell
-                </Link>}
-               
+                {token ? (
+                  <Link
+                    to={"/postproperty"}
+                    className="text-white font-semibold text-lg mx-3"
+                  >
+                    <span onClick={checkUserAuth}>Sell</span>
+                  </Link>
+                ) : (
+                  <Link
+                    to={"/SignIn"}
+                    className="text-white font-semibold text-lg mx-3"
+                  >
+                    Sell
+                  </Link>
+                )}
 
                 <Link
                   to={"/projects"}

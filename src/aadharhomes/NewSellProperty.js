@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import Nav from "./Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import { RadioGroup, Radio, Stack } from "@chakra-ui/react";
-import { event } from "jquery";
-const { Country, State, City } = require("country-state-city");
+const {  State, City } = require("country-state-city");
 const NewSellProperty = () => {
   const storedSellerId = localStorage.getItem("mySellerId");
   const [showSteps, setShowSteps] = useState(false);
@@ -26,7 +25,7 @@ const NewSellProperty = () => {
       "Flat/Apartment",
       "Independent House / Villa",
       "Independent / Builder Floor",
-      "1 RK/ Studio Apartment",
+      "Residential Land",
       "Serviced Apartment",
       "Farmhouse",
       "Other",
@@ -52,6 +51,8 @@ const NewSellProperty = () => {
     selectoption: "Select Property Type",
     subType: "",
   });
+
+  
 
   const resetData = () => {
     setSellProperty({
@@ -223,14 +224,10 @@ const NewSellProperty = () => {
   };
 
   const [selectedState, setSelectedState] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-
   // Get states of a country (e.g., India)
   const countryCode = "IN";
   const states = State.getStatesOfCountry(countryCode);
-
   // Get cities of a state (e.g., Rajasthan)
-  const stateCode = "RA";
   const cities = selectedState
     ? City.getCitiesOfState(countryCode, selectedState)
     : [];
@@ -249,11 +246,12 @@ const NewSellProperty = () => {
       <Nav />
       <section className=" py-12 text-gray-800 ">
         <div className="mx-auto flex max-w-md flex-col rounded-lg lg:max-w-screen-xl lg:flex-row">
+
           <div className="max-w-xl px-4 lg:pr-24 lg:pt-20">
             <h3 className="lg:text-5xl md:text-3xl  font-semibold">
               Post your property
             </h3>
-            <h3 className=" mb-3 lg:text-5xl md:text-3xl font-semibold text-red-400 ">
+            <h3 className=" mb-3 lg:text-5xl md:text-3xl font-semibold text-red-600 ">
               get the best prices
             </h3>
             <p className="mb-3 text-lg text-gray-600 text-justify lg:w-3/4 hidden md:block">
@@ -261,14 +259,16 @@ const NewSellProperty = () => {
               dedicated to providing advisory and mediation services for all
               your needs. you can expect us every time. All that is for you!
             </p>
+
             <div className="flex flex-col space-x-2 sm:flex-row space-y-4 sm:space-y-0 ml-[-10px] lg:pt-12">
               <button
-                className="rounded-full text-white text-md sm:text-lg md:text-md font-normal px-3 sm:px-6 py-2 sm:py-4 bg-red-400 hover:bg-red-500"
+                className="rounded-full text-white text-md sm:text-lg md:text-md font-normal px-3 sm:px-6 py-2 sm:py-4 bg-red-600 "
                 onClick={() => setShowSteps(!showSteps)}
               >
                 How It Works
               </button>
             </div>
+
             {showSteps && (
               <div className="fixed inset-0 hidden sm:block md:block lg:flex items-center  justify-center bg-gray-800 bg-opacity-75 ">
                 <div className="shadow-2xl rounded-xl px-4 py-4 bg-white relative w-1/2 h-70">
@@ -328,90 +328,26 @@ const NewSellProperty = () => {
                 </div>
               </div>
             )}
+            
           </div>
 
-          <div className="mt-8 mb-8 max-w-3/4  shadow-2xl sm:rounded-lg sm:shadow-lg lg:mt-0  bg-red-400 px-1">
-            {/* <div className="m-2">
-              <p className="text-2xl mx-2 text-white">
-                You're looking to<span>....</span>
-              </p>
-
-              <p>
-                <span
-                  className={`mx-2 px-3 py-1 rounded-2xl text-white border-2 hover:bg-red-600 hover:text-white ${
-                    sellProperty.propertyLooking === "Sell"
-                      ? "bg-red-600 text-white"
-                      : ""
-                  }`}
-                  onClick={() => handleOptionClick("Sell")}
-                >
-                  Sell
-                </span>{" "}
-                <span
-                  className={`px-3 text-white py-1 rounded-2xl border-2 hover:bg-red-600 hover:text-white ${
-                    sellProperty.propertyLooking === "rent"
-                      ? "bg-red-600 text-white"
-                      : ""
-                  }`}
-                  onClick={() => handleOptionClick("rent")}
-                >
-                  Rent/Lease
-                </span>{" "}
-              </p>
-            </div> */}
-
-            {/* <RadioGroup
-              onChange={(value) => handleOptionClick(value)}
-              value={sellProperty.propertyLooking}
-              className="m-2"
-            >
-               <Stack spacing={5}>
-              <p className="text-2xl mx-2 text-white">
-                You're looking to<span>....</span>
-              </p>
-
-              <p>
-                <Radio
-                  value="Sell"
-                  className={`mx-2 bg-white `}
-                  bgColor="blue"
-                  colorScheme='red'
-                  size="lg"
-                  text="white"
-                  spacing={-1}
-                >
-                  Sell
-                </Radio>{" "}
-                <Radio
-                  value="rent"
-                  className={`bg-white `}
-                  bgColor="blue"
-                  
-                  size="lg"
-                  spacing={1}
-                >
-                  Rent/Lease
-                </Radio>
-              </p>
-              </Stack>
-            </RadioGroup> */}
-
+          <div className="mt-8 mb-8 max-w-3/4    lg:mt-0 shadow-lg rounded-lg py-2   px-4">
             <RadioGroup
               onChange={(value) => handleOptionClick(value)}
               value={sellProperty.propertyLooking}
               className="m-2"
               defaultValue="2"
             >
-              <p className="text-2xl  text-white">
+              <p className="text-2xl  text-black">
                 You're looking to<span>....</span>
               </p>
 
-              <Stack spacing={5} direction="row">
+              <Stack spacing={5} direction="row" color="black">
                 <Radio colorScheme="blue" value="Sell" size="lg">
                   Sell
                 </Radio>
                 <Radio colorScheme="blue" value="rent" size="lg">
-                Rent/Lease
+                  Rent/Lease
                 </Radio>
               </Stack>
             </RadioGroup>
@@ -419,7 +355,7 @@ const NewSellProperty = () => {
               <div className="grid gap-3 md:grid-cols-2">
                 <div>
                   <select
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none text-gray-500"
+                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none text-black"
                     name="selectoption"
                     value={sellProperty.selectoption}
                     onChange={handleChangeValue}
@@ -434,7 +370,7 @@ const NewSellProperty = () => {
 
                 {sellProperty.selectoption !== "Select Property Type" && (
                   <select
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none text-gray-500"
+                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none text-black"
                     name="propertyType"
                     value={sellProperty.propertyType}
                     onChange={handleChangeValue}
@@ -455,7 +391,7 @@ const NewSellProperty = () => {
                   <select
                     value={sellProperty.state}
                     onChange={handleChangeStateValue}
-                    className="mt-2 h-10 w-full rounded-md text-gray-500 bg-white border px-3 outline-none"
+                    className="mt-2 h-10 w-full rounded-md text-black bg-white border px-3 outline-none"
                   >
                     <option value="">Select State</option>
                     {states.map((state) => (
@@ -472,7 +408,7 @@ const NewSellProperty = () => {
                       <select
                         value={sellProperty.city}
                         onChange={handleChangeCityValue}
-                        className="mt-2 h-10 w-full text-gray-500 rounded-md bg-white border px-3 outline-none"
+                        className="mt-2 h-10 w-full text-black rounded-md bg-white border px-3 outline-none"
                       >
                         <option value="Select City">Select City</option>
                         {cities.map((city) => (
@@ -493,7 +429,7 @@ const NewSellProperty = () => {
                   name="propertyName"
                   value={sellProperty.propertyName}
                   onChange={handleChangeValue}
-                  className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                  className="mt-3 h-10 w-full placeholder:text-black  rounded-md bg-white  border px-3 outline-none"
                 />
               </div>
 
@@ -504,7 +440,7 @@ const NewSellProperty = () => {
                   name="address"
                   value={sellProperty.address}
                   onChange={handleChangeValue}
-                  className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                  className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
                 />
               </div>
 
@@ -516,29 +452,43 @@ const NewSellProperty = () => {
                     name="price"
                     value={sellProperty.price}
                     onChange={handleChangeValue}
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
                   />
                 </div>
-                <div>
+
+                <div className="flex items-center">
                   <input
                     type="text"
                     placeholder="Area"
                     name="area"
                     value={sellProperty.area}
                     onChange={handleChangeValue}
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    className="mt-3 h-10 w-1/2 placeholder:text-black rounded-md bg-white border px-3 outline-none"
                   />
+
+                  <select
+                    name="areaUnit"
+                    value={sellProperty.areaUnit}
+                    onChange={handleChangeValue}
+                    className="mt-3 ml-2 h-10 w-1/2 rounded-md bg-white border px-2 outline-none"
+                  >
+                    <option value="sqft">Sqft</option>
+                    <option value="sqrd">Sqyd</option>
+                  </select>
+
                 </div>
+
+
               </div>
 
               <div>
                 <input
                   type="text"
-                  placeholder="Description"
+                  placeholder="Property Description"
                   name="description"
                   value={sellProperty.description}
                   onChange={handleChangeValue}
-                  className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                  className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
                 />
               </div>
 
@@ -550,7 +500,7 @@ const NewSellProperty = () => {
                     name="landMark"
                     value={sellProperty.landMark}
                     onChange={handleChangeValue}
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
                   />
                 </div>
                 <div>
@@ -561,7 +511,7 @@ const NewSellProperty = () => {
                     name="amenities"
                     value={sellProperty.amenities.join(",")}
                     onChange={handleChangeValueAmenities}
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
                   />
                 </div>
               </div>
@@ -574,12 +524,12 @@ const NewSellProperty = () => {
                     name="builtYear"
                     value={sellProperty.builtYear}
                     onChange={handleChangeValue}
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
                   />
                 </div>
                 <div>
                   <select
-                    className="mt-2 h-10 w-full rounded-md text-gray-500 border px-3 outline-none"
+                    className="mt-3 h-10 w-full placeholder:text-black rounded-md text-black border px-3 outline-none"
                     value={sellProperty.furnishing}
                     onChange={handleProjectfurnishing}
                   >
@@ -591,9 +541,9 @@ const NewSellProperty = () => {
                 </div>
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2 text-gray-500">
+              <div className="grid gap-3 md:grid-cols-2 text-black pt-1">
                 <div>
-                  <label htmlFor="frontImage" className=" text-white mx-3 ">
+                  <label htmlFor="frontImage" className=" text-black mx-3 ">
                     Upload Front Images:
                   </label>
                   <input
@@ -601,12 +551,12 @@ const NewSellProperty = () => {
                     name="frontImage"
                     onChange={(e) => handleFileChange(e, "frontImage")}
                     accept="image/*"
-                    className="mt-2 h-10 w-full rounded-md bg-white border text-gray-500 px-3 outline-none pt-1"
+                    className="mt-1 h-10 w-full rounded-md bg-white border text-black px-3 outline-none pt-1"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="otherImage" className=" text-white mx-3 ">
+                  <label htmlFor="otherImage" className=" text-black mx-3 ">
                     Upload Other Images:
                   </label>
                   <input
@@ -616,13 +566,14 @@ const NewSellProperty = () => {
                     onChange={handleOtherImageChange}
                     accept="image/*"
                     id="otherImage"
-                    className="mt-2 h-10 w-full rounded-md bg-white border text-gray-500 px-3 outline-none pt-1 mb-3"
+                    className="mt-1 h-10 w-full rounded-md bg-white border text-black px-3 outline-none pt-1 mb-3"
                   />
                 </div>
               </div>
+
               <div className="flex justify-center items-center">
                 <button
-                  className="rounded-lg text-white text-md sm:text-lg md:text-md border-2 font-normal px-2 sm:px-6 py-1 sm:py-4 bg-red-400 hover:bg-red-500"
+                  className="rounded-lg text-white px-4 text-md sm:text-lg md:text-md  font-normal  sm:px-6 py-1 sm:py-4 bg-red-600 hover:bg-red-700"
                   onClick={submitSellPropertyDetails}
                 >
                   Submit
@@ -630,6 +581,7 @@ const NewSellProperty = () => {
               </div>
             </div>
           </div>
+
         </div>
       </section>
       <Footer />

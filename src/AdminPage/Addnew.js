@@ -245,11 +245,12 @@ const AddNew = () => {
             <option value="Commercial Property">Commercial Property</option>
             <option value="Residential Flats">Residential Flats</option>
             <option value="SCO Plots">SCO Plots</option>
-            <option value="Deendayal Plots">Deen Dayal Plots</option>
+            <option value="Deen Dayal Plots">Deen Dayal Plots</option>
             <option value="Residential Plots">Residential Plots</option>
             <option value="Independent Floors">Independent Floors</option>
             <option value="Builder Floors">Builder Floors</option>
             <option value="Affordable Homes">Affordable Homes</option>
+            <option value="Villas">Villas</option>
           </select>
 
           
