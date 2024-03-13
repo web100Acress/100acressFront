@@ -338,13 +338,36 @@ const BannerPage = () => {
     projectGallery,
   } = projectViewDetails;
   const sliderImages = project_floorplan_Image || [];
-  const device = "desktop";
-  return (
+  
+  const eventData = {
+    context: "https://schema.org",
+    type: projectViewDetails.type,
+    name: projectViewDetails.projectName,
+    description: projectViewDetails.project_discripation,
+    startDate: "2024-03-10",
+    endDate: "2025-12-24",
+    // url: `https://www.100acress.com/${projectViewDetails.project_url}`,
+    // image: projectViewDetails.frontImage.url,
+    location: {
+      name: projectViewDetails.projectAddress,
+      type: "Place",
+      address: {
+        type: projectViewDetails.city,
+        name:projectViewDetails.projectAddress,
+      }
+    }
+  };
+
+  return (           
     <Wrapper
       className="section"
       style={{ overflowY: "hidden", overflowX: "hidden" }}
     >
       <Helmet>
+        {eventData.context}{eventData.type}{eventData.name}{eventData.description}
+        {eventData.startDate}{eventData.endDate}{eventData.url}{eventData.image}
+        {eventData.location.name} {eventData.location.type} {eventData.location.address.type}
+        {eventData.location.address.name}
         <title>{projectViewDetails.meta_title}</title>
         <meta
           name="description"

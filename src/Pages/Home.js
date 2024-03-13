@@ -14,7 +14,7 @@ import Footer from "../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { DataContext } from "../MyContext";
 function Home() {
-  const {trendingProject, featuredProject, affordable, upcoming, city} = useContext(DataContext)
+  const {trendingProject, featuredProject, affordable, upcoming, city} = useContext(DataContext);
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
@@ -48,11 +48,11 @@ function Home() {
           }}
         >
           Trending Properties
-          <Link to={"/projects"}>
+          {/* <Link to={"/projects"}>
             <span className="float-right text-sm text-red-600 hidden sm:block">
               View All{" "}
             </span>
-          </Link>
+          </Link> */}
         </h1>
         {
           <section className="flex flex-col bg-white items-center">
@@ -77,7 +77,7 @@ function Home() {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          <span style={{ float: "right" }} className="text-sm">
+                          <span style={{ float: "right" }} className="text-[13px]">
                             {item.builderName}
                           </span>
                           <br />
@@ -192,11 +192,11 @@ function Home() {
         }}
       >
         Featured Projects
-        <Link to={"/projects"}>
+        {/* <Link to={"/projects"}>
           <span className="float-right text-sm text-red-600 hidden sm:block">
             View All{" "}
           </span>
-        </Link>
+        </Link> */}
       </h1>
 
       {
@@ -350,11 +350,11 @@ function Home() {
             }}
           >
             Affordable Homes
-            <Link to={"/projects"}>
+            {/* <Link to={"/projects"}>
               <span className="float-right text-sm text-white hidden sm:block pt-3">
                 View All{" "}
               </span>
-            </Link>
+            </Link> */}
           </h1>
           {
             <section

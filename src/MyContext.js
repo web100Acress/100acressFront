@@ -11,6 +11,7 @@ export const DataProvider = ({ children }) => {
   const [affordable, setAffordable] = useState([]);
   const [city, setCity] = useState([]);
   const [allProjectData, setAllProjectData] = useState([]);
+  const [residencialProjects, setResidencialProjects]= useState([]);
 
   useEffect(() => {
     fetchAllProject();
@@ -24,9 +25,11 @@ export const DataProvider = ({ children }) => {
       const trendingProjects = projectsData.filter(
         (project) => project.projectOverview === "trending"
       );
+
       const upcomingProjects = projectsData.filter(
         (project) => project.projectOverview === "upcoming"
       );
+
       const featuredProjects = projectsData.filter(
         (project) => project.projectOverview === "featured"
       );
@@ -34,17 +37,24 @@ export const DataProvider = ({ children }) => {
       const affordable = projectsData.filter(
         (project) => project.type === "Affordable Homes"
       );
+      
+      const residencialProjects = projectsData.filter(
+        (project) => project.type === "Residential Flats"
+      );
 
-      const city = projectsData
-        .filter((project) => project.projectOverview === "delhi")
+      const city = projectsData.filter(
+        (project) => project.projectOverview === "delhi"
+      );
         
-
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
       setFeaturedProject(featuredProjects);
       setAffordable(affordable);
       setCity(city);
       setAllProjectData(res.data.data);
+      setResidencialProjects(residencialProjects);
+
+
     } catch (error) {
       console.log(error || error.message);
     }
@@ -59,6 +69,7 @@ export const DataProvider = ({ children }) => {
         upcoming,
         city,
         allProjectData,
+        residencialProjects
       }}
     >
       {children}

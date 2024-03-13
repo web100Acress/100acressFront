@@ -37,7 +37,7 @@ const Sidebar = () => {
             <Link to="/Admin/enquiries"className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0">
               <GoProjectSymlink className="icon fa-sm m-3" /> Enquiries
             </Link>
-            <Link to="/Admin/Projects" className="flex items-center hover:bg-gray-400 text-white text-center fa-xl p-0">
+            <Link to="/Admin/Projects/property" className="flex items-center hover:bg-gray-400 text-white text-center fa-xl p-0">
               <FaDiagramProject className="icon fa-sm m-3" /> Projects
             </Link>
             <Link to="/Admin/rent"className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0">

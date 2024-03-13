@@ -112,10 +112,11 @@ export default function SignIn() {
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
             
               if(roleResponse.data.User.role==="admin"){
-                history("/Admin/dashboard");
+                history("/admin/acress/property/aadhar");
               }else{
                 history("/");
               }
+
           } else {
             console.error("Role fetch failed:", roleResponse);
             alert(

@@ -4,7 +4,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate,
+  Navigate, 
 } from "react-router-dom";
 import Home from "./Pages/Home";
 import LoginMain from "./Components/Actual_Components/LoginMain";
@@ -83,6 +83,7 @@ import ProjectAddHighligths from "./AdminPage/ProjectAddHighligths";
 import PrivateRoute from "./PrivateRoute";
 import Blogging from "./Pages/Blogging";
 import { DataProvider } from "./MyContext";
+import ResidentialProjects from "./Components/HomePageComponents/ResidentialProjects";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -90,15 +91,14 @@ function App() {
     mobile: "1234567890",
   };
   const token = localStorage.getItem("myToken");
-  // const [data, setData] = useState('');
+  const [role, setRole] = useState(null);
+  
 
-  // useEffect(() => {
-  //   const storedData = localStorage.getItem('userRole');
-  //   if (storedData) {
-  //     setData(storedData);
-  //   }
-  // }, []);
-  // console.log(data, "ole")
+  useEffect(() => {
+    const userRole = localStorage.getItem("userRole");
+    setRole(userRole);
+  }, []);
+
   return (
     <DataProvider>
       <Wrapper className="section">
@@ -107,7 +107,7 @@ function App() {
             <Route
               path="/postproperty"
               element={
-                token !== null ? <NewSellProperty /> : <Navigate to="/SignIn" />
+                token !== null ? <NewSellProperty /> : <Navigate  to="/SignIn" />
               }
             />
             <Route path="/SignIn" element={<SignIn />} />
@@ -116,13 +116,14 @@ function App() {
             <Route path="/SignIn" element={<SignIn />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<Privacy />} />
-            <Route path="/termsandconditions" element={<TermsAndConditions/>}/>
+            <Route  path="/termsandconditions" element={<TermsAndConditions />} />
             <Route path="/projects" element={<Properties />} />
             <Route path="/rent" element={<RentPropViewCard />} />
             <Route path="/buy" element={<BuyPropViewCard />} />
             <Route path="/rent/:id" element={<RentViewDetails />} />
             <Route path="/buy/:id" element={<BuyViewDetails />} />
             <Route path="/propviewcard" element={<PropViewCardPro />} />
+            <Route path={`/property/residential`}  element={<ResidentialProjects />} />
 
             <Route path="/middlemain" element={<MiddleMain />} />
             <Route path="/viewallproperty" element={<ViewAllProperty />} />
@@ -132,15 +133,15 @@ function App() {
             <Route path="/resetpassword/:token" element={<ForgetPassword />} />
 
             <Route path="/forgetpassword" element={<ResetEmailPassword />} />
-            <Route path="/form" element={<Form registeredData={registeredData} />} />
+            <Route  path="/form" element={<Form registeredData={registeredData} />}/>
             <Route path="/protected/private/admin" element={<AdminMain />} />
-            <Route  path="/protected/private/admin/editProject/:url" element={<EditableProperty/>}/>
+            <Route  path="/protected/private/admin/editProject/:url" element={<EditableProperty />}/>
 
             <Route path="/knowabouts" element={<PropertyKnow />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/:pUrl" element={<BannerPage />} />
             <Route path="/about" element={<About />} />
-            <Route path="/userviewproperty/:id" element={<UserViewProperty/>}/>
+            <Route path="/userviewproperty/:id" element={<UserViewProperty />} />
             <Route path="/usereditproperty" element={<UserEditProperty />} />
 
             <Route path="*" element={<PageNotFound />} />
@@ -148,8 +149,8 @@ function App() {
 
             <Route path="/Admin/acress/dashboard" element={<Dashboard />} />
             <Route path="/Admin/viewproperty/:id" element={<ViewPropertyAdmin />}/>
-            <Route path="/Admin/viewproperty/viewdetails/:id" element={<ClientDetails/>}/>
-            <Route path="/Admin/viewproperty/editdetails/:id" element={<EditDetails />}/>
+            <Route path="/Admin/viewproperty/viewdetails/:id"  element={<ClientDetails />} />
+            <Route path="/Admin/viewproperty/editdetails/:id"  element={<EditDetails />} />
             <Route path="/admin/addnew" element={<Addnew />} />
             <Route path="/admin/adminproperty" element={<Adminproperty />} />
             <Route path="/Admin/blog" element={<Blog />} />
@@ -158,35 +159,46 @@ function App() {
             <Route path="/Admin/editProject" element={<EditProject />} />
             <Route path="/Admin/enquiries" element={<Enquiries />} />
             <Route path="/Admin/header" element={<Header />} />
-            <Route path="/Admin/Projects" element={<Projects />} />
+            <Route path="/Admin/Projects/property" element={<Projects />} />
             <Route path="/Admin/rent" element={<Rent />} />
             <Route path="/Admin/rent/view/:id" element={<RentView />} />
             <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
 
             {/* <Route
-              path="/admin/dashboard"
-              element={role !== "admin" ? <Sidebar /> : <Navigate to="/" />}
+              path="/admin/access/property/aadhar"
+              element={role === "admin" ? <Sidebar/> : <Navigate to="/" />}
             /> */}
 
-            {/* <Route
-              path="/admin/dashboard"
-              element={data !== "admin" ?<Navigate to="/" /> :<Sidebar />  }
-            /> */}
-            <Route path="/admin/dashboard" element={<Sidebar />} />
+            <Route path="/admin/acress/property/aadhar" element={<Sidebar />} />
+
             <Route path="/Admin/buy" element={<Buy />} />
             <Route path="/Admin/buy/view/:id" element={<BuyView />} />
             <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
             <Route path="/Admin/contactpage" element={<ContactPage />} />
-            <Route path="/Admin/ContactUs/UserProfile" element={<UserProfile />}/>
+            <Route
+              path="/Admin/ContactUs/UserProfile"
+              element={<UserProfile />}
+            />
             <Route path="/searchdata/:key" element={<SearchData />} />
             <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
             <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
-            <Route path="/Admin/projecteditbhk/:id" element={<ProjectEditBHK />}/>
-            <Route path="/Admin/ProjectsAddBhk/:id"  element={<ProjectsAddBhk />}/>
-            <Route path="/Admin/adminProperty" element={<Adminproperty/>}/>
-            <Route path="Admin/ProjectAddHighlights/:id" element={<ProjectAddHighligths/>}/>
-            <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />}/>}/>
-            
+            <Route
+              path="/Admin/projecteditbhk/:id"
+              element={<ProjectEditBHK />}
+            />
+            <Route
+              path="/Admin/ProjectsAddBhk/:id"
+              element={<ProjectsAddBhk />}
+            />
+            <Route path="/Admin/adminProperty" element={<Adminproperty />} />
+            <Route
+              path="Admin/ProjectAddHighlights/:id"
+              element={<ProjectAddHighligths />}
+            />
+            <Route
+              path="/dashboard"
+              element={<PrivateRoute element={<Dashboard />} />}
+            />
           </Routes>
         </Router>
       </Wrapper>
