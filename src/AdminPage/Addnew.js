@@ -21,7 +21,7 @@ const AddNew = () => {
     city: "",
     projectOverview: "",
     project_url: "",
-    project_status: "",
+    project_Status: "",
   });
 
   const resetData = () => {
@@ -45,7 +45,7 @@ const AddNew = () => {
       city: "",
       projectOverview: "",
       project_url: "",
-      project_status: "",
+      project_Status: "",
     });
   };
 
@@ -70,7 +70,7 @@ const AddNew = () => {
   };
 
   const handleProjectStatus = (event) =>{
-    setEditFromData({ ...editFromData, project_status: event.target.value });
+    setEditFromData({ ...editFromData, project_Status: event.target.value });
   }
 
   const [fileData, setFileData] = useState({
@@ -256,7 +256,7 @@ const AddNew = () => {
           
           <select
             className="text-gray-600 border px-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
-            value={editFromData.project_status}
+            value={editFromData.project_Status}
             onChange={handleProjectStatus}
           >
             <option value="" className="text-gray-600">Project Status</option>

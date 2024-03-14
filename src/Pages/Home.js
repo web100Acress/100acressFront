@@ -7,14 +7,15 @@ import SpacesAvailable from "../Components/HomePageComponents/Spaces";
 import SearchBar from "../Components/HomePageComponents/SearchBar";
 import styled from "styled-components";
 import OurServices from "../Components/HomePageComponents/ourServices";
-import Free from '../../src/Pages/Free'
+import Free from "../../src/Pages/Free";
 import { Helmet } from "react-helmet";
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { DataContext } from "../MyContext";
 function Home() {
-  const {trendingProject, featuredProject, affordable, upcoming, city} = useContext(DataContext);
+  const { trendingProject, featuredProject, affordable, upcoming, city } =
+    useContext(DataContext);
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
@@ -33,7 +34,7 @@ function Home() {
           <SearchBar />
         </div>
       </div>
-      
+
       <div className="">
         {" "}
         <h1
@@ -77,7 +78,10 @@ function Home() {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          <span style={{ float: "right" }} className="text-[13px]">
+                          <span
+                            style={{ float: "right" }}
+                            className="text-[13px]"
+                          >
                             {item.builderName}
                           </span>
                           <br />
@@ -124,6 +128,14 @@ function Home() {
           }}
         >
           Upcoming Projects
+          <Link to={"/projects/upcomming"} target="_top">
+            <span
+              className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block group bg-gradient-to-br from-red-600 to-red-600 focus:outline-none focus:ring-4 animate-pulse"
+              style={{ margin: "16px" }}
+            >
+              View All {" "}<i class="fa-solid fa-angle-right"></i>
+            </span>
+          </Link>
         </h1>
         {
           <section className="flex flex-col items-center bg-orange-100">
@@ -183,7 +195,7 @@ function Home() {
       </div>
       <SpacesAvailable />
 
-      <h1
+      <h2
         className="xjUWI "
         style={{
           fontSize: "xx-large",
@@ -197,7 +209,7 @@ function Home() {
             View All{" "}
           </span>
         </Link> */}
-      </h1>
+      </h2>
 
       {
         <section className="flex flex-col  items-center">
@@ -253,7 +265,7 @@ function Home() {
       }
       <div className="py-3" style={{ backgroundColor: "#00314f" }}>
         {" "}
-        <h1
+        <h3
           className="xjUWI text-white "
           style={{
             fontSize: "xx-large",
@@ -270,7 +282,7 @@ function Home() {
               View All{" "}
             </span>
           </Link>
-        </h1>
+        </h3>
         {
           <section
             className="flex flex-col pt-4 
@@ -332,13 +344,13 @@ function Home() {
       </div>
 
       <Cities />
-      <StarCarousel />
+      {/* <StarCarousel /> */}
       <FormHome />
 
-      <div className="pt-8">
+      <div className="">
         <div style={{ backgroundColor: "#00314f" }}>
           {" "}
-          <h1
+          <h3
             className="xjUWI text-white pt-3 "
             style={{
               fontSize: "xx-large",
@@ -355,7 +367,7 @@ function Home() {
                 View All{" "}
               </span>
             </Link> */}
-          </h1>
+          </h3>
           {
             <section
               className="flex flex-col pt-4
@@ -421,7 +433,7 @@ function Home() {
         </div>
       </div>
 
-      <h1
+      <h3
         className="xjUWI "
         style={{
           fontSize: "xx-large",
@@ -430,7 +442,7 @@ function Home() {
         }}
       >
         Services We Offer
-      </h1>
+      </h3>
 
       <OurServices />
       <WhyChoose />
@@ -446,7 +458,7 @@ function Home() {
           </a>
         </div>
       </div>
-      <Free/>
+      <Free />
       <Footer />
     </Wrapper>
   );

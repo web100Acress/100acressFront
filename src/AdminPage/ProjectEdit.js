@@ -34,7 +34,8 @@ const ProjectEdit = () => {
     type: "",
     project_url: "",
     meta_title:"",
-    meta_description:""
+    meta_description:"",
+    project_Status:""
   });
 
   const { id } = useParams();
@@ -260,6 +261,28 @@ const ProjectEdit = () => {
                             setValues({
                               ...values,
                               project_discripation: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Project Status :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          name="project_Status"
+                          value={values.project_Status}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              project_Status: e.target.value,
                             })
                           }
                         />

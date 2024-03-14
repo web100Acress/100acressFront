@@ -5,6 +5,7 @@ import axios from "axios";
 import { RadioGroup, Radio, Stack } from "@chakra-ui/react";
 const {  State, City } = require("country-state-city");
 const NewSellProperty = () => {
+  
   const storedSellerId = localStorage.getItem("mySellerId");
   const [showSteps, setShowSteps] = useState(false);
   const sellerId = JSON.parse(storedSellerId);
@@ -232,9 +233,15 @@ const NewSellProperty = () => {
     ? City.getCitiesOfState(countryCode, selectedState)
     : [];
 
+  // const handleChangeStateValue = (event) => {
+  //   setSelectedState(event.target.value);
+  //   setSellProperty({ ...sellProperty, state: event.target.value });
+  // };
   const handleChangeStateValue = (event) => {
-    setSelectedState(event.target.value);
-    setSellProperty({ ...sellProperty, state: event.target.value });
+    const selectedStateValue = event.target.value;
+    setSelectedState(selectedStateValue);
+    // Assuming `setSellProperty` is updating the state in some context
+    setSellProperty({ ...sellProperty, state: selectedStateValue });
   };
 
   const handleChangeCityValue = (event) => {

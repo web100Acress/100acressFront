@@ -84,6 +84,7 @@ import PrivateRoute from "./PrivateRoute";
 import Blogging from "./Pages/Blogging";
 import { DataProvider } from "./MyContext";
 import ResidentialProjects from "./Components/HomePageComponents/ResidentialProjects";
+import UpComingProjects from "./Components/HomePageComponents/UpComingProjects";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -123,7 +124,8 @@ function App() {
             <Route path="/rent/:id" element={<RentViewDetails />} />
             <Route path="/buy/:id" element={<BuyViewDetails />} />
             <Route path="/propviewcard" element={<PropViewCardPro />} />
-            <Route path={`/property/residential`}  element={<ResidentialProjects />} />
+            <Route path="/property/residential"  element={<ResidentialProjects />} />
+            <Route path="/projects/upcomming" element={<UpComingProjects />} />
 
             <Route path="/middlemain" element={<MiddleMain />} />
             <Route path="/viewallproperty" element={<ViewAllProperty />} />
@@ -170,35 +172,19 @@ function App() {
             /> */}
 
             <Route path="/admin/acress/property/aadhar" element={<Sidebar />} />
-
             <Route path="/Admin/buy" element={<Buy />} />
             <Route path="/Admin/buy/view/:id" element={<BuyView />} />
             <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
             <Route path="/Admin/contactpage" element={<ContactPage />} />
-            <Route
-              path="/Admin/ContactUs/UserProfile"
-              element={<UserProfile />}
-            />
+            <Route path="/Admin/ContactUs/UserProfile" element={<UserProfile />}/>
             <Route path="/searchdata/:key" element={<SearchData />} />
             <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
             <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
-            <Route
-              path="/Admin/projecteditbhk/:id"
-              element={<ProjectEditBHK />}
-            />
-            <Route
-              path="/Admin/ProjectsAddBhk/:id"
-              element={<ProjectsAddBhk />}
-            />
+            <Route path="/Admin/projecteditbhk/:id" element={<ProjectEditBHK />}/>
+            <Route path="/Admin/ProjectsAddBhk/:id" element={<ProjectsAddBhk />} />
             <Route path="/Admin/adminProperty" element={<Adminproperty />} />
-            <Route
-              path="Admin/ProjectAddHighlights/:id"
-              element={<ProjectAddHighligths />}
-            />
-            <Route
-              path="/dashboard"
-              element={<PrivateRoute element={<Dashboard />} />}
-            />
+            <Route path="Admin/ProjectAddHighlights/:id" element={<ProjectAddHighligths />} />
+            <Route path="/dashboard" element={<PrivateRoute element={<Dashboard/>}/>}/>
           </Routes>
         </Router>
       </Wrapper>

@@ -49,7 +49,7 @@ const ProjectView = () => {
     };
     fetchData();
   }, []);
-
+  console.log(viewDetails,"viewDetails")
   return (
     <div style={{overflowX:"hidden"}}>
       <Sidebar />
@@ -230,7 +230,7 @@ const ProjectView = () => {
                     <span className="text-red-600 font-semibold ">
                       Project Status :{" "}
                       <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.project_status}
+                        {viewDetails.project_Status}
                       </span>
                     </span>
                   </th>

@@ -9,7 +9,7 @@ function SpacesAvailable() {
           Choose the Best For you
         </div>
         <div className="_6sknMP">
-          <Link to={`/property/residential`}>
+          <Link to={`/property/residential`} target="_top">
           <div className="_ksjMM _1fe2" title="Residential Projects">
             <p className="_9gncbH">Residential</p>
             <p className="_4rgjvNN">Projects</p>

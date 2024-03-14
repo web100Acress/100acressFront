@@ -102,7 +102,7 @@ const BannerPage = () => {
   const sliderRef = React.createRef();
   const [projectViewDetails, setProjectViewDetails] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-
+console.log(projectViewDetails,"projectViewDetailsprojectViewDetails")
   const settings1 = {
     showStatus: false,
     dots: false,
