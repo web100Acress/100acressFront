@@ -13,6 +13,17 @@ import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { DataContext } from "../MyContext";
+import { ScaleLoader } from "react-spinners";   
+        const keyframes = `
+  @keyframes moveHorizontal {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+`;
 function Home() {
   const { trendingProject, featuredProject, affordable, upcoming, city } =
     useContext(DataContext);
@@ -78,12 +89,12 @@ function Home() {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          <span
+                          {/* <span
                             style={{ float: "right" }}
                             className="text-[13px]"
                           >
                             {item.builderName}
-                          </span>
+                          </span> */}
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
                             {item.projectAddress}
@@ -128,12 +139,22 @@ function Home() {
           }}
         >
           Upcoming Projects
-          <Link to={"/projects/upcomming"} target="_top">
+          {/* <Link to={"/projects/upcoming"} target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block group bg-gradient-to-br from-red-600 to-red-600 focus:outline-none focus:ring-4 animate-pulse"
               style={{ margin: "16px" }}
             >
               View All {" "}<i class="fa-solid fa-angle-right"></i>
+            </span>
+          </Link> */}
+          <Link to="/projects/upcoming" target="_top">
+            <span
+              className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
+              style={{ display: "flex", alignItems: "center", margin: "16px" }}
+            >
+              <ScaleLoader color="#FFFFFF" height={20} width={3} />
+              <style>{keyframes}</style>
+              <span style={{ marginLeft: "8px" }}>View All </span>
             </span>
           </Link>
         </h1>

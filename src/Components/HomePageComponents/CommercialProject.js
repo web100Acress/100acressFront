@@ -1,21 +1,21 @@
 import React,{useContext} from 'react'
-import Nav from "../../aadharhomes/Nav";
-import Footer from "../Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
+import Nav from '../../aadharhomes/Nav';
+import Footer from '../Actual_Components/Footer';
 import { Link } from "react-router-dom";
-const UpComingProjects = () => {
-    const {allupcomingProject} = useContext(DataContext)
+import { DataContext } from "../../MyContext";
+const CommercialProject = () => {
+  const {commercialProject} = useContext(DataContext)
   return (
     <div>
       <Nav />
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-        Upcoming Projects
+        Commercial Projects
         </h1>
       </div>
       <section className="flex flex-col items-center">
             <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-              {allupcomingProject.map((item, index) => {
+              {commercialProject.map((item, index) => {
                 const pUrl = item.project_url;
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
@@ -71,4 +71,4 @@ const UpComingProjects = () => {
   )
 }
 
-export default UpComingProjects
+export default CommercialProject

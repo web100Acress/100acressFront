@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+
+import React, { useState } from "react";
 import axios from "axios";
 
 function FormHome() {
@@ -22,9 +23,7 @@ function FormHome() {
 
   const handleInquirySubmitData = async (e) => {
     e.preventDefault();
-
     const { name, email, mobile, message } = formDataInquiry;
-
     if (!name || !email || !mobile || !message) {
       alert("Please fill out all fields.");
       return;
@@ -55,9 +54,9 @@ function FormHome() {
   return (
     <section className="">
       <div id="form-container" className="flex justify-center items-center bg-white py-10 px-8 xl:px-16 lg:px-10 sm:px-6 xs:px-4">
-        <div className="text-white w-full max-w-7xl  bg-red-600 rounded-lg overflow-hidden">
+        <div className="text-white w-full max-w-7xl h-full  bg-red-600 rounded-lg overflow-hidden">
           <div className="flex flex-col md:flex-row ">
-            <div className="w-full md:w-1/2 px-4 py-4">
+            <div className="w-full h-full md:w-1/2 px-4 py-4">
               <p className="font-semibold text-lg lg:text-2xl text-white  md:text-2xl sm:text-base text-center">
                 Let us find your Dream Property
               </p>
@@ -108,11 +107,11 @@ function FormHome() {
                 </button>
               </div>
             </div>
-            <div className="hidden md:block w-full md:w-1/2">
+            <div className="hidden md:block w-full  md:w-1/2">
               <img
                 src="../../Images/Formcontact.png"
                 alt="expertImage"
-                className="w-full object-fit h-full "
+                className="w-full object-fit h-full"
               />
             </div>
 

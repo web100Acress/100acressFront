@@ -31,7 +31,7 @@ const UserAdmin = () => {
     const [viewAll, setViewAll] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage] = useState(10);
-
+    const [searchTerm, setSearchTerm] = useState("");
     useEffect(() => {
       const fetchData = async () => {
         try {
@@ -44,21 +44,45 @@ const UserAdmin = () => {
       fetchData();
     }, []);
 
+    const filteredProjects = viewAll.filter(
+      (item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-    const currentRows = viewAll.slice(indexOfFirstRow, indexOfLastRow);
+    const currentRows = filteredProjects.slice(indexOfFirstRow, indexOfLastRow);
   
     const paginate = (pageNumber) => {
       setCurrentPage(pageNumber);
     };
+    const handleSearch = (e) => {
+      setSearchTerm(e.target.value);
+      setCurrentPage(1);
+    };
+
+    
   
     
   return (
     <>
     <Sidebar />
     <div  className="" style={customStyle} >
-      <div className="flex justify-end mb-2 mt-2 mr-20">
-      </div>
+    <div
+          className="flex items-center mb-2 mt-2"
+          style={{ marginLeft: "100px" }}
+        >
+          <button className="text-bold bg-red-600 p-2 text-white rounded-md mr-10">
+            Search
+          </button>
+          <input
+            type="text"
+            placeholder="Search..."
+            className="p-2 border-b-2 w-50 border-red-600 text-black placeholder-black outline-none rounded-sm"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+          </div>
       <div className="flex justify-center items-center mt-0">
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-5/6 mt-0">
           <table className="w-full text-sm text-left rtl:text-right text-black-100 dark:text-black-100 ">

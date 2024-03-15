@@ -7,7 +7,7 @@ function Cities() {
         <p className="px-10 font-semibold text-xl xl:text-4xl lg:text-3xl pt-4 md:text-2xl">Gurugram Prime Locations</p>
         <div className="gdmJO d-flex justify-content-between px-4 text-center align-items-center">
           <div className="cvBMLN text-justify">
-            <div className="asdDRsfVN bg-one ">
+            <div className="asdDRsfVN bg-one   ">
               <p className='items-center'>Sohna Road</p>
             </div>
           </div>
@@ -43,7 +43,7 @@ function Cities() {
           </div>
           <div className="cvBMLN">
             <div className="asdDRsfVN bg-eight ">
-              <p className=''>Southern Peripheral Road</p>
+              <p>Southern Peripheral Road</p>
             </div>
           </div>
           <div className="cvBMLN text-justify">
@@ -112,6 +112,7 @@ const Wrapper = styled.section`
     cursor: pointer;
     border-radius: 13px;
     text-align: center;
+
   }
 
   .asdDRsfVN {
@@ -123,6 +124,7 @@ const Wrapper = styled.section`
     -moz-transition: all 0.5s;
     -o-transition: all 0.5s;
     transition: all 0.5s;
+    
   }
 
   .bg-one {
@@ -178,8 +180,17 @@ const Wrapper = styled.section`
   .bg-one:hover,
   .bg-two:hover,
   .bg-three:hover,
-  .bg-four:hover {
-    filter: grayscale(0.60);
+  .bg-four:hover,
+  .bg-five:hover,
+  .bg-six:hover,
+  .bg-seven:hover,
+  .bg-eight:hover,
+  .bg-nine:hover,
+  .bg-ten:hover {
+    // filter: grayscale(0.80);
+    opacity: 1;
+    filter: brightness(90%);
+   
   }
 
   .cvBMLN:hover .asdDRsfVN,
@@ -189,6 +200,7 @@ const Wrapper = styled.section`
     -webkit-transform: scale(1.2);
     -o-transform: scale(1.2);
     transform: scale(1.2);
+    
   }
 
   .cvBMLN p {
@@ -199,6 +211,7 @@ const Wrapper = styled.section`
     font-weight: bold;
     color: white;
     transition: 0.5s;
+    
   }
 
   .cvBMLN:hover p {

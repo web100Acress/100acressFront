@@ -1,17 +1,17 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
-
 export const DataContext = createContext();
-
 export const DataProvider = ({ children }) => {
+
   const [trendingProject, setTrendingProject] = useState([]);
   const [featuredProject, setFeaturedProject] = useState([]);
-
   const [upcoming, setUpcoming] = useState([]);
   const [affordable, setAffordable] = useState([]);
   const [city, setCity] = useState([]);
   const [allProjectData, setAllProjectData] = useState([]);
-  const [residencialProjects, setResidencialProjects]= useState([]);
+  const [residencialProjects, setResidencialProjects] = useState([]);
+  const [allupcomingProject, setAllUpComingProject]= useState([]);
+  const [commercialProject, setAllCommercialProject] = useState([]);
 
   useEffect(() => {
     fetchAllProject();
@@ -29,7 +29,7 @@ export const DataProvider = ({ children }) => {
       const upcomingProjects = projectsData.filter(
         (project) => project.projectOverview === "upcoming"
       );
-       console.log(upcomingProjects,"upcomingProjects")
+
       const featuredProjects = projectsData.filter(
         (project) => project.projectOverview === "featured"
       );
@@ -37,7 +37,7 @@ export const DataProvider = ({ children }) => {
       const affordable = projectsData.filter(
         (project) => project.type === "Affordable Homes"
       );
-      
+
       const residencialProjects = projectsData.filter(
         (project) => project.type === "Residential Flats"
       );
@@ -45,7 +45,17 @@ export const DataProvider = ({ children }) => {
       const city = projectsData.filter(
         (project) => project.projectOverview === "delhi"
       );
-        
+
+      const allupcomingProject = projectsData.filter(
+        (project) => project.project_Status === "comingsoon"
+      )
+
+      const commercialProject = projectsData.filter(
+        (project) => project.type === "Commercial Property"
+      )
+
+      
+
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
       setFeaturedProject(featuredProjects);
@@ -53,8 +63,9 @@ export const DataProvider = ({ children }) => {
       setCity(city);
       setAllProjectData(res.data.data);
       setResidencialProjects(residencialProjects);
-
-
+      setAllUpComingProject(allupcomingProject);
+      setAllCommercialProject(commercialProject);
+      // console.log(commercialProject, "setAllUpComingProject");
     } catch (error) {
       console.log(error || error.message);
     }
@@ -69,7 +80,9 @@ export const DataProvider = ({ children }) => {
         upcoming,
         city,
         allProjectData,
-        residencialProjects
+        residencialProjects,
+        allupcomingProject,
+        commercialProject
       }}
     >
       {children}

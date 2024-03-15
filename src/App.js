@@ -85,6 +85,7 @@ import Blogging from "./Pages/Blogging";
 import { DataProvider } from "./MyContext";
 import ResidentialProjects from "./Components/HomePageComponents/ResidentialProjects";
 import UpComingProjects from "./Components/HomePageComponents/UpComingProjects";
+import CommercialProject from "./Components/HomePageComponents/CommercialProject";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -125,7 +126,8 @@ function App() {
             <Route path="/buy/:id" element={<BuyViewDetails />} />
             <Route path="/propviewcard" element={<PropViewCardPro />} />
             <Route path="/property/residential"  element={<ResidentialProjects />} />
-            <Route path="/projects/upcomming" element={<UpComingProjects />} />
+            <Route path="/projects/upcoming" element={<UpComingProjects />} />
+            <Route path="/projects/commerial" element={<CommercialProject/>}/>
 
             <Route path="/middlemain" element={<MiddleMain />} />
             <Route path="/viewallproperty" element={<ViewAllProperty />} />

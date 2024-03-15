@@ -16,10 +16,12 @@ function SpacesAvailable() {
           </div>
           </Link>
 
-          <div className="_ksjMM _1fe4" title="Commercial Property">
+         <Link to={`/projects/commerial`} target="_top">
+         <div className="_ksjMM _1fe4" title="Commercial Projects">
             <p className="_9gncbH">Commercial</p>
             <p className="_4rgjvNN">Projects</p>
           </div>
+         </Link>
 
           <div className="_ksjMM _1fe6" title="Shop-Cum Offices">
             <p className="_9gncbH">Shop-Cum</p>
