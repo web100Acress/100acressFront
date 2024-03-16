@@ -10,7 +10,7 @@ const ScoPlots = () => {
         <Nav/>
         <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-        Sco Plots
+        SCO Plots in Gurugram
         </h1>
       </div>
       <section className="flex flex-col items-center">
@@ -35,9 +35,9 @@ const ScoPlots = () => {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          <span style={{ float: "right" }} className="text-sm">
+                          {/* <span style={{ float: "right" }} className="text-sm">
                             {item.builderName}
-                          </span>
+                          </span> */}
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
                             {item.projectAddress}
