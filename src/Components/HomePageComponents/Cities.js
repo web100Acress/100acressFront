@@ -56,8 +56,7 @@ function Cities() {
               <p>Golf Course Extn Road</p>
             </div>
           </div>
-        </div>
-     
+        </div>   
       </div>
     </Wrapper>
   );
@@ -189,7 +188,8 @@ const Wrapper = styled.section`
   .bg-ten:hover {
     // filter: grayscale(0.80);
     opacity: 1;
-    filter: brightness(90%);
+    // filter: brightness(90%);
+    filter: gray saturate(0%) brightness(70%) contrast(1000%);
    
   }
 

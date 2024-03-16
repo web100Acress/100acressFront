@@ -12,14 +12,16 @@ const customStyle = {
 };
 
 const ProjectEditBHK = () => {
-  const [viewBHK, setViewBHK] = useState([]);
+
   const { id } = useParams();
+  const [viewBHK, setViewBHK] = useState([]);
+  
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get(`https://api.100acress.com/bhk_edit/${id}`);
-        console.log(res,"fdfdfg")
+        console.log(res,"dsdfdf fsdfsdfsdfsdf fsdfsdfdsfs")
         setViewBHK(res.data.data.BhK_Details[0]);
       } catch (error) {
         console.log(error);
@@ -30,10 +32,11 @@ const ProjectEditBHK = () => {
 
   const submitBHKFromData = async (e) => {
     try {
-      const res = axios.post(
+      const res = await axios.post(
         `https://api.100acress.com/bhk_update/${id}`,
         viewBHK
       );
+
       if (res.ok) {
         console.log("User updated successfully");
       }

@@ -10,24 +10,25 @@ function SpacesAvailable() {
         </div>
         <div className="_6sknMP">
           <Link to={`/property/residential`} target="_top">
-          <div className="_ksjMM _1fe2" title="Residential Projects">
-            <p className="_9gncbH">Residential</p>
-            <p className="_4rgjvNN">Projects</p>
-          </div>
+            <div className="_ksjMM _1fe2" title="Residential Projects">
+              <p className="_9gncbH">Residential</p>
+              <p className="_4rgjvNN">Projects</p>
+            </div>
           </Link>
 
-         <Link to={`/projects/commerial`} target="_top">
-         <div className="_ksjMM _1fe4" title="Commercial Projects">
-            <p className="_9gncbH">Commercial</p>
-            <p className="_4rgjvNN">Projects</p>
-          </div>
-         </Link>
+          <Link to={`/projects/commerial`} target="_top">
+            <div className="_ksjMM _1fe4" title="Commercial Projects">
+              <p className="_9gncbH">Commercial</p>
+              <p className="_4rgjvNN">Projects</p>
+            </div>
+          </Link>
 
-          <div className="_ksjMM _1fe6" title="Shop-Cum Offices">
-            <p className="_9gncbH">Shop-Cum</p>
-            <p className="_4rgjvNN">Offices</p>
-          </div>
-
+          <Link to={`/sco/plots`} target="_top">
+            <div className="_ksjMM _1fe6" title="Plots Sco">
+              <p className="_9gncbH">Plots</p>
+              <p className="_4rgjvNN">Sco</p>
+            </div>
+          </Link>
           <div className="_ksjMM _1fe7" title="Builder & Independent">
             <p className="_9gncbH">Builder & Independent</p>
             <p className="_4rgjvNN"> Floors</p>

@@ -12,6 +12,7 @@ export const DataProvider = ({ children }) => {
   const [residencialProjects, setResidencialProjects] = useState([]);
   const [allupcomingProject, setAllUpComingProject]= useState([]);
   const [commercialProject, setAllCommercialProject] = useState([]);
+  const [scoPlots, setAllScoPlots] = useState([]);
 
   useEffect(() => {
     fetchAllProject();
@@ -54,6 +55,10 @@ export const DataProvider = ({ children }) => {
         (project) => project.type === "Commercial Property"
       )
 
+      const scoPlots = projectsData.filter(
+        (project) => project.type === "SCO Plots"
+      )
+
       
 
       setTrendingProject(trendingProjects);
@@ -65,6 +70,7 @@ export const DataProvider = ({ children }) => {
       setResidencialProjects(residencialProjects);
       setAllUpComingProject(allupcomingProject);
       setAllCommercialProject(commercialProject);
+      setAllScoPlots(scoPlots)
       // console.log(commercialProject, "setAllUpComingProject");
     } catch (error) {
       console.log(error || error.message);
@@ -82,7 +88,8 @@ export const DataProvider = ({ children }) => {
         allProjectData,
         residencialProjects,
         allupcomingProject,
-        commercialProject
+        commercialProject,
+        scoPlots
       }}
     >
       {children}

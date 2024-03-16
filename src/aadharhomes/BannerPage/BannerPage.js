@@ -1,13 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
-import Slider from "react-slick";
+import React, { useEffect, useState } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Glide from "@glidejs/glide";
 import Modal from "react-modal";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -99,10 +96,9 @@ const BannerPage = () => {
   };
 
   const { pUrl } = useParams();
-  const sliderRef = React.createRef();
   const [projectViewDetails, setProjectViewDetails] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-console.log(projectViewDetails,"projectViewDetailsprojectViewDetails")
+
   const settings1 = {
     showStatus: false,
     dots: false,
@@ -338,36 +334,13 @@ console.log(projectViewDetails,"projectViewDetailsprojectViewDetails")
     projectGallery,
   } = projectViewDetails;
   const sliderImages = project_floorplan_Image || [];
-  
-  const eventData = {
-    context: "https://schema.org",
-    type: projectViewDetails.type,
-    name: projectViewDetails.projectName,
-    description: projectViewDetails.project_discripation,
-    startDate: "2024-03-10",
-    endDate: "2025-12-24",
-    // url: `https://www.100acress.com/${projectViewDetails.project_url}`,
-    // image: projectViewDetails.frontImage.url,
-    location: {
-      name: projectViewDetails.projectAddress,
-      type: "Place",
-      address: {
-        type: projectViewDetails.city,
-        name:projectViewDetails.projectAddress,
-      }
-    }
-  };
 
-  return (           
+  return (
     <Wrapper
       className="section"
       style={{ overflowY: "hidden", overflowX: "hidden" }}
     >
       <Helmet>
-        {eventData.context}{eventData.type}{eventData.name}{eventData.description}
-        {eventData.startDate}{eventData.endDate}{eventData.url}{eventData.image}
-        {eventData.location.name} {eventData.location.type} {eventData.location.address.type}
-        {eventData.location.address.name}
         <title>{projectViewDetails.meta_title}</title>
         <meta
           name="description"
@@ -388,12 +361,12 @@ console.log(projectViewDetails,"projectViewDetailsprojectViewDetails")
             left: 0,
             right: 0,
             padding: "5px",
-            backgroundColor: "#fff", // Set your desired background color
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)", // Add a subtle box shadow
+            backgroundColor: "#fff",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            zIndex: 1000, // Set a high z-index to make sure it's above other content
+            zIndex: 1000,
           }}
         >
           <img
@@ -593,48 +566,14 @@ console.log(projectViewDetails,"projectViewDetailsprojectViewDetails")
 
         {/* Extra Code */}
 
-        <div className="pt-3">
+        {/* <div className="pt-3">
           <div className="flex justify-center items-center rounded h-auto bg-[#F1F1FE]">
             <div className="text-black w-full overflow-hidden">
               <div className="flex flex-col md:flex-row">
-                {/* <div className="w-full md:w-1/2 sm:w-full p-4 text-black">
-                  <span class="lg:text-3xl md:text-2xl sm:text-base text-justify text-gray-600 font-semibold">
-                    Highlights of {projectViewDetails.projectName}
-                  </span>
-
-                  <div className="mt-4">
-                    {highlight &&
-                      Array.isArray(highlight) &&
-                      highlight.length > 0 &&
-                      highlight.map((item, index) => (
-                        <ul
-                          className="list-disc"
-                          style={{ listStyleType: "circle" }}
-                          key={index}
-                        >
-                          <li className="mb-2 text-black">
-                            {item.highlight_Point}
-                          </li>
-                        </ul>
-                      ))}
-                  </div>
-                </div>
-
-                <div className="md:block w-1/2 overflow-hidden hidden sm:block h-auto">
-                  {projectViewDetails?.highlightImage?.url && (
-                    <img
-                      src={projectViewDetails.highlightImage.url}
-                      alt={`${projectViewDetails.projectName}`}
-                      className="w-full  object-fit"
-                    />
-                  )}
-                </div> */}
-
                 <div className="w-full md:w-1/2 sm:w-full p-4 text-black">
                   <span class="lg:text-3xl md:text-2xl sm:text-base text-justify text-gray-600 font-semibold">
                     Highlights of {projectViewDetails.projectName}
                   </span>
-
                   <div className="mt-4">
                     {highlight &&
                       Array.isArray(highlight) &&
@@ -653,12 +592,52 @@ console.log(projectViewDetails,"projectViewDetailsprojectViewDetails")
                   </div>
                 </div>
 
-                <div className="md:block w-1/2 overflow-hidden hidden sm:block">
+                <div className=" w-1/2 overflow-hidden   ">
                   {projectViewDetails?.highlightImage?.url && (
                     <img
                       src={projectViewDetails.highlightImage.url}
                       alt={`${projectViewDetails.projectName}`}
                       className="w-full h-auto object-fit"
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> */}
+
+        <div className="pt-3">
+          <div className="flex justify-center items-stretch rounded h-auto bg-[#F1F1FE]">
+            <div className="text-black w-full flex flex-col">
+              <div className="flex flex-col md:flex-row h-full">
+                <div className="w-full md:w-1/2 sm:w-full p-4 text-black">
+                  <span class="lg:text-3xl md:text-2xl sm:text-base text-justify text-gray-600 font-semibold">
+                    Highlights of {projectViewDetails.projectName}
+                  </span>
+                  <div className="mt-4">
+                    {highlight &&
+                      Array.isArray(highlight) &&
+                      highlight.length > 0 &&
+                      highlight.map((item, index) => (
+                        <ul
+                          className="list-disc"
+                          style={{ listStyleType: "circle" }}
+                          key={index}
+                        >
+                          <li className="mb-2 text-black">
+                            {item.highlight_Point}
+                          </li>
+                        </ul>
+                      ))}
+                  </div>
+                </div>
+
+                <div className="w-full md:w-1/2 overflow-hidden flex items-center">
+                  {projectViewDetails?.highlightImage?.url && (
+                    <img
+                      src={projectViewDetails.highlightImage.url}
+                      alt={`${projectViewDetails.projectName}`}
+                      className="w-full h-full object-cover"
                     />
                   )}
                 </div>
@@ -838,7 +817,7 @@ console.log(projectViewDetails,"projectViewDetailsprojectViewDetails")
 
         <div className="flex flex-col items-center justify-center mt-2 md:mt-8 lg:h-32 sm:h-28 shadow-xl">
           <span className="font-semibold lg:text-xl md:text-xl sm:text-base text-gray-600 text-center mb-2">
-            CALL NOW TO SPEAK TO AN EXPERT
+            CALL NOW 
           </span>
           <a
             href="tel:+918527134491"

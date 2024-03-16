@@ -86,14 +86,14 @@ const ProjectAddHighligths = () => {
   }
 
   const handleDeleteUser = async (id) => {
-    const urlDelete = `https://api.100acress.com/bhk_delete/${id}`;
+   
 
     try {
       const response = await axios.delete(
-        `https://api.100acress.com/bhk_delete/${id}`
+        `https://api.100acress.com/highlight/delete/${id}`
       );
       if (response.status >= 200 && response.status < 300) {
-        // window.location.reload();
+        window.location.reload();
       } else {
         console.error("Failed to delete user. Server returned an error.");
       }
@@ -160,7 +160,7 @@ const ProjectAddHighligths = () => {
                       <td className="px-2 py-1">{item.highlight_Point}</td>
 
                       <td className="px-2 py-1 flex space-x-1">
-                        <Link to={`/Admin/projecteditbhk/${id}`}>
+                        <Link to={`/Admin/projectedithighlight/${id1}`}>
                           <button
                             type="button"
                             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"

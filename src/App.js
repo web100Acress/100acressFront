@@ -86,6 +86,8 @@ import { DataProvider } from "./MyContext";
 import ResidentialProjects from "./Components/HomePageComponents/ResidentialProjects";
 import UpComingProjects from "./Components/HomePageComponents/UpComingProjects";
 import CommercialProject from "./Components/HomePageComponents/CommercialProject";
+import ProjectEditHighlight from "./AdminPage/ProjectEditHighlight";
+import ScoPlots from "./Components/HomePageComponents/ScoPlots";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -128,6 +130,7 @@ function App() {
             <Route path="/property/residential"  element={<ResidentialProjects />} />
             <Route path="/projects/upcoming" element={<UpComingProjects />} />
             <Route path="/projects/commerial" element={<CommercialProject/>}/>
+             <Route path="/sco/plots" element={<ScoPlots/>}/>
 
             <Route path="/middlemain" element={<MiddleMain />} />
             <Route path="/viewallproperty" element={<ViewAllProperty />} />
@@ -183,9 +186,10 @@ function App() {
             <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
             <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
             <Route path="/Admin/projecteditbhk/:id" element={<ProjectEditBHK />}/>
+            <Route path="/Admin/projectedithighlight/:id" element= {<ProjectEditHighlight/>}/>
             <Route path="/Admin/ProjectsAddBhk/:id" element={<ProjectsAddBhk />} />
             <Route path="/Admin/adminProperty" element={<Adminproperty />} />
-            <Route path="Admin/ProjectAddHighlights/:id" element={<ProjectAddHighligths />} />
+            <Route path="/Admin/ProjectAddHighlights/:id" element={<ProjectAddHighligths />} />
             <Route path="/dashboard" element={<PrivateRoute element={<Dashboard/>}/>}/>
           </Routes>
         </Router>

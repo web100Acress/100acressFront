@@ -225,22 +225,15 @@ const NewSellProperty = () => {
   };
 
   const [selectedState, setSelectedState] = useState("");
-  // Get states of a country (e.g., India)
   const countryCode = "IN";
   const states = State.getStatesOfCountry(countryCode);
-  // Get cities of a state (e.g., Rajasthan)
   const cities = selectedState
     ? City.getCitiesOfState(countryCode, selectedState)
     : [];
-
-  // const handleChangeStateValue = (event) => {
-  //   setSelectedState(event.target.value);
-  //   setSellProperty({ ...sellProperty, state: event.target.value });
-  // };
+     
   const handleChangeStateValue = (event) => {
     const selectedStateValue = event.target.value;
     setSelectedState(selectedStateValue);
-    // Assuming `setSellProperty` is updating the state in some context
     setSellProperty({ ...sellProperty, state: selectedStateValue });
   };
 
@@ -402,7 +395,7 @@ const NewSellProperty = () => {
                   >
                     <option value="">Select State</option>
                     {states.map((state) => (
-                      <option key={state.isoCode} value={state.isoCode}>
+                      <option key={state.name} value={state.isoCode}>
                         {state.name}
                       </option>
                     ))}
