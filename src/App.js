@@ -1,6 +1,11 @@
 import React from "react";
 import { styled } from "styled-components";
-import { BrowserRouter as Router,  Routes, Route, Navigate} from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Home from "./Pages/Home";
 import AboutPage from "./Components/AboutPageComponents/AboutPage";
 import Properties from "./Pages/Properties";
@@ -35,7 +40,6 @@ import ContactPage from "./AdminPage/ContactPage";
 import AdminContact from "./AdminPage/AdminContact";
 import ViewAllProperty from "./Pages/ViewAllProperty";
 import ForgetPassword from "./Pages/ForgetPassword";
-
 
 import ResetEmailPassword from "./Pages/ResetEmailPassword";
 import NewSellProperty from "./aadharhomes/NewSellProperty";
@@ -92,7 +96,7 @@ function App() {
             <Route
               path="/postproperty"
               element={
-                token !== null ? <NewSellProperty /> : <Navigate  to="/SignIn" />
+                token !== null ? <NewSellProperty /> : <Navigate to="/SignIn" />
               }
             />
             <Route path="/SignIn" element={<SignIn />} />
@@ -101,20 +105,29 @@ function App() {
             <Route path="/SignIn" element={<SignIn />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<Privacy />} />
-            <Route  path="/termsandconditions" element={<TermsAndConditions />} />
+            <Route
+              path="/termsandconditions"
+              element={<TermsAndConditions />}
+            />
             <Route path="/projects" element={<Properties />} />
             <Route path="/rent" element={<RentPropViewCard />} />
             <Route path="/buy" element={<BuyPropViewCard />} />
             <Route path="/rent/:id" element={<RentViewDetails />} />
             <Route path="/buy/:id" element={<BuyViewDetails />} />
             <Route path="/propviewcard" element={<PropViewCardPro />} />
-            <Route path="/property/residential"  element={<ResidentialProjects />} />
+            <Route
+              path="/property/residential"
+              element={<ResidentialProjects />}
+            />
             <Route path="/projects/upcoming" element={<UpComingProjects />} />
-            <Route path="/projects/commerial" element={<CommercialProject/>}/>
-            <Route path="/sco/plots" element={<ScoPlots/>}/>
-            <Route path="/projects/independentfloors" element={<BuilderIndependentFloor/>}/>
-            <Route path="/deendayal/plots" element={<DeenDayalPlots/>}/>
-            <Route path="/new&artical" element={<NewsandArtical/>}/>
+            <Route path="/projects/commerial" element={<CommercialProject />} />
+            <Route path="/sco/plots" element={<ScoPlots />} />
+            <Route
+              path="/projects/independentfloors"
+              element={<BuilderIndependentFloor />}
+            />
+            <Route path="/deendayal/plots" element={<DeenDayalPlots />} />
+            <Route path="/new&artical" element={<NewsandArtical />} />
 
             <Route path="/middlemain" element={<MiddleMain />} />
             <Route path="/viewallproperty" element={<ViewAllProperty />} />
@@ -124,24 +137,42 @@ function App() {
             <Route path="/resetpassword/:token" element={<ForgetPassword />} />
 
             <Route path="/forgetpassword" element={<ResetEmailPassword />} />
-            <Route  path="/form" element={<Form registeredData={registeredData} />}/>
+            <Route
+              path="/form"
+              element={<Form registeredData={registeredData} />}
+            />
             <Route path="/protected/private/admin" element={<AdminMain />} />
-            <Route  path="/protected/private/admin/editProject/:url" element={<EditableProperty />}/>
+            <Route
+              path="/protected/private/admin/editProject/:url"
+              element={<EditableProperty />}
+            />
 
             <Route path="/knowabouts" element={<PropertyKnow />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/:pUrl" element={<BannerPage />} />
             <Route path="/about" element={<About />} />
-            <Route path="/userviewproperty/:id" element={<UserViewProperty />} />
+            <Route
+              path="/userviewproperty/:id"
+              element={<UserViewProperty />}
+            />
             <Route path="/usereditproperty" element={<UserEditProperty />} />
 
             <Route path="*" element={<PageNotFound />} />
             <Route path="/contactmainpage" element={<ContactPage />} />
 
             <Route path="/Admin/acress/dashboard" element={<Dashboard />} />
-            <Route path="/Admin/viewproperty/:id" element={<ViewPropertyAdmin />}/>
-            <Route path="/Admin/viewproperty/viewdetails/:id"  element={<ClientDetails />} />
-            <Route path="/Admin/viewproperty/editdetails/:id"  element={<EditDetails />} />
+            <Route
+              path="/Admin/viewproperty/:id"
+              element={<ViewPropertyAdmin />}
+            />
+            <Route
+              path="/Admin/viewproperty/viewdetails/:id"
+              element={<ClientDetails />}
+            />
+            <Route
+              path="/Admin/viewproperty/editdetails/:id"
+              element={<EditDetails />}
+            />
             <Route path="/admin/addnew" element={<Addnew />} />
             <Route path="/admin/adminproperty" element={<Adminproperty />} />
             <Route path="/Admin/blog" element={<Blog />} />
@@ -155,22 +186,39 @@ function App() {
             <Route path="/Admin/rent/view/:id" element={<RentView />} />
             <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
 
-
             <Route path="/admin/acress/property/aadhar" element={<Sidebar />} />
             <Route path="/Admin/buy" element={<Buy />} />
             <Route path="/Admin/buy/view/:id" element={<BuyView />} />
             <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
             <Route path="/Admin/contactpage" element={<ContactPage />} />
-            <Route path="/Admin/ContactUs/UserProfile" element={<UserProfile />}/>
+            <Route
+              path="/Admin/ContactUs/UserProfile"
+              element={<UserProfile />}
+            />
             <Route path="/searchdata/:key" element={<SearchData />} />
             <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
             <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
-            <Route path="/Admin/projecteditbhk/:id" element={<ProjectEditBHK />}/>
-            <Route path="/Admin/projectedithighlight/:id" element= {<ProjectEditHighlight/>}/>
-            <Route path="/Admin/ProjectsAddBhk/:id" element={<ProjectsAddBhk />} />
+            <Route
+              path="/Admin/projecteditbhk/:id"
+              element={<ProjectEditBHK />}
+            />
+            <Route
+              path="/Admin/projectedithighlight/:id"
+              element={<ProjectEditHighlight />}
+            />
+            <Route
+              path="/Admin/ProjectsAddBhk/:id"
+              element={<ProjectsAddBhk />}
+            />
             <Route path="/Admin/adminProperty" element={<Adminproperty />} />
-            <Route path="/Admin/ProjectAddHighlights/:id" element={<ProjectAddHighligths />} />
-            <Route path="/dashboard" element={<PrivateRoute element={<Dashboard/>}/>}/>
+            <Route
+              path="/Admin/ProjectAddHighlights/:id"
+              element={<ProjectAddHighligths />}
+            />
+            <Route
+              path="/dashboard"
+              element={<PrivateRoute element={<Dashboard />} />}
+            />
           </Routes>
         </Router>
       </Wrapper>
@@ -181,13 +229,12 @@ function App() {
 export default App;
 
 const Wrapper = styled.section`
-  font-family: "DM Sans", sans-serif;
+font-family: "Roboto", sans-serif;
+font-weight: 400;
+font-style: normal;
   h1,
   h2,
   h3,
   h4,
   h5,
-  h6 {
-    font-family: "Inter", sans-serif !important;
-  }
 `;

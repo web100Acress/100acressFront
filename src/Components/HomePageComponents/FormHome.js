@@ -182,7 +182,7 @@ const FormHome = () => {
             "@import url('https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css')",
         }}
       />
-      <div className="flex items-center justify-center px-10 py-12 bg-[#f5f5f5] shadow-2xl">
+      <div className="flex -mb-3 items-center justify-center px-10 py-12 bg-[#f5f5f5] shadow-2xl">
         <div
           className="bg-red-600 text-gray-500 w-full overflow-hidden"
           style={{ maxWidth: 1300 }}

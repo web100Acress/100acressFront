@@ -159,11 +159,11 @@ function OurServices() {
               >
                 <div className="icon">
                   <img
-                    src="../../Images/Construction.jpg"
+                    src="../../Images/construction.JPG"
                     style={{ height: "204px" }}
                     width="220"
                     height="220"
-                    alt=""
+                    alt="Construction"
                   />
                 </div>
                 <div className="content">

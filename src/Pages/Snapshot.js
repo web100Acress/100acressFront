@@ -20,7 +20,7 @@ const Snapshot = () => {
                             </div>
 
                             <div className="backdrop-blur-lg relative mb-3 rounded-3xl border bg-white/70 px-2 py-4 text-left shadow lg:px-4">
-                                <p className="relative text-2xl text-center font-black text-black">5124+</p>
+                                <p className="relative text-2xl text-center font-black text-black">550+</p>
                                 <p className="relative mt-2 text-gray-600 text-center mb-0 px-2">Commercial Projects</p>
                             </div>
 
@@ -29,7 +29,7 @@ const Snapshot = () => {
                                 <p className="relative mt-2 text-gray-600 text-center mb-0 px-2">SCO Plots</p>
                             </div>
                             <div className="backdrop-blur-lg relative mb-3 rounded-3xl border bg-white/70 px-2 py-4 text-left shadow lg:px-4">
-                                <p className="relative text-2xl text-center font-black text-black">8999+</p>
+                                <p className="relative text-2xl text-center font-black text-black">250+</p>
                                 <p className="relative mt-2 text-gray-600 text-center mb-0 px-2">Plots &  Floors</p>
                             </div>
                             <div className="backdrop-blur-lg relative mb-3 rounded-3xl border bg-white/70 px-2 py-4 text-left shadow lg:px-4">
