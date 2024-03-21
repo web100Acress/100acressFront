@@ -750,6 +750,12 @@ const Footer = () => {
                     Terms & Conditions
                   </Link>
                 </li>
+
+                <li className=" sm:mb-0">
+                  <Link to="new&artical" className="text-left px-1 text-md hover:underline" target='_top' style={{ color: 'white' }}>
+                     News & Article
+                  </Link>
+                </li>
               </div>
             </ul>
           </div>

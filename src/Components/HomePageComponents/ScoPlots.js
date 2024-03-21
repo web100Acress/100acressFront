@@ -3,11 +3,22 @@ import Nav from '../../aadharhomes/Nav'
 import Footer from '../Actual_Components/Footer'
 import { Link } from "react-router-dom";
 import { DataContext } from "../../MyContext";
+import { Helmet } from 'react-helmet';
 const ScoPlots = () => {
     const {scoPlots} = useContext(DataContext)
   return (
     <div>
         <Nav/>
+
+        <Helmet>
+        <title>SCO Plots in Gurgaon, Top 10 SCO Plots in Gurgaon</title>
+        <meta
+          name="description"
+          content="Find New Upcoming projects of SCO (Shop Cum Office) Property in Gurgaon. It helps to find Retail Shops and F&amp;B. Find SCO Price in Gurgaon"
+        />
+      </Helmet>
+
+
         <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
         SCO Plots in Gurugram

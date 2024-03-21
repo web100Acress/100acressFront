@@ -1,31 +1,33 @@
 import React, { useContext } from "react";
 import Nav from "../../aadharhomes/Nav";
 import Footer from "../Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
-const ResidentialProjects = () => {
-  const { residencialProjects } = useContext(DataContext);
+import { DataContext } from "../../MyContext";
+const BuilderIndependentFloor = () => {
+  const { BuilderIndependentFloor } = useContext(DataContext);
   return (
     <div>
       <Nav />
-
-      <Helmet>
-        <title>Residential Project in Gurgaon, Apartments in Gurgaon</title>
-        <meta
-          name="description"
-          content="Buy 2/3 BHK Residential Project in Gurgaon as per your desired location and budget. Checkout your desired Location and Price. Book Now"
-        />
-      </Helmet>
-
-      <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">
+      <div className="max-w-screen pt-2 sm:pt-2 md:pt-2" target="_top">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          RESIDENTIAL PROPERTIES
+          Independent & Builder Floors in Gurugram
         </h1>
       </div>
+
+      <div className="mx-10 mb-3  text-sm" style={{ textAlign: "center" }}>
+        <p style={{ maxWidth: "100%", margin: "0 auto" }}>
+          Property is an important part of our lives; if we need a home, we look
+          for Residential Property in Gurgaon. Owning a home comes with a slew
+          of additional responsibilities, such as finding the assets in the best
+          location, proximity to amenities, accessibility, pricing, and other
+          financial services, security, proximity to education systems,
+          hospitality services, and soon.
+        </p>
+      </div>
+
       <section className="flex flex-col items-center">
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {residencialProjects.map((item, index) => {
+          {BuilderIndependentFloor.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
@@ -45,9 +47,9 @@ const ResidentialProjects = () => {
                       <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
                       </a>
-                      <span style={{ float: "right" }} className="text-sm">
-                        {item.builderName}
-                      </span>
+                      {/* <span style={{ float: "right" }} className="text-sm">
+                            {item.builderName}
+                          </span> */}
                       <br />
                       <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
                         {item.projectAddress}
@@ -76,9 +78,10 @@ const ResidentialProjects = () => {
           })}
         </div>
       </section>
+      
       <Footer />
     </div>
   );
 };
 
-export default ResidentialProjects;
+export default BuilderIndependentFloor;

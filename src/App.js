@@ -1,30 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { styled } from "styled-components";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate, 
-} from "react-router-dom";
+import { BrowserRouter as Router,  Routes, Route, Navigate} from "react-router-dom";
 import Home from "./Pages/Home";
-import LoginMain from "./Components/Actual_Components/LoginMain";
 import AboutPage from "./Components/AboutPageComponents/AboutPage";
 import Properties from "./Pages/Properties";
 import MiddleMain from "./Components/PropertyViewComponents/MiddleMain";
-import VerificationForm from "./Components/Forms.js/SignUpForm/VerificationForm";
 import AdminMain from "./Components/AdminPanelComponents/AdminMain";
-import ProfilePage from "./Components/ProfilePage";
 import PropertyKnow from "./Components/KnowAbouts/PropertyKnow";
 import Profile from "./Components/ProfileSec_Components/Profile";
-import FinalNavBar from "./Components/HomePageComponents/NavBar";
-import Footer from "./Components/Actual_Components/Footer";
 import PageNotFound from "./Pages/PageNotFound";
 import EditableProperty from "./Components/AdminPanelComponents/EditableProperty";
-import Nav from "./aadharhomes/Nav";
 import Form from "./Pages/Form";
 import SignUp from "./aadharhomes/SignUp";
 import SignIn from "./aadharhomes/SignIn";
-import SellProperty from "./aadharhomes/SellProperty";
+
 import BannerPage from "./aadharhomes/BannerPage/BannerPage";
 
 //Simran Routing
@@ -33,7 +22,6 @@ import Addnew from "./AdminPage/Addnew";
 import Adminproperty from "./AdminPage/Adminproperty";
 import Dashboard from "./AdminPage/Dashboard";
 import Blog from "./AdminPage/Blog";
-// import Contact from "./AdminPage/AdminContact";
 import EditProject from "./AdminPage/EditProject";
 import Enquiries from "./AdminPage/Enquiries";
 import Header from "./AdminPage/Header";
@@ -43,13 +31,11 @@ import Sidebar from "./AdminPage/Sidebar";
 import UserProfile from "./AdminPage/UserProfile";
 import Buy from "./AdminPage/Buy";
 import ContactPage from "./AdminPage/ContactPage";
-import PropertyRent from "./Pages/PropertyRent";
 
 import AdminContact from "./AdminPage/AdminContact";
-import Contact from "./Pages/Contact";
 import ViewAllProperty from "./Pages/ViewAllProperty";
 import ForgetPassword from "./Pages/ForgetPassword";
-// import AboutUs from "./Pages/About";
+
 
 import ResetEmailPassword from "./Pages/ResetEmailPassword";
 import NewSellProperty from "./aadharhomes/NewSellProperty";
@@ -88,6 +74,9 @@ import UpComingProjects from "./Components/HomePageComponents/UpComingProjects";
 import CommercialProject from "./Components/HomePageComponents/CommercialProject";
 import ProjectEditHighlight from "./AdminPage/ProjectEditHighlight";
 import ScoPlots from "./Components/HomePageComponents/ScoPlots";
+import BuilderIndependentFloor from "./Components/HomePageComponents/BuilderIndependentFloor";
+import DeenDayalPlots from "./Components/HomePageComponents/DeenDayalPlots";
+import NewsandArtical from "./Pages/NewsandArtical";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -95,14 +84,6 @@ function App() {
     mobile: "1234567890",
   };
   const token = localStorage.getItem("myToken");
-  const [role, setRole] = useState(null);
-  
-
-  useEffect(() => {
-    const userRole = localStorage.getItem("userRole");
-    setRole(userRole);
-  }, []);
-
   return (
     <DataProvider>
       <Wrapper className="section">
@@ -130,7 +111,10 @@ function App() {
             <Route path="/property/residential"  element={<ResidentialProjects />} />
             <Route path="/projects/upcoming" element={<UpComingProjects />} />
             <Route path="/projects/commerial" element={<CommercialProject/>}/>
-             <Route path="/sco/plots" element={<ScoPlots/>}/>
+            <Route path="/sco/plots" element={<ScoPlots/>}/>
+            <Route path="/projects/independentfloors" element={<BuilderIndependentFloor/>}/>
+            <Route path="/deendayal/plots" element={<DeenDayalPlots/>}/>
+            <Route path="/new&artical" element={<NewsandArtical/>}/>
 
             <Route path="/middlemain" element={<MiddleMain />} />
             <Route path="/viewallproperty" element={<ViewAllProperty />} />
@@ -171,10 +155,6 @@ function App() {
             <Route path="/Admin/rent/view/:id" element={<RentView />} />
             <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
 
-            {/* <Route
-              path="/admin/access/property/aadhar"
-              element={role === "admin" ? <Sidebar/> : <Navigate to="/" />}
-            /> */}
 
             <Route path="/admin/acress/property/aadhar" element={<Sidebar />} />
             <Route path="/Admin/buy" element={<Buy />} />

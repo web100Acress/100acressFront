@@ -1,137 +1,182 @@
 import React from "react";
 import styled from "styled-components";
-let interiordesign ='../../../Images/interiordesign.avif'
 function OurServices() {
   return (
     <Wrapper className="section">
       <div className="max-w-screen-xl mx-auto px-10 py-10">
-        <div className='row '>
-          <div className='col-md-3'>
-            <div className='col max-mb-30 aos-init aos-animate' data-aos='fade-up'>
+        <div className="row ">
+          <div className="col-md-3">
+            <div
+              className="col max-mb-30 aos-init aos-animate"
+              data-aos="fade-up"
+            >
               {" "}
               <a
-                href='#'
-                className='icon-box text-center'
-                data-bg-color='#fff'
+                href="#"
+                className="icon-box text-center"
+                data-bg-color="#fff"
                 style={{ backgroundColor: "rgb(255, 255, 255)" }}
-                data-abc='true'>
-                <div className='icon'>
+                data-abc="true"
+              >
+                <div className="icon">
                   {" "}
-                  <img src='../../Images/consulting.jpg' style={{ height: "204px" }} width='240' height="220" />{" "}
+                  <img
+                    src="../../Images/consulting.jpg"
+                    style={{ height: "204px" }}
+                    width="240"
+                    height="220"
+                  />{" "}
                 </div>
-                <div className='content'>
-                  <h3 className='title fz-20'>
-                    Real Estate Consulting
-                  </h3>
-                  <div className='desc '>
+                <div className="content">
+                  <h3 className="title fz-20">Real Estate Consulting</h3>
+                  <div className="desc ">
                     <p className="text-justify items-center">
-                      We Provide the best services to help you get your dream home as per your expectations.
+                      We Provide the best services to help you get your dream
+                      home as per your expectations.
                     </p>
                   </div>{" "}
                 </div>
               </a>{" "}
             </div>
           </div>
-          <div className='col-md-3'>
-            <div className='col max-mb-30 aos-init aos-animate' data-aos='fade-up'>
+          <div className="col-md-3">
+            <div
+              className="col max-mb-30 aos-init aos-animate"
+              data-aos="fade-up"
+            >
               {" "}
               <a
-                href='#'
-                className='icon-box text-center'
-                data-bg-color='#fff'
+                href="#"
+                className="icon-box text-center"
+                data-bg-color="#fff"
                 style={{ backgroundColor: "rgb(255, 255, 255)" }}
-                data-abc='true'>
-                <div className='icon'>
+                data-abc="true"
+              >
+                <div className="icon">
                   {" "}
                   <img
-                    src='../../Images/lawyer.jpg'
+                    src="../../Images/lawyer.jpg"
                     style={{ height: "204px" }}
-                    width='220'
+                    width="220"
                     height="220"
-                    alt=''
+                    alt=""
                   />{" "}
                 </div>
-                <div className='content'>
-                  <h3 className='title fz-20 '>
-                    Legal Advice
-                  </h3>
-                  <div className='desc'>
+                <div className="content">
+                  <h3 className="title fz-20 ">Legal Advice</h3>
+                  <div className="desc">
                     <p className="text-justify items-center">
-                      The major issue is trust worthy legal assistance. We will help you through all the aspect.
+                      The major issue is trust worthy legal assistance. We will
+                      help you through all the aspect.
                     </p>
                   </div>{" "}
-
                 </div>
               </a>{" "}
             </div>
           </div>
-          <div className='col-md-3'>
-            <div className='col max-mb-10 aos-init aos-animate' data-aos='fade-up'>
+          <div className="col-md-3">
+            <div
+              className="col max-mb-10 aos-init aos-animate"
+              data-aos="fade-up"
+            >
               {" "}
               <a
-                href='#'
-                className='icon-box text-center'
-                data-bg-color='#fff'
+                href="#"
+                className="icon-box text-center"
+                data-bg-color="#fff"
                 style={{ backgroundColor: "rgb(255, 255, 255)" }}
-                data-abc='true'>
-                <div className='icon '>
+                data-abc="true"
+              >
+                <div className="icon ">
                   {" "}
                   <img
-                    src='../../../Images/interiordesign.png'
+                    src="../../../Images/interiordesign.png"
                     style={{ height: "204px" }}
-                    width='220'
+                    width="220"
                     height="220"
-                    alt=''
-                   
+                    alt=""
                   />{" "}
                 </div>
-                <div className='content'>
-                  <h3 className='title fz-20 '>
-                  Interior Design
-                  </h3>
-                  <div className='desc'>
+                <div className="content">
+                  <h3 className="title fz-20 ">Interior Design</h3>
+                  <div className="desc">
                     <p className="text-justify items-center">
-                    These interior decoration ideas, tips, and tricks will help you make home decisions. 
-                     
+                      These interior decoration ideas, tips, and tricks will
+                      help you make home decisions.
                     </p>
                   </div>{" "}
-
                 </div>
               </a>{" "}
             </div>
           </div>
-          <div className='col-md-3'>
-            <div className='col max-mb-30 aos-init aos-animate' data-aos='fade-up'>
+          <div className="col-md-3">
+            <div
+              className="col max-mb-30 aos-init aos-animate"
+              data-aos="fade-up"
+            >
               {" "}
               <a
-                href='#'
-                className='icon-box text-center'
-                data-bg-color='#fff'
+                href="#"
+                className="icon-box text-center"
+                data-bg-color="#fff"
                 style={{ backgroundColor: "rgb(255, 255, 255)" }}
-                data-abc='true'>
-                <div className='icon'>
+                data-abc="true"
+              >
+                <div className="icon">
                   {" "}
                   <img
-                    src='../../Images/homeloan.jpg'
+                    src="../../Images/homeloan.jpg"
                     style={{ height: "204px" }}
-                    width='220'
+                    width="220"
                     height="220"
-                    alt=''
+                    alt=""
                   />{" "}
                 </div>
-                <div className='content'>
-                  <h3 className='title fz-20'>
-                    Home Loan
-                  </h3>
-                  <div className='desc'>
+                <div className="content">
+                  <h3 className="title fz-20">Home Loan</h3>
+                  <div className="desc">
                     <p className="text-justify items-center">
-                      We will help you to provide best home loan to complete your dream and guide.
-                    
+                      We will help you to provide best home loan to complete
+                      your dream and guide.
                     </p>
                   </div>{" "}
-
                 </div>
               </a>{" "}
+            </div>
+          </div>
+
+          <div className="col-md-3 d-lg-none d-md-none">
+            <div
+              className="col  max-mb-30 aos-init aos-animate"
+              data-aos="fade-up"
+            >
+              <a
+                href="#"
+                className="icon-box text-center"
+                data-bg-color="#fff"
+                style={{ backgroundColor: "rgb(255, 255, 255)" }}
+                data-abc="true"
+              >
+                <div className="icon">
+                  <img
+                    src="../../Images/Construction.jpg"
+                    style={{ height: "204px" }}
+                    width="220"
+                    height="220"
+                    alt=""
+                  />
+                </div>
+                <div className="content">
+                  <h3 className="title fz-20">Construction</h3>
+                  <div className="desc">
+                    <p className="text-justify items-center">
+                      Skilled talents in real estate and construction are
+                      essential for translating social visions into tangible
+                      Smart Cities.
+                    </p>
+                  </div>
+                </div>
+              </a>
             </div>
           </div>
         </div>

@@ -4,28 +4,30 @@ import Footer from "../Actual_Components/Footer";
 import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-const ResidentialProjects = () => {
-  const { residencialProjects } = useContext(DataContext);
+const DeenDayalPlots = () => {
+  const { deenDayalPlots } = useContext(DataContext);
+  
   return (
     <div>
       <Nav />
 
       <Helmet>
-        <title>Residential Project in Gurgaon, Apartments in Gurgaon</title>
+        <title>Plots in Gurgaon - Residential Deen Dayal Plots &amp; Lands in Gurgaon</title>
         <meta
           name="description"
-          content="Buy 2/3 BHK Residential Project in Gurgaon as per your desired location and budget. Checkout your desired Location and Price. Book Now"
+          content="Buy Deen Dayal Residential Plots/Lands for Sale in Gurgaon"
         />
       </Helmet>
 
-      <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">
+      <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          RESIDENTIAL PROPERTIES
+          Deen Dayal Plots in Gurugram
         </h1>
       </div>
+
       <section className="flex flex-col items-center">
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {residencialProjects.map((item, index) => {
+          {deenDayalPlots.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
@@ -45,9 +47,9 @@ const ResidentialProjects = () => {
                       <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
                       </a>
-                      <span style={{ float: "right" }} className="text-sm">
-                        {item.builderName}
-                      </span>
+                      {/* <span style={{ float: "right" }} className="text-sm">
+                            {item.builderName}
+                          </span> */}
                       <br />
                       <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
                         {item.projectAddress}
@@ -81,4 +83,4 @@ const ResidentialProjects = () => {
   );
 };
 
-export default ResidentialProjects;
+export default DeenDayalPlots;

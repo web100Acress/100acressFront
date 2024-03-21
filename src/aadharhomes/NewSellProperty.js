@@ -3,9 +3,47 @@ import Nav from "./Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import { RadioGroup, Radio, Stack } from "@chakra-ui/react";
-const {  State, City } = require("country-state-city");
+import { State, City } from "country-state-city";
+
+const stateCodeMapping = {
+  "Andhra Pradesh": "AP",
+  "Arunachal Pradesh": "AR",
+  "Assam": "AS",
+  "Bihar": "BR",
+  "Chandigarh": "CH",
+  "Chhattisgarh": "CT",
+  "Delhi": "DL",
+  "Goa": "GA",
+  "Gujarat": "GJ",
+  "Haryana": "HR",
+  "Himachal Pradesh": "HP",
+  "Jammu and Kashmir": "JK",
+  "Jharkhand": "JH",
+  "Karnataka": "KA",
+  "Kerala": "KL",
+  "Ladakh": "LA",
+  "Lakshadweep": "LD",
+  "Madhya Pradesh": "MP",
+  "Maharashtra": "MH",
+  "Manipur": "MN",
+  "Meghalaya": "ML",
+  "Mizoram": "MZ",
+  "Nagaland": "NL",
+  "Odisha": "OR",
+  "Puducherry": "PY",
+  "Punjab": "PB",
+  "Rajasthan": "RJ",
+  "Sikkim": "SK",
+  "Tamil Nadu": "TN",
+  "Telangana": "TG",
+  "Tripura": "TR",
+  "Uttar Pradesh": "UP",
+  "Uttarakhand": "UT",
+  "West Bengal": "WB"
+};
+
+
 const NewSellProperty = () => {
-  
   const storedSellerId = localStorage.getItem("mySellerId");
   const [showSteps, setShowSteps] = useState(false);
   const sellerId = JSON.parse(storedSellerId);
@@ -38,8 +76,8 @@ const NewSellProperty = () => {
     propertyType: "",
     propertyName: "",
     address: "",
-    city: "DefaultCityValue",
-    state: "DefaultStateValue",
+    city: "",
+    state: "",
     price: "",
     area: "",
     description: "",
@@ -53,7 +91,50 @@ const NewSellProperty = () => {
     subType: "",
   });
 
+  const [selectedState, setSelectedState] = useState("Haryana");
+  const [selectedCity, setSelectedCity] = useState("City");
+
+  const countryCode = "IN";
+  const states = State.getStatesOfCountry(countryCode);
+  const getStateCode = (selectedState) => {
+    if (typeof selectedState !== 'string') {
+      throw new Error(`Selected state is not a valid string: ${selectedState}`);
+    }
   
+    const formattedStateName = selectedState
+      .toLowerCase()
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+    const stateCode = stateCodeMapping[formattedStateName];
+  
+    if (stateCode) {
+      return stateCode;
+    } else {
+      throw new Error(`State code not found for state: ${selectedState}`);
+    }
+  };
+  
+  const stateCode = getStateCode(selectedState);
+  const cities = selectedState
+    ? City.getCitiesOfState(countryCode, stateCode)
+    : [];
+
+  const handleChangeStateValue = (e) => {
+    const stateName = e.target.value;
+    setSelectedState(stateName);
+    setSellProperty(prevState => ({
+      ...prevState,
+      state: stateName, 
+    }));
+  };
+
+  const handleChangeCityValue = (e) => {
+    const cityName = e.target.value;
+    setSelectedCity(cityName);
+    setSellProperty(prevState => ({
+      ...prevState,
+      city: cityName,
+    }));
+  };
 
   const resetData = () => {
     setSellProperty({
@@ -75,6 +156,16 @@ const NewSellProperty = () => {
       subType: "",
     });
   };
+
+  // const resetData1 = () =>{
+  //   setSelectedState({
+  //     state:"",
+  //   })
+
+  //   setSelectedCity({
+  //     city:"",
+  //   })
+  // }
 
   const resetImageData = () => {
     setFileData({
@@ -161,7 +252,6 @@ const NewSellProperty = () => {
     }
 
     formDataAPI.append("frontImage", fileData.frontImage);
-
     try {
       setIsLoading(true);
       const response = await axios.post(apiEndpoint, formDataAPI);
@@ -171,7 +261,6 @@ const NewSellProperty = () => {
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
-      // Set loading state to false when the API call is complete (success or error)
       setIsLoading(false);
     }
   };
@@ -224,29 +313,11 @@ const NewSellProperty = () => {
     setSellProperty({ ...sellProperty, furnishing: event.target.value });
   };
 
-  const [selectedState, setSelectedState] = useState("");
-  const countryCode = "IN";
-  const states = State.getStatesOfCountry(countryCode);
-  const cities = selectedState
-    ? City.getCitiesOfState(countryCode, selectedState)
-    : [];
-     
-  const handleChangeStateValue = (event) => {
-    const selectedStateValue = event.target.value;
-    setSelectedState(selectedStateValue);
-    setSellProperty({ ...sellProperty, state: selectedStateValue });
-  };
-
-  const handleChangeCityValue = (event) => {
-    setSellProperty({ ...sellProperty, city: event.target.value });
-  };
-
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
       <section className=" py-12 text-gray-800 ">
         <div className="mx-auto flex max-w-md flex-col rounded-lg lg:max-w-screen-xl lg:flex-row">
-
           <div className="max-w-xl px-4 lg:pr-24 lg:pt-20">
             <h3 className="lg:text-5xl md:text-3xl  font-semibold">
               Post your property
@@ -328,7 +399,6 @@ const NewSellProperty = () => {
                 </div>
               </div>
             )}
-            
           </div>
 
           <div className="mt-8 mb-8 max-w-3/4    lg:mt-0 shadow-lg rounded-lg py-2   px-4">
@@ -351,6 +421,7 @@ const NewSellProperty = () => {
                 </Radio>
               </Stack>
             </RadioGroup>
+
             <div className="p-1 sm:p-8">
               <div className="grid gap-3 md:grid-cols-2">
                 <div>
@@ -389,13 +460,14 @@ const NewSellProperty = () => {
               <div className="grid gap-3 md:grid-cols-2">
                 <div>
                   <select
-                    value={sellProperty.state}
+                    value={selectedState}
                     onChange={handleChangeStateValue}
+                    name="state"
                     className="mt-2 h-10 w-full rounded-md text-black bg-white border px-3 outline-none"
                   >
                     <option value="">Select State</option>
                     {states.map((state) => (
-                      <option key={state.name} value={state.isoCode}>
+                      <option key={state.name} value={state.name}>
                         {state.name}
                       </option>
                     ))}
@@ -406,7 +478,8 @@ const NewSellProperty = () => {
                   {selectedState && (
                     <div>
                       <select
-                        value={sellProperty.city}
+                        value={selectedCity}
+                        name="city"
                         onChange={handleChangeCityValue}
                         className="mt-2 h-10 w-full text-black rounded-md bg-white border px-3 outline-none"
                       >
@@ -475,10 +548,7 @@ const NewSellProperty = () => {
                     <option value="sqft">Sqft</option>
                     <option value="sqrd">Sqyd</option>
                   </select>
-
                 </div>
-
-
               </div>
 
               <div>
@@ -581,7 +651,6 @@ const NewSellProperty = () => {
               </div>
             </div>
           </div>
-
         </div>
       </section>
       <Footer />

@@ -18,13 +18,13 @@ function Properties() {
               <Link to={`/${pUrl}/`} target="_top">
                 <article
                   key={index}
-                  className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                  className="mb-4 transition hover:scale-105  overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                 >
                   <div>
                     <img
                       src={item.frontImage.url}
                       alt="frontImage"
-                      className="w-full h-48 object-fit"
+                      className="w-full h-48 object-fit "
                     />
                   </div>
                   <div className="p-4">

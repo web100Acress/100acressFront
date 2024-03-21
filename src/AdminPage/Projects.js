@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import EditProject from "./EditProject";
 import Modal from "react-modal";
 import AddNew from "./Addnew";
 import Sidebar from "./Sidebar";
@@ -73,6 +72,7 @@ const Projects = () => {
     );
     if (confirmDeletion) {
       handleDeleteUser(id);
+      // window.location.reload();
     }
   };
 
@@ -209,17 +209,15 @@ const Projects = () => {
                             {" "}
                             ADD Highlights
                           </button>
-                        </Link >
-                       
-                       
-                       <button
-                      //  onClick={()=>handleDeleteButtonClick(id)}
+                        </Link>
+
+                        <button
+                          onClick={() => handleDeleteButtonClick(id)}
                           type="button"
                           className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
                         >
                           Delete
                         </button>
-                       
                       </td>
                     </tr>
                   );

@@ -100,13 +100,13 @@ const Search = () => {
           <div className="mt-[-10] w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-0">
               <a
-                href=""
+               
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
                 Residential
               </a>
               <a
-                href=""
+           
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
                 Commercial

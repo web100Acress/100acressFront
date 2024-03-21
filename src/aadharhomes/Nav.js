@@ -17,7 +17,7 @@ import {
   Stack,
   useMediaQuery,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import logoImage from "../Images/100acress.png";
 import axios from "axios";

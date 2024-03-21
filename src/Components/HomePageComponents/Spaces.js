@@ -29,20 +29,42 @@ function SpacesAvailable() {
               <p className="_4rgjvNN">Sco</p>
             </div>
           </Link>
-          <div className="_ksjMM _1fe7" title="Builder & Independent">
+
+          <Link to={`/projects/independentfloors`}  target="_top">
+            <div className="_ksjMM _1fe7" title="Builder & Independent Floor">
+              <p className="_9gncbH">Builder & Independent</p>
+              <p className="_4rgjvNN">Floor</p>
+            </div>
+          </Link>
+
+          <Link to={`/deendayal/plots`} target="_top">
+            <div className="_ksjMM _1fe8" title="Deen Dayal Plots">
+              <p className="_9gncbH">Deen Dayal</p>
+              <p className="_4rgjvNN">Plots</p>
+            </div>
+          </Link>
+
+          <Link  target="_top">
+            <div className="_ksjMM _1fe9" title="Villa's">
+              <p className="_9gncbH">Luxury</p>
+              <p className="_4rgjvNN">Villas</p>
+            </div>
+          </Link>
+
+          {/* <div className="_ksjMM _1fe7" title="Builder & Independent">
             <p className="_9gncbH">Builder & Independent</p>
             <p className="_4rgjvNN"> Floors</p>
-          </div>
+          </div> */}
 
-          <div className="_ksjMM _1fe8" title="Deen Dayal Plots">
+          {/* <div className="_ksjMM _1fe8" title="Deen Dayal Plots">
             <p className="_9gncbH">Deen Dayal</p>
             <p className="_4rgjvNN">Plots</p>
-          </div>
+          </div> */}
 
-          <div className="_ksjMM _1fe9" title="Villa's">
+          {/* <div className="_ksjMM _1fe9" title="Villa's">
             <p className="_9gncbH">Luxury </p>
             <p className="_4rgjvNN">Villas</p>
-          </div>
+          </div> */}
         </div>
       </div>
     </Wrapper>
@@ -195,6 +217,7 @@ const Wrapper = styled.section`
     justify-content: center;
     align-items: end;
     box-sizing: border-box;
+    // height: 150px;
   }
   p,
   span {

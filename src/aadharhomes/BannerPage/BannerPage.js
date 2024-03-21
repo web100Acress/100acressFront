@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Modal from "react-modal";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { Helmet } from "react-helmet";
@@ -377,15 +377,15 @@ const BannerPage = () => {
           />
 
           <span className="text-[#012e29] text-3xl sm:text-xl lg:text-3xl md:text-2xl sm:pt-2 md:m-2 text-right hidden lg:inline-block">
-            <a href="tel:9811750130">
+            <Link to="tel:9811750130">
               <i className="fa-solid fa-phone"></i> 9811750130
-            </a>
+            </Link>
           </span>
 
           <span className="text-[#012e29] text-lg pt-2 md:text-2xl lg:hidden block text-right">
-            <a href="tel:9811750130">
+            <Link to="tel:9811750130">
               <i className="fa-solid fa-phone"></i> 9811750130
-            </a>
+            </Link>
           </span>
         </div>
 
@@ -819,12 +819,12 @@ const BannerPage = () => {
           <span className="font-semibold lg:text-xl md:text-xl sm:text-base text-gray-600 text-center mb-2">
             CALL NOW 
           </span>
-          <a
-            href="tel:+918527134491"
+          <Link
+            to="tel:+918527134491"
             className="font-semibold lg:text-3xl md:text-xl sm:text-base text-gray-600"
           >
             <i className="fa-solid fa-phone mb-2"></i> +91 8527134491
-          </a>
+          </Link>
         </div>
 
         <div className="">

@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import Cities from "../Components/HomePageComponents/Cities";
 import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
-import StarCarousel from "../Components/HomePageComponents/Carousel";
 import SpacesAvailable from "../Components/HomePageComponents/Spaces";
 import SearchBar from "../Components/HomePageComponents/SearchBar";
 import styled from "styled-components";
@@ -14,6 +13,7 @@ import Footer from "../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { DataContext } from "../MyContext";
 import { ScaleLoader } from "react-spinners";   
+import Snapshot from "./Snapshot";
         const keyframes = `
   @keyframes moveHorizontal {
     from {
@@ -60,22 +60,24 @@ function Home() {
           }}
         >
           Trending Properties
+          
           {/* <Link to={"/projects"}>
             <span className="float-right text-sm text-red-600 hidden sm:block">
               View All{" "}
             </span>
           </Link> */}
+
         </h1>
         {
-          <section className="flex flex-col bg-white items-center">
-            <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+          <section className="flex flex-col bg-white items-center ">
+            <div className="grid max-w-md grid-cols-1  px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {trendingProject.map((item, index) => {
                 const pUrl = item.project_url;
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
                     <article
                       key={index}
-                      className="mb-4  overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                      className="mb-4  transition hover:scale-105 overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                     >
                       <div>
                         <img
@@ -139,6 +141,7 @@ function Home() {
           }}
         >
           Upcoming Projects
+
           {/* <Link to={"/projects/upcoming"} target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block group bg-gradient-to-br from-red-600 to-red-600 focus:outline-none focus:ring-4 animate-pulse"
@@ -147,6 +150,7 @@ function Home() {
               View All {" "}<i class="fa-solid fa-angle-right"></i>
             </span>
           </Link> */}
+
           <Link to="/projects/upcoming" target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
@@ -167,13 +171,13 @@ function Home() {
                   <Link to={`/${pUrl}/`} target="_top">
                     <article
                       key={index}
-                      className="mb-4 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                      className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                     >
                       <div>
                         <img
                           src={item.frontImage.url}
                           alt="property In Gurugram"
-                          className="w-full h-48 object-fit"
+                          className="w-full h-48 object-fit "
                         />
                       </div>
                       <div className="p-4">
@@ -225,11 +229,13 @@ function Home() {
         }}
       >
         Featured Projects
+        
         {/* <Link to={"/projects"}>
           <span className="float-right text-sm text-red-600 hidden sm:block">
             View All{" "}
           </span>
         </Link> */}
+
       </h2>
 
       {
@@ -241,7 +247,7 @@ function Home() {
                 <Link to={`/${pUrl}/`} target="_top">
                   <article
                     key={index}
-                    className="mb-4 bg-white overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                    className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                   >
                     <div>
                       <img
@@ -316,7 +322,7 @@ function Home() {
                   <Link to={`/${pUrl}/`} target="_top">
                     <article
                       key={index}
-                      className="mb-4  bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                      className="mb-4 transition hover:scale-105  bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                     >
                       <div>
                         <img
@@ -401,7 +407,7 @@ function Home() {
                     <Link to={`/${pUrl}/`} target="_top">
                       <article
                         key={index}
-                        className="mb-4  bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                        className="mb-4 transition hover:scale-105  bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                       >
                         <div>
                           <img
@@ -479,6 +485,7 @@ function Home() {
           </a>
         </div>
       </div>
+      <Snapshot/>
       <Free />
       <Footer />
     </Wrapper>
