@@ -23,7 +23,7 @@ import {
   useBreakpointValue,
   Spacer,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -34,6 +34,7 @@ import Footer from "../Components/Actual_Components/Footer";
 import Nav from "./Nav";
 import Free from "../../src/Pages/Free";
 import { DataContext } from "../MyContext";
+import { AuthContext } from "../AuthContext";
 const avatars = [
   {
     name: "Ashish Bhadauriya",
@@ -65,6 +66,7 @@ export default function SignIn() {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
   // const { handleUserLogin } = useContext(DataContext);
+  const { login } = useContext(AuthContext);
 
   const [userLogin, setuserLogin] = useState({
     password: "",
@@ -78,58 +80,60 @@ export default function SignIn() {
     setuserLogin({ ...userLogin, [name]: value });
   };
 
-
   const handleUserLogin = async () => {
     const { email, password } = userLogin;
-    if (email && password) {
-      try {
-        const loginResponse = await axios.post(
-          "https://api.100acress.com/postPerson/verify_Login",
-          { email, password }
-        );
-        const newToken = loginResponse.data.token;
-        localStorage.setItem("myToken", JSON.stringify(newToken));
-        setToken(newToken);
 
-        if (loginResponse.status === 200) {
-          const roleResponse = await axios.get(
-            `https://api.100acress.com/postPerson/Role/${email}`
-          );
-          if (roleResponse.status === 200) {
+    // if (email && password) {
+    //   try {
+    //     const loginResponse = await axios.post(
+    //       "https://api.100acress.com/postPerson/verify_Login",
+    //       { email, password }
+    //     );
+    //     const newToken = loginResponse.data.token;
+    //     localStorage.setItem("myToken", JSON.stringify(newToken));
+    //     setToken(newToken);
 
-              localStorage.setItem("userRole",JSON.stringify(roleResponse.data.User.role))
-              const sellerId = roleResponse.data.User._id;
-              localStorage.setItem("mySellerId", JSON.stringify(sellerId));
+    //     if (loginResponse.status === 200) {
+    //       const roleResponse = await axios.get(
+    //         `https://api.100acress.com/postPerson/Role/${email}`
+    //       );
+    //       if (roleResponse.status === 200) {
 
-              if(roleResponse.data.User.role==="admin"){
-                history("/admin/acress/property/aadhar");
-              }else{
-                history("/");
-              }
+    //           localStorage.setItem("userRole",JSON.stringify(roleResponse.data.User.role))
+    //           const sellerId = roleResponse.data.User._id;
+    //           localStorage.setItem("mySellerId", JSON.stringify(sellerId));
 
-          } else {
-            console.error("Role fetch failed:", roleResponse);
-            alert(
-              `Failed to fetch role information. Server responded with an error: ${roleResponse.status}`
-            );
-          }
-        } else {
-          console.error("Login failed:", loginResponse);
-          alert(
-            `Invalid credentials. Server responded with an error: ${loginResponse.status}`
-          );
-        }
-      } catch (error) {
-        console.error("Error during login:", error);
-        alert("The email address or password entered is not valid");
-      }
-    } else {
-      alert("Please Enter both Email and Password");
-    }
+    //           if(roleResponse.data.User.role==="admin"){
+    //             history("/admin/acress/property/aadhar");
+    //           }else{
+    //             history("/");
+    //           }
+
+    //       } else {
+    //         console.error("Role fetch failed:", roleResponse);
+    //         alert(
+    //           `Failed to fetch role information. Server responded with an error: ${roleResponse.status}`
+    //         );
+    //       }
+    //     } else {
+    //       console.error("Login failed:", loginResponse);
+    //       alert(
+    //         `Invalid credentials. Server responded with an error: ${loginResponse.status}`
+    //       );
+    //     }
+    //   } catch (error) {
+    //     console.error("Error during login:", error);
+    //     alert("The email address or password entered is not valid");
+    //   }
+    // } else {
+    //   alert("Please Enter both Email and Password");
+    // }
+
+    //  Naya Code
+    try {
+      await login(userLogin);
+    } catch (error) {}
   };
-
- 
-  
 
   // const handleSubmit = async () => {
   //   try {

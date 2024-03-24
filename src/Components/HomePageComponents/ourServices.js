@@ -5,6 +5,8 @@ function OurServices() {
     <Wrapper className="section">
       <div className="max-w-screen-xl mx-auto px-10 py-10">
         <div className="row ">
+
+          
           <div className="col-md-3">
             <div
               className="col max-mb-30 aos-init aos-animate"
@@ -39,6 +41,8 @@ function OurServices() {
               </a>{" "}
             </div>
           </div>
+
+
           <div className="col-md-3">
             <div
               className="col max-mb-30 aos-init aos-animate"
@@ -74,6 +78,8 @@ function OurServices() {
               </a>{" "}
             </div>
           </div>
+
+
           <div className="col-md-3">
             <div
               className="col max-mb-10 aos-init aos-animate"
@@ -109,6 +115,8 @@ function OurServices() {
               </a>{" "}
             </div>
           </div>
+
+
           <div className="col-md-3">
             <div
               className="col max-mb-30 aos-init aos-animate"
@@ -151,7 +159,6 @@ function OurServices() {
               data-aos="fade-up"
             >
               <a
-                href="#"
                 className="icon-box text-center"
                 data-bg-color="#fff"
                 style={{ backgroundColor: "rgb(255, 255, 255)" }}
@@ -159,7 +166,7 @@ function OurServices() {
               >
                 <div className="icon">
                   <img
-                    src="../../Images/construction.JPG"
+                    src="../../../Images/construction.JPG"
                     style={{ height: "204px" }}
                     width="220"
                     height="220"
@@ -179,6 +186,8 @@ function OurServices() {
               </a>
             </div>
           </div>
+
+
         </div>
       </div>
     </Wrapper>

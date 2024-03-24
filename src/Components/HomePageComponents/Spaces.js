@@ -26,7 +26,7 @@ function SpacesAvailable() {
           <Link to={`/sco/plots`} target="_top">
             <div className="_ksjMM _1fe6" title="Plots Sco">
               <p className="_9gncbH">Plots</p>
-              <p className="_4rgjvNN">Sco</p>
+              <p className="_4rgjvNN">SCO</p>
             </div>
           </Link>
 

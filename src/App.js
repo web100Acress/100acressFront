@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
 import {
-  BrowserRouter as Router,
+  // BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -81,6 +81,8 @@ import ScoPlots from "./Components/HomePageComponents/ScoPlots";
 import BuilderIndependentFloor from "./Components/HomePageComponents/BuilderIndependentFloor";
 import DeenDayalPlots from "./Components/HomePageComponents/DeenDayalPlots";
 import NewsandArtical from "./Pages/NewsandArtical";
+import { AuthProvider } from "./AuthContext";
+import UserDashBoard from "./Components/HomePageComponents/UserDashBoard";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -90,138 +92,158 @@ function App() {
   const token = localStorage.getItem("myToken");
   return (
     <DataProvider>
-      <Wrapper className="section">
-        <Router>
-          <Routes>
-            <Route
-              path="/postproperty"
-              element={
-                token !== null ? <NewSellProperty /> : <Navigate to="/SignIn" />
-              }
-            />
-            <Route path="/SignIn" element={<SignIn />} />
-            <Route path="/" element={<Home />} />
-            <Route path="/SignUP" element={<SignUp />} />
-            <Route path="/SignIn" element={<SignIn />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route
-              path="/termsandconditions"
-              element={<TermsAndConditions />}
-            />
-            <Route path="/projects" element={<Properties />} />
-            <Route path="/rent" element={<RentPropViewCard />} />
-            <Route path="/buy" element={<BuyPropViewCard />} />
-            <Route path="/rent/:id" element={<RentViewDetails />} />
-            <Route path="/buy/:id" element={<BuyViewDetails />} />
-            <Route path="/propviewcard" element={<PropViewCardPro />} />
-            <Route
-              path="/property/residential"
-              element={<ResidentialProjects />}
-            />
-            <Route path="/projects/upcoming" element={<UpComingProjects />} />
-            <Route path="/projects/commerial" element={<CommercialProject />} />
-            <Route path="/sco/plots" element={<ScoPlots />} />
-            <Route
-              path="/projects/independentfloors"
-              element={<BuilderIndependentFloor />}
-            />
-            <Route path="/deendayal/plots" element={<DeenDayalPlots />} />
-            <Route path="/new&artical" element={<NewsandArtical />} />
+      <AuthProvider>
+        <Wrapper className="section">
+          {/* <Router> */}
+            <Routes>
+              <Route
+                path="/postproperty"
+                element={
+                  token !== null ? (
+                    <NewSellProperty />
+                  ) : (
+                    <Navigate to="/SignIn" />
+                  )
+                }
+              />
+              <Route path="/SignIn" element={<SignIn />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/SignUP" element={<SignUp />} />
+              <Route path="/SignIn" element={<SignIn />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route
+                path="/termsandconditions"
+                element={<TermsAndConditions />}
+              />
+              <Route path="/projects" element={<Properties />} />
+              <Route path="/rent" element={<RentPropViewCard />} />
+              <Route path="/buy" element={<BuyPropViewCard />} />
+              <Route path="/rent/:id" element={<RentViewDetails />} />
+              <Route path="/buy/:id" element={<BuyViewDetails />} />
+              <Route path="/propviewcard" element={<PropViewCardPro />} />
+              <Route
+                path="/property/residential"
+                element={<ResidentialProjects />}
+              />
+              <Route path="/projects/upcoming" element={<UpComingProjects />} />
+              <Route
+                path="/projects/commerial"
+                element={<CommercialProject />}
+              />
+              <Route path="/sco/plots" element={<ScoPlots />} />
+              <Route
+                path="/projects/independentfloors"
+                element={<BuilderIndependentFloor />}
+              />
+              <Route path="/deendayal/plots" element={<DeenDayalPlots />} />
+              <Route path="/new&artical" element={<NewsandArtical />} />
+              <Route path="/userdashboard" element={<UserDashBoard/>}/>
 
-            <Route path="/middlemain" element={<MiddleMain />} />
-            <Route path="/viewallproperty" element={<ViewAllProperty />} />
-            <Route path="/contactus" element={<ContactUs />} />
-            <Route path="/careerwithus" element={<CareerWithUs />} />
-            <Route path="/blog" element={<Blogging />} />
-            <Route path="/resetpassword/:token" element={<ForgetPassword />} />
 
-            <Route path="/forgetpassword" element={<ResetEmailPassword />} />
-            <Route
-              path="/form"
-              element={<Form registeredData={registeredData} />}
-            />
-            <Route path="/protected/private/admin" element={<AdminMain />} />
-            <Route
-              path="/protected/private/admin/editProject/:url"
-              element={<EditableProperty />}
-            />
+              <Route path="/middlemain" element={<MiddleMain />} />
+              <Route path="/viewallproperty" element={<ViewAllProperty />} />
+              <Route path="/contactus" element={<ContactUs />} />
+              <Route path="/careerwithus" element={<CareerWithUs />} />
+              <Route path="/blog" element={<Blogging />} />
+              <Route
+                path="/resetpassword/:token"
+                element={<ForgetPassword />}
+              />
 
-            <Route path="/knowabouts" element={<PropertyKnow />} />
-            <Route path="/profile/:id" element={<Profile />} />
-            <Route path="/:pUrl" element={<BannerPage />} />
-            <Route path="/about" element={<About />} />
-            <Route
-              path="/userviewproperty/:id"
-              element={<UserViewProperty />}
-            />
-            <Route path="/usereditproperty" element={<UserEditProperty />} />
+              <Route path="/forgetpassword" element={<ResetEmailPassword />} />
+              <Route
+                path="/form"
+                element={<Form registeredData={registeredData} />}
+              />
+              <Route path="/protected/private/admin" element={<AdminMain />} />
+              <Route
+                path="/protected/private/admin/editProject/:url"
+                element={<EditableProperty />}
+              />
 
-            <Route path="*" element={<PageNotFound />} />
-            <Route path="/contactmainpage" element={<ContactPage />} />
+              <Route path="/knowabouts" element={<PropertyKnow />} />
+              <Route path="/profile/:id" element={<Profile />} />
+              <Route path="/:pUrl" element={<BannerPage />} />
+              <Route path="/about" element={<About />} />
+              <Route
+                path="/userviewproperty/:id"
+                element={<UserViewProperty />}
+              />
+              <Route path="/usereditproperty" element={<UserEditProperty />} />
 
-            <Route path="/Admin/acress/dashboard" element={<Dashboard />} />
-            <Route
-              path="/Admin/viewproperty/:id"
-              element={<ViewPropertyAdmin />}
-            />
-            <Route
-              path="/Admin/viewproperty/viewdetails/:id"
-              element={<ClientDetails />}
-            />
-            <Route
-              path="/Admin/viewproperty/editdetails/:id"
-              element={<EditDetails />}
-            />
-            <Route path="/admin/addnew" element={<Addnew />} />
-            <Route path="/admin/adminproperty" element={<Adminproperty />} />
-            <Route path="/Admin/blog" element={<Blog />} />
-            <Route path="/Admin/user" element={<UserAdmin />} />
-            <Route path="/Admin/contact" element={<AdminContact />} />
-            <Route path="/Admin/editProject" element={<EditProject />} />
-            <Route path="/Admin/enquiries" element={<Enquiries />} />
-            <Route path="/Admin/header" element={<Header />} />
-            <Route path="/Admin/Projects/property" element={<Projects />} />
-            <Route path="/Admin/rent" element={<Rent />} />
-            <Route path="/Admin/rent/view/:id" element={<RentView />} />
-            <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
+              <Route path="*" element={<PageNotFound />} />
+              <Route path="/contactmainpage" element={<ContactPage />} />
 
-            <Route path="/admin/acress/property/aadhar" element={<Sidebar />} />
-            <Route path="/Admin/buy" element={<Buy />} />
-            <Route path="/Admin/buy/view/:id" element={<BuyView />} />
-            <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
-            <Route path="/Admin/contactpage" element={<ContactPage />} />
-            <Route
-              path="/Admin/ContactUs/UserProfile"
-              element={<UserProfile />}
-            />
-            <Route path="/searchdata/:key" element={<SearchData />} />
-            <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
-            <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
-            <Route
-              path="/Admin/projecteditbhk/:id"
-              element={<ProjectEditBHK />}
-            />
-            <Route
-              path="/Admin/projectedithighlight/:id"
-              element={<ProjectEditHighlight />}
-            />
-            <Route
-              path="/Admin/ProjectsAddBhk/:id"
-              element={<ProjectsAddBhk />}
-            />
-            <Route path="/Admin/adminProperty" element={<Adminproperty />} />
-            <Route
-              path="/Admin/ProjectAddHighlights/:id"
-              element={<ProjectAddHighligths />}
-            />
-            <Route
-              path="/dashboard"
-              element={<PrivateRoute element={<Dashboard />} />}
-            />
-          </Routes>
-        </Router>
-      </Wrapper>
+              <Route path="/Admin/acress/dashboard" element={<Dashboard />} />
+              <Route
+                path="/Admin/viewproperty/:id"
+                element={<ViewPropertyAdmin />}
+              />
+              <Route
+                path="/Admin/viewproperty/viewdetails/:id"
+                element={<ClientDetails />}
+              />
+              <Route
+                path="/Admin/viewproperty/editdetails/:id"
+                element={<EditDetails />}
+              />
+              <Route path="/admin/addnew" element={<Addnew />} />
+              <Route path="/admin/adminproperty" element={<Adminproperty />} />
+              <Route path="/Admin/blog" element={<Blog />} />
+              <Route path="/Admin/user" element={<UserAdmin />} />
+              <Route path="/Admin/contact" element={<AdminContact />} />
+              <Route path="/Admin/editProject" element={<EditProject />} />
+              <Route path="/Admin/enquiries" element={<Enquiries />} />
+              <Route path="/Admin/header" element={<Header />} />
+              <Route path="/Admin/Projects/property" element={<Projects />} />
+              <Route path="/Admin/rent" element={<Rent />} />
+              <Route path="/Admin/rent/view/:id" element={<RentView />} />
+              <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
+
+              <Route
+                path="/admin/acress/property/aadhar"
+                element={<Sidebar />}
+              />
+              <Route path="/Admin/buy" element={<Buy />} />
+              <Route path="/Admin/buy/view/:id" element={<BuyView />} />
+              <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
+              <Route path="/Admin/contactpage" element={<ContactPage />} />
+              <Route
+                path="/Admin/ContactUs/UserProfile"
+                element={<UserProfile />}
+              />
+              <Route path="/searchdata/:key" element={<SearchData />} />
+              <Route
+                path="/Admin/ProjectsView/:pUrl"
+                element={<ProjectView />}
+              />
+              <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
+              <Route
+                path="/Admin/projecteditbhk/:id"
+                element={<ProjectEditBHK />}
+              />
+              <Route
+                path="/Admin/projectedithighlight/:id"
+                element={<ProjectEditHighlight />}
+              />
+              <Route
+                path="/Admin/ProjectsAddBhk/:id"
+                element={<ProjectsAddBhk />}
+              />
+              <Route path="/Admin/adminProperty" element={<Adminproperty />} />
+              <Route
+                path="/Admin/ProjectAddHighlights/:id"
+                element={<ProjectAddHighligths />}
+              />
+              <Route
+                path="/dashboard"
+                element={<PrivateRoute element={<Dashboard />} />}
+              />
+            </Routes>
+          {/* </Router> */}
+        </Wrapper>
+      </AuthProvider>
     </DataProvider>
   );
 }

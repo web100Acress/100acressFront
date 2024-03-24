@@ -85,12 +85,17 @@ const MenuListContainer = ({ isOpen }) => {
             <ToastContainer />
 
             <MenuItem fontSize="sm">
-              <NavLink>Edit Profile</NavLink>
+              <NavLink to={`/userdashboard`}>View Profile</NavLink>
             </MenuItem>
 
             <MenuItem fontSize="sm">
-              <NavLink to={`/userviewproperty/${id}`}>View Property</NavLink>
+              <NavLink>Edit Profile</NavLink>
             </MenuItem>
+
+
+            {/* <MenuItem fontSize="sm">
+              <NavLink to={`/userviewproperty/${id}`}>View Property</NavLink>
+            </MenuItem> */}
 
             <MenuItem fontSize="sm">
               <NavLink>Change Password</NavLink>
@@ -176,13 +181,14 @@ export default function Nav() {
     onClose();
   };
 
-  const history = useNavigate();
-
+ 
   const [token, setToken] = useState();
+  
   const checkUserAuth = () => {
     const storedToken = localStorage.getItem("myToken");
     setToken(storedToken);
   };
+
   useEffect(() => {
     checkUserAuth();
   }, []);
@@ -204,7 +210,7 @@ export default function Nav() {
     <Wrapper className="section">
       <Box>
         <Box bg="red" px={{ base: 0, md: 4, lg: 7 }}>
-          <Flex h={14} alignItems="center" justifyContent="space-between">
+          <Flex h={16} alignItems="center" justifyContent="space-between">
             <IconButton
               size={"md"}
               icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -225,7 +231,7 @@ export default function Nav() {
               <Box>
                 <Link to={"/"}>
                   <Image
-                    maxW={["100px", "200px"]}
+                    maxW={["160px", "200px"]}
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
                     src={logoImage}
