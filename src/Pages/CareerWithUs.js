@@ -16,7 +16,7 @@ const CareerWithUs = () => {
             />
           </div>
 
-          <div className="absolute inset-0 flex justify-center items-center text-white">
+          {/* <div className="absolute inset-0 flex justify-center items-center text-white">
             <p
               className="bg-black bg-opacity-50 p-3 mx-10 sm:mx-10 md:mx-16 lg:mx-20 xl:mx-24 2xl:mx-20 
            text-sm xl:text-xl 
@@ -26,7 +26,7 @@ const CareerWithUs = () => {
               Our main working mantra is to work with full dedication and
               passion to create a brilliant outcome.
             </p>
-          </div>
+          </div> */}
         </section>
         <div className="bg-gray-100 border-2 text-center pt-2 pb-2">
           <h4 className="lg:text-2xl mt-4 text-red-600 sm:text:sm">
@@ -60,10 +60,10 @@ const CareerWithUs = () => {
               <div className=" bg-white text-gray-500 p-2 flex justify-between">
                 <div className="flex-1 ">
                   <strong className="text-red-600  lg:text-xl sm:text-sm">
-                    Sales Manager
+                    Sales Team Lead
                   </strong>
                   <p className="lg:text-lg sm:text-xs ">
-                    Min 1-2 Years of Relevant Experience
+                    Min 1-3 Years of Relevant Experience
                   </p>
                 </div>
                 <div className="flex-1 text-right">
@@ -78,7 +78,7 @@ const CareerWithUs = () => {
               <div className=" bg-white text-gray-500 p-2 flex justify-between">
                 <div className="flex-1">
                   <strong className="text-red-600  lg:text-xl sm:text-sm">
-                    Freelance Content Writer
+                    Sales Head
                   </strong>
                   <p className="lg:text-lg sm:text-xs">
                     Min 1-2 Years of Relevant Experience
@@ -96,10 +96,10 @@ const CareerWithUs = () => {
               <div className=" bg-white text-gray-500 p-2 flex justify-between">
                 <div className="flex-1">
                   <strong className="text-red-600  lg:text-xl sm:text-sm">
-                    Android Developer
+                    Personal Assistant Female
                   </strong>
                   <p className="lg:text-lg sm:text-xs">
-                    Min 3-4 Year of Relevant Experience
+                    Min 1-3 Year of Relevant Experience
                   </p>
                 </div>
                 <div className="flex-1 text-right">
@@ -114,7 +114,7 @@ const CareerWithUs = () => {
               <div className=" bg-white text-gray-500 p-2 flex justify-between">
                 <div className="flex-1">
                   <strong className="text-red-600  lg:text-xl sm:text-sm">
-                    IOS Developer
+                  Youtuber Jobs
                   </strong>
                   <p className="lg:text-lg sm:text-xs">
                     Min 3-4 Years of Relevant Experience

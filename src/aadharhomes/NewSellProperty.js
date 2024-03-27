@@ -455,6 +455,7 @@ const NewSellProperty = () => {
                     )}
                   </select>
                 )}
+                
               </div>
 
               <div className="grid gap-3 md:grid-cols-2">

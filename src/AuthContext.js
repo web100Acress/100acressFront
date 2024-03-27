@@ -1,53 +1,6 @@
-// import { createContext, useContext, useReducer } from 'react';
-// const AuthContext = createContext();
-
-// const initialState = {
-//   isAuthenticated: false,
-//   user: null,
-// };
-
-// const authReducer = (state, action) => {
-//   switch (action.type) {
-//     case 'LOGIN':
-//       return {
-//         ...state,
-//         isAuthenticated: true,
-//         user: action.payload,
-//       };
-//     case 'LOGOUT':
-//       return {
-//         ...state,
-//         isAuthenticated: false,
-//         user: null,
-//       };
-//     default:
-//       return state;
-//   }
-// };
-
-// const AuthProvider = ({ children }) => {
-//   const [state, dispatch] = useReducer(authReducer, initialState);
-
-//   return (
-//     <AuthContext.Provider value={{ state, dispatch }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
-
-// const useAuth = () => {
-//   const context = useContext(AuthContext);
-//   if (!context) {
-//     throw new Error('useAuth must be used within an AuthProvider');
-//   }
-//   return context;
-// };
-
-// export { AuthProvider, useAuth };
-
 import axios from "axios";
 import React, { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -89,16 +42,22 @@ export const AuthProvider = ({ children }) => {
           const newToken = loginResponse.data.token;
           localStorage.setItem("myToken", JSON.stringify(newToken));
           setToken(newToken);
-  
+
           if (loginResponse.status === 200) {
             const roleResponse = await axios.get(
               `https://api.100acress.com/postPerson/Role/${email}`
             );
             setAgentData(roleResponse.data.User);
             // Save agentData to local storage
-            localStorage.setItem("agentData", JSON.stringify(roleResponse.data.User));
+            localStorage.setItem(
+              "agentData",
+              JSON.stringify(roleResponse.data.User)
+            );
             if (roleResponse.status === 200) {
-              localStorage.setItem("userRole", JSON.stringify(roleResponse.data.User.role));
+              localStorage.setItem(
+                "userRole",
+                JSON.stringify(roleResponse.data.User.role)
+              );
               const sellerId = roleResponse.data.User._id;
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
               if (roleResponse.data.User.role === "admin") {
@@ -131,9 +90,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const { id } = useParams();
+  console.log(id, "Use Auth Id");
 
-  
-  
+  const handleDeleteUser = async (id) => {
+    try {
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete this user?"
+      );
+      if (confirmDelete) {
+        const res = await axios.delete(
+          `https://api.100acress.com/postPerson/propertyDelete/${id}`
+        );
+        if (res.status >= 200 && res.status < 300) {
+          window.location.reload();
+        } else {
+          console.error("Failed to delete user. Server returned an error.");
+        }
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting user:", error.message);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -143,6 +122,7 @@ export const AuthProvider = ({ children }) => {
         setLoading,
         login,
         agentData,
+        handleDeleteUser,
       }}
     >
       {children}

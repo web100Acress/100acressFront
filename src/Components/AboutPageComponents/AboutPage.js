@@ -9,7 +9,7 @@ const About = () => {
       <div className="overflow-x-hidden">
         <div className="w-full">
           <img
-            src="../../Images/aboutus.jpg"
+            src="../../Images/aboutus.png"
             alt="About Us"
             className="w-full h-60 sm:h-30 object-fit"
           />
