@@ -9,7 +9,7 @@ export const DataProvider = ({ children }) => {
   const [city, setCity] = useState([]);
   const [allProjectData, setAllProjectData] = useState([]);
   const [residencialProjects, setResidencialProjects] = useState([]);
-  const [allupcomingProject, setAllUpComingProject]= useState([]);
+  const [allupcomingProject, setAllUpComingProject] = useState([]);
   const [commercialProject, setAllCommercialProject] = useState([]);
   const [scoPlots, setAllScoPlots] = useState([]);
   const [BuilderIndependentFloor, setBuilderIndependentFLoor] = useState([]);
@@ -26,11 +26,11 @@ export const DataProvider = ({ children }) => {
       const trendingProjects = projectsData.filter(
         (project) => project.projectOverview === "trending"
       );
+      const upcomingProjects = projectsData
+        .filter((project) => project.projectOverview === "upcoming")
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-      const upcomingProjects = projectsData.filter(
-        (project) => project.projectOverview === "upcoming"
-      );
-
+      console.log(upcomingProjects, "upcomingProjects upcomingProjects");
       const featuredProjects = projectsData.filter(
         (project) => project.projectOverview === "featured"
       );
@@ -49,28 +49,38 @@ export const DataProvider = ({ children }) => {
 
       const allupcomingProject = projectsData.filter(
         (project) => project.project_Status === "comingsoon"
-      )
+      );
+
+      // console.log(upcomingProjects,"allupcomingProjectallupcomingProject")
 
       const commercialProject = projectsData.filter(
         (project) => project.type === "Commercial Property"
-      )
+      );
 
       const scoPlots = projectsData.filter(
         (project) => project.type === "SCO Plots"
-      )
-
+      );
 
       // const BuilderIndependentFloor = projectsData.filter(
       //   (project) => project.type === "Independent Floors" || project.type === "Builder Floors"
       // )
 
       const BuilderIndependentFloor = projectsData.filter((project) => {
-        return project.type === "Independent Floors" || project.type === "Builder Floors";
+        return (
+          project.type === "Independent Floors" ||
+          project.type === "Builder Floors"
+        );
       });
 
-      const deenDayalPlots =  projectsData.filter((project) =>{
-        return project.type === 'Deen Dayal Plots'
-      })
+      const deenDayalPlots = projectsData.filter((project) => {
+        return project.type === "Deen Dayal Plots";
+      });
+
+      // const val = projectsData.filter((project)=>{
+      //   return  project.project_Status === 'createdAt'
+      // })
+
+      // console.log(val, "ashssd data wise")
 
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
@@ -90,7 +100,6 @@ export const DataProvider = ({ children }) => {
   };
 
   const [isAuthenticated, setIsAuthenticated] = useState(null);
-  
 
   const [token, setToken] = useState(null);
 
@@ -110,19 +119,20 @@ export const DataProvider = ({ children }) => {
           const roleResponse = await axios.get(
             `https://api.100acress.com/postPerson/Role/${email}`
           );
-          console.log(roleResponse,"roleResponse roleResponse")
+          console.log(roleResponse, "roleResponse roleResponse");
           if (roleResponse.status === 200) {
+            localStorage.setItem(
+              "userRole",
+              JSON.stringify(roleResponse.data.User.role)
+            );
+            const sellerId = roleResponse.data.User._id;
+            localStorage.setItem("mySellerId", JSON.stringify(sellerId));
 
-              localStorage.setItem("userRole",JSON.stringify(roleResponse.data.User.role))
-              const sellerId = roleResponse.data.User._id;
-              localStorage.setItem("mySellerId", JSON.stringify(sellerId));
-
-              // if(roleResponse.data.User.role==="admin"){
-              //   history("/admin/acress/property/aadhar");
-              // }else{
-              //   history("/");
-              // }
-
+            // if(roleResponse.data.User.role==="admin"){
+            //   history("/admin/acress/property/aadhar");
+            // }else{
+            //   history("/");
+            // }
           } else {
             console.error("Role fetch failed:", roleResponse);
             alert(
@@ -144,8 +154,7 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-
-  return (   
+  return (
     <DataContext.Provider
       value={{
         trendingProject,
@@ -158,10 +167,10 @@ export const DataProvider = ({ children }) => {
         allupcomingProject,
         commercialProject,
         scoPlots,
-        token, 
+        token,
         BuilderIndependentFloor,
         deenDayalPlots,
-        handleUserLogin
+        handleUserLogin,
       }}
     >
       {children}

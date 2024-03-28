@@ -191,7 +191,7 @@ const FormHome = () => {
             <div className="hidden md:block w-full md:w-1/2">
               <div style={{ height: "100%", overflow: "hidden" }}>
                 <img
-                  src="../../Images/Formcontact.png"
+                  src="../../Images/Formcontact.jpeg"
                   alt="expertImage"
                   className="object-cover w-full h-full"
                 />

@@ -20,7 +20,6 @@ const UserDashBoard = () => {
     console.log("agentData or agentData.postProperty is undefined.");
   }
 
-
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
@@ -102,7 +101,7 @@ const UserDashBoard = () => {
         </div>
       </div>
       <hr className="mx-10" />
-      
+
       <div>
         <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl">
           All Your Listing Property on 100acress Are Up-To-Date
@@ -141,7 +140,10 @@ const UserDashBoard = () => {
                               Edit
                             </div>
                             <button
-                              onClick={() => handleDeleteUser(userId)}
+                              onClick={() => {
+                                handleDeleteUser(userId);
+                                localStorage.setItem("userId", userId);
+                              }}
                               className="bg-red-600 text-white px-2 py-1 rounded-md mr-2"
                             >
                               Delete

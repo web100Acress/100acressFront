@@ -47,11 +47,11 @@ const ContactUs = () => {
            </div>
          </div>
 
-         <div className='md:w-90 h-auto md:h-96 object-cover '>
+         <div className='md:w-90 h-auto md:h-96 object-fit '>
            <img
-             src="../../Images/contactus2.jpg"
+             src="../../Images/contactus2.jpeg"
              alt="property in gurgaon"
-             className="w-full h-full object-cover"
+             className="w-full h-full object-fit"
            />
          </div>
          <div className='md:w-90 h-auto md:h-96 bg-orange-100  '>

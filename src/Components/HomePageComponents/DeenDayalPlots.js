@@ -6,13 +6,15 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 const DeenDayalPlots = () => {
   const { deenDayalPlots } = useContext(DataContext);
-  
+
   return (
     <div>
       <Nav />
 
       <Helmet>
-        <title>Plots in Gurgaon - Residential Deen Dayal Plots &amp; Lands in Gurgaon</title>
+        <title>
+          Plots in Gurgaon - Residential Deen Dayal Plots &amp; Lands in Gurgaon
+        </title>
         <meta
           name="description"
           content="Buy Deen Dayal Residential Plots/Lands for Sale in Gurgaon"
@@ -20,12 +22,20 @@ const DeenDayalPlots = () => {
       </Helmet>
 
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
-        <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+        <h1 className="mb-2 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Deen Dayal Plots in Gurugram
         </h1>
+        <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+          Deen Dayal Plots in Gurugram offer a unique opportunity for
+          residential development in the rapidly growing city.With convenient
+          access to amenities, infrastructure, and transportation networks, Deen
+          Dayal Plots cater to the burgeoning demand for quality residential
+          spaces in Gurugram, making them an attractive choice for homebuyers
+          and investors alike.
+        </h2>
       </div>
 
-      <section className="flex flex-col items-center">
+      <section className="flex flex-col items-center pt-2">
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
           {deenDayalPlots.map((item, index) => {
             const pUrl = item.project_url;

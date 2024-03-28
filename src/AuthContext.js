@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { createContext, useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -90,8 +90,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const { id } = useParams();
-  console.log(id, "Use Auth Id");
+  let id = localStorage.getItem("userId");
 
   const handleDeleteUser = async (id) => {
     try {
@@ -99,9 +98,11 @@ export const AuthProvider = ({ children }) => {
         "Are you sure you want to delete this user?"
       );
       if (confirmDelete) {
+        localStorage.removeItem("userId");
         const res = await axios.delete(
           `https://api.100acress.com/postPerson/propertyDelete/${id}`
         );
+        
         if (res.status >= 200 && res.status < 300) {
           window.location.reload();
         } else {
@@ -113,6 +114,8 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+
+  
   return (
     <AuthContext.Provider
       value={{

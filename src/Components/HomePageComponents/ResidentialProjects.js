@@ -19,11 +19,18 @@ const ResidentialProjects = () => {
       </Helmet>
 
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">
-        <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+        <h1 className="mb-2 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           RESIDENTIAL PROPERTIES
         </h1>
+        <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+    Residential properties encompass a diverse range of housing options
+    tailored to meet varying lifestyle needs. From single-family homes to
+    condominiums, townhouses, and apartments, each type offers unique
+    features and amenities. 
+</h2>
+
       </div>
-      <section className="flex flex-col items-center">
+      <section className="flex pt-2 flex-col items-center">
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
           {residencialProjects.map((item, index) => {
             const pUrl = item.project_url;

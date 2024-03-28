@@ -166,7 +166,7 @@ function OurServices() {
               >
                 <div className="icon">
                   <img
-                    src="../../../Images/construction.JPG"
+                    src="../../Images/construction.jpg"
                     style={{ height: "204px" }}
                     width="220"
                     height="220"
