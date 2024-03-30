@@ -13,12 +13,12 @@ const ContactUs = () => {
     <div class="w-full">
           <img
             src="../../Images/contact.png"
-            alt="About Us"
+            alt="contact Us"
             class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
           />
           <img
             src="../../Images/contactmobile.png"
-            alt="About Us"
+            alt="contact Us"
             class="w-full h-60 sm:h-30 object-fit small-screen-image block sm:hidden"
           />
         </div>
@@ -51,12 +51,12 @@ const ContactUs = () => {
              <button className='text-white bg-red-600 w-[146px] mx-4 my-2 py-2 font-bold rounded-lg'>Send</button>
            </div>
          </div>
-
-         <div className='md:w-90 h-auto md:h-96 object-fit '>
+         {/* md:w-90 h-auto md:h-96 sm:h-[250px] object-fit  */}
+         <div className=''>
            <img
              src="../../Images/contactus2.jpeg"
              alt="property in gurgaon"
-             className="w-full h-full object-fit"
+             className=' contactImage'
            />
          </div>
          <div className='md:w-90 h-auto md:h-96 bg-orange-100  '>

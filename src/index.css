@@ -17,6 +17,34 @@
     border-radius: 4px;
     background-clip: content-box;
   }
-
-
+  .contactImage{
+    height:500px;
+    width: 100%;
+  }
+  @media (max-width: 639px) {
+    .contactImage {
+      height: 250px; /* Adjust height for extra small screens */
+    }
+  }
+  
+  /* For small screens (sm) */
+  @media (min-width: 640px) and (max-width: 767px) {
+    .contactImage {
+      height: 400px; /* Adjust height for small screens */
+    }
+  }
+  
+  /* For medium screens (md) */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .contactImage {
+      height: 500px; /* Adjust height for medium screens */
+    }
+  }
+  
+  /* For large screens (lg) */
+  @media (min-width: 1024px) {
+    .contactImage {
+      height: 500px; /* Adjust height for large screens */
+    }
+  }
   

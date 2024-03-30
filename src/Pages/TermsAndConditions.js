@@ -9,12 +9,12 @@ const TermsAndConditions = () => {
     <div class="w-full">
           <img
             src="../../Images/term.png"
-            alt="About Us"
+            alt="termandcondition"
             class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
           />
           <img
             src="../../Images/termmobile.png"
-            alt="About Us"
+            alt="termandcondition"
             class="w-full h-60 sm:h-30 object-fit small-screen-image block sm:hidden"
           />
         </div>
