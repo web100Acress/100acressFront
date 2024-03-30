@@ -36,7 +36,7 @@ import Sidebar from "./AdminPage/Sidebar";
 import UserProfile from "./AdminPage/UserProfile";
 import Buy from "./AdminPage/Buy";
 import ContactPage from "./AdminPage/ContactPage";
-
+import About from "./Pages/About";
 import AdminContact from "./AdminPage/AdminContact";
 import ViewAllProperty from "./Pages/ViewAllProperty";
 import ForgetPassword from "./Pages/ForgetPassword";
@@ -67,7 +67,6 @@ import ContactUs from "./Pages/ContactUs";
 import SearchData from "./Pages/SearchData";
 import UserViewProperty from "./Pages/UserViewProperty";
 import CareerWithUs from "./Pages/CareerWithUs";
-import About from "./Pages/About";
 import UserEditProperty from "./Pages/UserEditProperty";
 import ProjectAddHighligths from "./AdminPage/ProjectAddHighligths";
 import PrivateRoute from "./PrivateRoute";
@@ -110,7 +109,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/SignUP" element={<SignUp />} />
               <Route path="/SignIn" element={<SignIn />} />
-              <Route path="/about" element={<AboutPage />} />
+             
               <Route path="/privacy" element={<Privacy />} />
               <Route
                 path="/termsandconditions"
@@ -119,6 +118,7 @@ function App() {
               <Route path="/projects" element={<Properties />} />
               <Route path="/rent" element={<RentPropViewCard />} />
               <Route path="/buy" element={<BuyPropViewCard />} />
+              <Route path="/about" element={<About/>} />
               <Route path="/rent/:id" element={<RentViewDetails />} />
               <Route path="/buy/:id" element={<BuyViewDetails />} />
               <Route path="/propviewcard" element={<PropViewCardPro />} />
@@ -165,7 +165,7 @@ function App() {
               <Route path="/knowabouts" element={<PropertyKnow />} />
               <Route path="/profile/:id" element={<Profile />} />
               <Route path="/:pUrl" element={<BannerPage />} />
-              <Route path="/about" element={<About />} />
+        
               <Route
                 path="/userviewproperty/:id"
                 element={<UserViewProperty />}

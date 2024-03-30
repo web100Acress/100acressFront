@@ -10,13 +10,18 @@ const ContactUs = () => {
     <div className='overflow-x-hidden'>
      
    
-     <div className='w-full'>
-       <img
-         src='../../Images/contact.png'
-         alt='About Us'
-         className='w-full h-60 sm:h-30 object-fit'
-       />
-     </div>
+    <div class="w-full">
+          <img
+            src="../../Images/contact.png"
+            alt="About Us"
+            class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
+          />
+          <img
+            src="../../Images/contactmobile.png"
+            alt="About Us"
+            class="w-full h-60 sm:h-30 object-fit small-screen-image block sm:hidden"
+          />
+        </div>
      <div className='xl:py-10 xl:px-10 lg:py-10 lg:px-10'>
        <div><p className='text-4xl font-bold text-center mb-3 mt-2 '>Get In Touch </p></div>
        

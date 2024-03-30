@@ -5,7 +5,6 @@ import { AuthContext } from "../../AuthContext";
 import { Link } from "react-router-dom";
 const UserDashBoard = () => {
   const { agentData, handleDeleteUser } = useContext(AuthContext);
-
   let filteredRentProperties = [];
   let filteredSellProperties = [];
 
@@ -142,7 +141,7 @@ const UserDashBoard = () => {
                             <button
                               onClick={() => {
                                 handleDeleteUser(userId);
-                                localStorage.setItem("userId", userId);
+                                localStorage.setItem("user", userId);
                               }}
                               className="bg-red-600 text-white px-2 py-1 rounded-md mr-2"
                             >

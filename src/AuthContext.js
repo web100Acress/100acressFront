@@ -90,21 +90,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  let id = localStorage.getItem("userId");
-
   const handleDeleteUser = async (id) => {
     try {
       const confirmDelete = window.confirm(
         "Are you sure you want to delete this user?"
       );
       if (confirmDelete) {
-        localStorage.removeItem("userId");
         const res = await axios.delete(
           `https://api.100acress.com/postPerson/propertyDelete/${id}`
         );
-        
         if (res.status >= 200 && res.status < 300) {
-          window.location.reload();
+          setAgentData(prevData => ({
+            ...prevData,
+            postProperty: prevData.postProperty.filter(item => item._id !== id)
+          }));
+          localStorage.removeItem("user");
         } else {
           console.error("Failed to delete user. Server returned an error.");
         }
@@ -113,9 +113,8 @@ export const AuthProvider = ({ children }) => {
       console.error("An error occurred while deleting user:", error.message);
     }
   };
-
-
   
+
   return (
     <AuthContext.Provider
       value={{
@@ -131,4 +130,5 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+
 };

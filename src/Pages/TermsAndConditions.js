@@ -6,13 +6,18 @@ const TermsAndConditions = () => {
     <>
     <Nav/>
     <div className='overflow-x-hidden'>
-     <div className='w-full'>
-       <img
-         src='../../Images/term.jpg'
-         alt='AboutUs'
-         className='w-full h-60 sm:h-30 object-fit'
-       />
-     </div>
+    <div class="w-full">
+          <img
+            src="../../Images/term.png"
+            alt="About Us"
+            class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
+          />
+          <img
+            src="../../Images/termmobile.png"
+            alt="About Us"
+            class="w-full h-60 sm:h-30 object-fit small-screen-image block sm:hidden"
+          />
+        </div>
 
      <h3 className='pt-3 text-red-600 md:text-2xl  lg:text-3xl xl:text-3xl text-center'>Terms And Conditions</h3>
      <p className='text-gray-500 text-lg px-4 py-2 text-justify'>100acress.com Gurgaon is an honoured real estate company that strongly believes in providing customer

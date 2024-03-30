@@ -718,7 +718,8 @@ const Footer = () => {
                     Home
                   </Link>
                 </li>
-                <li className=" sm:mb-0">
+                
+                <li className="sm:mb-0">
                   <Link to="/about" className="text-left px-1 text-sm hover:underline" target='_top' style={{ color: 'white' }}>
                     About
                   </Link>

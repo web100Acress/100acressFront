@@ -8,13 +8,18 @@ const CareerWithUs = () => {
     <Nav/>
       <div className="overflow-x-hidden">
         <section className="relative">
-          <div className="w-full">
-            <img
-              src="../../Images/career.png"
-              alt="Career With Us"
-              className="w-full h-60 sm:h-30 object-fit"
-            />
-          </div>
+        <div class="w-full">
+          <img
+            src="../../Images/career.png"
+            alt="About Us"
+            class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
+          />
+          <img
+            src="../../Images/careermobile.png"
+            alt="About Us"
+            class="w-full h-60 sm:h-30 object-fit small-screen-image block sm:hidden"
+          />
+        </div>
 
           {/* <div className="absolute inset-0 flex justify-center items-center text-white">
             <p

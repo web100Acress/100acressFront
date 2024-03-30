@@ -17,7 +17,7 @@ const About = () => {
 
         <div className="px-4 py-2">
           <h3 className="text-center text-red-600 md:text-xl lg:text-2xl xl:text-4xl pt-4">
-            About 100acress.com
+            About 100acress.com 
           </h3>
           <p className="text-gray-500 text-lg  text-justify">
             100acress.com Gurgaon is an honoured real estate company that

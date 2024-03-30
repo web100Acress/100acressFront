@@ -30,7 +30,6 @@ export const DataProvider = ({ children }) => {
         .filter((project) => project.projectOverview === "upcoming")
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-      console.log(upcomingProjects, "upcomingProjects upcomingProjects");
       const featuredProjects = projectsData.filter(
         (project) => project.projectOverview === "featured"
       );
