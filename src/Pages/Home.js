@@ -87,9 +87,10 @@ function Home() {
                         />
                       </div>
                       <div className="p-4">
+                        
                         <div className="pb-2">
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectName}
+                            {item.projectName}   
                           </a>
                           {/* <span
                             style={{ float: "right" }}
@@ -102,6 +103,7 @@ function Home() {
                             {item.projectAddress}
                           </a>
                         </div>
+
                         <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                           <li className="text-left">
                             <span className="text-sm font-extrabold text-black">
@@ -118,6 +120,7 @@ function Home() {
                             </button>
                           </li>
                         </ul>
+
                       </div>
                     </article>
                   </Link>
@@ -477,7 +480,7 @@ function Home() {
       <div>
         <div>
           <a
-            href="https://api.whatsapp.com/send?phone=9711139812"
+            href="https://api.whatsapp.com/send?phone=8500900100"
             className="dd-m-whatsapp"
             target="_blank"
           >

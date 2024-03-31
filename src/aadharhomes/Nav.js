@@ -13,7 +13,6 @@ import {
   Image,
   AvatarBadge,
   HStack,
-  Spacer,
   Stack,
   useMediaQuery,
 } from "@chakra-ui/react";
@@ -91,7 +90,6 @@ const MenuListContainer = ({ isOpen }) => {
             <MenuItem fontSize="sm">
               <NavLink>Edit Profile</NavLink>
             </MenuItem>
-
 
             {/* <MenuItem fontSize="sm">
               <NavLink to={`/userviewproperty/${id}`}>View Property</NavLink>
@@ -181,9 +179,8 @@ export default function Nav() {
     onClose();
   };
 
- 
   const [token, setToken] = useState();
-  
+
   const checkUserAuth = () => {
     const storedToken = localStorage.getItem("myToken");
     setToken(storedToken);
@@ -192,8 +189,6 @@ export default function Nav() {
   useEffect(() => {
     checkUserAuth();
   }, []);
-
-
 
   const keyframes = `
   @keyframes moveHorizontal {
@@ -710,46 +705,6 @@ export default function Nav() {
               </div>
               <SpacerComponent />
 
-              {/* <Menu>
-              <MenuButton
-                  as={Button}
-                  borderRadius="l"
-                  variant="unstyled"
-                  aria-label="Profile"
-                  onMouseEnter={toggleDropdown} 
-                 
-                
-                >
-                  <Avatar
-                    boxSize={{ base: "1.7em", md: "1.8em" }}
-                    bgColor="white"
-                    marginLeft={{ base: 0, md: "9" }}
-                    icon={
-                      <AvatarBadge
-                        boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
-                        bg="red.500"
-                        border="2px"
-                        borderColor="white"
-                        darkBorderColor="gray.800"
-                        rounded="full"
-                      />
-                    }
-                  >
-                    <img
-                      className="w-16 h-10 rounded-full"
-                      src="../../Images/Avtar.png"
-                      alt=""
-                    />
-                  </Avatar>
-
-                </MenuButton>
-                <MenuListContainer
-                  isOpen={isDropdownOpen}
-                  onClose={onClose}
-                  onLoginRegisterClick={handleLoginRegisterClick}
-                />
-              </Menu> */}
-
               <Menu>
                 <MenuButton
                   as={Button}
@@ -758,6 +713,27 @@ export default function Nav() {
                   aria-label="Profile"
                   onMouseEnter={toggleDropdown}
                 >
+                  { token ? <><Avatar
+                    boxSize={{ base: "1.7em", md: "1.8em" }}
+                    bgColor="white"
+                    marginLeft={{ base: 0, md: "9" }}
+                    icon={
+                      <AvatarBadge
+                        boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
+                        bg="green.500"
+                        border="2px"
+                        borderColor="white"
+                        darkBorderColor="gray.800"
+                        rounded="full"
+                      />
+                    }
+                  >
+                    <img
+                      className="w-16 h-10 rounded-full"
+                      src="../../Images/logoAvtar.png"
+                      alt=""
+                    />
+                  </Avatar> </> : <>
                   <Avatar
                     boxSize={{ base: "1.7em", md: "1.8em" }}
                     bgColor="white"
@@ -775,10 +751,31 @@ export default function Nav() {
                   >
                     <img
                       className="w-16 h-10 rounded-full"
-                      src="https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001882.png"
+                      src="../../Images/logoAvtar.png"
                       alt=""
                     />
-                  </Avatar>
+                  </Avatar></>}
+                  {/* <Avatar
+                    boxSize={{ base: "1.7em", md: "1.8em" }}
+                    bgColor="white"
+                    marginLeft={{ base: 0, md: "9" }}
+                    icon={
+                      <AvatarBadge
+                        boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
+                        bg="red.500"
+                        border="2px"
+                        borderColor="white"
+                        darkBorderColor="gray.800"
+                        rounded="full"
+                      />
+                    }
+                  >
+                    <img
+                      className="w-16 h-10 rounded-full"
+                      src="../../Images/logoAvtar.png"
+                      alt=""
+                    />
+                  </Avatar> */}
                 </MenuButton>
                 <MenuListContainer
                   isOpen={isDropdownOpen}
@@ -786,7 +783,6 @@ export default function Nav() {
                   onLoginRegisterClick={handleLoginRegisterClick}
                 />
               </Menu>
-
             </Flex>
           </Flex>
 

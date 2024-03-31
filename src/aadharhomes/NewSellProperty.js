@@ -80,7 +80,7 @@ const NewSellProperty = () => {
     state: "",
     price: "",
     area: "",
-    description: "",
+    descripation: "",
     landMark: "",
     amenities: [],
     builtYear: "",
@@ -145,7 +145,7 @@ const NewSellProperty = () => {
       state: "",
       price: "",
       area: "",
-      description: "",
+      descripation: "",
       landMark: "",
       amenities: [],
       builtYear: "",
@@ -375,7 +375,7 @@ const NewSellProperty = () => {
                   </span>
                   <p className="text-justify">
                     Afterward, input all details such as property name, address,
-                    city, state, price, area, description, landmark, amenities,
+                    city, state, price, area, descripation, landmark, amenities,
                     built year and furnishing. Get access to buyer/tenant
                     contact details and connect easily.
                   </p>
@@ -518,6 +518,17 @@ const NewSellProperty = () => {
                 />
               </div>
 
+              <div>
+                <input
+                  type="text"
+                  placeholder="Type"
+                  name="type"
+                  value={sellProperty.type}
+                  onChange={handleChangeValue}
+                  className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
+                />
+              </div>
+
               <div className="grid gap-3 md:grid-cols-2">
                 <div>
                   <input
@@ -555,9 +566,9 @@ const NewSellProperty = () => {
               <div>
                 <input
                   type="text"
-                  placeholder="Property Description"
-                  name="description"
-                  value={sellProperty.description}
+                  placeholder="Property descripation"
+                  name="descripation"
+                  value={sellProperty.descripation}
                   onChange={handleChangeValue}
                   className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
                 />

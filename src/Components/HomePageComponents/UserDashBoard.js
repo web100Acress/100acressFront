@@ -68,7 +68,7 @@ const UserDashBoard = () => {
               </div>
               <div className="flex flex-col items-center flex-1 rounded-lg bg-gray-100 px-3 py-2 md:mr-2 md:ml-0">
                 <p className="text-sm font-medium text-gray-500">
-                  Buy Property
+                  Sell <br/> Property
                 </p>
                 <p className="text-3xl font-medium text-gray-600">
                   {" "}
@@ -77,7 +77,7 @@ const UserDashBoard = () => {
               </div>
               <div className="flex flex-col items-center flex-1 rounded-lg bg-gray-100 px-3 py-2 md:mr-2 md:ml-0">
                 <p className="text-sm font-medium text-gray-500">
-                  Sell Property
+                  Rent Property
                 </p>
                 <p className="text-3xl font-medium text-gray-600">
                   {" "}
@@ -111,6 +111,7 @@ const UserDashBoard = () => {
         {agentData.postProperty &&
           agentData.postProperty.map((item, index) => {
             const userId = item._id;
+            const id =item._id;
             return (
               <div className="w-full md:w-1/3 mb-4" key={index}>
                 {" "}
@@ -135,9 +136,12 @@ const UserDashBoard = () => {
                         </p>
                         <div className="flex">
                           <div className="d-flex mt-1">
-                            <div className="bg-green-600 px-3 text-white py-1 rounded-md mr-2">
+                            <Link to={`/useredit/${id}`}>
+                              <button className="bg-green-600 px-3 text-white py-1 rounded-md mr-2">
                               Edit
-                            </div>
+                            </button>
+                            </Link>
+                            
                             <button
                               onClick={() => {
                                 handleDeleteUser(userId);

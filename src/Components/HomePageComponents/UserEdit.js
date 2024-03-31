@@ -1,29 +1,9 @@
-import React, { useState, useEffect } from "react";
-import Sidebar from "./Sidebar";
+import React, { useEffect, useState } from "react";
+import Nav from "../../aadharhomes/Nav";
+import Footer from "../Actual_Components/Footer";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
-const customStyle = {
-  position: "absolute",
-  top: "100px",
-  marginLeft: "250px",
-  right: "auto",
-  width: "80%",
-};
-
-function handleFileChange(event) {
-  const input = event.target;
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const previewImage = document.getElementById("previewImage");
-      previewImage.src = e.target.result;
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-
-const EditDetails = () => {
+const UserEdit = () => {
   const [values, setValues] = useState({
     propertyType: "",
     propertyName: "",
@@ -41,9 +21,11 @@ const EditDetails = () => {
     availableDate: "",
     propertyLooking: "Select Property Type",
     subType: "",
+    frontImage:null,
   });
 
   const { id } = useParams();
+
   const { otherImage } = values;
 
   useEffect(() => {
@@ -66,7 +48,7 @@ const EditDetails = () => {
         `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
         values
       );
-      if (response.ok) {
+      if (response.status === 200) {
         alert("Data updated successfully");
         console.log("User updated successfully");
       } else {
@@ -77,26 +59,61 @@ const EditDetails = () => {
     }
   };
 
+ 
+
+//   async function handleFileChange(event) {
+//     const input = event.target;
+//     if (input.files && input.files[0]) {
+//       const file = input.files[0];
+  
+//       try {
+//         // Assuming you have an API endpoint to upload the image
+//         const formData = new FormData();
+//         formData.append('file', file);
+  
+//         // Make an API call to upload the image
+//         const response = await axios.post(`https://api.100acress.com/postPerson/propertyoneUpdate/${id}`, formData, {
+//           headers: {
+//             'Content-Type': 'multipart/form-data'
+//           }
+//         });
+  
+//         // Assuming the API response contains the URL of the uploaded image
+//         const imageUrl = response.data.imageUrl;
+  
+//         // Update the frontImage property in the values object with the HTTPS URL
+//         setValues(prevState => ({
+//           ...prevState,
+//           frontImage: {
+//             url: imageUrl, // HTTPS URL of the uploaded image
+//           }
+//         }));
+//       } catch (error) {
+//         console.error('Error uploading image:', error);
+//       }
+//     }
+//   }
+  
+  
+  
+
+     function handleFileChange(event) {
+      const input = event.target;
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const previewImage = document.getElementById("previewImage");
+          previewImage.src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
   return (
     <>
-      <Sidebar />
-      <div style={customStyle}>
-       
+      <Nav />
+      <div>
         <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
-        <div className="flex items-center mb-4  ">
-          <input
-            id="default-checkbox"
-            type="checkbox"
-            defaultValue=""
-            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600  dark:bg-gray-700 dark:border-gray-600"
-          />
-          <label
-            htmlFor="default-checkbox"
-            className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-          >
-            Verify
-          </label>
-        </div>
           <div className="card-body">
             <table className="table table-striped table-bordered">
               <tbody>
@@ -179,17 +196,39 @@ const EditDetails = () => {
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
-                      Property Type :{" "}
+                      State :{" "}
                       <span style={{ color: "black", fontWeight: "normal" }}>
                         <input
                           type="text"
-                          value={values.propertyType}
+                          value={values.state}
                           className="outline-none"
-                          name="propertyType"
+                          name="state"
                           onChange={(e) =>
                             setValues({
                               ...values,
-                              propertyType: e.target.value,
+                              state: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      City :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          value={values.city}
+                          className="outline-none"
+                          name="city"
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              city: e.target.value,
                             })
                           }
                         />
@@ -212,50 +251,6 @@ const EditDetails = () => {
                             setValues({
                               ...values,
                               address: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      City:{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          value={values.city}
-                          className="outline-none"
-                          name="city"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              city: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      State :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          value={values.state}
-                          name="state"
-                          className="outline-none"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              state: e.target.value,
                             })
                           }
                         />
@@ -310,12 +305,13 @@ const EditDetails = () => {
 
                 <tr>
                   <th>
-                    <span className="text-red-600 font-semibold ">
+                    <span className="text-red-600 font-semibold  ">
                       Project Description :{" "}
                       <span style={{ color: "black", fontWeight: "normal" }}>
                         <input
                           type="text"
                           name="descripation"
+                          style={{ width: "600px" }}
                           value={values.descripation}
                           className="outline-none"
                           onChange={(e) =>
@@ -447,28 +443,6 @@ const EditDetails = () => {
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
-                      Available Date:{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          name="availableDate"
-                          value={values.availableDate}
-                          className="outline-none"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              availableDate: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
                       Select Property Type:{" "}
                       <span style={{ color: "black", fontWeight: "normal" }}>
                         <input
@@ -500,8 +474,10 @@ const EditDetails = () => {
           </div>
         </div>
       </div>
+
+      <Footer />
     </>
   );
 };
 
-export default EditDetails;
+export default UserEdit;

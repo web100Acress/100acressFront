@@ -82,6 +82,7 @@ import DeenDayalPlots from "./Components/HomePageComponents/DeenDayalPlots";
 import NewsandArtical from "./Pages/NewsandArtical";
 import { AuthProvider } from "./AuthContext";
 import UserDashBoard from "./Components/HomePageComponents/UserDashBoard";
+import UserEdit from "./Components/HomePageComponents/UserEdit";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -139,7 +140,8 @@ function App() {
               <Route path="/deendayal/plots" element={<DeenDayalPlots />} />
               <Route path="/new&artical" element={<NewsandArtical />} />
               <Route path="/userdashboard" element={<UserDashBoard/>}/>
-
+              <Route path="/useredit/:id" element={<UserEdit/>}/>
+              
 
               <Route path="/middlemain" element={<MiddleMain />} />
               <Route path="/viewallproperty" element={<ViewAllProperty />} />

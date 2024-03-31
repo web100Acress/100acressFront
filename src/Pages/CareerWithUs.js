@@ -21,17 +21,7 @@ const CareerWithUs = () => {
           />
         </div>
 
-          {/* <div className="absolute inset-0 flex justify-center items-center text-white">
-            <p
-              className="bg-black bg-opacity-50 p-3 mx-10 sm:mx-10 md:mx-16 lg:mx-20 xl:mx-24 2xl:mx-20 
-           text-sm xl:text-xl 
-            text-justify sm:text-justify"
-            >
-              At 100acress, we believe our employees are our valuable assets.
-              Our main working mantra is to work with full dedication and
-              passion to create a brilliant outcome.
-            </p>
-          </div> */}
+
         </section>
         <div className="bg-gray-100 border-2 text-center pt-2 pb-2">
           <h4 className="lg:text-2xl mt-4 text-red-600 sm:text:sm">
@@ -271,7 +261,7 @@ const CareerWithUs = () => {
             <p>
               {" "}
               <i class="fa-solid fa-mobile-screen-button mr-10 justify-center text-blue-500"></i>
-              <span className="text-red-600">+91-97111-39812 </span>
+              <span className="text-red-600">+91-8500900100 </span>
             </p>
           </div>
         </div>

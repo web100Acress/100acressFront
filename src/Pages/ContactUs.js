@@ -65,7 +65,7 @@ const ContactUs = () => {
              <div className='grid grid-cols-1 px-2 py-10'>
                <div className='my-4'>
                  <i className="fa-solid fa-mobile-screen-button text-orange-300 text-2xl"></i>
-                 <a href='tel:+9123456789' className='mx-2 text-lg font-bold '>+919811750130</a>
+                 <a href='tel:+918500900100' className='mx-2 text-lg font-bold '>+918500900100</a>
 
                </div>
                <div className='my-4 flex items-center'>
