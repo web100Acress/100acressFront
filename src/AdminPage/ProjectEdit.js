@@ -39,7 +39,8 @@ const ProjectEdit = () => {
   });
 
   const { id } = useParams();
-  const { project_floorplan_Image, otherImage, frontImage } = values;
+  const { project_floorplan_Image } = values;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -72,9 +73,6 @@ const ProjectEdit = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-
-    // You may want to perform additional checks/validation here
-
     setValues({
       ...values,
       frontImage: file,

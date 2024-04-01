@@ -83,6 +83,7 @@ import NewsandArtical from "./Pages/NewsandArtical";
 import { AuthProvider } from "./AuthContext";
 import UserDashBoard from "./Components/HomePageComponents/UserDashBoard";
 import UserEdit from "./Components/HomePageComponents/UserEdit";
+import BlogView from "./Pages/BlogView";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -148,6 +149,7 @@ function App() {
               <Route path="/contactus" element={<ContactUs />} />
               <Route path="/careerwithus" element={<CareerWithUs />} />
               <Route path="/blog" element={<Blogging />} />
+              <Route path="/blog/:id" element ={<BlogView/>}/>
               <Route
                 path="/resetpassword/:token"
                 element={<ForgetPassword />}

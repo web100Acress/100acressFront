@@ -131,11 +131,11 @@ const UserDashBoard = () => {
                         <p className="text-md font-medium text-gray-800 mb-0">
                           {item.propertyName}
                         </p>
-                        <p className="mb-0 text-gray-500 text-sm">
+                        <p className="mb-0  text-gray-500 text-sm">
                           {item.city}, {item.state}
                         </p>
-                        <div className="flex">
-                          <div className="d-flex mt-1">
+                        <div className="flex pt-5">
+                          <div className="d-flex mt-1 ">
                             <Link to={`/useredit/${id}`}>
                               <button className="bg-green-600 px-3 text-white py-1 rounded-md mr-2">
                               Edit
@@ -155,6 +155,7 @@ const UserDashBoard = () => {
                         </div>
                       </div>
                     </div>
+                    
                   </div>
                 </div>
               </div>

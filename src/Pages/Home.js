@@ -480,7 +480,7 @@ function Home() {
       <div>
         <div>
           <a
-            href="https://api.whatsapp.com/send?phone=8500900100"
+            href="https://api.whatsapp.com/send?phone=+918500900100"
             className="dd-m-whatsapp"
             target="_blank"
           >

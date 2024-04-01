@@ -14,9 +14,11 @@ export const DataProvider = ({ children }) => {
   const [scoPlots, setAllScoPlots] = useState([]);
   const [BuilderIndependentFloor, setBuilderIndependentFLoor] = useState([]);
   const [deenDayalPlots, setDeenDayalPlots] = useState([]);
+  const [blogData, setBlogData] = useState([]);
 
   useEffect(() => {
     fetchAllProject();
+    fetchBlogData();
   }, []);
 
   const fetchAllProject = async () => {
@@ -98,6 +100,15 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  const fetchBlogData  = async () =>{
+    try {
+      const res = await axios.get('https://api.100acress.com/blog/view');
+      setBlogData(res.data.data);
+    } catch (error) {
+      console.log(error || error.message);
+    }
+  }
+
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   const [token, setToken] = useState(null);
@@ -127,11 +138,7 @@ export const DataProvider = ({ children }) => {
             const sellerId = roleResponse.data.User._id;
             localStorage.setItem("mySellerId", JSON.stringify(sellerId));
 
-            // if(roleResponse.data.User.role==="admin"){
-            //   history("/admin/acress/property/aadhar");
-            // }else{
-            //   history("/");
-            // }
+      
           } else {
             console.error("Role fetch failed:", roleResponse);
             alert(
@@ -170,6 +177,7 @@ export const DataProvider = ({ children }) => {
         BuilderIndependentFloor,
         deenDayalPlots,
         handleUserLogin,
+        blogData,
       }}
     >
       {children}

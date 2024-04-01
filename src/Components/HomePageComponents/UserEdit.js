@@ -21,12 +21,11 @@ const UserEdit = () => {
     availableDate: "",
     propertyLooking: "Select Property Type",
     subType: "",
-    frontImage:null,
+    frontImage: null,
+    otherImage: [],
   });
-
-  const { id } = useParams();
-
   const { otherImage } = values;
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,10 +43,24 @@ const UserEdit = () => {
 
   const handleUpdateUser = async () => {
     try {
+      const formData = new FormData();
+
+      for (const key in values) {
+        formData.append(key, values[key]);
+      }
+
+      formData.append("frontImage", values.frontImage.file);
+
       const response = await axios.post(
         `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
-        values
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
+
       if (response.status === 200) {
         alert("Data updated successfully");
         console.log("User updated successfully");
@@ -59,55 +72,22 @@ const UserEdit = () => {
     }
   };
 
- 
-
-//   async function handleFileChange(event) {
-//     const input = event.target;
-//     if (input.files && input.files[0]) {
-//       const file = input.files[0];
-  
-//       try {
-//         // Assuming you have an API endpoint to upload the image
-//         const formData = new FormData();
-//         formData.append('file', file);
-  
-//         // Make an API call to upload the image
-//         const response = await axios.post(`https://api.100acress.com/postPerson/propertyoneUpdate/${id}`, formData, {
-//           headers: {
-//             'Content-Type': 'multipart/form-data'
-//           }
-//         });
-  
-//         // Assuming the API response contains the URL of the uploaded image
-//         const imageUrl = response.data.imageUrl;
-  
-//         // Update the frontImage property in the values object with the HTTPS URL
-//         setValues(prevState => ({
-//           ...prevState,
-//           frontImage: {
-//             url: imageUrl, // HTTPS URL of the uploaded image
-//           }
-//         }));
-//       } catch (error) {
-//         console.error('Error uploading image:', error);
-//       }
-//     }
-//   }
-  
-  
-  
-
-     function handleFileChange(event) {
-      const input = event.target;
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const previewImage = document.getElementById("previewImage");
-          previewImage.src = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
+  function handleFileChange(event) {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        setValues((prevValues) => ({
+          ...prevValues,
+          frontImage: {
+            file: input.files[0],
+            url: e.target.result,
+          },
+        }));
+      };
+      reader.readAsDataURL(input.files[0]);
     }
+  }
 
   return (
     <>
@@ -125,7 +105,7 @@ const UserEdit = () => {
                   <td>
                     <img
                       src={values.frontImage ? values.frontImage.url : ""}
-                      alt=""
+                      alt="frontImage"
                       style={{ maxWidth: "20%" }}
                       id="previewImage"
                     />
@@ -138,7 +118,7 @@ const UserEdit = () => {
                   <th>Other Images</th>
                 </tr>
 
-                <tr>
+                {/* <tr>
                   <td>
                     <section className="w-full mx-4">
                       <div className="flex flex-wrap max-w-screen-md ">
@@ -167,6 +147,43 @@ const UserEdit = () => {
                           setValues({ ...values, otherImage: file });
                         }}
                       />
+                    </section>
+                  </td>
+                </tr> */}
+
+                <tr>
+                  <td>
+                    <section className="w-full mx-4">
+                      <div className="flex flex-wrap max-w-screen-md ">
+                        {otherImage &&
+                          Array.isArray(otherImage) &&
+                          otherImage.length > 0 &&
+                          otherImage.map((image, index) => (
+                            <article
+                              key={index}
+                              className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
+                            >
+                              <img
+                                src={image.url}
+                                alt={`Image ${index + 1}`}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                            </article>
+                          ))}
+                        <br />
+                        <input
+                          type="file"
+                          name="project_floorplan_Image"
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+
+                            setValues({
+                              ...values,
+                              project_floorplan_Image: file,
+                            });
+                          }}
+                        />
+                      </div>
                     </section>
                   </td>
                 </tr>

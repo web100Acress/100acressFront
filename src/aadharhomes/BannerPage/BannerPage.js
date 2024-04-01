@@ -377,14 +377,20 @@ const BannerPage = () => {
           />
 
           <span className="text-[#012e29] text-3xl sm:text-xl lg:text-3xl md:text-2xl sm:pt-2 md:m-2 text-right hidden lg:inline-block">
-            <Link to="tel:9811750130">
-              <i className="fa-solid fa-phone"></i> 9811750130
+            <Link to={`tel:${projectViewDetails.number ? projectViewDetails.number : '+919811750130'}`}>
+              <i className="fa-solid fa-phone"></i>{" "}
+              {projectViewDetails.number
+                ? projectViewDetails.number
+                : 9811750130}
             </Link>
           </span>
 
           <span className="text-[#012e29] text-lg pt-2 md:text-2xl lg:hidden block text-right">
-            <Link to="tel:9811750130">
-              <i className="fa-solid fa-phone"></i> 9811750130
+            <Link to={`tel:${projectViewDetails.number ? projectViewDetails.number : '+919811750130'}`}>
+              <i className="fa-solid fa-phone"></i>
+              {projectViewDetails.number
+                ? projectViewDetails.number
+                : 9811750130}
             </Link>
           </span>
         </div>
@@ -817,7 +823,7 @@ const BannerPage = () => {
 
         <div className="flex flex-col items-center justify-center mt-2 md:mt-8 lg:h-32 sm:h-28 shadow-xl">
           <span className="font-semibold lg:text-xl md:text-xl sm:text-base text-gray-600 text-center mb-2">
-            CALL NOW 
+            CALL NOW
           </span>
           <Link
             to="tel:+918527134491"
