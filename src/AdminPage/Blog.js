@@ -1,297 +1,187 @@
-// import React, { useState } from "react";
-// import Sidebar from "./Sidebar";
-// const customStyle = {
-//   position: "absolute",
-//   top: "100px",
-//   marginLeft: "250px",
-//   right: "auto",
-//   width: "80%"
-// };
-
-// const Blog = () => {
-//   const [openForm, setOpenForm] = useState(false);
-//   const formOpen = () => {
-//     setOpenForm(true);
-//   };
-
-//   const closeForm = () => {
-//     setOpenForm(false);
-//   };
-
-//   return (
-//     <>
-//       <Sidebar />
-//       <div className="" style={customStyle}>
-//         <div className="flex justify-end mb-2 mt-2 mr-20">
-//           <button
-//             onClick={formOpen}
-//             className="bg-blue-700 p-2 sm:rounded-lg text-white"
-//           >
-//             Add Blog
-//           </button>
-//         </div>
-//         <div className="flex justify-center items-center mt-0">
-//           <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-5/6 mt-0">
-//             {openForm && (
-//               <div className="modal-overlay shadow-2xl ">
-//                 <div className="container w-full h-70  rounded-xl modal-content pt-4">
-//                   <button className="text-white text-2xl absolute top-2 right-4 " onClick={closeForm}>
-//                     ✖
-//                   </button>
-//                   <div>
-//                     <textarea
-//                       name="Title"
-//                       placeholder="Blog Title"
-//                       rows="1"
-//                       className="w-full p-2 outline-none border-b-2 placeholder-black mt-4 rounded-md bg-white text-black  border-white  mobile-input"
-//                     ></textarea>
-//                     <textarea
-//                       name="Description"
-//                       placeholder="Blog Description"
-//                       rows="1"
-
-//                       className="w-full p-2 outline-none border-b-2 placeholder-black mt-4 rounded-md border-white bg-white text-black mobile-input"
-//                     ></textarea>
-
-//                     <select
-//                       className="text-black border p-2 outline-none w-full  ring-black focus:ring-1 mt-4 rounded-md"
-
-//                     >
-//                       <option value="" className="text-gray-600">Blog Category</option>
-//                       <option value="Commercial Property">Commercial Property</option>
-//                       <option value="Residential Flats">Residential Flats</option>
-//                       <option value="SCO Plots">SCO Plots</option>
-//                       <option value="Deendayal Plots">Deen Dayal Plots</option>
-//                       <option value="Residential Plots">Residential Plots</option>
-//                       <option value="Independent Floors">Independent Floors</option>
-//                       <option value="Builder Floors">Builder Floors</option>
-//                       <option value="Affordable Homes">Affordable Homes</option>
-//                     </select>
-
-//                     <select
-//                       className="text-black border p-2 outline-none w-full  ring-black focus:ring-1 mt-4 rounded-md"
-//                     >
-//                       <option value="" className="text-gray-600">Admin</option>
-//                     </select>
-//                      <div className="flex mt-3 ring-black">
-//                       <div className="relative h-10  px-2 min-w-[160px] bg-white w-full ring-black rounded-md">
-//                         <p className="mt-2 font-medium  text-black">
-//                           Front Image<input
-//                           type="file"
-//                           name="frontImage"
-//                           accept="image/*"
-//                           className="mx-2"
-//                         />
-//                         </p>
-
-//                       </div>
-//                     </div>
-//                     <div className="text-center  my-4 ">
-//                       <button className="bg-white text-red-600 text-lg text-bold rounded-md px-4 py-2 mx-2 my-2" >Submit</button></div>
-//                   </div>
-//                 </div>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default Blog;
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
-
 import "react-quill/dist/quill.snow.css";
+import { Link } from "react-router-dom";
 import axios from "axios";
-
-const customStyle = {
-  position: "absolute",
-  top: "100px",
-  marginLeft: "250px",
-  right: "auto",
-  width: "80%",
-};
-
 const Blog = () => {
-  const [openForm, setOpenForm] = useState(false);
- 
-  const [fileData, setFileData] = useState({
-    blog_Image: null,
-  });
-
-  const [editForm, setEditForm] = useState({
-    blog_Title: "",
-    blog_Description: "",
-    author: "Admin",
-    blog_Category: "",
-  });
-
-  const formOpen = () => {
-    setOpenForm(true);
+  const [viewAll, setViewAll] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+  const customStyle = {
+    position: "absolute",
+    top: "100px",
+    marginLeft: "250px",
+    right: "auto",
+    width: "80%",
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("https://api.100acress.com/blog/view");
+        console.log(res, "++++++++++");
+        setViewAll(res.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
 
-  const closeForm = () => {
-    setOpenForm(false);
-  };
-
-
-
-  const handleEditTitle = (e) => {
-    const { name, value } = e.target;
-    setEditForm({ ...editForm, [name]: value });
-  };
-
-  const handleEditCategory = (e) => {
-    setEditForm({
-      ...editForm,
-      blog_Category: e.target.value,
-    });
-  };
-
-
-  const handleSubmitForm = async (e) => {
-    e.preventDefault();
-    if (!fileData || !fileData.blog_Image) {
-      console.error("File data is missing or invalid.");
-      return;
-    }
-    const formDataAPI = new FormData();
-    const apiEndpoint = "https://api.100acress.com/blog/insert";
-    for (const key in editForm) {
-      formDataAPI.append(key, editForm[key]);
-    }
-    formDataAPI.append("blog_Image", fileData.blog_Image);
+  const handleDeleteUser = async (id) => {
     try {
-      const response = await axios.post(apiEndpoint, formDataAPI);
-      if (response.status === 200) {
-        console.log(response.data, "response");
-        alert("Data submitted successfully");
-        resetData();
+      const response = await axios.delete(
+        `https://api.100acress.com/blog/Delete/${id}`
+      );
+      if (response.status >= 200 && response.status < 300) {
+        window.location.reload();
       } else {
-        console.error("Failed to submit data:", response.data);
+        console.error("Failed to delete user. Server returned an error.");
       }
     } catch (error) {
-      console.error("Error:", error);
-      if (error.response) {
-        console.error("Server error:", error.response.data);
-      }
+      console.error("An error occurred while deleting user:", error.message);
     }
   };
 
-  const handleFileChange = (e, key) => {
-    const newFileData = { ...fileData };
-    newFileData[key] = e.target.files[0];
-    setFileData(newFileData);
+  const handleDeleteButtonClick = (id) => {
+    const confirmDeletion = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+    if (confirmDeletion) {
+      handleDeleteUser(id);
+    }
   };
 
-  const resetData = () => {
-    setEditForm({
-      blog_Title: "",
-      blog_Description: "",
-      author: "Admin",
-      blog_Category: "",
-      blog_Image: "",
-    });
+  const filteredProjects = viewAll.filter((item) =>
+    item.blog_Title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = filteredProjects.slice(indexOfFirstRow, indexOfLastRow);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
-   
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
   return (
     <>
       <Sidebar />
       <div className="" style={customStyle}>
-        <div className="flex justify-end mb-2 mt-2 mr-20">
-          <button
-            onClick={formOpen}
-            className="bg-blue-700 p-2 sm:rounded-lg text-white"
-          >
-            Add Blog
+        <div
+          className="flex items-center mb-2 mt-2"
+          style={{ marginLeft: "100px" }}
+        >
+          <button className="text-bold bg-red-600 p-2 text-white rounded-md mr-10">
+            Search
           </button>
+          <input
+            type="text"
+            placeholder="Search..."
+            className="p-2 border-b-2 w-50 border-red-600 text-black placeholder-black outline-none rounded-sm"
+          />
+          <span>
+            {" "}
+            <div className="flex justify-end ml-20">
+              <Link
+                to={"/blog/write"}
+                className="bg-blue-700 p-2 sm:rounded-lg text-white ml-2"
+              >
+                Add Blog
+              </Link>
+            </div>
+          </span>
         </div>
+        
 
         <div className="flex justify-center items-center mt-0">
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-5/6 mt-0">
-            {openForm && (
-              <div className="modal-overlay bg-white shadow-2xl">
-                <div className="container w-full h-70 rounded-xl  pt-4">
-                  <button
-                    className="text-black text-2xl absolute top-2 right-4 "
-                    onClick={closeForm}
-                  >
-                    {" "}
-                    ✖
-                  </button>
-                  <div>
-                    <input
-                      name="blog_Title"
-                      placeholder="Blog Title"
-                      className="w-full mb-4 p-2 outline-none border-2 placeholder-black mt-4 rounded-md  text-black  border-gray-200  mobile-input"
-                      value={editForm.blog_Title}
-                      onChange={handleEditTitle}
-                    />
-
-                    <input
-                      name="blog_Description"
-                      placeholder="Blog Description"
-                      
-                      className="w-full mb-4 p-2 outline-none border-2 placeholder-black mt-4 rounded-md  text-black  border-gray-200  mobile-input"
-                      value={editForm.blog_Description}
-                      onChange={handleEditTitle}
-                    />
-
-                    <select
-                      className="text-black border-2 p-2 outline-none w-full border-gray-200 mt-4 rounded-md"
-                      value={editForm.blog_Category}
-                      onChange={handleEditCategory}
+            <table className="w-full text-sm text-left rtl:text-right text-black-100 dark:text-black-100 ">
+              <thead className="text-xs text-black uppercase dark:text-black border-b-2  border-red-400">
+                <tr className="">
+                  <th scope="col" className="px-6 py-3">
+                    SNo.
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Title
+                  </th>
+                  
+                  <th scope="col" className="px-6 py-3">
+                    Category
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Author
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentRows.map((item, index) => {
+                  const serialNumber = indexOfFirstRow + index + 1;
+                  const id = item._id;
+                  return (
+                    <tr
+                      key={index}
+                      className="bg-white-500 border-b border-red-400"
                     >
-                      <option value="" className="text-gray-600">
-                        Blog Category
-                      </option>
-                      <option value="Commercial Property">
-                        Commercial Property
-                      </option>
-                      <option value="Residential Flats">
-                        Residential Flats
-                      </option>
-                      <option value="SCO Plots">SCO Plots</option>
-                      <option value="Deendayal Plots">Deen Dayal Plots</option>
-                      <option value="Residential Plots">
-                        Residential Plots
-                      </option>
-                      <option value="Independent Floors">
-                        Independent Floors
-                      </option>
-                      <option value="Builder Floors">Builder Floors</option>
-                      <option value="Affordable Homes">Affordable Homes</option>
-                    </select>
+                      <td className="px-2 py-1">{serialNumber}</td>
+                      <td className="px-2 py-1">{item.blog_Title}</td>
+                      <td className="px-2 py-1">{item.blog_Category}</td>
+                      <td className="px-2 py-1">{item.author}</td>
+                      <td className="px-2 py-1 flex space-x-1">
+                        <Link to={`/Admin/blog/view/${id}`}>
+                          <button
+                            type="button"
+                            className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                          >
+                            {" "}
+                            View
+                          </button>
+                        </Link>
 
-                    <div className="flex mt-3 border-2 border-gray-200  rounded-md">
-                      <div className="relative h-10  px-2 min-w-[160px]  w-full  rounded-md">
-                        <p className="mt-2 font-medium border-gray-200 text-black">
-                          Front Image
-                          <input
-                            type="file"
-                            name="blog_Image"
-                            accept="image/*"
-                            onChange={(e) => handleFileChange(e, "blog_Image")}
-                            className="mx-2 border-gray-200"
-                          />
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-center  my-4 ">
-                      <button
-                        className="bg-white text-black text-lg border-2 rounded-md px-4 py-2 mx-2 my-2"
-                        onClick={(e) => handleSubmitForm(e)}
-                      >
-                        Submit
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+                        <Link to={`/Admin/blog/edit/${id}`}>
+                          <button
+                            type="button"
+                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                          >
+                            {" "}
+                            Edit
+                          </button>
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteButtonClick(id)}
+                          className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <div className="flex justify-center mt-2 mb-2">
+              {Array.from(
+                { length: Math.ceil(viewAll.length / rowsPerPage) },
+                (_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => paginate(index + 1)}
+                    className={`mx-2 px-3 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 ${
+                      currentPage === index + 1
+                        ? "bg-red-600 text-white"
+                        : "bg-gray-300 text-gray-700"
+                    }`}
+                  >
+                    {index + 1}
+                  </button>
+                )
+              )}
+            </div>
           </div>
         </div>
       </div>

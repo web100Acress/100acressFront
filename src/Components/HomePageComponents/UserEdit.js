@@ -196,7 +196,7 @@ const UserEdit = () => {
                         <input
                           type="text"
                           value={values.propertyName}
-                          className="outline-none"
+                          className="outline-none  w-96"
                           name="propertyName"
                           onChange={(e) =>
                             setValues({
@@ -262,7 +262,7 @@ const UserEdit = () => {
                         <input
                           type="text"
                           value={values.address}
-                          className="outline-none"
+                          className="outline-none  w-96"
                           name="address"
                           onChange={(e) =>
                             setValues({
@@ -285,7 +285,7 @@ const UserEdit = () => {
                           type="text"
                           name="price"
                           value={values.price}
-                          className="outline-none"
+                          className="outline-none  w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -307,7 +307,7 @@ const UserEdit = () => {
                           type="text"
                           name="area"
                           value={values.area}
-                          className="outline-none"
+                          className="outline-none  w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -330,7 +330,7 @@ const UserEdit = () => {
                           name="descripation"
                           style={{ width: "600px" }}
                           value={values.descripation}
-                          className="outline-none"
+                          className="outline-none  w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -352,7 +352,7 @@ const UserEdit = () => {
                           type="text"
                           name="landMark"
                           value={values.landMark}
-                          className="outline-none"
+                          className="outline-none  w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -374,7 +374,7 @@ const UserEdit = () => {
                           type="text"
                           name="builtYear"
                           value={values.builtYear}
-                          className="outline-none"
+                          className="outline-none  w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -400,12 +400,12 @@ const UserEdit = () => {
                       >
                         <input
                           type="text"
-                          value={values.Amenities}
-                          className="outline-none"
+                          value={values.amenities}
+                          className="outline-none  w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
-                              Amenities: e.target.value,
+                              amenities: e.target.value,
                             })
                           }
                         />
@@ -423,7 +423,7 @@ const UserEdit = () => {
                           type="text"
                           name="furnishing"
                           value={values.furnishing}
-                          className="outline-none"
+                          className="outline-none w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -444,7 +444,7 @@ const UserEdit = () => {
                         <input
                           type="text"
                           value={values.type}
-                          className="outline-none"
+                          className="outline-none w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -466,7 +466,7 @@ const UserEdit = () => {
                           type="text"
                           name="propertyLooking"
                           value={values.propertyLooking}
-                          className="outline-none"
+                          className="outline-none w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,

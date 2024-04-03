@@ -41,6 +41,7 @@ const EditDetails = () => {
     availableDate: "",
     propertyLooking: "Select Property Type",
     subType: "",
+    verify: "",
   });
 
   const { id } = useParams();
@@ -66,7 +67,7 @@ const EditDetails = () => {
         `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
         values
       );
-      if (response.ok) {
+      if (response.status === 200) {
         alert("Data updated successfully");
         console.log("User updated successfully");
       } else {
@@ -81,22 +82,27 @@ const EditDetails = () => {
     <>
       <Sidebar />
       <div style={customStyle}>
-       
         <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
-        <div className="flex items-center mb-4  ">
-          <input
-            id="default-checkbox"
-            type="checkbox"
-            defaultValue=""
-            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600  dark:bg-gray-700 dark:border-gray-600"
-          />
-          <label
-            htmlFor="default-checkbox"
-            className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-          >
-            Verify
-          </label>
-        </div>
+          <div className="flex items-center mb-4  ">
+            <input
+              id="default-checkbox"
+              type="checkbox"
+              defaultValue=""
+              checked={values.verify !== ""}
+              onChange={(e) =>
+                setValues({ verify: e.target.checked ? "verified" : "" })
+              }
+      
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600  dark:bg-gray-700 dark:border-gray-600"
+            />
+            <label
+              htmlFor="default-checkbox"
+              className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >
+              Verify
+            </label>
+            {values.verify && <span> ✓</span>}
+          </div>
           <div className="card-body">
             <table className="table table-striped table-bordered">
               <tbody>
@@ -162,7 +168,7 @@ const EditDetails = () => {
                         <input
                           type="text"
                           value={values.propertyName}
-                          className="outline-none"
+                          className="outline-none w-96"
                           name="propertyName"
                           onChange={(e) =>
                             setValues({
@@ -184,7 +190,7 @@ const EditDetails = () => {
                         <input
                           type="text"
                           value={values.propertyType}
-                          className="outline-none"
+                          className="outline-none w-96"
                           name="propertyType"
                           onChange={(e) =>
                             setValues({
@@ -206,7 +212,7 @@ const EditDetails = () => {
                         <input
                           type="text"
                           value={values.address}
-                          className="outline-none"
+                          className="outline-none w-96"
                           name="address"
                           onChange={(e) =>
                             setValues({
@@ -228,7 +234,7 @@ const EditDetails = () => {
                         <input
                           type="text"
                           value={values.city}
-                          className="outline-none"
+                          className="outline-none w-96"
                           name="city"
                           onChange={(e) =>
                             setValues({
@@ -251,7 +257,7 @@ const EditDetails = () => {
                           type="text"
                           value={values.state}
                           name="state"
-                          className="outline-none"
+                          className="outline-none w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -273,7 +279,7 @@ const EditDetails = () => {
                           type="text"
                           name="price"
                           value={values.price}
-                          className="outline-none"
+                          className="outline-none w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -295,7 +301,7 @@ const EditDetails = () => {
                           type="text"
                           name="area"
                           value={values.area}
-                          className="outline-none"
+                          className="outline-none w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -317,7 +323,7 @@ const EditDetails = () => {
                           type="text"
                           name="descripation"
                           value={values.descripation}
-                          className="outline-none"
+                          className="outline-none w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -339,7 +345,7 @@ const EditDetails = () => {
                           type="text"
                           name="landMark"
                           value={values.landMark}
-                          className="outline-none"
+                          className="outline-none w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -387,12 +393,12 @@ const EditDetails = () => {
                       >
                         <input
                           type="text"
-                          value={values.Amenities}
+                          value={values.amenities}
                           className="outline-none"
                           onChange={(e) =>
                             setValues({
                               ...values,
-                              Amenities: e.target.value,
+                              amenities: e.target.value,
                             })
                           }
                         />
@@ -410,7 +416,7 @@ const EditDetails = () => {
                           type="text"
                           name="furnishing"
                           value={values.furnishing}
-                          className="outline-none"
+                          className="outline-none w-96"
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -487,6 +493,8 @@ const EditDetails = () => {
                     </span>
                   </th>
                 </tr>
+
+                
               </tbody>
             </table>
 
