@@ -20,12 +20,19 @@ const BlogEdit = () => {
     author: "",
   });
   const { id } = useParams();
-  
+
   const handleUpdateUser = async () => {
     try {
+      const formData = new FormData();
+
+      for (const key in viewDetails) {
+        formData.append(key, viewDetails[key]);
+      }
+      formData.append("blog_Image", viewDetails.frontImage.file);
+      
       const response = await axios.put(
         `https://api.100acress.com/blog/update/${id}`,
-        viewDetails
+        formData
       );
       if (response.status === 200) {
         alert("Data updated successfully");
@@ -37,16 +44,64 @@ const BlogEdit = () => {
     }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setViewDetails((prevValues) => ({
-      ...prevValues,
-       blog_Image: {
-        public_id: "your_public_id",
-        url: URL.createObjectURL(file),
-      },
-    }));
-  };
+  // const handleUpdateUser = async () => {
+  //   try {
+  //     const formData = new FormData();
+
+  //     for (const key in values) {
+  //       formData.append(key, values[key]);
+  //     }
+
+  //     formData.append("frontImage", values.frontImage.file);
+
+  //     const response = await axios.post(
+  //       `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     if (response.status === 200) {
+  //       alert("Data updated successfully");
+  //       console.log("User updated successfully");
+  //     } else {
+  //       console.error("Failed to update user");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating user:", error);
+  //   }
+  // };
+
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   setViewDetails((prevValues) => ({
+  //     ...prevValues,
+  //     blog_Image: {
+  //       public_id: "your_public_id",
+  //       url: URL.createObjectURL(file),
+  //     },
+  //   }));
+  // };
+
+  function handleFileChange(event) {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        setViewDetails((prevValues) => ({
+          ...prevValues,
+          frontImage: {
+            file: input.files[0],
+            url: e.target.result,
+          },
+        }));
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,6 +116,7 @@ const BlogEdit = () => {
     };
     fetchData();
   }, []);
+
 
   return (
     <>
@@ -78,31 +134,37 @@ const BlogEdit = () => {
                     </span>
                   </th>
                 </tr>
-                <tr>
+                {/* <tr>
                   <td>
                     <img
                       src={
-                        viewDetails.blog_Image
-                          ? viewDetails.blog_Image.url
-                          : ""
+                        viewDetails.blog_Image ? viewDetails.blog_Image.url : ""
                       }
                       alt="blog_Image"
                       style={{ maxWidth: "20%" }}
                       id="previewImage"
                     />
                     <br />
-                    <input
-                      type="file"
-                      name="blog_Image"
-                      onChange={handleImageChange}
+                    <input type="file" onChange={(e) => handleFileChange(e)} />
+                  </td>
+                </tr> */}
+
+                <tr>
+                  <td>
+                    <img
+                      src={viewDetails.blog_Image ? viewDetails.blog_Image.url : ""}
+                      alt="blog_Image"
+                      style={{ maxWidth: "20%" }}
+                      id="previewImage"
                     />
+                    <br />
+                    <input type="file" onChange={(e) => handleFileChange(e)} />
                   </td>
                 </tr>
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
                       Blog Title :{" "}
-
                     </span>
                     <input
                       name="blog_Title"
@@ -113,7 +175,8 @@ const BlogEdit = () => {
                         setViewDetails({
                           ...viewDetails,
                           blog_Title: e.target.value,
-                        })}
+                        })
+                      }
                     />
                   </th>
                 </tr>
@@ -121,7 +184,7 @@ const BlogEdit = () => {
                   <th>
                     <span className="text-red-600 font-semibold ">
                       Blog Description :{" "}
-                      <input
+                      <textarea
                         name="blog_Description"
                         placeholder="Blog Description"
                         className="w-full p-2 outline-none border-2 placeholder-black mt-4 rounded-md  text-black  border-gray-200  mobile-input"
@@ -130,7 +193,8 @@ const BlogEdit = () => {
                           setViewDetails({
                             ...viewDetails,
                             blog_Description: e.target.value,
-                          })}
+                          })
+                        }
                       />
                     </span>
                   </th>
@@ -146,17 +210,32 @@ const BlogEdit = () => {
                           setViewDetails({
                             ...viewDetails,
                             blog_Category: e.target.value,
-                          })}
+                          })
+                        }
                       >
-                        <option value="" className="text-gray-600">Blog Category</option>
-                        <option value="Commercial Property">Commercial Property</option>
-                        <option value="Residential Flats">Residential Flats</option>
+                        <option value="" className="text-gray-600">
+                          Blog Category
+                        </option>
+                        <option value="Commercial Property">
+                          Commercial Property
+                        </option>
+                        <option value="Residential Flats">
+                          Residential Flats
+                        </option>
                         <option value="SCO Plots">SCO Plots</option>
-                        <option value="Deendayal Plots">Deen Dayal Plots</option>
-                        <option value="Residential Plots">Residential Plots</option>
-                        <option value="Independent Floors">Independent Floors</option>
+                        <option value="Deendayal Plots">
+                          Deen Dayal Plots
+                        </option>
+                        <option value="Residential Plots">
+                          Residential Plots
+                        </option>
+                        <option value="Independent Floors">
+                          Independent Floors
+                        </option>
                         <option value="Builder Floors">Builder Floors</option>
-                        <option value="Affordable Homes">Affordable Homes</option>
+                        <option value="Affordable Homes">
+                          Affordable Homes
+                        </option>
                       </select>
                     </span>
                   </th>
@@ -174,7 +253,8 @@ const BlogEdit = () => {
                           setViewDetails({
                             ...viewDetails,
                             author: e.target.value,
-                          })}
+                          })
+                        }
                       />
                     </span>
                   </th>

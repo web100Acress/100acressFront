@@ -12,9 +12,9 @@ import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { DataContext } from "../MyContext";
-import { ScaleLoader } from "react-spinners";   
+import { ScaleLoader } from "react-spinners";
 import Snapshot from "./Snapshot";
-        const keyframes = `
+const keyframes = `
   @keyframes moveHorizontal {
     from {
       transform: translateX(0);
@@ -60,13 +60,11 @@ function Home() {
           }}
         >
           Trending Properties
-          
           {/* <Link to={"/projects"}>
             <span className="float-right text-sm text-red-600 hidden sm:block">
               View All{" "}
             </span>
           </Link> */}
-
         </h1>
         {
           <section className="flex flex-col bg-white items-center ">
@@ -87,10 +85,9 @@ function Home() {
                         />
                       </div>
                       <div className="p-4">
-                        
                         <div className="pb-2">
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectName}   
+                            {item.projectName}
                           </a>
                           {/* <span
                             style={{ float: "right" }}
@@ -120,7 +117,6 @@ function Home() {
                             </button>
                           </li>
                         </ul>
-
                       </div>
                     </article>
                   </Link>
@@ -144,7 +140,6 @@ function Home() {
           }}
         >
           Upcoming Projects
-
           {/* <Link to={"/projects/upcoming"} target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block group bg-gradient-to-br from-red-600 to-red-600 focus:outline-none focus:ring-4 animate-pulse"
@@ -153,7 +148,6 @@ function Home() {
               View All {" "}<i class="fa-solid fa-angle-right"></i>
             </span>
           </Link> */}
-
           <Link to="/projects/upcoming" target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
@@ -232,13 +226,11 @@ function Home() {
         }}
       >
         Featured Projects
-        
         {/* <Link to={"/projects"}>
           <span className="float-right text-sm text-red-600 hidden sm:block">
             View All{" "}
           </span>
         </Link> */}
-
       </h2>
 
       {
@@ -479,8 +471,15 @@ function Home() {
 
       <div>
         <div>
-          <a
+          {/* <a
             href="https://api.whatsapp.com/send?phone=+918500900100"
+            className="dd-m-whatsapp"
+            target="_blank"
+          >
+            <span className="icon"></span>
+          </a> */}
+          <a
+            href="https://api.whatsapp.com/send?phone=8500900100"
             className="dd-m-whatsapp"
             target="_blank"
           >
@@ -488,7 +487,7 @@ function Home() {
           </a>
         </div>
       </div>
-      <Snapshot/>
+      <Snapshot />
       <Free />
       <Footer />
     </Wrapper>
@@ -666,10 +665,9 @@ const Wrapper = styled.section`
 
   .element {
     transition: transform 0.5s ease-in-out;
-}
+  }
 
-.element:hover {
+  .element:hover {
     transform: scale(1.02);
-}
-
+  }
 `;

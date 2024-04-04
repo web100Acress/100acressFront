@@ -49,8 +49,8 @@ const avatars = [
     url: "https://bit.ly/kent-c-dodds",
   },
   {
-    name: "Prosper Otemuyiwa",
-    url: "https://bit.ly/prosper-baba",
+    name: "Simran Karnwal",
+    url: "../../Images/sim.PNG",
   },
   {
     name: "Christian Nwamba",
