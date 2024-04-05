@@ -67,7 +67,7 @@ function Home() {
           </Link> */}
         </h1>
         {
-          <section className="flex flex-col bg-white items-center ">
+          <section className="flex flex-col bg-white items-center pt-1 ">
             <div className="grid max-w-md grid-cols-1  px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {trendingProject.map((item, index) => {
                 const pUrl = item.project_url;
@@ -148,6 +148,7 @@ function Home() {
               View All {" "}<i class="fa-solid fa-angle-right"></i>
             </span>
           </Link> */}
+          
           <Link to="/projects/upcoming" target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
@@ -471,15 +472,8 @@ function Home() {
 
       <div>
         <div>
-          {/* <a
-            href="https://api.whatsapp.com/send?phone=+918500900100"
-            className="dd-m-whatsapp"
-            target="_blank"
-          >
-            <span className="icon"></span>
-          </a> */}
           <a
-            href="https://api.whatsapp.com/send?phone=8500900100"
+            href="https://api.whatsapp.com/message/ROVEJ7K6CX37K1?autoload=1&app_absent=0"
             className="dd-m-whatsapp"
             target="_blank"
           >
@@ -570,7 +564,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 17vh !important;
-      background-image: url("../../Images/1.png");
+      background-image: url("../../Images/1navratri.jpg");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -584,7 +578,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/1.png");
+      background-image: url("../../Images/1navratri.jpg");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -598,7 +592,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 20vh !important;
-      background-image: url("../../Images/1.png");
+      background-image: url("../../Images/1navratri.jpg");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -612,7 +606,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/1.png");
+      background-image: url("../../Images/1navratri.jpg");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -621,7 +615,7 @@ const Wrapper = styled.section`
 
   @media screen and (max-width: 1800px) and (min-width: 601px) {
     .djqwUUJNCO {
-      background-image: url("../../Images/BannerImage3.png");
+      background-image: url("../../Images/navratri.jpg");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;

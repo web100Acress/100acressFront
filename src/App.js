@@ -243,12 +243,37 @@ function App() {
 export default App;
 
 const Wrapper = styled.section`
-font-family: "Roboto", sans-serif;
-font-weight: 400;
-font-style: normal;
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
+// font-family: "Roboto", sans-serif;
+// font-weight: 400;
+// font-style: normal;
+//   h1,
+//   h2,
+//   h3,
+//   h4,
+//   h5,
+
+.philosopher-regular {
+  font-family: "Philosopher", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.philosopher-bold {
+  font-family: "Philosopher", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.philosopher-regular-italic {
+  font-family: "Philosopher", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.philosopher-bold-italic {
+  font-family: "Philosopher", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
 `;

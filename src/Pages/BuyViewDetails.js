@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { styled } from "styled-components";
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
@@ -6,9 +6,9 @@ import axios from "axios";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import SmallPopForm from "../Components/Actual_Components/SmallPopForm";
-import { Checkbox, Text } from "@chakra-ui/react";
+import { DataContext } from "../MyContext";
 const BuyViewDetails = () => {
   const settings = {
     dots: false,
@@ -22,7 +22,7 @@ const BuyViewDetails = () => {
   const [showContact, setShowContact] = useState(false);
   const [getContact, setGetContact] = useState("");
 
-  const { frontImage, otherImage, propertyName, amenities } = rentViewDetails;
+  const { frontImage, otherImage, amenities } = rentViewDetails;
 
   const { id } = useParams();
 
@@ -105,55 +105,6 @@ const BuyViewDetails = () => {
     custNumber: "",
     propertyAddress: "",
   });
-
-  const handleChangeAgentForm = (e) => {
-    const { name, value } = e.target;
-    setAgentForm({ ...agentFrom, [name]: value });
-  };
-
-  const handleSubmitAgentForm = (e) => {
-    e.preventDefault();
-
-    const { custName, custNumber } = agentFrom;
-
-    if (custName && custNumber) {
-      axios
-        .post("https://acre.onrender.com/postEnquiry", {
-          ...agentFrom,
-          propertyAddress: rentViewDetails.city,
-          agentEmail: rentViewDetails.email,
-          agentNumber: rentViewDetails.number,
-        })
-        .then((response) => {
-          alert("Data Submitted Successfully");
-          resetData();
-        })
-        .catch((error) => {
-          console.error("Registration failed:", error);
-          if (error.response) {
-            alert(`Server responded with an error: ${error.response.status}`);
-          } else if (error.request) {
-            alert("No response received from the server");
-          } else {
-            alert(`Error setting up the request: ${error.message}`);
-          }
-        });
-    } else {
-      alert("Please fill the data");
-    }
-    setShowContact(true);
-  };
-
-  const resetData = () => {
-    setAgentForm({
-      agentEmail: "",
-      agentNumber: "",
-      custName: "",
-      custEmail: "",
-      custNumber: "",
-      propertyAddress: "",
-    });
-  };
 
   const resetData1 = () => {
     setAgentForm1({
@@ -269,6 +220,8 @@ const BuyViewDetails = () => {
     });
   };
 
+  const { trendingProject, upcoming } = useContext(DataContext);
+  console.log(trendingProject, "sdfsdfsdv fsdfsdfsdfd");
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
@@ -352,7 +305,6 @@ const BuyViewDetails = () => {
                       </div>
                     )}
 
-      
                   <div className="article-title">
                     <span className="text-lg  text-red-500 m-0">
                       Property Type:{" "}
@@ -668,15 +620,18 @@ const BuyViewDetails = () => {
               <div className="col-lg-4 m-15 px-tb blog-aside">
                 <div className="widget widget-author">
                   <div className="widget-title">
-                    <p><span className="text-red-500">Price:</span> {rentViewDetails.price}</p>
+                    <p>
+                      <span className="text-red-500">Price:</span>{" "}
+                      {rentViewDetails.price}
+                    </p>
                   </div>
-
 
                   <div className="widget-title ">
                     <p>
                       <div className="flex justify-center items-center">
                         <div className="text-red-500 font-semibold text-xl text-center">
-                        {rentViewDetails.role}  {"-"}  {rentViewDetails.agentName} 
+                          {rentViewDetails.role} {"-"}{" "}
+                          {rentViewDetails.agentName}
                         </div>
                       </div>
 
@@ -707,202 +662,204 @@ const BuyViewDetails = () => {
                     </p>
                   </div>
 
-
-
                   {rentViewDetails.email ? (
-                  <>
-                    {showForm && (
-                      <div className=" widget-tags">
-                        <div className="widget-title text-center items-center">
-                          <p className="text-red-500">Fill out form only one - time   </p>
-                          <span>After get the contact number </span>
-                        </div>
-                        <div className="widget-body">
-                          <div className="row">
-                            <div className="col-md-12">
-                              <div className="form-group">
-                                <input
-                                  name="custName"
-                                  value={agentFrom1.custName}
-                                  required
-                                  onChange={handleChangeAgentForm1}
-                                  placeholder="Name *"
-                                  className="form-control"
-                                  type="text"
-                                />
+                    <>
+                      {showForm && (
+                        <div className=" widget-tags">
+                          <div className="widget-title text-center items-center">
+                            <p className="text-red-500">
+                              Fill out form only one - time{" "}
+                            </p>
+                            <span>After get the contact number </span>
+                          </div>
+                          <div className="widget-body">
+                            <div className="row">
+                              <div className="col-md-12">
+                                <div className="form-group">
+                                  <input
+                                    name="custName"
+                                    value={agentFrom1.custName}
+                                    required
+                                    onChange={handleChangeAgentForm1}
+                                    placeholder="Name *"
+                                    className="form-control"
+                                    type="text"
+                                  />
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="col-md-12 pt-2">
-                              <div className="form-group">
-                                <input
-                                  name="custNumber"
-                                  value={agentFrom1.custNumber}
-                                  onChange={handleChangeAgentForm1}
-                                  required
-                                  placeholder="Number *"
-                                  className="form-control"
-                                  type="text"
-                                />
+                              <div className="col-md-12 pt-2">
+                                <div className="form-group">
+                                  <input
+                                    name="custNumber"
+                                    value={agentFrom1.custNumber}
+                                    onChange={handleChangeAgentForm1}
+                                    required
+                                    placeholder="Number *"
+                                    className="form-control"
+                                    type="text"
+                                  />
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="col-md-12 pt-2">
-                              <div className="form-group">
-                                <input
-                                  name="custEmail"
-                                  value={agentFrom1.custEmail}
-                                  onChange={handleChangeAgentForm1}
-                                  placeholder="Email *"
-                                  className="form-control"
-                                  type="email"
-                                />
+                              <div className="col-md-12 pt-2">
+                                <div className="form-group">
+                                  <input
+                                    name="custEmail"
+                                    value={agentFrom1.custEmail}
+                                    onChange={handleChangeAgentForm1}
+                                    placeholder="Email *"
+                                    className="form-control"
+                                    type="email"
+                                  />
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="col-md-12 pt-2">
-                              <div className="form-group">
-                                <input
-                                  name="propertyAddress"
-                                  value={agentFrom1.propertyAddress}
-                                  onChange={handleChangeAgentForm1}
-                                  placeholder="Property Address *"
-                                  className="form-control"
-                                  type="hidden"
-                                />
+                              <div className="col-md-12 pt-2">
+                                <div className="form-group">
+                                  <input
+                                    name="propertyAddress"
+                                    value={agentFrom1.propertyAddress}
+                                    onChange={handleChangeAgentForm1}
+                                    placeholder="Property Address *"
+                                    className="form-control"
+                                    type="hidden"
+                                  />
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="col-md-12 pt-2">
-                              <div className="form-group">
-                                <input
-                                  name="agentEmail"
-                                  value={agentFrom1.agentEmail}
-                                  onChange={handleChangeAgentForm1}
-                                  placeholder="Agent Email *"
-                                  className="form-control"
-                                  type="hidden"
-                                />
+                              <div className="col-md-12 pt-2">
+                                <div className="form-group">
+                                  <input
+                                    name="agentEmail"
+                                    value={agentFrom1.agentEmail}
+                                    onChange={handleChangeAgentForm1}
+                                    placeholder="Agent Email *"
+                                    className="form-control"
+                                    type="hidden"
+                                  />
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="col-md-12 pt-2">
-                              <div className="form-group">
-                                <input
-                                  name="agentNumber"
-                                  value={agentFrom1.agentNumber}
-                                  onChange={handleChangeAgentForm1}
-                                  placeholder="Agent Number *"
-                                  className="form-control"
-                                  type="hidden"
-                                />
+                              <div className="col-md-12 pt-2">
+                                <div className="form-group">
+                                  <input
+                                    name="agentNumber"
+                                    value={agentFrom1.agentNumber}
+                                    onChange={handleChangeAgentForm1}
+                                    placeholder="Agent Number *"
+                                    className="form-control"
+                                    type="hidden"
+                                  />
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="col-md-12 pt-2">
-                              <div className="send">
-                                <button
-                                  className="px-btn theme bg-red-500 text-red-500"
-                                  onClick={(event) => {
-                                    handleSubmitAgentForm1(event);
-                                  }}
-                                >
-                                  <span className="text-red-500">Submit</span>{" "}
-                                  <i className="arrow text-red-500" />
-                                </button>
+                              <div className="col-md-12 pt-2">
+                                <div className="send">
+                                  <button
+                                    className="px-btn theme bg-red-500 text-red-500"
+                                    onClick={(event) => {
+                                      handleSubmitAgentForm1(event);
+                                    }}
+                                  >
+                                    <span className="text-red-500">Submit</span>{" "}
+                                    <i className="arrow text-red-500" />
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    {showForm && (
-                      <div className="widget widget-tags">
-                        <div className="widget-title">
-                          <h3>Contact</h3>
-                        </div>
-                        <div className="widget-body">
-                          <div className="row">
-                            <div className="col-md-12">
-                              <div className="form-group">
-                                <input
-                                  name="custName"
-                                  value={setUserForm.custName}
-                                  onChange={handleUserFormChange1}
-                                  placeholder="Name *"
-                                  className="form-control"
-                                  type="text"
-                                />
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {showForm && (
+                        <div className="widget widget-tags">
+                          <div className="widget-title">
+                            <h3>Contact</h3>
+                          </div>
+                          <div className="widget-body">
+                            <div className="row">
+                              <div className="col-md-12">
+                                <div className="form-group">
+                                  <input
+                                    name="custName"
+                                    value={setUserForm.custName}
+                                    onChange={handleUserFormChange1}
+                                    placeholder="Name *"
+                                    className="form-control"
+                                    type="text"
+                                  />
+                                </div>
                               </div>
-                            </div>
-                            <div className="col-md-12 pt-2">
-                              <div className="form-group">
-                                <input
-                                  name="custEmail"
-                                  value={setUserForm1.custEmail}
-                                  onChange={handleUserFormChange1}
-                                  placeholder="Email *"
-                                  className="form-control"
-                                  type="email"
-                                />
+                              <div className="col-md-12 pt-2">
+                                <div className="form-group">
+                                  <input
+                                    name="custEmail"
+                                    value={setUserForm1.custEmail}
+                                    onChange={handleUserFormChange1}
+                                    placeholder="Email *"
+                                    className="form-control"
+                                    type="email"
+                                  />
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="col-md-12 pt-2">
-                              <div className="form-group">
-                                <input
-                                  name="custNumber"
-                                  value={setAgentForm1.custNumber}
-                                  onChange={handleUserFormChange1}
-                                  placeholder="Mobile *"
-                                  className="form-control"
-                                  type="text"
-                                />
+                              <div className="col-md-12 pt-2">
+                                <div className="form-group">
+                                  <input
+                                    name="custNumber"
+                                    value={setAgentForm1.custNumber}
+                                    onChange={handleUserFormChange1}
+                                    placeholder="Mobile *"
+                                    className="form-control"
+                                    type="text"
+                                  />
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="col-md-12 pt-2">
-                              <div className="form-group">
-                                <input
-                                  name="projectName"
-                                  placeholder="Project Name *"
-                                  className="form-control"
-                                  type="hidden"
-                                />
+                              <div className="col-md-12 pt-2">
+                                <div className="form-group">
+                                  <input
+                                    name="projectName"
+                                    placeholder="Project Name *"
+                                    className="form-control"
+                                    type="hidden"
+                                  />
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="col-md-12 pt-2">
-                              <div className="form-group">
-                                <input
-                                  name="addresss"
-                                  placeholder="Address *"
-                                  className="form-control"
-                                  type="hidden"
-                                />
+                              <div className="col-md-12 pt-2">
+                                <div className="form-group">
+                                  <input
+                                    name="addresss"
+                                    placeholder="Address *"
+                                    className="form-control"
+                                    type="hidden"
+                                  />
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="col-md-12 pt-2">
-                              <div className="send">
-                                <button
-                                  className="px-btn theme bg-red-500 text-red-500"
-                                  onClick={handleSubmitFormData1}
-                                >
-                                  <span className="text-red-500">Submit </span>{" "}
-                                  <i className="arrow text-red-500" />
-                                </button>
+                              <div className="col-md-12 pt-2">
+                                <div className="send">
+                                  <button
+                                    className="px-btn theme bg-red-500 text-red-500"
+                                    onClick={handleSubmitFormData1}
+                                  >
+                                    <span className="text-red-500">
+                                      Submit{" "}
+                                    </span>{" "}
+                                    <i className="arrow text-red-500" />
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </>
-                )}
+                      )}
+                    </>
+                  )}
 
                   <div className="widget-title">
                     <p>
@@ -924,16 +881,34 @@ const BuyViewDetails = () => {
                       disability into an ability.
                     </p>
                   </div>
-
-                  
                 </div>
 
-               
-
-                <div className="widget widget-post">
+                <div className="widget widget-post ">
                   <div className="widget-title">
                     <p className="text-lg text-red-500">Trending Properties</p>
                   </div>
+                  {trendingProject.slice(0, 5).map((item, index) => {
+                    return (
+                     <Link to={`/${item.project_url}/`} target="_top">
+                      <div className="flex items-center pt-3 hover:bg-gray-100" key={index}>
+                        <img
+                          className="rounded-full w-20 h-20 p-2 transition hover:scale-105"
+                          src={item.frontImage && item.frontImage.url}
+                          alt="frontImage"
+                        />
+                        <div className="ml-4 ">
+                          <p className="text-sm font-medium mb-2 hover:text-red-600  duration-500">
+                            {item.projectName}
+                          </p>
+                          <p className="text-sm font-medium hover:text-red-600  duration-500">
+                            {item.projectAddress}
+                          </p>
+                        </div>
+                      </div>
+                     </Link>
+                    );
+                  })}
+
                   <div className="widget-body"></div>
                 </div>
 
@@ -941,6 +916,28 @@ const BuyViewDetails = () => {
                   <div className="widget-title">
                     <p className="text-lg text-red-500">Upcoming Projects</p>
                   </div>
+                  {upcoming.slice(0, 5).map((item, index) => {
+                    return (
+                  
+                      <Link  to={`/${item.project_url}/`} target="_top">
+                      <div className="flex items-center pt-3 hover:bg-gray-100" key={index}>
+                        <img
+                          className="rounded-full w-20 h-20 p-2 transition hover:scale-105"
+                          src={item.frontImage && item.frontImage.url}
+                          alt="frontImage"
+                        />
+                        <div className="ml-4 ">
+                          <p className="text-sm font-medium mb-2 hover:text-red-600  duration-500">
+                            {item.projectName}
+                          </p>
+                          <p className="text-sm font-medium hover:text-red-600  duration-500">
+                            {item.projectAddress}
+                          </p>
+                        </div>
+                      </div>
+                      </Link>
+                    );
+                  })}
                   <div className="widget-body"></div>
                 </div>
               </div>

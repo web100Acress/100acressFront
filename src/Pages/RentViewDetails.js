@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { styled } from "styled-components";
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
@@ -6,8 +6,8 @@ import axios from "axios";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-
-import { useParams } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
+import { DataContext } from "../MyContext";
 const RentViewDetails = () => {
   const settings = {
     dots: false,
@@ -21,7 +21,7 @@ const RentViewDetails = () => {
   const [showContact, setShowContact] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [getContact, setGetContact] = useState("");
-  const { frontImage, otherImage, propertyName, amenities } = rentViewDetails;
+  const { frontImage, otherImage, amenities } = rentViewDetails;
 
   const { id } = useParams();
 
@@ -77,43 +77,6 @@ const RentViewDetails = () => {
     propertyAddress: "",
   });
 
-  const handleChangeAgentForm = (e) => {
-    const { name, value } = e.target;
-    setAgentForm({ ...agentFrom, [name]: value });
-  };
-
-  const handleSubmitAgentForm = (e) => {
-    e.preventDefault();
-
-    const { custName, custNumber } = agentFrom;
-
-    if (custName && custNumber) {
-      axios
-        .post("https://acre.onrender.com/postEnquiry", {
-          ...agentFrom,
-          propertyAddress: rentViewDetails.city,
-          agentEmail: rentViewDetails.email,
-          agentNumber: rentViewDetails.number,
-        })
-        .then((response) => {
-          alert("Data Submitted Successfully");
-          resetData();
-        })
-        .catch((error) => {
-          console.error("Registration failed:", error);
-          if (error.response) {
-            alert(`Server responded with an error: ${error.response.status}`);
-          } else if (error.request) {
-            alert("No response received from the server");
-          } else {
-            alert(`Error setting up the request: ${error.message}`);
-          }
-        });
-    } else {
-      alert("Please fill the data");
-    }
-    setShowContact(true);
-  };
 
   const resetData = () => {
     setAgentForm({
@@ -259,6 +222,9 @@ const RentViewDetails = () => {
     };
     fetchData();
   }, []);
+
+  const { trendingProject, upcoming } = useContext(DataContext);
+  console.log(trendingProject, "sdfsdfsdv fsdfsdfsdfd");
 
   return (
     <div style={{ overflowX: "hidden" }}>
@@ -922,6 +888,27 @@ const RentViewDetails = () => {
                   <div className="widget-title">
                     <p className="text-lg text-red-500">Trending Properties</p>
                   </div>
+                  {trendingProject.slice(0, 5).map((item, index) => {
+                    return (
+                     <Link to={`/${item.project_url}/`} target="_top">
+                      <div className="flex items-center pt-3 hover:bg-gray-100" key={index}>
+                        <img
+                          className="rounded-full w-20 h-20 p-2 transition hover:scale-105"
+                          src={item.frontImage && item.frontImage.url}
+                          alt="frontImage"
+                        />
+                        <div className="ml-4 ">
+                          <p className="text-sm font-medium mb-2 hover:text-red-600  duration-500">
+                            {item.projectName}
+                          </p>
+                          <p className="text-sm font-medium hover:text-red-600  duration-500">
+                            {item.projectAddress}
+                          </p>
+                        </div>
+                      </div>
+                     </Link>
+                    );
+                  })}
                   <div className="widget-body"></div>
                 </div>
 
@@ -929,6 +916,28 @@ const RentViewDetails = () => {
                   <div className="widget-title">
                     <p className="text-lg text-red-500">Upcoming Projects</p>
                   </div>
+                  {upcoming.slice(0, 5).map((item, index) => {
+                    return (
+                  
+                      <Link  to={`/${item.project_url}/`} target="_top">
+                      <div className="flex items-center pt-3 hover:bg-gray-100" key={index}>
+                        <img
+                          className="rounded-full w-20 h-20 p-2 transition hover:scale-105"
+                          src={item.frontImage && item.frontImage.url}
+                          alt="frontImage"
+                        />
+                        <div className="ml-4 ">
+                          <p className="text-sm font-medium mb-2 hover:text-red-600  duration-500">
+                            {item.projectName}
+                          </p>
+                          <p className="text-sm font-medium hover:text-red-600  duration-500">
+                            {item.projectAddress}
+                          </p>
+                        </div>
+                      </div>
+                      </Link>
+                    );
+                  })}
                   <div className="widget-body"></div>
                 </div>
               </div>
