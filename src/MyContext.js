@@ -15,7 +15,8 @@ export const DataProvider = ({ children }) => {
   const [BuilderIndependentFloor, setBuilderIndependentFLoor] = useState([]);
   const [deenDayalPlots, setDeenDayalPlots] = useState([]);
   const [blogData, setBlogData] = useState([]);
-
+  const [sohnaRoad, setSohnaRoad] = useState([]);
+  const [golfCourse, setGolfCourse] = useState([]);
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
@@ -52,7 +53,6 @@ export const DataProvider = ({ children }) => {
         (project) => project.project_Status === "comingsoon"
       );
 
-      // console.log(upcomingProjects,"allupcomingProjectallupcomingProject")
 
       const commercialProject = projectsData.filter(
         (project) => project.type === "Commercial Property"
@@ -61,10 +61,6 @@ export const DataProvider = ({ children }) => {
       const scoPlots = projectsData.filter(
         (project) => project.type === "SCO Plots"
       );
-
-      // const BuilderIndependentFloor = projectsData.filter(
-      //   (project) => project.type === "Independent Floors" || project.type === "Builder Floors"
-      // )
 
       const BuilderIndependentFloor = projectsData.filter((project) => {
         return (
@@ -77,11 +73,15 @@ export const DataProvider = ({ children }) => {
         return project.type === "Deen Dayal Plots";
       });
 
-      // const val = projectsData.filter((project)=>{
-      //   return  project.project_Status === 'createdAt'
-      // })
+      const sohnaRoad = projectsData.filter(
+        (project) =>project.projectAddress.includes("Sohna Road")
+      );
 
-      // console.log(val, "ashssd data wise")
+      const golfCourse = projectsData.filter(
+        (project) => project.projectAddress.includes("Golf Course Road")
+      )
+
+      console.log(golfCourse,"golfCoursegolfCourse")
 
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
@@ -95,6 +95,8 @@ export const DataProvider = ({ children }) => {
       setAllScoPlots(scoPlots);
       setBuilderIndependentFLoor(BuilderIndependentFloor);
       setDeenDayalPlots(deenDayalPlots);
+      setSohnaRoad(sohnaRoad);
+      setGolfCourse(golfCourse);
     } catch (error) {
       console.log(error || error.message);
     }
@@ -178,6 +180,8 @@ export const DataProvider = ({ children }) => {
         deenDayalPlots,
         handleUserLogin,
         blogData,
+        sohnaRoad,
+        golfCourse,
       }}
     >
       {children}

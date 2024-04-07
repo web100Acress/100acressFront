@@ -69,7 +69,7 @@ function Home() {
         {
           <section className="flex flex-col bg-white items-center pt-1 ">
             <div className="grid max-w-md grid-cols-1  px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-              {trendingProject.map((item, index) => {
+                   {trendingProject.map((item, index) => {
                 const pUrl = item.project_url;
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
@@ -89,12 +89,6 @@ function Home() {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          {/* <span
-                            style={{ float: "right" }}
-                            className="text-[13px]"
-                          >
-                            {item.builderName}
-                          </span> */}
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
                             {item.projectAddress}
@@ -140,15 +134,6 @@ function Home() {
           }}
         >
           Upcoming Projects
-          {/* <Link to={"/projects/upcoming"} target="_top">
-            <span
-              className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block group bg-gradient-to-br from-red-600 to-red-600 focus:outline-none focus:ring-4 animate-pulse"
-              style={{ margin: "16px" }}
-            >
-              View All {" "}<i class="fa-solid fa-angle-right"></i>
-            </span>
-          </Link> */}
-          
           <Link to="/projects/upcoming" target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"

@@ -146,7 +146,7 @@ export default function SignIn() {
   // };
 
   const handleUserSignUp = () => {
-    history("/SignUp");
+    history("/signup");
   };
 
   const handleForgetUserPassword = () => {

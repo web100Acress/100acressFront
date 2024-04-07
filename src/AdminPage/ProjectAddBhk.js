@@ -93,12 +93,9 @@ const ProjectsAddBhk = () => {
   }
  
   const handleDeleteUser = async (id) => {
-    const urlDelete = `https://api.100acress.com/bhk_delete/${id}`;
-    console.log(urlDelete)
     try {
       const response = await axios.delete(`https://api.100acress.com/bhk_delete/${id}`);
       if (response.status >= 200 && response.status < 300) {
-        // window.location.reload();
       } else {
         console.error('Failed to delete user. Server returned an error.');
       }

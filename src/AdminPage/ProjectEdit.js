@@ -79,6 +79,8 @@ const ProjectEdit = () => {
     });
   };
 
+
+
   return (
     <>
       <Sidebar />
@@ -90,6 +92,7 @@ const ProjectEdit = () => {
                 <tr>
                   <th>Project Front Image</th>
                 </tr>
+
                 <tr>
                   {/* Front Image code here */}
                   <td>
@@ -608,8 +611,6 @@ const ProjectEdit = () => {
                   </th>
                 </tr>
 
-
-
                 
                 <tr>
                   <th>
@@ -632,6 +633,7 @@ const ProjectEdit = () => {
                     </span>
                   </th>
                 </tr>
+
               </tbody>
             </table>
 
@@ -642,6 +644,8 @@ const ProjectEdit = () => {
             >
               Update
             </button>
+
+            
           </div>
         </div>
       </div>

@@ -100,7 +100,7 @@ export default function SignUp() {
         .post("https://api.100acress.com/postPerson/register", userSignUp)
         .then((response) => {
           alert("Your accout is created.");
-          history("/SignIn");
+          history("/signin");
           resetData();
         })
         .catch((error) => {
@@ -119,7 +119,7 @@ export default function SignUp() {
   };
 
   const handleUserSignIn = () => {
-    history("/SignIn");
+    history("/signin");
   };
 
   const handleClick = () => {

@@ -1,62 +1,157 @@
-import React from 'react';
-import { styled } from 'styled-components';
+import React, { useState } from "react";
+import { styled } from "styled-components";
+import { Link } from "react-router-dom";
 function Cities() {
+  // const [clicked, setClicked] = useState(null);
+
+  // const handleClick = (location) => {
+  //  setClicked(location)
+  // };
+
+  const [selectedRoad, setSelectedRoad] = useState(null); 
+
+  const handleClick = (roadName) => {
+    setSelectedRoad(roadName);
+    
+  };
+
   return (
     <Wrapper className="section ">
       <div className="dffasPL">
-        <p className="px-10 font-semibold text-xl xl:text-4xl lg:text-3xl pt-4 md:text-2xl">Gurugram Prime Locations</p>
+        <p className="px-10 font-semibold text-xl xl:text-4xl lg:text-3xl pt-4 md:text-2xl">
+          Gurugram Prime Locations
+        </p>
         <div className="gdmJO d-flex justify-content-between px-4 text-center align-items-center">
           <div className="cvBMLN text-justify">
-            <div className="asdDRsfVN bg-one   ">
-              <p className='items-center'>Sohna Road</p>
-            </div>
+            <Link to={`/property-in-gurugram/Sohna Road`}>
+              <div
+                className={`asdDRsfVN bg-one ${
+                  selectedRoad === "Sohna Road" ? "selected" : ""
+                }`}
+                onClick={() => handleClick("Sohna Road")}
+              >
+                <p className="items-center">Sohna Road</p>
+              </div>
+            </Link>
           </div>
+
           <div className="cvBMLN">
-            <div className="asdDRsfVN bg-two">
-              <p>Golf Course</p>
-            </div>
+            <Link to={`/property-in-gurugram/Golf Course`}>
+              <div
+                className={`asdDRsfVN bg-two ${
+                  selectedRoad === "Golf Course" ? "selected" : ""
+                }`}
+                onClick={() => handleClick("Golf Course")}
+              >
+                <p>Golf Course</p>
+              </div>
+            </Link>
           </div>
+
           <div className="cvBMLN">
-            <div className="asdDRsfVN bg-three">
-              <p>MG Road</p>
-            </div>
+            <Link to={`/property-in-gurugram/Mg Road`}>
+              <div
+                className={`asdDRsfVN bg-three  ${
+                  selectedRoad === "MG Road" ? "selected" : ""
+                }`}
+                onClick={() => handleClick("MG Road")}
+              >
+                <p>MG Road</p>
+              </div>
+            </Link>
           </div>
+
           <div className="cvBMLN">
-            <div className="asdDRsfVN bg-four ">
-              <p className=''>Northern Peripheral Road</p>
-            </div>
+            <Link to={`/property-in-gurugram/Northern Peripheral Road`}>
+              <div
+                className={`asdDRsfVN bg-four ${
+                  selectedRoad === "Northern Peripheral Road" ? "selected" : ""
+                }`}
+                onClick={() => handleClick("Northern Peripheral Road")}
+              >
+                <p className="">Northern Peripheral Road</p>
+              </div>
+            </Link>
           </div>
+
           <div className="cvBMLN text-justify">
-            <div className="asdDRsfVN bg-five ">
-              <p className='items-center'>Dwarka Expressway</p>
-            </div>
+            <Link to={`/property-in-gurugram/Dwarka Expressway`}>
+              <div
+                className={`asdDRsfVN bg-five ${
+                  selectedRoad === "Dwarka Expressway" ? "selected" : ""
+                }`}
+                onClick={() => handleClick("Dwarka Expressway")}
+              >
+                <p className="items-center">Dwarka Expressway</p>
+              </div>
+            </Link>
           </div>
+
           <div className="cvBMLN">
-            <div className="asdDRsfVN bg-six">
-              <p>New Gurgaon</p>
-            </div>
+            <Link to={`/property-in-gurugram/New Gurgaon`}>
+              <div
+                className={`asdDRsfVN bg-six  ${
+                  selectedRoad === "New Gurgaon" ? "selected" : ""
+                } `}
+                onClick={() => handleClick("New Gurgaon")}
+              >
+                <p>New Gurgaon</p>
+              </div>
+            </Link>
           </div>
+
           <div className="cvBMLN">
-            <div className="asdDRsfVN bg-seven">
-              <p>Sohna (South of Gurugram)</p>
-            </div>
+            <Link to={`/property-in-gurugram/Sohna South of Gurugram)`}>
+              <div
+                className={`asdDRsfVN bg-seven  ${
+                  selectedRoad === "Sohna (South of Gurugram)" ? "selected" : ""
+                }`}
+                onClick={() => handleClick("Sohna (South of Gurugram)")}
+              >
+                <p>Sohna (South of Gurugram)</p>
+              </div>
+            </Link>
           </div>
+
           <div className="cvBMLN">
-            <div className="asdDRsfVN bg-eight ">
-              <p>Southern Peripheral Road</p>
-            </div>
+            <Link to={`/property-in-gurugram/Southern Peripheral Road`}>
+              <div
+                className={`asdDRsfVN bg-eight ${
+                  selectedRoad === "Southern Peripheral Road" ? "selected" : ""
+                }`}
+                onClick={() => handleClick("Southern Peripheral Road")}
+              >
+                <p>Southern Peripheral Road</p>
+              </div>
+            </Link>
           </div>
+
           <div className="cvBMLN text-justify">
-            <div className="asdDRsfVN bg-nine ">
-              <p className='items-center'>NH-48</p>
-            </div>
+            <Link to={`/property-in-gurugram/NH-48`}>
+              <div
+                className={`asdDRsfVN bg-nine ${
+                  selectedRoad === "NH-48" ? "selected" : ""
+                }`}
+                onClick={() => handleClick("NH-48")}
+              >
+                <p className="items-center">NH-48</p>
+              </div>
+            </Link>
           </div>
+
           <div className="cvBMLN">
-            <div className="asdDRsfVN bg-ten">
-              <p>Golf Course Extn Road</p>
-            </div>
+            <Link to={`/property-in-gurugram/Golf Course Extn Road`}>
+              <div
+                className={`asdDRsfVN bg-ten ${
+                  selectedRoad === "Golf Course Extn Road" ? "selected" : ""
+                }`}
+                onClick={() => handleClick("Golf Course Extn Road")}
+              >
+                <p>Golf Course Extn Road</p>
+              </div>
+            </Link>
           </div>
-        </div>   
+        </div>
       </div>
     </Wrapper>
   );
@@ -66,7 +161,7 @@ export default Cities;
 
 const Wrapper = styled.section`
   .dffasPL {
-    background-color: #F1F1FE;
+    background-color: #f1f1fe;
     padding-top: 10px;
     padding-bottom: 20px;
   }
@@ -111,7 +206,6 @@ const Wrapper = styled.section`
     cursor: pointer;
     border-radius: 13px;
     text-align: center;
-
   }
 
   .asdDRsfVN {
@@ -123,7 +217,6 @@ const Wrapper = styled.section`
     -moz-transition: all 0.5s;
     -o-transition: all 0.5s;
     transition: all 0.5s;
-    
   }
 
   .bg-one {
@@ -150,7 +243,6 @@ const Wrapper = styled.section`
     background-image: url(../../OtherImages/capture1.PNG);
     background-position: center;
   }
-
 
   .bg-six {
     background-image: url(../../OtherImages/capture2.PNG);
@@ -190,7 +282,6 @@ const Wrapper = styled.section`
     opacity: 1;
     // filter: brightness(90%);
     filter: gray saturate(0%) brightness(70%) contrast(1000%);
-   
   }
 
   .cvBMLN:hover .asdDRsfVN,
@@ -200,7 +291,6 @@ const Wrapper = styled.section`
     -webkit-transform: scale(1.2);
     -o-transform: scale(1.2);
     transform: scale(1.2);
-    
   }
 
   .cvBMLN p {
@@ -211,7 +301,6 @@ const Wrapper = styled.section`
     font-weight: bold;
     color: white;
     transition: 0.5s;
-    
   }
 
   .cvBMLN:hover p {

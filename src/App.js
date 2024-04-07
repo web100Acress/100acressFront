@@ -86,6 +86,7 @@ import UserEdit from "./Components/HomePageComponents/UserEdit";
 import BlogView from "./Pages/BlogView";
 import BlogEdit from "./AdminPage/BlogEdit";
 import BlogWrite from "./AdminPage/BlogWrite";
+import GurugramPrimeLocation from "./Pages/GurugramPrimeLocation";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -102,13 +103,13 @@ function App() {
             <Route
               path="/postproperty"
               element={
-                token !== null ? <NewSellProperty /> : <Navigate to="/SignIn" />
+                token !== null ? <NewSellProperty /> : <Navigate to="/signin" />
               }
             />
-            <Route path="/SignIn" element={<SignIn />} />
+            <Route path="/signIn" element={<SignIn />} />
             <Route path="/" element={<Home />} />
-            <Route path="/SignUP" element={<SignUp />} />
-            <Route path="/SignIn" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signin" element={<SignIn />} />
 
             <Route path="/privacy" element={<Privacy />} />
             <Route
@@ -167,7 +168,7 @@ function App() {
               element={<UserViewProperty />}
             />
             <Route path="/usereditproperty" element={<UserEditProperty />} />
-
+            <Route path="/property-in-gurugram/:location" element ={<GurugramPrimeLocation/>}/>
             <Route path="*" element={<PageNotFound />} />
             <Route path="/contactmainpage" element={<ContactPage />} />
 
@@ -243,37 +244,36 @@ function App() {
 export default App;
 
 const Wrapper = styled.section`
-// font-family: "Roboto", sans-serif;
-// font-weight: 400;
-// font-style: normal;
-//   h1,
-//   h2,
-//   h3,
-//   h4,
-//   h5,
+  // font-family: "Roboto", sans-serif;
+  // font-weight: 400;
+  // font-style: normal;
+  //   h1,
+  //   h2,
+  //   h3,
+  //   h4,
+  //   h5,
 
-.philosopher-regular {
-  font-family: "Philosopher", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
+  .philosopher-regular {
+    font-family: "Philosopher", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
 
-.philosopher-bold {
-  font-family: "Philosopher", sans-serif;
-  font-weight: 700;
-  font-style: normal;
-}
+  .philosopher-bold {
+    font-family: "Philosopher", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+  }
 
-.philosopher-regular-italic {
-  font-family: "Philosopher", sans-serif;
-  font-weight: 400;
-  font-style: italic;
-}
+  .philosopher-regular-italic {
+    font-family: "Philosopher", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+  }
 
-.philosopher-bold-italic {
-  font-family: "Philosopher", sans-serif;
-  font-weight: 700;
-  font-style: italic;
-}
-
+  .philosopher-bold-italic {
+    font-family: "Philosopher", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+  }
 `;
