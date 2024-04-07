@@ -23,7 +23,7 @@ function Cities() {
         </p>
         <div className="gdmJO d-flex justify-content-between px-4 text-center align-items-center">
           <div className="cvBMLN text-justify">
-            <Link to={`/property-in-gurugram/Sohna Road`}>
+            <Link to={`/property-in-gurugram/sohna-road`}>
               <div
                 className={`asdDRsfVN bg-one ${
                   selectedRoad === "Sohna Road" ? "selected" : ""
@@ -36,7 +36,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/Golf Course`}>
+            <Link to={`/property-in-gurugram/golf-course`}>
               <div
                 className={`asdDRsfVN bg-two ${
                   selectedRoad === "Golf Course" ? "selected" : ""
@@ -49,7 +49,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/Mg Road`}>
+            <Link to={`/property-in-gurugram/mg-road`}>
               <div
                 className={`asdDRsfVN bg-three  ${
                   selectedRoad === "MG Road" ? "selected" : ""
@@ -62,7 +62,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/Northern Peripheral Road`}>
+            <Link to={`/property-in-gurugram/northern-peripheral-road`}>
               <div
                 className={`asdDRsfVN bg-four ${
                   selectedRoad === "Northern Peripheral Road" ? "selected" : ""
@@ -75,7 +75,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN text-justify">
-            <Link to={`/property-in-gurugram/Dwarka Expressway`}>
+            <Link to={`/property-in-gurugram/dwarka-expressway`}>
               <div
                 className={`asdDRsfVN bg-five ${
                   selectedRoad === "Dwarka Expressway" ? "selected" : ""
@@ -88,7 +88,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/New Gurgaon`}>
+            <Link to={`/property-in-gurugram/new-gurgaon`}>
               <div
                 className={`asdDRsfVN bg-six  ${
                   selectedRoad === "New Gurgaon" ? "selected" : ""
@@ -101,7 +101,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/Sohna South of Gurugram)`}>
+            <Link to={`/property-in-gurugram/sohna-south-of-gurugram`}>
               <div
                 className={`asdDRsfVN bg-seven  ${
                   selectedRoad === "Sohna (South of Gurugram)" ? "selected" : ""
@@ -114,7 +114,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/Southern Peripheral Road`}>
+            <Link to={`/property-in-gurugram/southern-peripheral-road`}>
               <div
                 className={`asdDRsfVN bg-eight ${
                   selectedRoad === "Southern Peripheral Road" ? "selected" : ""
@@ -140,7 +140,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/Golf Course Extn Road`}>
+            <Link to={`/property-in-gurugram/golf-course-extn-road`}>
               <div
                 className={`asdDRsfVN bg-ten ${
                   selectedRoad === "Golf Course Extn Road" ? "selected" : ""
