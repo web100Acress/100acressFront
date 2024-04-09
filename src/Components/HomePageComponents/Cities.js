@@ -43,7 +43,7 @@ function Cities() {
                 }`}
                 onClick={() => handleClick("Golf Course")}
               >
-                <p>Golf Course</p>
+                <p>Golf Course Road</p>
               </div>
             </Link>
           </div>

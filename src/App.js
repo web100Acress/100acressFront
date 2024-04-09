@@ -87,6 +87,7 @@ import BlogView from "./Pages/BlogView";
 import BlogEdit from "./AdminPage/BlogEdit";
 import BlogWrite from "./AdminPage/BlogWrite";
 import GurugramPrimeLocation from "./Pages/GurugramPrimeLocation";
+import Career from "./AdminPage/Career";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -190,6 +191,7 @@ function App() {
             <Route path="/Admin/blog" element={<Blog />} />
             <Route path="/Admin/blog/view/:id" element={<BlogView />} />
             <Route path="/Admin/blog/edit/:id" element={<BlogEdit />} />
+            <Route path="/Admin/career" element={<Career/>}/>
             <Route path="/Admin/user" element={<UserAdmin />} />
             <Route path="/Admin/contact" element={<AdminContact />} />
             <Route path="/Admin/editProject" element={<EditProject />} />

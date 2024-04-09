@@ -3,12 +3,8 @@ import axios from "axios";
 import Nav from "../../aadharhomes/Nav";
 import Footer from "./Footer";
 import { Link } from "react-router-dom";
-import SmallPopForm from "./SmallPopForm";
 function BuyPropViewCard() {
   const [buyData, setBuyData] = useState([]);
-
-  const { frontImage, otherImage, propertyName, amenities } = buyData;
-
   const fetchData = async () => {
     try {
       const res = await axios.get(
@@ -22,7 +18,6 @@ function BuyPropViewCard() {
 
   useEffect(() => {
     fetchData();
-    console.log(buyData, "Buy Data");
   }, []);
 
   return (
@@ -63,16 +58,16 @@ function BuyPropViewCard() {
 
                                   <div className="p-4">
                                     <div className="pb-2">
-                                      <a className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
+                                      <p className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
                                         {property.propertyName}
-                                      </a>
+                                      </p>
                                       <span style={{ float: "right" }}>
                                         {property.price}
                                       </span>
                                       <br />
-                                      <a className="text-sm hover:text-red-600 duration-500 ease-in-out">
+                                      <p className="text-sm hover:text-red-600 duration-500 ease-in-out">
                                         {property.city}, {property.state}
-                                      </a>
+                                      </p>
                                     </div>
                                     <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                                       <li className="text-left">
@@ -126,16 +121,16 @@ function BuyPropViewCard() {
 
                             <div className="p-4">
                               <div className="pb-2">
-                                <a className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
+                                <p className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
                                   {item.propertyName}
-                                </a>
+                                </p>
                                 <span style={{ float: "right" }}>
                                   {item.price}
                                 </span>
                                 <br />
-                                <a className="text-sm hover:text-red-600 duration-500 ease-in-out">
+                                <p className="text-sm hover:text-red-600 duration-500 ease-in-out">
                                   {item.city}, {item.state}
-                                </a>
+                                </p>
                               </div>
                               <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                                 <li className="text-left">

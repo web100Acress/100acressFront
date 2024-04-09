@@ -17,6 +17,7 @@ export const DataProvider = ({ children }) => {
   const [blogData, setBlogData] = useState([]);
   const [sohnaRoad, setSohnaRoad] = useState([]);
   const [golfCourse, setGolfCourse] = useState([]);
+
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
@@ -24,7 +25,7 @@ export const DataProvider = ({ children }) => {
 
   const fetchAllProject = async () => {
     try {
-      const res = await axios.get("https://api.100acress.com/project/viewAll");
+      const res = await axios.get("https://api.100acress.com/project/viewAll/data");
       const projectsData = res.data.data;
       const trendingProjects = projectsData.filter(
         (project) => project.projectOverview === "trending"
@@ -81,7 +82,6 @@ export const DataProvider = ({ children }) => {
         (project) => project.projectAddress.includes("Golf Course Road")
       )
 
-      console.log(golfCourse,"golfCoursegolfCourse")
 
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
@@ -111,10 +111,8 @@ export const DataProvider = ({ children }) => {
     }
   }
 
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
-
   const [token, setToken] = useState(null);
-
+ 
   const handleUserLogin = async (userLogin) => {
     const { email, password } = userLogin;
     if (email && password) {
@@ -131,7 +129,7 @@ export const DataProvider = ({ children }) => {
           const roleResponse = await axios.get(
             `https://api.100acress.com/postPerson/Role/${email}`
           );
-          console.log(roleResponse, "roleResponse roleResponse");
+       
           if (roleResponse.status === 200) {
             localStorage.setItem(
               "userRole",

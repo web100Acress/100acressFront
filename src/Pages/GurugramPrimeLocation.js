@@ -6,21 +6,17 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 const GurugramPrimeLocation = () => {
   const { allProjectData } = useContext(DataContext);
-
   const { location } = useParams();
   const stringWithSpaces = location.replace(/-/g, " ");
- // Split the stringWithSpaces into words
- const words = stringWithSpaces.toLowerCase().split(' ');
-
- // Capitalize the first letter of each word
- const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
-
- // Join the words back into a single string
- const primel = capitalizedWords.join(' ');
+  const words = stringWithSpaces.toLowerCase().split(" ");
+  const capitalizedWords = words.map(
+    (word) => word.charAt(0).toUpperCase() + word.slice(1)
+  );
+  const primel = capitalizedWords.join(" ");
   const sohnaRoad = allProjectData.filter((project) =>
     project.projectAddress.includes(primel)
   );
-console.log(sohnaRoad,)
+
   return (
     <div>
       <Nav />

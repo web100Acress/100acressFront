@@ -9,7 +9,7 @@ import { FaHome } from "react-icons/fa";
 import Header from './Header';
 import { Link } from 'react-router-dom';
 import { FaRegUserCircle } from "react-icons/fa";
-
+import { BiSolidGraduation } from "react-icons/bi";
 const Sidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -72,6 +72,11 @@ const Sidebar = () => {
             <Link to="/Admin/blog"  className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0">
               <SiBloglovin className="icon fa-sm m-4" /> Blog
             </Link >
+
+            <Link to="/Admin/career"  className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0">
+              <BiSolidGraduation size={25}  className="icon fa-sm m-4 " /> Career
+            </Link >
+
 
             <Link to="/Admin/user"  className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0">
               <FaRegUserCircle  className="icon fa-sm m-4" /> User

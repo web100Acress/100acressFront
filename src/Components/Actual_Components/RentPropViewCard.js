@@ -14,7 +14,6 @@ function RentPropViewCard() {
         const res = await axios.get(
           "https://api.100acress.com/property/viewAll"
         );
-        console.log(res, "fsdfsfsdf rent")
         setRentData(res.data.collectdata);
         setPostPropertyData(res.data.done);
       } catch (error) {
@@ -28,7 +27,6 @@ function RentPropViewCard() {
   }, [rentData]);
 
   useEffect(() => {
-    console.log(postPropertyData, "postproperty data data");
   }, [postPropertyData]);
 
   return (
@@ -69,16 +67,16 @@ function RentPropViewCard() {
 
                                 <div className="p-4">
                                   <div className="pb-2">
-                                    <a className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
+                                    <p className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
                                       {property.propertyName}
-                                    </a>
+                                    </p>
                                     <span style={{ float: "right" }}>
                                       {property.price}
                                     </span>
                                     <br />
-                                    <a className="text-sm hover:text-red-600 duration-500 ease-in-out">
+                                    <p className="text-sm hover:text-red-600 duration-500 ease-in-out">
                                       {property.city}, {property.state}
-                                    </a>
+                                    </p>
                                   </div>
                                   <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                                     <li className="text-left">
@@ -132,16 +130,16 @@ function RentPropViewCard() {
 
                           <div className="p-4">
                             <div className="pb-2">
-                              <a className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
+                              <p className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
                                 {item.propertyName}
-                              </a>
+                              </p>
                               <span style={{ float: "right" }}>
                                 {item.price}
                               </span>
                               <br />
-                              <a className="text-sm hover:text-red-600 duration-500 ease-in-out">
+                              <p className="text-sm hover:text-red-600 duration-500 ease-in-out">
                                 {item.city}, {item.state}
-                              </a>
+                              </p>
                             </div>
                             <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                               <li className="text-left">

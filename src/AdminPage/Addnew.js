@@ -155,7 +155,6 @@ const AddNew = () => {
         ...fileData,
         projectGallery: updatedOtherImage,
       });
-      console.log(updatedOtherImage, "Update other");
     } else {
       console.error("No files selected");
     }
