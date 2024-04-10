@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import axios from "axios";
+import { DataContext } from "../MyContext";
 const Career = () => {
+  const { careerData } = useContext(DataContext);
+
+  const {activityImage} = careerData;
   const customStyle = {
     position: "absolute",
     top: "100px",
@@ -11,26 +15,12 @@ const Career = () => {
     right: "auto",
     width: "80%",
   };
-
-  // State to manage modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [jobOpenModel, setJobOpenModel] = useState(false);
-
-  // Function to open modal
   const openModal = () => {
     setIsModalOpen(true);
   };
-
-  // Function to close modal
   const closeModal = () => {
     setIsModalOpen(false);
-  };
-
-  const jOpenModel = () => {
-    setJobOpenModel(true);
-  };
-  const jCloseModel = () => {
-    setJobOpenModel(false);
   };
 
   const [career, setCareer] = useState({
@@ -163,7 +153,7 @@ const Career = () => {
                 onClick={openModal}
                 className="bg-blue-700 p-2 sm:rounded-lg text-white ml-2"
               >
-                Manage Vacancy
+                Career Manage
               </button>
             </div>
           </span>
@@ -294,11 +284,11 @@ const Career = () => {
                     S No.
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Job Profile
+                    Banner Image
                   </th>
 
                   <th scope="col" className="px-6 py-3">
-                    Experience
+                    Activity Image
                   </th>
 
                   <th scope="col" className="px-16 py-3">
@@ -307,111 +297,150 @@ const Career = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr className="bg-white-500 border-b border-red-400">
-                  <td className="px-4 py-1 ">1</td>
-                  <td className="px-4 py-1">hghhg</td>
-                  <td className="px-4 py-1">hghghgh</td>
-                  <td className="px-4 py-1 flex space-x-1">
-                    <Link>
-                      <button
-                        type="button"
-                        className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
-                      >
-                        {" "}
-                        View
-                      </button>
-                    </Link>
+                {careerData.map((item, index) => {
+                  return (
+                    <tr className="bg-white-500 border-b border-red-400">
+                      <td className="px-4 py-1 ">{index + 1}</td>
 
-                    <Link>
-                      <button
-                        type="button"
-                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
-                      >
-                        {" "}
-                        Edit
-                      </button>
-                    </Link>
+                      <td className="px-4 py-2">
+                        <img
+                          src={item.bannerImage && item.bannerImage.url}
+                          alt="Image"
+                          className="w-12 h-12"
+                        />
+                      </td>
 
-                    <button
-                      type="button"
-                      onClick={jOpenModel}
-                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
-                    >
-                      {" "}
-                      Job Details
-                    </button>
-                    {jobOpenModel && (
-                      <div className=" z-50 fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-500 bg-opacity-50">
-                        <div className="bg-white p-6  w-1/2 rounded-lg">
-                          <div className="flex items-center">
-                            <h2 className="text-xl font-bold mb-1 flex-grow">
-                              Job Posting
-                            </h2>
-                            <button
-                              className="bg-gray-200 text-xl mx-1 p-2  text-white rounded-lg"
-                              onClick={jCloseModel}
-                            >
-                              <RxCross2 className="text-black" />
-                            </button>
-                          </div>
-
-                          <div className="flex mt-3 border-2 border-gray-200  rounded-md">
-                            <div className="relative h-10  px-2 min-w-[160px]  w-full  rounded-md">
-                              <p className="mt-2 font-medium border-gray-200 text-black">
-                                Upload Resume
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  className="mx-2 border-gray-200"
-                                />
-                              </p>
-                            </div>
-                          </div>
-
-
-                          <label className="block pt-3" for="name">
-                            <input
-                              className="w-full h-11 placeholder:text-black font-semibold rounded-md border-2 bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                              type="text"
-                              placeholder="Skills"
+                      <td className="px-4 py-2">
+                        {activityImage &&
+                          Array.isArray(activityImage) &&
+                          activityImage.length > 0 &&
+                          activityImage.map((image, index) => (
+                            <img
+                              key={index} 
+                              src={image.url} 
+                              alt="Image"
+                              className="w-12 h-12"
                             />
-                          </label>
+                          ))}
+                      </td>
 
-                          <label className="block pt-3" for="name">
-                            <input
-                              className="w-full h-11 placeholder:text-black font-semibold  rounded-md border-2 bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                              type="text"
-                              placeholder="Experience"
-                            />
-                          </label>
 
-                          <label className="block pt-3" for="name">
-                            <input
-                              className="w-full h-11 placeholder:text-black font-semibold  rounded-md border-2 bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                              type="text"
-                              placeholder="Highest Quilification"
-                            />
-                          </label>
 
-                          <button className="bg-red-600 p-2 mt-3 text-white rounded-lg">
-                            Posted
+
+                      <td className="px-4 py-1 flex space-x-1">
+                        <Link>
+                          <button
+                            type="button"
+                            className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                          >
+                            {" "}
+                            View
                           </button>
-                        </div>
-                      </div>
-                    )}
+                        </Link>
 
-                    <button
-                      type="button"
-                      className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
+                        <Link>
+                          <button
+                            type="button"
+                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                          >
+                            {" "}
+                            Edit
+                          </button>
+                        </Link>
+
+                        <Link
+                          to={"/Admin/jobposting"}
+                          type="button"
+                          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                        >
+                          {" "}
+                          Job Details
+                        </Link>
+
+                        <button
+                          type="button"
+                          className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         </div>
+
+        {/* <table className="table table-striped table-bordered">
+              <tbody>
+               
+
+                <tr>
+                  <th>Project project_Brochure Image</th>
+                </tr>
+                <tr>
+                  <td>
+                    <img
+                      src=''
+                      alt=""
+                      style={{ maxWidth: "20%" }}
+                    />
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>Project projectGallery Image</th>
+                </tr>
+                <tr>
+                  <td>
+                    <section className="w-full mx-4">
+                      <div className="flex flex-wrap max-w-screen-md ">
+                      
+                            <article
+                             
+                              className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
+                            >
+                              <img
+                                src=''
+                                alt=""
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                            </article>
+                       
+                      </div>
+                    </section>
+                  </td>
+                </tr>
+
+               
+
+
+             
+              
+               
+
+             
+
+               
+
+               
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Project Overview :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                       hfghfghfghfg
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+              
+
+              </tbody>
+            </table> */}
       </div>
     </div>
   );

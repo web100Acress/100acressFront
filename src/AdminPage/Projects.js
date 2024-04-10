@@ -32,16 +32,15 @@ const customStyles = {
 const Projects = () => {
   const [viewAll, setViewAll] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(25);
+  const [rowsPerPage] = useState(25); 
   const [modalIsOpen, setIsOpen] = React.useState(false);
-
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://api.100acress.com/project/viewAll"
+          "https://api.100acress.com/project/viewAll/data"
         );
         setViewAll(res.data.data);
       } catch (error) {
@@ -50,7 +49,7 @@ const Projects = () => {
     };
     fetchData();
   }, []);
-
+  
   const handleDeleteUser = async (id) => {
     try {
       const response = await axios.delete(
@@ -104,6 +103,7 @@ const Projects = () => {
     <>
       <Sidebar />
       <div className="" style={customStyle}>
+
         <div
           className="flex items-center mb-2 mt-2"
           style={{ marginLeft: "100px" }}
@@ -252,6 +252,7 @@ const Projects = () => {
             </Modal>
           </div>
         </div>
+
       </div>
     </>
   );

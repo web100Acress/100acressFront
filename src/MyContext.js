@@ -17,15 +17,25 @@ export const DataProvider = ({ children }) => {
   const [blogData, setBlogData] = useState([]);
   const [sohnaRoad, setSohnaRoad] = useState([]);
   const [golfCourse, setGolfCourse] = useState([]);
+  const [token, setToken] = useState(null);
+  const [careerData, setCareerData] = useState([]);
 
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
+    fetchCareerData();
   }, []);
+
+ 
+  
+
+  
 
   const fetchAllProject = async () => {
     try {
-      const res = await axios.get("https://api.100acress.com/project/viewAll/data");
+      const res = await axios.get(
+        "https://api.100acress.com/project/viewAll/data"
+      );
       const projectsData = res.data.data;
       const trendingProjects = projectsData.filter(
         (project) => project.projectOverview === "trending"
@@ -54,7 +64,6 @@ export const DataProvider = ({ children }) => {
         (project) => project.project_Status === "comingsoon"
       );
 
-
       const commercialProject = projectsData.filter(
         (project) => project.type === "Commercial Property"
       );
@@ -74,14 +83,13 @@ export const DataProvider = ({ children }) => {
         return project.type === "Deen Dayal Plots";
       });
 
-      const sohnaRoad = projectsData.filter(
-        (project) =>project.projectAddress.includes("Sohna Road")
+      const sohnaRoad = projectsData.filter((project) =>
+        project.projectAddress.includes("Sohna Road")
       );
 
-      const golfCourse = projectsData.filter(
-        (project) => project.projectAddress.includes("Golf Course Road")
-      )
-
+      const golfCourse = projectsData.filter((project) =>
+        project.projectAddress.includes("Golf Course Road")
+      );
 
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
@@ -102,17 +110,15 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-  const fetchBlogData  = async () =>{
+  const fetchBlogData = async () => {
     try {
-      const res = await axios.get('https://api.100acress.com/blog/view');
+      const res = await axios.get("https://api.100acress.com/blog/view");
       setBlogData(res.data.data);
     } catch (error) {
       console.log(error || error.message);
     }
-  }
+  };
 
-  const [token, setToken] = useState(null);
- 
   const handleUserLogin = async (userLogin) => {
     const { email, password } = userLogin;
     if (email && password) {
@@ -129,7 +135,7 @@ export const DataProvider = ({ children }) => {
           const roleResponse = await axios.get(
             `https://api.100acress.com/postPerson/Role/${email}`
           );
-       
+
           if (roleResponse.status === 200) {
             localStorage.setItem(
               "userRole",
@@ -137,8 +143,6 @@ export const DataProvider = ({ children }) => {
             );
             const sellerId = roleResponse.data.User._id;
             localStorage.setItem("mySellerId", JSON.stringify(sellerId));
-
-      
           } else {
             console.error("Role fetch failed:", roleResponse);
             alert(
@@ -157,6 +161,16 @@ export const DataProvider = ({ children }) => {
       }
     } else {
       alert("Please Enter both Email and Password");
+    }
+  };
+
+  const fetchCareerData = async () => {
+    try {
+      const res = await axios.get("https://api.100acress.com/career/page/view");
+      setCareerData(res.data.data);
+     
+    } catch (error) {
+      console.log(error || error.message);
     }
   };
 
@@ -180,6 +194,7 @@ export const DataProvider = ({ children }) => {
         blogData,
         sohnaRoad,
         golfCourse,
+        careerData,
       }}
     >
       {children}
