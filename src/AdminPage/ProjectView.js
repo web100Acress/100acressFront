@@ -49,7 +49,7 @@ const ProjectView = () => {
     };
     fetchData();
   }, []);
-  console.log(viewDetails,"viewDetails")
+  
   return (
     <div style={{overflowX:"hidden"}}>
       <Sidebar />

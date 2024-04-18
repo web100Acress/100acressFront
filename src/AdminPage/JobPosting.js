@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
-import axios  from "axios";
+import axios from "axios";
+import { DataContext } from "../MyContext";
 const JobPosting = () => {
+  const { jobPostingData } = useContext(DataContext);
+
   const customStyle = {
     position: "absolute",
     top: "100px",
@@ -47,19 +50,47 @@ const JobPosting = () => {
     });
   };
 
-  const submitJobPostingData = async(e) =>{
-      e.preventDefault();
-      try {
-        const res = await  axios.post("")
-      } catch (error) {
-        console.log(error || error.message)
+  const submitJobPostingData = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        "https://api.100acress.com/career/opening/Insert",
+        job
+      );
+      alert("Data Posted");
+      resetData();
+    } catch (error) {
+      console.log(error || error.message);
+    }
+  };
+
+  const handleDeleteUser = async (id) => {
+    try {
+      const res = await axios.delete(
+        `https://api.100acress.com/career/opening/delete/${id}`
+      );
+      if (res.status >= 200 && res.status < 300) {
+        window.location.reload();
+      } else {
+        console.error("Failed to delete user. Server returned an error.");
       }
-  }
+    } catch (error) {
+      console.log(error || error.message);
+    }
+  };
+
+  const handleDeleteButtonClick = (id) => {
+    const confirmDeletion = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+    if (confirmDeletion) {
+      handleDeleteUser(id);
+    }
+  };
 
   return (
     <div>
       <Sidebar />
-
       <div className="" style={customStyle}>
         <div
           className="flex items-center mb-2 mt-2"
@@ -166,7 +197,10 @@ const JobPosting = () => {
                   />
                 </label>
 
-                <button className="bg-red-600 p-2 mt-3 text-white rounded-lg">
+                <button
+                  onClick={submitJobPostingData}
+                  className="bg-red-600 p-2 mt-3 text-white rounded-lg"
+                >
                   Submit Data
                 </button>
               </div>
@@ -196,39 +230,47 @@ const JobPosting = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr className="bg-white-500 border-b border-red-400">
-                  <td className="px-4 py-1 ">1</td>
-                  <td className="px-4 py-1">hghhg</td>
-                  <td className="px-4 py-1">hghghgh</td>
-                  <td className="px-4 py-1 flex space-x-1">
-                    <Link>
-                      <button
-                        type="button"
-                        className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
-                      >
-                        {" "}
-                        View
-                      </button>
-                    </Link>
-
-                    <Link>
-                      <button
-                        type="button"
-                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
-                      >
-                        {" "}
-                        Edit
-                      </button>
-                    </Link>
-
-                    <button
-                      type="button"
-                      className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                {jobPostingData.map((item, index) => {
+                  return (
+                    <tr
+                      key={index}
+                      className="bg-white-500 border-b border-red-400"
                     >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
+                      <td className="px-4 py-1 ">{index + 1}</td>
+                      <td className="px-4 py-1">{item.jobProfile}</td>
+                      <td className="px-4 py-1">{item.experience}</td>
+                      <td className="px-4 py-1 flex space-x-1">
+                        <Link to={`/Admin/jobposting/view/${item._id}`}>
+                          <button
+                            type="button"
+                            className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                          >
+                            {" "}
+                            View
+                          </button>
+                        </Link>
+
+                        <Link to={`/Admin/jobposting/edit/${item._id}`}>
+                          <button
+                            type="button"
+                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                          >
+                            {" "}
+                            Edit
+                          </button>
+                        </Link>
+
+                        <button
+                          type="button"
+                          onClick={(e) => handleDeleteButtonClick(item._id)}
+                          className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

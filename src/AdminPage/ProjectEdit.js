@@ -12,6 +12,8 @@ const customStyle = {
 };
 
 const ProjectEdit = () => {
+
+  
   const [values, setValues] = useState({
     frontImage: "",
     otherImage: [],
@@ -71,15 +73,7 @@ const ProjectEdit = () => {
     }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setValues({
-      ...values,
-      frontImage: file,
-    });
-  };
-
-
+  
 
   return (
     <>

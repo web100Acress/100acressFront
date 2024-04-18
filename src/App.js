@@ -89,6 +89,10 @@ import BlogWrite from "./AdminPage/BlogWrite";
 import GurugramPrimeLocation from "./Pages/GurugramPrimeLocation";
 import Career from "./AdminPage/Career";
 import JobPosting from "./AdminPage/JobPosting";
+import CareerView from "./AdminPage/CareerView";
+import CareerEdit from "./AdminPage/CareerEdit";
+import JobPostingView from "./AdminPage/JobPostingView";
+import JobPostingEdit from "./AdminPage/JobPostingEdit";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -201,6 +205,8 @@ function App() {
             <Route path="/Admin/Projects/property" element={<Projects />} />
             <Route path="/Admin/rent" element={<Rent />} />
             <Route path="/Admin/jobposting" element ={<JobPosting/>}/>
+            <Route path="/Admin/jobposting/view/:id" element ={<JobPostingView/>}/>
+            <Route path="/Admin/jobposting/edit/:id" element ={<JobPostingEdit/>}/>
             <Route path="/Admin/rent/view/:id" element={<RentView />} />
             <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
 
@@ -216,6 +222,8 @@ function App() {
             <Route path="/searchdata/:key" element={<SearchData />} />
             <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
             <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
+            <Route path="/Admin/careerview/:id" element={<CareerView/>}/>
+            <Route path="/Admin/careerEdit/:id" element={<CareerEdit/>}/>
             <Route
               path="/Admin/projecteditbhk/:id"
               element={<ProjectEditBHK />}

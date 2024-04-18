@@ -19,17 +19,16 @@ export const DataProvider = ({ children }) => {
   const [golfCourse, setGolfCourse] = useState([]);
   const [token, setToken] = useState(null);
   const [careerData, setCareerData] = useState([]);
+  const [jobPostingData, setJobPostingData] = useState([]);
+  const [resalePropertydata, setResalePropertydata] = useState([]);
 
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
     fetchCareerData();
+    fetchJobPostingData();
+    buyFetchData();
   }, []);
-
- 
-  
-
-  
 
   const fetchAllProject = async () => {
     try {
@@ -168,9 +167,30 @@ export const DataProvider = ({ children }) => {
     try {
       const res = await axios.get("https://api.100acress.com/career/page/view");
       setCareerData(res.data.data);
-     
     } catch (error) {
       console.log(error || error.message);
+    }
+  };
+
+  const fetchJobPostingData = async () => {
+    try {
+      const res = await axios.get(
+        "https://api.100acress.com/career/opening/ViewAll"
+      );
+      setJobPostingData(res.data.data);
+    } catch (error) {
+      console.log(error || error.message);
+    }
+  };
+
+  const buyFetchData = async () => {
+    try {
+      const res = await axios.get(
+        "https://api.100acress.com/property/buy/ViewAll"
+      );
+      setResalePropertydata(res.data.collectdata);
+    } catch (error) {
+      console.error("Error fetching resale property data:", error);
     }
   };
 
@@ -195,6 +215,8 @@ export const DataProvider = ({ children }) => {
         sohnaRoad,
         golfCourse,
         careerData,
+        jobPostingData,
+        resalePropertydata,
       }}
     >
       {children}

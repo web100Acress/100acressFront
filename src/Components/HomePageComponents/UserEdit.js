@@ -63,7 +63,6 @@ const UserEdit = () => {
 
       if (response.status === 200) {
         alert("Data updated successfully");
-        console.log("User updated successfully");
       } else {
         console.error("Failed to update user");
       }
@@ -118,38 +117,6 @@ const UserEdit = () => {
                   <th>Other Images</th>
                 </tr>
 
-                {/* <tr>
-                  <td>
-                    <section className="w-full mx-4">
-                      <div className="flex flex-wrap max-w-screen-md ">
-                        {otherImage &&
-                          Array.isArray(otherImage) &&
-                          otherImage.length > 0 &&
-                          otherImage.map((image, index) => (
-                            <article
-                              key={index}
-                              className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
-                            >
-                              <img
-                                src={image.url}
-                                alt={`Image ${index + 1}`}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                            </article>
-                          ))}
-                      </div>
-                      <br />
-                      <input
-                        type="file"
-                        name="otherImage"
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          setValues({ ...values, otherImage: file });
-                        }}
-                      />
-                    </section>
-                  </td>
-                </tr> */}
 
                 <tr>
                   <td>

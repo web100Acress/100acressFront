@@ -154,6 +154,15 @@ export default function Nav() {
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isMenuOpen1, setMenuOpen1] = useState(false);
+  const [isMenuOpen2, setMenuOpen2] = useState(false);
+
+  const handleHover2 = () => {
+    setMenuOpen2(true);
+  };
+
+  const handleLeave2 = () => {
+    setMenuOpen2(false);
+  };
 
   const handleHover = () => {
     setMenuOpen(true);
@@ -611,12 +620,91 @@ export default function Nav() {
                     </Link>
                   )}
 
-                  <Link
-                    to={"/projects"}
-                    className="text-white font-semibold text-lg"
+                  <div
+                    className="relative group "
+                    onMouseEnter={handleHover2}
+                    onMouseLeave={handleLeave2}
                   >
-                    Projects
-                  </Link>
+                    <Link to={"/projects"}>
+                      <button className="text-white font-semibold text-lg ">
+                        Projects
+                      </button>
+                    </Link>
+                    <div
+                      className={`absolute  bg-white py-2 text-gray-800 w-90  rounded-md shadow-lg z-10 ${
+                        isMenuOpen2 ? "block" : "hidden"
+                      }`}
+                    >
+                      <div className="flex">
+                        <div className="w-48">
+                          <Link
+                            to="#"
+                            className="block px-4 py-1 text-black  text-lg "
+                          >
+                            Popular Cities
+                            <hr className="mt-1" />
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4   hover:text-red-600"
+                          >
+                            Projects in Gurugram
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            Projects in Delhi
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            Projects in Noida
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            Projects in Goa
+                          </Link>
+                        </div>
+                        <div className="w-48">
+                          <Link
+                            to="#"
+                            className="block px-4 py-1 text-black  text-lg "
+                          >
+                            Abroad Property
+                            <hr className="mt-1" />
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4   hover:text-red-600"
+                          >
+                            Property in Dubai
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            Property in Singapore
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            Property in India
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            Property in Bangkok
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </>
               )}
             </HStack>
@@ -713,76 +801,64 @@ export default function Nav() {
                   aria-label="Profile"
                   onMouseEnter={toggleDropdown}
                 >
-                  { token ? <><Avatar
-                    boxSize={{ base: "1.7em", md: "1.8em" }}
-                    bgColor="white"
-                    marginLeft={{ base: 0, md: "9" }}
-                    icon={
-                      <AvatarBadge
-                        boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
-                        bg="green.500"
-                        border="2px"
-                        borderColor="white"
-                        darkBorderColor="gray.800"
-                        rounded="full"
-                      />
-                    }
-                  >
-                    <img
-                      className="w-16 h-10 rounded-full"
-                      src="../../Images/logoAvtar.png"
-                      alt=""
-                    />
-                  </Avatar> </> : <>
-                  <Avatar
-                    boxSize={{ base: "1.7em", md: "1.8em" }}
-                    bgColor="white"
-                    marginLeft={{ base: 0, md: "9" }}
-                    icon={
-                      <AvatarBadge
-                        boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
-                        bg="red.500"
-                        border="2px"
-                        borderColor="white"
-                        darkBorderColor="gray.800"
-                        rounded="full"
-                      />
-                    }
-                  >
-                    <img
-                      className="w-16 h-10 rounded-full"
-                      src="../../Images/logoAvtar.png"
-                      alt=""
-                    />
-                  </Avatar></>}
-                  {/* <Avatar
-                    boxSize={{ base: "1.7em", md: "1.8em" }}
-                    bgColor="white"
-                    marginLeft={{ base: 0, md: "9" }}
-                    icon={
-                      <AvatarBadge
-                        boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
-                        bg="red.500"
-                        border="2px"
-                        borderColor="white"
-                        darkBorderColor="gray.800"
-                        rounded="full"
-                      />
-                    }
-                  >
-                    <img
-                      className="w-16 h-10 rounded-full"
-                      src="../../Images/logoAvtar.png"
-                      alt=""
-                    />
-                  </Avatar> */}
+                  { token ? (
+                    <>
+                      <Avatar
+                        boxSize={{ base: "1.7em", md: "1.8em" }}
+                        bgColor="white"
+                        marginLeft={{ base: 0, md: "9" }}
+                        icon={
+                          <AvatarBadge
+                            boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
+                            bg="green.500"
+                            border="2px"
+                            borderColor="white"
+                            darkBorderColor="gray.800"
+                            rounded="full"
+                          />
+                        }
+                      >
+                        <img
+                          className="w-16 h-10 rounded-full"
+                          src="../../Images/logoAvtar.png"
+                          alt=""
+                        />
+                      </Avatar>
+                    </>
+                  ) : (
+                    <>
+                      <Avatar
+                        boxSize={{ base: "1.7em", md: "1.8em" }}
+                        bgColor="white"
+                        marginLeft={{ base: 0, md: "9" }}
+                        icon={
+                          <AvatarBadge
+                            boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
+                            bg="red.500"
+                            border="2px"
+                            borderColor="white"
+                            darkBorderColor="gray.800"
+                            rounded="full"
+                          />
+                        }
+                      >
+                        <img
+                          className="w-16 h-10 rounded-full"
+                          src="../../Images/logoAvtar.png"
+                          alt="logoAvtar"
+                        />
+                      </Avatar>
+                    </>
+                  )}
                 </MenuButton>
+
                 <MenuListContainer
                   isOpen={isDropdownOpen}
                   onClose={onClose}
                   onLoginRegisterClick={handleLoginRegisterClick}
                 />
               </Menu>
+
             </Flex>
           </Flex>
 
@@ -798,16 +874,6 @@ export default function Nav() {
               }}
             >
               <Stack color="white" as="nav" spacing={4}>
-                {/* {Links.map((link) => (
-                <Link
-                  key={link}
-                  style={{ textDecoration: "none" }}
-                  to={`/${link}`}
-                >
-                  {link}
-                </Link>
-              ))} */}
-
                 <Link
                   to={"/rent"}
                   className="text-white font-semibold mx-3 text-lg"
@@ -845,8 +911,10 @@ export default function Nav() {
                   Projects
                 </Link>
               </Stack>
+
             </Box>
           )}
+
         </Box>
       </Box>
     </Wrapper>

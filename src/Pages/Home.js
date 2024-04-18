@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { DataContext } from "../MyContext";
 import { ScaleLoader } from "react-spinners";
 import Snapshot from "./Snapshot";
+import Resale from "./Resale";
 const keyframes = `
   @keyframes moveHorizontal {
     from {
@@ -69,7 +70,7 @@ function Home() {
         {
           <section className="flex flex-col bg-white items-center pt-1 ">
             <div className="grid max-w-md grid-cols-1  px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-                   {trendingProject.map((item, index) => {
+              {trendingProject.map((item, index) => {
                 const pUrl = item.project_url;
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
@@ -440,6 +441,15 @@ function Home() {
           }
         </div>
       </div>
+      <h1
+        className="xjUWI"
+        style={{
+          fontSize: "xx-large",
+          margin: "30px 60px 0px 60px",
+          fontWeight: "600",
+        }}
+      >Best Resale Property For You</h1>
+      <Resale />
 
       <h3
         className="xjUWI "
@@ -549,7 +559,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 17vh !important;
-      background-image: url("../../Images/1navratri.jpg");
+      background-image: url("../../Images/1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -563,7 +573,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/1navratri.jpg");
+      background-image: url("../../Images/1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -577,7 +587,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 20vh !important;
-      background-image: url("../../Images/1navratri.jpg");
+      background-image: url("../../Images/1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -591,7 +601,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/1navratri.jpg");
+      background-image: url("../../Images/1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -600,7 +610,7 @@ const Wrapper = styled.section`
 
   @media screen and (max-width: 1800px) and (min-width: 601px) {
     .djqwUUJNCO {
-      background-image: url("../../Images/navratri.jpg");
+      background-image: url("../../Images/BannerImage3.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;

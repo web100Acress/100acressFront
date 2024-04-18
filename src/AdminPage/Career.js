@@ -7,7 +7,6 @@ import { DataContext } from "../MyContext";
 const Career = () => {
   const { careerData } = useContext(DataContext);
 
-  const {activityImage} = careerData;
   const customStyle = {
     position: "absolute",
     top: "100px",
@@ -15,10 +14,13 @@ const Career = () => {
     right: "auto",
     width: "80%",
   };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const openModal = () => {
     setIsModalOpen(true);
   };
+
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -127,6 +129,29 @@ const Career = () => {
       resetFileData();
     } catch (error) {
       console.log(error || error.message);
+    }
+  };
+
+  const handleDeleteUser = async (id) => {
+    try {
+      const res = await axios.delete(
+        `https://api.100acress.com/career/page/delete/${id}`
+      );
+      if (res.status >= 200 && res.status < 300) {
+        window.location.reload();
+      } else {
+        console.error("Failed to delete user. Server returned an error.");
+      }
+    } catch (error) {
+      console.log(error || error.message);
+    }
+  };
+  const handleDeleteButtonClick = (id) => {
+    const confirmDeletion = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+    if (confirmDeletion) {
+      handleDeleteUser(id);
     }
   };
 
@@ -311,24 +336,20 @@ const Career = () => {
                       </td>
 
                       <td className="px-4 py-2">
-                        {activityImage &&
-                          Array.isArray(activityImage) &&
-                          activityImage.length > 0 &&
-                          activityImage.map((image, index) => (
+                        <div className="flex">
+                          {item.activityImage.map((image, idx) => (
                             <img
-                              key={index} 
-                              src={image.url} 
-                              alt="Image"
-                              className="w-12 h-12"
+                              key={idx}
+                              src={image.url}
+                              alt="Activity Image"
+                              className="w-12 h-12 mr-2"
                             />
                           ))}
+                        </div>
                       </td>
 
-
-
-
                       <td className="px-4 py-1 flex space-x-1">
-                        <Link>
+                        <Link to={`/Admin/careerview/${item._id}`}>
                           <button
                             type="button"
                             className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
@@ -338,7 +359,7 @@ const Career = () => {
                           </button>
                         </Link>
 
-                        <Link>
+                        <Link to={`/Admin/careerEdit/${item._id}`}>
                           <button
                             type="button"
                             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
@@ -359,6 +380,7 @@ const Career = () => {
 
                         <button
                           type="button"
+                          onClick={() => handleDeleteButtonClick(item._id)}
                           className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"
                         >
                           Delete
@@ -371,76 +393,6 @@ const Career = () => {
             </table>
           </div>
         </div>
-
-        {/* <table className="table table-striped table-bordered">
-              <tbody>
-               
-
-                <tr>
-                  <th>Project project_Brochure Image</th>
-                </tr>
-                <tr>
-                  <td>
-                    <img
-                      src=''
-                      alt=""
-                      style={{ maxWidth: "20%" }}
-                    />
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>Project projectGallery Image</th>
-                </tr>
-                <tr>
-                  <td>
-                    <section className="w-full mx-4">
-                      <div className="flex flex-wrap max-w-screen-md ">
-                      
-                            <article
-                             
-                              className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
-                            >
-                              <img
-                                src=''
-                                alt=""
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                            </article>
-                       
-                      </div>
-                    </section>
-                  </td>
-                </tr>
-
-               
-
-
-             
-              
-               
-
-             
-
-               
-
-               
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Overview :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                       hfghfghfghfg
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-              
-
-              </tbody>
-            </table> */}
       </div>
     </div>
   );

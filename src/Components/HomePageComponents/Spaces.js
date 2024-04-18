@@ -6,7 +6,7 @@ function SpacesAvailable() {
     <Wrapper className="section">
       <div style={{ boxShadow: "0px 0px 30px 0px #0000001a" }}>
         <div className="px-14 font-semibold text-xl xl:text-4xl lg:text-3xl pt-4 md:text-2xl">
-          Choose the Best For you
+        Dream Property In The Heart of Gurugram
         </div>
         <div className="_6sknMP">
           <Link to={`/property/residential`} target="_top">
