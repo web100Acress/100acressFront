@@ -251,7 +251,7 @@ export default function Nav() {
                     onMouseEnter={handleHover1}
                     onMouseLeave={handleLeave1}
                   >
-                    <Link to="/buy">
+                    <Link to="/buy/best-resale-property-in-gurugram">
                       <button className=" text-white font-semibold text-lg ">
                         Buy
                       </button>
@@ -430,7 +430,7 @@ export default function Nav() {
                     onMouseEnter={handleHover}
                     onMouseLeave={handleLeave}
                   >
-                    <Link to="/rent">
+                    <Link to="/rent/best-rental-property-in-gurugram">
                       <button className="text-white font-semibold text-lg ">
                         Rent
                       </button>
@@ -875,14 +875,14 @@ export default function Nav() {
             >
               <Stack color="white" as="nav" spacing={4}>
                 <Link
-                  to={"/rent"}
+                  to={"/rent/best-rental-property-in-gurugram"}
                   className="text-white font-semibold mx-3 text-lg"
                 >
                   Rent
                 </Link>
 
                 <Link
-                  to={"/buy"}
+                  to={"/buy/best-resale-property-in-gurugram"}
                   className="text-white font-semibold text-lg mx-3"
                 >
                   Buy

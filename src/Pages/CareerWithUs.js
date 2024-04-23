@@ -178,6 +178,19 @@ const CareerWithUs = () => {
                 <h3 className="text-xl font-bold mb-2">Life@100ACRESS:</h3>
 
                 {viewCareer.lifeAcress}
+
+                {/* {viewCareer &&
+                  Array.isArray(viewCareer) &&
+                  viewCareer.length > 0 &&
+                  viewCareer.map((item, index) => (
+                    <ul
+                      className="list-disc"
+                      style={{ listStyleType: "circle" }}
+                      key={index}
+                    >
+                      <li className="mb-2 text-black">{item.lifeAcress}</li>
+                    </ul>
+                  ))} */}
               </div>
             </div>
           </div>

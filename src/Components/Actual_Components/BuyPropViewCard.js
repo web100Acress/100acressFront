@@ -3,6 +3,7 @@ import axios from "axios";
 import Nav from "../../aadharhomes/Nav";
 import Footer from "./Footer";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 function BuyPropViewCard() {
   const [buyData, setBuyData] = useState([]);
   const fetchData = async () => {
@@ -23,7 +24,13 @@ function BuyPropViewCard() {
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
-  
+      <Helmet>
+        <title>best-resale-property-in-gurugram</title>
+        <meta
+          name="description"
+          content="Discover the best resale properties in Gurugram. Find your ideal property in gurugram only by 100acress.com"
+        />
+      </Helmet>
       <div>
         <section className="flex flex-col items-center bg-white">
           <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
@@ -39,44 +46,43 @@ function BuyPropViewCard() {
                             {item.postProperty.map(
                               (property, propertyIndex) => (
                                 <Link to={`/buy/${property._id}`}>
-                                <article
-                                  className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                                  key={propertyIndex}
-                                >
-                                  <div>
-                                    {property.frontImage &&
-                                    property.frontImage.url ? (
-                                      <img
-                                        src={property.frontImage.url}
-                                        alt="frontImage"
-                                        className="w-full h-48 object-fit"
-                                      />
-                                    ) : (
-                                      <span>Image not available</span>
-                                    )}
-                                  </div>
-
-                                  <div className="p-4">
-                                    <div className="pb-2">
-                                      <p className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
-                                        {property.propertyName}
-                                      </p>
-                                      <span style={{ float: "right" }}>
-                                        {property.price}
-                                      </span>
-                                      <br />
-                                      <p className="text-sm hover:text-red-600 duration-500 ease-in-out">
-                                        {property.city}, {property.state}
-                                      </p>
+                                  <article
+                                    className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                                    key={propertyIndex}
+                                  >
+                                    <div>
+                                      {property.frontImage &&
+                                      property.frontImage.url ? (
+                                        <img
+                                          src={property.frontImage.url}
+                                          alt="frontImage"
+                                          className="w-full h-48 object-fit"
+                                        />
+                                      ) : (
+                                        <span>Image not available</span>
+                                      )}
                                     </div>
-                                    <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
-                                      <li className="text-left">
-                                        <span className="text-sm font-extrabold  text-black">
-                                          {property.propertyType}
+
+                                    <div className="p-4">
+                                      <div className="pb-2">
+                                        <p className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
+                                          {property.propertyName}
+                                        </p>
+                                        <span style={{ float: "right" }}>
+                                          {property.price}
                                         </span>
-                                      </li>
-                                      <li className="text-left">
-                                       
+                                        <br />
+                                        <p className="text-sm hover:text-red-600 duration-500 ease-in-out">
+                                          {property.city}, {property.state}
+                                        </p>
+                                      </div>
+                                      <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+                                        <li className="text-left">
+                                          <span className="text-sm font-extrabold  text-black">
+                                            {property.propertyType}
+                                          </span>
+                                        </li>
+                                        <li className="text-left">
                                           <button
                                             type="button"
                                             style={{ width: "122px" }}
@@ -84,11 +90,10 @@ function BuyPropViewCard() {
                                           >
                                             View Details
                                           </button>
-                                       
-                                      </li>
-                                    </ul>
-                                  </div>
-                                </article>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </article>
                                 </Link>
                               )
                             )}
@@ -102,45 +107,44 @@ function BuyPropViewCard() {
                     return (
                       <>
                         {
-                           <Link to={`/buy/${item._id}`}>
-                          <article
-                            className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                            key={index}
-                          >
-                            <div>
-                              {item.frontImage && item.frontImage.url ? (
-                                <img
-                                  src={item.frontImage.url}
-                                  alt="frontImage"
-                                  className="w-full h-48 object-fit"
-                                />
-                              ) : (
-                                <span>Image not available</span>
-                              )}
-                            </div>
-
-                            <div className="p-4">
-                              <div className="pb-2">
-                                <p className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
-                                  {item.propertyName}
-                                </p>
-                                <span style={{ float: "right" }}>
-                                  {item.price}
-                                </span>
-                                <br />
-                                <p className="text-sm hover:text-red-600 duration-500 ease-in-out">
-                                  {item.city}, {item.state}
-                                </p>
+                          <Link to={`/buy/${item._id}`}>
+                            <article
+                              className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                              key={index}
+                            >
+                              <div>
+                                {item.frontImage && item.frontImage.url ? (
+                                  <img
+                                    src={item.frontImage.url}
+                                    alt="frontImage"
+                                    className="w-full h-48 object-fit"
+                                  />
+                                ) : (
+                                  <span>Image not available</span>
+                                )}
                               </div>
-                              <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
-                                <li className="text-left">
-                                  <span className="text-sm font-extrabold text-black">
-                                    {item.propertyType}
-                                  </span>
-                                </li>
 
-                                <li className="text-left">
-                                 
+                              <div className="p-4">
+                                <div className="pb-2">
+                                  <p className="text-lg font-semibold hover:text-red-600 duration-500 ease-in-out">
+                                    {item.propertyName}
+                                  </p>
+                                  <span style={{ float: "right" }}>
+                                    {item.price}
+                                  </span>
+                                  <br />
+                                  <p className="text-sm hover:text-red-600 duration-500 ease-in-out">
+                                    {item.city}, {item.state}
+                                  </p>
+                                </div>
+                                <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+                                  <li className="text-left">
+                                    <span className="text-sm font-extrabold text-black">
+                                      {item.propertyType}
+                                    </span>
+                                  </li>
+
+                                  <li className="text-left">
                                     <button
                                       type="button"
                                       style={{ width: "122px" }}
@@ -148,11 +152,10 @@ function BuyPropViewCard() {
                                     >
                                       View Details
                                     </button>
-                                 
-                                </li>
-                              </ul>
-                            </div>
-                          </article>
+                                  </li>
+                                </ul>
+                              </div>
+                            </article>
                           </Link>
                         }
                       </>

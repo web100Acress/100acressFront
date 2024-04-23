@@ -123,8 +123,8 @@ function App() {
               element={<TermsAndConditions />}
             />
             <Route path="/projects" element={<Properties />} />
-            <Route path="/rent" element={<RentPropViewCard />} />
-            <Route path="/buy" element={<BuyPropViewCard />} />
+            <Route path="/rent/best-rental-property-in-gurugram" element={<RentPropViewCard />} />
+            <Route path="/buy/best-resale-property-in-gurugram" element={<BuyPropViewCard />} />
             <Route path="/about" element={<About />} />
             <Route path="/rent/:id" element={<RentViewDetails />} />
             <Route path="/buy/:id" element={<BuyViewDetails />} />
