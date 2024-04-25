@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
@@ -9,12 +9,13 @@ import { GrCommand } from "react-icons/gr";
 import { RiAdminFill } from "react-icons/ri";
 import axios from "axios";
 import { FaFacebook, FaLinkedin } from "react-icons/fa";
-
+import { DataContext } from "../MyContext";
 const CareerWithUs = () => {
   const [viewCareer, setViewCareer] = useState([]);
   const [showform, setShowForm] = useState(false);
   const { activityImage = [], highlightImage } = viewCareer;
-
+  const { jobPostingData } = useContext(DataContext);
+  console.log(jobPostingData, "jobPostingDatajobPostingData");
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -75,6 +76,7 @@ const CareerWithUs = () => {
             </div>
           </div>
         </div>
+
         <div>
           <p className="text-xl lg:text-3xl md:text-2xl sm:text-xl xs:text-xl text-red-600 text-left px-6 lg:px-16 md:px-8 sm:px-6 xs:px-4 mt-2">
             WHY 100ACRESS
@@ -178,26 +180,15 @@ const CareerWithUs = () => {
                 <h3 className="text-xl font-bold mb-2">Life@100ACRESS:</h3>
 
                 {viewCareer.lifeAcress}
-
-                {/* {viewCareer &&
-                  Array.isArray(viewCareer) &&
-                  viewCareer.length > 0 &&
-                  viewCareer.map((item, index) => (
-                    <ul
-                      className="list-disc"
-                      style={{ listStyleType: "circle" }}
-                      key={index}
-                    >
-                      <li className="mb-2 text-black">{item.lifeAcress}</li>
-                    </ul>
-                  ))} */}
               </div>
             </div>
           </div>
         </div>
+
         <p className="text-xl lg:text-3xl md:text-2xl sm:text-2xl xs:text-xl text-red-600 text-left px-12 pt-4  mb-0 bg-gray-100">
           100ACRESS HIGHLIGHTS
         </p>
+
         <div className="flex justify-center bg-gray-100">
           <div className="flex flex-col md:flex-row space-y-2  items-center justify-center max-w-7xl w-full pt-2 pb-5">
             <div className="w-full md:w-1/2 mx-2 h-96 overflow-hidden">
@@ -276,6 +267,7 @@ const CareerWithUs = () => {
             </div>
           </div>
         </div>
+
         <div className="container">
           <div className="row">
             <div className="col-md-4">
@@ -315,144 +307,113 @@ const CareerWithUs = () => {
               >
                 <h3 className="mb-4 mt-4 ml-5 ">All Openings</h3>
                 <div className="flex flex-col h-96 overflow-y-auto">
-                  {[...Array(10)].map((_, index) => (
-                    <div className="flex items-stretch" key={index}>
-                      <div className="flex-1 px-4 mb-4">
-                        <div className="bg-gray-50 hover:bg-gray-200 rounded-lg p-4 h-full">
-                          <p className="mb-2 text-xs lg:text-xl md:text-lg sm:text-lg xs:text-xs">
-                            Job Title: <span className="">Content Editor</span>
-                          </p>
-                          <p className="mb-2 flex justify-between items-center">
-                            <span className="text-xs lg:text-xl md:text-lg sm:text-lg xs:text-xs text-semibold">
-                              Location:{" "}
-                              <span className="text-xs lg:text-xl md:text-lg sm:text-lg xs:text-xs">
-                                Noida
+                  {jobPostingData.map((item, index) => {
+                    return (
+                      <div className="flex items-stretch" key={index}>
+                        <div className="flex-1 px-4 mb-4">
+                          <div className="bg-gray-50 hover:bg-gray-200 rounded-lg p-4 h-full">
+                            <p className="mb-2 text-xs lg:text-xl md:text-lg sm:text-lg xs:text-xs">
+                              Job Title:{" "}
+                              <span className="">{item.jobTitle}</span>
+                            </p>
+                            <p className="mb-2 flex justify-between items-center">
+                              <span className="text-xs lg:text-xl md:text-lg sm:text-lg xs:text-xs text-semibold">
+                                Location:{" "}
+                                <span className="text-xs lg:text-xl md:text-lg sm:text-lg xs:text-xs">
+                                  {item.jobLocation}
+                                </span>
                               </span>
-                            </span>
-                            <span>
-                              <div className="text-right">
-                                <button
-                                  type="button"
-                                  className="text-white bg-red-600 font-medium rounded-lg text-xs lg:text-xl md:text-lg sm:text-sm xs:text-xs px-2 py-2"
-                                  onClick={() => setShowForm(!showform)}
-                                >
-                                  Know More
-                                </button>
-                              </div>
-                              {showform && (
-                                <>
-                                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10">
-                                    <div className="px-4 py-4 bg-white w-full sm:w-full md:w-3/4 lg:w-1/2 h-96 overflow-y-auto flex flex-col items-center relative">
-                                      <button
-                                        className="text-red-400 text-xl absolute top-4 right-[1rem] md:right-8 lg:right-8 sm:right-6 cursor-pointer z-50"
-                                        onClick={() => setShowForm(false)}
-                                      >
-                                        ✖
-                                      </button>
-                                      <div className="ml-[-6rem]">
-                                        <strong>Content Editor</strong>
-                                      </div>
-                                      <p>
-                                        <strong>Experience Range:</strong> 4+
-                                        Years
-                                        <br />
-                                        <strong>Location: </strong>Noida
-                                      </p>
-                                      <div className="py-0">
-                                        <p className="text-lg">
-                                          <strong>Job brief</strong>
+                              <span>
+                                <div className="text-right">
+                                  <button
+                                    type="button"
+                                    className="text-white bg-red-600 font-medium rounded-lg text-xs lg:text-xl md:text-lg sm:text-sm xs:text-xs px-2 py-2"
+                                    onClick={() =>
+                                      setShowForm(
+                                        item._id === showform ? false : item._id
+                                      )
+                                    }
+                                  >
+                                    Know More
+                                  </button>
+                                </div>
+                                {showform === item._id && (
+                                  <>
+                                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10">
+                                      <div className="px-4 py-4 bg-white w-full sm:w-full md:w-3/4 lg:w-1/2 h-96 overflow-y-auto flex flex-col items-center relative">
+                                        <button
+                                          className="text-red-400 text-xl absolute top-4 right-[1rem] md:right-8 lg:right-8 sm:right-6 cursor-pointer z-50"
+                                          onClick={() => setShowForm(false)}
+                                        >
+                                          ✖
+                                        </button>
+                                        <div className="ml-[-6rem]">
+                                          <strong>{item.jobTitle}</strong>
+                                        </div>
+                                        <p>
+                                          <strong>Experience Range:</strong>{" "}
+                                          {item.experience} Years
+                                          <br />
+                                          <strong>Location: </strong>
+                                          {item.jobLocation}
                                         </p>
-                                        <p className="">
-                                          We are looking for an Editor, with a
-                                          good sense of what makes an
-                                          interesting angle to a story, to
-                                          juggle all the moving parts of
-                                          publications. You will plan,
-                                          coordinate, review and edit content.
-                                          The successful candidate will be able
-                                          to decide which ideas should be
-                                          pursued and which should get dropped
-                                          in order to meet quality and accuracy
-                                          standards. The goal is to provide
-                                          exceptional, informative and engaging
-                                          content.
-                                        </p>
-                                        <p className="text-lg">
-                                          <strong>Responsibilities</strong>{" "}
-                                        </p>
-                                        <ul className="list-disc">
-                                          <li>
-                                            Coordinate online or print
-                                            publishing cycle and manage content
-                                            areas.
-                                          </li>
-                                          <li>
-                                            Set publication standards and
-                                            establish goals and expectations.
-                                          </li>
-                                          <li>
-                                            Suggest stories and generate
-                                            headline ideas in alignment with
-                                            targeted audience’s preferences.
-                                          </li>
-                                          <li>
-                                            Oversee layout (artwork, design,
-                                            photography) and check content for
-                                            accuracy and errors.
-                                          </li>
-                                          <li>
-                                            Understanding of video content and
-                                            platform.
-                                          </li>
-                                        </ul>
-                                        <p className="text-lg">
-                                          <strong>
-                                            Requirements and skills
-                                          </strong>
-                                        </p>
-                                        <ul className="list-disc">
-                                          <li>
-                                            Proven working experience as an
-                                            Editor.
-                                          </li>
-                                          <li>
-                                            Strong writing/editing/proofreading
-                                            skills and an excellent portfolio.
-                                          </li>
-                                          <li>
-                                            Hands on experience with MS Office
-                                            and InDesign, Photoshop or other
-                                            publishing tools.
-                                          </li>
-                                          <li>
-                                            Proven familiarity with SEO and
-                                            social media best practices.
-                                          </li>
-                                        </ul>
-                                        <br />
-                                        <div className="text-red-600">
-                                          <strong>
-                                            To apply on this job, email your
-                                            resume at{" "}
-                                          </strong>
-                                          <a
-                                            href="mailto:hr@100acress.com?subject=CV - L&D Manager"
-                                            className="text-black underline"
-                                          >
-                                            hr@100acress.com
-                                          </a>
+                                        <div className="py-0">
+                                          <p className="text-lg">
+                                            <strong>Job brief</strong>
+                                          </p>
+                                          <p className="">
+                                            {item.jobProfile}
+                                          </p>
+                                          <p className="text-lg">
+                                            <strong>Responsibilities</strong>{" "}
+                                          </p>
+                                          <ul className="list-disc">
+                                            <li>
+                                              {item.responsibility}.
+                                            </li>
+                                           
+                                            
+                                            
+                                            
+                                          </ul>
+                                          <p className="text-lg">
+                                            <strong>
+                                              Requirements and skills
+                                            </strong>
+                                          </p>
+                                          <ul className="list-disc">
+                                            <li>
+                                              {item.skill}
+                                            </li>
+                                           
+                                            
+                                            
+                                          </ul>
+                                          <br />
+                                          <div className="text-red-600">
+                                            <strong>
+                                              To apply for this job, email your
+                                              resume at{" "}
+                                            </strong>
+                                            <a
+                                              href={`mailto:hr@100acress.com?subject=CV - ${item.jobTitle}`}
+                                              className="text-black underline"
+                                            >
+                                              hr@100acress.com
+                                            </a>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </>
-                              )}
-                            </span>
-                          </p>
+                                  </>
+                                )}
+                              </span>
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>

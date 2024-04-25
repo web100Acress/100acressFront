@@ -190,7 +190,7 @@ const JobPosting = () => {
                   <input
                     className="w-full placeholder:text-black font-semibold  rounded-md border-2 bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                     type="text"
-                    placeholder="Job Profile "
+                    placeholder="Job Brief "
                     name="jobProfile"
                     value={job.jobProfile}
                     onChange={handleChange}
@@ -217,7 +217,7 @@ const JobPosting = () => {
                     S No.
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    Job Profile
+                    Job Title
                   </th>
 
                   <th scope="col" className="px-6 py-3">
@@ -237,7 +237,7 @@ const JobPosting = () => {
                       className="bg-white-500 border-b border-red-400"
                     >
                       <td className="px-4 py-1 ">{index + 1}</td>
-                      <td className="px-4 py-1">{item.jobProfile}</td>
+                      <td className="px-4 py-1">{item.jobTitle}</td>
                       <td className="px-4 py-1">{item.experience}</td>
                       <td className="px-4 py-1 flex space-x-1">
                         <Link to={`/Admin/jobposting/view/${item._id}`}>
