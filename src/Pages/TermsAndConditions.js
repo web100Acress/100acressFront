@@ -1,10 +1,21 @@
 import React from 'react';
 import Footer from '../Components/Actual_Components/Footer';
 import Nav from '../aadharhomes/Nav';
+import { Helmet } from 'react-helmet';
 const TermsAndConditions = () => {
   return (
     <>
     <Nav/>
+    <Helmet>
+        <meta
+          name="description"
+          content="Read the terms and conditions of 100acress.com. Understand our policies for property listings, transactions, and usage of our platform. Ensure compliance."
+        />
+        <title>
+        Terms and Conditions | 100acress.com
+        </title>
+      </Helmet>
+
     <div className='overflow-x-hidden'>
     <div class="w-full">
           <img

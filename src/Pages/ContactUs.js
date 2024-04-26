@@ -1,12 +1,23 @@
 import React from 'react';
 import Footer from '../Components/Actual_Components/Footer';
 import Nav from '../aadharhomes/Nav';
-
+import { Helmet } from 'react-helmet';
 
 const ContactUs = () => {
   return (
     <div style={{overflowX:"hidden"}}>
     <Nav/>
+
+    <Helmet>
+        <meta
+          name="description"
+          content="Have questions or need assistance? Contact the 100acress.com team for support with property listings, buying, selling, or renting. We're here to help!"
+        />
+        <title>
+        Contact Us | Reach Out to 100acress.com Experts Guidance
+        </title>
+      </Helmet>
+
     <div className='overflow-x-hidden'>
      
    

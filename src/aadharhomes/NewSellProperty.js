@@ -4,44 +4,43 @@ import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import { RadioGroup, Radio, Stack } from "@chakra-ui/react";
 import { State, City } from "country-state-city";
-
+import { Helmet } from "react-helmet";
 const stateCodeMapping = {
   "Andhra Pradesh": "AP",
   "Arunachal Pradesh": "AR",
-  "Assam": "AS",
-  "Bihar": "BR",
-  "Chandigarh": "CH",
-  "Chhattisgarh": "CT",
-  "Delhi": "DL",
-  "Goa": "GA",
-  "Gujarat": "GJ",
-  "Haryana": "HR",
+  Assam: "AS",
+  Bihar: "BR",
+  Chandigarh: "CH",
+  Chhattisgarh: "CT",
+  Delhi: "DL",
+  Goa: "GA",
+  Gujarat: "GJ",
+  Haryana: "HR",
   "Himachal Pradesh": "HP",
   "Jammu and Kashmir": "JK",
-  "Jharkhand": "JH",
-  "Karnataka": "KA",
-  "Kerala": "KL",
-  "Ladakh": "LA",
-  "Lakshadweep": "LD",
+  Jharkhand: "JH",
+  Karnataka: "KA",
+  Kerala: "KL",
+  Ladakh: "LA",
+  Lakshadweep: "LD",
   "Madhya Pradesh": "MP",
-  "Maharashtra": "MH",
-  "Manipur": "MN",
-  "Meghalaya": "ML",
-  "Mizoram": "MZ",
-  "Nagaland": "NL",
-  "Odisha": "OR",
-  "Puducherry": "PY",
-  "Punjab": "PB",
-  "Rajasthan": "RJ",
-  "Sikkim": "SK",
+  Maharashtra: "MH",
+  Manipur: "MN",
+  Meghalaya: "ML",
+  Mizoram: "MZ",
+  Nagaland: "NL",
+  Odisha: "OR",
+  Puducherry: "PY",
+  Punjab: "PB",
+  Rajasthan: "RJ",
+  Sikkim: "SK",
   "Tamil Nadu": "TN",
-  "Telangana": "TG",
-  "Tripura": "TR",
+  Telangana: "TG",
+  Tripura: "TR",
   "Uttar Pradesh": "UP",
-  "Uttarakhand": "UT",
-  "West Bengal": "WB"
+  Uttarakhand: "UT",
+  "West Bengal": "WB",
 };
-
 
 const NewSellProperty = () => {
   const storedSellerId = localStorage.getItem("mySellerId");
@@ -97,22 +96,22 @@ const NewSellProperty = () => {
   const countryCode = "IN";
   const states = State.getStatesOfCountry(countryCode);
   const getStateCode = (selectedState) => {
-    if (typeof selectedState !== 'string') {
+    if (typeof selectedState !== "string") {
       throw new Error(`Selected state is not a valid string: ${selectedState}`);
     }
-  
+
     const formattedStateName = selectedState
       .toLowerCase()
       .replace(/\b\w/g, (char) => char.toUpperCase());
     const stateCode = stateCodeMapping[formattedStateName];
-  
+
     if (stateCode) {
       return stateCode;
     } else {
       throw new Error(`State code not found for state: ${selectedState}`);
     }
   };
-  
+
   const stateCode = getStateCode(selectedState);
   const cities = selectedState
     ? City.getCitiesOfState(countryCode, stateCode)
@@ -121,16 +120,16 @@ const NewSellProperty = () => {
   const handleChangeStateValue = (e) => {
     const stateName = e.target.value;
     setSelectedState(stateName);
-    setSellProperty(prevState => ({
+    setSellProperty((prevState) => ({
       ...prevState,
-      state: stateName, 
+      state: stateName,
     }));
   };
 
   const handleChangeCityValue = (e) => {
     const cityName = e.target.value;
     setSelectedCity(cityName);
-    setSellProperty(prevState => ({
+    setSellProperty((prevState) => ({
       ...prevState,
       city: cityName,
     }));
@@ -254,7 +253,7 @@ const NewSellProperty = () => {
     formDataAPI.append("frontImage", fileData.frontImage);
     try {
       setIsLoading(true);
-      const response = await axios.post(apiEndpoint, formDataAPI);
+       await axios.post(apiEndpoint, formDataAPI);
       alert("Submit Successfully, Under Review");
       resetData();
       resetImageData();
@@ -316,6 +315,15 @@ const NewSellProperty = () => {
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
+      <Helmet>
+        <meta
+          name="description"
+          content="Post Free Property Listing at 100acress.com. Rent, sell, or rent hassle-free. Reach potential buyers easily with our Trusted platform for property listing."
+        />
+        <title>
+          Post Free Property Listing | Rent/Sell at 100acress.com
+        </title>
+      </Helmet>
       <section className=" py-12 text-gray-800 ">
         <div className="mx-auto flex max-w-md flex-col rounded-lg lg:max-w-screen-xl lg:flex-row">
           <div className="max-w-xl px-4 lg:pr-24 lg:pt-20">
@@ -455,7 +463,6 @@ const NewSellProperty = () => {
                     )}
                   </select>
                 )}
-                
               </div>
 
               <div className="grid gap-3 md:grid-cols-2">

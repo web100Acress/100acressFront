@@ -10,6 +10,7 @@ import { RiAdminFill } from "react-icons/ri";
 import axios from "axios";
 import { FaFacebook, FaLinkedin } from "react-icons/fa";
 import { DataContext } from "../MyContext";
+import { Helmet } from "react-helmet";
 const CareerWithUs = () => {
   const [viewCareer, setViewCareer] = useState([]);
   const [showform, setShowForm] = useState(false);
@@ -34,6 +35,14 @@ const CareerWithUs = () => {
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
+
+      <Helmet>
+        <meta
+          name="description"
+          content="Explore exciting career opportunities at 100acress.com. Join our dynamic team and grow with us. Browse job openings and apply now!"
+        />
+        <title>Join Our Team | Career opportunities at 100acress.com</title>
+      </Helmet>
       <div className="overflow-x-hidden">
         <section className="relative">
           <div class="w-full">
@@ -361,20 +370,12 @@ const CareerWithUs = () => {
                                           <p className="text-lg">
                                             <strong>Job brief</strong>
                                           </p>
-                                          <p className="">
-                                            {item.jobProfile}
-                                          </p>
+                                          <p className="">{item.jobProfile}</p>
                                           <p className="text-lg">
                                             <strong>Responsibilities</strong>{" "}
                                           </p>
                                           <ul className="list-disc">
-                                            <li>
-                                              {item.responsibility}.
-                                            </li>
-                                           
-                                            
-                                            
-                                            
+                                            <li>{item.responsibility}.</li>
                                           </ul>
                                           <p className="text-lg">
                                             <strong>
@@ -382,12 +383,7 @@ const CareerWithUs = () => {
                                             </strong>
                                           </p>
                                           <ul className="list-disc">
-                                            <li>
-                                              {item.skill}
-                                            </li>
-                                           
-                                            
-                                            
+                                            <li>{item.skill}</li>
                                           </ul>
                                           <br />
                                           <div className="text-red-600">

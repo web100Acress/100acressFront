@@ -1,11 +1,21 @@
 import React from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import Nav from "../aadharhomes/Nav";
-
+import { Helmet } from "react-helmet";
 const NewsandArtical = () => {
   return (
     <>
       <Nav />
+      <Helmet>
+        <meta
+          name="description"
+          content="Stay updated with the latest news and informative articles related to real estate on 100acress.com. Explore trends and tips for property buyers and sellers."
+        />
+        <title>
+        Latest News and Articles in Real Estate at 100acress.com
+        </title>
+      </Helmet>
+
       <div className="max-w-screen-xl mx-auto p-5 sm:p-10 md:p-16">
         <h1 className="sm:text-4xl text-5xl mb-4 underline text-red-600  font-bold title-font ">
           100acress.com Latest News.

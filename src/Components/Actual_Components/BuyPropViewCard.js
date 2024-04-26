@@ -25,10 +25,10 @@ function BuyPropViewCard() {
     <div style={{ overflowX: "hidden" }}>
       <Nav />
       <Helmet>
-        <title>best-resale-property-in-gurugram</title>
+        <title>Find Your Dream Property: Buy Properties at 100acress.com</title>
         <meta
           name="description"
-          content="Discover the best resale properties in Gurugram. Find your ideal property in gurugram only by 100acress.com"
+          content="Explore a wide range of properties for sale at 100acress.com. Find your dream home, or commercial properties and residential apartment in Gurugram!"
         />
       </Helmet>
       <div>

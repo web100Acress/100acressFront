@@ -135,7 +135,7 @@ function Home() {
           }}
         >
           Upcoming Projects
-          <Link to="/projects/upcoming" target="_top">
+          <Link to="projects/upcoming-projects-in-Gurgaon" target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
               style={{ display: "flex", alignItems: "center", margin: "16px" }}
@@ -169,9 +169,9 @@ function Home() {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          <span style={{ float: "right" }} className="text-sm">
+                          {/* <span style={{ float: "right" }} className="text-sm">
                             {item.builderName}
-                          </span>
+                          </span> */}
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
                             {item.projectAddress}
@@ -441,14 +441,39 @@ function Home() {
           }
         </div>
       </div>
-      <h1
+      {/* <h1
         className="xjUWI"
         style={{
           fontSize: "xx-large",
           margin: "30px 60px 0px 60px",
           fontWeight: "600",
         }}
-      >Best Resale Property For You</h1>
+      >Best Resale Property For You</h1> */}
+
+<h1
+        className="xjUWI text-md md:text-2xl lg:text-4xl xl:text-4xl"
+        style={{
+          // fontSize: "xx-large",
+          margin: "14px 40px 5px 60px",
+          fontWeight: "600",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          marginBottom:"-40px"
+        }}
+      >
+       <span> Best Resale Property <span> For You</span></span>
+        <Link to="/buy-properties/best-resale-property-in-gurugram" target="_top">
+          <span
+            className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
+            style={{ display: "flex", alignItems: "center", margin: "16px" }}
+          >
+            <ScaleLoader color="#FFFFFF" height={20} width={3} />
+            <style>{keyframes}</style>
+            <span style={{ marginLeft: "8px" }}>View  All </span>
+          </span>
+        </Link>
+      </h1>
       <Resale />
 
       <h3

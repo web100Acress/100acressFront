@@ -1,10 +1,20 @@
 import React from "react";
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
+import { Helmet } from "react-helmet";
 const About = () => {
   return (
     <>
       <Nav />
+
+      <Helmet>
+        <meta
+          name="description"
+          content="Discover the story behind 100acress.com, a trusted real estate company in Gurgaon. Learn about our values and commitment to excellence in property services."
+        />
+        <title>About Us | Real Estate Company in Gurgaon - 100acress.com</title>
+      </Helmet>
+
       <div className="overflow-x-hidden">
         <div class="w-full">
           <img

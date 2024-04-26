@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import {DataContext} from '../MyContext'
+import { Helmet } from "react-helmet";
 function Properties() {
   const {allProjectData} = useContext(DataContext);
 
@@ -10,6 +11,16 @@ function Properties() {
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
+      <Helmet>
+        <meta
+          name="description"
+          content="Discover the latest new projects in Gurgaon at 100acress.com. Explore upcoming residential Projects and Commercial Properties. Explore Top Real Estate Projects."
+        />
+        <title>
+        New Projects in Gurgaon | Best Real Estate at 100acress.com
+        </title>
+      </Helmet>
+
       <section className="flex flex-col items-center bg-white">
         <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
           {allProjectData.map((item, index) => {

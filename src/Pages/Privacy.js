@@ -1,11 +1,21 @@
 import React from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import Nav from "../aadharhomes/Nav";
-
+import { Helmet } from "react-helmet";
 const Privacy = () => {
   return (
     <>
       <Nav />
+      <Helmet>
+        <meta
+          name="description"
+          content="Understand the Privacy Policy & User Agreement of 100acress.com. Learn about our terms and conditions for using our services."
+        />
+        <title>
+        100acress.com: Privacy Policy & User Agreement
+        </title>
+      </Helmet>
+
       <div className="overflow-x-hidden">
       <div class="w-full">
           <img

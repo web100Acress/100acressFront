@@ -117,15 +117,15 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
 
-            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/privacyPolicy" element={<Privacy />} />
             <Route
               path="/termsandconditions"
               element={<TermsAndConditions />}
             />
-            <Route path="/projects" element={<Properties />} />
-            <Route path="/rent/best-rental-property-in-gurugram" element={<RentPropViewCard />} />
-            <Route path="/buy/best-resale-property-in-gurugram" element={<BuyPropViewCard />} />
-            <Route path="/about" element={<About />} />
+            <Route path="/projects-in-Gurugram" element={<Properties />} />
+            <Route path="/rental-properties/best-rental-property-in-gurugram" element={<RentPropViewCard />} />
+            <Route path="/buy-properties/best-resale-property-in-gurugram" element={<BuyPropViewCard />} />
+            <Route path="/about-us" element={<About />} />
             <Route path="/rent/:id" element={<RentViewDetails />} />
             <Route path="/buy/:id" element={<BuyViewDetails />} />
             <Route path="/propviewcard" element={<PropViewCardPro />} />
@@ -133,7 +133,7 @@ function App() {
               path="/property/residential"
               element={<ResidentialProjects />}
             />
-            <Route path="/projects/upcoming" element={<UpComingProjects />} />
+            <Route path="projects/upcoming-projects-in-Gurgaon" element={<UpComingProjects />} />
             <Route path="/projects/commerial" element={<CommercialProject />} />
             <Route path="/sco/plots" element={<ScoPlots />} />
             <Route
@@ -141,13 +141,13 @@ function App() {
               element={<BuilderIndependentFloor />}
             />
             <Route path="/deendayal/plots" element={<DeenDayalPlots />} />
-            <Route path="/new&artical" element={<NewsandArtical />} />
+            <Route path="/newsandarticals" element={<NewsandArtical />} />
             <Route path="/userdashboard" element={<UserDashBoard />} />
             <Route path="/useredit/:id" element={<UserEdit />} />
 
             <Route path="/middlemain" element={<MiddleMain />} />
             <Route path="/viewallproperty" element={<ViewAllProperty />} />
-            <Route path="/contactus" element={<ContactUs />} />
+            <Route path="/info/contactus" element={<ContactUs />} />
             <Route path="/careerwithus" element={<CareerWithUs />} />
             <Route path="/blog" element={<Blogging />} />
             <Route path="/blog/:id" element={<BlogView />} />

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Footer from "../Components/Actual_Components/Footer";
 import Nav from "../aadharhomes/Nav";
 import { DataContext } from "../MyContext";
+import { Helmet } from "react-helmet";
 const Blogging = () => {
   const { blogData } = useContext(DataContext);
 
@@ -15,6 +16,13 @@ const Blogging = () => {
   return (
     <>
       <Nav />
+      <Helmet>
+        <meta
+          name="description"
+          content="Discover the latest insights, tips, and Expert guidance on real estate trends, investment strategies, and property management on our blog at 100acress.com. Stay informed!"
+        />
+        <title>Blog | Expert Guidance on Real Estate | 100acress.com</title>
+      </Helmet>
       <div class="">
         <p class="mt-4 lg:mt-10 text-3xl text-center font-bold sm:text-4xl xl:text-5xl">
           Blog

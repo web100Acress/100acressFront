@@ -5,7 +5,6 @@ import {
   IconButton,
   Button,
   useDisclosure,
-  Text,
   Avatar,
   Menu,
   MenuButton,
@@ -17,26 +16,13 @@ import {
   useMediaQuery,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import logoImage from "../Images/100acress.png";
 import axios from "axios";
 import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
 import { ScaleLoader } from "react-spinners";
-const PropertyBox = ({ text }) => (
-  <Box
-    bg="red"
-    p={[1, 2]}
-    rounded={["full"]}
-    color="white"
-    margin={["1"]}
-    fontSize={["md", "lg", "sm"]}
-    textAlign="center"
-    width={["100%", "100%", "none"]}
-  >
-    <Text as="b">{text}</Text>
-  </Box>
-);
+
 
 const SpacerComponent = () => <Box width="60px" />;
 
@@ -51,7 +37,7 @@ const MenuListContainer = ({ isOpen }) => {
 
   const HandleUserLogout = async () => {
     try {
-      const response = await axios.get(
+      await axios.get(
         "https://acre.onrender.com/postPerson/logout"
       );
       history("/");
@@ -64,8 +50,6 @@ const MenuListContainer = ({ isOpen }) => {
   };
 
   const token = localStorage.getItem("myToken");
-  const { id } = useParams();
-
   return (
     <>
       {token ? (
@@ -251,7 +235,7 @@ export default function Nav() {
                     onMouseEnter={handleHover1}
                     onMouseLeave={handleLeave1}
                   >
-                    <Link to="/buy/best-resale-property-in-gurugram">
+                    <Link to="/buy-properties/best-resale-property-in-gurugram">
                       <button className=" text-white font-semibold text-lg ">
                         Buy
                       </button>
@@ -430,7 +414,7 @@ export default function Nav() {
                     onMouseEnter={handleHover}
                     onMouseLeave={handleLeave}
                   >
-                    <Link to="/rent/best-rental-property-in-gurugram">
+                    <Link to="/rental-properties/best-rental-property-in-gurugram">
                       <button className="text-white font-semibold text-lg ">
                         Rent
                       </button>
@@ -625,7 +609,7 @@ export default function Nav() {
                     onMouseEnter={handleHover2}
                     onMouseLeave={handleLeave2}
                   >
-                    <Link to={"/projects"}>
+                    <Link to={"/projects-in-Gurugram"}>
                       <button className="text-white font-semibold text-lg ">
                         Projects
                       </button>
@@ -875,14 +859,14 @@ export default function Nav() {
             >
               <Stack color="white" as="nav" spacing={4}>
                 <Link
-                  to={"/rent/best-rental-property-in-gurugram"}
+                  to={"/rental-properties/best-rental-property-in-gurugram"}
                   className="text-white font-semibold mx-3 text-lg"
                 >
                   Rent
                 </Link>
 
                 <Link
-                  to={"/buy/best-resale-property-in-gurugram"}
+                  to={"/buy-properties/best-resale-property-in-gurugram"}
                   className="text-white font-semibold text-lg mx-3"
                 >
                   Buy
@@ -905,7 +889,7 @@ export default function Nav() {
                 )}
 
                 <Link
-                  to={"/projects"}
+                  to={"/projects-in-Gurugram"}
                   className="text-white font-semibold text-lg mx-3"
                 >
                   Projects
