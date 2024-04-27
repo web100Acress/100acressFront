@@ -147,7 +147,7 @@ function App() {
 
             <Route path="/middlemain" element={<MiddleMain />} />
             <Route path="/viewallproperty" element={<ViewAllProperty />} />
-            <Route path="/info/contactus" element={<ContactUs />} />
+            <Route path="/contactus" element={<ContactUs />} />
             <Route path="/careerwithus" element={<CareerWithUs />} />
             <Route path="/blog" element={<Blogging />} />
             <Route path="/blog/:id" element={<BlogView />} />

@@ -153,7 +153,7 @@ const ContactUs = () => {
           </p>
         </div>
         <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
-          <a href="mailto:seo@100acress.com" target="_blank" class="mx-2 text-[#012e29] text-lg font-bold">
+          <a href="mailto:seo@100acress.com"  class="mx-2 text-[#012e29] text-lg font-bold">
             Contact Sales
           </a>
         </p>
@@ -166,7 +166,7 @@ const ContactUs = () => {
           We are here to help with any questions or code.
         </p>
         <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
-          <a href="mailto:seo@100acress.com" target="_blank" class="mx-2 text-[#012e29] text-lg font-bold">
+          <a href="mailto:seo@100acress.com"  class="mx-2 text-[#012e29] text-lg font-bold">
             Get Support
           </a>
         </p>
@@ -182,7 +182,7 @@ const ContactUs = () => {
           Get Stripe news, company info, and media resources.
         </p>
         <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-[18px] text-[#012e29] font-medium">
-          <a href="mailto:seo@100acress.com" target="_blank" class="mx-2 text-[#012e29] text-lg font-bold">
+          <a href="mailto:seo@100acress.com"  class="mx-2 text-[#012e29] text-lg font-bold">
             Visit Newsroom
           </a>
         </p>
