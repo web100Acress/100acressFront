@@ -1,104 +1,200 @@
-import React from 'react';
-import Footer from '../Components/Actual_Components/Footer';
-import Nav from '../aadharhomes/Nav';
-import { Helmet } from 'react-helmet';
+import React, { useState } from "react";
+import Footer from "../Components/Actual_Components/Footer";
+import Nav from "../aadharhomes/Nav";
+import axios from "axios";
 
 const ContactUs = () => {
+  const [data, setData] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    message: "",
+    status: "",
+  });
+
+  const resetData = () => {
+    setData({
+      name: "",
+      email: "",
+      mobile: "",
+      message: "",
+      status: "",
+    });
+  };
+  const handleData = (e) => {
+    const { name, value } = e.target;
+    setData({ ...data, [name]: value });
+  };
+
+  const handleSubmitData = async (e) => {
+    e.preventDefault();
+    const { name, email, mobile, message } = data;
+    if (!name || !email || !mobile || !message) {
+      alert("Please fill out all fields");
+      return;
+    }
+    try {
+      const res = await axios.post(
+        "https://api.100acress.com/contact_Insert",
+        data
+      );
+      // console.log(res, "hvjn bgjhgjhbjbjhghbn fyughv ");
+      alert("Data Submitted Successfully");
+      resetData();
+    } catch (error) {
+      if (error.response) {
+        console.log("Server Error:", error.response.data);
+      } else if (error.request) {
+        console.log("Request Error:", error.request);
+      } else {
+        console.log("Error:", error.message);
+      }
+    }
+  };
   return (
-    <div style={{overflowX:"hidden"}}>
-    <Nav/>
-
-    <Helmet>
-        <meta
-          name="description"
-          content="Have questions or need assistance? Contact the 100acress.com team for support with property listings, buying, selling, or renting. We're here to help!"
-        />
-        <title>
-        Contact Us | Reach Out to 100acress.com Experts Guidance
-        </title>
-      </Helmet>
-
-    <div className='overflow-x-hidden'>
-     
-   
-    <div class="w-full">
+    <div style={{ overflowX: "hidden" }}>
+      <Nav />
+      <div className="overflow-x-hidden">
+        {/* <div className="w-full">
           <img
             src="../../Images/contact.png"
-            alt="contact Us"
+            alt="ContactUs"
+            className="w-full h-[9rem] sm:h-30 object-fit"
+          />
+        </div> */}
+         <div class="w-full">
+          <img
+            src="../../Images/contact.png"
+            alt="About Us"
             class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
           />
           <img
-            src="../../Images/contactmobile.png"
-            alt="contact Us"
-            class="w-full h-60 sm:h-30 object-fit small-screen-image block sm:hidden"
+            src="../../Images/contact.png"
+            alt="About Us"
+            class="w-full h-[9rem] sm:h-30 object-fit small-screen-image block sm:hidden"
           />
         </div>
-     <div className='xl:py-10 xl:px-10 lg:py-10 lg:px-10'>
-       <div><p className='text-4xl font-bold text-center mb-3 mt-2 '>Get In Touch </p></div>
-       
-       <div className="grid grid-cols-1 md:grid-cols-3 shadow-xl">
-         <div className='md:w-90 h-auto md:h-96 bg-orange-100 py-10 px-2'>
-           <div className='flex flex-col mx-3 mb-2 text-black '>
-             <label htmlFor="name" className='text-lg font-bold py-1'>Name</label>
-             <input type="name" id="name" placeholder="Enter your Name" required="" className='border-b-2 py-1 border-black text-md bg-orange-100 focus:outline-none' />
-           </div>
+        <div>
+          <h2 className="text-center text-bold mt-5">
+            Contact us by filling this contact form.
+          </h2>
+        </div>
+        <div className="flex justify-center">
+          <div className="w-5/5 mx-auto my-10 flex flex-col items-center md:flex-row">
+            <div className=" w-full md:w-4/5 h-full bg-[#012e29] shadow-xl text-white p-10">
+              <span></span>
+              <div className="mt-2 leading-7 text-center">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  value={data.name}
+                  onChange={handleData}
+                  className="border-b-2 w-[80%] mb-3 p-1 border-b-white placeholder:text-white placeholder:opacity-80 text-lg bg-[#012e29] focus:outline-none"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={data.email}
+                  onChange={handleData}
+                  className="border-b-2 w-[80%] mb-3 p-1 border-b-white placeholder:text-white placeholder:opacity-80 text-lg bg-[#012e29] focus:outline-none"
+                />
+                <input
+                  type="number"
+                  name="mobile"
+                  placeholder="Contact Number"
+                  value={data.mobile}
+                  onChange={handleData}
+                  className="border-b-2 w-[80%] mb-3 p-1 border-b-white placeholder:text-white placeholder:opacity-80 text-lg bg-[#012e29] focus:outline-none"
+                />
+                <textarea
+                  id="message"
+                  name="message"
+                  placeholder="Message here..."
+                  value={data.message}
+                  onChange={handleData}
+                  className="w-[80%] bg-[#012e29] border-2 border-white h-20 text-lg outline-none placeholder:text-white placeholder:opacity-80 py-1 px-2 mt-6 resize-none leading-6 duration-200 ease-in-out rounded-lg"
+                ></textarea>
+                <div className="mt-4">
+                  <button
+                    onClick={handleSubmitData}
+                    className="block m-auto w-[60%] md:w-[50%] text-center border bg-[#012e29] rounded-full py-1 mt-6 text-lg font-bold tracking-wide uppercase text-white brightness-105 hover:bg-green-900"
+                  >
+                    Send
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="hidden md:block  w-[70%] md:w-[40%] bg-red-600 items-center flex flex-col justify-center leading-7 space-y-8  h-full">
+              <img
+                src="../../Images/contactpageimage.png"
+                alt=""
+                className="object-cover h-full shadow-xl"
+              />
+            </div>
+          </div>
+        </div>
 
-           <div className='flex flex-col mx-3 mb-2'>
-             <label htmlFor="email" className='text-lg font-bold py-1'>Email</label>
-             <input type="email" id="email" placeholder='Enter your Email' required="" className="border-b-2 py-1 border-black bg-orange-100 text-md focus:outline-none" />
-           </div>
 
-           <div className='flex flex-col mx-3 mb-2'>
-             <label htmlFor="mobile" className='text-lg font-bold py-1 '>Mobile No</label>
-             <input type="tel" id="mobile" placeholder='Enter your Mobile Number' required="" className="border-b-2 py-1 border-black bg-orange-100 text-md focus:outline-none" />
-           </div>
+<div class="flex justify-center bg-orange-100 mb-20 mx-5 my-5">
+  <div class="flex flex-col justify-center w-full lg:w-[96%] space-y-10 lg:space-y-0 lg:space-x-10 max-w-7xl p-8 lg:p-14">
+    <div class="flex flex-col justify-center items-center lg:flex-row space-y-10 lg:space-y-0 lg:space-x-10">
+      <div class="shadow-lg flex bg-[#012e29] flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
+        {/* <div class="-mt-16">
+          <ion-icon name="bar-chart-outline" class="text-3xl md:text-5xl rounded-full p-4 bg-white text-cyan-400"></ion-icon>
+        </div> */}
+        <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
+          Sales
+        </div>
+        <div>
+          <p class="text-center text-white text-lg p-2">
+            We would love to talk about how we can work together.
+          </p>
+        </div>
+        <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
+          <a href="mailto:seo@100acress.com" target="_blank" class="mx-2 text-[#012e29] text-lg font-bold">
+            Contact Sales
+          </a>
+        </p>
+      </div>
+      <div class="bg-[#012e29] shadow-lg flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
+        <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
+          Help &amp; Support
+        </div>
+        <p class="text-center text-white text-lg p-2">
+          We are here to help with any questions or code.
+        </p>
+        <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
+          <a href="mailto:seo@100acress.com" target="_blank" class="mx-2 text-[#012e29] text-lg font-bold">
+            Get Support
+          </a>
+        </p>
+      </div>
+      <div class="bg-[#012e29] shadow-lg flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
+        {/* <div class="-mt-16">
+          <ion-icon name="camera-outline" class="text-3xl md:text-5xl rounded-full p-4 bg-white text-cyan-400"></ion-icon>
+        </div> */}
+        <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
+          Media &amp; Press
+        </div>
+        <p class="text-center text-white text-lg p-2">
+          Get Stripe news, company info, and media resources.
+        </p>
+        <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-[18px] text-[#012e29] font-medium">
+          <a href="mailto:seo@100acress.com" target="_blank" class="mx-2 text-[#012e29] text-lg font-bold">
+            Visit Newsroom
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 
-           <div className='flex flex-col mx-3 mb-2'>
-             <label htmlFor="message" className='text-lg font-bold py-1'>Message</label>
-             <textarea id="message" placeholder='Enter your Message' required="" rows="3" className="border-b-2 py-1 border-black bg-orange-100 text-md focus:outline-none"></textarea>
-           </div>
-
-           <div className='text-center mt-1'>
-             <button className='text-white bg-red-600 w-[146px] mx-4 my-2 py-2 font-bold rounded-lg'>Send</button>
-           </div>
-         </div>
-         {/* md:w-90 h-auto md:h-96 sm:h-[250px] object-fit  */}
-         <div className=''>
-           <img
-             src="../../Images/contactus2.jpeg"
-             alt="property in gurgaon"
-             className=' contactImage'
-           />
-         </div>
-         <div className='md:w-90 h-auto md:h-96 bg-orange-100  '>
-           <div className='py-10 px-10'>
-
-             <div className='grid grid-cols-1 px-2 py-10'>
-               <div className='my-4'>
-                 <i className="fa-solid fa-mobile-screen-button text-orange-300 text-2xl"></i>
-                 <a href='tel:+918500900100' className='mx-2 text-lg font-bold '>+918500900100</a>
-
-               </div>
-               <div className='my-4 flex items-center'>
-                 <i className="fa-solid fa-envelope text-orange-300  text-2xl"></i>
-                 <a href="mailto:hr@100acress.com" target="_blank" className='mx-2 text-red-600 text-lg font-bold '>seo@100acress.com</a>
-               </div>
-               <div className='my-4 flex items-center'>
-                 <i className="fa-solid fa-location-dot text-orange-300 text-2xl"></i>
-                 <span className='mx-2  text-lg font-bold '>708, ILD Trade Center, Sector- 47, Gurgaon.</span>
-               </div>
-
-             </div>
-           </div>
-         </div>
-       </div>
-     </div>
-
-   </div>
-   <Footer/>
+      </div>
+      <Footer />
     </div>
   );
 };
 
 export default ContactUs;
-

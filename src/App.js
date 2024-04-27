@@ -133,7 +133,7 @@ function App() {
               path="/property/residential"
               element={<ResidentialProjects />}
             />
-            <Route path="projects/upcoming-projects-in-Gurgaon" element={<UpComingProjects />} />
+            <Route path="projects/upcoming-projects-in-gurgaon" element={<UpComingProjects />} />
             <Route path="/projects/commerial" element={<CommercialProject />} />
             <Route path="/sco/plots" element={<ScoPlots />} />
             <Route

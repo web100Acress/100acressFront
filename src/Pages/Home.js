@@ -135,7 +135,7 @@ function Home() {
           }}
         >
           Upcoming Projects
-          <Link to="projects/upcoming-projects-in-Gurgaon" target="_top">
+          <Link to="projects/upcoming-projects-in-gurgaon" target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
               style={{ display: "flex", alignItems: "center", margin: "16px" }}
