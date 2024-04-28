@@ -12,23 +12,24 @@ const customStyle = {
 };
 
 const ProjectEditBHK = () => {
-
   const { id } = useParams();
   const [viewBHK, setViewBHK] = useState([]);
-  
+
+  const resetData = () => {
+    setViewBHK({});
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get(`https://api.100acress.com/bhk_edit/${id}`);
-        console.log(res,"dsdfdf fsdfsdfsdfsdf fsdfsdfdsfs")
         setViewBHK(res.data.data.BhK_Details[0]);
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-  },[]);
+  }, []);
 
   const submitBHKFromData = async (e) => {
     try {
@@ -37,14 +38,14 @@ const ProjectEditBHK = () => {
         viewBHK
       );
 
-      if (res.ok) {
-        console.log("User updated successfully");
-      }
+      if (res.status === 200) {
+        alert("User updated successfully");
+     
+      }   resetData();
     } catch (error) {
       console.log(error.message);
     }
   };
- 
 
   return (
     <>
@@ -69,7 +70,9 @@ const ProjectEditBHK = () => {
                       placeholder="Add BHK Area"
                       name="bhk_Area"
                       value={viewBHK.bhk_Area}
-                      onChange={(e) => setViewBHK({ ...viewBHK, bhk_Area: e.target.value })}
+                      onChange={(e) =>
+                        setViewBHK({ ...viewBHK, bhk_Area: e.target.value })
+                      }
                       required
                     />
                   </label>
@@ -80,7 +83,9 @@ const ProjectEditBHK = () => {
                       placeholder="Add Bhk Type"
                       name="bhk_type"
                       value={viewBHK.bhk_type}
-                      onChange={(e) =>setViewBHK({ ...viewBHK, bhk_type: e.target.value})}
+                      onChange={(e) =>
+                        setViewBHK({ ...viewBHK, bhk_type: e.target.value })
+                      }
                       required
                     />
                     <input
@@ -89,7 +94,9 @@ const ProjectEditBHK = () => {
                       placeholder="Price"
                       name="price"
                       value={viewBHK.price}
-                      onChange={(e) => setViewBHK({ ...viewBHK, price: e.target.value })}
+                      onChange={(e) =>
+                        setViewBHK({ ...viewBHK, price: e.target.value })
+                      }
                       required
                     />
                   </label>

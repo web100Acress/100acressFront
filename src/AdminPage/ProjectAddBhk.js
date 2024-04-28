@@ -1,10 +1,8 @@
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Modal from "react-modal";
 import Sidebar from "./Sidebar";
 import { Link, useParams } from "react-router-dom";
-
 
 const customStyle = {
   position: "absolute",
@@ -31,6 +29,7 @@ const customStyles = {
 };
 
 const ProjectsAddBhk = () => {
+  
   const [editFromData, setEditFromData] = useState({
    bhk_type:"",
    price:"",
@@ -65,19 +64,17 @@ const ProjectsAddBhk = () => {
   }, []);
 
 
-
-
   const handleEditChangeFrom = (e) => {
     const { name, value } = e.target;
     setEditFromData({ ...editFromData, [name]: value });
   };
+
 
   const submitBHKFromData = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(`https://api.100acress.com/bhk_insert/${id}`,editFromData);
       alert("User data inserted successfully");
-
       resetData();
     } catch (error) {
       console.error('Error inserting user data:', error.message);
@@ -96,6 +93,7 @@ const ProjectsAddBhk = () => {
     try {
       const response = await axios.delete(`https://api.100acress.com/bhk_delete/${id}`);
       if (response.status >= 200 && response.status < 300) {
+        window.location.reload();
       } else {
         console.error('Failed to delete user. Server returned an error.');
       }
@@ -166,8 +164,8 @@ const ProjectsAddBhk = () => {
                       <td className="px-2 py-1 flex space-x-1">
 
                        
-
-                        <Link to={`/Admin/projecteditbhk/${id}`}>
+                      
+                        <Link  to={`/Admin/projecteditbhk/${id1}`}>
                           <button
                             type="button"
                             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1.5 text-center"

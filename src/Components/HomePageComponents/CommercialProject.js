@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { DataContext } from "../../MyContext";
 import { Helmet } from "react-helmet";
 const CommercialProject = () => {
-  const { commercialProject } = useContext(DataContext);
+  const { commercialProjectAll } = useContext(DataContext);
   return (
     <div>
       <Nav />
@@ -34,7 +34,7 @@ const CommercialProject = () => {
       </div>
       <section className="flex pt-2 flex-col items-center">
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {commercialProject.map((item, index) => {
+          {commercialProjectAll.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
