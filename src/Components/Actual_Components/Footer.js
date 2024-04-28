@@ -6,12 +6,12 @@ const Footer = () => {
     <>
       <footer className="bg-red-600 h-90">
         <div className="mx-auto grid text-gray-50 lg:grid-cols-12 px-4">
-          {/* <div className="flex flex-col lg:flex-row items-start border-slate-500 py-2 px-2 lg:col-span-12 xl:pl-28 2xl:pl-32">
+          <div className="flex flex-col lg:flex-row items-start border-slate-500 py-2 px-2 lg:col-span-12 xl:pl-28 2xl:pl-32">
             <div className="mt-4 lg:mt-0 lg:ml-2 lg:w-full lg:col-span-6">
               <nav>
-                <p className="font-bold text-xl  text-white ">Useful Links</p>
+                <p className="font-bold text-xl  text-white ">Get In Touch</p>
 
-                <p className="space-x-2 text-sm text-bold text-justify">
+                {/* <p className="space-x-2 text-sm text-bold text-justify">
                   <span className="hover:underline ">
                     <Link to="" target="_blank" style={{ color: "white" }}>
                       Property in Gurugram
@@ -288,10 +288,10 @@ const Footer = () => {
                     </Link>
                   </span>{" "}
                   |
-                </p>
+                </p> */}
               </nav>
             </div>
-          </div> */}
+          </div>
           <div className="lg:w-1/2">
             <nav
               aria-label="Footer Navigation "
