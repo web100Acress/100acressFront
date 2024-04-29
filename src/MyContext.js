@@ -22,6 +22,7 @@ export const DataProvider = ({ children }) => {
   const [jobPostingData, setJobPostingData] = useState([]);
   const [resalePropertydata, setResalePropertydata] = useState([]);
   const [commercialProjectAll, setAllCommercialProjectAll] = useState([]);
+  const [typeScoPlots, setTypeScoPlots] = useState([]);
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
@@ -75,6 +76,10 @@ export const DataProvider = ({ children }) => {
         (project) => project.type === "Commercial Property"
       );
 
+      const typeScoPlots = projectsData.filter(
+        (project) => project.projectOverview === "sco"
+      )
+
       const BuilderIndependentFloor = projectsData.filter((project) => {
         return (
           project.type === "Independent Floors" ||
@@ -109,6 +114,7 @@ export const DataProvider = ({ children }) => {
       setSohnaRoad(sohnaRoad);
       setGolfCourse(golfCourse);
       setAllCommercialProjectAll(commercialProjectAll);
+      setTypeScoPlots(typeScoPlots)
     } catch (error) {
       console.log(error || error.message);
     }
@@ -223,6 +229,7 @@ export const DataProvider = ({ children }) => {
         jobPostingData,
         resalePropertydata,
         commercialProjectAll,
+        typeScoPlots,
       }}
     >
       {children}

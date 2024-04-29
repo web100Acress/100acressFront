@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-
+import { MdOutlineDeleteOutline } from "react-icons/md";
 const customStyle = {
   position: "absolute",
   top: "100px",
@@ -12,8 +12,6 @@ const customStyle = {
 };
 
 const ProjectEdit = () => {
-
-  
   const [values, setValues] = useState({
     frontImage: "",
     otherImage: [],
@@ -35,9 +33,9 @@ const ProjectEdit = () => {
     Amenities: [],
     type: "",
     project_url: "",
-    meta_title:"",
-    meta_description:"",
-    project_Status:""
+    meta_title: "",
+    meta_description: "",
+    project_Status: "",
   });
 
   const { id } = useParams();
@@ -73,7 +71,32 @@ const ProjectEdit = () => {
     }
   };
 
-  
+
+  const handleDeleteUser = async (index) => {
+    const IndexNumber = index;
+    try {
+      const response = await axios.delete(
+        `https://api.100acress.com/floorImage/${id}/${IndexNumber}`
+      );
+      if (response.status >= 200 && response.status < 300) {
+        window.location.reload();
+      } else {
+        console.error("Failed to delete user. Server returned an error.");
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting user:", error.message);
+    }
+  };
+
+  const deleteFloorPlanImage = (id) => {
+    const confirmDeletion = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+    if (confirmDeletion) {
+      handleDeleteUser(id);
+      // window.location.reload();
+    }
+  };
 
   return (
     <>
@@ -121,16 +144,58 @@ const ProjectEdit = () => {
 
                 <tr>
                   <td>
-                    <section className="w-full mx-4">
-                      <div className="flex flex-wrap max-w-screen-md ">
+                    <section className="w-full mx-4 mb-4">
+                      {/* <div className="flex flex-wrap max-w-screen-md ">
                         {project_floorplan_Image &&
                           Array.isArray(project_floorplan_Image) &&
                           project_floorplan_Image.length > 0 &&
                           project_floorplan_Image.map((image, index) => (
+                            
                             <article
                               key={index}
                               className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
                             >
+                               <MdOutlineDeleteOutline onClick={()=>deleteFloorPlanImage(index)} size={30} className=" group-hover:text-red-500" />
+                              <img
+                                src={image.url}
+                                alt={`Image ${index + 1}`}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                            
+                            </article>
+                            
+                          ))}
+                        <br />
+                        <input
+                          type="file"
+                          name="project_floorplan_Image"
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+
+                            setValues({
+                              ...values,
+                              project_floorplan_Image: file,
+                            });
+                          }}
+                        />
+                      </div> */}
+                      <div className="flex flex-wrap max-w-screen-md">
+                        {project_floorplan_Image &&
+                          Array.isArray(project_floorplan_Image) &&
+                          project_floorplan_Image.length > 0 &&
+                          project_floorplan_Image.map((image, index) => (
+                        
+                            <article
+                              key={index}
+                              className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
+                            >
+                              
+                              <MdOutlineDeleteOutline
+                                onClick={() => deleteFloorPlanImage(index)}
+                                size={30}
+                                className="group-hover:text-red-500"
+                              />
+                            
                               <img
                                 src={image.url}
                                 alt={`Image ${index + 1}`}
@@ -582,7 +647,6 @@ const ProjectEdit = () => {
                   </th>
                 </tr>
 
-
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
@@ -605,7 +669,6 @@ const ProjectEdit = () => {
                   </th>
                 </tr>
 
-                
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
@@ -627,7 +690,6 @@ const ProjectEdit = () => {
                     </span>
                   </th>
                 </tr>
-
               </tbody>
             </table>
 
@@ -638,8 +700,6 @@ const ProjectEdit = () => {
             >
               Update
             </button>
-
-            
           </div>
         </div>
       </div>

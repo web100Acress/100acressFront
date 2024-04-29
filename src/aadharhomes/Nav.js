@@ -197,6 +197,7 @@ export default function Nav() {
   return (
     <Wrapper className="section">
       <Box>
+      {/* #c13335 */}
         <Box bg="red" px={{ base: 0, md: 4, lg: 7 }}>
           <Flex h={16} alignItems="center" justifyContent="space-between">
             <IconButton
