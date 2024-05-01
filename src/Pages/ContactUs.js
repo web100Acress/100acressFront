@@ -55,13 +55,6 @@ const ContactUs = () => {
     <div style={{ overflowX: "hidden" }}>
       <Nav />
       <div className="overflow-x-hidden">
-        {/* <div className="w-full">
-          <img
-            src="../../Images/contact.png"
-            alt="ContactUs"
-            className="w-full h-[9rem] sm:h-30 object-fit"
-          />
-        </div> */}
          <div class="w-full">
           <img
             src="../../Images/contact.png"

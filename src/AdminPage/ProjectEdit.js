@@ -40,7 +40,8 @@ const ProjectEdit = () => {
 
   const { id } = useParams();
   const { project_floorplan_Image } = values;
-
+  const floorPlanLength = values.project_floorplan_Image.length;
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -55,11 +56,45 @@ const ProjectEdit = () => {
     fetchData();
   }, []);
 
+  function handleFileChange(event) {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        setValues((prevValues) => ({
+          ...prevValues,
+          frontImage: {
+            file: input.files[0],
+            url: e.target.result,
+          },
+        }));
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+ 
+
+  
+  
+
   const handleUpdateUser = async () => {
     try {
+      const fromData = new FormData();
+
+      for(const key in values){
+        fromData.append(key, values[key])
+      }
+
+      for(let i=0;i<floorPlanLength;i++){
+        fromData.append('project_floorplan_Image', values.project_floorplan_Image.file)
+      }
+
+      fromData.append('frontImage', values.frontImage.file);
+
       const response = await axios.post(
         `https://api.100acress.com/project/Update/${id}`,
-        values
+        fromData
       );
       if (response.status === 200) {
         alert("Data updated successfully");
@@ -120,21 +155,7 @@ const ProjectEdit = () => {
                       id="previewImage"
                     />
                     <br />
-                    <input
-                      type="file"
-                      name="frontImage"
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-
-                        setValues((prevValues) => ({
-                          ...prevValues,
-                          frontImage: {
-                            public_id: "your_public_id", // update with the correct value if needed
-                            url: URL.createObjectURL(file),
-                          },
-                        }));
-                      }}
-                    />
+                    <input type="file" onChange={(e) => handleFileChange(e)} />
                   </td>
                 </tr>
 
@@ -145,40 +166,6 @@ const ProjectEdit = () => {
                 <tr>
                   <td>
                     <section className="w-full mx-4 mb-4">
-                      {/* <div className="flex flex-wrap max-w-screen-md ">
-                        {project_floorplan_Image &&
-                          Array.isArray(project_floorplan_Image) &&
-                          project_floorplan_Image.length > 0 &&
-                          project_floorplan_Image.map((image, index) => (
-                            
-                            <article
-                              key={index}
-                              className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
-                            >
-                               <MdOutlineDeleteOutline onClick={()=>deleteFloorPlanImage(index)} size={30} className=" group-hover:text-red-500" />
-                              <img
-                                src={image.url}
-                                alt={`Image ${index + 1}`}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                            
-                            </article>
-                            
-                          ))}
-                        <br />
-                        <input
-                          type="file"
-                          name="project_floorplan_Image"
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-
-                            setValues({
-                              ...values,
-                              project_floorplan_Image: file,
-                            });
-                          }}
-                        />
-                      </div> */}
                       <div className="flex flex-wrap max-w-screen-md">
                         {project_floorplan_Image &&
                           Array.isArray(project_floorplan_Image) &&
@@ -215,7 +202,9 @@ const ProjectEdit = () => {
                               project_floorplan_Image: file,
                             });
                           }}
+                          multiple 
                         />
+                        
                       </div>
                     </section>
                   </td>
@@ -236,7 +225,7 @@ const ProjectEdit = () => {
                               : ""
                           }
                           alt="location"
-                          style={{ maxWidth: "20%" }}
+                          style={{ maxWidth: "50%" }}
                           id="previewImage"
                         />
                         <br />
@@ -268,7 +257,7 @@ const ProjectEdit = () => {
                         <img
                           src={values.logo ? values.logo.url : ""}
                           alt="logo"
-                          style={{ maxWidth: "20%" }}
+                          style={{ maxWidth: "50%" }}
                         />
                         <br />
                         <input

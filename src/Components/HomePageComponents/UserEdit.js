@@ -26,7 +26,7 @@ const UserEdit = () => {
   });
   const { otherImage } = values;
   const { id } = useParams();
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -54,11 +54,6 @@ const UserEdit = () => {
       const response = await axios.post(
         `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
       );
 
       if (response.status === 200) {
@@ -114,7 +109,7 @@ const UserEdit = () => {
                 </tr>
 
                 <tr>
-                  <th>Other Images</th>
+                  <th>Other Images </th>
                 </tr>
 
 
@@ -140,13 +135,14 @@ const UserEdit = () => {
                         <br />
                         <input
                           type="file"
-                          name="project_floorplan_Image"
+                          multiple
+                          name="otherImage"
                           onChange={(e) => {
                             const file = e.target.files[0];
 
                             setValues({
                               ...values,
-                              project_floorplan_Image: file,
+                              otherImage: file,
                             });
                           }}
                         />

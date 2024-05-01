@@ -34,8 +34,7 @@ const ViewDetails = () => {
   useEffect(()=>{
   },[viewDetails])
 
-
-
+  console.log(viewDetails,"============")
   const { id } = useParams();
   
   return (

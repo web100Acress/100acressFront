@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Search from "../../aadharhomes/Search";
 
@@ -7,12 +7,39 @@ function SearchBar() {
     <Wrapper className="section">
       <div
         className="qsbWrapper mr-auto ml-auto lg:mr-auto md:ml-auto md:mr-auto ml:ml-auto sm:mr-4 sm:ml-4  xs:py-2 lg:h-14 md:h-10 sm:h-8"
-        style={{ maxWidth: "800px",marginTop:'128px'}}
+        style={{ maxWidth: "800px", marginTop: "128px" }}
       >
         <div className="SJDMls xl:h-14 lg:h-14 md:h-8 sm:h-8">
-          <div className="options active">Buy</div>
-          <div className="options ">Rent</div>
-          <div className="options ">Sell</div>
+          <span
+            className="options active font-semibold hover:underline hover:underline-offset-8 cursor-pointer "
+          >
+            Buy
+          </span>
+          <span
+            className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer "
+          >
+            Rent
+          </span>
+          <span
+            className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
+          >
+            Projects
+          </span>
+          <span
+            className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
+          >  
+            Commercial
+          </span>
+          <span
+            className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
+          >
+            Land/Plots
+          </span>
+          <span
+            className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
+          >
+            New Launch
+          </span>
         </div>
         <Search />
       </div>
@@ -24,7 +51,6 @@ export default SearchBar;
 const Wrapper = styled.section`
   font-weight: 400;
   line-height: 18px;
-  font-family: "DM Sans", sans-serif;
   div {
     box-sizing: border-box;
   }
@@ -47,9 +73,9 @@ const Wrapper = styled.section`
     padding: 9px 30px 13px 30px;
     font-size: 16px;
   }
-  .options:hover {
-    font-size: 18px;
-  }
+  // .options:hover {
+  //   font-size: 18px;
+  // }
   .SJDMls > div:hover {
     cursor: pointer;
   }
@@ -154,7 +180,7 @@ const Wrapper = styled.section`
 //     display: flex;
 //     justify-content: center;
 //     flex-direction: column;
- 
+
 //   }
 //   .qsbWrapper .qsb {
 //     display: flex;
@@ -594,7 +620,3 @@ const Wrapper = styled.section`
 //     }
 //   }
 // `;
-
-
-
-

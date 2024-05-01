@@ -156,15 +156,6 @@ const NewSellProperty = () => {
     });
   };
 
-  // const resetData1 = () =>{
-  //   setSelectedState({
-  //     state:"",
-  //   })
-
-  //   setSelectedCity({
-  //     city:"",
-  //   })
-  // }
 
   const resetImageData = () => {
     setFileData({
@@ -203,54 +194,28 @@ const NewSellProperty = () => {
   });
 
   const otherImageLength = fileData.otherImage.length;
-
-  // const submitSellPropertyDetails = async (e) => {
-  //   e.preventDefault();
-  //   const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
-
-  //   const formDataAPI = new FormData();
-
-  //   for (const key in sellProperty) {
-  //     formDataAPI.append(key, sellProperty[key]);
-  //   }
-
-  //   for (let i = 0; i < otherImageLength; i++) {
-  //     formDataAPI.append(`otherImage_${i}`, fileData.otherImage[i]);
-  //   }
-
-  //   formDataAPI.append("frontImage", fileData.frontImage);
-
-  //   try {
-  //     const response = await axios.post(apiEndpoint, formDataAPI);
-  //     alert("Submit Successfully, Under Review");
-  //     resetData();
-  //     resetImageData();
-  //   } catch (error) {
-  //     console.error("Error submitting form:", error);
-  //   }
-  // };
   const [isLoading, setIsLoading] = useState(false);
 
   const submitSellPropertyDetails = async (e) => {
     e.preventDefault();
-
     if (isLoading) {
       return;
     }
-
     const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
-
     const formDataAPI = new FormData();
-
+    
     for (const key in sellProperty) {
       formDataAPI.append(key, sellProperty[key]);
     }
 
     for (let i = 0; i < otherImageLength; i++) {
-      formDataAPI.append(`otherImage_${i}`, fileData.otherImage[i]);
+      formDataAPI.append("otherImage", fileData.otherImage[i]);
     }
 
     formDataAPI.append("frontImage", fileData.frontImage);
+
+    console.log(formDataAPI,"formDataAPIformDataAPI");
+
     try {
       setIsLoading(true);
        await axios.post(apiEndpoint, formDataAPI);
@@ -307,6 +272,8 @@ const NewSellProperty = () => {
       console.error("No files selected");
     }
   };
+
+  
 
   const handleProjectfurnishing = (event) => {
     setSellProperty({ ...sellProperty, furnishing: event.target.value });

@@ -11,8 +11,6 @@ const customStyle = {
   width: "80%",
 };
 
-
-
 const ViewPropertyAdmin = () => {
   const [viewProperty, setViewAllProperty] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,7 +20,6 @@ const ViewPropertyAdmin = () => {
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
-  
   const filteredRows = viewProperty.filter((item) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     if (
@@ -42,11 +39,10 @@ const ViewPropertyAdmin = () => {
     }
     return false;
   });
-  // const currentRows1 = viewProperty.slice(indexOfFirstRow, indexOfLastRow);
 
-  // const currentRows = filteredRows.slice(indexOfFirstRow, indexOfLastRow);
-  const [currentRows1, currentRows] = [viewProperty, filteredRows].map(rows => rows.slice(indexOfFirstRow, indexOfLastRow));
-
+  const [currentRows1, currentRows] = [viewProperty, filteredRows].map((rows) =>
+    rows.slice(indexOfFirstRow, indexOfLastRow)
+  );
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -66,7 +62,6 @@ const ViewPropertyAdmin = () => {
           `https://api.100acress.com/postPerson/propertyView/${id}`
         );
         setViewAllProperty(res.data.data.postProperty);
-  
       } catch (error) {
         console.log(error.res || error);
       }
@@ -76,29 +71,29 @@ const ViewPropertyAdmin = () => {
   }, []);
 
 
-
-
-  const handleDeleteUser = async(id) =>{
+  const handleDeleteUser = async (id) => {
     try {
-      const res =await axios.delete(`https://api.100acress.com/postPerson/propertyDelete/${id}`)
-      if(res.status >= 200 && res.status < 300){
+      const res = await axios.delete(
+        `https://api.100acress.com/postPerson/propertyDelete/${id}`
+      );
+      if (res.status >= 200 && res.status < 300) {
         window.location.reload();
-      }else{
-        console.error('Failed to delete user. Server returned an error.');
+      } else {
+        console.error("Failed to delete user. Server returned an error.");
       }
     } catch (error) {
-      console.error('An error occurred while deleting user:', error.message);
+      console.error("An error occurred while deleting user:", error.message);
     }
-  }
+  };
 
-  const handleDeleteButtonClicked = (id) =>{
-    const confirmDelete = window.confirm('Are you sure you want to delete this user?');
-    if(confirmDelete){
+  const handleDeleteButtonClicked = (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+    if (confirmDelete) {
       handleDeleteUser(id);
     }
-  }
-
-  
+  };
 
   return (
     <>
@@ -205,8 +200,9 @@ const ViewPropertyAdmin = () => {
                               View
                             </button>
                           </Link>{" "}
-
-                          <Link to={`/Admin/viewproperty/editdetails/${userId}`}>
+                          <Link
+                            to={`/Admin/viewproperty/editdetails/${userId}`}
+                          >
                             <button
                               type="button"
                               className="text-white mr-2 bg-red-400 hover:bg-red-600 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-2 py-1.5 text-center"
@@ -214,15 +210,13 @@ const ViewPropertyAdmin = () => {
                               Edit
                             </button>
                           </Link>{" "}
-                    
-                            <button
-                              type="button"
-                              onClick={()=>handleDeleteButtonClicked(userId)}
-                              className="text-white  bg-red-700 hover:bg-red-700 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-2 py-1.5 text-center"
-                            >
-                              Delete
-                            </button>
-                         
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteButtonClicked(userId)}
+                            className="text-white  bg-red-700 hover:bg-red-700 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-2 py-1.5 text-center"
+                          >
+                            Delete
+                          </button>
                         </td>
 
                         <td className="px-2 py-1 flex space-x-1"></td>

@@ -68,11 +68,6 @@ function Home() {
           }}
         >
           Trending Properties
-          {/* <Link to={"/projects"}>
-            <span className="float-right text-sm text-red-600 hidden sm:block">
-              View All{" "}
-            </span>
-          </Link> */}
         </h1>
         {
           <section className="flex flex-col bg-white items-center pt-1 ">
@@ -309,7 +304,7 @@ function Home() {
             textOverflow: "ellipsis",
           }}
         >
-          SCO Plots In Gurugram
+          SCO Plots in Gurugram
           <Link to="/sco/plots" target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
