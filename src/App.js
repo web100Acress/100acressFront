@@ -122,7 +122,7 @@ function App() {
               path="/termsandconditions"
               element={<TermsAndConditions />}
             />
-            <Route path="/projects-in-Gurugram" element={<Properties />} />
+            <Route path="/projects-in-gurugram" element={<Properties />} />
             <Route path="/rental-properties/best-rental-property-in-gurugram" element={<RentPropViewCard />} />
             <Route path="/buy-properties/best-resale-property-in-gurugram" element={<BuyPropViewCard />} />
             <Route path="/about-us" element={<About />} />

@@ -198,7 +198,7 @@ export default function Nav() {
     <Wrapper className="section">
       <Box>
       {/* #c13335 */}
-        <Box bg="red" px={{ base: 0, md: 4, lg: 7 }}>
+        <Box  bg="#ab2727"  px={{ base: 0, md: 4, lg: 7 }}>
           <Flex h={16} alignItems="center" justifyContent="space-between">
             <IconButton
               size={"md"}
@@ -610,7 +610,7 @@ export default function Nav() {
                     onMouseEnter={handleHover2}
                     onMouseLeave={handleLeave2}
                   >
-                    <Link to={"/projects-in-Gurugram"}>
+                    <Link to={"/projects-in-gurugram"}>
                       <button className="text-white font-semibold text-lg ">
                         Projects
                       </button>
@@ -673,18 +673,6 @@ export default function Nav() {
                             className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Property in Singapore
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Property in India
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Property in Bangkok
                           </Link>
                         </div>
                       </div>
@@ -890,7 +878,7 @@ export default function Nav() {
                 )}
 
                 <Link
-                  to={"/projects-in-Gurugram"}
+                  to={"/projects-in-gurugram"}
                   className="text-white font-semibold text-lg mx-3"
                 >
                   Projects

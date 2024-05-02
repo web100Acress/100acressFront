@@ -6,8 +6,8 @@ function SearchBar() {
   return (
     <Wrapper className="section">
       <div
-        className="qsbWrapper mr-auto ml-auto lg:mr-auto md:ml-auto md:mr-auto ml:ml-auto sm:mr-4 sm:ml-4  xs:py-2 lg:h-14 md:h-10 sm:h-8"
-        style={{ maxWidth: "800px", marginTop: "128px" }}
+        className="qsbWrapper pt-4 mr-auto ml-auto lg:mr-auto md:ml-auto md:mr-auto ml:ml-auto sm:mr-4 sm:ml-4  xs:py-2 lg:h-14 md:h-10 sm:h-8"
+        style={{ maxWidth: "800px", marginTop: "110px" }}
       >
         <div className="SJDMls xl:h-14 lg:h-14 md:h-8 sm:h-8">
           <span
@@ -23,7 +23,7 @@ function SearchBar() {
           <span
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >
-            Projects
+             New Launch
           </span>
           <span
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
@@ -38,7 +38,7 @@ function SearchBar() {
           <span
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >
-            New Launch
+           SCO
           </span>
         </div>
         <Search />

@@ -48,7 +48,7 @@ function Home() {
         </title>
       </Helmet>
 
-      <div className="h-screen w-full zoom zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl ">
+      <div className="h-screen w-full zoom zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl"  style={{backgroundImage: `url('../../Images/A4.png')`}}>
         <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
           <SearchBar />
         </div>
@@ -753,7 +753,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 17vh !important;
-      background-image: url("../../Images/1.png");
+      background-image: url("../../Images/M1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -767,7 +767,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/1.png");
+      background-image: url("../../Images/M1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -781,7 +781,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 20vh !important;
-      background-image: url("../../Images/1.png");
+      background-image: url("../../Images/M1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -795,7 +795,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/1.png");
+      background-image: url("../../Images/M1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -804,7 +804,7 @@ const Wrapper = styled.section`
 
   @media screen and (max-width: 1800px) and (min-width: 601px) {
     .djqwUUJNCO {
-      background-image: url("../../Images/BannerImage3.png");
+      // background-image: url("../../Images/A4.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
