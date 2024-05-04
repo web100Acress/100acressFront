@@ -346,13 +346,14 @@ const BannerPage = () => {
           name="description"
           content={projectViewDetails.meta_description}
         />
+      
         <link
           rel="canonical"
-          to={`https://www.100acress.com/${projectViewDetails.project_url}`}
+          href={`https://www.100acress.com/${projectViewDetails.project_url}`}
         />
       </Helmet>
 
-      <>
+      <>   
         <div
           className="px-4"
           style={{
@@ -377,7 +378,13 @@ const BannerPage = () => {
           />
 
           <span className="text-[#012e29] text-3xl sm:text-xl lg:text-3xl md:text-2xl sm:pt-2 md:m-2 text-right hidden lg:inline-block">
-            <Link to={`tel:${projectViewDetails.number ? projectViewDetails.number : '+919811750130'}`}>
+            <Link
+              to={`tel:${
+                projectViewDetails.number
+                  ? projectViewDetails.number
+                  : "+919811750130"
+              }`}
+            >
               <i className="fa-solid fa-phone"></i>{" "}
               {projectViewDetails.number
                 ? projectViewDetails.number
@@ -386,7 +393,13 @@ const BannerPage = () => {
           </span>
 
           <span className="text-[#012e29] text-lg pt-2 md:text-2xl lg:hidden block text-right">
-            <Link to={`tel:${projectViewDetails.number ? projectViewDetails.number : '+919811750130'}`}>
+            <Link
+              to={`tel:${
+                projectViewDetails.number
+                  ? projectViewDetails.number
+                  : "+919811750130"
+              }`}
+            >
               <i className="fa-solid fa-phone"></i>
               {projectViewDetails.number
                 ? projectViewDetails.number
@@ -570,48 +583,7 @@ const BannerPage = () => {
           )}
         </div>
 
-        {/* Extra Code */}
-
-        {/* <div className="pt-3">
-          <div className="flex justify-center items-center rounded h-auto bg-[#F1F1FE]">
-            <div className="text-black w-full overflow-hidden">
-              <div className="flex flex-col md:flex-row">
-                <div className="w-full md:w-1/2 sm:w-full p-4 text-black">
-                  <span class="lg:text-3xl md:text-2xl sm:text-base text-justify text-gray-600 font-semibold">
-                    Highlights of {projectViewDetails.projectName}
-                  </span>
-                  <div className="mt-4">
-                    {highlight &&
-                      Array.isArray(highlight) &&
-                      highlight.length > 0 &&
-                      highlight.map((item, index) => (
-                        <ul
-                          className="list-disc"
-                          style={{ listStyleType: "circle" }}
-                          key={index}
-                        >
-                          <li className="mb-2 text-black">
-                            {item.highlight_Point}
-                          </li>
-                        </ul>
-                      ))}
-                  </div>
-                </div>
-
-                <div className=" w-1/2 overflow-hidden   ">
-                  {projectViewDetails?.highlightImage?.url && (
-                    <img
-                      src={projectViewDetails.highlightImage.url}
-                      alt={`${projectViewDetails.projectName}`}
-                      className="w-full h-auto object-fit"
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
-
+  
         <div className="pt-3">
           <div className="flex justify-center items-stretch rounded h-auto bg-[#F1F1FE]">
             <div className="text-black w-full flex flex-col">
@@ -773,7 +745,7 @@ const BannerPage = () => {
           transitionDuration={500}
           containerClass="carousel-container"
           removeArrowOnDeviceType={["tablet", "mobile"]}
-          deviceType="desktop" // assuming you're not passing the device type as a prop
+          deviceType="desktop" 
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item-padding-40-px"
         >

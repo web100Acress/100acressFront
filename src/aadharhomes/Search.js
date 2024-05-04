@@ -33,7 +33,7 @@ const Search = () => {
         <div className="flex items-center xl:h-14 lg:h-14 md:h-10 sm:h-8">
           <div className="w-60 mt-1 lg:mt-3 md:mt-3 sm:mt-2 ml-2 lg:ml-8 md:ml-6 sm:ml-4 lg:w-[820px] md:w-60 sm:w-70 outline-none">
             <input
-              className="outline-none"
+              className="outline-none w-full"
               type="text"
               name="query"
               placeholder="Enter Your Query"

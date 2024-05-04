@@ -1,6 +1,13 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import JoditEditor from 'jodit-react';
 import axios from "axios";
 const BlogWrite = () => {
+  const [content,setContent]=useState('')
+
+  const handleContent=(value)=> {
+    setContent(value)
+  }
+  
   const [fileData, setFileData] = useState({
     blog_Image: null,
   });
@@ -11,10 +18,13 @@ const BlogWrite = () => {
     author: "Admin",
     blog_Category: "",
   });
-  const handleEditTitle = (e) => {
-    const { name, value } = e.target;
-    setEditForm({ ...editForm, [name]: value });
-  };
+
+  
+
+  const handleChangeData = (e) => {
+    const {name, value} = e.target;
+    setEditForm({...editForm, [name]:value})
+  }
 
   const handleEditCategory = (e) => {
     setEditForm({
@@ -35,6 +45,7 @@ const BlogWrite = () => {
       formDataAPI.append(key, editForm[key]);
     }
     formDataAPI.append("blog_Image", fileData.blog_Image);
+    formDataAPI.append("blog_Description", content);
     try {
       const response = await axios.post(apiEndpoint, formDataAPI);
       if (response.status === 200) {
@@ -51,6 +62,7 @@ const BlogWrite = () => {
       }
     }
   };
+ 
 
   const handleFileChange = (e, key) => {
     const newFileData = { ...fileData };
@@ -68,6 +80,9 @@ const BlogWrite = () => {
     });
   };
 
+
+
+
   return (
     <div className="">
       <div className="flex justify-center items-center pt-10">
@@ -80,16 +95,17 @@ const BlogWrite = () => {
                   placeholder="Blog Title"
                   className="w-full mb-4 p-2 outline-none border-2 placeholder-black mt-4 rounded-md  text-black  border-gray-200  mobile-input"
                   value={editForm.blog_Title}
-                  onChange={handleEditTitle}
+                  onChange={handleChangeData}
                 />
 
-                <textarea
-                  name="blog_Description"
-                  placeholder="Blog Description"
-                  className="w-full mb-4 p-2 outline-none border-2 placeholder-black mt-4 rounded-md text-black border-gray-200 mobile-input"
-                  value={editForm.blog_Description}
-                  onChange={handleEditTitle}
-                />
+                <div>
+                  <label htmlFor="content">Content:</label>
+                  <JoditEditor
+                    name="blog_Description"
+                    value={content}
+                    onChange={handleContent}
+                  />
+                </div>
 
                 <select
                   className="text-black border-2 p-2 outline-none w-full border-gray-200 mt-4 rounded-md"
@@ -113,9 +129,9 @@ const BlogWrite = () => {
 
                 <div className="flex mt-3 border-2 border-gray-200  rounded-md">
                   <div className="relative h-10  px-2 min-w-[160px]  w-full  rounded-md">
-                    <p className="mt-2 font-medium border-gray-200 text-black">
-                      Front Image
-                      <input
+                     <p className="mt-2 font-medium border-gray-200 text-black">
+                       Front Image
+                       <input
                         type="file"
                         name="blog_Image"
                         accept="image/*"

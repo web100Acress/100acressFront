@@ -53,25 +53,15 @@ const Blogging = () => {
                         {item.blog_Title}
                       </Link>
                     </h2>
-                    {/* <p className="text-gray-500 text-justify">{item.blog_Description}</p>
+
                     <div>
-                      <Link
-                        to={`/blog/${item._id}`}
-                        target="_top"
-                        className="font-semibold bg-red-600 text-white py-1 px-2 rounded-lg "
-                      >
-                        Read more
-                      </Link>
-                    </div> */}
-                    <div>
-                      <p className="text-gray-500 text-justify">
-                        {showFullDescription
-                          ? item.blog_Description
-                          : `${item.blog_Description
-                              .split(" ")
-                              .slice(0, 20)
-                              .join(" ")}...`}
-                      </p>
+                      {showFullDescription
+                        ? item.blog_Description
+                        : `${item.blog_Description
+                            .split(" ")
+                            .slice(0, 20)
+                            .join(" ")}...`}
+
                       <div>
                         {item.blog_Description.split(" ").length > 20 && (
                           <button
@@ -135,30 +125,22 @@ const Blogging = () => {
                         {item.blog_Title}
                       </Link>
                     </h2>
-                    {/* <p className="text-gray-500 text-justify">{item.blog_Description}</p>
                     <div>
-                      <Link
-                        to={`/blog/${item._id}`}
-                        target="_top"
-                        className="font-semibold bg-red-600 text-white py-1 px-2 rounded-lg "
-                      >
-                        Read more
-                      </Link>
-                    </div> */}
-                    <div>
-                      <p className="text-gray-500 text-justify">
-                        {showFullDescription
-                          ? item.blog_Description
-                          : `${item.blog_Description
-                              .split(" ")
-                              .slice(0, 20)
-                              .join(" ")}...`}
-                      </p>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: showFullDescription
+                            ? item.blog_Description
+                            : `${item.blog_Description
+                                .split(" ")
+                                .slice(0, 10)
+                                .join(" ")}...`,
+                        }}
+                      ></div>
                       <div>
-                        {item.blog_Description.split(" ").length > 20 && (
+                        {item.blog_Description.split(" ").length > 10 && (
                           <button
                             onClick={toggleDescription}
-                            className="font-semibold bg-red-600 text-white py-1 px-2 rounded-lg"
+                            className="font-semibold bg-red-600 text-white  px-2 rounded-lg"
                           >
                             <Link
                               to={`/blog/${item._id}`}

@@ -20,6 +20,7 @@
     "chart.js": "^4.4.0",
     "country-state-city": "^3.2.1",
     "framer-motion": "^10.15.2",
+    "jodit-react": "^4.1.2",
     "jquery": "^3.7.1",
     "lucide-react": "^0.307.0",
     "mdb-react-ui-kit": "^6.2.0",

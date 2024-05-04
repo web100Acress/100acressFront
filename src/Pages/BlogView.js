@@ -22,7 +22,7 @@ const BlogView = () => {
   }, []);
 
   useEffect(() => {
-    console.log(data, "dsfdsdsfds sdfsdfsdfs");
+ 
   });
 
   const {
@@ -42,7 +42,7 @@ const BlogView = () => {
           <div className="grid w-70 h-50 max-w-screen-lg grid-cols-1 p-2 gap-5 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 lg:gap-10">
             <article className="overflow-hidden rounded-lg border-2 border-gray-200 border-opacity-60 shadow-lg">
               <img
-                className="w-full transform object-cover object-center md:h-52 lg:h-80"
+                className="w-full transform object-fit object-center md:h-52 lg:h-80"
                 src={blog_Image && blog_Image.url}
                 alt="blog"
               />
@@ -54,7 +54,8 @@ const BlogView = () => {
                   {blog_Category}
                 </h1>
                 <p className="line-clamp-6 mb-3 cursor-pointer overflow-hidden leading-relaxed text-gray-500">
-                  {blog_Description}
+                <div dangerouslySetInnerHTML={{ __html: blog_Description  }}>
+                      </div>
                 </p>
               </div>
             </article>

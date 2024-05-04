@@ -37,7 +37,7 @@ function Home() {
   } = useContext(DataContext);
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
-      <Nav />
+      <Nav/>
       <Helmet>
         <meta
           name="description"
@@ -670,7 +670,7 @@ function Home() {
           </a>
         </div>
       </div> */}
-      
+
       <Snapshot />
       <Free />
       <Footer />

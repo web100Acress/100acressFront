@@ -19,7 +19,7 @@ const Blog = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get("https://api.100acress.com/blog/view");
-        console.log(res, "++++++++++");
+       
         setViewAll(res.data.data);
       } catch (error) {
         console.log(error);
