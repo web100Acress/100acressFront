@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Search from "../../aadharhomes/Search";
-
+import { Link } from "react-router-dom";
 function SearchBar() {
   return (
     <Wrapper className="section">
@@ -10,36 +10,36 @@ function SearchBar() {
         style={{ maxWidth: "800px", marginTop: "110px" }}
       >
         <div className="SJDMls xl:h-14 lg:h-14 md:h-8 sm:h-8">
-          <span
+          <Link to='/buy-properties/best-resale-property-in-gurugram'
             className="options active font-semibold hover:underline hover:underline-offset-8 cursor-pointer "
           >
             Buy
-          </span>
-          <span
+          </Link>
+          <Link to='/ental-properties/best-rental-property-in-gurugram'
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer "
           >
             Rent
-          </span>
-          <span
+          </Link>
+          <Link to='/projects/upcoming-projects-in-gurgaon'
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >
              New Launch
-          </span>
-          <span
+          </Link>
+          <Link to='/projects/commerial'
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >  
             Commercial
-          </span>
-          <span
+          </Link>
+          <Link to='/deendayal/plots'
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >
             Land/Plots
-          </span>
-          <span
+          </Link>
+          <Link to='/sco/plots'
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >
            SCO
-          </span>
+          </Link>
         </div>
         <Search />
       </div>

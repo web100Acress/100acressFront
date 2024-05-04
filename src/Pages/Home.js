@@ -659,7 +659,7 @@ function Home() {
       <OurServices />
       <WhyChoose />
 
-      <div>
+      {/* <div>
         <div>
           <a
             href="https://api.whatsapp.com/message/ROVEJ7K6CX37K1?autoload=1&app_absent=0"
@@ -669,7 +669,8 @@ function Home() {
             <span className="icon"></span>
           </a>
         </div>
-      </div>
+      </div> */}
+      
       <Snapshot />
       <Free />
       <Footer />

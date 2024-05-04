@@ -269,7 +269,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Budget Homes
                           </Link>
@@ -281,7 +281,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className=" text-sm px-4 py-2  hover:text-red-600 flex items-center"
+                            className=" text-sm px-4  hover:text-red-600 flex items-center"
                           >
                             NewlyLaunched
                             <span className="flex border rounded-md text-white bg-red-600 py-0 px-1 ">
@@ -311,7 +311,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
+                            className="block text-sm px-2   hover:text-red-600"
                           >
                             Villa in Gurugram
                           </Link>
@@ -323,15 +323,15 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
+                            className="block text-sm px-2   hover:text-red-600"
                           >
                             Office Place in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
+                            className="block text-sm px-2  hover:text-red-600"
                           >
-                            Commercial Space in Gurugram
+                            Retail Space in Gurugram
                           </Link>
                         </div>
                         <div className="w-40">
@@ -356,7 +356,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             ₹1 Cr - ₹2.5 Cr
                           </Link>
@@ -368,7 +368,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Above ₹5 Cr
                           </Link>
@@ -389,19 +389,19 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
+                            className="block text-sm px-2   hover:text-red-600"
                           >
                             Projects in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
+                            className="block text-sm px-2   hover:text-red-600"
                           >
                             Investment Hotspot
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
+                            className="block text-sm px-2   hover:text-red-600"
                           >
                             Find an Agent
                           </Link>
@@ -448,7 +448,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Furnished Homes
                           </Link>
@@ -460,7 +460,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Immediately Available
                           </Link>
@@ -478,19 +478,19 @@ export default function Nav() {
                             to="#"
                             className="block text-sm px-2   hover:text-red-600"
                           >
-                            Flats for rent in Gurugram
+                            Flats for Rent in Gurugram
                           </Link>
                           <Link
                             to="#"
                             className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            House for rent in Gurugram
+                            House for Rent in Gurugram
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
+                            className="block text-sm px-2   hover:text-red-600"
                           >
-                            Villa for rent in Gurugram
+                            Villa for Rent in Gurugram
                           </Link>
 
                           <Link
@@ -501,7 +501,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
+                            className="block text-sm px-2  hover:text-red-600"
                           >
                             Commercial Space in Gurugram
                           </Link>
@@ -529,7 +529,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
+                            className="block text-sm px-2   hover:text-red-600"
                           >
                             ₹50000 - ₹75000
                           </Link>
@@ -537,7 +537,14 @@ export default function Nav() {
                             to="#"
                             className="block text-sm px-2 py-1  hover:text-red-600"
                           >
-                            Above ₹7=5000
+                           ₹75000 - 150000
+                          </Link>
+
+                          <Link
+                            to="#"
+                            className="block text-sm px-2   hover:text-red-600"
+                          >
+                           Above ₹150000
                           </Link>
                         </div>
                         <div className="w-48">
@@ -562,7 +569,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Find an Agent
                           </Link>
@@ -574,7 +581,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Property Services
                           </Link>
@@ -643,7 +650,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Noida
                           </Link>
