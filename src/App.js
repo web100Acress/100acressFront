@@ -1,10 +1,11 @@
 import React from "react";
 import { styled } from "styled-components";
 import {
-  // BrowserRouter as Router,
+  BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
+ 
 } from "react-router-dom";
 import Home from "./Pages/Home";
 import AboutPage from "./Components/AboutPageComponents/AboutPage";
@@ -101,13 +102,14 @@ function App() {
   };
   const token = localStorage.getItem("myToken");
   return (
+   
     <DataProvider>
       <AuthProvider>
         <Wrapper className="section">
           {/* <Router> */}
           <Routes>
             <Route
-              path="/postproperty"
+              path="/postproperty/"
               element={
                 token !== null ? <NewSellProperty /> : <Navigate to="/signin" />
               }
@@ -117,17 +119,17 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
 
-            <Route path="/privacyPolicy" element={<Privacy />} />
+            <Route path="/privacypolicy/" element={<Privacy />} />
             <Route
-              path="/termsandconditions"
+              path="/termsandconditions/"
               element={<TermsAndConditions />}
             />
-            <Route path="/projects-in-gurugram" element={<Properties />} />
-            <Route path="/rental-properties/best-rental-property-in-gurugram" element={<RentPropViewCard />} />
-            <Route path="/buy-properties/best-resale-property-in-gurugram" element={<BuyPropViewCard />} />
-            <Route path="/about-us" element={<About />} />
-            <Route path="/rent/:id" element={<RentViewDetails />} />
-            <Route path="/buy/:id" element={<BuyViewDetails />} />
+            <Route path="/projects-in-gurugram/" element={<Properties />} />
+            <Route path="/rental-properties/best-rental-property-in-gurugram/" element={<RentPropViewCard />} />
+            <Route path="/buy-properties/best-resale-property-in-gurugram/" element={<BuyPropViewCard />} />
+            <Route path="/about-us/" element={<About />} />
+            <Route path="/rental-properties/:pUrl/:id/" element={<RentViewDetails />} />
+            <Route path="/buy-properties/:pUrl/:id/" element={<BuyViewDetails />} />
             <Route path="/propviewcard" element={<PropViewCardPro />} />
             <Route
               path="/property/residential"
@@ -141,15 +143,15 @@ function App() {
               element={<BuilderIndependentFloor />}
             />
             <Route path="/deendayal/plots" element={<DeenDayalPlots />} />
-            <Route path="/newsandarticals" element={<NewsandArtical />} />
+            <Route path="/newsandarticals/" element={<NewsandArtical />} />
             <Route path="/userdashboard" element={<UserDashBoard />} />
             <Route path="/useredit/:id" element={<UserEdit />} />
 
             <Route path="/middlemain" element={<MiddleMain />} />
             <Route path="/viewallproperty" element={<ViewAllProperty />} />
-            <Route path="/contactus" element={<ContactUs />} />
-            <Route path="/careerwithus" element={<CareerWithUs />} />
-            <Route path="/blog" element={<Blogging />} />
+            <Route path="/contactus/" element={<ContactUs />} />
+            <Route path="/careerwithus/" element={<CareerWithUs />} />
+            <Route path="/blog/" element={<Blogging />} />
             <Route path="/blog/:id" element={<BlogView />} />
             <Route path="/blog/write" element={<BlogWrite />} />
             <Route path="/resetpassword/:token" element={<ForgetPassword />} />
@@ -250,6 +252,7 @@ function App() {
         </Wrapper>
       </AuthProvider>
     </DataProvider>
+   
   );
 }
 

@@ -10,32 +10,32 @@ function SearchBar() {
         style={{ maxWidth: "800px", marginTop: "110px" }}
       >
         <div className="SJDMls xl:h-14 lg:h-14 md:h-8 sm:h-8">
-          <Link to='/buy-properties/best-resale-property-in-gurugram'
+          <Link to='/buy-properties/best-resale-property-in-gurugram/'
             className="options active font-semibold hover:underline hover:underline-offset-8 cursor-pointer "
           >
             Buy
           </Link>
-          <Link to='/ental-properties/best-rental-property-in-gurugram'
+          <Link to='/rental-properties/best-rental-property-in-gurugram/'
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer "
           >
             Rent
           </Link>
-          <Link to='/projects/upcoming-projects-in-gurgaon'
+          <Link to='/projects/upcoming-projects-in-gurgaon/'
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >
              New Launch
           </Link>
-          <Link to='/projects/commerial'
+          <Link to='/projects/commerial/'
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >  
             Commercial
           </Link>
-          <Link to='/deendayal/plots'
+          <Link to='/deendayal/plots/'
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >
             Land/Plots
           </Link>
-          <Link to='/sco/plots'
+          <Link to='/sco/plots/'
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >
            SCO

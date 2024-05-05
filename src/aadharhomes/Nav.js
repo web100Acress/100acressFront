@@ -300,7 +300,7 @@ const handleInquiryDataChange = (e) => {
                     onMouseEnter={handleHover1}
                     onMouseLeave={handleLeave1}
                   >
-                    <Link to="/buy-properties/best-resale-property-in-gurugram">
+                    <Link to="/buy-properties/best-resale-property-in-gurugram/">
                       <button className=" text-white font-semibold text-lg ">
                         Buy
                       </button>
@@ -479,7 +479,7 @@ const handleInquiryDataChange = (e) => {
                     onMouseEnter={handleHover}
                     onMouseLeave={handleLeave}
                   >
-                    <Link to="/rental-properties/best-rental-property-in-gurugram">
+                    <Link to="/rental-properties/best-rental-property-in-gurugram/">
                       <button className="text-white font-semibold text-lg ">
                         Rent
                       </button>
@@ -662,7 +662,7 @@ const handleInquiryDataChange = (e) => {
 
                   {token ? (
                     <Link
-                      to={"/postproperty"}
+                      to={"/postproperty/"}
                       className="text-white font-semibold text-lg"
                     >
                       <span onClick={checkUserAuth}>Sell</span>
@@ -681,7 +681,7 @@ const handleInquiryDataChange = (e) => {
                     onMouseEnter={handleHover2}
                     onMouseLeave={handleLeave2}
                   >
-                    <Link to={"/projects-in-gurugram"}>
+                    <Link to={"/projects-in-gurugram/"}>
                       <button className="text-white font-semibold text-lg ">
                         Projects
                       </button>
@@ -756,7 +756,7 @@ const handleInquiryDataChange = (e) => {
             <Flex alignItems="center">
               <div className="" style={{ marginRight: "-40px" }}>
                 {token ? (
-                  <Link to="/postproperty">
+                  <Link to="/postproperty/">
                     <button className="btn flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
@@ -1039,14 +1039,14 @@ const handleInquiryDataChange = (e) => {
             >
               <Stack color="white" as="nav" spacing={4}>
                 <Link
-                  to={"/rental-properties/best-rental-property-in-gurugram"}
+                  to={"/rental-properties/best-rental-property-in-gurugram/"}
                   className="text-white font-semibold mx-3 text-lg"
                 >
                   Rent
                 </Link>
 
                 <Link
-                  to={"/buy-properties/best-resale-property-in-gurugram"}
+                  to={"/buy-properties/best-resale-property-in-gurugram/"}
                   className="text-white font-semibold text-lg mx-3"
                 >
                   Buy
@@ -1054,7 +1054,7 @@ const handleInquiryDataChange = (e) => {
 
                 {token ? (
                   <Link
-                    to={"/postproperty"}
+                    to={"/postproperty/"}
                     className="text-white font-semibold text-lg mx-3"
                   >
                     <span onClick={checkUserAuth}>Sell</span>
@@ -1069,7 +1069,7 @@ const handleInquiryDataChange = (e) => {
                 )}
 
                 <Link
-                  to={"/projects-in-gurugram"}
+                  to={"/projects-in-gurugram/"}
                   className="text-white font-semibold text-lg mx-3"
                 >
                   Projects

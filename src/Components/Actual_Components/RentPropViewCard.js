@@ -53,7 +53,7 @@ function RentPropViewCard() {
                           <>
                             {item.postProperty.map(
                               (property, propertyIndex) => (
-                                <Link to={`/rent/${property._id}`}>
+                                <Link to={`/rental-properties/${property.propertyName.replace(/\s+/g, '-')}/${property._id}`}>
                                   <article
                                     className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                                     key={propertyIndex}
@@ -115,7 +115,7 @@ function RentPropViewCard() {
                     return (
                       <>
                         {
-                          <Link to={`/rent/${item._id}`}>
+                          <Link to={`/rental-properties/${item.propertyName.replace(/\s+/g, '-')}/${item._id}`}>
                             <article
                               className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                               key={index}

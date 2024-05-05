@@ -23,6 +23,7 @@ export const DataProvider = ({ children }) => {
   const [resalePropertydata, setResalePropertydata] = useState([]);
   const [commercialProjectAll, setAllCommercialProjectAll] = useState([]);
   const [typeScoPlots, setTypeScoPlots] = useState([]);
+  
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
@@ -67,7 +68,7 @@ export const DataProvider = ({ children }) => {
       const commercialProject = projectsData.filter(
         (project) => project.projectOverview === "commercial"
       );
-  
+
       const scoPlots = projectsData.filter(
         (project) => project.type === "SCO Plots"
       );
@@ -78,7 +79,7 @@ export const DataProvider = ({ children }) => {
 
       const typeScoPlots = projectsData.filter(
         (project) => project.projectOverview === "sco"
-      )
+      );
 
       const BuilderIndependentFloor = projectsData.filter((project) => {
         return (
@@ -114,7 +115,7 @@ export const DataProvider = ({ children }) => {
       setSohnaRoad(sohnaRoad);
       setGolfCourse(golfCourse);
       setAllCommercialProjectAll(commercialProjectAll);
-      setTypeScoPlots(typeScoPlots)
+      setTypeScoPlots(typeScoPlots);
     } catch (error) {
       console.log(error || error.message);
     }
@@ -173,6 +174,7 @@ export const DataProvider = ({ children }) => {
       alert("Please Enter both Email and Password");
     }
   };
+
 
   const fetchCareerData = async () => {
     try {

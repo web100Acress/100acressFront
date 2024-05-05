@@ -335,6 +335,12 @@ const BannerPage = () => {
   } = projectViewDetails;
   const sliderImages = project_floorplan_Image || [];
 
+  const today = new Date();
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 365);
+  const expirationDate = tomorrow.toISOString().split("T")[0];
+
   return (
     <Wrapper
       className="section"
@@ -346,14 +352,39 @@ const BannerPage = () => {
           name="description"
           content={projectViewDetails.meta_description}
         />
-      
         <link
           rel="canonical"
           href={`https://www.100acress.com/${projectViewDetails.project_url}`}
         />
+        <script type="application/ld+json">
+          {`
+      {
+        "@context": "https://schema.org",
+        "@type": "Event",
+        "name": "${projectViewDetails.projectName}",
+        "description": "M3M Jewel, M3M Commercial Property MG Road Gurgaon",
+        "startDate": "${today.toISOString().split("T")[0]}",
+        "endDate": "${expirationDate}",
+         ${
+           projectViewDetails.frontImage && projectViewDetails.frontImage.url
+             ? `"image": "${projectViewDetails.frontImage.url}",`
+             : ""
+         }
+        "location": {,
+        "location": {
+          "name": "${projectViewDetails.projectAddress}",
+          "@type": "Place",
+          "address": {
+            "@type": "PostalAddress",
+            "name": "${projectViewDetails.projectAddress}"
+          }
+        }
+      }
+    `}
+        </script>
       </Helmet>
 
-      <>   
+      <>
         <div
           className="px-4"
           style={{
@@ -583,7 +614,6 @@ const BannerPage = () => {
           )}
         </div>
 
-  
         <div className="pt-3">
           <div className="flex justify-center items-stretch rounded h-auto bg-[#F1F1FE]">
             <div className="text-black w-full flex flex-col">
@@ -745,7 +775,7 @@ const BannerPage = () => {
           transitionDuration={500}
           containerClass="carousel-container"
           removeArrowOnDeviceType={["tablet", "mobile"]}
-          deviceType="desktop" 
+          deviceType="desktop"
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item-padding-40-px"
         >

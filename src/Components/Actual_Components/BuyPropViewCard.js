@@ -12,6 +12,7 @@ function BuyPropViewCard() {
         "https://api.100acress.com/property/buy/ViewAll"
       );
       setBuyData(res.data.collectdata);
+     
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -45,7 +46,7 @@ function BuyPropViewCard() {
                           <>
                             {item.postProperty.map(
                               (property, propertyIndex) => (
-                                <Link to={`/buy/${property._id}`}>
+                                <Link to={`/buy-properties/${property.propertyName.replace(/\s+/g, '-')}/${property._id}`}>
                                   <article
                                     className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                                     key={propertyIndex}
@@ -107,7 +108,7 @@ function BuyPropViewCard() {
                     return (
                       <>
                         {
-                          <Link to={`/buy/${item._id}`}>
+                          <Link to={`/buy-properties/${item.propertyName.replace(/\s+/g, '-')}/${item._id}`}>
                             <article
                               className="mb-4 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                               key={index}

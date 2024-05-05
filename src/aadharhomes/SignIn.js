@@ -63,15 +63,11 @@ export default function SignIn() {
   const { isOpen, onClose } = useDisclosure();
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
-  // const { handleUserLogin } = useContext(DataContext);
   const { login } = useContext(AuthContext);
-
   const [userLogin, setuserLogin] = useState({
     password: "",
     email: "",
   });
-
-  // const [error, setError] = useState('');
 
   const handleLoginChange = (e) => {
     const { name, value } = e.target;
@@ -79,23 +75,13 @@ export default function SignIn() {
   };
 
   const handleUserLogin = async () => {
-   
     try {
       await login(userLogin);
-    } catch (error) {}
+    } catch (error) {console.log(error)}
   };
 
-  //   try {
-  //   const data=  await  handleUserLogin(userLogin);
-  //   console.log(data,"fsdfsdff sdfsfsfs")
-  //     history("")
-  //   } catch (error) {
-  //     setError('Invalid username or password');
-  //   }
-  // };
-
   const handleUserSignUp = () => {
-    history("/signup");
+    history("/postproperty");
   };
 
   const handleForgetUserPassword = () => {
@@ -212,6 +198,7 @@ export default function SignIn() {
               </Flex>
             </Stack>
           </Stack>
+
           <Stack
             bg={"gray.50"}
             rounded={"xl"}
@@ -325,6 +312,7 @@ export default function SignIn() {
               </Flex>
             </Box>
           </Stack>
+          
         </Container>
         <Modal
           initialFocusRef={initialRef}
