@@ -362,7 +362,7 @@ const BannerPage = () => {
         "@context": "https://schema.org",
         "@type": "Event",
         "name": "${projectViewDetails.projectName}",
-        "description": "M3M Jewel, M3M Commercial Property MG Road Gurgaon",
+        "description":"${projectViewDetails.meta_description}" ,
         "startDate": "${today.toISOString().split("T")[0]}",
         "endDate": "${expirationDate}",
          ${
@@ -370,7 +370,7 @@ const BannerPage = () => {
              ? `"image": "${projectViewDetails.frontImage.url}",`
              : ""
          }
-        "location": {,
+       
         "location": {
           "name": "${projectViewDetails.projectAddress}",
           "@type": "Place",

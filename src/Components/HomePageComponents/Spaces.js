@@ -9,35 +9,35 @@ function SpacesAvailable() {
         Dream Property In The Heart of Gurugram
         </div>
         <div className="_6sknMP">
-          <Link to={`/property/residential`} target="_top">
+          <Link to={`/property/residential/`} target="_top">
             <div className="_ksjMM _1fe2" title="Residential Projects">
               <p className="_9gncbH">Residential</p>
               <p className="_4rgjvNN">Projects</p>
             </div>
           </Link>
 
-          <Link to={`/projects/commerial`} target="_top">
+          <Link to={`/projects/commerial/`} target="_top">
             <div className="_ksjMM _1fe4" title="Commercial Projects">
               <p className="_9gncbH">Commercial</p>
               <p className="_4rgjvNN">Projects</p>
             </div>
           </Link>
 
-          <Link to={`/sco/plots`} target="_top">
+          <Link to={`/sco/plots/`} target="_top">
             <div className="_ksjMM _1fe6" title="Plots Sco">
               <p className="_9gncbH">Plots</p>
               <p className="_4rgjvNN">SCO</p>
             </div>
           </Link>
 
-          <Link to={`/projects/independentfloors`}  target="_top">
+          <Link to={`/projects/independentfloors/`}  target="_top">
             <div className="_ksjMM _1fe7" title="Builder & Independent Floor">
               <p className="_9gncbH">Builder & Independent</p>
               <p className="_4rgjvNN">Floor</p>
             </div>
           </Link>
 
-          <Link to={`/deendayal/plots`} target="_top">
+          <Link to={`/deendayal/plots/`} target="_top">
             <div className="_ksjMM _1fe8" title="Deen Dayal Plots">
               <p className="_9gncbH">Deen Dayal</p>
               <p className="_4rgjvNN">Plots</p>
@@ -51,20 +51,7 @@ function SpacesAvailable() {
             </div>
           </Link>
 
-          {/* <div className="_ksjMM _1fe7" title="Builder & Independent">
-            <p className="_9gncbH">Builder & Independent</p>
-            <p className="_4rgjvNN"> Floors</p>
-          </div> */}
-
-          {/* <div className="_ksjMM _1fe8" title="Deen Dayal Plots">
-            <p className="_9gncbH">Deen Dayal</p>
-            <p className="_4rgjvNN">Plots</p>
-          </div> */}
-
-          {/* <div className="_ksjMM _1fe9" title="Villa's">
-            <p className="_9gncbH">Luxury </p>
-            <p className="_4rgjvNN">Villas</p>
-          </div> */}
+      
         </div>
       </div>
     </Wrapper>

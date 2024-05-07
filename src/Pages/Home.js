@@ -137,7 +137,7 @@ function Home() {
           }}
         >
           Upcoming Projects
-          <Link to="projects/upcoming-projects-in-gurgaon" target="_top">
+          <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
               style={{ display: "flex", alignItems: "center", margin: "16px" }}
@@ -219,7 +219,7 @@ function Home() {
           }}
         >
            Commercial Projects in Delhi NCR
-          <Link to={"/projects/commerial"} target="_top">
+          <Link to={"/projects/commerial/"} target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
               style={{ display: "flex", alignItems: "center", margin: "16px" }}
@@ -305,7 +305,7 @@ function Home() {
           }}
         >
           SCO Plots in Gurugram
-          <Link to="/sco/plots" target="_top">
+          <Link to="/sco/plots/" target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
               style={{ display: "flex", alignItems: "center", margin: "16px" }}
@@ -449,7 +449,7 @@ function Home() {
           }}
         >
           Projects in Delhi
-          <Link to={"/projects"}>
+          <Link to={"/project-in-delhi/"}>
             <span className="float-right text-sm text-white hidden sm:block pt-3">
               View All{" "}
             </span>
@@ -630,7 +630,7 @@ function Home() {
           Best Resale Property <span> For You</span>
         </span>
         <Link
-          to="/buy-properties/best-resale-property-in-gurugram"
+          to="/buy-properties/best-resale-property-in-gurugram/"
           target="_top"
         >
           <span

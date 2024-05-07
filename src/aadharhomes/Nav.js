@@ -70,7 +70,7 @@ const MenuListContainer = ({ isOpen }) => {
             <ToastContainer />
 
             <MenuItem fontSize="sm">
-              <NavLink to={`/userdashboard`}>View Profile</NavLink>
+              <NavLink to={`/userdashboard/`}>View Profile</NavLink>
             </MenuItem>
 
             <MenuItem fontSize="sm">
@@ -107,8 +107,8 @@ const MenuListContainer = ({ isOpen }) => {
             <ToastContainer />
 
             <MenuItem fontSize="sm" color={"red"}>
-              <NavLink to="/signin">Login/</NavLink>
-              <NavLink to="/signup">Register</NavLink>
+              <NavLink to="/signin/">Login/</NavLink>
+              <NavLink to="/signup/">Register</NavLink>
             </MenuItem>
 
             <MenuItem fontSize="sm">
@@ -354,7 +354,7 @@ const handleInquiryDataChange = (e) => {
                           </Link>
                         </div>
 
-                        <div className="w-52">
+                        <div className="w-52 mb-4">
                           <Link
                             to="#"
                             className="block text-black  text-lg px-2 py-1 "
@@ -669,7 +669,7 @@ const handleInquiryDataChange = (e) => {
                     </Link>
                   ) : (
                     <Link
-                      to={"/signin"}
+                      to={"/signin/"}
                       className="text-white font-semibold text-lg"
                     >
                       Sell
@@ -691,7 +691,7 @@ const handleInquiryDataChange = (e) => {
                         isMenuOpen2 ? "block" : "hidden"
                       }`}
                     >
-                      <div className="flex">
+                      <div className="flex mb-3">
                         <div className="w-48">
                           <Link
                             to="#"
@@ -723,6 +723,32 @@ const handleInquiryDataChange = (e) => {
                             className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Projects in Goa
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4   hover:text-red-600"
+                          >
+                            Projects in Ahmedabad
+                          </Link>
+
+                          <Link
+                            to="#"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            Projects in Ayodhya
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4  hover:text-red-600"
+                          >
+                            Projects in Mumbai
+                          </Link>
+
+                          <Link
+                            to="#"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            Projects in Panipat
                           </Link>
                         </div>
                         <div className="w-48">
@@ -795,7 +821,7 @@ const handleInquiryDataChange = (e) => {
                     </button>
                   </Link>
                 ) : (
-                  <Link to="/signin">
+                  <Link to="/signin/">
                     <button className="btn flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
@@ -1061,7 +1087,7 @@ const handleInquiryDataChange = (e) => {
                   </Link>
                 ) : (
                   <Link
-                    to={"/signin"}
+                    to={"/signin/"}
                     className="text-white font-semibold text-lg mx-3"
                   >
                     Sell

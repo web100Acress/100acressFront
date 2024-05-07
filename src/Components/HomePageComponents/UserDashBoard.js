@@ -87,7 +87,7 @@ const UserDashBoard = () => {
             </div>
             <div className="d-flex flex-col md:flex-row w-full mt-3">
               <Link
-                to={"/postproperty"}
+                to={"/postproperty/"}
                 className="bg-red-600 md:w-1/2 w-full text-white text-md py-2 rounded-md md:mr-2 mb-2 md:mb-0"
               >
                 Post Property

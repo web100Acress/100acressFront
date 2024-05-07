@@ -23,7 +23,8 @@ export const DataProvider = ({ children }) => {
   const [resalePropertydata, setResalePropertydata] = useState([]);
   const [commercialProjectAll, setAllCommercialProjectAll] = useState([]);
   const [typeScoPlots, setTypeScoPlots] = useState([]);
-  
+  const [delhiData, setDelhiData] = useState([]);
+
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
@@ -38,6 +39,7 @@ export const DataProvider = ({ children }) => {
         "https://api.100acress.com/project/viewAll/data"
       );
       const projectsData = res.data.data;
+
       const trendingProjects = projectsData.filter(
         (project) => project.projectOverview === "trending"
       );
@@ -99,6 +101,12 @@ export const DataProvider = ({ children }) => {
       const golfCourse = projectsData.filter((project) =>
         project.projectAddress.includes("Golf Course Road")
       );
+      
+      const delhiData = projectsData.filter(
+        (project) => project.city === "Delhi" || project.city === "New Delhi"
+      );
+
+      console.log(delhiData, "delhiData");
 
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
@@ -116,6 +124,7 @@ export const DataProvider = ({ children }) => {
       setGolfCourse(golfCourse);
       setAllCommercialProjectAll(commercialProjectAll);
       setTypeScoPlots(typeScoPlots);
+      setDelhiData(delhiData);
     } catch (error) {
       console.log(error || error.message);
     }
@@ -175,7 +184,6 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-
   const fetchCareerData = async () => {
     try {
       const res = await axios.get("https://api.100acress.com/career/page/view");
@@ -232,6 +240,7 @@ export const DataProvider = ({ children }) => {
         resalePropertydata,
         commercialProjectAll,
         typeScoPlots,
+        delhiData,
       }}
     >
       {children}

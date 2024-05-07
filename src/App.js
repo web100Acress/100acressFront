@@ -94,6 +94,7 @@ import CareerView from "./AdminPage/CareerView";
 import CareerEdit from "./AdminPage/CareerEdit";
 import JobPostingView from "./AdminPage/JobPostingView";
 import JobPostingEdit from "./AdminPage/JobPostingEdit";
+import DelhiProject from "./Pages/DelhiProject";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -114,10 +115,10 @@ function App() {
                 token !== null ? <NewSellProperty /> : <Navigate to="/signin" />
               }
             />
-            <Route path="/signIn" element={<SignIn />} />
+            <Route path="/signIn/" element={<SignIn />} />
             <Route path="/" element={<Home />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup/" element={<SignUp />} />
+            <Route path="/signin/" element={<SignIn />} />
 
             <Route path="/privacypolicy/" element={<Privacy />} />
             <Route
@@ -132,19 +133,20 @@ function App() {
             <Route path="/buy-properties/:pUrl/:id/" element={<BuyViewDetails />} />
             <Route path="/propviewcard" element={<PropViewCardPro />} />
             <Route
-              path="/property/residential"
+              path="/property/residential/"
               element={<ResidentialProjects />}
             />
             <Route path="projects/upcoming-projects-in-gurgaon" element={<UpComingProjects />} />
-            <Route path="/projects/commerial" element={<CommercialProject />} />
-            <Route path="/sco/plots" element={<ScoPlots />} />
+            <Route path="/projects/commerial/" element={<CommercialProject />} />
+            <Route path="/sco/plots/" element={<ScoPlots />} />
             <Route
-              path="/projects/independentfloors"
+              path="/projects/independentfloors/"
               element={<BuilderIndependentFloor />}
             />
-            <Route path="/deendayal/plots" element={<DeenDayalPlots />} />
+            <Route path="/project-in-delhi/" element={<DelhiProject/>}/>
+            <Route path="/deendayal/plots/" element={<DeenDayalPlots />} />
             <Route path="/newsandarticals/" element={<NewsandArtical />} />
-            <Route path="/userdashboard" element={<UserDashBoard />} />
+            <Route path="/userdashboard/" element={<UserDashBoard />} />
             <Route path="/useredit/:id" element={<UserEdit />} />
 
             <Route path="/middlemain" element={<MiddleMain />} />

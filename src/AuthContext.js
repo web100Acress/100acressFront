@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
               if (roleResponse.data.User.role === "admin") {
                 history("/admin/acress/property/aadhar");
               } else {
-                history("/userdashboard");
+                history("/userdashboard/");
               }
             } else {
               console.error("Role fetch failed:", roleResponse);

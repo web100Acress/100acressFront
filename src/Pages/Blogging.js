@@ -49,24 +49,26 @@ const Blogging = () => {
 
                   <div className="flex flex-col gap-2">
                     <h2 className="text-xl font-bold text-red-600">
-                      <Link href="#" className="">
-                        {item.blog_Title}
-                      </Link>
+                      <Link>{item.blog_Title}</Link>
                     </h2>
-
                     <div>
-                      {showFullDescription
-                        ? item.blog_Description
-                        : `${item.blog_Description
-                            .split(" ")
-                            .slice(0, 20)
-                            .join(" ")}...`}
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: showFullDescription
+                            ? item.blog_Description
+                            : `${item.blog_Description
+                                .split(" ")
+                                .slice(0, 10)
+                                .join(" ")}...`,
+                        }}
+                      ></div>
 
                       <div>
-                        {item.blog_Description.split(" ").length > 20 && (
+                        {item.blog_Description.split(" ").length > 10 && (
+                         
                           <button
-                            onClick={toggleDescription}
-                            className="font-semibold bg-red-600 text-white py-1 px-2 rounded-lg"
+                            onClick={() => toggleDescription(index)} 
+                            className="font-semibold bg-red-600 text-white px-4 py-2 rounded-lg"
                           >
                             <Link
                               to={`/blog/${item._id}`}
@@ -121,9 +123,7 @@ const Blogging = () => {
 
                   <div className="flex flex-col gap-2">
                     <h2 className="text-xl font-bold text-red-600">
-                      <Link href="#" className="">
-                        {item.blog_Title}
-                      </Link>
+                      <Link className="">{item.blog_Title}</Link>
                     </h2>
                     <div>
                       <div
@@ -136,6 +136,7 @@ const Blogging = () => {
                                 .join(" ")}...`,
                         }}
                       ></div>
+
                       <div>
                         {item.blog_Description.split(" ").length > 10 && (
                           <button
