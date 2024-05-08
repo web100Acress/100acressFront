@@ -124,6 +124,7 @@ export const AuthProvider = ({ children }) => {
                 history("/admin/acress/property/aadhar");
               } else {
                 history("/userdashboard/");
+                window.location.reload()
               }
             } else {
               console.error("Role fetch failed:", roleResponse);

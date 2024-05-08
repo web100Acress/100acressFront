@@ -24,7 +24,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { InputGroup, InputRightElement } from "@chakra-ui/react";
@@ -77,11 +77,13 @@ export default function SignIn() {
   const handleUserLogin = async () => {
     try {
       await login(userLogin);
-    } catch (error) {console.log(error)}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleUserSignUp = () => {
-    history("/postproperty");
+    history("/signup/");
   };
 
   const handleForgetUserPassword = () => {
@@ -107,7 +109,7 @@ export default function SignIn() {
           name="description"
           content="List your property for sale on 100acress.com. Reach potential buyers and sell your property online hassle-free. Trusted platform for property sellers. List now!"
         />
-         <link rel="canonical" href="https://www.100acress.com/signin/" />
+        <link rel="canonical" href="https://www.100acress.com/signin/" />
       </Helmet>
       <Box position={"relative"}>
         {password !== "" && email !== "" && <ToastContainer />}
@@ -313,7 +315,6 @@ export default function SignIn() {
               </Flex>
             </Box>
           </Stack>
-          
         </Container>
         <Modal
           initialFocusRef={initialRef}
