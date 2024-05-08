@@ -19,6 +19,7 @@ function Properties() {
         <title>
         New Projects in Gurgaon | Best Real Estate at 100acress.com
         </title>
+        <link rel="canonical" href="https://www.100acress.com/projects-in-gurugram/" />
       </Helmet>
 
       <section className="flex flex-col items-center bg-white">

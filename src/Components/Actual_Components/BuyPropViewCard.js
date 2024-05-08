@@ -31,6 +31,7 @@ function BuyPropViewCard() {
           name="description"
           content="Explore a wide range of properties for sale at 100acress.com. Find your dream home, or commercial properties and residential apartment in Gurugram!"
         />
+          <link rel="canonical" href="https://www.100acress.com/buy-properties/best-resale-property-in-gurugram/" />
       </Helmet>
       <div>
         <section className="flex flex-col items-center bg-white">

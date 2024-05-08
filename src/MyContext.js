@@ -106,8 +106,6 @@ export const DataProvider = ({ children }) => {
         (project) => project.city === "Delhi" || project.city === "New Delhi"
       );
 
-      console.log(delhiData, "delhiData");
-
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
       setFeaturedProject(featuredProjects);

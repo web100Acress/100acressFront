@@ -452,7 +452,7 @@ const handleInquiryDataChange = (e) => {
                             Localities in Gurugram
                           </Link>
                           <Link
-                            to="#"
+                            to='/projects-in-gurugram/'
                             className="block text-sm px-2   hover:text-red-600"
                           >
                             Projects in Gurugram
@@ -681,7 +681,9 @@ const handleInquiryDataChange = (e) => {
                     onMouseEnter={handleHover2}
                     onMouseLeave={handleLeave2}
                   >
-                    <Link to={"/projects-in-gurugram/"}>
+                    <Link 
+                    // to={"/projects-in-gurugram/"}
+                    >
                       <button className="text-white font-semibold text-lg ">
                         Projects
                       </button>
@@ -701,13 +703,13 @@ const handleInquiryDataChange = (e) => {
                             <hr className="mt-1" />
                           </Link>
                           <Link
-                            to="#"
+                            to={'/projects-in-gurugram/'}
                             className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Gurugram
                           </Link>
                           <Link
-                            to="#"
+                            to={'/project-in-delhi/'}
                             className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Projects in Delhi

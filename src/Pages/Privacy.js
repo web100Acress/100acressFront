@@ -14,6 +14,7 @@ const Privacy = () => {
         <title>
         100acress.com: Privacy Policy & User Agreement
         </title>
+        <link rel="canonical" href="https://www.100acress.com/privacypolicy/" />
       </Helmet>
 
       <div className="overflow-x-hidden">

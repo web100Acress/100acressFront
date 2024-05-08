@@ -16,6 +16,7 @@ const ResidentialProjects = () => {
           name="description"
           content="Buy 2/3 BHK Residential Project in Gurgaon as per your desired location and budget. Checkout your desired Location and Price. Book Now"
         />
+            <link rel="canonical" href="https://www.100acress.com/property/residential/" />
       </Helmet>
 
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">

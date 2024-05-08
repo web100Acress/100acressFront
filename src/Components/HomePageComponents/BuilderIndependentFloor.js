@@ -3,11 +3,26 @@ import Nav from "../../aadharhomes/Nav";
 import Footer from "../Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { DataContext } from "../../MyContext";
+import { Helmet } from "react-helmet";
 const BuilderIndependentFloor = () => {
   const { BuilderIndependentFloor } = useContext(DataContext);
   return (
     <div>
       <Nav />
+      <Helmet>
+        <title>
+          Builder Floor in Gurgaon | Independent Floor | 10acress.com
+        </title>
+        <meta
+          name="description"
+          content="Explore premium builder floors in Gurgaon. Find your dream independent floor at 100acress.com. Browse now for exclusive listings on your trusted site!"
+        />
+
+        <link
+          rel="canonical"
+          href="https://www.100acress.com/projects/independentfloors/"
+        />
+      </Helmet>
       <div className="max-w-screen pt-2 sm:pt-2 md:pt-2" target="_top">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Independent & Builder Floors in Gurugram
@@ -78,7 +93,7 @@ const BuilderIndependentFloor = () => {
           })}
         </div>
       </section>
-      
+
       <Footer />
     </div>
   );

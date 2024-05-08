@@ -17,6 +17,7 @@ const UpComingProjects = () => {
         <title>
         Upcoming Projects in Gurgaon at 100acress.com | Real Estate 
         </title>
+        <link rel="canonical" href="https://www.100acress.com/projects/upcoming-projects-in-gurgaon/" />
       </Helmet>
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">

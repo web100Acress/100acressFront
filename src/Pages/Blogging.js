@@ -22,6 +22,7 @@ const Blogging = () => {
           content="Discover the latest insights, tips, and Expert guidance on real estate trends, investment strategies, and property management on our blog at 100acress.com. Stay informed!"
         />
         <title>Blog | Expert Guidance on Real Estate | 100acress.com</title>
+        <link rel="canonical" href="https://www.100acress.com/blog/" />
       </Helmet>
       <div class="">
         <p class="mt-4 lg:mt-10 text-3xl text-center font-bold sm:text-4xl xl:text-5xl">

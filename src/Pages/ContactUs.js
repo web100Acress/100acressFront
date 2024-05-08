@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import Nav from "../aadharhomes/Nav";
 import axios from "axios";
-
+import { Helmet } from "react-helmet";
 const ContactUs = () => {
   const [data, setData] = useState({
     name: "",
@@ -54,8 +54,20 @@ const ContactUs = () => {
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
+      <Helmet>
+        <title>Contact Us | Reach Out to 100acress.com Experts Guidance</title>
+        <meta
+          name="description"
+          content="Have questions or need assistance? Contact the 100acress.com team for support with property listings, buying, selling, or renting. We're here to help!"
+        />
+        <link
+          rel="canonical"
+          href="https://www.100acress.com/deendayal/plots/"
+        />
+      </Helmet>
+
       <div className="overflow-x-hidden">
-         <div class="w-full">
+        <div class="w-full">
           <img
             src="../../Images/contact.png"
             alt="About Us"
@@ -129,61 +141,68 @@ const ContactUs = () => {
           </div>
         </div>
 
-
-<div class="flex justify-center bg-orange-100 mb-20 mx-5 my-5">
-  <div class="flex flex-col justify-center w-full lg:w-[96%] space-y-10 lg:space-y-0 lg:space-x-10 max-w-7xl p-8 lg:p-14">
-    <div class="flex flex-col justify-center items-center lg:flex-row space-y-10 lg:space-y-0 lg:space-x-10">
-      <div class="shadow-lg flex bg-[#012e29] flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
-        {/* <div class="-mt-16">
+        <div class="flex justify-center bg-orange-100 mb-20 mx-5 my-5">
+          <div class="flex flex-col justify-center w-full lg:w-[96%] space-y-10 lg:space-y-0 lg:space-x-10 max-w-7xl p-8 lg:p-14">
+            <div class="flex flex-col justify-center items-center lg:flex-row space-y-10 lg:space-y-0 lg:space-x-10">
+              <div class="shadow-lg flex bg-[#012e29] flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
+                {/* <div class="-mt-16">
           <ion-icon name="bar-chart-outline" class="text-3xl md:text-5xl rounded-full p-4 bg-white text-cyan-400"></ion-icon>
         </div> */}
-        <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
-          Sales
-        </div>
-        <div>
-          <p class="text-center text-white text-lg p-2">
-            We would love to talk about how we can work together.
-          </p>
-        </div>
-        <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
-          <a href="mailto:seo@100acress.com"  class="mx-2 text-[#012e29] text-lg font-bold">
-            Contact Sales
-          </a>
-        </p>
-      </div>
-      <div class="bg-[#012e29] shadow-lg flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
-        <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
-          Help &amp; Support
-        </div>
-        <p class="text-center text-white text-lg p-2">
-          We are here to help with any questions or code.
-        </p>
-        <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
-          <a href="mailto:seo@100acress.com"  class="mx-2 text-[#012e29] text-lg font-bold">
-            Get Support
-          </a>
-        </p>
-      </div>
-      <div class="bg-[#012e29] shadow-lg flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
-        {/* <div class="-mt-16">
+                <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
+                  Sales
+                </div>
+                <div>
+                  <p class="text-center text-white text-lg p-2">
+                    We would love to talk about how we can work together.
+                  </p>
+                </div>
+                <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
+                  <a
+                    href="mailto:seo@100acress.com"
+                    class="mx-2 text-[#012e29] text-lg font-bold"
+                  >
+                    Contact Sales
+                  </a>
+                </p>
+              </div>
+              <div class="bg-[#012e29] shadow-lg flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
+                <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
+                  Help &amp; Support
+                </div>
+                <p class="text-center text-white text-lg p-2">
+                  We are here to help with any questions or code.
+                </p>
+                <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
+                  <a
+                    href="mailto:seo@100acress.com"
+                    class="mx-2 text-[#012e29] text-lg font-bold"
+                  >
+                    Get Support
+                  </a>
+                </p>
+              </div>
+              <div class="bg-[#012e29] shadow-lg flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
+                {/* <div class="-mt-16">
           <ion-icon name="camera-outline" class="text-3xl md:text-5xl rounded-full p-4 bg-white text-cyan-400"></ion-icon>
         </div> */}
-        <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
-          Media &amp; Press
+                <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
+                  Media &amp; Press
+                </div>
+                <p class="text-center text-white text-lg p-2">
+                  Get Stripe news, company info, and media resources.
+                </p>
+                <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-[18px] text-[#012e29] font-medium">
+                  <a
+                    href="mailto:seo@100acress.com"
+                    class="mx-2 text-[#012e29] text-lg font-bold"
+                  >
+                    Visit Newsroom
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-        <p class="text-center text-white text-lg p-2">
-          Get Stripe news, company info, and media resources.
-        </p>
-        <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-[18px] text-[#012e29] font-medium">
-          <a href="mailto:seo@100acress.com"  class="mx-2 text-[#012e29] text-lg font-bold">
-            Visit Newsroom
-          </a>
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-
       </div>
       <Footer />
     </div>

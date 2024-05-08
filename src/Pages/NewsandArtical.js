@@ -14,6 +14,7 @@ const NewsandArtical = () => {
         <title>
         Latest News and Articles in Real Estate at 100acress.com
         </title>
+        <link rel="canonical" href="https://www.100acress.com/newsandarticals/" />
       </Helmet>
 
       <div className="max-w-screen-xl mx-auto p-5 sm:p-10 md:p-16">

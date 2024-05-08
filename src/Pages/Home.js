@@ -46,6 +46,7 @@ function Home() {
         <title>
           Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India
         </title>
+        <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
       <div className="h-screen w-full zoom zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl"  style={{backgroundImage: `url('../../Images/A4.png')`}}>
@@ -449,7 +450,7 @@ function Home() {
           }}
         >
           Projects in Delhi
-          <Link to={"/project-in-delhi/"}>
+          <Link to={"/project-in-delhi/"} target="_top"> 
             <span className="float-right text-sm text-white hidden sm:block pt-3">
               View All{" "}
             </span>

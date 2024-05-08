@@ -19,6 +19,7 @@ const DeenDayalPlots = () => {
           name="description"
           content="Buy Deen Dayal Residential Plots/Lands for Sale in Gurgaon"
         />
+           <link rel="canonical" href="https://www.100acress.com/deendayal/plots/" />
       </Helmet>
 
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">

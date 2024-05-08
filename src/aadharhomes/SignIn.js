@@ -107,6 +107,7 @@ export default function SignIn() {
           name="description"
           content="List your property for sale on 100acress.com. Reach potential buyers and sell your property online hassle-free. Trusted platform for property sellers. List now!"
         />
+         <link rel="canonical" href="https://www.100acress.com/signin/" />
       </Helmet>
       <Box position={"relative"}>
         {password !== "" && email !== "" && <ToastContainer />}

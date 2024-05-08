@@ -38,6 +38,7 @@ function RentPropViewCard() {
           name="description"
           content="Explore a wide range of rental properties on 100acress.com. Find your dream home for rent. Trusted platform for rental listings. Start your search today!"
         />
+         <link rel="canonical" href="https://www.100acress.com/rental-properties/best-rental-property-in-gurugram/" />
       </Helmet>
       <div>
         <section className="flex flex-col items-center bg-white">

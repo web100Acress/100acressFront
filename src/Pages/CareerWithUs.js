@@ -42,6 +42,7 @@ const CareerWithUs = () => {
           content="Explore exciting career opportunities at 100acress.com. Join our dynamic team and grow with us. Browse job openings and apply now!"
         />
         <title>Join Our Team | Career opportunities at 100acress.com</title>
+        <link rel="canonical" href="https://www.100acress.com/careerwithus/" />
       </Helmet>
       <div className="overflow-x-hidden">
         <section className="relative">

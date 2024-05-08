@@ -18,6 +18,7 @@ const CommercialProject = () => {
           name="description"
           content="Invest Wisely, Buy Commercial Projects in Gurgaon. Book Retail Shops, Food Courts, and Commercial Spaces with High Rental &amp; Flexible Payment Plan. Book Now"
         />
+          <link rel="canonical" href="https://www.100acress.com/projects/commerial/" />
       </Helmet>
 
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">

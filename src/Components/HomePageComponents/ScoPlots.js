@@ -16,6 +16,7 @@ const ScoPlots = () => {
           name="description"
           content="Find New Upcoming projects of SCO (Shop Cum Office) Property in Gurgaon. It helps to find Retail Shops and F&amp;B. Find SCO Price in Gurgaon"
         />
+         <link rel="canonical" href="https://www.100acress.com/sco/plots/" />
       </Helmet>
 
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
