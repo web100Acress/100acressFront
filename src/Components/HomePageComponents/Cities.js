@@ -3,11 +3,11 @@ import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 function Cities() {
   const [selectedRoad, setSelectedRoad] = useState(null); 
+
   const handleClick = (roadName) => {
     setSelectedRoad(roadName);
-    
   };
-
+  
   return (
     <Wrapper className="section ">
       <div className="dffasPL">
@@ -16,7 +16,7 @@ function Cities() {
         </p>
         <div className="gdmJO d-flex justify-content-between px-4 text-center align-items-center">
           <div className="cvBMLN text-justify">
-            <Link to={`/property-in-gurugram/sohna-road/`}>
+            <Link to={`/property-in-gurugram/sohna-road/`} target="_top">
               <div
                 className={`asdDRsfVN bg-one ${
                   selectedRoad === "Sohna Road" ? "selected" : ""
@@ -29,7 +29,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/golf-course/`}>
+            <Link to={`/property-in-gurugram/golf-course/`} target="_top">
               <div
                 className={`asdDRsfVN bg-two ${
                   selectedRoad === "Golf Course" ? "selected" : ""
@@ -42,7 +42,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/mg-road/`}>
+            <Link to={`/property-in-gurugram/mg-road/`} target="_top">
               <div
                 className={`asdDRsfVN bg-three  ${
                   selectedRoad === "MG Road" ? "selected" : ""
@@ -55,7 +55,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/northern-peripheral-road/`}>
+            <Link to={`/property-in-gurugram/northern-peripheral-road/`} target="_top">
               <div
                 className={`asdDRsfVN bg-four ${
                   selectedRoad === "Northern Peripheral Road" ? "selected" : ""
@@ -68,7 +68,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN text-justify">
-            <Link to={`/property-in-gurugram/dwarka-expressway/`}>
+            <Link to={`/property-in-gurugram/dwarka-expressway/`} target="_top">
               <div
                 className={`asdDRsfVN bg-five ${
                   selectedRoad === "Dwarka Expressway" ? "selected" : ""
@@ -81,7 +81,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/new-gurgaon/`}>
+            <Link to={`/property-in-gurugram/new-gurgaon/`} target="_top">
               <div
                 className={`asdDRsfVN bg-six  ${
                   selectedRoad === "New Gurgaon" ? "selected" : ""
@@ -94,7 +94,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/sohna-south-of-gurugram/`}>
+            <Link to={`/property-in-gurugram/sohna-south-of-gurugram/`} target="_top">
               <div
                 className={`asdDRsfVN bg-seven  ${
                   selectedRoad === "Sohna (South of Gurugram)" ? "selected" : ""
@@ -107,7 +107,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/southern-peripheral-road/`}>
+            <Link to={`/property-in-gurugram/southern-peripheral-road/`} target="_top">
               <div
                 className={`asdDRsfVN bg-eight ${
                   selectedRoad === "Southern Peripheral Road" ? "selected" : ""
@@ -120,7 +120,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN text-justify">
-            <Link to={`/property-in-gurugram/NH-48/`}>
+            <Link to={`/property-in-gurugram/NH-48/`} target="_top">
               <div
                 className={`asdDRsfVN bg-nine ${
                   selectedRoad === "NH-48" ? "selected" : ""
@@ -133,7 +133,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/golf-course-extn-road/`}>
+            <Link to={`/property-in-gurugram/golf-course-extn-road/`} target="_top">
               <div
                 className={`asdDRsfVN bg-ten ${
                   selectedRoad === "Golf Course Extn Road" ? "selected" : ""

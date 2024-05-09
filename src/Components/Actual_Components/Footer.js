@@ -469,39 +469,39 @@ const Footer = () => {
             >
               <li className="flex space-x-3  " >
                 <Link
-                  to="https://www.facebook.com/100Acress"
+                  to="https://www.facebook.com/100Acress" target="_blank"
                   className="flex items-center justify-center text-white bg-blue-400 w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8 rounded-full"
                 >
                   <FaFacebook size={20} />
                 </Link>
                 <Link
-                  to="https://twitter.com/100acressdotcom"
+                  to="https://twitter.com/100acressdotcom" target="_blank"
                   className="flex items-center justify-center text-white bg-black w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8 rounded-full "
                 >
                   <i className="fa-brands fa-x-twitter text-sm"></i>
                 </Link>
 
                 <Link
-                  to="https://www.instagram.com/100acress_com/"
+                  to="https://www.instagram.com/100acress_com/" target="_blank"
                   className="flex items-center justify-center text-white w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8 rounded-full bg-[#c32aa3]"
                 >
                   <FaInstagram size={20} />
                 </Link>
                 <Link
-                  to="https://www.linkedin.com/company/100acress/"
+                  to="https://www.linkedin.com/company/100acress/" target="_blank"
                   className="flex justify-center items-center text-white bg-blue-700 w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8 rounded-full"
                 >
                   <FaLinkedin size={20} />
                 </Link>
                 <Link
-                  to="https://www.youtube.com/@100acress"
+                  to="https://www.youtube.com/@100acress" target="_blank"
                   className="flex items-center justify-center text-red-600 rounded-full bg-white w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8"
                 >
                   <FaYoutube size={20} />
                 </Link>
 
                 <Link
-                  to="https://api.whatsapp.com/message/ROVEJ7K6CX37K1?autoload=1&app_absent=0"
+                  to="https://api.whatsapp.com/message/ROVEJ7K6CX37K1?autoload=1&app_absent=0" target="_blank"
                   className="flex items-center justify-center text-white rounded-full bg-green-500 w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8"
                 >
                   <FaWhatsapp size={20} />
