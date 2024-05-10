@@ -32,8 +32,8 @@ const GurugramPrimeLocation = () => {
         </h1>
 
         <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          Looking for prime real estate in Gurgaon? Explore our exquisite
-          collection of apartments residential, commercial and SCO in {result}, offering unparalleled luxury and
+          Looking for prime Real Estate in Gurgaon? Explore our exquisite
+          collection of  Residential Apartments, Commercial Space and SCO in {result} Gurugram, offering unparalleled luxury and
           comfort. Find your dream property in Gurgaon today!
         </h2>
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">

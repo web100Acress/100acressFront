@@ -21,7 +21,7 @@ function SearchBar() {
             Rent
           </Link>
           <Link to='/projects/upcoming-projects-in-gurgaon/'
-            className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
+            className="options font-semibold hover:underline  hover:underline-offset-8  cursor-pointer"
           >
              New Launch
           </Link>

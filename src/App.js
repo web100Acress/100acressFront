@@ -1,11 +1,10 @@
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
- 
 } from "react-router-dom";
 import Home from "./Pages/Home";
 import AboutPage from "./Components/AboutPageComponents/AboutPage";
@@ -103,7 +102,6 @@ function App() {
   };
   const token = localStorage.getItem("myToken");
   return (
-   
     <DataProvider>
       <AuthProvider>
         <Wrapper className="section">
@@ -126,24 +124,42 @@ function App() {
               element={<TermsAndConditions />}
             />
             <Route path="/projects-in-gurugram/" element={<Properties />} />
-            <Route path="/rental-properties/best-rental-property-in-gurugram/" element={<RentPropViewCard />} />
-            <Route path="/buy-properties/best-resale-property-in-gurugram/" element={<BuyPropViewCard />} />
+            <Route
+              path="/rental-properties/best-rental-property-in-gurugram/"
+              element={<RentPropViewCard />}
+            />
+            <Route
+              path="/buy-properties/best-resale-property-in-gurugram/"
+              element={<BuyPropViewCard />}
+            />
             <Route path="/about-us/" element={<About />} />
-            <Route path="/rental-properties/:pUrl/:id/" element={<RentViewDetails />} />
-            <Route path="/buy-properties/:pUrl/:id/" element={<BuyViewDetails />} />
+            <Route
+              path="/rental-properties/:pUrl/:id/"
+              element={<RentViewDetails />}
+            />
+            <Route
+              path="/buy-properties/:pUrl/:id/"
+              element={<BuyViewDetails />}
+            />
             <Route path="/propviewcard" element={<PropViewCardPro />} />
             <Route
               path="/property/residential/"
               element={<ResidentialProjects />}
             />
-            <Route path="projects/upcoming-projects-in-gurgaon" element={<UpComingProjects />} />
-            <Route path="/projects/commerial/" element={<CommercialProject />} />
+            <Route
+              path="projects/upcoming-projects-in-gurgaon"
+              element={<UpComingProjects />}
+            />
+            <Route
+              path="/projects/commerial/"
+              element={<CommercialProject />}
+            />
             <Route path="/sco/plots/" element={<ScoPlots />} />
             <Route
               path="/projects/independentfloors/"
               element={<BuilderIndependentFloor />}
             />
-            <Route path="/project-in-delhi/" element={<DelhiProject/>}/>
+            <Route path="/project-in-delhi/" element={<DelhiProject />} />
             <Route path="/deendayal/plots/" element={<DeenDayalPlots />} />
             <Route path="/newsandarticals/" element={<NewsandArtical />} />
             <Route path="/userdashboard/" element={<UserDashBoard />} />
@@ -178,7 +194,10 @@ function App() {
               element={<UserViewProperty />}
             />
             <Route path="/usereditproperty" element={<UserEditProperty />} />
-            <Route path="/property-in-gurugram/:location" element ={<GurugramPrimeLocation/>}/>
+            <Route
+              path="/property-in-gurugram/:location"
+              element={<GurugramPrimeLocation />}
+            />
             <Route path="*" element={<PageNotFound />} />
             <Route path="/contactmainpage" element={<ContactPage />} />
 
@@ -200,7 +219,7 @@ function App() {
             <Route path="/Admin/blog" element={<Blog />} />
             <Route path="/Admin/blog/view/:id" element={<BlogView />} />
             <Route path="/Admin/blog/edit/:id" element={<BlogEdit />} />
-            <Route path="/Admin/career" element={<Career/>}/>
+            <Route path="/Admin/career" element={<Career />} />
             <Route path="/Admin/user" element={<UserAdmin />} />
             <Route path="/Admin/contact" element={<AdminContact />} />
             <Route path="/Admin/editProject" element={<EditProject />} />
@@ -208,9 +227,15 @@ function App() {
             <Route path="/Admin/header" element={<Header />} />
             <Route path="/Admin/Projects/property" element={<Projects />} />
             <Route path="/Admin/rent" element={<Rent />} />
-            <Route path="/Admin/jobposting" element ={<JobPosting/>}/>
-            <Route path="/Admin/jobposting/view/:id" element ={<JobPostingView/>}/>
-            <Route path="/Admin/jobposting/edit/:id" element ={<JobPostingEdit/>}/>
+            <Route path="/Admin/jobposting" element={<JobPosting />} />
+            <Route
+              path="/Admin/jobposting/view/:id"
+              element={<JobPostingView />}
+            />
+            <Route
+              path="/Admin/jobposting/edit/:id"
+              element={<JobPostingEdit />}
+            />
             <Route path="/Admin/rent/view/:id" element={<RentView />} />
             <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
 
@@ -226,8 +251,8 @@ function App() {
             <Route path="/searchdata/:key" element={<SearchData />} />
             <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
             <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
-            <Route path="/Admin/careerview/:id" element={<CareerView/>}/>
-            <Route path="/Admin/careerEdit/:id" element={<CareerEdit/>}/>
+            <Route path="/Admin/careerview/:id" element={<CareerView />} />
+            <Route path="/Admin/careerEdit/:id" element={<CareerEdit />} />
             <Route
               path="/Admin/projecteditbhk/:id"
               element={<ProjectEditBHK />}
@@ -254,7 +279,6 @@ function App() {
         </Wrapper>
       </AuthProvider>
     </DataProvider>
-   
   );
 }
 
