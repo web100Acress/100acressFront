@@ -54,7 +54,7 @@ function BuyPropViewCard() {
                                   >
                                     <div>
                                       {property.frontImage &&
-                                      property.frontImage.url ? (
+                                        property.frontImage.url ? (
                                         <img
                                           src={property.frontImage.url}
                                           alt="frontImage"

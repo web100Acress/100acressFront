@@ -16,6 +16,7 @@ const ProjectEdit = () => {
     frontImage: "",
     otherImage: [],
     project_floorplan_Image: [],
+    projectGallery:[],
     project_locationImage: "",
     logo: "",
     projectName: "",
@@ -39,9 +40,10 @@ const ProjectEdit = () => {
   });
 
   const { id } = useParams();
-  const { project_floorplan_Image } = values;
+  const { project_floorplan_Image,projectGallery } = values;
   const floorPlanLength = values.project_floorplan_Image.length;
-  
+  const projectGalleryLength = values.projectGallery.length;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -73,10 +75,6 @@ const ProjectEdit = () => {
     }
   }
 
- 
-
-  
-  
 
   const handleUpdateUser = async () => {
     try {
@@ -90,7 +88,13 @@ const ProjectEdit = () => {
         fromData.append('project_floorplan_Image', values.project_floorplan_Image.file)
       }
 
+      for(let i=0;i<projectGalleryLength;i++){
+        fromData.append('projectGallery', values.projectGallery.file);
+      }
+
+
       fromData.append('frontImage', values.frontImage.file);
+      fromData.append('projectMaster_plan', values.projectMaster_plan.file)
 
       const response = await axios.post(
         `https://api.100acress.com/project/Update/${id}`,
@@ -211,6 +215,57 @@ const ProjectEdit = () => {
                 </tr>
 
                 <tr>
+                  <th>Project Gallery Image</th>
+                </tr>
+
+                <tr>
+                  <td>
+                    <section className="w-full mx-4 mb-4">
+                      <div className="flex flex-wrap max-w-screen-md">
+                        {projectGallery &&
+                          Array.isArray(projectGallery) &&
+                          projectGallery.length > 0 &&
+                          projectGallery.map((image, index) => (
+                        
+                            <article
+                              key={index}
+                              className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
+                            >
+                              
+                              <MdOutlineDeleteOutline
+                                onClick={() => deleteFloorPlanImage(index)}
+                                size={30}
+                                className="group-hover:text-red-500"
+                              />
+                            
+                              <img
+                                src={image.url}
+                                alt={`Image ${index + 1}`}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                            </article>
+                          ))}
+                        <br />
+                        <input
+                          type="file"
+                          name="projectGallery"
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+
+                            setValues({
+                              ...values,
+                              projectGallery: file,
+                            });
+                          }}
+                          multiple 
+                        />
+                        
+                      </div>
+                    </section>
+                  </td>
+                </tr>
+
+                <tr>
                   <th>Project Location Image</th>
                 </tr>
 
@@ -267,6 +322,33 @@ const ProjectEdit = () => {
                             const file = e.target.files[0];
                             // console.log("Selected file:", file.name);
                             setValues({ ...values, logo: file });
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th> Project Master Plan</th>
+                </tr>
+
+                <tr>
+                  <td>
+                    <tr>
+                      <td>
+                        <img
+                          src={values.projectMaster_plan ? values.projectMaster_plan.url : ""}
+                          alt="logo"
+                          style={{ maxWidth: "50%" }}
+                        />
+                        <br />
+                        <input
+                          type="file"
+                          name="projectMaster_plan"
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+                            setValues({ ...values, projectMaster_plan: file });
                           }}
                         />
                       </td>

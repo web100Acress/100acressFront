@@ -158,17 +158,17 @@ const ProjectView = () => {
                 </tr>
 
                 <tr>
-                  <th>Project project_Brochure Image</th>
+                  <th>Project Master Plan</th>
                 </tr>
                 <tr>
                   <td>
                     <img
                       src={
-                        viewDetails.project_Brochure
-                          ? viewDetails.project_Brochure.url
+                        viewDetails.projectMaster_plan
+                          ? viewDetails.projectMaster_plan.url
                           : ""
                       }
-                      alt=""
+                      alt="projectMaster_plan"
                       style={{ maxWidth: "20%" }}
                       id="previewImage"
                     />

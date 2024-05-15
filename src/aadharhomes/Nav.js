@@ -40,7 +40,7 @@ const MenuListContainer = ({ isOpen }) => {
   const HandleUserLogout = async () => {
     try {
       await axios.get(
-        "https://acre.onrender.com/postPerson/logout"
+        "https://api.100acress.com/postPerson/logout"
       );
       history("/");
       localStorage.removeItem("myToken");
@@ -904,7 +904,7 @@ const handleInquiryDataChange = (e) => {
                       <span className="flex items-center  ">
                         <IoCall className="text-gray-600" />
                         <span className="text-lg font-semibold text-gray-600 ml-2">
-                          8500-900-100
+                          +91{" "}8500-900-100
                         </span>
                       </span>
                       <div className="flex justify-center ">

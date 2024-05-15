@@ -124,6 +124,7 @@ function Home() {
           </section>
         }
       </div>
+
       <div className="bg-orange-100 py-3 ">
         {" "}
         <h1
@@ -514,7 +515,7 @@ function Home() {
             </div>
           </section>
         }
-      </div>
+      </div>     
 
       <Cities />
       {/* <StarCarousel /> */}

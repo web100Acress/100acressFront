@@ -501,7 +501,7 @@ const Footer = () => {
                 </Link>
 
                 <Link
-                  to="https://api.whatsapp.com/message/ROVEJ7K6CX37K1?autoload=1&app_absent=0" target="_blank"
+                  to="https://wa.me/918500900100" target="_blank"
                   className="flex items-center justify-center text-white rounded-full bg-green-500 w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8"
                 >
                   <FaWhatsapp size={20} />

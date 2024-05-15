@@ -32,7 +32,7 @@ const customStyles = {
 const Projects = () => {
   const [viewAll, setViewAll] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(25); 
+  const [rowsPerPage] = useState(25);
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -49,7 +49,7 @@ const Projects = () => {
     };
     fetchData();
   }, []);
-  
+
   const handleDeleteUser = async (id) => {
     try {
       const response = await axios.delete(
@@ -103,7 +103,6 @@ const Projects = () => {
     <>
       <Sidebar />
       <div className="" style={customStyle}>
-
         <div
           className="flex items-center mb-2 mt-2"
           style={{ marginLeft: "100px" }}
@@ -121,12 +120,14 @@ const Projects = () => {
           <span>
             {" "}
             <div className="flex justify-end ml-20">
-              <button
-                onClick={openModal}
-                className="bg-blue-700 p-2 sm:rounded-lg text-white ml-2"
-              >
-                Add New
-              </button>
+              <Link to={"/admin/project-insert"}>
+                <button
+                  // onClick={openModal}
+                  className="bg-blue-700 p-2 sm:rounded-lg text-white ml-2"
+                >
+                  Add New
+                </button>  
+              </Link>
             </div>
           </span>
         </div>
@@ -242,17 +243,20 @@ const Projects = () => {
                 )
               )}
             </div>
-            <Modal
+            {/* <Modal
               isOpen={modalIsOpen}
               onRequestClose={closeModal}
               style={customStyles}
               contentLabel="Example Modal"
             >
               <AddNew />
-            </Modal>
+            </Modal> */}
+
+            {/* <Link to={"/admin/project-insert"}>
+              <AddNew />
+            </Link> */}
           </div>
         </div>
-
       </div>
     </>
   );

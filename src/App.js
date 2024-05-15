@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { styled } from "styled-components";
 import {
   BrowserRouter as Router,
@@ -94,6 +94,7 @@ import CareerEdit from "./AdminPage/CareerEdit";
 import JobPostingView from "./AdminPage/JobPostingView";
 import JobPostingEdit from "./AdminPage/JobPostingEdit";
 import DelhiProject from "./Pages/DelhiProject";
+import InsertProject from "./AdminPage/InsertProject";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -215,6 +216,7 @@ function App() {
               element={<EditDetails />}
             />
             <Route path="/admin/addnew" element={<Addnew />} />
+            <Route path="/admin/project-insert" element={<InsertProject/>}/>
             <Route path="/admin/adminproperty" element={<Adminproperty />} />
             <Route path="/Admin/blog" element={<Blog />} />
             <Route path="/Admin/blog/view/:id" element={<BlogView />} />

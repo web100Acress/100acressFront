@@ -424,11 +424,16 @@
 // export default CareerWithUs;
 
 
-import React from "react";
+import React, { useContext, useState } from "react";
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
-
+import axios from "axios";
+import { DataContext } from "../MyContext";
 const CareerWithUs = () => {
+  
+  const {jobPostingData} = useContext(DataContext);
+
+ 
   return (
     <div style={{overflowX:"hidden"}}>
     <Nav/>
@@ -478,186 +483,31 @@ const CareerWithUs = () => {
               Open Positions
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 px-8 ">
-              <div className=" bg-white text-gray-500 p-2 flex justify-between">
+             {jobPostingData.map((data,index)=>{
+              return(
+                <div className=" bg-white text-gray-500 p-2 flex justify-between">
                 <div className="flex-1 ">
                   <strong className="text-red-600  lg:text-xl sm:text-sm">
-                    Sales Team Lead
+                  Job Title:  {data.jobTitle}
                   </strong>
+
+
                   <p className="lg:text-lg sm:text-xs ">
-                    Min 1-3 Years of Relevant Experience
+                     Experience: {data.experience}
                   </p>
                 </div>
                 <div className="flex-1 text-right">
                   <p className="lg:text-lg sm:text-xs justify-start mb-0">
-                    Location: Gurgaon
+                    Location: {data.jobLocation}
                   </p>
                   <p className=" lg:text-lg sm:text-xs justify-start mt-0">
-                    Full Time | 2 Days Ago
-                  </p>
-                </div>
-              </div>
-              <div className=" bg-white text-gray-500 p-2 flex justify-between">
-                <div className="flex-1">
-                  <strong className="text-red-600  lg:text-xl sm:text-sm">
-                    Sales Head
-                  </strong>
-                  <p className="lg:text-lg sm:text-xs">
-                    Min 1-2 Years of Relevant Experience
-                  </p>
-                </div>
-                <div className="flex-1 text-right">
-                  <p className="lg:text-lg sm:text-xs justify-start mb-0">
-                    Location: Gurgaon
-                  </p>
-                  <p className=" lg:text-lg sm:text-sm justify-start mt-0">
-                    Full Time | 2 Days Ago
-                  </p>
-                </div>
-              </div>
-              <div className=" bg-white text-gray-500 p-2 flex justify-between">
-                <div className="flex-1">
-                  <strong className="text-red-600  lg:text-xl sm:text-sm">
-                    Personal Assistant Female
-                  </strong>
-                  <p className="lg:text-lg sm:text-xs">
-                    Min 1-3 Year of Relevant Experience
-                  </p>
-                </div>
-                <div className="flex-1 text-right">
-                  <p className="lg:text-lg sm:text-xs justify-start mb-0">
-                    Location: Gurgaon
-                  </p>
-                  <p className=" lg:text-lg sm:text-sm justify-start mt-0">
                     Full Time | 1 Days Ago
                   </p>
                 </div>
               </div>
-              <div className=" bg-white text-gray-500 p-2 flex justify-between">
-                <div className="flex-1">
-                  <strong className="text-red-600  lg:text-xl sm:text-sm">
-                  Youtuber Jobs
-                  </strong>
-                  <p className="lg:text-lg sm:text-xs">
-                    Min 3-4 Years of Relevant Experience
-                  </p>
-                </div>
-                <div className="flex-1 text-right">
-                  <p className="lg:text-lg sm:text-xs justify-start mb-0">
-                    Location: Gurgaon
-                  </p>
-                  <p className=" lg:text-lg sm:text-sm justify-start mt-0">
-                    Full Time | 2 Days Ago
-                  </p>
-                </div>
-              </div>
-              <div className=" bg-white text-gray-500 p-2 flex justify-between">
-                <div className="flex-1">
-                  <strong className="text-red-600  lg:text-xl sm:text-sm">
-                    Senior Sales Manager
-                  </strong>
-                  <p className="lg:text-lg sm:text-xs">
-                    Min 3-4 Years of Relevant Experience
-                  </p>
-                </div>
-                <div className="flex-1 text-right">
-                  <p className="lg:text-lg sm:text-xs justify-start mb-0">
-                    Location: Gurgaon
-                  </p>
-                  <p className=" lg:text-lg sm:text-sm justify-start mt-0">
-                    Full Time | 2 Days Ago
-                  </p>
-                </div>
-              </div>
-              <div className=" bg-white text-gray-500 p-2 flex justify-between">
-                <div className="flex-1">
-                  <strong className="text-red-600  lg:text-xl sm:text-sm">
-                    SMO
-                  </strong>
-                  <p className="lg:text-lg sm:text-xs">
-                    Min 1-2 Years of Relevant Experience
-                  </p>
-                </div>
-                <div className="flex-1 text-right">
-                  <p className="lg:text-lg sm:text-xs justify-start mb-0">
-                    Location: Gurgaon
-                  </p>
-                  <p className=" lg:text-lg sm:text-sm justify-start mt-0">
-                    Full Time | 2 Days Ago
-                  </p>
-                </div>
-              </div>
-              <div className=" bg-white text-gray-500 p-2 flex justify-between">
-                <div className="flex-1">
-                  <strong className="text-red-600  lg:text-xl sm:text-sm">
-                    Motion & Graphic Designer
-                  </strong>
-                  <p className="lg:text-lg sm:text-xs">
-                    Min 1-2 Years of Relevant Experience
-                  </p>
-                </div>
-                <div className="flex-1 text-right">
-                  <p className="lg:text-lg sm:text-xs justify-start mb-0">
-                    Location: Gurgaon
-                  </p>
-                  <p className=" lg:text-lg sm:text-sm justify-start mt-0">
-                    Full Time | 2 Days Ago
-                  </p>
-                </div>
-              </div>
-              <div className=" bg-white text-gray-500 p-2 flex justify-between">
-                <div className="flex-1">
-                  <strong className="text-red-600  lg:text-xl sm:text-sm">
-                    Tele Caller Executive
-                  </strong>
-                  <p className="lg:text-lg sm:text-xs">
-                    Min 1-2 Years of Relevant Experience
-                  </p>
-                </div>
-                <div className="flex-1 text-right">
-                  <p className="lg:text-lg sm:text-xs justify-start mb-0">
-                    Location: Gurgaon
-                  </p>
-                  <p className=" lg:text-lg sm:text-sm justify-start mt-0">
-                    Full Time | 2 Days Ago
-                  </p>
-                </div>
-              </div>
-              <div className=" bg-white text-gray-500 p-2 flex justify-between">
-                <div className="flex-1">
-                  <strong className=" lg:text-xl sm:text-sm text-red-600">
-                    Assistant Sales Manager
-                  </strong>
-                  <p className="lg:text-lg sm:text-xs">
-                    Min 1-2 Years of Relevant Experience
-                  </p>
-                </div>
-                <div className="flex-1 text-right">
-                  <p className="lg:text-lg sm:text-xs justify-start mb-0">
-                    Location: Gurgaon
-                  </p>
-                  <p className="  lg:text-lg sm:text-sm justify-start mt-0">
-                    Full Time | 2 Days Ago
-                  </p>
-                </div>
-              </div>
-              <div className="bg-white text-gray-500 p-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 2xl:px-12 flex justify-between">
-                <div className="flex-1">
-                  <strong className="lg:text-xl sm:text-sm text-red-600">
-                    Content Writer
-                  </strong>
-                  <p className="lg:text-lg sm:text-xs">
-                    Min 1-2 Years of Relevant Experience
-                  </p>
-                </div>
-                <div className="flex-1 text-right">
-                  <p className="lg:text-lg sm:text-xs justify-start mb-0">
-                    Location: Gurgaon
-                  </p>
-                  <p className="lg:text-lg sm:text-xs justify-start mt-0">
-                    Full Time | Today
-                  </p>
-                </div>
-              </div>
+              )
+             })}
+          
             </div>
           </div>
         </div>
