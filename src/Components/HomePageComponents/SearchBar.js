@@ -1,47 +1,74 @@
-import React from "react";
+import React , {useState}from "react";
 import styled from "styled-components";
 import Search from "../../aadharhomes/Search";
 import { Link } from "react-router-dom";
 function SearchBar() {
+  const [activeLink, setActiveLink] = useState("");
+  const [data, setData] = useState(null);
+
+  const handleLinkClick = (linkName) => {
+    setActiveLink(linkName);
+    setData(`${linkName}`); // Replace this with actual data fetching logic
+    
+  };
+
+
   return (
     <Wrapper className="section">
       <div
         className="qsbWrapper pt-4 mr-auto ml-auto lg:mr-auto md:ml-auto md:mr-auto ml:ml-auto sm:mr-4 sm:ml-4  xs:py-2 lg:h-14 md:h-10 sm:h-8"
         style={{ maxWidth: "780px", marginTop: "110px" }}
       >
-        <div className="SJDMls xl:h-14 lg:h-14 md:h-8 sm:h-8">
-          <Link to='/buy-properties/best-resale-property-in-gurugram/'
+        {/* <div className="SJDMls xl:h-14 lg:h-14 md:h-8 sm:h-8">
+          <Link
             className="options active font-semibold hover:underline hover:underline-offset-8 cursor-pointer "
           >
             Buy
           </Link>
-          <Link to='/rental-properties/best-rental-property-in-gurugram/'
+          <Link 
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer "
           >
             Rent
           </Link>
-          <Link to='/projects/upcoming-projects-in-gurgaon/'
+          <Link
             className="options font-semibold hover:underline  hover:underline-offset-8  cursor-pointer"
           >
              New Launch
           </Link>
-          <Link to='/projects/commerial/'
+          <Link 
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >  
             Commercial
           </Link>
-          <Link to='/deendayal/plots/'
+          <Link 
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >
             Land/Plots
           </Link>
-          <Link to='/sco/plots/'
+          <Link
             className="options font-semibold hover:underline hover:underline-offset-8 cursor-pointer"
           >
            SCO
           </Link>
+        </div> */}
+
+        <div className="SJDMls xl:h-14 lg:h-14 md:h-8 sm:h-8">
+          {["Buy", "Rent", "New Launch", "Commercial", "Land/Plots", "SCO"].map(
+            (linkName) => (
+              <Link
+                key={linkName}
+                className={`options font-semibold hover:underline hover:underline-offset-8 cursor-pointer ${
+                  activeLink === linkName ? "active text-red-500" : ""
+                }`}
+                onClick={() => handleLinkClick(linkName)}
+              >
+                {linkName}
+              </Link>
+            )
+          )}
         </div>
-        <Search />
+
+        <Search data1={data}/>
       </div>
     </Wrapper>
   );
