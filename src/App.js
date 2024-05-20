@@ -95,6 +95,7 @@ import JobPostingView from "./AdminPage/JobPostingView";
 import JobPostingEdit from "./AdminPage/JobPostingEdit";
 import DelhiProject from "./Pages/DelhiProject";
 import InsertProject from "./AdminPage/InsertProject";
+import UserDetails from "./AdminPage/UserDetails";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -223,6 +224,7 @@ function App() {
             <Route path="/Admin/blog/edit/:id" element={<BlogEdit />} />
             <Route path="/Admin/career" element={<Career />} />
             <Route path="/Admin/user" element={<UserAdmin />} />
+            <Route path="/Admin/userdetails" element={<UserDetails/>}/>
             <Route path="/Admin/contact" element={<AdminContact />} />
             <Route path="/Admin/editProject" element={<EditProject />} />
             <Route path="/Admin/enquiries" element={<Enquiries />} />

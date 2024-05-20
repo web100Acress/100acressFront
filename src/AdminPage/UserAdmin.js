@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios';
 import Sidebar from './Sidebar'
-import Modal from "react-modal";
 import { Link } from 'react-router-dom';
 const customStyle = {
     position:"absolute",
@@ -12,21 +11,7 @@ const customStyle = {
      
    };
   
-  const customStyles = {
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      padding: '10px',
-      marginTop: '0px',
-      width: '550px',
-      height: '100%',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      paddingTop:'0px',
-    },
-  };
+ 
 const UserAdmin = () => {
     const [viewAll, setViewAll] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);

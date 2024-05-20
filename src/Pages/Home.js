@@ -37,7 +37,7 @@ function Home() {
   } = useContext(DataContext);
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
-      <Nav/>
+      <Nav />
       <Helmet>
         <meta
           name="description"
@@ -49,7 +49,7 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-      <div className="h-screen w-full zoom zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl"  style={{backgroundImage: `url('../../Images/A4.png')`}}>
+      <div className="h-screen w-full zoom  zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
         <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
           <SearchBar />
         </div>
@@ -58,10 +58,10 @@ function Home() {
       <div className="">
         {" "}
         <h1
-          className="xjUWI "
+          className="xjUWI"
           style={{
             fontSize: "xx-large",
-            margin: "20px 40px 5px 60px",
+            margin: "10px 40px 5px 60px",
             fontWeight: "600",
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -69,6 +69,16 @@ function Home() {
           }}
         >
           Trending Properties
+          <Link to="/projects-in-gurugram/" target="_top">
+            <span
+              className="float-right text-white text-sm px-2 mx-4 rounded-full hidden md:flex bg-red-600"
+              style={{ alignItems: "center", margin: "16px" }}
+            >
+              <ScaleLoader color="#FFFFFF" height={20} width={3} />
+              <style>{keyframes}</style>
+              <span style={{ marginLeft: "8px" }}>View All</span>
+            </span>
+          </Link>
         </h1>
         {
           <section className="flex flex-col bg-white items-center pt-1 ">
@@ -141,8 +151,8 @@ function Home() {
           Upcoming Projects
           <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
             <span
-              className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
-              style={{ display: "flex", alignItems: "center", margin: "16px" }}
+              className="float-right text-white text-sm px-2 mx-4 rounded-full hidden md:flex bg-red-600"
+              style={{  alignItems: "center", margin: "16px" }}
             >
               <ScaleLoader color="#FFFFFF" height={20} width={3} />
               <style>{keyframes}</style>
@@ -220,11 +230,11 @@ function Home() {
             textOverflow: "ellipsis",
           }}
         >
-           Commercial Projects in Delhi NCR
+          Commercial Projects in Delhi NCR
           <Link to={"/projects/commerial/"} target="_top">
             <span
-              className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
-              style={{ display: "flex", alignItems: "center", margin: "16px" }}
+              className="float-right text-white md:flex text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
+              style={{ alignItems: "center", margin: "16px" }}
             >
               <ScaleLoader color="#FFFFFF" height={20} width={3} />
               <style>{keyframes}</style>
@@ -292,7 +302,6 @@ function Home() {
         }
       </div>
 
-
       <div className="bg-orange-100 py-3 ">
         {" "}
         <h1
@@ -309,8 +318,8 @@ function Home() {
           SCO Plots in Gurugram
           <Link to="/sco/plots/" target="_top">
             <span
-              className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
-              style={{ display: "flex", alignItems: "center", margin: "16px" }}
+              className="float-right text-white md:flex text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
+              style={{  alignItems: "center", margin: "16px" }}
             >
               <ScaleLoader color="#FFFFFF" height={20} width={3} />
               <style>{keyframes}</style>
@@ -341,7 +350,7 @@ function Home() {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                         
+
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
                             {item.projectAddress}
@@ -375,14 +384,29 @@ function Home() {
 
       <SpacesAvailable />
       <h2
-        className="xjUWI "
+        className="xjUWI"
         style={{
           fontSize: "xx-large",
-          margin: "20px 60px",
+          margin: "10px 40px 5px 60px",
           fontWeight: "600",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
         }}
       >
         Featured Projects
+        <Link to="/projects-in-gurugram/" target="_top">
+          <span
+            className="float-right text-white md:flex text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
+            style={{  alignItems: "center", margin: "16px" }}
+          >
+            <ScaleLoader color="#FFFFFF" height={20} width={3} />
+            <style>{keyframes}</style>
+            <span className="hidden sm:block" style={{ marginLeft: "8px" }}>
+              View All{" "}
+            </span>
+          </span>
+        </Link>
       </h2>
 
       {
@@ -451,7 +475,7 @@ function Home() {
           }}
         >
           Projects in Delhi
-          <Link to={"/project-in-delhi/"} target="_top"> 
+          <Link to={"/project-in-delhi/"} target="_top">
             <span className="float-right text-sm text-white hidden sm:block pt-3">
               View All{" "}
             </span>
@@ -515,7 +539,7 @@ function Home() {
             </div>
           </section>
         }
-      </div>     
+      </div>
 
       <Cities />
       {/* <StarCarousel /> */}
@@ -606,15 +630,7 @@ function Home() {
           }
         </div>
       </div>
-      {/* <h1
-        className="xjUWI"
-        style={{
-          fontSize: "xx-large",
-          margin: "30px 60px 0px 60px",
-          fontWeight: "600",
-        }}
-      >Best Resale Property For You</h1> */}
-
+  
       <h1
         className="xjUWI text-md md:text-2xl lg:text-4xl xl:text-4xl"
         style={{
@@ -636,8 +652,8 @@ function Home() {
           target="_top"
         >
           <span
-            className="float-right text-white text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
-            style={{ display: "flex", alignItems: "center", margin: "16px" }}
+            className="float-right text-white md:flex text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
+            style={{ alignItems: "center", margin: "16px" }}
           >
             <ScaleLoader color="#FFFFFF" height={20} width={3} />
             <style>{keyframes}</style>
@@ -807,7 +823,7 @@ const Wrapper = styled.section`
 
   @media screen and (max-width: 1800px) and (min-width: 601px) {
     .djqwUUJNCO {
-      // background-image: url("../../Images/A4.png");
+      background-image: url("../../Images/A4.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
