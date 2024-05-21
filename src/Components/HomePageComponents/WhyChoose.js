@@ -6,7 +6,7 @@ function WhyChoose() {
       <div className="flex flex-col md:flex-row">
         <div className='w-full bg-white px-4 flex flex-col md:flex-row'>
           <div className='w-full md:w-1/2 bg-white rounded-lg mb-4 xl:mt-2 lg:mt-10 md:mt-20'>
-            <img src="../Images/djfML.PNG" alt="100acress" className="w-full object-fit md:h-auto lg:h-auto rounded-lg" />
+            <img src="../Images/djfML.png" alt="100acress" className="w-full object-fit md:h-auto lg:h-auto rounded-lg" />
           </div>
           <div className='w-full md:w-1/2 px-2'>
             <p className="fw-semibold xl:mt-14 lg:mt-10 text-lg lg:text-4xl md:text-3xl sm:text-xl  ">

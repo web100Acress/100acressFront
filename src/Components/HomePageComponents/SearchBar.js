@@ -16,7 +16,7 @@ function SearchBar() {
   return (
     <Wrapper className="section">
       <div
-        className="qsbWrapper pt-4 mr-auto ml-auto lg:mr-auto md:ml-auto md:mr-auto ml:ml-auto sm:mr-4 sm:ml-4  xs:py-2 lg:h-14 md:h-10 sm:h-8"
+        className="qsbWrapper pt-2 mr-auto ml-auto lg:mr-auto md:ml-auto md:mr-auto ml:ml-auto sm:mr-4 sm:ml-4  xs:py-2 lg:h-14 md:h-10 sm:h-8"
         style={{ maxWidth: "780px", marginTop: "110px" }}
       >
         {/* <div className="SJDMls xl:h-14 lg:h-14 md:h-8 sm:h-8">
