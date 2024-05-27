@@ -540,7 +540,7 @@ const NewSellProperty = () => {
               <div>
                 <input
                   type="text"
-                  placeholder="Property descripation"
+                  placeholder="Property description"
                   name="descripation"
                   value={sellProperty.descripation}
                   onChange={handleChangeValue}

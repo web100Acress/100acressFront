@@ -3,33 +3,21 @@ import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 const DelhiProject = () => {
   const { delhiData } = useContext(DataContext);
   return (
     <div>
       <Nav />
 
-      {/* <Helmet>
-      <title>Residential Project in Gurgaon, Apartments in Gurgaon</title>
+      <Helmet>
+      <title>Property in New Delhi - Flats, Villas, House for Sale in Delhi</title>
       <meta
         name="description"
-        content="Buy 2/3 BHK Residential Project in Gurgaon as per your desired location and budget. Checkout your desired Location and Price. Book Now"
+        content="Real Estate Properties in New Delhi- Get Details for Residential &amp; Commercial Properties"
       />
-    </Helmet> */}
-      {/* 
-    <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">
-      <h1 className="mb-2 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-        RESIDENTIAL PROPERTIES
-      </h1>
-      <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-  Residential properties encompass a diverse range of housing options
-  tailored to meet varying lifestyle needs. From single-family homes to
-  condominiums, townhouses, and apartments, each type offers unique
-  features and amenities. 
-</h2>
-
-    </div> */}
-
+    </Helmet>
+  
       <section className="flex pt-2 flex-col items-center">
       <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
             Projects in Delhi

@@ -15,6 +15,7 @@ import { DataContext } from "../MyContext";
 import { ScaleLoader } from "react-spinners";
 import Snapshot from "./Snapshot";
 import Resale from "./Resale";
+import HomeBuilderCarousel from "./HomeBuilderCarousel";
 const keyframes = `
   @keyframes moveHorizontal {
     from {
@@ -690,6 +691,8 @@ function Home() {
       </div> */}
 
       <Snapshot />
+
+      <HomeBuilderCarousel/>
       <Free />
       <Footer />
     </Wrapper>

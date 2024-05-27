@@ -98,7 +98,7 @@ const FormEnquiryReducer = (state, action) => {
       return {
         ...state,
         isSingleProjectEnquriesLoading: false,
-        isError: true,
+        isError: true,   
       };
   }
 

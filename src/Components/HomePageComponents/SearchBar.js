@@ -1,4 +1,4 @@
-import React , {useState}from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Search from "../../aadharhomes/Search";
 import { Link } from "react-router-dom";
@@ -9,9 +9,7 @@ function SearchBar() {
   const handleLinkClick = (linkName) => {
     setActiveLink(linkName);
     setData(`${linkName}`); // Replace this with actual data fetching logic
-    
   };
-
 
   return (
     <Wrapper className="section">
@@ -55,11 +53,21 @@ function SearchBar() {
         <div className="SJDMls xl:h-14 lg:h-14 md:h-8 sm:h-8">
           {["Buy", "Rent", "New Launch", "Commercial", "Land/Plots", "SCO"].map(
             (linkName) => (
+              // <Link
+              //   key={linkName}
+              //   className={`options font-semibold hover:underline hover:underline-offset-8 cursor-pointer ${
+              //     activeLink === linkName ? "active underline text-red-500" : ""
+              //   }`}
+              //   onClick={() => handleLinkClick(linkName)}
+              // >
+              //   {linkName}
+              // </Link>
+
               <Link
                 key={linkName}
                 className={`options font-semibold hover:underline hover:underline-offset-8 cursor-pointer ${
-                  activeLink === linkName ? "active text-red-500" : ""
-                }`}
+                  activeLink === linkName ? "active underline underline-offset-8 text-red-500" : ""
+                } hover:text-red-500`}
                 onClick={() => handleLinkClick(linkName)}
               >
                 {linkName}
@@ -68,7 +76,7 @@ function SearchBar() {
           )}
         </div>
 
-        <Search data1={data}/>
+        <Search data1={data} />
       </div>
     </Wrapper>
   );

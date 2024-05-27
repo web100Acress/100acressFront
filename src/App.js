@@ -217,14 +217,14 @@ function App() {
               element={<EditDetails />}
             />
             <Route path="/admin/addnew" element={<Addnew />} />
-            <Route path="/admin/project-insert" element={<InsertProject/>}/>
+            <Route path="/admin/project-insert" element={<InsertProject />} />
             <Route path="/admin/adminproperty" element={<Adminproperty />} />
             <Route path="/Admin/blog" element={<Blog />} />
             <Route path="/Admin/blog/view/:id" element={<BlogView />} />
             <Route path="/Admin/blog/edit/:id" element={<BlogEdit />} />
             <Route path="/Admin/career" element={<Career />} />
             <Route path="/Admin/user" element={<UserAdmin />} />
-            <Route path="/Admin/userdetails" element={<UserDetails/>}/>
+            <Route path="/Admin/userdetails" element={<UserDetails />} />
             <Route path="/Admin/contact" element={<AdminContact />} />
             <Route path="/Admin/editProject" element={<EditProject />} />
             <Route path="/Admin/enquiries" element={<Enquiries />} />
@@ -289,36 +289,41 @@ function App() {
 export default App;
 
 const Wrapper = styled.section`
-  // font-family: "Roboto", sans-serif;
-  // font-weight: 400;
-  // font-style: normal;
-  //   h1,
-  //   h2,
-  //   h3,
-  //   h4,
-  //   h5,
+  // .philosopher-regular {
+  //   font-family: "Philosopher", sans-serif;
+  //   font-weight: 400;
+  //   font-style: normal;
+  // }
 
-  .philosopher-regular {
-    font-family: "Philosopher", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-  }
+  // .philosopher-bold {
+  //   font-family: "Philosopher", sans-serif;
+  //   font-weight: 700;
+  //   font-style: normal;
+  // }
 
-  .philosopher-bold {
-    font-family: "Philosopher", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-  }
+  // .philosopher-regular-italic {
+  //   font-family: "Philosopher", sans-serif;
+  //   font-weight: 400;
+  //   font-style: italic;
+  // }
 
-  .philosopher-regular-italic {
-    font-family: "Philosopher", sans-serif;
-    font-weight: 400;
-    font-style: italic;
-  }
+  // .philosopher-bold-italic {
+  //   font-family: "Philosopher", sans-serif;
+  //   font-weight: 700;
+  //   font-style: italic;
+  // }
 
-  .philosopher-bold-italic {
-    font-family: "Philosopher", sans-serif;
-    font-weight: 700;
-    font-style: italic;
-  }
+
+
+  // <uniquifier>: Use a unique and descriptive class name
+// <weight>: Use a value from 300 to 900
+
+.rubik-<uniquifier> {
+  font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+}
+
+
 `;

@@ -6,7 +6,6 @@ import { GoProjectSymlink } from "react-icons/go";
 import { AiFillPropertySafety } from "react-icons/ai";
 import { GiFamilyHouse } from "react-icons/gi";
 import { FaHome } from "react-icons/fa";
-import Header from "./Header";
 import { Link } from "react-router-dom";
 import { FaRegUserCircle } from "react-icons/fa";
 import { BiSolidGraduation } from "react-icons/bi";
@@ -20,14 +19,11 @@ const Sidebar = () => {
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
+ 
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Header toggleSidebar={toggleSidebar} />
-      <div className="flex h-auto">
+      {/* <Header toggleSidebar={toggleSidebar} /> */}
+      <div className="flex h-auto ">
         <div
           className={`fixed top-0 left-0 h-full w-60 bg-black overflow-auto ${
             sidebarOpen ? "" : "hidden"
@@ -71,7 +67,7 @@ const Sidebar = () => {
               <span className="text-lg font-semibold">Buy</span>
             </Link>
             <Link
-              to="/Admin/adminProperty"
+              to="/Admin/userdetails"
               className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0"
             >
               <FaHome className="icon fa-sm m-3.5" />{" "}
@@ -134,13 +130,13 @@ const Sidebar = () => {
               <span className="text-lg font-semibold">User</span>
             </Link>
 
-            <Link
+            {/* <Link
               to="/Admin/userdetails"
               className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0"
             >
               <FaRegUserCircle className="icon fa-sm m-3.5" />
               <span className="text-lg font-semibold"> User Details</span>
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
