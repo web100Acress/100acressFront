@@ -354,7 +354,7 @@ const BannerPage = () => {
         />
         <link
           rel="canonical"
-          href={`https://www.100acress.com/${projectViewDetails.project_url}`}
+          href={`https://www.100acress.com/${projectViewDetails.project_url}/`}
         />
         <script type="application/ld+json">
           {`

@@ -1412,7 +1412,7 @@ const BuyPropViewCard = () => {
                                               ? `/buy-properties/${nestedItem.propertyName.replace(
                                                   /\s+/g,
                                                   "-"
-                                                )}/${nestedItem._id}`
+                                                )}/${nestedItem._id}/`
                                               : "#"
                                           }>
                                           <button

@@ -465,23 +465,30 @@ function Home() {
       <div className="py-3" style={{ backgroundColor: "#00314f" }}>
         {" "}
         <h3
-          className="xjUWI text-white "
-          style={{
-            fontSize: "xx-large",
-            margin: "10px 40px 5px 60px",
-            fontWeight: "600",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          Projects in Delhi
-          <Link to={"/project-in-delhi/"} target="_top">
-            <span className="float-right text-sm text-white hidden sm:block pt-3">
+        className="xjUWI text-white"
+        style={{
+          fontSize: "xx-large",
+          margin: "10px 40px 5px 60px",
+          fontWeight: "600",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+         Projects in Delhi
+        <Link to={"/project-in-delhi/"} target="_top">
+          <span
+            className="float-right text-white md:flex text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
+            style={{  alignItems: "center", margin: "16px" }}
+          >
+            <ScaleLoader color="#FFFFFF" height={20} width={3} />
+            <style>{keyframes}</style>
+            <span className="hidden sm:block" style={{ marginLeft: "8px" }}>
               View All{" "}
             </span>
-          </Link>
-        </h3>
+          </span>
+        </Link>
+      </h3>
         {
           <section
             className="flex flex-col pt-4 
