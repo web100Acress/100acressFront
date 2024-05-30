@@ -20,7 +20,7 @@ const Free = () => {
                     <p className='pt-0 px-2'>List your property today and connect with potential buyers or sellers without any cost.</p>
                 </div>
                 <div className='text-left md:text-left mt-4 md:mt-0 px-2 flex-shrink-0'>
-                    <Link to="/signin/">
+                    <Link to="/signin/" target='_top'>
                         <button className='text-black px-2 md:px-4 sm:px-2 bg-blue-300 py-2 md:py-3 rounded-full'>
                             Post Property
                             <span

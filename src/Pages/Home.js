@@ -16,6 +16,7 @@ import { ScaleLoader } from "react-spinners";
 import Snapshot from "./Snapshot";
 import Resale from "./Resale";
 import HomeBuilderCarousel from "./HomeBuilderCarousel";
+import BackToTopButton from "./BackToTopButton";
 const keyframes = `
   @keyframes moveHorizontal {
     from {
@@ -153,7 +154,7 @@ function Home() {
           <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
             <span
               className="float-right text-white text-sm px-2 mx-4 rounded-full hidden md:flex bg-red-600"
-              style={{  alignItems: "center", margin: "16px" }}
+              style={{ alignItems: "center", margin: "16px" }}
             >
               <ScaleLoader color="#FFFFFF" height={20} width={3} />
               <style>{keyframes}</style>
@@ -320,7 +321,7 @@ function Home() {
           <Link to="/sco/plots/" target="_top">
             <span
               className="float-right text-white md:flex text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
-              style={{  alignItems: "center", margin: "16px" }}
+              style={{ alignItems: "center", margin: "16px" }}
             >
               <ScaleLoader color="#FFFFFF" height={20} width={3} />
               <style>{keyframes}</style>
@@ -399,7 +400,7 @@ function Home() {
         <Link to="/projects-in-gurugram/" target="_top">
           <span
             className="float-right text-white md:flex text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
-            style={{  alignItems: "center", margin: "16px" }}
+            style={{ alignItems: "center", margin: "16px" }}
           >
             <ScaleLoader color="#FFFFFF" height={20} width={3} />
             <style>{keyframes}</style>
@@ -465,30 +466,30 @@ function Home() {
       <div className="py-3" style={{ backgroundColor: "#00314f" }}>
         {" "}
         <h3
-        className="xjUWI text-white"
-        style={{
-          fontSize: "xx-large",
-          margin: "10px 40px 5px 60px",
-          fontWeight: "600",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}
-      >
-         Projects in Delhi
-        <Link to={"/project-in-delhi/"} target="_top">
-          <span
-            className="float-right text-white md:flex text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
-            style={{  alignItems: "center", margin: "16px" }}
-          >
-            <ScaleLoader color="#FFFFFF" height={20} width={3} />
-            <style>{keyframes}</style>
-            <span className="hidden sm:block" style={{ marginLeft: "8px" }}>
-              View All{" "}
+          className="xjUWI text-white"
+          style={{
+            fontSize: "xx-large",
+            margin: "10px 40px 5px 60px",
+            fontWeight: "600",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          Projects in Delhi
+          <Link to={"/project-in-delhi/"} target="_top">
+            <span
+              className="float-right text-white md:flex text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
+              style={{ alignItems: "center", margin: "16px" }}
+            >
+              <ScaleLoader color="#FFFFFF" height={20} width={3} />
+              <style>{keyframes}</style>
+              <span className="hidden sm:block" style={{ marginLeft: "8px" }}>
+                View All{" "}
+              </span>
             </span>
-          </span>
-        </Link>
-      </h3>
+          </Link>
+        </h3>
         {
           <section
             className="flex flex-col pt-4 
@@ -638,7 +639,7 @@ function Home() {
           }
         </div>
       </div>
-  
+
       <h1
         className="xjUWI text-md md:text-2xl lg:text-4xl xl:text-4xl"
         style={{
@@ -699,8 +700,9 @@ function Home() {
 
       <Snapshot />
 
-      <HomeBuilderCarousel/>
+      <HomeBuilderCarousel />
       <Free />
+      <BackToTopButton/>
       <Footer />
     </Wrapper>
   );

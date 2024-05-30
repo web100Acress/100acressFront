@@ -1402,7 +1402,7 @@ const BuyPropViewCard = () => {
                                     <div className="row">
                                       <div className="col-md-6">
                                         <p className="text-md mb-0 font-semibold">
-                                          Price: {nestedItem.price}
+                                        ₹ {nestedItem.price}
                                         </p>
                                       </div>
                                       <div className="col-md-6 d-flex justify-content-end">
