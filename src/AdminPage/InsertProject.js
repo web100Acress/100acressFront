@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-import JoditEditor from "jodit-react";
 import Sidebar from "./Sidebar";
-import { Link } from "react-router-dom";
 const customStyle = {
   position: "absolute",
-  top: "100px",
+  top: "20px",
   marginLeft: "100px",
   right: "auto",
   width: "80%",
@@ -32,6 +30,14 @@ const InsertProject = () => {
     projectOverview: "",
     project_url: "",
     project_Status: "",
+    totalLandArea: "",
+    totalUnit: "",
+    towerNumber: "",
+    mobileNumber: "",
+    possessionDate: "",
+    minPrice: "",
+    maxPrice: "",
+    launchingDate:""
   });
 
   const resetData = () => {
@@ -56,6 +62,14 @@ const InsertProject = () => {
       projectOverview: "",
       project_url: "",
       project_Status: "",
+      totalLandArea: "",
+      totalUnit: "",
+      towerNumber: "",
+      mobileNumber: "",
+      possessionDate: "",
+      minPrice: "",
+      maxPrice: "",
+      launchingDate:"",
     });
   };
 
@@ -292,43 +306,6 @@ const InsertProject = () => {
               </select>
             </div>
 
-            
-
-            {/* <label className="block" for="name">
-            <input
-              className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-              type="text"
-              placeholder="Project URL"
-              name="project_url"
-              value={editFromData.project_url}
-              onChange={handleChangeProjectData}
-            />
-          </label>
-
-
-
-          <label className="block" for="name">
-            <input
-              className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-              type="text"
-              placeholder="State"
-              name="state"
-              value={editFromData.state}
-              onChange={handleChangeProjectData}
-            />
-          </label>
-
-          <label className="block" for="name">
-            <input
-              className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-              type="text"
-              placeholder="City"
-              name="city"
-              value={editFromData.city}
-              onChange={handleChangeProjectData}
-            />
-          </label> */}
-
             <div className="flex space-x-4">
               <label className="block" for="project_url">
                 <input
@@ -364,6 +341,105 @@ const InsertProject = () => {
               </label>
             </div>
 
+            {/* New projet Data add */}
+
+            <div className="flex space-x-4">
+              <label className="block" for="project_url">
+                <input
+                  className=" w-[270px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                  type="text"
+                  placeholder="Total Land Area"
+                  name="totalLandArea"
+                  value={editFromData.totalLandArea}
+                  onChange={handleChangeProjectData}
+                />
+              </label>
+
+              <label className="block" for="state">
+                <input
+                  className="w-[270px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                  type="text"
+                  placeholder="Total Unit"
+                  name="totalUnit"
+                  value={editFromData.totalUnit}
+                  onChange={handleChangeProjectData}
+                />
+              </label>
+
+           <div className="flex">
+           <label className="block" for="city">
+                <input
+                  className="w-[100px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                  type="text"
+                  placeholder="Tower Number"
+                  name="towerNumber"
+                  value={editFromData.towerNumber}
+                  onChange={handleChangeProjectData}
+                />
+              </label>
+
+              <label className="block" for="city">
+                <input
+                  className="w-[100px] mx-2 rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                  type="text"
+                  placeholder="Launching Date"
+                  name="launchingDate"
+                  value={editFromData.launchingDate}
+                  onChange={handleChangeProjectData}
+                />
+              </label>
+           </div>
+            </div>
+
+            <div className="flex space-x-4">
+              <label className="block" for="project_url">
+                <input
+                  className=" w-[270px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                  type="number"
+                  placeholder="Mobile Number"
+                  name="mobileNumber"
+                  value={editFromData.mobileNumber}
+                  onChange={handleChangeProjectData}
+                />
+              </label>
+
+              <label className="block" for="state">
+                <input
+                  className="w-[270px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                  type="text"
+                  placeholder="Possession Date"
+                  name="possessionDate"
+                  value={editFromData.possessionDate}
+                  onChange={handleChangeProjectData}
+                />
+              </label>
+
+              <div className="flex">
+                <label className="block" for="city">
+                  <input
+                    className="w-[100px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                    type="text"
+                    placeholder="₹ Min Price"
+                    name="minPrice"
+                    value={editFromData.minPrice}
+                    onChange={handleChangeProjectData}
+                  />
+                </label>
+
+                <label className="block" for="city">
+                  <input
+                    className="w-[100px] rounded-md border mx-2 bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                    type="text"
+                    placeholder="₹ Max Price"
+                    name="maxPrice"
+                    value={editFromData.maxPrice}
+                    onChange={handleChangeProjectData}
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* New projet Data End */}
 
             <label className="block" for="name">
               <input

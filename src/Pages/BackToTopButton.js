@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { GoMoveToTop } from "react-icons/go";
 const BackToTopButton = () => {
   const [showButton, setShowButton] = useState(false);
 
@@ -23,13 +22,8 @@ const BackToTopButton = () => {
   return (
     <>
       {showButton && (
-        <button onClick={scrollToTop} style={styles.button}>
-          {/* ↑ Back to Top */}
-          <img
-            className="rounded-full shadow-2xl bg-red-300"
-            src="../../Images/original-8096d806c5d10d8eaa5c3e575a457e80.gif"
-            style={{ width: "40px", height: "40px" }}
-          />
+        <button onClick={scrollToTop} style={styles.button} className="bg-red-600 border-white text-white px-3 py-3  flex items-center rounded-full animate-bounce">
+          <i className="fa-solid fa-arrow-up  transform rotate-360" />
         </button>
       )}
     </>
@@ -41,9 +35,7 @@ const styles = {
     position: "fixed",
     bottom: "50px",
     right: "50px",
-    // padding: '10px 20px',
     fontSize: "18px",
-    // backgroundColor: '#C04952',
     color: "#fff",
     border: "none",
     borderRadius: "50px",

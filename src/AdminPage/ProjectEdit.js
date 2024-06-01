@@ -37,6 +37,7 @@ const ProjectEdit = () => {
     meta_title: "",
     meta_description: "",
     project_Status: "",
+    launchingDate:"",
   });
 
   const { id } = useParams();
@@ -370,6 +371,183 @@ const ProjectEdit = () => {
                             setValues({
                               ...values,
                               projectName: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Total LandArea :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          value={values.totalLandArea}
+                          name="totalLandArea"
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              totalLandArea: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Total Unit :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          value={values.totalUnit}
+                          name="totalUnit"
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              totalUnit: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Tower Number :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          value={values.towerNumber}
+                          name="towerNumber"
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              towerNumber: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Mobile Number :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          value={values.mobileNumber}
+                          name="mobileNumber"
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              mobileNumber: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                     Possession Date :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          value={values.possessionDate}
+                          name="possessionDate"
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              possessionDate: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                     Launching Date :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          value={values.launchingDate}
+                          name="launchingDate"
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              launchingDate: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Minimum Price :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          value={values.minPrice}
+                          name="minPrice"
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              minPrice: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Maximum Price :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          value={values.maxPrice}
+                          name="maxPrice"
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              maxPrice: e.target.value,
                             })
                           }
                         />

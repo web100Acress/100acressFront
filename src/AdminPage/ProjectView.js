@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 const customStyle = {
   position: "absolute",
-  top: "100px",
+  top: "10px",
   marginLeft: "250px",
   right: "auto",
   width: "80%",
@@ -26,7 +26,6 @@ const ProjectView = () => {
   const [viewDetails, setViewDetails] = useState([]);
   const { pUrl } = useParams();
   const {
-    otherImage,
     project_floorplan_Image,
     projectRedefine_Connectivity,
     projectRedefine_Business,
@@ -208,6 +207,94 @@ const ProjectView = () => {
                       Property Name :{" "}
                       <span style={{ color: "black", fontWeight: "normal" }}>
                         {viewDetails.projectName}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Total LandArea Name :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails.totalLandArea}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Total Unit  :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails.totalUnit}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Tower Number  :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails.towerNumber}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Mobile Number  :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails.mobileNumber}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Possession Date   :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails.possessionDate}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                     Maximum Price  :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails.maxPrice}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Minimum Price  :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails.minPrice}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Launching Date  :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails.launchingDate}
                       </span>
                     </span>
                   </th>

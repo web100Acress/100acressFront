@@ -14,7 +14,7 @@ import "swiper/css/free-mode";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-
+import { format, isValid, parseISO } from 'date-fns';
 const BannerPage = () => {
   //Side Form
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -341,6 +341,17 @@ const BannerPage = () => {
   tomorrow.setDate(tomorrow.getDate() + 365);
   const expirationDate = tomorrow.toISOString().split("T")[0];
 
+
+  const formatDate = (isoString) => {
+    if (!isoString) {
+      return 'No date provided';
+    }
+    const date = parseISO(isoString);
+    if (!isValid(date)) {
+      return 'Invalid date';
+    }
+    return format(date, 'MMMM dd, yyyy');
+  };
   return (
     <Wrapper
       className="section"
@@ -531,6 +542,43 @@ const BannerPage = () => {
           <span className="leading-relaxed">
             {projectViewDetails.project_discripation}
           </span>
+        </div>
+
+        {/* New Data  Design */}
+
+        <div className="bg-[#eee] h-auto flex justify-center p-6 m-6 mb-3">
+          <div className="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 lg:gap-24 sm:gap-6 md:gap-8 p-6">
+            <div className="flex flex-col">
+              <span className="text-center font-normal">Land Area</span>
+              <span className="text-center font-semibold text-2xl">{projectViewDetails.totalLandArea} Acres</span>
+            </div>
+
+            <div className="flex flex-col">
+              <span className="text-center font-normal">About Project</span>
+              <span className="text-center font-semibold text-xl">{projectViewDetails.towerNumber} Tower - {projectViewDetails.totalUnit} Unit</span>
+            </div>
+
+      
+
+            <div className="flex flex-col">
+              <span className="text-center font-normal">Possession</span>
+              <span className="text-center font-semibold text-xl">{formatDate(projectViewDetails.possessionDate)}</span>
+            </div>
+
+           
+            <div className="flex flex-col">
+              <span className="text-center font-normal">Price</span>
+              <span className="text-center font-semibold text-xl">₹ {projectViewDetails.minPrice}cr - ₹ {projectViewDetails.maxPrice}cr</span>
+            </div>
+
+
+            <div className="flex flex-col">
+              <span className="text-center font-normal">Launching Date</span>
+              <span className="text-center font-semibold text-xl">{formatDate(projectViewDetails.launchingDate)}</span>
+            </div>
+
+           
+          </div>
         </div>
 
         {/* Side Form  */}

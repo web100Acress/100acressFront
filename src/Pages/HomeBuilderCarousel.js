@@ -1,5 +1,3 @@
-
-
 import React from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
@@ -43,7 +41,7 @@ const CustomRightArrow = ({ onClick }) => {
       onClick={onClick}
     >
       <span className="text-white text-2xl p-2 rounded-full bg-black ">
-        <GrNext  size={25}/>
+        <GrNext size={25} />
       </span>
     </button>
   );
@@ -60,10 +58,10 @@ const HomeBuilderCarousel = (props) => {
           ssr={true}
           infinite={true}
           autoPlay={true}
-          autoPlaySpeed={2000}
+          autoPlaySpeed={1000}
           keyBoardControl={true}
-          customTransition="transform 3s ease-in-out"
-          transitionDuration={1000}
+          customTransition="transform 3s linear"
+          transitionDuration={3000}
           containerClass="carousel-container"
           removeArrowOnDeviceType={["tablet", "mobile"]}
           deviceType={props.deviceType}
@@ -231,6 +229,11 @@ const HomeBuilderCarousel = (props) => {
           <div>
             <img src="../BuilderImage/trevoc.webp" alt="trevoc" />
           </div>
+          {/* Trinitry */}
+          <div className="mt-4">
+            <img src="../BuilderImage/Trinitry.jpg"  alt="trinitry" />
+          </div>
+
           <div>
             <img src="../BuilderImage/vatika.webp" alt="vatika" />
           </div>
@@ -248,7 +251,6 @@ export default HomeBuilderCarousel;
 
 const Wrapper = styled.section`
   position: relative;
-
   .custom-arrow {
     position: absolute;
     top: 50%;
@@ -288,10 +290,10 @@ const Wrapper = styled.section`
   }
 
   .custom-arrow-left {
-    left: 10px; /* Adjust as necessary */
+    left: 10px;
   }
 
   .custom-arrow-right {
-    right: 10px; /* Adjust as necessary */
+    right: 10px;
   }
 `;
