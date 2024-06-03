@@ -262,7 +262,7 @@ const handleInquiryDataChange = (e) => {
     <Wrapper className="section">
       <Box>
       {/* #c13335  #ab2727 #7a3351  #A10302 */}
-        <Box  bg="#C04952"  px={{ base: 0, md: 4, lg: 7 }}>
+        <Box  bg="#ED2201"  px={{ base: 0, md: 4, lg: 7 }}>
           <Flex h={16} alignItems="center" justifyContent="space-between">
             <IconButton
               size={"md"}

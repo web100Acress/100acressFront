@@ -784,7 +784,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 17vh !important;
-      background-image: url("../../Images/M1.png");
+      background-image: url("../../Images/M2.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -798,7 +798,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/M1.png");
+      background-image: url("../../Images/M2.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -812,7 +812,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 20vh !important;
-      background-image: url("../../Images/M1.png");
+      background-image: url("../../Images/M2.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -826,7 +826,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/M1.png");
+      background-image: url("../../Images/M2.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -835,7 +835,7 @@ const Wrapper = styled.section`
 
   @media screen and (max-width: 1800px) and (min-width: 601px) {
     .djqwUUJNCO {
-      background-image: url("../../Images/A4.png");
+      background-image: url("../../Images/A7.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;

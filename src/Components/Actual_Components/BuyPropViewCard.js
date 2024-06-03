@@ -178,7 +178,6 @@
 
 // export default BuyPropViewCard;
 
-
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Nav from "../../aadharhomes/Nav";
@@ -278,7 +277,7 @@ const BuyPropViewCard = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       const onScroll = () => {
-        if (window.scrollY > 20) {
+        if (window.scrollY > 120) {
           setIsVisible(true);
         } else {
           setIsVisible(false);
@@ -379,7 +378,6 @@ const BuyPropViewCard = () => {
                       >
                         1 BHK
                       </a>
-                      
                     </div>
                   )}
                 </li>
@@ -398,9 +396,8 @@ const BuyPropViewCard = () => {
                         href="#"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
-                       Gurugram
+                        Gurugram
                       </a>
-                     
                     </div>
                   )}
                 </li>
@@ -842,7 +839,7 @@ const BuyPropViewCard = () => {
                       </div>
                     )}
                   </div> */}
-                    <div className="fi_acc">
+                  <div className="fi_acc">
                     <div className="fi_head" onClick={toggle4}>
                       Area
                       <i
@@ -861,7 +858,7 @@ const BuyPropViewCard = () => {
                           />
                           <label for="oneBhk" className="filter ml-2">
                             {" "}
-                          4 BHK
+                            4 BHK
                           </label>
                         </li>
                       </div>
@@ -886,14 +883,17 @@ const BuyPropViewCard = () => {
                           />
                           <label for="oneBhk" className="filter ml-2">
                             {" "}
-                           Gurugram
+                            Gurugram
                           </label>
                         </li>
                       </div>
                     )}
                   </div>
 
-                  <div className="fi_acc" style={{borderBottom:"1px solid #d9d9d9"}}>
+                  <div
+                    className="fi_acc"
+                    style={{ borderBottom: "1px solid #d9d9d9" }}
+                  >
                     <div className="fi_head" onClick={toggle5}>
                       PRICE
                       <i
@@ -1163,7 +1163,7 @@ const BuyPropViewCard = () => {
                           />
                           <label for="oneBhk" className="filter ml-2">
                             {" "}
-                          4 BHK
+                            4 BHK
                           </label>
                         </li>
                       </div>
@@ -1188,14 +1188,17 @@ const BuyPropViewCard = () => {
                           />
                           <label for="oneBhk" className="filter ml-2">
                             {" "}
-                           Gurugram
+                            Gurugram
                           </label>
                         </li>
                       </div>
                     )}
                   </div>
 
-                  <div className="fi_acc" style={{borderBottom:"1px solid #d9d9d9"}}>
+                  <div
+                    className="fi_acc"
+                    style={{ borderBottom: "1px solid #d9d9d9" }}
+                  >
                     <div className="fi_head" onClick={toggle5}>
                       PRICE
                       <i
@@ -1325,7 +1328,6 @@ const BuyPropViewCard = () => {
                       </div>
                     )}
                   </div>
-                
                 </div>
               </div>
             </div>
@@ -1352,34 +1354,21 @@ const BuyPropViewCard = () => {
                   </div>
                 </div>
 
-                <div className="row space-y-1 my-4">
+                {/* <div className="grid lg:grid-cols-2 sm:grid-cols-1 md:grid-cols-2 shadow-lg">
                   {buyData.length > 0 ? (
                     buyData.map((item, index) => (
                       <React.Fragment key={index}>
                         {item.postProperty && item.postProperty.length > 0 ? (
                           item.postProperty.map((nestedItem, nestedIndex) => (
-                            <div className="col-md-6" key={nestedIndex}>
-                              <div className="row g-0 shadow-lg rounded-lg">
-                                <div className="col-lg-4 col-12 ">
+                            <div key={nestedIndex}>
+                              <div className="row g-0  rounded-lg bg-white ">
+                                <div className="col-lg-4 col-12">
                                   {nestedItem.frontImage &&
                                   nestedItem.frontImage.url ? (
                                     <img
                                       src={nestedItem.frontImage.url}
                                       alt="frontImage"
-                                      className="w-full h-[178px] object-fit d-lg-block d-none rounded-l-lg"
-                                    />
-                                  ) : (
-                                    <span>Image not available</span>
-                                  )}
-                                </div>
-
-                                <div className="col-12 d-lg-none">
-                                  {nestedItem.frontImage &&
-                                  nestedItem.frontImage.url ? (
-                                    <img
-                                      src={nestedItem.frontImage.url}
-                                      alt="frontImage"
-                                      className="w-full h-[178px] object-fit mt-3"
+                                      className="w-full h-[178px] object-cover d-lg-block rounded-l-lg"
                                     />
                                   ) : (
                                     <span>Image not available</span>
@@ -1387,26 +1376,21 @@ const BuyPropViewCard = () => {
                                 </div>
                                 <div className="col-lg-8 col-12">
                                   <div className="p-3">
-                                    <h5 className="text-sm mb-0">
+                                    <p className="text-md mb-0">
                                       {nestedItem.propertyName}
-                                    </h5>
-                                    <p className="text-sm mb-3">
-                                      Location: {nestedItem.city}
                                     </p>
-                                    <p className="mb-4">
-                                      <small className="text-body-secondary">
-                                        M3M India New Ultra Luxury High Rise
-                                        Residential M3M Golf Estate SCDA
-                                      </small>
+                                    <p className="text-md mb-3">
+                                      Location: {nestedItem.city}
                                     </p>
                                     <div className="row">
                                       <div className="col-md-6">
-                                        <p className="text-md mb-0 font-semibold">
-                                        ₹ {nestedItem.price}
+                                        <p className="text-md mb-0">
+                                          ₹ {nestedItem.price}
                                         </p>
                                       </div>
                                       <div className="col-md-6 d-flex justify-content-end">
-                                        <Link  to={
+                                        <Link
+                                          to={
                                             nestedItem.propertyName &&
                                             nestedItem._id
                                               ? `/buy-properties/${nestedItem.propertyName.replace(
@@ -1414,10 +1398,12 @@ const BuyPropViewCard = () => {
                                                   "-"
                                                 )}/${nestedItem._id}/`
                                               : "#"
-                                          }>
+                                          }
+                                        >
                                           <button
                                             type="button"
-                                            className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 rounded-lg text-sm px-3 py-1 text-center me-2"
+                                            className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 rounded-lg text-sm px-3 py-1 text-center"
+                                            style={{ marginTop: "50px" }}
                                           >
                                             View Details
                                           </button>
@@ -1437,7 +1423,143 @@ const BuyPropViewCard = () => {
                   ) : (
                     <p>Loading...</p>
                   )}
+                </div> */}
+
+                {/* <div className="grid lg:grid-cols-2 sm:grid-cols-1 md:grid-cols-2 gap-4 p-4">
+  {buyData.length > 0 ? (
+    buyData.map((item, index) => (
+      <React.Fragment key={index}>
+        {item.postProperty && item.postProperty.length > 0 ? (
+          item.postProperty.map((nestedItem, nestedIndex) => (
+            <div key={nestedIndex} className="shadow-lg">
+              <div className="row g-0 rounded-lg bg-white h-[178px]">
+                <div className="col-lg-4 col-12 h-full">
+                  {nestedItem.frontImage && nestedItem.frontImage.url ? (
+                    <img
+                      src={nestedItem.frontImage.url}
+                      alt="frontImage"
+                      className="w-full h-full object-cover d-lg-block rounded-l-lg"
+                    />
+                  ) : (
+                    <span>Image not available</span>
+                  )}
                 </div>
+                <div className="col-lg-8 col-12">
+                  <div className="p-4 flex flex-col justify-between h-full">
+                    <div>
+                      <p className="text-md mb-1 font-semibold">
+                        {nestedItem.propertyName}
+                      </p>
+                      <p className="text-md mb-2 text-gray-600">
+                        Location: {nestedItem.city}
+                      </p>
+                      <p className="text-md mb-0 font-semibold">
+                        ₹ {nestedItem.price}
+                      </p>
+                    </div>
+                    <div className="d-flex justify-content-end mt-auto">
+                      <Link
+                        to={
+                          nestedItem.propertyName && nestedItem._id
+                            ? `/buy-properties/${nestedItem.propertyName.replace(
+                                /\s+/g,
+                                "-"
+                              )}/${nestedItem._id}/`
+                            : "#"
+                        }
+                      >
+                        <button
+                          type="button"
+                          className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 rounded-lg text-sm px-4 w-32 py-2 text-center m-0"
+                        >
+                          View Details
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : null}
+      </React.Fragment>
+    ))
+  ) : (
+    <p>Loading...</p>
+  )}
+</div> */}
+
+                <section className="flex flex-col items-center bg-white">
+                  <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-1 sm:gap-12 lg:grid-cols-1 xl:grid-cols-2 xl:gap-16">
+                    {buyData.length > 0 ? (
+                      buyData.map((item, index) => (
+                        <React.Fragment key={index}>
+                          {item.postProperty && item.postProperty.length > 0
+                            ? item.postProperty.map(
+                                (nestedItem, nestedIndex) => (
+                                  <div key={nestedIndex} className="shadow-lg">
+                                    <div className="row rounded-lg">
+                                      <div className="col-lg-4 col-md-4 col-sm-12 col-12">
+                                        {nestedItem.frontImage &&
+                                        nestedItem.frontImage.url ? (
+                                          <img
+                                            src={nestedItem.frontImage.url}
+                                            alt="frontImage"
+                                            className="object-fit h-48 w-full rounded-l-lg"
+                                          />
+                                        ) : (
+                                          <span>Image not available</span>
+                                        )}
+                                      </div>
+                                      <div className="col-lg-8 col-md-8 col-sm-12 col-12">
+                                        <div className="p-4 h-full flex flex-col justify-between">
+                                          <div>
+                                            <p className="text-md mb-1 font-semibold">
+                                              {nestedItem.propertyName}
+                                            </p>
+                                            <p className="text-md mb-2 text-gray-600">
+                                              Location: {nestedItem.city}
+                                            </p>
+                                            <p className="text-md mb-0 font-semibold">
+                                              ₹ {nestedItem.price}
+                                            </p>
+                                          </div>
+                                          <div className="flex justify-end mt-auto">
+                                            <Link
+                                              to={
+                                                nestedItem.propertyName &&
+                                                nestedItem._id
+                                                  ? `/buy-properties/${nestedItem.propertyName.replace(
+                                                      /\s+/g,
+                                                      "-"
+                                                    )}/${nestedItem._id}/`
+                                                  : "#"
+                                              }
+                                            >
+                                              <button
+                                                type="button"
+                                                className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 rounded-lg text-sm px-4 py-2 text-center m-0"
+                                              >
+                                                View Details
+                                              </button>
+                                            </Link>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              )
+                            : null}
+                        </React.Fragment>
+                      ))
+                    ) : (
+                      <p>Loading...</p>
+                    )}
+                  </div>
+                </section>
+
+                
               </div>
             </div>
           </div>
