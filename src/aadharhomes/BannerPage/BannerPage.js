@@ -546,7 +546,7 @@ const BannerPage = () => {
 
         {/* New Data  Design */}
 
-        <div className="bg-[#eee] h-auto flex justify-center p-6 m-6 mb-3">
+        <div className="bg-[#eee] h-auto flex justify-center p-6 m-0 mb-3">
           <div className="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 lg:gap-24 sm:gap-6 md:gap-8 p-6">
             <div className="flex flex-col">
               <span className="text-center font-normal">Land Area</span>
@@ -558,18 +558,20 @@ const BannerPage = () => {
               <span className="text-center font-semibold text-xl">{projectViewDetails.towerNumber} Tower - {projectViewDetails.totalUnit} Unit</span>
             </div>
 
-      
+
+           
+            <div className="flex flex-col">
+              <span className="text-center font-normal">Price</span>
+              <span className="text-center font-semibold text-xl">₹ {projectViewDetails.minPrice}Cr - ₹ {projectViewDetails.maxPrice}Cr</span>
+            </div>
+
+
 
             <div className="flex flex-col">
               <span className="text-center font-normal">Possession</span>
               <span className="text-center font-semibold text-xl">{formatDate(projectViewDetails.possessionDate)}</span>
             </div>
 
-           
-            <div className="flex flex-col">
-              <span className="text-center font-normal">Price</span>
-              <span className="text-center font-semibold text-xl">₹ {projectViewDetails.minPrice}cr - ₹ {projectViewDetails.maxPrice}cr</span>
-            </div>
 
 
             <div className="flex flex-col">
