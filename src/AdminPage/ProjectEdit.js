@@ -38,6 +38,13 @@ const ProjectEdit = () => {
     meta_description: "",
     project_Status: "",
     launchingDate:"",
+    totalLandArea:"",
+    totalUnit:"",
+    towerNumber:"",
+    mobileNumber:"",
+    possessionDate:"",
+    minPrice:"",
+    maxPrice:"",
   });
 
   const { id } = useParams();
@@ -77,30 +84,51 @@ const ProjectEdit = () => {
   }
 
 
+
   const handleUpdateUser = async () => {
     try {
       const fromData = new FormData();
-
-      for(const key in values){
-        fromData.append(key, values[key])
+  
+      // Append all key-value pairs from values
+      for (const key in values) {
+        if (values[key] !== undefined && values[key] !== null) {
+          fromData.append(key, values[key]);
+        }
       }
-
-      for(let i=0;i<floorPlanLength;i++){
-        fromData.append('project_floorplan_Image', values.project_floorplan_Image.file)
+  
+      // Append floor plan images if they exist
+      if (values.project_floorplan_Image && Array.isArray(values.project_floorplan_Image)) {
+        for (let i = 0; i < floorPlanLength; i++) {
+          if (values.project_floorplan_Image[i] && values.project_floorplan_Image[i].file) {
+            fromData.append('project_floorplan_Image', values.project_floorplan_Image[i].file);
+          }
+        }
       }
-
-      for(let i=0;i<projectGalleryLength;i++){
-        fromData.append('projectGallery', values.projectGallery.file);
+  
+      // Append project gallery images if they exist
+      if (values.projectGallery && Array.isArray(values.projectGallery)) {
+        for (let i = 0; i < projectGalleryLength; i++) {
+          if (values.projectGallery[i] && values.projectGallery[i].file) {
+            fromData.append('projectGallery', values.projectGallery[i].file);
+          }
+        }
       }
-
-
-      fromData.append('frontImage', values.frontImage.file);
-      fromData.append('projectMaster_plan', values.projectMaster_plan.file)
-
+  
+      // Append front image if it exists
+      if (values.frontImage && values.frontImage.file) {
+        fromData.append('frontImage', values.frontImage.file);
+      }
+  
+      // Append project master plan image if it exists
+      if (values.projectMaster_plan && values.projectMaster_plan.file) {
+        fromData.append('projectMaster_plan', values.projectMaster_plan.file);
+      }
+  
       const response = await axios.post(
         `https://api.100acress.com/project/Update/${id}`,
         fromData
       );
+      console.log(response, "response");
       if (response.status === 200) {
         alert("Data updated successfully");
       } else {
@@ -110,6 +138,7 @@ const ProjectEdit = () => {
       console.error("Error updating user:", error);
     }
   };
+  
 
 
   const handleDeleteUser = async (index) => {
