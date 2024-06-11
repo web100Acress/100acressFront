@@ -21,7 +21,7 @@ const Resale = () => {
                             <Link to={`/buy-properties/${property.propertyName.replace(/\s+/g, '-')}/${property._id}`} target="_top">
                               <article
                                 key={propertyIndex}
-                                className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md flex flex-col items-center gap-4 md:flex-row lg:gap-6 border border-gray-300 rounded-lg overflow-hidden"
+                                className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md flex flex-col items-center gap-4 md:flex-row lg:gap-6  rounded-lg overflow-hidden"
                               >
                                 <span className="group relative block h-56 w-full self-start overflow-hidden rounded-l-lg bg-gray-100 shadow-lg md:h-24 md:w-24 lg:h-32 lg:w-32">
                                   {property.frontImage && (

@@ -415,7 +415,7 @@ const BannerPage = () => {
           <img
             src={projectViewDetails?.logo?.url}
             style={{ height: "40px", width: "200px" }}
-            alt="projectlogo"
+            alt={projectViewDetails.projectName}
             loading="lazy"
           />
 

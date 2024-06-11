@@ -85,6 +85,63 @@ const ProjectEdit = () => {
 
 
 
+  // const handleUpdateUser = async () => {
+  //   try {
+  //     const fromData = new FormData();
+  
+  //     // Append all key-value pairs from values
+  //     for (const key in values) {
+  //       if (values[key] !== undefined && values[key] !== null) {
+  //         fromData.append(key, values[key]);
+  //       }
+  //     }
+  
+  //     // Append floor plan images if they exist
+  //     if (values.project_floorplan_Image && Array.isArray(values.project_floorplan_Image)) {
+  //       for (let i = 0; i < floorPlanLength; i++) {
+  //         if (values.project_floorplan_Image[i] && values.project_floorplan_Image[i].file) {
+  //           fromData.append('project_floorplan_Image', values.project_floorplan_Image[i].file);
+  //         }
+  //       }
+  //     }
+  
+  //     // Append project gallery images if they exist
+  //     if (values.projectGallery && Array.isArray(values.projectGallery)) {
+  //       for (let i = 0; i < projectGalleryLength; i++) {
+  //         if (values.projectGallery[i] && values.projectGallery[i].file) {
+  //           fromData.append('projectGallery', values.projectGallery[i].file);
+  //         }
+  //       }
+  //     }
+  
+  //     // Append front image if it exists
+  //     if (values.frontImage && values.frontImage.file) {
+  //       fromData.append('frontImage', values.frontImage.file);
+  //     }
+  
+  //     // Append project master plan image if it exists
+  //     if (values.projectMaster_plan && values.projectMaster_plan.file) {
+  //       fromData.append('projectMaster_plan', values.projectMaster_plan.file);
+  //     }
+  
+  //     const response = await axios.post(
+  //       `https://api.100acress.com/project/Update/${id}`,
+  //       fromData
+  //     );
+
+  //     if (response.status === 200) {
+  //       alert("Data updated successfully");
+  //     } else {
+  //       console.error("Failed to update user");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating user:", error);
+  //   }
+  // };
+  
+
+
+
   const handleUpdateUser = async () => {
     try {
       const fromData = new FormData();
@@ -98,37 +155,41 @@ const ProjectEdit = () => {
   
       // Append floor plan images if they exist
       if (values.project_floorplan_Image && Array.isArray(values.project_floorplan_Image)) {
-        for (let i = 0; i < floorPlanLength; i++) {
-          if (values.project_floorplan_Image[i] && values.project_floorplan_Image[i].file) {
-            fromData.append('project_floorplan_Image', values.project_floorplan_Image[i].file);
+        values.project_floorplan_Image.forEach((item, index) => {
+          if (item && item.file) {
+            fromData.append(`project_floorplan_Image`, item.file);
+            console.log(`Appending floor plan image: project_floorplan_Image[${index}]`, item.file);
           }
-        }
+        });
       }
   
       // Append project gallery images if they exist
       if (values.projectGallery && Array.isArray(values.projectGallery)) {
-        for (let i = 0; i < projectGalleryLength; i++) {
-          if (values.projectGallery[i] && values.projectGallery[i].file) {
-            fromData.append('projectGallery', values.projectGallery[i].file);
+        values.projectGallery.forEach((item, index) => {
+          if (item && item.file) {
+            fromData.append(`projectGallery`, item.file);
+            console.log(`Appending gallery image: projectGallery[${index}]`, item.file);
           }
-        }
+        });
       }
   
       // Append front image if it exists
       if (values.frontImage && values.frontImage.file) {
         fromData.append('frontImage', values.frontImage.file);
+        console.log(`Appending front image: frontImage`, values.frontImage.file);
       }
   
       // Append project master plan image if it exists
       if (values.projectMaster_plan && values.projectMaster_plan.file) {
         fromData.append('projectMaster_plan', values.projectMaster_plan.file);
+        console.log(`Appending master plan image: projectMaster_plan`, values.projectMaster_plan.file);
       }
   
       const response = await axios.post(
         `https://api.100acress.com/project/Update/${id}`,
         fromData
       );
-      console.log(response, "response");
+      
       if (response.status === 200) {
         alert("Data updated successfully");
       } else {
@@ -139,7 +200,7 @@ const ProjectEdit = () => {
     }
   };
   
-
+  
 
   const handleDeleteUser = async (index) => {
     const IndexNumber = index;
@@ -230,7 +291,6 @@ const ProjectEdit = () => {
                           name="project_floorplan_Image"
                           onChange={(e) => {
                             const file = e.target.files[0];
-
                             setValues({
                               ...values,
                               project_floorplan_Image: file,
@@ -238,7 +298,6 @@ const ProjectEdit = () => {
                           }}
                           multiple 
                         />
-                        
                       </div>
                     </section>
                   </td>

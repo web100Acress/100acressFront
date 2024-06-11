@@ -474,6 +474,7 @@ const Footer = () => {
                 >
                   <FaFacebook size={20} />
                 </Link>
+
                 <Link
                   to="https://twitter.com/100acressdotcom" target="_blank"
                   className="flex items-center justify-center text-white bg-black w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8 rounded-full "
@@ -482,17 +483,19 @@ const Footer = () => {
                 </Link>
 
                 <Link
-                  to="https://www.instagram.com/100acress_com/" target="_blank"
+                  to="https://www.instagram.com/official100acress/" target="_blank"
                   className="flex items-center justify-center text-white w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8 rounded-full bg-[#c32aa3]"
                 >
                   <FaInstagram size={20} />
                 </Link>
+
                 <Link
                   to="https://www.linkedin.com/company/100acress/" target="_blank"
                   className="flex justify-center items-center text-white bg-blue-700 w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8 rounded-full"
                 >
                   <FaLinkedin size={20} />
                 </Link>
+
                 <Link
                   to="https://www.youtube.com/@100acress" target="_blank"
                   className="flex items-center justify-center text-red-600 rounded-full bg-white w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8"
@@ -513,6 +516,7 @@ const Footer = () => {
                 >
                   <IoCall size={20} className="text-white" />
                 </a>
+                
               </li>
             </nav>
           </div>
@@ -585,6 +589,7 @@ const Footer = () => {
                     Blog
                   </Link>
                 </li>
+
                 <li className=" sm:mb-0">
                   <Link
                     to="/termsandconditions/"
@@ -606,6 +611,7 @@ const Footer = () => {
                     News & Article
                   </Link>
                 </li>
+
               </div>
             </ul>
           </div>

@@ -17,6 +17,7 @@ import Snapshot from "./Snapshot";
 import Resale from "./Resale";
 import HomeBuilderCarousel from "./HomeBuilderCarousel";
 import BackToTopButton from "./BackToTopButton";
+import PossessionProperty from "../Components/PossessionProperty";
 const keyframes = `
   @keyframes moveHorizontal {
     from {
@@ -702,7 +703,11 @@ function Home() {
 
       <HomeBuilderCarousel />
       <Free />
-      <BackToTopButton/>
+  
+     
+      <PossessionProperty/>
+      
+      <BackToTopButton />
       <Footer />
     </Wrapper>
   );
