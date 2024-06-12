@@ -1,3 +1,5 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
 .App {
   text-align: center;
 }
@@ -39,3 +41,10 @@
 }
 
 
+
+.rubik-default {
+  font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400; /* Regular weight, you can change this if needed */
+  font-style: normal;
+}

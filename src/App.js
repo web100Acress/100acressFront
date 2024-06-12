@@ -1,11 +1,7 @@
 import React from "react";
+import './App.css';
 import { styled } from "styled-components";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes,  Route, Navigate} from "react-router-dom";
 import Home from "./Pages/Home";
 import AboutPage from "./Components/AboutPageComponents/AboutPage";
 import Properties from "./Pages/Properties";
@@ -289,41 +285,14 @@ function App() {
 export default App;
 
 const Wrapper = styled.section`
-  // .philosopher-regular {
-  //   font-family: "Philosopher", sans-serif;
-  //   font-weight: 400;
-  //   font-style: normal;
-  // }
-
-  // .philosopher-bold {
-  //   font-family: "Philosopher", sans-serif;
-  //   font-weight: 700;
-  //   font-style: normal;
-  // }
-
-  // .philosopher-regular-italic {
-  //   font-family: "Philosopher", sans-serif;
-  //   font-weight: 400;
-  //   font-style: italic;
-  // }
-
-  // .philosopher-bold-italic {
-  //   font-family: "Philosopher", sans-serif;
-  //   font-weight: 700;
-  //   font-style: italic;
-  // }
-
-
-
-  // <uniquifier>: Use a unique and descriptive class name
-// <weight>: Use a value from 300 to 900
-
-.rubik-<uniquifier> {
+  
+.rubik-default {
   font-family: "Rubik", sans-serif;
   font-optical-sizing: auto;
-  font-weight: <weight>;
+  font-weight: 400; /* Regular weight, you can change this if needed */
   font-style: normal;
 }
-
-
+  h1,h2,h3,span,div,li,a{
+  font-family: "Rubik", sans-serif;
+  }
 `;

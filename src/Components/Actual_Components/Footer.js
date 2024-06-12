@@ -452,7 +452,7 @@ import { IoCall } from "react-icons/io5";
 const Footer = () => {
   return (
     <>
-      <footer className="bg-[#C04952] h-90">
+      <footer className="bg-[#ED2201] h-90">
         <div className="mx-auto grid text-gray-50 lg:grid-cols-12 px-4">
           <div className="flex flex-col lg:flex-row items-start border-slate-500 py-2 px-2 lg:col-span-12 xl:pl-28 2xl:pl-32">
             <div className="mt-4 lg:mt-0 lg:ml-2 lg:w-full lg:col-span-6">

@@ -139,7 +139,7 @@
 //                   {isOpen && (
 //                     <div className="absolute left-0 mt-2 w-56 z-10 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
 //                       <a
-//                         href="#"
+//                        
 //                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
 //                       >
 //                         Independent Floor
@@ -1725,43 +1725,43 @@ const BuyPropViewCard = () => {
                   {isOpen && (
                     <div className="absolute left-0 mt-2 w-56 z-10 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
                       <Link
-                        href="#"
+                       
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         Independent Floor
                       </Link>
                       <Link
-                        href="#"
+                       
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         Apartment
                       </Link>
                       <Link
-                        href="#"
+                       
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         Builder Floor
                       </Link>
                       <Link
-                        href="#"
+                       
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         Plot
                       </Link>
                       <Link
-                        href="#"
+                       
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         Residential
                       </Link>
                       <Link
-                        href="#"
+                       
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         Studio
                       </Link>
                       <Link
-                        href="#"
+                       
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         Villas
@@ -1781,7 +1781,7 @@ const BuyPropViewCard = () => {
                   {toOpen && (
                     <div className="absolute left-0 mt-2 w-56 z-10 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
                       <Link
-                        href="#"
+                       
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         1 BHK
@@ -1801,7 +1801,7 @@ const BuyPropViewCard = () => {
                   {show && (
                     <div className="absolute left-0 mt-2 w-56 z-10 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
                       <Link
-                        href="#"
+                       
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         Gurugram
