@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import styled from "styled-components";
 import { GrPrevious, GrNext } from "react-icons/gr";
+import { DataContext } from "../MyContext";
+import { useConst } from "@chakra-ui/react";
 const responsive = {
   desktop: {
     breakpoint: { max: 1440, min: 1024 },
@@ -47,6 +49,8 @@ const CustomRightArrow = ({ onClick }) => {
   );
 };
 const HomeBuilderCarousel = (props) => {
+
+  const {allProjectData} = useContext(DataContext);
   return (
     <Wrapper>
       <div className="mx-10 mt-12">
