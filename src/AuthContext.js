@@ -120,12 +120,13 @@ export const AuthProvider = ({ children }) => {
               );
               const sellerId = roleResponse.data.User._id;
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
-              if (roleResponse.data.User.role === "admin") {
+              if (roleResponse.data.User.role === "Admin") {
                 history("/admin/acress/property/aadhar");
               } else {
                 history("/userdashboard/");
                 window.location.reload()
               }
+             
             } else {
               console.error("Role fetch failed:", roleResponse);
               alert(
@@ -151,29 +152,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  // Add this function to handle authentication persistence
-
-  const checkAuthAndRedirect = () => {
-    const token = localStorage.getItem("myToken");
-    const userRole = localStorage.getItem("userRole");
-    if (token && userRole) {
-      setToken(token);
-      setAgentData(JSON.parse(localStorage.getItem("agentData")));
-      const role = JSON.parse(userRole);
-      if (role === "admin") {
-        history("/admin/acress/property/aadhar");
-      } else {
-        history("/userdashboard/");
-      }
-    }
-  };
-  
-  // Call checkAuthAndRedirect when the component mounts
-
-  // useEffect(() => {
-  //   checkAuthAndRedirect();
-  // }, []);
-
   
   const handleDeleteUser = async (id) => {
     try {

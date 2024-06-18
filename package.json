@@ -23,6 +23,7 @@
     "framer-motion": "^10.15.2",
     "jodit-react": "^4.1.2",
     "jquery": "^3.7.1",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.307.0",
     "mdb-react-ui-kit": "^6.2.0",
     "react": "^18.2.0",

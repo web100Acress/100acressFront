@@ -24,7 +24,9 @@ export const DataProvider = ({ children }) => {
   const [commercialProjectAll, setAllCommercialProjectAll] = useState([]);
   const [typeScoPlots, setTypeScoPlots] = useState([]);
   const [delhiData, setDelhiData] = useState([]);
-
+  const [noidaData, setNoidaData] = useState([]);
+  const [goaData, setGoaData] = useState([]);
+  const [panipat, setPanipat] = useState([]);
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
@@ -101,10 +103,16 @@ export const DataProvider = ({ children }) => {
       const golfCourse = projectsData.filter((project) =>
         project.projectAddress.includes("Golf Course Road")
       );
-      
+
       const delhiData = projectsData.filter(
         (project) => project.city === "Delhi" || project.city === "New Delhi"
       );
+
+      const noidaData = projectsData.filter(
+        (project) => project.city === "Noida"
+      );
+      const goaData = projectsData.filter((project) => project.city === "Goa");
+      const panipat = projectsData.filter((project) => project.city === "Panipat");
 
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
@@ -123,6 +131,9 @@ export const DataProvider = ({ children }) => {
       setAllCommercialProjectAll(commercialProjectAll);
       setTypeScoPlots(typeScoPlots);
       setDelhiData(delhiData);
+      setNoidaData(noidaData);
+      setGoaData(goaData);
+      setPanipat(panipat)
     } catch (error) {
       console.log(error || error.message);
     }
@@ -239,6 +250,9 @@ export const DataProvider = ({ children }) => {
         commercialProjectAll,
         typeScoPlots,
         delhiData,
+        noidaData,
+        goaData,
+        panipat,
       }}
     >
       {children}

@@ -1,33 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Modal from "react-modal";
-import AddNew from "./Addnew";
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
 
 const customStyle = {
   position: "absolute",
   top: "10px",
-  marginLeft: "250px",
+  marginLeft: "200px",
   right: "auto",
-  width: "80%",
+  width: "85%",
 };
 
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    padding: "10px",
-    marginTop: "0px",
-    width: "550px",
-    height: "100%",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    paddingTop: "0px",
-  },
-};
+
 
 const Projects = () => {
   const [viewAll, setViewAll] = useState([]);
@@ -100,9 +84,9 @@ const Projects = () => {
   }
 
   return (
-    <>
+    <div>
       <Sidebar />
-      <div className="" style={customStyle}>
+      <div style={customStyle}>
         <div
           className="flex items-center mb-2 mt-2"
           style={{ marginLeft: "100px" }}
@@ -258,7 +242,7 @@ const Projects = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

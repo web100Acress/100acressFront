@@ -715,40 +715,35 @@ const handleInquiryDataChange = (e) => {
                             Projects in Delhi
                           </Link>
                           <Link
-                            to="#"
+                            to={`/project-in-noida/`}
                             className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Noida
                           </Link>
                           <Link
-                            to="#"
+                           to={`/project-in-goa/`}
                             className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Projects in Goa
                           </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Projects in Ahmedabad
-                          </Link>
+                       
 
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Ayodhya
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4  hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Projects in Mumbai
                           </Link>
 
                           <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            to={`/project-in-panipat/`}
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Panipat
                           </Link>
