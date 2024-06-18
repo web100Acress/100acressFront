@@ -264,6 +264,7 @@ function App() {
              <Route path="/property-in-gurugram/:location" element={<GurugramPrimeLocation />} />
             <Route path="*" element={<PageNotFound />} />
             <Route path="/contactmainpage" element={<ContactPage />} />
+            <Route path="/searchdata/:key" element={<SearchData />} />
             </Route>
 
             {/* Admin Routing */}
@@ -272,9 +273,9 @@ function App() {
             <Route path="/Admin/viewproperty/:id" element={<ViewPropertyAdmin />} />
             <Route path="/Admin/viewproperty/viewdetails/:id"  element={<ClientDetails />}  />
              <Route path="/Admin/viewproperty/editdetails/:id"  element={<EditDetails />} />
-             <Route path="/admin/addnew" element={<Addnew />} />
-            <Route path="/admin/project-insert" element={<InsertProject />} />
-           <Route path="/admin/adminproperty" element={<Adminproperty />} />
+             <Route path="/Admin/addnew" element={<Addnew />} />
+            <Route path="/Admin/project-insert" element={<InsertProject />} />
+           <Route path="/Admin/adminproperty" element={<Adminproperty />} />
              <Route path="/Admin/blog" element={<Blog />} />
             <Route path="/Admin/blog/view/:id" element={<BlogView />} />
            <Route path="/Admin/blog/edit/:id" element={<BlogEdit />} />
@@ -299,7 +300,7 @@ function App() {
              <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
              <Route path="/Admin/contactpage" element={<ContactPage />} />
              <Route path="/Admin/ContactUs/UserProfile" element={<UserProfile />}  />
-            <Route path="/searchdata/:key" element={<SearchData />} />
+          
             <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
              <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
              <Route path="/Admin/careerview/:id" element={<CareerView />} />

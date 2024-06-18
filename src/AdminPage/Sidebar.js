@@ -9,6 +9,10 @@ import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { FaRegUserCircle } from "react-icons/fa";
 import { BiSolidGraduation } from "react-icons/bi";
+import { RiLogoutCircleRLine } from "react-icons/ri";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 const Sidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -19,7 +23,26 @@ const Sidebar = () => {
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
- 
+
+  const HandleUserLogout = async () => {
+    try {
+      await axios.get("https://api.100acress.com/postPerson/logout");
+      history("/");
+      localStorage.removeItem("myToken");
+      localStorage.removeItem("mySellerId");
+      localStorage.removeItem("userRole");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const history = useNavigate();
+  const showToastMessage = () => {
+    toast.success("Logging out!", {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 1000,
+    });
+  };
   return (
     <div style={{ overflowX: "hidden" }}>
       {/* <Header toggleSidebar={toggleSidebar} /> */}
@@ -130,13 +153,18 @@ const Sidebar = () => {
               <span className="text-lg font-semibold">User</span>
             </Link>
 
-            {/* <Link
-              to="/Admin/userdetails"
-              className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0"
+            <button
+              onClick={() => HandleUserLogout({})}
+              className="flex items-center hover:bg-gray-400 text-white text-center fa-xl p-0"
             >
-              <FaRegUserCircle className="icon fa-sm m-3.5" />
-              <span className="text-lg font-semibold"> User Details</span>
-            </Link> */}
+              <RiLogoutCircleRLine className="icon fa-sm m-3.5" />
+              <span
+                onClick={showToastMessage}
+                className="text-lg font-semibold"
+              >
+                Log Out
+              </span>
+            </button>
           </div>
         </div>
       </div>
