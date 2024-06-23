@@ -217,7 +217,7 @@ function App() {
       <Wrapper className="section">
         {/* <Router> */}
           <Routes>
-            <Route path="/" element={<PublicRoute />}>
+              <Route path="/" element={<PublicRoute />}>
               <Route index element={<Home />} />
               <Route path="/postproperty" element={token !== null ? <NewSellProperty /> : <Navigate to="/signin" />} />
               <Route path="/signup/" element={<SignUp />} />
@@ -242,7 +242,7 @@ function App() {
              <Route path="/project-in-goa/" element={<GoaProject/>} />
              <Route path="/deendayal/plots/" element={<DeenDayalPlots />} />
              <Route path="/newsandarticals/" element={<NewsandArtical />} />
-             <Route path="/userdashboard/" element={<UserDashBoard />} />
+             <Route path="/userdashboard/" element={token !== null ? <UserDashBoard /> : <Navigate to="/" />} />
              <Route path="/useredit/:id" element={<UserEdit />} />
              <Route path="/middlemain" element={<MiddleMain />} />
              <Route path="/viewallproperty" element={<ViewAllProperty />} />
@@ -265,6 +265,7 @@ function App() {
             <Route path="*" element={<PageNotFound />} />
             <Route path="/contactmainpage" element={<ContactPage />} />
             <Route path="/searchdata/:key" element={<SearchData />} />
+            <Route path="/Admin/blog" element={<Blog />} />
             </Route>
 
             {/* Admin Routing */}
@@ -276,7 +277,7 @@ function App() {
              <Route path="/Admin/addnew" element={<Addnew />} />
             <Route path="/Admin/project-insert" element={<InsertProject />} />
            <Route path="/Admin/adminproperty" element={<Adminproperty />} />
-             <Route path="/Admin/blog" element={<Blog />} />
+             
             <Route path="/Admin/blog/view/:id" element={<BlogView />} />
            <Route path="/Admin/blog/edit/:id" element={<BlogEdit />} />
              <Route path="/Admin/career" element={<Career />} />
@@ -302,7 +303,7 @@ function App() {
              <Route path="/Admin/ContactUs/UserProfile" element={<UserProfile />}  />
           
             <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
-             <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
+            <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
              <Route path="/Admin/careerview/:id" element={<CareerView />} />
             <Route path="/Admin/careerEdit/:id" element={<CareerEdit />} />
              <Route path="/Admin/projecteditbhk/:id"  element={<ProjectEditBHK />} />
@@ -313,6 +314,8 @@ function App() {
             <Route path="/dashboard"  element={<PrivateRoute element={<Dashboard />} />}  />
         
             </Route>
+
+            
           </Routes>
         {/* </Router> */}
       </Wrapper>

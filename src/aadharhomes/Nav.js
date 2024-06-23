@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Box,
   Flex,
@@ -25,7 +25,7 @@ import { ScaleLoader } from "react-spinners";
 import { IoHeadsetOutline } from "react-icons/io5";
 import { IoCall } from "react-icons/io5";
 import { Ri24HoursLine } from "react-icons/ri";
-
+import { DataContext } from "../MyContext";
 const SpacerComponent = () => <Box width="60px" />;
 
 const MenuListContainer = ({ isOpen }) => {
@@ -39,9 +39,7 @@ const MenuListContainer = ({ isOpen }) => {
 
   const HandleUserLogout = async () => {
     try {
-      await axios.get(
-        "https://api.100acress.com/postPerson/logout"
-      );
+      await axios.get("https://api.100acress.com/postPerson/logout");
       history("/");
       localStorage.removeItem("myToken");
       localStorage.removeItem("mySellerId");
@@ -76,7 +74,6 @@ const MenuListContainer = ({ isOpen }) => {
             <MenuItem fontSize="sm">
               <NavLink>Edit Profile</NavLink>
             </MenuItem>
-
 
             <MenuItem fontSize="sm">
               <NavLink>Change Password</NavLink>
@@ -130,6 +127,18 @@ const MenuListContainer = ({ isOpen }) => {
 };
 
 export default function Nav() {
+  // Filter Data Price wise
+  
+
+  const [priceRange, setPriceRange] = useState({ min: 0, max: Infinity });
+  
+  const handlePriceClick = (min, max) => {
+    setPriceRange({ min, max });
+    console.log(`Selected Price Range: Min - ${min}, Max - ${max}`);
+  };
+  
+  // console.log(priceRange,"priceRange Nav")
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -141,7 +150,6 @@ export default function Nav() {
 
   const [showHeadsetDropdown, setShowHeadsetDropdown] = useState(false);
   const [showSteps, setShowSteps] = useState(false);
-
 
   const handleHeadMouseEnter = () => {
     setShowHeadsetDropdown(true);
@@ -209,60 +217,58 @@ export default function Nav() {
   }
 `;
 
-
-const [formDataInquiry, setFormDataInquiry] = useState({
-  name: "",
-  mobile: "",
-  email: "",
-  message: "",
-  status: "",
-});
-
-const resetData = () => {
-  setFormDataInquiry({
+  const [formDataInquiry, setFormDataInquiry] = useState({
     name: "",
     mobile: "",
     email: "",
     message: "",
     status: "",
   });
-};
-const handleInquirySubmitData = async (e) => {
-  e.preventDefault();
-  const { name, email, mobile, message } = formDataInquiry;
-  if (!name || !email || !mobile || !message) {
-    alert("Please fill out all fields.");
-    return;
-  }
-  try {
-    const res = await axios.post(
-      "https://api.100acress.com/contact_Insert",
-      formDataInquiry
-    );
-    alert("Data submitted successfully");
-    resetData();
-  } catch (error) {
-    if (error.response) {
-      console.error("Server error:", error.response.data);
-    } else if (error.request) {
-      console.error("Request error:", error.request);
-    } else {
-      console.error("Error:", error.message);
+
+  const resetData = () => {
+    setFormDataInquiry({
+      name: "",
+      mobile: "",
+      email: "",
+      message: "",
+      status: "",
+    });
+  };
+  const handleInquirySubmitData = async (e) => {
+    e.preventDefault();
+    const { name, email, mobile, message } = formDataInquiry;
+    if (!name || !email || !mobile || !message) {
+      alert("Please fill out all fields.");
+      return;
     }
-  }
-};
+    try {
+      const res = await axios.post(
+        "https://api.100acress.com/contact_Insert",
+        formDataInquiry
+      );
+      alert("Data submitted successfully");
+      resetData();
+    } catch (error) {
+      if (error.response) {
+        console.error("Server error:", error.response.data);
+      } else if (error.request) {
+        console.error("Request error:", error.request);
+      } else {
+        console.error("Error:", error.message);
+      }
+    }
+  };
 
-const handleInquiryDataChange = (e) => {
-  const { name, value } = e.target;
-  setFormDataInquiry({ ...formDataInquiry, [name]: value });
-};
-
+  const handleInquiryDataChange = (e) => {
+    const { name, value } = e.target;
+    setFormDataInquiry({ ...formDataInquiry, [name]: value });
+  };
 
   return (
     <Wrapper className="section">
       <Box>
-      {/* #c13335  #ab2727 #7a3351  #A10302 */}
-        <Box  bg="#ED2201"  px={{ base: 0, md: 4, lg: 7 }}>
+        {/* #c13335  #ab2727 #7a3351  #A10302 */}
+        <Box bg="#ED2201" px={{ base: 0, md: 4, lg: 7 }}>
           <Flex h={16} alignItems="center" justifyContent="space-between">
             <IconButton
               size={"md"}
@@ -452,7 +458,7 @@ const handleInquiryDataChange = (e) => {
                             Localities in Gurugram
                           </Link>
                           <Link
-                            to='/projects-in-gurugram/'
+                            to="/projects-in-gurugram/"
                             className="block text-sm px-2   hover:text-red-600"
                           >
                             Projects in Gurugram
@@ -574,41 +580,40 @@ const handleInquiryDataChange = (e) => {
                         <div className="w-40">
                           <Link
                             to="#"
-                            className="block text-black text-lg px-2 py-1 "
+                            className="block text-black  text-lg px-4 py-1  hover:text-red-600"
                           >
                             Budget
                             <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2   hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
-                            under ₹25000
+                            Under ₹50 Lac
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
-                            ₹25000 - ₹50000
+                            ₹50 Lac - ₹1 Cr
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2   hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
-                            ₹50000 - ₹75000
+                            ₹1 Cr - ₹2.5 Cr
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
-                           ₹75000 - 150000
+                            ₹2.5 Cr - ₹5 Cr
                           </Link>
-
                           <Link
                             to="#"
-                            className="block text-sm px-2   hover:text-red-600"
+                            className="block text-sm px-4 py-1  hover:text-red-600"
                           >
-                           Above ₹150000
+                            Above ₹5 Cr
                           </Link>
                         </div>
                         <div className="w-48">
@@ -681,7 +686,7 @@ const handleInquiryDataChange = (e) => {
                     onMouseEnter={handleHover2}
                     onMouseLeave={handleLeave2}
                   >
-                    <Link 
+                    <Link
                     // to={"/projects-in-gurugram/"}
                     >
                       <button className="text-white font-semibold text-lg ">
@@ -702,31 +707,34 @@ const handleInquiryDataChange = (e) => {
                             Popular Cities
                             <hr className="mt-1" />
                           </Link>
+
                           <Link
-                            to={'/projects-in-gurugram/'}
+                            to={"/projects-in-gurugram/"}
                             className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Gurugram
                           </Link>
+
                           <Link
-                            to={'/project-in-delhi/'}
+                            to={"/project-in-delhi/"}
                             className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Projects in Delhi
                           </Link>
+
                           <Link
                             to={`/project-in-noida/`}
                             className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Noida
                           </Link>
+
                           <Link
-                           to={`/project-in-goa/`}
+                            to={`/project-in-goa/`}
                             className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Projects in Goa
                           </Link>
-                       
 
                           <Link
                             to="#"
@@ -734,6 +742,7 @@ const handleInquiryDataChange = (e) => {
                           >
                             Projects in Ayodhya
                           </Link>
+
                           <Link
                             to="#"
                             className="block text-sm px-4 py-1  hover:text-red-600"
@@ -748,25 +757,50 @@ const handleInquiryDataChange = (e) => {
                             Projects in Panipat
                           </Link>
                         </div>
-                        <div className="w-48">
+                        {/* I am Working here */}
+
+                        <div className="w-40">
                           <Link
                             to="#"
-                            className="block px-4 py-1 text-black  text-lg "
+                            className="block text-black text-lg px-4 py-1 hover:text-red-600"
                           >
-                            Abroad Property
+                            Budget
                             <hr className="mt-1" />
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4   hover:text-red-600"
+                            className="block text-sm px-4 hover:text-red-600"
+                            onClick={() => handlePriceClick(0, 1)}
                           >
-                            Property in Dubai
+                            Under ₹1 Cr
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            className="block text-sm px-4 py-1 hover:text-red-600"
+                            onClick={() => handlePriceClick(1, 5)}
                           >
-                            Property in Singapore
+                            ₹1 Cr - ₹5 Cr
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4 py-1 hover:text-red-600"
+                            onClick={() => handlePriceClick(5, 10)}
+                          >
+                            ₹5 Cr - ₹10 Cr
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4 py-1 hover:text-red-600"
+                            onClick={() => handlePriceClick(10, 20)}
+                          >
+                            ₹10 Cr - ₹20 Cr
+                          </Link>
+                          <Link
+                            to="#"
+                            className="block text-sm px-4 py-1 hover:text-red-600"
+                            onClick={() => handlePriceClick(20, Infinity)}
+                          >
+                            Above ₹20 Cr
                           </Link>
                         </div>
                       </div>
@@ -860,8 +894,6 @@ const handleInquiryDataChange = (e) => {
               </div>
               <SpacerComponent />
 
-
-
               <div className="flex gap-4 ">
                 <div
                   className="relative group hidden md:block "
@@ -896,10 +928,10 @@ const handleInquiryDataChange = (e) => {
                           24 x 7
                         </p>
                       </div>
-                      <span className="flex items-center  ">
+                      <span className="flex items-center pt-1  ">
                         <IoCall className="text-gray-600" />
-                        <span className="text-lg font-semibold text-gray-600 ml-2">
-                          +91{" "}8500-900-100
+                        <span className="text-sm font-semibold text-gray-600 ml-2">
+                          +91 8500-900-100
                         </span>
                       </span>
                       <div className="flex justify-center ">
@@ -976,14 +1008,14 @@ const handleInquiryDataChange = (e) => {
                     </div>
                   )}
                 </div>
-                
+
                 <Menu>
                   <MenuButton
                     as={Button}
                     borderRadius="l"
                     variant="unstyled"
                     aria-label="Profile"
-                    onClick={handleAvatarClick} 
+                    onClick={handleAvatarClick}
                   >
                     {token ? (
                       <>
@@ -1043,9 +1075,6 @@ const handleInquiryDataChange = (e) => {
                   />
                 </Menu>
               </div>
-
-
-
             </Flex>
           </Flex>
 
@@ -1098,10 +1127,8 @@ const handleInquiryDataChange = (e) => {
                   Projects
                 </Link>
               </Stack>
-
             </Box>
           )}
-
         </Box>
       </Box>
     </Wrapper>

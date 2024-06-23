@@ -4,7 +4,6 @@ import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-
 const PanipatProject = () => {
     const { panipat } = useContext(DataContext);
     return (

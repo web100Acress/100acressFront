@@ -65,7 +65,7 @@ const Sidebar = () => {
               className="flex items-center hover:bg-gray-400 text-white text-center fa-xl p-1"
             >
               <GoProjectSymlink className="icon fa-sm m-3.5" />
-              <span className="text-lg font-semibold">Enquiries</span>
+              <span className="text-lg font-semibold"> Project Enquiries</span>
             </Link>
 
             <Link

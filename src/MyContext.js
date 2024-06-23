@@ -27,14 +27,28 @@ export const DataProvider = ({ children }) => {
   const [noidaData, setNoidaData] = useState([]);
   const [goaData, setGoaData] = useState([]);
   const [panipat, setPanipat] = useState([]);
+  const [minPrice, setMinPrice] = useState(5);
+  const [maxPrice, setMaxPrice] = useState(10);
+  const [filteredProjects, setFilteredProjects] = useState([]);
+
+
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
     fetchCareerData();
     fetchJobPostingData();
     buyFetchData();
-  }, []);
+    handleFilter();
+  }, [minPrice, maxPrice]);
 
+
+  const handleFilter = () => {
+    const filtered = allProjectData.filter(project => 
+      project.minPrice >= minPrice && project.maxPrice <= maxPrice
+    );
+    setFilteredProjects(filtered);
+  };
+  
   const fetchAllProject = async () => {
     try {
       const res = await axios.get(
@@ -114,6 +128,13 @@ export const DataProvider = ({ children }) => {
       const goaData = projectsData.filter((project) => project.city === "Goa");
       const panipat = projectsData.filter((project) => project.city === "Panipat");
 
+
+      setFilteredProjects(projectsData.filter(project => 
+        project.minPrice >= minPrice && project.maxPrice <= maxPrice
+      ));
+
+      // console.log(filteredProjects,"filteredProjectsghh")
+     
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
       setFeaturedProject(featuredProjects);
@@ -224,6 +245,7 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+ 
   return (
     <DataContext.Provider
       value={{
@@ -253,6 +275,7 @@ export const DataProvider = ({ children }) => {
         noidaData,
         goaData,
         panipat,
+        handleFilter, // Expose handleFilter here
       }}
     >
       {children}
