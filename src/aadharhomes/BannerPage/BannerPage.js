@@ -422,30 +422,30 @@ const BannerPage = () => {
           <span className="text-[#012e29] text-3xl sm:text-xl lg:text-3xl md:text-2xl sm:pt-2 md:m-2 text-right hidden lg:inline-block">
             <Link
               to={`tel:${
-                projectViewDetails.number
-                  ? projectViewDetails.number
+                projectViewDetails.mobileNumber
+                  ? projectViewDetails.mobileNumber
                   : "+919811750130"
               }`}
             >
               <i className="fa-solid fa-phone"></i>{" "}
-              {projectViewDetails.number
-                ? projectViewDetails.number
-                : 9811750130}
+              {projectViewDetails.mobileNumber
+                ? projectViewDetails.mobileNumber
+                : "9811750130"}
             </Link>
           </span>
 
           <span className="text-[#012e29] text-lg pt-2 md:text-2xl lg:hidden block text-right">
             <Link
               to={`tel:${
-                projectViewDetails.number
-                  ? projectViewDetails.number
-                  : "+919811750130"
+                projectViewDetails.mobileNumber
+                  ? projectViewDetails.mobileNumber
+                  : "9811750130"
               }`}
             >
               <i className="fa-solid fa-phone"></i>
-              {projectViewDetails.number
-                ? projectViewDetails.number
-                : 9811750130}
+              {projectViewDetails.mobileNumber
+                ? projectViewDetails.mobileNumber
+                : "9811750130"}
             </Link>
           </span>
         </div>

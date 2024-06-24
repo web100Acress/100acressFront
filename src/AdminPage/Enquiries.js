@@ -117,7 +117,7 @@ const Enquiries = () => {
                     Status
                   </div>
                 </div>
-                <div className="divide-y divide-gray-200 bg-white dark:divide-neutral-700 dark:bg-neutral-800">
+                {/* <div className="divide-y divide-gray-200 bg-white dark:divide-neutral-700 dark:bg-neutral-800">
                   {selectedEnquiries.map((item, index) => (
                     <div key={index} className="flex">
                       <div className="w-1/12 border-r border-gray-200 dark:border-neutral-700 px-6 py-2 text-center break-words whitespace-normal text-sm text-gray-800 dark:text-neutral-200">
@@ -137,7 +137,31 @@ const Enquiries = () => {
                       </div>
                     </div>
                   ))}   
-                </div>
+                </div> */}
+
+<div className="divide-y divide-gray-200 bg-white dark:divide-neutral-700 dark:bg-neutral-800">
+  {[...selectedEnquiries].reverse().map((item, index) => (
+    <div key={index} className="flex">
+      <div className="w-1/12 border-r border-gray-200 dark:border-neutral-700 px-6 py-2 text-center break-words whitespace-normal text-sm text-gray-800 dark:text-neutral-200">
+        {startIndex + index + 1}
+      </div>
+      <div className="w-2/12 border-r border-gray-200 dark:border-neutral-700 px-6 py-2 text-center break-words whitespace-normal text-sm text-gray-800 dark:text-neutral-200">
+        {item.name}
+      </div>
+      <div className="w-2/12 border-r border-gray-200 dark:border-neutral-700 px-6 py-2 text-center break-words whitespace-normal text-sm text-gray-800 dark:text-neutral-200">
+        {item.mobile}
+      </div>
+      <div className="w-3/12 border-r px-6 py-2 text-center break-words whitespace-normal text-sm text-gray-800 dark:text-neutral-200">
+        {item.projectName}
+      </div>
+      <div className="w-2/12 px-6 py-2 border-r text-center break-words whitespace-normal text-sm text-gray-800 dark:text-neutral-200">
+        {item.status}
+      </div>
+    </div>
+  ))}
+</div>
+
+
               </div>
             </div>
             <div className="mt-4 flex justify-center">{renderPagination()}</div>

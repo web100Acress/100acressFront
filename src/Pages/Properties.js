@@ -6,7 +6,6 @@ import {DataContext} from '../MyContext'
 import { Helmet } from "react-helmet";
 function Properties() {
   const {allProjectData} = useContext(DataContext);
-  
 
   return (
     <div style={{ overflowX: "hidden" }}>

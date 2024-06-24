@@ -2,6 +2,8 @@ import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
+  const [priceRange, setPriceRange] = useState({ min: 0, max: Infinity });
+  
   const [trendingProject, setTrendingProject] = useState([]);
   const [featuredProject, setFeaturedProject] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
@@ -27,10 +29,9 @@ export const DataProvider = ({ children }) => {
   const [noidaData, setNoidaData] = useState([]);
   const [goaData, setGoaData] = useState([]);
   const [panipat, setPanipat] = useState([]);
-  const [minPrice, setMinPrice] = useState(5);
-  const [maxPrice, setMaxPrice] = useState(10);
+  const [minPrice, setMinPrice] = useState(priceRange.min);
+  const [maxPrice, setMaxPrice] = useState(priceRange.max);
   const [filteredProjects, setFilteredProjects] = useState([]);
-
 
   useEffect(() => {
     fetchAllProject();
@@ -38,16 +39,34 @@ export const DataProvider = ({ children }) => {
     fetchCareerData();
     fetchJobPostingData();
     buyFetchData();
+  }, []);
+
+
+  // useEffect(() => {
+  //   setMinPrice(priceRange.min);
+  //   setMaxPrice(priceRange.max);
+  //   handleFilter();
+  // }, [priceRange]);
+
+  
+ 
+  
+
+
+  useEffect(() => {
     handleFilter();
-  }, [minPrice, maxPrice]);
+}, [priceRange]);
 
-
-  const handleFilter = () => {
+const handleFilter = () => {
+    const minPriceNumber = parseFloat(priceRange.min);
+    const maxPriceNumber = parseFloat(priceRange.max);
     const filtered = allProjectData.filter(project => 
-      project.minPrice >= minPrice && project.maxPrice <= maxPrice
+        project.minPrice >= minPriceNumber && project.maxPrice <= maxPriceNumber
     );
     setFilteredProjects(filtered);
-  };
+};
+  
+
   
   const fetchAllProject = async () => {
     try {
@@ -133,7 +152,7 @@ export const DataProvider = ({ children }) => {
         project.minPrice >= minPrice && project.maxPrice <= maxPrice
       ));
 
-      // console.log(filteredProjects,"filteredProjectsghh")
+      
      
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
@@ -154,7 +173,8 @@ export const DataProvider = ({ children }) => {
       setDelhiData(delhiData);
       setNoidaData(noidaData);
       setGoaData(goaData);
-      setPanipat(panipat)
+      setPanipat(panipat);
+      setFilteredProjects(filteredProjects);
     } catch (error) {
       console.log(error || error.message);
     }
@@ -245,10 +265,14 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  
+
  
   return (
     <DataContext.Provider
       value={{
+        priceRange, 
+        setPriceRange,
         trendingProject,
         featuredProject,
         affordable,
@@ -276,6 +300,7 @@ export const DataProvider = ({ children }) => {
         goaData,
         panipat,
         handleFilter, // Expose handleFilter here
+        filteredProjects,
       }}
     >
       {children}

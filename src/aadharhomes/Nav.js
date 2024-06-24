@@ -127,17 +127,16 @@ const MenuListContainer = ({ isOpen }) => {
 };
 
 export default function Nav() {
-  // Filter Data Price wise
-  
+  // Filter Data budget wise
 
-  const [priceRange, setPriceRange] = useState({ min: 0, max: Infinity });
+  const {priceRange, setPriceRange} = useContext(DataContext);
   
   const handlePriceClick = (min, max) => {
     setPriceRange({ min, max });
-    console.log(`Selected Price Range: Min - ${min}, Max - ${max}`);
+   
   };
   
-  // console.log(priceRange,"priceRange Nav")
+
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -768,41 +767,43 @@ export default function Nav() {
                             <hr className="mt-1" />
                           </Link>
                           <Link
-                            to="#"
+                            to={`/projects-in-gurugram/budget`}
                             className="block text-sm px-4 hover:text-red-600"
                             onClick={() => handlePriceClick(0, 1)}
                           >
                             Under ₹1 Cr
                           </Link>
                           <Link
-                            to="#"
+                             to={`/projects-in-gurugram/budget`}
                             className="block text-sm px-4 py-1 hover:text-red-600"
                             onClick={() => handlePriceClick(1, 5)}
                           >
                             ₹1 Cr - ₹5 Cr
                           </Link>
                           <Link
-                            to="#"
+                            to={`/projects-in-gurugram/budget`}
                             className="block text-sm px-4 py-1 hover:text-red-600"
                             onClick={() => handlePriceClick(5, 10)}
                           >
                             ₹5 Cr - ₹10 Cr
                           </Link>
                           <Link
-                            to="#"
+                             to={`/projects-in-gurugram/budget`}
                             className="block text-sm px-4 py-1 hover:text-red-600"
                             onClick={() => handlePriceClick(10, 20)}
                           >
                             ₹10 Cr - ₹20 Cr
                           </Link>
                           <Link
-                            to="#"
+                             to={`/projects-in-gurugram/budget`}
                             className="block text-sm px-4 py-1 hover:text-red-600"
                             onClick={() => handlePriceClick(20, Infinity)}
                           >
                             Above ₹20 Cr
                           </Link>
                         </div>
+
+                        
                       </div>
                     </div>
                   </div>
