@@ -128,15 +128,12 @@ const MenuListContainer = ({ isOpen }) => {
 
 export default function Nav() {
   // Filter Data budget wise
-
   const {priceRange, setPriceRange} = useContext(DataContext);
   
   const handlePriceClick = (min, max) => {
     setPriceRange({ min, max });
-   
   };
   
-
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showLoginModal, setShowLoginModal] = useState(false);

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-
+import { DataContext } from "../MyContext";
+import { Link } from "react-router-dom";
 const PossessionProperty = ({ deviceType }) => {
   const responsive = {
     desktop: {
@@ -24,6 +25,11 @@ const PossessionProperty = ({ deviceType }) => {
       items: 1,
       slidesToSlide: 1, // optional, default to 1.
     },
+  };
+
+  const { possessionDate, setPossessionDate } = useContext(DataContext);
+  const handleDateClick = (value) => {
+    setPossessionDate(value);
   };
 
   return (
@@ -68,7 +74,7 @@ const PossessionProperty = ({ deviceType }) => {
                 <div className="mt-3 mb-6 px-3 pb-2">
                   <a>
                     <span className=" animate-bounce focus:animate-none hover:animate-none  inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                    Ready to move
+                      Ready to move
                     </span>
                     <span className="block text-gray-400">
                       29,000+ Properties
@@ -79,7 +85,12 @@ const PossessionProperty = ({ deviceType }) => {
             </div>
           </div>
 
-          <div className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]">
+          <Link >
+          <div
+           target="_top"
+            onClick={() => handleDateClick(2024)}
+            className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
+          >
             <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
               <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
                 <a className="relative flex h-48 overflow-hidden ">
@@ -92,7 +103,7 @@ const PossessionProperty = ({ deviceType }) => {
                 <div className="mt-3 mb-6 px-3 pb-2">
                   <a>
                     <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                      Possession in 2024
+                      Possession in <span>2024</span>
                     </span>
                     <span className="block text-gray-400">
                       29,000+ Properties
@@ -102,102 +113,128 @@ const PossessionProperty = ({ deviceType }) => {
               </div>
             </div>
           </div>
+          </Link>
+          
+          <Link >
+            <div
+             target="_top"
+              onClick={() => handleDateClick(2025)}
+              className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
+            >
+              <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
+                <div className="relative bg-[#D7F2E3] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
+                  <a className="relative flex h-48 overflow-hidden ">
+                    <img
+                      className="object-cover w-full  h-44"
+                      src="../../Images/p3.jpg"
+                      alt=" Ready to move"
+                    />
+                  </a>
+                  <div className="mt-3 mb-6 px-3 pb-2">
+                    <a>
+                      <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
+                        Possession in <span>2025</span>
+                      </span>
+                      <span className="block text-gray-400">
+                        29,000+ Properties
+                      </span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Link>
 
-          <div className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]">
-            <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
-              <div className="relative bg-[#D7F2E3] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                <a className="relative flex h-48 overflow-hidden ">
-                  <img
-                    className="object-cover w-full  h-44"
-                    src="../../Images/p3.jpg"
-                    alt=" Ready to move"
-                  />
-                </a>
-                <div className="mt-3 mb-6 px-3 pb-2">
-                  <a>
-                    <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                      Possession in 2025
-                    </span>
-                    <span className="block text-gray-400">
-                      29,000+ Properties
-                    </span>
+          <Link >
+            <div
+             target="_top"
+              onClick={() => handleDateClick(2026)}
+              className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
+            >
+              <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
+                <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
+                  <a className="relative flex h-48 overflow-hidden ">
+                    <img
+                      className="object-cover w-full  h-44"
+                      src="../../Images/p4.jpg"
+                      alt=" Ready to move"
+                    />
                   </a>
+                  <div className="mt-3 mb-6 px-3 pb-2">
+                    <a>
+                      <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
+                        Possession in <span>2026</span>
+                      </span>
+                      <span className="block text-gray-400">
+                        29,000+ Properties
+                      </span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]">
-            <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
-              <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                <a className="relative flex h-48 overflow-hidden ">
-                  <img
-                    className="object-cover w-full  h-44"
-                    src="../../Images/p4.jpg"
-                    alt=" Ready to move"
-                  />
-                </a>
-                <div className="mt-3 mb-6 px-3 pb-2">
-                  <a>
-                    <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                      Possession in 2026
-                    </span>
-                    <span className="block text-gray-400">
-                      29,000+ Properties
-                    </span>
+          <Link >
+            <div
+              onClick={() => handleDateClick(2027)}
+              className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
+               target="_top"
+            >
+              <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
+                <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
+                  <a className="relative flex h-48 overflow-hidden ">
+                    <img
+                      className="object-cover w-full  h-44"
+                      src="../../Images/p3.jpg"
+                      alt=" Ready to move"
+                    />
                   </a>
+                  <div className="mt-3 mb-6 px-3 pb-2">
+                    <a>
+                      <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
+                        Possession in <span>2027</span>
+                      </span>
+                      <span className="block text-gray-400">
+                        29,000+ Properties
+                      </span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]">
-            <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
-              <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                <a className="relative flex h-48 overflow-hidden ">
-                  <img
-                    className="object-cover w-full  h-44"
-                    src="../../Images/p3.jpg"
-                    alt=" Ready to move"
-                  />
-                </a>
-                <div className="mt-3 mb-6 px-3 pb-2">
-                  <a>
-                    <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                      Possession in 2027
-                    </span>
-                    <span className="block text-gray-400">
-                      29,000+ Properties
-                    </span>
+          <Link>
+            <div
+              onClick={() => handleDateClick(2028)}
+              className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
+              target="_top"
+            >
+              <div className="transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
+                <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
+                  <a className="relative flex h-48 overflow-hidden ">
+                    <img
+                      className="object-cover w-full  h-44"
+                      src="../../Images/p2.jpg"
+                      alt=" Ready to move"
+                    />
                   </a>
+                  <div className="mt-3 mb-6 px-3 pb-2">
+                    <a>
+                      <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
+                        Possession in <span>2028</span>
+                      </span>
+                      <span className="block text-gray-400">
+                        29,000+ Properties
+                      </span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]">
-            <div className="transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
-              <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                <a className="relative flex h-48 overflow-hidden ">
-                  <img
-                    className="object-cover w-full  h-44"
-                    src="../../Images/p2.jpg"
-                    alt=" Ready to move"
-                  />
-                </a>
-                <div className="mt-3 mb-6 px-3 pb-2">
-                  <a>
-                    <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                      Possession in 2028
-                    </span>
-                    <span className="block text-gray-400">
-                      29,000+ Properties
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
         </Carousel>
       </div>
     </>

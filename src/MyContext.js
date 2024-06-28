@@ -3,7 +3,6 @@ import axios from "axios";
 export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: Infinity });
-  
   const [trendingProject, setTrendingProject] = useState([]);
   const [featuredProject, setFeaturedProject] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
@@ -32,7 +31,9 @@ export const DataProvider = ({ children }) => {
   const [minPrice, setMinPrice] = useState(priceRange.min);
   const [maxPrice, setMaxPrice] = useState(priceRange.max);
   const [filteredProjects, setFilteredProjects] = useState([]);
-
+  const [possessionDate, setPossessionDate] = useState(null);
+  const [possessionAllData, setPossessionAllData] = useState([]);
+ 
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
@@ -41,33 +42,31 @@ export const DataProvider = ({ children }) => {
     buyFetchData();
   }, []);
 
-
-  // useEffect(() => {
-  //   setMinPrice(priceRange.min);
-  //   setMaxPrice(priceRange.max);
-  //   handleFilter();
-  // }, [priceRange]);
-
-  
- 
-  
-
-
   useEffect(() => {
+    PossessionFilter();
     handleFilter();
-}, [priceRange]);
+  }, [priceRange,possessionDate]);
 
-const handleFilter = () => {
+  const handleFilter = () => {
     const minPriceNumber = parseFloat(priceRange.min);
     const maxPriceNumber = parseFloat(priceRange.max);
-    const filtered = allProjectData.filter(project => 
+    const filtered = allProjectData.filter(
+      (project) =>
         project.minPrice >= minPriceNumber && project.maxPrice <= maxPriceNumber
     );
     setFilteredProjects(filtered);
-};
-  
+  };
+ 
+  const PossessionFilter = () => {
+    setPossessionAllData([]);
+    const PossFilter = allProjectData.filter((project) => {
+      const projectYear = new Date(project.possessionDate).getFullYear();
+      return projectYear === parseInt(possessionDate);
+    });
+    setPossessionAllData(PossFilter);
+  };
 
-  
+
   const fetchAllProject = async () => {
     try {
       const res = await axios.get(
@@ -145,15 +144,17 @@ const handleFilter = () => {
         (project) => project.city === "Noida"
       );
       const goaData = projectsData.filter((project) => project.city === "Goa");
-      const panipat = projectsData.filter((project) => project.city === "Panipat");
+      const panipat = projectsData.filter(
+        (project) => project.city === "Panipat"
+      );
 
+      setFilteredProjects(
+        projectsData.filter(
+          (project) =>
+            project.minPrice >= minPrice && project.maxPrice <= maxPrice
+        )
+      );
 
-      setFilteredProjects(projectsData.filter(project => 
-        project.minPrice >= minPrice && project.maxPrice <= maxPrice
-      ));
-
-      
-     
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
       setFeaturedProject(featuredProjects);
@@ -265,14 +266,13 @@ const handleFilter = () => {
     }
   };
 
-  
-
- 
   return (
     <DataContext.Provider
       value={{
-        priceRange, 
+        priceRange,
         setPriceRange,
+        possessionDate,
+        setPossessionDate,
         trendingProject,
         featuredProject,
         affordable,
@@ -301,6 +301,7 @@ const handleFilter = () => {
         panipat,
         handleFilter, // Expose handleFilter here
         filteredProjects,
+        possessionAllData,
       }}
     >
       {children}

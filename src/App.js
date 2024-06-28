@@ -98,6 +98,8 @@ import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
 import BudgetPrice from "./Pages/BudgetPrice";
 import { useState } from "react";
+import BlogViewAdmin from "./AdminPage/BlogViewAdmin";
+import PossessionProject from "./Pages/PossessionProject";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -121,6 +123,7 @@ function App() {
              <Route path="/termsandconditions/" element={<TermsAndConditions />} />
              <Route path="/projects-in-gurugram/" element={<Properties />} />
              <Route path="/projects-in-gurugram/budget" element = {<BudgetPrice/>}/>
+             <Route path="/projects-in-gurugram/possession" element = {<PossessionProject/>}/>
              <Route path="/rental-properties/best-rental-property-in-gurugram/" element={<RentPropViewCard />} />
              <Route  path="/buy-properties/best-resale-property-in-gurugram/"  element={<BuyPropViewCard />}  />
              <Route path="/about-us/" element={<About />} />
@@ -145,7 +148,7 @@ function App() {
              <Route path="/contactus/" element={<ContactUs />} />
              <Route path="/careerwithus/" element={<CareerWithUs />} />
              <Route path="/blog/" element={<Blogging />} />
-             <Route path="/blog/:id" element={<BlogView />} />
+             <Route path="/blog/:blogTitle/:id" element={<BlogView />} />
              <Route path="/blog/write" element={<BlogWrite />} />
              <Route path="/resetpassword/:token" element={<ForgetPassword />} />
              <Route path="/forgetpassword" element={<ResetEmailPassword />} />
@@ -172,9 +175,8 @@ function App() {
              <Route path="/Admin/viewproperty/editdetails/:id"  element={<EditDetails />} />
              <Route path="/Admin/addnew" element={<Addnew />} />
             <Route path="/Admin/project-insert" element={<InsertProject />} />
-           <Route path="/Admin/adminproperty" element={<Adminproperty />} />
-             
-            <Route path="/Admin/blog/view/:id" element={<BlogView />} />
+            <Route path="/Admin/adminproperty" element={<Adminproperty />} />
+            <Route path="/Admin/blog/view/:id" element={<BlogViewAdmin/>}/>
            <Route path="/Admin/blog/edit/:id" element={<BlogEdit />} />
              <Route path="/Admin/career" element={<Career />} />
             <Route path="/Admin/user" element={<UserAdmin />} />
