@@ -31,9 +31,20 @@ export const DataProvider = ({ children }) => {
   const [minPrice, setMinPrice] = useState(priceRange.min);
   const [maxPrice, setMaxPrice] = useState(priceRange.max);
   const [filteredProjects, setFilteredProjects] = useState([]);
-  const [possessionDate, setPossessionDate] = useState(null);
+  // const [possessionDate, setPossessionDate] = useState(null);
   const [possessionAllData, setPossessionAllData] = useState([]);
- 
+  const [readyToMoveData, setReadyTOMoveData] = useState([]);
+  
+  const [possessionDate, setPossessionDate] = useState(() => {
+    try {
+      const storedDate = localStorage.getItem('possessionDate');
+      return storedDate ? JSON.parse(storedDate) : null;
+    } catch (error) {
+      console.error('Error parsing localStorage data:', error);
+      return null;
+    }
+  });
+
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
@@ -42,20 +53,15 @@ export const DataProvider = ({ children }) => {
     buyFetchData();
   }, []);
 
-  useEffect(() => {
-    PossessionFilter();
-    handleFilter();
-  }, [priceRange,possessionDate]);
+  
 
-  const handleFilter = () => {
-    const minPriceNumber = parseFloat(priceRange.min);
-    const maxPriceNumber = parseFloat(priceRange.max);
-    const filtered = allProjectData.filter(
-      (project) =>
-        project.minPrice >= minPriceNumber && project.maxPrice <= maxPriceNumber
-    );
-    setFilteredProjects(filtered);
-  };
+  useEffect(() => {
+    if (possessionDate !== null) { 
+      PossessionFilter();
+    }
+    handleFilter();
+  }, [priceRange, possessionDate]);
+
  
   const PossessionFilter = () => {
     setPossessionAllData([]);
@@ -143,12 +149,17 @@ export const DataProvider = ({ children }) => {
       const noidaData = projectsData.filter(
         (project) => project.city === "Noida"
       );
+
       const goaData = projectsData.filter((project) => project.city === "Goa");
       const panipat = projectsData.filter(
         (project) => project.city === "Panipat"
       );
 
-      setFilteredProjects(
+
+       const  readyToMoveData = projectsData.filter((project) => project.project_Status === "readytomove")
+       
+       
+       setFilteredProjects(
         projectsData.filter(
           (project) =>
             project.minPrice >= minPrice && project.maxPrice <= maxPrice
@@ -176,6 +187,7 @@ export const DataProvider = ({ children }) => {
       setGoaData(goaData);
       setPanipat(panipat);
       setFilteredProjects(filteredProjects);
+      setReadyTOMoveData(readyToMoveData);
     } catch (error) {
       console.log(error || error.message);
     }
@@ -266,6 +278,16 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  const handleFilter = () => {
+    const minPriceNumber = parseFloat(priceRange.min);
+    const maxPriceNumber = parseFloat(priceRange.max);
+    const filtered = allProjectData.filter(
+      (project) =>
+        project.minPrice >= minPriceNumber && project.maxPrice <= maxPriceNumber
+    );
+    setFilteredProjects(filtered);
+  };
+
   return (
     <DataContext.Provider
       value={{
@@ -302,6 +324,7 @@ export const DataProvider = ({ children }) => {
         handleFilter, // Expose handleFilter here
         filteredProjects,
         possessionAllData,
+        readyToMoveData,
       }}
     >
       {children}

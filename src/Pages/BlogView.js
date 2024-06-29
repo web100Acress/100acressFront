@@ -9,6 +9,54 @@ const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
   const [data, setData] = useState([]);
   const { id } = useParams();
+  const [blogQuery, setBlogQuery] = useState({
+    name: "",
+    mobile: "",
+    email: "",
+    message: "",
+    status: "",
+  });
+
+  const resetData = () => {
+    setBlogQuery({
+      name: "",
+      mobile: "",
+      email: "",
+      message: "",
+      status: "",
+    });
+  };
+
+  const handleBlogQueryChange = (e) => {
+    const { name, value } = e.target;
+    setBlogQuery({ ...blogQuery, [name]: value });
+  };
+
+  const handleBlogSubmitQueryData = async (e) => {
+    e.preventDefault();
+    const { name, email, mobile, message } = blogQuery;
+    if (!name || !email || !mobile || !message) {
+      alert("Please fill out all fields.");
+      return;
+    }
+    try {
+      const res = await axios.post(
+        "https://api.100acress.com/contact_Insert",
+        blogQuery
+      );
+      alert("Data submitted successfully");
+      resetData();
+    } catch (error) {
+      if (error.response) {
+        console.error("Server error:", error.response.data);
+      } else if (error.request) {
+        console.error("Request error:", error.request);
+      } else {
+        console.error("Error:", error.message);
+      }
+    }
+  };
+
   const fetchData = async () => {
     try {
       const res = await axios.get(`https://api.100acress.com/blog/view/${id}`);
@@ -21,8 +69,6 @@ const BlogView = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  useEffect(() => {});
 
   const {
     blog_Title,
@@ -89,6 +135,91 @@ const BlogView = () => {
                     </Link>
                   );
                 })}
+              </div>
+
+              <div className="article-comment">
+                <h4 className="text-lg  text-red-500 m-0">Contact Us </h4>
+                <form id="contact-form">
+                  <div className="row pt-3">
+                    <div className="widget widget-tags">
+                      <div className="widget-body">
+                        <div className="row">
+                          <div className="col-md-12">
+                            <div className="form-group">
+                              <input
+                                name="name"
+                                onChange={handleBlogQueryChange}
+                                value={blogQuery.name}
+                                placeholder="Name *"
+                                className="form-control"
+                                type="text"
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-12 pt-2">
+                            <div className="form-group">
+                              <input
+                                name="email"
+                                value={blogQuery.email}
+                                onChange={handleBlogQueryChange}
+                                placeholder="Email *"
+                                className="form-control"
+                                type="email"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="col-md-12 pt-2">
+                            <div className="form-group">
+                              <input
+                                name="mobile"
+                                value={blogQuery.mobile}
+                                onChange={handleBlogQueryChange}
+                                placeholder="Mobile *"
+                                className="form-control"
+                                type="number"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="col-md-12 pt-2 ">
+                            <div className="form-group">
+                              <input
+                                name="message"
+                                value={blogQuery.message}
+                                onChange={handleBlogQueryChange}
+                                placeholder="Message *"
+                                className="form-control"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="col-md-12 pt-2  ">
+                            <div className="form-group">
+                              <input
+                                name="addresss"
+                                id="address"
+                                placeholder="Address *"
+                                className="form-control"
+                                type="hidden"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="col-md-12 pt-2">
+                            <button
+                              className="px-btn theme px-2 py-1 rounded-md bg-red-500 text-red-500"
+                              onClick={handleBlogSubmitQueryData}
+                            >
+                              <span className="text-white">Submit</span>{" "}
+                              <i className="arrow text-red-500" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

@@ -100,6 +100,7 @@ import BudgetPrice from "./Pages/BudgetPrice";
 import { useState } from "react";
 import BlogViewAdmin from "./AdminPage/BlogViewAdmin";
 import PossessionProject from "./Pages/PossessionProject";
+import ReadyToMoveProject from "./Pages/ReadyToMoveProject";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -123,6 +124,7 @@ function App() {
              <Route path="/termsandconditions/" element={<TermsAndConditions />} />
              <Route path="/projects-in-gurugram/" element={<Properties />} />
              <Route path="/projects-in-gurugram/budget" element = {<BudgetPrice/>}/>
+             <Route path="/projects-in-gurugram/readytomove/" element = {<ReadyToMoveProject/>}/>
              <Route path="/projects-in-gurugram/possession" element = {<PossessionProject/>}/>
              <Route path="/rental-properties/best-rental-property-in-gurugram/" element={<RentPropViewCard />} />
              <Route  path="/buy-properties/best-resale-property-in-gurugram/"  element={<BuyPropViewCard />}  />

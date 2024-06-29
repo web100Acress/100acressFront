@@ -687,18 +687,7 @@ function Home() {
       <OurServices />
       <WhyChoose />
 
-      {/* <div>
-        <div>
-          <a
-            href="https://api.whatsapp.com/message/ROVEJ7K6CX37K1?autoload=1&app_absent=0"
-            className="dd-m-whatsapp"
-            target="_blank"
-          >
-            <span className="icon"></span>
-          </a>
-        </div>
-      </div> */}
-
+  
       <Snapshot />
 
       <HomeBuilderCarousel />

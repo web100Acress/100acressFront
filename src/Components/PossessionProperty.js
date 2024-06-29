@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext , useEffect} from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { DataContext } from "../MyContext";
@@ -31,6 +31,17 @@ const PossessionProperty = ({ deviceType }) => {
   const handleDateClick = (value) => {
     setPossessionDate(value);
   };
+  
+  useEffect(() => {
+    if (possessionDate) {
+      try {
+        localStorage.setItem('possessionDate', JSON.stringify(possessionDate));
+      } catch (error) {
+        console.error('Error storing data in localStorage:', error);
+      }
+    }
+  }, [possessionDate]);
+  
 
   return (
     <>
@@ -39,7 +50,7 @@ const PossessionProperty = ({ deviceType }) => {
         <br />
         <span className="text-sm font-normal">
           {" "}
-          Projects based on your preferred possession date
+          find projects that fit your preferred possession timeline.
         </span>
       </p>
 
@@ -61,7 +72,9 @@ const PossessionProperty = ({ deviceType }) => {
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item-padding-40-px"
         >
-          <div className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem] content">
+          <Link target="_top" to='/projects-in-gurugram/readytomove/'>
+          <div className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem] content"
+           onClick={() => handleDateClick("Ready to move")}>
             <div className="mx-auto transition duration-300 hover:scale-105 flex flex-wrap justify-center max-w-screen-xl">
               <div className="relative bg-[#f7c089] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 shadow-md">
                 <a className="relative flex h-48 overflow-hidden ">
@@ -84,14 +97,15 @@ const PossessionProperty = ({ deviceType }) => {
               </div>
             </div>
           </div>
+          </Link>
 
-          <Link >
+          <Link    to='/projects-in-gurugram/possession'>
           <div
-           target="_top"
+           
             onClick={() => handleDateClick(2024)}
             className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
           >
-            <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
+            <div  className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
               <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
                 <a className="relative flex h-48 overflow-hidden ">
                   <img
@@ -115,9 +129,9 @@ const PossessionProperty = ({ deviceType }) => {
           </div>
           </Link>
           
-          <Link >
+          <Link  to="/projects-in-gurugram/possession">
             <div
-             target="_top"
+             
               onClick={() => handleDateClick(2025)}
               className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
             >
@@ -145,9 +159,9 @@ const PossessionProperty = ({ deviceType }) => {
             </div>
           </Link>
 
-          <Link >
+          <Link   to="/projects-in-gurugram/possession">
             <div
-             target="_top"
+             
               onClick={() => handleDateClick(2026)}
               className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
             >
@@ -175,11 +189,12 @@ const PossessionProperty = ({ deviceType }) => {
             </div>
           </Link>
 
-          <Link >
+          <Link  to="/projects-in-gurugram/possession">
             <div
+            
               onClick={() => handleDateClick(2027)}
               className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
-               target="_top"
+              
             >
               <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
                 <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
@@ -205,11 +220,12 @@ const PossessionProperty = ({ deviceType }) => {
             </div>
           </Link>
 
-          <Link>
+          <Link   to="/projects-in-gurugram/possession">
             <div
+            
               onClick={() => handleDateClick(2028)}
               className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
-              target="_top"
+             
             >
               <div className="transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
                 <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">

@@ -1625,7 +1625,7 @@ const BuyViewDetails = () => {
       const res = await axios.get(
         "https://api.100acress.com/property/buy/ViewAll"
       );
-      setBuyData(res.data.collectdata, "abcdefghijklmn");
+      setBuyData(res.data.collectdata);
     } catch (error) {
       console.error("Error fetching Data", error);
     }
@@ -1635,7 +1635,7 @@ const BuyViewDetails = () => {
     fetchData();
   }, []);
 
-  const { trendingProject, upcoming } = useContext(DataContext);
+  const { trendingProject } = useContext(DataContext);
   console.log(trendingProject);
   return (
     <div style={{ overflowX: "hidden" }}>
