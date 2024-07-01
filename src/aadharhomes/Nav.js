@@ -133,6 +133,8 @@ export default function Nav() {
   const handlePriceClick = (min, max) => {
     setPriceRange({ min, max });
   };
+
+ 
   
 
   const { isOpen, onOpen, onClose } = useDisclosure();

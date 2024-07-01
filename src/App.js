@@ -27,7 +27,7 @@ import EditProject from "./AdminPage/EditProject";
 import Enquiries from "./AdminPage/Enquiries";
 import Header from "./AdminPage/Header";
 import Projects from "./AdminPage/Projects";
-import Rent from "./AdminPage/Rent";
+import Rent from "./AdminPage/ResaleEnquiries";
 import Sidebar from "./AdminPage/Sidebar";
 import UserProfile from "./AdminPage/UserProfile";
 import Buy from "./AdminPage/Buy";
@@ -124,7 +124,7 @@ function App() {
              <Route path="/termsandconditions/" element={<TermsAndConditions />} />
              <Route path="/projects-in-gurugram/" element={<Properties />} />
              <Route path="/projects-in-gurugram/budget" element = {<BudgetPrice/>}/>
-             <Route path="/projects-in-gurugram/readytomove/" element = {<ReadyToMoveProject/>}/>
+             <Route path="/projects-in-gurugram/ready-to-move/property/" element = {<ReadyToMoveProject/>}/>
              <Route path="/projects-in-gurugram/possession" element = {<PossessionProject/>}/>
              <Route path="/rental-properties/best-rental-property-in-gurugram/" element={<RentPropViewCard />} />
              <Route  path="/buy-properties/best-resale-property-in-gurugram/"  element={<BuyPropViewCard />}  />
@@ -188,7 +188,7 @@ function App() {
              <Route path="/Admin/enquiries" element={<Enquiries />} />
             <Route path="/Admin/header" element={<Header />} />
              <Route path="/Admin/Projects/property" element={<Projects />} />
-            <Route path="/Admin/rent" element={<Rent />} />
+            <Route path="/Admin/resale-enquiries" element={<Rent />} />
              <Route path="/Admin/jobposting" element={<JobPosting />} />
             <Route path="/Admin/jobposting/view/:id" element={<JobPostingView />} />
              <Route  path="/Admin/jobposting/edit/:id"  element={<JobPostingEdit />}  />

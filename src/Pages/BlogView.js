@@ -9,6 +9,8 @@ const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
   const [data, setData] = useState([]);
   const { id } = useParams();
+  const [buttonText, setButtonText] = useState('Submit');
+  const [responseMessage, setResponseMessage] = useState('');
   const [blogQuery, setBlogQuery] = useState({
     name: "",
     mobile: "",
@@ -16,7 +18,7 @@ const BlogView = () => {
     message: "",
     status: "",
   });
-
+   
   const resetData = () => {
     setBlogQuery({
       name: "",
@@ -39,13 +41,16 @@ const BlogView = () => {
       alert("Please fill out all fields.");
       return;
     }
+
+    setButtonText('Submitting...');
     try {
       const res = await axios.post(
         "https://api.100acress.com/contact_Insert",
         blogQuery
       );
-      alert("Data submitted successfully");
+      setResponseMessage('Data submitted successfully');
       resetData();
+      setButtonText('Submit');
     } catch (error) {
       if (error.response) {
         console.error("Server error:", error.response.data);
@@ -54,6 +59,7 @@ const BlogView = () => {
       } else {
         console.error("Error:", error.message);
       }
+      setButtonText('Submit');
     }
   };
 
@@ -205,13 +211,13 @@ const BlogView = () => {
                               />
                             </div>
                           </div>
-
+                          {responseMessage && <p className="text-[12px] mb-0 text-red-600">{responseMessage}</p>}
                           <div className="col-md-12 pt-2">
                             <button
                               className="px-btn theme px-2 py-1 rounded-md bg-red-500 text-red-500"
                               onClick={handleBlogSubmitQueryData}
                             >
-                              <span className="text-white">Submit</span>{" "}
+                              <span className="text-white">{buttonText}</span>{" "}
                               <i className="arrow text-red-500" />
                             </button>
                           </div>

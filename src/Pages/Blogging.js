@@ -8,7 +8,6 @@ const Blogging = () => {
   const { blogData } = useContext(DataContext);
 
   const [showFullDescription, setShowFullDescription] = useState(false);
-
   const toggleDescription = () => {
     setShowFullDescription(!showFullDescription);
   };

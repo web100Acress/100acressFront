@@ -49,7 +49,7 @@ const PossessionProject = () => {
                       </a>
                       <br />
                       <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                        {item.city}
+                        {item.city}{", "}<span className="font-light">{item.state}</span>
                       </a>
                     </div>
                     <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
@@ -66,8 +66,8 @@ const PossessionProject = () => {
                     </ul>
                     <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                       <li className="text-left">
-                        <span className="text-sm font-extrabold text-black">
-                          {item.state}
+                        <span className="text-md font-extrabold  text-red-600">
+                       <span className="text-lg">₹</span>{item.minPrice}{" - "}{item.maxPrice} Cr
                         </span>
                       </li>
 
@@ -87,6 +87,7 @@ const PossessionProject = () => {
           })}
         </div>
       </section>
+      
       <Footer />
     </div>
   );

@@ -1428,7 +1428,7 @@ const BuyViewDetails = () => {
   const { frontImage, otherImage, amenities } = rentViewDetails;
 
   const { id } = useParams();
-  console.log(id);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -1465,10 +1465,14 @@ const BuyViewDetails = () => {
     setAgentForm1({ ...agentFrom1, [name]: value });
   };
 
+  const [buttonText, setButtonText] = useState('Submit');
+  const [responseMessage, setResponseMessage] = useState('');
+
   const handleSubmitAgentForm1 = (e) => {
     e.preventDefault();
     const { custEmail, custNumber } = agentFrom1;
     if (custEmail && custNumber) {
+      setButtonText('Submitting...');
       axios
         .post("https://api.100acress.com/postEnquiry", {
           ...agentFrom1,
@@ -1476,9 +1480,8 @@ const BuyViewDetails = () => {
           agentEmail: rentViewDetails.email,
           agentNumber: rentViewDetails.number,
         })
-
         .then((response) => {
-          alert("Data Submitted Successfully");
+          setResponseMessage('Data submitted successfully');
           resetData1();
         })
         .catch((error) => {
@@ -1490,9 +1493,12 @@ const BuyViewDetails = () => {
           } else {
             alert(`Error setting up the request: ${error.message}`);
           }
+        })
+        .finally(() => {
+          setButtonText('Submit');
         });
     } else {
-      alert("Please fill the data");
+      setResponseMessage("Please fill the data");
     }
     setShowContact(true);
   };
@@ -1636,7 +1642,9 @@ const BuyViewDetails = () => {
   }, []);
 
   const { trendingProject } = useContext(DataContext);
-  console.log(trendingProject);
+ 
+
+
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
@@ -2009,6 +2017,7 @@ const BuyViewDetails = () => {
                                   />
                                 </div>
                               </div>
+                            {responseMessage && <p className="text-red-600 text-[12px] mb-0">{responseMessage}</p>}
 
                               <div className="col-md-12 pt-2">
                                 <div className="send">
@@ -2018,7 +2027,7 @@ const BuyViewDetails = () => {
                                       handleSubmitAgentForm1(event);
                                     }}
                                   >
-                                    <span className="text-red-500">Submit</span>{" "}
+                                    <span className="text-red-500">{buttonText} </span>{" "}
                                     <i className="arrow text-red-500" />
                                   </button>
                                 </div>

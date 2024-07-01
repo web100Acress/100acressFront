@@ -45,16 +45,16 @@ const PossessionProperty = ({ deviceType }) => {
 
   return (
     <>
-      <p className="text-xl bg-[#FFFFFF] lg:text-3xl md:text-2xl font-medium  sm:text-xl xs:text-xl text-left px-10 mt-4">
+      <p className=" mb-0 text-xl text-white bg-[#00314F] lg:text-3xl md:text-2xl font-bold  sm:text-xl xs:text-xl text-left px-10 mt-4">
         Move in now, next year or later
         <br />
-        <span className="text-sm font-normal">
+        <span className="text-sm font-medium">
           {" "}
           find projects that fit your preferred possession timeline.
         </span>
       </p>
 
-      <div className="mx-10">
+      <div>
         <Carousel
           swipeable={false}
           draggable={false}
@@ -72,7 +72,7 @@ const PossessionProperty = ({ deviceType }) => {
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item-padding-40-px"
         >
-          <Link target="_top" to='/projects-in-gurugram/readytomove/'>
+          <Link target="_top" to='/projects-in-gurugram/ready-to-move/property/'>
           <div className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem] content"
            onClick={() => handleDateClick("Ready to move")}>
             <div className="mx-auto transition duration-300 hover:scale-105 flex flex-wrap justify-center max-w-screen-xl">
@@ -90,7 +90,7 @@ const PossessionProperty = ({ deviceType }) => {
                       Ready to move
                     </span>
                     <span className="block text-gray-400">
-                      29,000+ Properties
+                      320+ Properties
                     </span>
                   </a>
                 </div>
@@ -120,7 +120,7 @@ const PossessionProperty = ({ deviceType }) => {
                       Possession in <span>2024</span>
                     </span>
                     <span className="block text-gray-400">
-                      29,000+ Properties
+                      600+ Properties
                     </span>
                   </a>
                 </div>
@@ -150,7 +150,7 @@ const PossessionProperty = ({ deviceType }) => {
                         Possession in <span>2025</span>
                       </span>
                       <span className="block text-gray-400">
-                        29,000+ Properties
+                        400+ Properties
                       </span>
                     </a>
                   </div>
@@ -180,7 +180,7 @@ const PossessionProperty = ({ deviceType }) => {
                         Possession in <span>2026</span>
                       </span>
                       <span className="block text-gray-400">
-                        29,000+ Properties
+                        1000+ Properties
                       </span>
                     </a>
                   </div>
@@ -211,7 +211,7 @@ const PossessionProperty = ({ deviceType }) => {
                         Possession in <span>2027</span>
                       </span>
                       <span className="block text-gray-400">
-                        29,000+ Properties
+                        800+ Properties
                       </span>
                     </a>
                   </div>
@@ -242,7 +242,7 @@ const PossessionProperty = ({ deviceType }) => {
                         Possession in <span>2028</span>
                       </span>
                       <span className="block text-gray-400">
-                        29,000+ Properties
+                        700+ Properties
                       </span>
                     </a>
                   </div>

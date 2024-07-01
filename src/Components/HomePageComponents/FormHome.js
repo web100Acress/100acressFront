@@ -19,20 +19,26 @@ const FormHome = () => {
     });
   };
 
+  const [buttonText, setButtonText] = useState('Submit');
+  const [responseMessage, setResponseMessage] = useState('')
+
+
   const handleInquirySubmitData = async (e) => {
     e.preventDefault();
     const { name, email, mobile, message } = formDataInquiry;
     if (!name || !email || !mobile || !message) {
-      alert("Please fill out all fields.");
+      setResponseMessage("Please fill out all fields.");
       return;
     }
+    setButtonText('Submitting...')
     try {
       const res = await axios.post(
         "https://api.100acress.com/contact_Insert",
         formDataInquiry
       );
-      alert("Data submitted successfully");
+      setResponseMessage('Data submitted successfully')
       resetData();
+      setButtonText('Submit')
     } catch (error) {
       if (error.response) {
         console.error("Server error:", error.response.data);
@@ -42,6 +48,7 @@ const FormHome = () => {
         console.error("Error:", error.message);
       }
     }
+    setButtonText('Submit')
   };
 
   const handleInquiryDataChange = (e) => {
@@ -142,13 +149,14 @@ const FormHome = () => {
                     onChange={handleInquiryDataChange}
                   />
                 </div>
+                {responseMessage && <p className="text-white font-extralight mx-2 text-[12px]">{responseMessage}</p>}
 
                 <div className="flex justify-center items-center mt-3">
                   <button
                     onClick={handleInquirySubmitData}
                     className="block px-5 bg-white hover:bg-red-300 focus:bg-red-500 text-red rounded-lg py-2 font-semibold"
                   >
-                    Submit
+                    {buttonText}
                   </button>
                 </div>
               </div>

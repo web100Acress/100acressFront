@@ -89,26 +89,11 @@ const BannerPage = () => {
     },
   };
 
-  const [isNavOpen, setIsNavOpen] = useState(false);
-
-  const toggleNav = () => {
-    setIsNavOpen(!isNavOpen);
-  };
-
   const { pUrl } = useParams();
   const [projectViewDetails, setProjectViewDetails] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
 
-  const settings1 = {
-    showStatus: false,
-    dots: false,
-    infinite: true,
-    showThumbs: false,
-    autoPlay: true,
-    interval: 1000,
-    speed: 500,
-  };
-
+  
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -196,6 +181,8 @@ const BannerPage = () => {
   };
 
   const [isLoading, setIsLoading] = useState(false);
+  const [userButtonText, setUserButtonText] = useState('Submit')
+  const [userResponseMessage, setUserResponseMessage] = useState('')
   const userSubmitDetails = (e) => {
     e.preventDefault();
 
@@ -207,6 +194,7 @@ const BannerPage = () => {
 
     if (mobile) {
       setIsLoading(true);
+      setUserButtonText('Submitting...');
       axios
         .post("https://api.100acress.com/userInsert", {
           ...userDetails,
@@ -214,19 +202,19 @@ const BannerPage = () => {
           address: projectViewDetails.projectAddress,
         })
         .then((res) => {
-          alert("Data submitted");
+          setUserResponseMessage('Data submitted successfully');
           resetData();
         })
-
         .catch((error) => {
           alert(error.message);
         })
         .finally(() => {
-          // Set loading state to false when the API call is complete (success or error)
+          // Set loading state to false and reset the button text when the API call is complete (success or error)
           setIsLoading(false);
+          setUserButtonText('Submit');
         });
     } else {
-      alert("Please fill in the data");
+      setUserResponseMessage("Please fill in the data");
     }
   };
 
@@ -242,48 +230,46 @@ const BannerPage = () => {
   };
 
   const [isLoading1, setIsLoading1] = useState(false);
-
-  const popSubmitDetails = (e) => {
+  const [PopUpbuttonText, setPopUpButtonText] = useState('Submit');
+  const [PopUpresponseMessage, setPopUpResponseMessage] = useState('');
+  const popSubmitDetails = async (e) => {
     e.preventDefault();
-
-    // Check if a request is already in progress
     if (isLoading1) {
       return;
     }
-
+  
     const { mobile } = popDetails;
-
+    
+    
     if (mobile) {
-      // Set loading state to true before making the API call
-      setIsLoading1(true);
-
-      axios
-        .post("https://api.100acress.com/userInsert", {
+      setPopUpButtonText('Submitting...');
+      try {
+        setIsLoading1(true);
+        const response = await axios.post("https://api.100acress.com/userInsert", {
           ...popDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
-        })
-        .then((res) => {
-          alert("Data submitted");
-          resetData1();
-        })
-        .catch((error) => {
-          alert(error.message);
-        })
-        .finally(() => {
-          // Set loading state to false when the API call is complete (success or error)
-          setIsLoading1(false);
         });
+        setPopUpResponseMessage('Data submitted successfully');
+        resetData1();
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        setIsLoading1(false);
+        setPopUpButtonText('Submit');
+      }
     } else {
-      alert("Please fill in the data");
+      setPopUpResponseMessage("Please fill in the data");
     }
   };
+  
 
   const [isLoading2, setIsLoading2] = useState(false);
-
-  const SideSubmitDetails = (e) => {
+  const [sideButtonText, setSideButtonText] = useState('Submit');
+  const [sideResponseMessage, setSideResponseMessage] = useState('');
+  
+  const SideSubmitDetails = async (e) => {
     e.preventDefault();
-    // Check if a request is already in progress
     if (isLoading2) {
       return;
     }
@@ -291,26 +277,28 @@ const BannerPage = () => {
 
     if (mobile) {
       setIsLoading2(true);
-      axios
-        .post("https://api.100acress.com/userInsert", {
-          ...sideDetails,
-          projectName: projectViewDetails.projectName,
-          address: projectViewDetails.projectAddress,
-        })
-        .then((res) => {
-          alert("Data submitted");
-          resetData2();
-        })
-
-        .catch((error) => {
-          alert(error.message);
-        })
-        .finally(() => {
-          // Set loading state to false when the API call is complete (success or error)
-          setIsLoading2(false);
-        });
+      setSideButtonText('Submitting...');
+      try {
+        const res = await axios.post(
+          "https://api.100acress.com/userInsert",
+          {
+            ...sideDetails,
+            projectName: projectViewDetails.projectName,
+            address: projectViewDetails.projectAddress,
+          }
+        );
+        setSideResponseMessage('Data submitted successfully');
+        resetData2();
+        setSideButtonText('Submit');
+      } catch (error) {
+        console.error("Error:", error.message);
+        setSideResponseMessage('Error: ' + error.message);
+        setSideButtonText('Submit');
+      } finally {
+        setIsLoading2(false);
+      }
     } else {
-      alert("Please fill in the data");
+      setSideResponseMessage("Please fill in the data");
     }
   };
 
@@ -513,6 +501,7 @@ const BannerPage = () => {
                       value={popDetails.mobile}
                     />
                   </label>
+                  {PopUpresponseMessage && <p className="text-[#012e29] text-[12px] mb-0">{PopUpresponseMessage}</p>}
                   <div
                     style={{
                       display: "flex",
@@ -520,11 +509,12 @@ const BannerPage = () => {
                       alignItems: "center",
                     }}
                   >
+                    
                     <button
-                      className="mt-2 rounded-full bg-[#012e29] px-10 py-2 font-semibold text-white"
+                      className="mt-0 rounded-full bg-[#012e29] px-10 py-2 font-semibold text-white"
                       onClick={popSubmitDetails}
                     >
-                      Submit
+                     {PopUpbuttonText}
                     </button>
                   </div>
                 </div>
@@ -549,27 +539,27 @@ const BannerPage = () => {
         <div className="bg-[#eee] h-auto flex justify-center p-6 m-0 mb-3">
           <div className="grid lg:grid-cols-4 md:grid-cols-4 sm:grid-cols-2 lg:gap-24 sm:gap-6 md:gap-8 p-6">
             <div className="flex flex-col">
-              <span className="text-center font-normal uppercase">Land Area</span>
-              <span className="text-center font-semibold text-2xl">{projectViewDetails.totalLandArea} Acres</span>
+              <span className="text-center font-normal ">Land Area</span>
+              <span className="text-center font-semibold text-xl uppercase">{projectViewDetails.totalLandArea} Acres</span>
             </div>
 
             <div className="flex flex-col">
-              <span className="text-center font-normal uppercase">About Project</span>
-              <span className="text-center font-semibold text-xl">{projectViewDetails.towerNumber} Tower - {projectViewDetails.totalUnit} Unit</span>
+              <span className="text-center font-normal ">About Project</span>
+              <span className="text-center font-semibold text-xl uppercase">{projectViewDetails.towerNumber} Tower - {projectViewDetails.totalUnit} Unit</span>
             </div>
 
 
            
             <div className="flex flex-col">
-              <span className="text-center font-normal uppercase">Price</span>
-              <span className="text-center font-semibold text-xl">₹ {projectViewDetails.minPrice} Cr - {projectViewDetails.maxPrice} Cr</span>
+              <span className="text-center font-normal ">Price</span>
+              <span className="text-center font-semibold text-xl uppercase">₹ {projectViewDetails.minPrice} Cr - {projectViewDetails.maxPrice} Cr</span>
             </div>
 
 
 
             <div className="flex flex-col">
-              <span className="text-center font-normal uppercase">Possession</span>
-              <span className="text-center font-semibold text-xl">{formatDate(projectViewDetails.possessionDate)}</span>
+              <span className="text-center font-normal ">Possession</span>
+              <span className="text-center font-semibold text-xl uppercase">{formatDate(projectViewDetails.possessionDate)}</span>
             </div>
 
 
@@ -643,6 +633,7 @@ const BannerPage = () => {
                         value={sideDetails.mobile}
                       />
                     </label>
+                    {sideResponseMessage && <p className="text-[#012e29] text-[12px] mb-0">{sideResponseMessage}</p>}
                     <div
                       style={{
                         display: "flex",
@@ -654,7 +645,7 @@ const BannerPage = () => {
                         className="mt-2 rounded-full bg-[#012e29] px-10 py-2 font-semibold text-white"
                         onClick={SideSubmitDetails}
                       >
-                        Submit
+                        {sideButtonText}
                       </button>
                     </div>
                   </div>
@@ -1040,6 +1031,7 @@ const BannerPage = () => {
                 className="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
               />
             </div>
+            {userResponseMessage && <p className="text-white text-[12px] mb-0">{userResponseMessage}</p> }
 
             {/* <div className="flex justify-center md:mt-2 p-4">
               <strong className="text-white text-center">
@@ -1047,12 +1039,12 @@ const BannerPage = () => {
               </strong>
             </div> */}
 
-            <div className="flex justify-center">
+            <div className="flex justify-center ">
               <button
                 onClick={userSubmitDetails}
-                className="inline-flex gap-1  text-white bg-[#012e29] border focus:outline-none px-3 py-2 rounded"
+                className="inline-flex gap-1 mb-0 text-white bg-[#012e29] border focus:outline-none px-3 py-2 rounded"
               >
-                Submit <i className="fa-solid fa-arrow-right pt-1 "></i>
+                {userButtonText} <i className="fa-solid fa-arrow-right pt-1 "></i>
               </button>
             </div>
           </form>

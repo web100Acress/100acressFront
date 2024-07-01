@@ -76,11 +76,11 @@ const Sidebar = () => {
               <span className="text-lg font-semibold">Projects</span>
             </Link>
             <Link
-              to="/Admin/rent"
+              to="/Admin/resale-enquiries"
               className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0"
             >
               <FaHome className="icon fa-sm m-3.5" />{" "}
-              <span className="text-lg font-semibold">Rent</span>
+              <span className="text-lg font-semibold">Resale Enquiries</span>
             </Link>
             <Link
               to="/Admin/buy"

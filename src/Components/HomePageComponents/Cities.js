@@ -94,14 +94,14 @@ function Cities() {
           </div>
 
           <div className="cvBMLN">
-            <Link to={`/property-in-gurugram/sohna-south-of-gurugram/`} target="_top">
+            <Link to={`/property-in-gurugram/sohna/`} target="_top">
               <div
                 className={`asdDRsfVN bg-seven  ${
-                  selectedRoad === "Sohna (South of Gurugram)" ? "selected" : ""
+                  selectedRoad === "Sohna" ? "selected" : ""
                 }`}
-                onClick={() => handleClick("Sohna (South of Gurugram)")}
+                onClick={() => handleClick("Sohna")}
               >
-                <p>Sohna (South of Gurugram)</p>
+                <p>Sohna</p>
               </div>
             </Link>
           </div>

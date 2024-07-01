@@ -93,28 +93,35 @@ export default function SignUp() {
     setUserSignUp({ ...userSignUp, [name]: value });
   };
 
+
+  const [buttonText, setButtonText] = useState('Create your Account');
+  const [responseMessage, setResponseMessage] = useState('')
   const handleUserRegister = () => {
     const { name, email, mobile, password, cpassword } = userSignUp;
+   
     if (name && email && mobile && password && password === cpassword) {
+     
       axios
         .post("https://api.100acress.com/postPerson/register", userSignUp)
+        
         .then((response) => {
-          alert("Your accout is created.");
+          setResponseMessage("Your accout is created, Please Signin");
           history("/signin");
           resetData();
         })
+        
         .catch((error) => {
           console.error("Registration failed:", error);
           if (error.response) {
-            alert("The email is already registered.");
+            setResponseMessage("The email is already registered.");
           } else if (error.request) {
-            alert("No response received from the server");
+            setResponseMessage("No response received from the server");
           } else {
-            alert(`Error setting up the request: ${error.message}`);
+            setResponseMessage(`Error setting up the request: ${error.message}`);
           }
         });
     } else {
-      alert("Please filled all data");
+      setResponseMessage("Please filled all data");
     }
   };
 
@@ -248,28 +255,7 @@ export default function SignUp() {
               <form>
                 <Stack spacing={4}>
                   <Stack direction="row" isRequired spacing={4}>
-                    {/* <RadioGroup
-                    onChange={(value) =>
-                      setUserSignUp({ ...userSignUp, role: value })
-                    }
-                    value={userSignUp.role}
-                    isRequired
-                    spacing={4}
-                  >
-                    <Radio colorScheme="red" value="Agent" isRequired>
-                      Agent
-                    </Radio>
-
-                    <Radio colorScheme="red" value="Owner" isRequired>
-                      Owner
-                    </Radio>
-
-                    <Radio colorScheme="red" value="Developer" isRequired>
-                      Developer
-                    </Radio>
-
-                  </RadioGroup> */}
-
+                  
                     <RadioGroup
                       onChange={(value) =>
                         setUserSignUp({ ...userSignUp, role: value })
@@ -404,12 +390,14 @@ export default function SignUp() {
                       }}
                     />
                   </FormControl>
+
+                  {responseMessage && <p className="mb-0 text-red-600 text-sm ">{responseMessage}</p>}
                 </Stack>
 
                 <Button
                   fontFamily={"heading"}
                   onClick={handleClick}
-                  mt={8}
+                  mt={3}
                   w={"full"}
                   bgGradient="linear(to-r, red.400,pink.400)"
                   color={"white"}
@@ -418,7 +406,7 @@ export default function SignUp() {
                     boxShadow: "xl",
                   }}
                 >
-                  Create your Account
+                  {buttonText}
                 </Button>
 
                 <Button

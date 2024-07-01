@@ -36,10 +36,14 @@ const RentViewDetails = () => {
     setAgentForm1({ ...agentFrom1, [name]: value });
   };
 
+  const [buttonText, setButtonText] = useState('Submit');
+  const [responseMessage, setResponseMessage] = useState('');
+  
   const handleSubmitAgentForm1 = (e) => {
     e.preventDefault();
     const { custEmail, custNumber } = agentFrom1;
     if (custEmail && custNumber) {
+      setButtonText('Submitting...')
       axios
         .post("https://api.100acress.com/postEnquiry", {
           ...agentFrom1,
@@ -49,7 +53,8 @@ const RentViewDetails = () => {
         })
 
         .then((response) => {
-          alert("Data Submitted Successfully");
+          setResponseMessage("Data submitted successfully");
+          setButtonText('Submit')
           resetData1();
         })
         .catch((error) => {
@@ -63,7 +68,7 @@ const RentViewDetails = () => {
           }
         });
     } else {
-      alert("Please fill the data");
+      setResponseMessage("Please fill the data");
     }
     setShowContact(true);
   };
@@ -476,7 +481,7 @@ const RentViewDetails = () => {
                       <div className=" widget-tags">
                         <div className="widget-title text-center items-center">
                           <p className="text-red-500">Fill out form only one - time   </p>
-                          <span>After get the contact number </span>
+                          <span>After get the contact number  </span>
                         </div>
                         <div className="widget-body">
                           <div className="row">
@@ -559,6 +564,7 @@ const RentViewDetails = () => {
                                 />
                               </div>
                             </div>
+                            {responseMessage && <p className="text-red-600 mb-0 text-[10px]">{responseMessage}</p>}
 
                             <div className="col-md-12 pt-2">
                               <div className="send">
@@ -568,7 +574,7 @@ const RentViewDetails = () => {
                                     handleSubmitAgentForm1(event);
                                   }}
                                 >
-                                  <span className="text-red-500">Submit</span>{" "}
+                                  <span className="text-red-500">{buttonText}</span>{" "}
                                   <i className="arrow text-red-500" />
                                 </button>
                               </div>

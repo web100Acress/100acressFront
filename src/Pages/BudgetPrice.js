@@ -6,7 +6,6 @@ import {DataContext} from '../MyContext'
 import { Helmet } from "react-helmet";
 const BudgetPrice = () => {
     const {filteredProjects} = useContext(DataContext);
-
   return (
     <div style={{ overflowX: "hidden" }}>
     <Nav />
