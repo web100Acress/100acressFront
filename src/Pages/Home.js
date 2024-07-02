@@ -108,14 +108,27 @@ function Home() {
                           </a>
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectAddress}
+                            {item.city}, {item.state}
                           </a>
                         </div>
 
+                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                      <li className="mr-4 flex items-center text-left">
+                        <li className="text-left">
+                          <span className="text-sm text-gray-400">
+                            {item.projectAddress}
+                          </span>
+                          <p className="m-0 text-base font-medium">
+                            {item.type}
+                          </p>
+                        </li>
+                      </li>
+                    </ul>
+
                         <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                           <li className="text-left">
-                            <span className="text-sm font-extrabold text-black">
-                              {item.city}
+                            <span className="text-sm font-extrabold text-red-600">
+                              <span className="text-xl">₹ </span> {item.minPrice}{" - "}{item.maxPrice} Cr
                             </span>
                           </li>
 
@@ -186,18 +199,31 @@ function Home() {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          {/* <span style={{ float: "right" }} className="text-sm">
-                            {item.builderName}
-                          </span> */}
+                          
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectAddress}
+                            {item.city}, {item.state}
                           </a>
                         </div>
+
+                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                      <li className="mr-4 flex items-center text-left">
+                        <li className="text-left">
+                          <span className="text-sm text-gray-400">
+                            {item.projectAddress}
+                          </span>
+                          <p className="m-0 text-base font-medium">
+                            {item.type}
+                          </p>
+                        </li>
+                      </li>
+                    </ul>
+
+                        
                         <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                           <li className="text-left">
-                            <span className="text-sm font-extrabold text-black">
-                              {item.city}
+                            <span className="text-sm font-extrabold text-red-600">
+                              <span className="text-xl">₹ </span>{item.minPrice}{" - "}{item.maxPrice} Cr
                             </span>
                           </li>
 
@@ -271,18 +297,29 @@ function Home() {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          <span style={{ float: "right" }} className="text-sm">
-                            {item.builderName}
-                          </span>
+                    
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectAddress}
+                            {item.city}, {item.state}
                           </a>
                         </div>
+
+                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                      <li className="mr-4 flex items-center text-left">
+                        <li className="text-left">
+                          <span className="text-sm text-gray-400">
+                            {item.projectAddress}
+                          </span>
+                          <p className="m-0 text-base font-medium">
+                            {item.type}
+                          </p>
+                        </li>
+                      </li>
+                    </ul>
                         <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                           <li className="text-left">
-                            <span className="text-sm font-extrabold text-black">
-                              {item.city}
+                            <span className="text-sm font-extrabold text-red-600">
+                            <span className="text-xl">₹ </span>{item.minPrice}{" - "}{item.maxPrice} Cr
                             </span>
                           </li>
 
@@ -356,13 +393,26 @@ function Home() {
 
                           <br />
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectAddress}
+                            {item.city}, {item.state}
                           </a>
                         </div>
+
+                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                      <li className="mr-4 flex items-center text-left">
+                        <li className="text-left">
+                          <span className="text-sm text-gray-400">
+                            {item.projectAddress}
+                          </span>
+                          <p className="m-0 text-base font-medium">
+                            {item.type}
+                          </p>
+                        </li>
+                      </li>
+                    </ul>
                         <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                           <li className="text-left">
-                            <span className="text-sm font-extrabold text-black">
-                              {item.city}
+                            <span className="text-sm font-extrabold text-red-600">
+                            <span className="text-xl">₹ </span>{item.minPrice}{" - "}{item.maxPrice} Cr
                             </span>
                           </li>
 
@@ -437,13 +487,26 @@ function Home() {
                         </a>
                         <br />
                         <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                          {item.projectAddress}
+                          {item.city}, {item.state}
                         </a>
                       </div>
+
+                      <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                      <li className="mr-4 flex items-center text-left">
+                        <li className="text-left">
+                          <span className="text-sm text-gray-400">
+                            {item.projectAddress}
+                          </span>
+                          <p className="m-0 text-base font-medium">
+                            {item.type}
+                          </p>
+                        </li>
+                      </li>
+                    </ul>
                       <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                         <li className="text-left">
-                          <span className="text-sm font-extrabold text-black">
-                            {item.city}
+                          <span className="text-sm font-extrabold text-red-600">
+                          <span className="text-xl">₹ </span>{item.minPrice}{" - "}{item.maxPrice} Cr
                           </span>
                         </li>
 
@@ -464,6 +527,7 @@ function Home() {
           </div>
         </section>
       }
+
       <div className="py-3" style={{ backgroundColor: "#00314f" }}>
         {" "}
         <h3
@@ -517,18 +581,28 @@ function Home() {
                           <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </a>
-                          <span style={{ float: "right" }} className="text-sm">
-                            {item.builderName}
-                          </span>
-                          <br />
+                          <br/>
                           <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectAddress}
+                            {item.city}, {item.state}
                           </a>
                         </div>
+
+                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                      <li className="mr-4 flex items-center text-left">
+                        <li className="text-left">
+                          <span className="text-sm text-gray-400">
+                            {item.projectAddress}
+                          </span>
+                          <p className="m-0 text-base font-medium">
+                            {item.type}
+                          </p>
+                        </li>
+                      </li>
+                    </ul>
                         <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                           <li className="text-left">
-                            <span className="text-sm font-extrabold text-black">
-                              {item.city}
+                            <span className="text-sm font-extrabold text-red-600">
+                              <span className="text-xl">₹ </span>{item.minPrice}{" - "}{item.maxPrice} Cr
                             </span>
                           </li>
 
@@ -570,11 +644,18 @@ function Home() {
             }}
           >
             Affordable Homes
-            {/* <Link to={"/projects"}>
-              <span className="float-right text-sm text-white hidden sm:block pt-3">
+            <Link to={"/projects-in-gurugram/"} target="_top">
+            <span
+              className="float-right text-white md:flex text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
+              style={{ alignItems: "center", margin: "16px" }}
+            >
+              <ScaleLoader color="#FFFFFF" height={20} width={3} />
+              <style>{keyframes}</style>
+              <span className="hidden sm:block" style={{ marginLeft: "8px" }}>
                 View All{" "}
               </span>
-            </Link> */}
+            </span>
+          </Link>
           </h3>
           {
             <section
@@ -603,21 +684,27 @@ function Home() {
                             <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                               {item.projectName}
                             </a>
-                            <span
-                              style={{ float: "right" }}
-                              className="text-sm"
-                            >
-                              {item.builderName}
-                            </span>
                             <br />
                             <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                              {item.projectAddress}
+                              {item.city}, {item.state}
                             </a>
                           </div>
+                          <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                      <li className="mr-4 flex items-center text-left">
+                        <li className="text-left">
+                          <span className="text-sm text-gray-400">
+                            {item.projectAddress}
+                          </span>
+                          <p className="m-0 text-base font-medium">
+                            {item.type}
+                          </p>
+                        </li>
+                      </li>
+                    </ul>
                           <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                             <li className="text-left">
-                              <span className="text-sm font-extrabold text-black">
-                                {item.city}
+                              <span className="text-sm font-extrabold text-red-600">
+                              <span className="text-xl">₹ </span>{item.minPrice}{" - "}{item.maxPrice} Cr
                               </span>
                             </li>
 

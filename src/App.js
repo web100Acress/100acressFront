@@ -97,7 +97,6 @@ import PanipatProject from "./Pages/PanipatProject";
 import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
 import BudgetPrice from "./Pages/BudgetPrice";
-import { useState } from "react";
 import BlogViewAdmin from "./AdminPage/BlogViewAdmin";
 import PossessionProject from "./Pages/PossessionProject";
 import ReadyToMoveProject from "./Pages/ReadyToMoveProject";
@@ -111,7 +110,7 @@ function App() {
   
   return (
     <DataProvider>
-    <AuthProvider>
+    <AuthProvider>    
       <Wrapper className="section">
         {/* <Router> */}
           <Routes>
@@ -133,7 +132,7 @@ function App() {
              <Route  path="/buy-properties/:pUrl/:id/"  element={<BuyViewDetails />}  />
              <Route path="/propviewcard" element={<PropViewCardPro />} />
              <Route path="/property/residential/"   element={<ResidentialProjects />} />
-             <Route path="projects/upcoming-projects-in-gurgaon"  element={<UpComingProjects />}  />
+             <Route path="/projects/upcoming-projects-in-gurgaon"  element={<UpComingProjects />}  />
              <Route  path="/projects/commerial/"  element={<CommercialProject />} />
              <Route path="/sco/plots/" element={<ScoPlots />} />
              <Route path="/projects/independentfloors/" element={<BuilderIndependentFloor />}  />
@@ -194,14 +193,12 @@ function App() {
              <Route  path="/Admin/jobposting/edit/:id"  element={<JobPostingEdit />}  />
              <Route path="/Admin/rent/view/:id" element={<RentView />} />
             <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
-
             <Route path="/admin/acress/property/aadhar" element={<Sidebar />} />
             <Route path="/Admin/buy" element={<Buy />} />
             <Route path="/Admin/buy/view/:id" element={<BuyView />} />
              <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
              <Route path="/Admin/contactpage" element={<ContactPage />} />
              <Route path="/Admin/ContactUs/UserProfile" element={<UserProfile />}  />
-          
             <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
             <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
              <Route path="/Admin/careerview/:id" element={<CareerView />} />

@@ -12,13 +12,12 @@ const ResaleEnquiries = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
 
-  const itemsPerPage = 25;
+  const itemsPerPage = 10;
 
   const fetchEnquiriesData = async () => {
     try {
       const res = await axios.get("https://api.100acress.com/postEnq_view");
       setEnquiries(res.data.data);
-      console.log(res, "+++++++++++++++");
     } catch (error) {
       console.log(error || error.message);
     }
