@@ -382,7 +382,7 @@ const BannerPage = () => {
     `}
         </script>
       </Helmet>
-
+         
       <>
         <div
           className="px-4"

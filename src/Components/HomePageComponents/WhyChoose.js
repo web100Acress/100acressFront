@@ -2,7 +2,7 @@ import React from 'react';
 
 function WhyChoose() {
   return (
-    <section className="font-sans">
+    <section className="font-sans px-4">
       <div className="flex flex-col md:flex-row">
         <div className='w-full bg-white px-4 flex flex-col md:flex-row'>
           <div className='w-full md:w-1/2 bg-white rounded-lg mb-4 xl:mt-2 lg:mt-10 md:mt-20'>

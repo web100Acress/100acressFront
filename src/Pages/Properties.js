@@ -4,13 +4,14 @@ import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import {DataContext} from '../MyContext'
 import { Helmet } from "react-helmet";
+import ProjectSearching from "./ProjectSearching";
 function Properties() {
   const {allProjectData} = useContext(DataContext);
 
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
-      
+      {/* <ProjectSearching/> */}
       <Helmet>
         <meta
           name="description"
@@ -84,6 +85,7 @@ function Properties() {
           })}
         </div>
       </section>
+
       <Footer />
     </div>
   );

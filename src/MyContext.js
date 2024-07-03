@@ -31,7 +31,6 @@ export const DataProvider = ({ children }) => {
   const [minPrice, setMinPrice] = useState(priceRange.min);
   const [maxPrice, setMaxPrice] = useState(priceRange.max);
   const [filteredProjects, setFilteredProjects] = useState([]);
-  // const [possessionDate, setPossessionDate] = useState(null);
   const [possessionAllData, setPossessionAllData] = useState([]);
   const [readyToMoveData, setReadyTOMoveData] = useState([]);
   
@@ -151,6 +150,7 @@ export const DataProvider = ({ children }) => {
       );
 
       const goaData = projectsData.filter((project) => project.city === "Goa");
+
       const panipat = projectsData.filter(
         (project) => project.city === "Panipat"
       );

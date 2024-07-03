@@ -7,7 +7,6 @@ const PrivateRoute = () => {
     }
   
     const userRole = JSON.parse(localStorage.getItem("userRole"));
-    
       if (userRole === "Admin") {
       return <Outlet />;
     } else {

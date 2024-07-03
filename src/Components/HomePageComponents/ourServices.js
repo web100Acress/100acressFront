@@ -3,10 +3,8 @@ import styled from "styled-components";
 function OurServices() {
   return (
     <Wrapper className="section">
-      <div className="max-w-screen-xl mx-auto px-10 py-10">
+      <div className="max-w-screen-xl mx-auto px-4 py-10">
         <div className="row ">
-
-          
           <div className="col-md-3">
             <div
               className="col max-mb-30 aos-init aos-animate"

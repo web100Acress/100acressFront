@@ -79,6 +79,7 @@ const ContactUs = () => {
             class="w-full h-[9rem] sm:h-30 object-fit small-screen-image block sm:hidden"
           />
         </div>
+        
         <div>
           <h1 className="text-center text-bold text-3xl mt-5">
             Buy, Sell, and Rent with 100acress
@@ -91,7 +92,8 @@ const ContactUs = () => {
               person for you
             </h2>
           </div>
-          </div>
+        </div>
+
         <div className="flex justify-center">
           <div className="w-5/5 mx-auto my-10 flex flex-col items-center md:flex-row">
             <div className=" w-full md:w-4/5 h-full bg-[#012e29] shadow-xl text-white p-10">
@@ -152,25 +154,24 @@ const ContactUs = () => {
         <div class="flex justify-center bg-orange-100 mb-20 mx-5 my-5">
           <div class="flex flex-col justify-center w-full lg:w-[96%] space-y-10 lg:space-y-0 lg:space-x-10 max-w-7xl p-8 lg:p-14">
             <div class="flex flex-col justify-center items-center lg:flex-row space-y-10 lg:space-y-0 lg:space-x-10">
-            <div class="shadow-lg flex bg-[#012e29] flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
-  <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
-    Sales
-  </div>
-  <div>
-    <p class="text-center text-white text-lg p-2">
-      We would love to talk about how we can work together.
-    </p>
-  </div>
-  <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
-    <a
-      href="tel:8500900100"
-      class="mx-2 text-[#012e29] text-lg font-bold"
-    >
-      Contact Sales
-    </a>
-  </p>
-</div>
-
+              <div class="shadow-lg flex bg-[#012e29] flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
+                <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
+                  Sales
+                </div>
+                <div>
+                  <p class="text-center text-white text-lg p-2">
+                    We would love to talk about how we can work together.
+                  </p>
+                </div>
+                <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
+                  <a
+                    href="tel:8500900100"
+                    class="mx-2 text-[#012e29] text-lg font-bold"
+                  >
+                    Contact Sales
+                  </a>
+                </p>
+              </div>
 
               <div class="bg-[#012e29] shadow-lg flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
                 <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
@@ -210,6 +211,7 @@ const ContactUs = () => {
             </div>
           </div>
         </div>
+
       </div>
       <Footer />
     </div>

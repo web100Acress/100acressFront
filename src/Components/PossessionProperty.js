@@ -45,7 +45,7 @@ const PossessionProperty = ({ deviceType }) => {
 
   return (
     <>
-      <p className=" mb-0 text-xl text-white bg-[#00314F] lg:text-3xl md:text-2xl font-bold  sm:text-xl xs:text-xl text-left px-10 mt-4">
+      <p className=" pt-2 mb-0 text-xl text-white bg-[#00314F] lg:text-3xl md:text-2xl font-bold  sm:text-xl xs:text-xl text-left px-4 mt-4">
         Move in now, next year or later
         <br />
         <span className="text-sm font-medium">
@@ -54,7 +54,7 @@ const PossessionProperty = ({ deviceType }) => {
         </span>
       </p>
 
-      <div>
+      <div className="mb-[-34px]">
         <Carousel
           swipeable={false}
           draggable={false}
@@ -73,7 +73,7 @@ const PossessionProperty = ({ deviceType }) => {
           itemClass="carousel-item-padding-40-px"
         >
           <Link target="_top" to='/projects-in-gurugram/ready-to-move/property/'>
-          <div className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem] content"
+          <div className="bg-[#00314F]  pb-2 mb-[1.9rem] content"
            onClick={() => handleDateClick("Ready to move")}>
             <div className="mx-auto transition duration-300 hover:scale-105 flex flex-wrap justify-center max-w-screen-xl">
               <div className="relative bg-[#f7c089] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 shadow-md">
@@ -103,7 +103,7 @@ const PossessionProperty = ({ deviceType }) => {
           <div
            
             onClick={() => handleDateClick(2024)}
-            className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
+            className="bg-[#00314F]  pb-2 mb-[1.9rem]"
           >
             <div  className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
               <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
@@ -133,7 +133,7 @@ const PossessionProperty = ({ deviceType }) => {
             <div
              
               onClick={() => handleDateClick(2025)}
-              className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
+              className="bg-[#00314F]  pb-2 mb-[1.9rem]"
             >
               <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
                 <div className="relative bg-[#D7F2E3] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
@@ -163,7 +163,7 @@ const PossessionProperty = ({ deviceType }) => {
             <div
              
               onClick={() => handleDateClick(2026)}
-              className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
+              className="bg-[#00314F]  pb-2 mb-[1.9rem]"
             >
               <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
                 <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
@@ -193,7 +193,7 @@ const PossessionProperty = ({ deviceType }) => {
             <div
             
               onClick={() => handleDateClick(2027)}
-              className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
+              className="bg-[#00314F]  pb-2 mb-[1.9rem]"
               
             >
               <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
@@ -224,7 +224,7 @@ const PossessionProperty = ({ deviceType }) => {
             <div
             
               onClick={() => handleDateClick(2028)}
-              className="bg-[#00314F] pt-2 pb-2 mb-[1.9rem]"
+              className="bg-[#00314F]  pb-2 mb-[1.9rem]"
              
             >
               <div className="transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">

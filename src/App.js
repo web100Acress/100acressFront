@@ -115,10 +115,10 @@ function App() {
         {/* <Router> */}
           <Routes>
               <Route path="/" element={<PublicRoute />}>
-              <Route index element={<Home />} />
+              <Route index element={<Home />}/>
               <Route path="/postproperty" element={token !== null ? <NewSellProperty /> : <Navigate to="/signin" />} />
-              <Route path="/signup/" element={<SignUp />} />
-             <Route path="/signin/" element={<SignIn />} />
+              <Route path="/signup/" element={<SignUp />}/>
+             <Route path="/signin/" element={<SignIn />}/>
              <Route path="/privacypolicy/" element={<Privacy />} />
              <Route path="/termsandconditions/" element={<TermsAndConditions />} />
              <Route path="/projects-in-gurugram/" element={<Properties />} />
@@ -209,10 +209,7 @@ function App() {
             <Route path="/Admin/adminProperty" element={<Adminproperty />} />
             <Route path="/Admin/ProjectAddHighlights/:id" element={<ProjectAddHighligths />} />
             <Route path="/dashboard"  element={<PrivateRoute element={<Dashboard />} />}  />
-        
             </Route>
-
-            
           </Routes>
         {/* </Router> */}
       </Wrapper>

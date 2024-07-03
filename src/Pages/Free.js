@@ -13,7 +13,7 @@ const Free = () => {
     }
   `;
     return (
-        <div className='px-10 py-8 '>
+        <div className='px-4 py-8 '>
             <div className='flex flex-col md:flex-row justify-between items-center w-full bg-blue-50 h-auto md:h-30 lg:px-10 md:px-10 sm:px-1 py-6 md:py-8 rounded-xl'>
                 <div className='md:mr-4 flex-grow'>
                     <p className='text-left text-2xl mb-2 px-2'>Post your Property for <em className="font-damion font-serif text-3xl">Free!</em></p>

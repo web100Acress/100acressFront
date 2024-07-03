@@ -6,6 +6,7 @@ const NewsandArtical = () => {
   return (
     <>
       <Nav />
+      
       <Helmet>
         <meta
           name="description"
