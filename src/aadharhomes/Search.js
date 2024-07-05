@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 const Search = ({ data1 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const [formData, setFormData] = useState({
+ const [formData, setFormData] = useState({
     location: "",
     query: "",
     collectionName: data1,
   });
+
 
   useEffect(() => {
     setFormData((prevState) => ({
@@ -24,20 +23,15 @@ const Search = ({ data1 }) => {
     });
   };
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-      // Trigger search button click when Enter is pressed
       document.getElementById("searchButton").click();
     }
   };
 
   return (
     <>
-      {/* <SearchBar setData={setData} /> */}
       <div className="w-70 bg-white border-white border-none lg:h-14 md:h-10 sm:h-8 rounded-lg lg:rounded-2xl md:rounded-xl sm:rounded-lg px-2 lg:px-4 md:px-3  sm:px-2">
         <div className="flex items-center xl:h-14 lg:h-14 md:h-10 sm:h-8">
           <div className="w-60 mt-1 lg:mt-3 md:mt-3 sm:mt-2 ml-2 lg:ml-8 md:ml-6 sm:ml-4 lg:w-[820px] md:w-full sm:w-70 outline-none">
@@ -48,9 +42,10 @@ const Search = ({ data1 }) => {
               placeholder="Enter Your Query"
               value={formData.query}
               onChange={handleInputChange}
-              onKeyPress={handleKeyPress} // Add this line
+              onKeyPress={handleKeyPress} 
             />
           </div>
+
           <Link
             to={{
               pathname: `/searchdata/${encodeURIComponent(
@@ -65,6 +60,7 @@ const Search = ({ data1 }) => {
               <i className="fas fa-search text-white"></i>
             </div>
           </Link>
+          
         </div>
       </div>
     </>

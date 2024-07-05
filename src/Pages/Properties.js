@@ -11,7 +11,7 @@ function Properties() {
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
-      {/* <ProjectSearching/> */}
+      <ProjectSearching/>
       <Helmet>
         <meta
           name="description"

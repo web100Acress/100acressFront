@@ -33,8 +33,9 @@ export const DataProvider = ({ children }) => {
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [possessionAllData, setPossessionAllData] = useState([]);
   const [readyToMoveData, setReadyTOMoveData] = useState([]);
-  
-  const [possessionDate, setPossessionDate] = useState(() => {
+  const [dlfProject, setDlfProject] = useState([]);
+
+   const [possessionDate, setPossessionDate] = useState(() => {
     try {
       const storedDate = localStorage.getItem('possessionDate');
       return storedDate ? JSON.parse(storedDate) : null;
@@ -149,7 +150,7 @@ export const DataProvider = ({ children }) => {
         (project) => project.city === "Noida"
       );
 
-      const goaData = projectsData.filter((project) => project.city === "Goa");
+      
 
       const panipat = projectsData.filter(
         (project) => project.city === "Panipat"
@@ -165,6 +166,15 @@ export const DataProvider = ({ children }) => {
             project.minPrice >= minPrice && project.maxPrice <= maxPrice
         )
       );
+
+      const dlfProject = projectsData.filter(
+        (project) => project.projectOverview === 'luxuryProject'
+      )
+
+
+      const goaData = projectsData.filter((project) => project.projectOverview === "goaProject");
+     console.log(goaData,"goaData")
+
 
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
@@ -188,6 +198,7 @@ export const DataProvider = ({ children }) => {
       setPanipat(panipat);
       setFilteredProjects(filteredProjects);
       setReadyTOMoveData(readyToMoveData);
+      setDlfProject(dlfProject)
     } catch (error) {
       console.log(error || error.message);
     }
@@ -325,6 +336,7 @@ export const DataProvider = ({ children }) => {
         filteredProjects,
         possessionAllData,
         readyToMoveData,
+        dlfProject,
       }}
     >
       {children}

@@ -38,10 +38,12 @@ function Home() {
     commercialProject,
     typeScoPlots,
     goaData,
+    dlfProject
   } = useContext(DataContext);
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
+
       <Helmet>
         <meta
           name="description"
@@ -252,7 +254,108 @@ function Home() {
         }
       </div>
 
-      {/* GoA */}
+    
+
+      {/* dlf prject */}
+      <div className="bg-[#F83CB0] py-3 ">
+        {" "}
+        <h1
+          className="xjUWI"
+          style={{
+            fontSize: "xx-large",
+            margin: "10px 40px 5px 60px",
+            fontWeight: "600",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          <span className="text-white">DLF Super Luxury Homes  #100crore </span>
+          <Link  target="_top">
+            <span
+              className="float-right text-white text-sm px-2 mx-4 rounded-full hidden md:flex bg-red-600"
+              style={{ alignItems: "center", margin: "16px" }}
+            >
+              <ScaleLoader color="#FFFFFF" height={20} width={3} />
+              <style>{keyframes}</style>
+              <span style={{ marginLeft: "8px" }}>View All </span>
+            </span>
+          </Link>
+        </h1>
+        {
+            <section className="flex flex-col items-center bg-[#F83CB0]">
+            <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+              {dlfProject.map((item, index) => {
+                const pUrl = item.project_url;
+                return (
+                  <Link to={`/${pUrl}/`} target="_top">
+                    <article
+                      key={index}
+                      className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                    >
+                      <div>
+                        <img
+                          src={item.frontImage.url}
+                          alt="property In Gurugram"
+                          className="w-full h-48 object-fit "
+                        />
+                      </div>
+                      <div className="p-4">
+                        <div className="pb-2">
+                          <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                            {item.projectName}
+                          </a>
+
+                          <br />
+                          <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                            {item.city}, {item.state}
+                          </a>
+                        </div>
+
+                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                          <li className="mr-4 flex items-center text-left">
+                            <li className="text-left">
+                              <span className="text-sm text-gray-400">
+                                {item.projectAddress}
+                              </span>
+                              <p className="m-0 text-base font-medium">
+                                {item.type}
+                              </p>
+                            </li>
+                          </li>
+                        </ul>
+
+                        <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
+                          <li className="text-left">
+                            <span className="text-sm font-extrabold text-red-600">
+                              <span className="text-xl">₹ </span>
+                              {item.minPrice}
+                              {" - "}
+                              {item.maxPrice} Cr
+                            </span>
+                          </li>
+
+                          <li className="text-left">
+                            <button
+                              type="button"
+                              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
+                            >
+                              View Details
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    </article>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        }
+      </div>
+
+
+     {/* Goa */}
 
       <div className="py-3 " style={{ backgroundColor: "#00314f" }}>
         {" "}
@@ -981,7 +1084,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 17vh !important;
-      background-image: url("../../Images/M2.png");
+      background-image: url("../../Images/P.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -995,7 +1098,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/M2.png");
+      background-image: url("../../Images/P.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -1009,7 +1112,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 20vh !important;
-      background-image: url("../../Images/M2.png");
+      background-image: url("../../Images/P.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -1023,7 +1126,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/M2.png");
+      background-image: url("../../Images/P.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -1032,7 +1135,7 @@ const Wrapper = styled.section`
 
   @media screen and (max-width: 1800px) and (min-width: 601px) {
     .djqwUUJNCO {
-      background-image: url("../../Images/A7.png");
+      background-image: url("../../Images/C.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
