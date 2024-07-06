@@ -68,6 +68,8 @@ export default function SignUp() {
     role: "propertyOwner",
   });
 
+
+
   const resetData = () => {
     setUserSignUp({
       name: "",

@@ -31,7 +31,6 @@ const ProjectEdit = () => {
     projectRedefine_Entertainment: "",
     projectReraNo: "",
     AboutDeveloper: "",
-    Amenities: [],
     type: "",
     project_url: "",
     meta_title: "",
@@ -924,7 +923,7 @@ const ProjectEdit = () => {
                   </th>
                 </tr>
 
-                <tr>
+                {/* <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
                       Amenities :{" "}
@@ -941,7 +940,7 @@ const ProjectEdit = () => {
                       </span>
                     </span>
                   </th>
-                </tr>
+                </tr> */}
 
                 <tr>
                   <th>

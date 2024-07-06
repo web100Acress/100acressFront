@@ -100,6 +100,7 @@ import BudgetPrice from "./Pages/BudgetPrice";
 import BlogViewAdmin from "./AdminPage/BlogViewAdmin";
 import PossessionProject from "./Pages/PossessionProject";
 import ReadyToMoveProject from "./Pages/ReadyToMoveProject";
+import DlfProject from "./Pages/DlfProject";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -139,6 +140,7 @@ function App() {
              <Route path="/project-in-delhi/" element={<DelhiProject />} />
              <Route path="/project-in-noida/" element={<NoidaProject/>} />
              <Route path="/project-in-panipat/" element={<PanipatProject/>} />
+             <Route path="/dlf-super-luxury/" element={<DlfProject/>} />
              <Route path="/project-in-goa/" element={<GoaProject/>} />
              <Route path="/deendayal/plots/" element={<DeenDayalPlots />} />
              <Route path="/newsandarticals/" element={<NewsandArtical />} />

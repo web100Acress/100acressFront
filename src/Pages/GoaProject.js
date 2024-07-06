@@ -9,7 +9,6 @@ const GoaProject = () => {
   return (
     <div>
       <Nav />
-
       <Helmet>
         <title>Property in Goa - Flats, Villas, House for Sale in Goa</title>
         <meta

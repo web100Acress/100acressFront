@@ -135,6 +135,10 @@ const Projects = () => {
                     City
                   </th>
 
+                  <th scope="col" className="px-6 py-3">
+                    Address
+                  </th>
+
                   <th scope="col" className="px-6 py-3 text-center">
                     Action
                   </th>
@@ -154,6 +158,7 @@ const Projects = () => {
                       <td className="px-2 py-1">{item.projectName}</td>
                       <td className="px-2 py-1">{item.type}</td>
                       <td className="px-2 py-1">{item.state}</td>
+                      <td className="px-2 py-1">{item.projectAddress}</td>
 
                       <td className="px-2 py-1 flex space-x-1">
                         <Link to={`/Admin/ProjectsView/${pUrl}`}>

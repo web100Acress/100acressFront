@@ -118,10 +118,10 @@ function Home() {
                         <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
-                              <span className="text-sm text-gray-400">
+                              <span className="text-[13px] text-gray-400">
                                 {item.projectAddress}
                               </span>
-                              <p className="m-0 text-base font-medium">
+                              <p className="m-0 text-sm font-medium " >
                                 {item.type}
                               </p>
                             </li>
@@ -215,10 +215,10 @@ function Home() {
                         <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
-                              <span className="text-sm text-gray-400">
+                              <span className="text-[13px] text-gray-400">
                                 {item.projectAddress}
                               </span>
-                              <p className="m-0 text-base font-medium">
+                              <p className="m-0 text-sm font-medium">
                                 {item.type}
                               </p>
                             </li>
@@ -271,12 +271,12 @@ function Home() {
           }}
         >
           <span className="text-white">DLF Super Luxury Homes  #100crore </span>
-          <Link  target="_top">
+          <Link to={'/dlf-super-luxury/'} target="_top">
             <span
-              className="float-right text-white text-sm px-2 mx-4 rounded-full hidden md:flex bg-red-600"
+              className="float-right text-red-600 text-sm px-2 mx-4 rounded-full hidden md:flex bg-white"
               style={{ alignItems: "center", margin: "16px" }}
             >
-              <ScaleLoader color="#FFFFFF" height={20} width={3} />
+              <ScaleLoader color="red" height={20} width={3} />
               <style>{keyframes}</style>
               <span style={{ marginLeft: "8px" }}>View All </span>
             </span>
@@ -315,10 +315,10 @@ function Home() {
                         <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
-                              <span className="text-sm text-gray-400">
+                              <span className="text-[13px] text-gray-400">
                                 {item.projectAddress}
                               </span>
-                              <p className="m-0 text-base font-medium">
+                              <p className="m-0 text-sm font-medium">
                                 {item.type}
                               </p>
                             </li>
@@ -418,10 +418,10 @@ function Home() {
                         <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
-                              <span className="text-sm text-gray-400">
+                              <span className="text-[13px] text-gray-400">
                                 {item.projectAddress}
                               </span>
-                              <p className="m-0 text-base font-medium">
+                              <p className="m-0 text-sm font-medium">
                                 {item.type}
                               </p>
                             </li>
@@ -514,10 +514,10 @@ function Home() {
                         <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
-                              <span className="text-sm text-gray-400">
+                              <span className="text-[13px] text-gray-400">
                                 {item.projectAddress}
                               </span>
-                              <p className="m-0 text-base font-medium">
+                              <p className="m-0 text-sm font-medium">
                                 {item.type}
                               </p>
                             </li>
@@ -614,10 +614,10 @@ function Home() {
                         <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
-                              <span className="text-sm text-gray-400">
+                              <span className="text-[13px] text-gray-400">
                                 {item.projectAddress}
                               </span>
-                              <p className="m-0 text-base font-medium">
+                              <p className="m-0 text-sm font-medium">
                                 {item.type}
                               </p>
                             </li>
@@ -710,10 +710,10 @@ function Home() {
                       <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                         <li className="mr-4 flex items-center text-left">
                           <li className="text-left">
-                            <span className="text-sm text-gray-400">
+                            <span className="text-[13px] text-gray-400">
                               {item.projectAddress}
                             </span>
-                            <p className="m-0 text-base font-medium">
+                            <p className="m-0 text-sm font-medium">
                               {item.type}
                             </p>
                           </li>
@@ -809,10 +809,10 @@ function Home() {
                         <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
-                              <span className="text-sm text-gray-400">
+                              <span className="text-[13px] text-gray-400">
                                 {item.projectAddress}
                               </span>
-                              <p className="m-0 text-base font-medium">
+                              <p className="m-0 text-sm font-medium">
                                 {item.type}
                               </p>
                             </li>
@@ -914,10 +914,10 @@ function Home() {
                           <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                             <li className="mr-4 flex items-center text-left">
                               <li className="text-left">
-                                <span className="text-sm text-gray-400">
+                                <span className="text-[13px] text-gray-400">
                                   {item.projectAddress}
                                 </span>
-                                <p className="m-0 text-base font-medium">
+                                <p className="m-0 text-sm font-medium">
                                   {item.type}
                                 </p>
                               </li>

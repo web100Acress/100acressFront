@@ -266,7 +266,7 @@ export default function Nav() {
     <Wrapper className="section">
       <Box>
         {/* #c13335  #ab2727 #7a3351  #A10302 */}
-        <Box bg="#ED2201" px={{ base: 0, md: 4, lg: 7 }}>
+        <Box bg="#F20808" px={{ base: 0, md: 4, lg: 7 }}>
           <Flex h={16} alignItems="center" justifyContent="space-between">
             <IconButton
               size={"md"}
@@ -397,7 +397,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2  hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
                             Retail Space in Gurugram
                           </Link>
@@ -457,7 +457,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="/projects-in-gurugram/"
-                            className="block text-sm px-2   hover:text-red-600"
+                            className="block text-sm px-2 py-1  hover:text-red-600"
                           >
                             Projects in Gurugram
                           </Link>
@@ -469,7 +469,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-2   hover:text-red-600"
+                            className="block text-sm px-2  py-1  hover:text-red-600"
                           >
                             Find an Agent
                           </Link>
@@ -597,7 +597,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            className="block text-sm px-4  hover:text-red-600"
                           >
                             ₹1 Cr - ₹2.5 Cr
                           </Link>
@@ -609,7 +609,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Above ₹5 Cr
                           </Link>
@@ -755,6 +755,7 @@ export default function Nav() {
                             Projects in Panipat
                           </Link>
                         </div>
+                        
                         {/* I am Working here */}
 
                         <div className="w-40">
@@ -781,7 +782,7 @@ export default function Nav() {
                           </Link>
                           <Link
                             to={`/projects-in-gurugram/budget`}
-                            className="block text-sm px-4 py-1 hover:text-red-600"
+                            className="block text-sm px-4  hover:text-red-600"
                             onClick={() => handlePriceClick(5, 10)}
                           >
                             ₹5 Cr - ₹10 Cr
@@ -795,10 +796,17 @@ export default function Nav() {
                           </Link>
                           <Link
                              to={`/projects-in-gurugram/budget`}
-                            className="block text-sm px-4 py-1 hover:text-red-600"
-                            onClick={() => handlePriceClick(20, Infinity)}
+                            className="block text-sm px-4  hover:text-red-600"
+                            onClick={() => handlePriceClick(20, 50)}
                           >
-                            Above ₹20 Cr
+                            ₹20 Cr - ₹50 Cr
+                          </Link>
+                          <Link
+                             to={`/projects-in-gurugram/budget`}
+                            className="block text-sm px-4 py-1 hover:text-red-600"
+                            onClick={() => handlePriceClick(50, Infinity)}
+                          >
+                            Above ₹50 Cr
                           </Link>
                         </div>
 

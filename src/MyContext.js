@@ -173,7 +173,7 @@ export const DataProvider = ({ children }) => {
 
 
       const goaData = projectsData.filter((project) => project.projectOverview === "goaProject");
-     console.log(goaData,"goaData")
+   
 
 
       setTrendingProject(trendingProjects);
