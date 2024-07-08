@@ -756,7 +756,7 @@ export default function Nav() {
                           </Link>
 
                           <Link
-                            to={`/project-in-Panchkula/`}
+                            to={`/project-in-panchkula/`}
                             className="block text-sm px-4 py-1   hover:text-red-600"
                           >
                             Projects in Panchkula

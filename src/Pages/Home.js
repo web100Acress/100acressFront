@@ -38,7 +38,7 @@ function Home() {
     commercialProject,
     typeScoPlots,
     goaData,
-    dlfProject
+    dlfProject,
   } = useContext(DataContext);
 
   return (
@@ -122,7 +122,7 @@ function Home() {
                               <span className="text-[13px] text-gray-400">
                                 {item.projectAddress}
                               </span>
-                              <p className="m-0 text-sm font-medium " >
+                              <p className="m-0 text-sm font-medium ">
                                 {item.type}
                               </p>
                             </li>
@@ -255,8 +255,6 @@ function Home() {
         }
       </div>
 
-    
-
       {/* dlf prject */}
       <div className="bg-[#F83CB0] py-3 ">
         {" "}
@@ -271,8 +269,8 @@ function Home() {
             textOverflow: "ellipsis",
           }}
         >
-          <span className="text-white">DLF Super Luxury Homes  #100crore </span>
-          <Link to={'/dlf-homes-projects/'} target="_top">
+          <span className="text-white">DLF Super Luxury Homes #100crore </span>
+          <Link to={"/dlf-homes-projects/"} target="_top">
             <span
               className="float-right text-red-600 text-sm px-2 mx-4 rounded-full hidden md:flex bg-white"
               style={{ alignItems: "center", margin: "16px" }}
@@ -284,7 +282,7 @@ function Home() {
           </Link>
         </h1>
         {
-            <section className="flex flex-col items-center bg-[#F83CB0]">
+          <section className="flex flex-col items-center bg-[#F83CB0]">
             <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {dlfProject.map((item, index) => {
                 const pUrl = item.project_url;
@@ -355,8 +353,7 @@ function Home() {
         }
       </div>
 
-
-     {/* Goa */}
+      {/* Goa */}
 
       <div className="py-3 " style={{ backgroundColor: "#00314f" }}>
         {" "}
@@ -371,7 +368,7 @@ function Home() {
             textOverflow: "ellipsis",
           }}
         >
-           Projects in Goa 
+          Projects in Goa
           <Link to={"/project-in-goa/"} target="_top">
             <span
               className="float-right text-white md:flex text-sm px-2 mx-4 rounded-full hidden sm:block bg-red-600"
@@ -999,9 +996,19 @@ function Home() {
 
       <OurServices />
       <WhyChoose />
+
       <Snapshot />
       <HomeBuilderCarousel />
       <Free />
+
+      <div>
+        <div>
+          <a href="tel:8500900100" className="dd-m-whatsapp">
+            <span className="icon"></span>
+          </a>
+        </div>
+      </div>
+
       <PossessionProperty />
       <BackToTopButton />
       <Footer />
@@ -1015,7 +1022,7 @@ const Wrapper = styled.section`
   .dd-m-whatsapp {
     position: fixed;
     z-index: 999;
-    bottom: 40px;
+    bottom: 10px;
     right: 10px;
     width: 55px;
     height: 55px;
@@ -1045,6 +1052,7 @@ const Wrapper = styled.section`
     cursor: pointer;
     text-decoration: none;
     color: #25d366;
+    background-color: #2bb601; /* Change background color to blue */
   }
 
   .dd-m-whatsapp:hover {
@@ -1062,7 +1070,7 @@ const Wrapper = styled.section`
     width: 50%;
     height: 50%;
     display: block;
-    fill: #fff;
+    fill: blue; /* Change fill color to blue */
     -webkit-transform: translateX(1px);
     -moz-transform: translateX(1px);
     -ms-transform: translateX(1px);
@@ -1073,11 +1081,12 @@ const Wrapper = styled.section`
   .dd-m-whatsapp .icon {
     width: 70%;
     height: 70%;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 39 39'%3E%3Cpath d='M10.7 32.8l.6.3c2.5 1.5 5.3 2.2 8.1 2.2 8.8 0 16-7.2 16-16 0-4.2-1.7-8.3-4.7-11.3s-7-4.7-11.3-4.7c-8.8 0-16 7.2-15.9 16.1 0 3 .9 5.9 2.4 8.4l.4.6-1.6 5.9 6-1.5z' fill='%2325d366'/%3E%3Cpath d='M32.4 6.4C29 2.9 24.3 1 19.5 1 9.3 1 1.1 9.3 1.2 19.4c0 3.2.9 6.3 2.4 9.1L1 38l9.7-2.5c2.7 1.5 5.7 2.2 8.7 2.2 10.1 0 18.3-8.3 18.3-18.4 0-4.9-1.9-9.5-5.3-12.9zM19.5 34.6c-2.7 0-5.4-.7-7.7-2.1l-.6-.3-5.8 1.5L6.9 28l-.4-.6c-4.4-7.1-2.3-16.5 4.9-20.9s16.5-2.3 20.9 4.9 2.3 16.5-4.9 20.9c-2.3 1.5-5.1 2.3-7.9 2.3zm8.8-11.1l-1.1-.5s-1.6-.7-2.6-1.2c-.1 0-.2-.1-.3-.1-.3 0-.5.1-.7.2 0 0-.1.1-1.5 1.7-.1.2-.3.3-.5.3h-.1c-.1 0-.3-.1-.4-.2l-.5-.2c-1.1-.5-2.1-1.1-2.9-1.9-.2-.2-.5-.4-.7-.6-.7-.7-1.4-1.5-1.9-2.4l-.1-.2c-.1-.1-.1-.2-.2-.4 0-.2 0-.4.1-.5 0 0 .4-.5.7-.8.2-.2.3-.5.5-.7.2-.3.3-.7.2-1-.1-.5-1.3-3.2-1.6-3.8-.2-.3-.4-.4-.7-.5h-1.1c-.2 0-.4.1-.6.1l-.1.1c-.2.1-.4.3-.6.4-.2.2-.3.4-.5.6-.7.9-1.1 2-1.1 3.1 0 .8.2 1.6.5 2.3l.1.3c.9 1.9 2.1 3.6 3.7 5.1l.4.4c.3.3.6.5.8.8 2.1 1.8 4.5 3.1 7.2 3.8.3.1.7.1 1 .2h1c.5 0 1.1-.2 1.5-.4.3-.2.5-.2.7-.4l.2-.2c.2-.2.4-.3.6-.5s.4-.4.5-.6c.2-.4.3-.9.4-1.4v-.7s-.1-.1-.3-.2z' fill='%23fff'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.11A19.86 19.86 0 0 1 3.11 12.18 19.86 19.86 0 0 1 .82 3.92 2 2 0 0 1 2.82 2h3a2 2 0 0 1 2 1.72c.16 1.19.45 2.36.85 3.47a2 2 0 0 1-.45 2.11L6.24 10.24a16 16 0 0 0 7.52 7.52l1.95-1.95a2 2 0 0 1 2.11-.45c1.11.4 2.28.69 3.47.85A2 2 0 0 1 22 16.92z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 70%;
   }
+
   @media screen and (max-width: 600px) {
     .xjUWI {
       font-size: x-large;

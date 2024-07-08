@@ -422,7 +422,7 @@
 // //                                         }}
 // //                                       >
 // //                                         <span className="text-red-500">
-// //                                           Submit 
+// //                                           Submit
 // //                                         </span>{" "}
 // //                                         <i className="arrow text-red-500" />
 // //                                       </button>
@@ -918,7 +918,7 @@
 // //                   </div>
 // //                   {upcoming.slice(0, 5).map((item, index) => {
 // //                     return (
-                  
+
 // //                       <Link  to={`/${item.project_url}/`} target="_top">
 // //                       <div className="flex items-center pt-3 hover:bg-gray-100" key={index}>
 // //                         <img
@@ -963,7 +963,7 @@
 // //   .gray-bg {
 // //     background-color: #f5f5f5;
 // //   }
-// //   /* Blog 
+// //   /* Blog
 // // ---------------------*/
 // //   .blog-grid {
 // //     box-shadow: 0 0 30px rgba(31, 45, 61, 0.125);
@@ -1358,8 +1358,6 @@
 // //   }
 // // `;
 
-
-
 // import React, { useState, useEffect, useContext, useRef } from "react";
 // import { styled } from "styled-components";
 // import Nav from "../aadharhomes/Nav";
@@ -1428,7 +1426,7 @@
 //   const { frontImage, otherImage, amenities } = rentViewDetails;
 
 //   const { id } = useParams();
-  
+
 //   useEffect(() => {
 //     const fetchData = async () => {
 //       try {
@@ -1642,8 +1640,6 @@
 //   }, []);
 
 //   const { trendingProject } = useContext(DataContext);
- 
-
 
 //   return (
 //     <div style={{ overflowX: "hidden" }}>
@@ -2179,7 +2175,6 @@
 //                     );
 //                   })}
 
-                  
 //                 </div>
 
 //                 <div className="p-4 shadow-2xl bg-white rounded-md mt-1">
@@ -2189,15 +2184,15 @@
 //                         Post your Property for{" "}
 //                         <em className="font-damion font-serif text-3xl flex ml-1">
 //                           Free!
-//                         </em> 
+//                         </em>
 //                       </p>
-                     
+
 //                     </div>
 //                     <Link to="/SignIn" target="_top" >
-//                     <div className="w-full flex justify-center px-2 py-2 "> 
-                     
+//                     <div className="w-full flex justify-center px-2 py-2 ">
+
 //                         <button className="text-black px-3 bg-blue-300 py-2 rounded-full flex items-center justify-center" >
-//                           Post Property 
+//                           Post Property
 //                           <span className="text-white text-sm px-2 mx-2 rounded-full bg-red-600 flex items-center ml-2">
 //                             <ScaleLoader
 //                               color="#FFFFFF"
@@ -2208,7 +2203,7 @@
 //                             <span style={{ marginLeft: "8px" }}>Free</span>
 //                           </span>
 //                         </button>
-                      
+
 //                     </div>
 //                     </Link>
 //                   </div>
@@ -2293,7 +2288,7 @@
 //                                                     )}/${nestedItem._id}/`
 //                                                   : "#"
 //                                               } target="_blank"
-//                                             > 
+//                                             >
 //                                               <button
 //                                                 type="button"
 //                                                 className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 rounded-lg text-sm px-4 py-2 text-center m-0"
@@ -2732,10 +2727,6 @@
 //   }
 // `;
 
-
-
-
-
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { styled } from "styled-components";
 import Footer from "../Components/Actual_Components/Footer";
@@ -2804,7 +2795,7 @@ const BuyViewDetails = () => {
   const toggleDescription = () => {
     setIsExpanded(!isExpanded);
   };
-  
+
   const [showForm, setShowForm] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [getContact, setGetContact] = useState("");
@@ -3025,7 +3016,7 @@ const BuyViewDetails = () => {
 
   return (
     <div style={{ overflowX: "hidden" }}>
- <Nav />
+      <Nav />
       <Wrapper>
         <div className="blog-single gray-bg">
           <div className="mx-10">
@@ -3108,7 +3099,6 @@ const BuyViewDetails = () => {
                   </div>
                 </article>
 
-                
                 <article className="article">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center border-b border-gray-100 w-full pb-2 mt-1">
                     <span className="text-lg text-red-500 min-w-[120px]">
@@ -3667,7 +3657,15 @@ const BuyViewDetails = () => {
                                           </div>
                                           <div className="flex justify-end mt-auto">
                                             <Link
-                                              to={`/buy-properties/:pUrl/:id/`}
+                                              to={
+                                                nestedItem.propertyName &&
+                                                nestedItem._id
+                                                  ? `/buy-properties/${nestedItem.propertyName.replace(
+                                                      /\s+/g,
+                                                      "-"
+                                                    )}/${nestedItem._id}/`
+                                                  : "#"
+                                              }
                                               target="_blank"
                                             >
                                               <button

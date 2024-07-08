@@ -142,17 +142,17 @@ function App() {
              <Route path="/project-in-delhi/" element={<DelhiProject />} />
              <Route path="/project-in-noida/" element={<NoidaProject/>} />
              <Route path="/project-in-panipat/" element={<PanipatProject/>} />
-             <Route path="/project-in-Panchkula/" element={<Panchkula/>}/>
+             <Route path="/project-in-panchkula/" element={<Panchkula/>}/>
              <Route path="/dlf-homes-projects/" element={<DlfProject/>} />
              <Route path="/project-in-goa/" element={<GoaProject/>} />
              <Route path="/deendayal/plots/" element={<DeenDayalPlots />} />
-             <Route path="/villas"  element = {<VillasProjects/>}/>
+             <Route path="/projects/villas"  element = {<VillasProjects/>}/>
              <Route path="/newsandarticals/" element={<NewsandArtical />} />
              <Route path="/userdashboard/" element={token !== null ? <UserDashBoard /> : <Navigate to="/" />} />
              <Route path="/useredit/:id" element={<UserEdit />} />
              <Route path="/middlemain" element={<MiddleMain />} />
              <Route path="/viewallproperty" element={<ViewAllProperty />} />
-             <Route path="/contactus/" element={<ContactUs />} />
+             <Route path="/contact-us/" element={<ContactUs />} />
              <Route path="/careerwithus/" element={<CareerWithUs />} />
              <Route path="/blog/" element={<Blogging />} />
              <Route path="/blog/:blogTitle/:id" element={<BlogView />} />

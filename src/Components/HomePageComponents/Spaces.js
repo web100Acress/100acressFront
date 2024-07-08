@@ -44,7 +44,7 @@ function SpacesAvailable() {
             </div>
           </Link>
 
-          <Link to={'villas'}  target="_top">
+          <Link to={'/projects/villas'}  target="_top">
             <div className="_ksjMM _1fe9" title="Villa's">
               <p className="_9gncbH">Luxury</p>
               <p className="_4rgjvNN">Villas</p>

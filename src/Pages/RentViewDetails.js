@@ -2110,7 +2110,7 @@ const toggleDescription = () => {
                                           </div>
                                           <div className="flex justify-end mt-auto">
                                             <Link
-                                              to={`/rental-properties/:pUrl/:id/`}
+                                             to={`/rental-properties/${nestedItem.propertyName.replace(/\s+/g, '-')}/${nestedItem._id}/`}
                                               target="_blank"
                                             >
                                               <button
