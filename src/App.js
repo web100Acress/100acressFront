@@ -101,6 +101,8 @@ import BlogViewAdmin from "./AdminPage/BlogViewAdmin";
 import PossessionProject from "./Pages/PossessionProject";
 import ReadyToMoveProject from "./Pages/ReadyToMoveProject";
 import DlfProject from "./Pages/DlfProject";
+import VillasProjects from "./Components/HomePageComponents/VillasProjects";
+import Panchkula from "./Pages/Panchkula";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -140,9 +142,11 @@ function App() {
              <Route path="/project-in-delhi/" element={<DelhiProject />} />
              <Route path="/project-in-noida/" element={<NoidaProject/>} />
              <Route path="/project-in-panipat/" element={<PanipatProject/>} />
-             <Route path="/dlf-super-luxury/" element={<DlfProject/>} />
+             <Route path="/project-in-Panchkula/" element={<Panchkula/>}/>
+             <Route path="/dlf-homes-projects/" element={<DlfProject/>} />
              <Route path="/project-in-goa/" element={<GoaProject/>} />
              <Route path="/deendayal/plots/" element={<DeenDayalPlots />} />
+             <Route path="/villas"  element = {<VillasProjects/>}/>
              <Route path="/newsandarticals/" element={<NewsandArtical />} />
              <Route path="/userdashboard/" element={token !== null ? <UserDashBoard /> : <Navigate to="/" />} />
              <Route path="/useredit/:id" element={<UserEdit />} />

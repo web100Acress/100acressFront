@@ -26,7 +26,6 @@ function RentPropViewCard() {
   useEffect(() => {}, [rentData]);
 
   useEffect(() => {}, [postPropertyData]);
-
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />

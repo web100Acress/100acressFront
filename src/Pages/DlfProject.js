@@ -5,7 +5,7 @@ import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 const DlfProject = () => {
-  const { dlfProject } = useContext(DataContext);
+  const { dlfAllProjects } = useContext(DataContext);
   return (
     <div>
       <Nav />
@@ -22,7 +22,7 @@ const DlfProject = () => {
         DLF Super Luxury Homes  #100crore
         </h1>
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {dlfProject.map((item, index) => {
+          {dlfAllProjects.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">

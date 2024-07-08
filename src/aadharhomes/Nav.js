@@ -754,6 +754,13 @@ export default function Nav() {
                           >
                             Projects in Panipat
                           </Link>
+
+                          <Link
+                            to={`/project-in-Panchkula/`}
+                            className="block text-sm px-4 py-1   hover:text-red-600"
+                          >
+                            Projects in Panchkula
+                          </Link>
                         </div>
                         
                         {/* I am Working here */}

@@ -1,186 +1,1044 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaFacebook, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
+import logoImage from "../../Images/100acress.png";
+import axios from "axios";
 const Footer = () => {
+  const [data, setData] = useState({
+    name: "",
+    mobile: "",
+  });
+  const resetData = () => {
+    setData({
+      name: "",
+      mobile: "",
+    });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { name, mobile } = data;
+    if (!name || !mobile) {
+      alert("Please fill out all fields.");
+      return;
+    }
+    try {
+      const res = await axios.post(
+        "https://api.100acress.com/contact_Insert",
+        data
+      );
+      console.log(res, "++++++++++++++++++");
+      alert("Data submit successfully");
+      resetData();
+    } catch (error) {
+      if (error.response) {
+        console.error("Server error:", error.response.data);
+      } else if (error.request) {
+        console.error("Server request:", error.request);
+      } else {
+        console.error("Error:", error.message);
+      }
+    }
+  };
+
+  const handleSubmitData = (e) => {
+    const { name, value } = e.target;
+    setData({ ...data, [name]: value });
+  };
   return (
     <>
-      <footer className="bg-[#F20808] h-90 ">
-        <div className="mx-auto grid text-gray-50 lg:grid-cols-12 px-4">
-          <div className="flex flex-col lg:flex-row items-start border-slate-500 py-2 px-2 lg:col-span-12 xl:pl-28 2xl:pl-32">
-            <div className="mt-4 lg:mt-0 lg:ml-2 lg:w-full lg:col-span-6">
-              <nav>
-                <p className="font-bold text-xl  text-white ">Get In Touch</p>
-              </nav>
+      {/* <div className="w-full divide-y divide-gray-200 bg-red-600">
+        <div className="flex flex-wrap py-3">
+          <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-6 py-3 text-center text-sm">
+            <img src={logoImage} className="mx-auto" alt="Logo" />
+            <p className="text-md my-3 mt-2 text-justify font-normal">
+              100acress.com Real Estate Company specializes in providing premier
+              property solutions tailored to meet your needs.
+            </p>
+            <div className="my-2 text-left text-md">
+              <i className="fa-solid fa-location-dot">
+                <span className="ml-8 font-normal  pb-2">
+                  708, ILD Trade Centre, Sector 47,
+                  <br />
+                  <span className="ml-10 mt-2 block">
+                    Gurugram, Haryana 122001
+                  </span>
+                </span>
+              </i>
+            </div>
+            <div className="my-3 text-left ">
+              <i className="fa-solid fa-phone">
+                <span className="ml-6 text-md font-normal">+91 8500-900-100</span>
+              </i>
+            </div>
+            <div className="my-2 text-left ">
+              <i className="fa-solid fa-message">
+                <span className="ml-6 font-normal">seo@100acress.com</span>
+              </i>
             </div>
           </div>
-          <div className="lg:w-1/2">
-            <nav
-              aria-label="Footer Navigation "
-              className="flex flex-wrap  px-3 sm:py-4 sm:px-8 lg:col-span-8 
-            lg:border-t-0 xl:flex-nowrap xl:space-x-16 xl:pl-32 2xl:pl-40"
-            >
-              <li className="flex space-x-3  " >
-                <Link
-                  to="https://www.facebook.com/100Acress" target="_blank"
-                  className="flex items-center justify-center text-white bg-blue-400 w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8 rounded-full"
-                >
-                  <FaFacebook size={20} />
-                </Link>
 
-                <Link
-                  to="https://twitter.com/100acressdotcom" target="_blank"
-                  className="flex items-center justify-center text-white bg-black w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8 rounded-full "
-                >
-                  <i className="fa-brands fa-x-twitter text-sm"></i>
-                </Link>
-
-                <Link
-                  to="https://www.instagram.com/official100acress/" target="_blank"
-                  className="flex items-center justify-center text-white w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8 rounded-full bg-[#c32aa3]"
-                >
-                  <FaInstagram size={20} />
-                </Link>
-
-                <Link
-                  to="https://www.linkedin.com/company/100acress/" target="_blank"
-                  className="flex justify-center items-center text-white bg-blue-700 w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8 rounded-full"
-                >
-                  <FaLinkedin size={20} />
-                </Link>
-
-                <Link
-                  to="https://www.youtube.com/@100acress" target="_blank"
-                  className="flex items-center justify-center text-red-600 rounded-full bg-white w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8"
-                >
-                  <FaYoutube size={20} />
-                </Link>
-
-                <Link
-                  to="https://wa.me/918500900100" target="_blank"
-                  className="flex items-center justify-center text-white rounded-full bg-green-500 w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8"
-                >
-                  <FaWhatsapp size={20} />
-                </Link>
-
-                <a
-                  href="tel:+918500900100"
-                  className="flex items-center justify-center text-white rounded-full bg-blue-500 w-8 h-8 lg:w-10 md:w-10 sm:w-10 xs-w-8 lg:h-10 md:h-10 sm:h-10 xs:h-8 "
-                >
-                  <IoCall size={20} className="text-white" />
-                </a>
-                
+          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-start text-2xl">
+            100acress
+            <div className="mt-2">
+              <li className="list-none text-white text-sm my-1 ">
+                Home
               </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Contact
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Blog
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Career
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                About
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Terms & Conditions
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                News & Articles
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Privacy & Policy
+              </li>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-left text-2xl">
+            Popular Cities
+            <div className="mt-2 mr-0">
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Gurugram
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Noida{" "}
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Delhi
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Goa
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Ayodhya
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Mumbai
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Panipat
+              </li>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-left text-2xl">
+            Services
+            <div className="mt-2">
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Real Estate Consulting
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Legal Advice
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Interior Design
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Home Loan
+              </li>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-0 py-3 text-center text-xl">
+            Instant Callback
+            <div className="flex flex-col mx-4 my-2 items-center">
+              <div className="relative w-full my-2">
+                <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                <input
+                  type="name"
+                  name="name"
+                  className="w-full pl-10 pr-5 py-2 text-sm placeholder-black text-black transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  placeholder="Full Name"
+                  value={data.name}
+                  onChange={handleSubmitData}
+                  required
+                />
+              </div>
+
+              <div className="relative w-full my-2">
+                <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                <input
+                  type="number"
+                  name="mobile"
+                  className="w-full pl-10 pr-5 py-2 text-sm placeholder-black text-black transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  placeholder="Mobile Number"
+                  value={data.mobile}
+                  onChange={handleSubmitData}
+                  required
+                />
+              </div>
+              <button className="w-full text-white bg-black font-normal py-1 mt-1 rounded-lg"
+              onClick={handleSubmit}>
+                Submit
+              </button>
+            </div>
+            <nav
+              aria-label="Footer Navigation"
+              className="flex justify-center space-x-3 mt-4 text-start"
+            >
+              <Link
+                to="https://www.facebook.com/100Acress"
+                target="_blank"
+                className="flex items-center justify-center text-white bg-blue-400 w-7 h-7 rounded-full"
+              >
+                <FaFacebook size={20} />
+              </Link>
+              <Link
+                to="https://twitter.com/100acressdotcom"
+                target="_blank"
+                className="flex items-center justify-center text-white bg-black w-7 h-7 rounded-full"
+              >
+                <i className="fa-brands fa-x-twitter text-sm"></i>
+              </Link>
+              <Link
+                to="https://www.instagram.com/official100acress/"
+                target="_blank"
+                className="flex items-center justify-center text-white w-7 h-7 rounded-full bg-[#c32aa3]"
+              >
+                <FaInstagram size={20} />
+              </Link>
+              <Link
+                to="https://www.linkedin.com/company/100acress/"
+                target="_blank"
+                className="flex items-center justify-center text-white bg-blue-700 w-7 h-7 rounded-full"
+              >
+                <FaLinkedin size={20} />
+              </Link>
+              <Link
+                to="https://www.youtube.com/@100acress"
+                target="_blank"
+                className="flex items-center justify-center text-red-600 rounded-full bg-white w-7 h-7"
+              >
+                <FaYoutube size={20} />
+              </Link>
+              <Link
+                to="https://wa.me/918500900100"
+                target="_blank"
+                className="flex items-center justify-center text-white rounded-full bg-green-500 w-7 h-7"
+              >
+                <FaWhatsapp size={20} />
+              </Link>
+              <a
+                href="tel:+918500900100"
+                className="flex items-center justify-center text-white rounded-full bg-blue-500 w-7 h-7"
+              >
+                <IoCall size={20} className="text-white" />
+              </a>
             </nav>
           </div>
+        </div>
 
-          <div
-            aria-label="Footer Navigation"
-            className="flex flex-wrap h-full rounded-xl pt-2 lg:col-span-12 lg:border-t-0 xl:flex-nowrap xl:space-r-16 mb-2"
-          >
-            <ul className="mt-2 pl-0 text-md h-6 flex-grow flex flex-col sm:flex-row md:mt-0 sm:items-center px-2">
-              <div className="flex flex-row sm:flex-row sm:justify-center flex-wrap">
-                <li className=" sm:mb-0">
-                  <Link
-                    to="/"
-                    className="text-left px-1 text-sm hover:underline"
-                    target="_top"
-                    style={{ color: "white" }}
-                  >
-                    Home
-                  </Link>
-                </li>
+        <div className="w-full px-2 py-3 bg-red-600">
+          <p className="text-center text-sm text-white mb-0">
+            Copyright © 2024,{" "}
+            <Link className="text-reset" to="https://100acress.com/">
+              100acress.com.
+            </Link>{" "}
+            All Rights Reserved
+          </p>
+        </div>
+      </div> */}
+      {/* <div className="w-full divide-y divide-gray-200 bg-red-600">
+  <div className="flex flex-wrap py-3">
+    <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-6 py-3 text-center text-sm">
+      <img src={logoImage} className="mx-auto" alt="Logo" />
+      <p className="text-md my-3 mt-2 text-justify font-normal">
+        100acress.com Real Estate Company specializes in providing premier
+        property solutions tailored to meet your needs.
+      </p>
+      <div className="my-2 text-left text-md">
+        <i className="fa-solid fa-location-dot">
+          <span className="ml-8 font-normal pb-2">
+            708, ILD Trade Centre, Sector 47,
+            <br />
+            <span className="ml-10 mt-2 block">
+              Gurugram, Haryana 122001
+            </span>
+          </span>
+        </i>
+      </div>
+      <div className="my-3 text-left">
+        <i className="fa-solid fa-phone">
+          <span className="ml-6 text-md font-normal">+91 8500-900-100</span>
+        </i>
+      </div>
+      <div className="my-2 text-left">
+        <i className="fa-solid fa-message">
+          <span className="ml-6 font-normal">seo@100acress.com</span>
+        </i>
+      </div>
+    </div>
 
-                <li className="sm:mb-0">
-                  <Link
-                    to="/about-us/"
-                    className="text-left px-1 text-sm hover:underline"
-                    target="_top"
-                    style={{ color: "white" }}
-                  >
-                    About
-                  </Link>
-                </li>
+    <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-center text-2xl">
+      100acress
+      <div className="mt-2 flex flex-col items-center">
+        <li className="list-none text-white text-sm my-1">Home</li>
+        <li className="list-none text-white text-sm my-1">Contact</li>
+        <li className="list-none text-white text-sm my-1">Blog</li>
+        <li className="list-none text-white text-sm my-1">Career</li>
+        <li className="list-none text-white text-sm my-1">About</li>
+        <li className="list-none text-white text-sm my-1">Terms & Conditions</li>
+        <li className="list-none text-white text-sm my-1">News & Articles</li>
+        <li className="list-none text-white text-sm my-1">Privacy & Policy</li>
+      </div>
+    </div>
 
-                <li className=" sm:mb-0">
-                  <Link
-                    to="/contactus/"
-                    className="text-left px-1 text-sm hover:underline"
-                    target="_top"
-                    style={{ color: "white" }}
-                  >
-                    Contact
-                  </Link>
-                </li>
-                <li className=" sm:mb-0">
-                  <Link
-                    to="/privacypolicy/"
-                    className="text-left px-1 text-sm hover:underline"
-                    target="_top"
-                    style={{ color: "white" }}
-                  >
-                    Privacy & Policy
-                  </Link>
-                </li>
-                <li className=" sm:mb-0">
-                  <Link
-                    to="/careerwithus/"
-                    className="text-left px-1 text-sm hover:underline"
-                    target="_top"
-                    style={{ color: "white" }}
-                  >
-                    Career
-                  </Link>
-                </li>
-                <li className=" sm:mb-0">
-                  <Link
-                    to="/blog/"
-                    className="text-left px-1 text-sm hover:underline"
-                    target="_top"
-                    style={{ color: "white" }}
-                  >
-                    Blog
-                  </Link>
-                </li>
+    <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-center text-2xl">
+      Popular Cities
+      <div className="mt-2 flex flex-col items-center">
+        <li className="list-none text-white text-sm my-1">Project in Gurugram</li>
+        <li className="list-none text-white text-sm my-1">Project in Noida</li>
+        <li className="list-none text-white text-sm my-1">Project in Delhi</li>
+        <li className="list-none text-white text-sm my-1">Project in Goa</li>
+        <li className="list-none text-white text-sm my-1">Project in Ayodhya</li>
+        <li className="list-none text-white text-sm my-1">Project in Mumbai</li>
+        <li className="list-none text-white text-sm my-1">Project in Panipat</li>
+      </div>
+    </div>
 
-                <li className=" sm:mb-0">
-                  <Link
-                    to="/termsandconditions/"
-                    className="text-left px-1 text-sm hover:underline"
-                    target="_top"
-                    style={{ color: "white" }}
-                  >
-                    Terms & Conditions
-                  </Link>
-                </li>
+    <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-center text-2xl">
+      Services
+      <div className="mt-2 flex flex-col items-center">
+        <li className="list-none text-white text-sm my-1">Real Estate Consulting</li>
+        <li className="list-none text-white text-sm my-1">Legal Advice</li>
+        <li className="list-none text-white text-sm my-1">Interior Design</li>
+        <li className="list-none text-white text-sm my-1">Home Loan</li>
+      </div>
+    </div>
 
-                <li className=" sm:mb-0">
-                  <Link
-                   to="/newsandarticals/"
-                    className="text-left px-1 text-sm hover:underline"
-                    target="_top"
-                    style={{ color: "white" }}
-                  >
-                    News & Article
-                  </Link>
-                </li>
+    <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-0 py-3 text-center text-xl">
+      Instant Callback
+      <div className="flex flex-col mx-4 my-2 items-center">
+        <div className="relative w-full my-2">
+          <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+          <input
+            type="name"
+            name="name"
+            className="w-full pl-10 pr-5 py-2 text-sm placeholder-black text-black transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            placeholder="Full Name"
+            value={data.name}
+            onChange={handleSubmitData}
+            required
+          />
+        </div>
 
-              </div>
-            </ul>
+        <div className="relative w-full my-2">
+          <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+          <input
+            type="number"
+            name="mobile"
+            className="w-full pl-10 pr-5 py-2 text-sm placeholder-black text-black transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            placeholder="Mobile Number"
+            value={data.mobile}
+            onChange={handleSubmitData}
+            required
+          />
+        </div>
+        <button className="w-full text-white bg-black font-normal py-1 mt-1 rounded-lg" onClick={handleSubmit}>
+          Submit
+        </button>
+      </div>
+      <nav aria-label="Footer Navigation" className="flex justify-center space-x-3 mt-4 text-start">
+        <Link
+          to="https://www.facebook.com/100Acress"
+          target="_blank"
+          className="flex items-center justify-center text-white bg-blue-400 w-7 h-7 rounded-full"
+        >
+          <FaFacebook size={20} />
+        </Link>
+        <Link
+          to="https://twitter.com/100acressdotcom"
+          target="_blank"
+          className="flex items-center justify-center text-white bg-black w-7 h-7 rounded-full"
+        >
+          <i className="fa-brands fa-x-twitter text-sm"></i>
+        </Link>
+        <Link
+          to="https://www.instagram.com/official100acress/"
+          target="_blank"
+          className="flex items-center justify-center text-white w-7 h-7 rounded-full bg-[#c32aa3]"
+        >
+          <FaInstagram size={20} />
+        </Link>
+        <Link
+          to="https://www.linkedin.com/company/100acress/"
+          target="_blank"
+          className="flex items-center justify-center text-white bg-blue-700 w-7 h-7 rounded-full"
+        >
+          <FaLinkedin size={20} />
+        </Link>
+        <Link
+          to="https://www.youtube.com/@100acress"
+          target="_blank"
+          className="flex items-center justify-center text-red-600 rounded-full bg-white w-7 h-7"
+        >
+          <FaYoutube size={20} />
+        </Link>
+        <Link
+          to="https://wa.me/918500900100"
+          target="_blank"
+          className="flex items-center justify-center text-white rounded-full bg-green-500 w-7 h-7"
+        >
+          <FaWhatsapp size={20} />
+        </Link>
+        <a href="tel:+918500900100" className="flex items-center justify-center text-white rounded-full bg-blue-500 w-7 h-7">
+          <IoCall size={20} className="text-white" />
+        </a>
+      </nav>
+    </div>
+  </div>
+
+  <div className="w-full px-2 py-3 bg-red-600">
+    <p className="text-center text-sm text-white mb-0">
+      Copyright © 2024,{" "}
+      <Link className="text-reset" to="https://100acress.com/">
+        100acress.com.
+      </Link>{" "}
+      All Rights Reserved
+    </p>
+  </div>
+</div> */}
+      {/* <div className="w-full divide-y divide-gray-200 bg-red-600">
+        <div className="flex flex-wrap py-3">
+          <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-6 py-3 text-center text-sm">
+            <img src={logoImage} className="mx-auto" alt="Logo" />
+            <p className="text-md my-3 mt-2 text-justify font-normal">
+              100acress.com Real Estate Company specializes in providing premier
+              property solutions tailored to meet your needs.
+            </p>
+            <div className="my-2 text-left text-md">
+              <i className="fa-solid fa-location-dot">
+                <span className="ml-8 font-normal pb-2">
+                  708, ILD Trade Centre, Sector 47,
+                  <span className="ml-10 mt-2 block">
+                    Gurugram, Haryana 122001
+                  </span>
+                </span>
+              </i>
+            </div>
+            <div className="my-3 text-left">
+              <i className="fa-solid fa-phone">
+                <span className="ml-6 text-md font-normal">
+                  +91 8500-900-100
+                </span>
+              </i>
+            </div>
+            <div className="my-2 text-left">
+              <i className="fa-solid fa-message">
+                <span className="ml-6 font-normal">seo@100acress.com</span>
+              </i>
+            </div>
           </div>
 
-          <div className="border-t border-white px-2 mt-2 py-2  lg:col-span-12">
-            <p className="text-left text-sm text-white">
-              Copyright © 2024,{" "}
-              <Link className="text-reset" to="https://100acress.com/">
-                100acress.com.{" "}
+          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-center text-2xl">
+            100acress
+            <div className="mt-2 flex flex-col items-center">
+              <ul className="list-inside text-left">
+                <li className="list-none text-white text-sm my-1">Home</li>
+                <li className="list-none text-white text-sm my-1">Contact</li>
+                <li className="list-none text-white text-sm my-1">Blog</li>
+                <li className="list-none text-white text-sm my-1">Career</li>
+                <li className="list-none text-white text-sm my-1">About</li>
+                <li className="list-none text-white text-sm my-1">
+                  Terms & Conditions
+                </li>
+                <li className="list-none text-white text-sm my-1">
+                  News & Articles
+                </li>
+                <li className="list-none text-white text-sm my-1">
+                  Privacy & Policy
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-center text-2xl">
+            Popular Cities
+            <div className="mt-2 flex flex-col items-center">
+              <ul className="list-inside text-left">
+                <li className="list-none text-white text-sm my-1">
+                  Project in Gurugram
+                </li>
+                <li className="list-none text-white text-sm my-1">
+                  Project in Noida
+                </li>
+                <li className="list-none text-white text-sm my-1">
+                  Project in Delhi
+                </li>
+                <li className="list-none text-white text-sm my-1">
+                  Project in Goa
+                </li>
+                <li className="list-none text-white text-sm my-1">
+                  Project in Ayodhya
+                </li>
+                <li className="list-none text-white text-sm my-1">
+                  Project in Mumbai
+                </li>
+                <li className="list-none text-white text-sm my-1">
+                  Project in Panipat
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-center text-2xl">
+            Services
+            <div className="mt-2 flex flex-col items-center">
+              <ul className="list-inside text-left">
+                <li className="list-none text-white text-sm my-1">
+                  Legal Advice
+                </li>
+                <li className="list-none text-white text-sm my-1">
+                  Interior Design
+                </li>
+                <li className="list-none text-white text-sm my-1">Home Loan</li>
+                <li className="list-none text-white text-sm my-1">
+                  Real Estate Consulting
+                </li>
+              </ul>
+            </div>
+          </div>
+  
+
+
+          <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-0 py-3 text-center text-xl">
+            Instant Callback
+            <div className="flex flex-col mx-4 my-2 items-center">
+              <div className="relative w-full my-2">
+                <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                <input
+                  type="name"
+                  name="name"
+                  className="w-full pl-10 pr-5 py-2 text-sm placeholder-black text-black transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  placeholder="Full Name"
+                  value={data.name}
+                  onChange={handleSubmitData}
+                  required
+                />
+              </div>
+
+              <div className="relative w-full my-2">
+                <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                <input
+                  type="number"
+                  name="mobile"
+                  className="w-full pl-10 pr-5 py-2 text-sm placeholder-black text-black transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  placeholder="Mobile Number"
+                  value={data.mobile}
+                  onChange={handleSubmitData}
+                  required
+                />
+              </div>
+              <button
+                className="w-full text-white bg-black font-normal py-1 mt-1 rounded-lg"
+                onClick={handleSubmit}
+              >
+                Submit
+              </button>
+            </div>
+            <nav
+              aria-label="Footer Navigation"
+              className="flex justify-center space-x-3 mt-4 text-start"
+            >
+              <Link
+                to="https://www.facebook.com/100Acress"
+                target="_blank"
+                className="flex items-center justify-center text-white bg-blue-400 w-7 h-7 rounded-full"
+              >
+                <FaFacebook size={20} />
               </Link>
-              All Rights Reserved
-            </p>
+              <Link
+                to="https://twitter.com/100acressdotcom"
+                target="_blank"
+                className="flex items-center justify-center text-white bg-black w-7 h-7 rounded-full"
+              >
+                <i className="fa-brands fa-x-twitter text-sm"></i>
+              </Link>
+              <Link
+                to="https://www.instagram.com/official100acress/"
+                target="_blank"
+                className="flex items-center justify-center text-white w-7 h-7 rounded-full bg-[#c32aa3]"
+              >
+                <FaInstagram size={20} />
+              </Link>
+              <Link
+                to="https://www.linkedin.com/company/100acress/"
+                target="_blank"
+                className="flex items-center justify-center text-white bg-blue-700 w-7 h-7 rounded-full"
+              >
+                <FaLinkedin size={20} />
+              </Link>
+              <Link
+                to="https://www.youtube.com/@100acress"
+                target="_blank"
+                className="flex items-center justify-center text-red-600 rounded-full bg-white w-7 h-7"
+              >
+                <FaYoutube size={20} />
+              </Link>
+              <Link
+                to="https://wa.me/918500900100"
+                target="_blank"
+                className="flex items-center justify-center text-white rounded-full bg-green-500 w-7 h-7"
+              >
+                <FaWhatsapp size={20} />
+              </Link>
+              <a
+                href="tel:+918500900100"
+                className="flex items-center justify-center text-white rounded-full bg-blue-500 w-7 h-7"
+              >
+                <IoCall size={20} className="text-white" />
+              </a>
+            </nav>
           </div>
         </div>
-      </footer>
+
+        <div className="w-full px-2 py-3 bg-red-600">
+          <p className="text-center text-sm text-white mb-0">
+            Copyright © 2024,{" "}
+            <Link className="text-reset" to="https://100acress.com/">
+              100acress.com.
+            </Link>{" "}
+            All Rights Reserved
+          </p>
+        </div>
+      </div> */}
+      {/* <div className="w-full divide-y divide-gray-200 bg-red-600">
+        <div className="flex flex-wrap py-3">
+          <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-6 py-3 text-center text-sm">
+            <img src={logoImage} className="mx-auto" alt="Logo" />
+            <p className="text-md my-3 mt-2 text-justify font-normal">
+              100acress.com Real Estate Company specializes in providing premier
+              property solutions tailored to meet your needs.
+            </p>
+            <div className="my-2 text-left text-md">
+              <i className="fa-solid fa-location-dot">
+                <span className="ml-8 font-normal  pb-2">
+                  708, ILD Trade Centre, Sector 47,
+                  <br />
+                  <span className="ml-10 mt-2 block">
+                    Gurugram, Haryana 122001
+                  </span>
+                </span>
+              </i>
+            </div>
+            <div className="my-3 text-left ">
+              <i className="fa-solid fa-phone">
+                <span className="ml-6 text-md font-normal">+91 8500-900-100</span>
+              </i>
+            </div>
+            <div className="my-2 text-left ">
+              <i className="fa-solid fa-message">
+                <span className="ml-6 font-normal">seo@100acress.com</span>
+              </i>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-start text-2xl">
+            100acress
+            <div className="mt-2">
+              <li className="list-none text-white text-sm my-1 ">
+                Home
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Contact
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Blog
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Career
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                About
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Terms & Conditions
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                News & Articles
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Privacy & Policy
+              </li>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-left text-2xl">
+            Popular Cities
+            <div className="mt-2 mr-0">
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Gurugram
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Noida{" "}
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Delhi
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Goa
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Ayodhya
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Mumbai
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Project in Panipat
+              </li>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-left text-2xl">
+            Services
+            <div className="mt-2">
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Real Estate Consulting
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Legal Advice
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Interior Design
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                Home Loan
+              </li>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-0 py-3 text-center text-xl">
+            Instant Callback
+            <div className="flex flex-col mx-4 my-2 items-center">
+              <div className="relative w-full my-2">
+                <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                <input
+                  type="name"
+                  name="name"
+                  className="w-full pl-10 pr-5 py-2 text-sm placeholder-black text-black transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  placeholder="Full Name"
+                  value={data.name}
+                  onChange={handleSubmitData}
+                  required
+                />
+              </div>
+
+              <div className="relative w-full my-2">
+                <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                <input
+                  type="number"
+                  name="mobile"
+                  className="w-full pl-10 pr-5 py-2 text-sm placeholder-black text-black transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  placeholder="Mobile Number"
+                  value={data.mobile}
+                  onChange={handleSubmitData}
+                  required
+                />
+              </div>
+              <button className="w-full text-white bg-black font-normal py-1 mt-1 rounded-lg"
+              onClick={handleSubmit}>
+                Submit
+              </button>
+            </div>
+            <nav
+              aria-label="Footer Navigation"
+              className="flex justify-center space-x-3 mt-4 text-start"
+            >
+              <Link
+                to="https://www.facebook.com/100Acress"
+                target="_blank"
+                className="flex items-center justify-center text-white bg-blue-400 w-7 h-7 rounded-full"
+              >
+                <FaFacebook size={20} />
+              </Link>
+              <Link
+                to="https://twitter.com/100acressdotcom"
+                target="_blank"
+                className="flex items-center justify-center text-white bg-black w-7 h-7 rounded-full"
+              >
+                <i className="fa-brands fa-x-twitter text-sm"></i>
+              </Link>
+              <Link
+                to="https://www.instagram.com/official100acress/"
+                target="_blank"
+                className="flex items-center justify-center text-white w-7 h-7 rounded-full bg-[#c32aa3]"
+              >
+                <FaInstagram size={20} />
+              </Link>
+              <Link
+                to="https://www.linkedin.com/company/100acress/"
+                target="_blank"
+                className="flex items-center justify-center text-white bg-blue-700 w-7 h-7 rounded-full"
+              >
+                <FaLinkedin size={20} />
+              </Link>
+              <Link
+                to="https://www.youtube.com/@100acress"
+                target="_blank"
+                className="flex items-center justify-center text-red-600 rounded-full bg-white w-7 h-7"
+              >
+                <FaYoutube size={20} />
+              </Link>
+              <Link
+                to="https://wa.me/918500900100"
+                target="_blank"
+                className="flex items-center justify-center text-white rounded-full bg-green-500 w-7 h-7"
+              >
+                <FaWhatsapp size={20} />
+              </Link>
+              <a
+                href="tel:+918500900100"
+                className="flex items-center justify-center text-white rounded-full bg-blue-500 w-7 h-7"
+              >
+                <IoCall size={20} className="text-white" />
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <div className="w-full px-2 py-3 bg-red-600">
+          <p className="text-center text-sm text-white mb-0">
+            Copyright © 2024,{" "}
+            <Link className="text-reset" to="https://100acress.com/">
+              100acress.com.
+            </Link>{" "}
+            All Rights Reserved
+          </p>
+        </div>
+      </div> */}
+
+      <div className="w-full divide-y divide-gray-200 bg-red-600">
+        <div className="flex flex-wrap py-3">
+          <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-6 py-2 text-center text-sm">
+            <img src={logoImage} className="mx-auto" alt="Logo" />
+            <p className="text-md my-3 mt-2 text-justify font-normal">
+              100acress.com Real Estate Company specializes in providing premier
+              property solutions tailored to meet your needs.
+            </p>
+            {/* <div className="my-2 text-left text-md">
+              <i className="fa-solid fa-location-dot">
+                <div className="font-normal mt-0">
+                <p className="">
+                  708, ILD Trade Centre, Sector 47,
+                 <span>Gurugram, Haryana 122001</span> 
+                </p>
+                </div>
+              </i>
+            </div> */}
+            {/* <div className="my-1 text-left text-md flex items-center">
+  <i className="fa-solid fa-location-dot mr-2 mb-3"></i>
+  <div className="font-normal">
+    <p className="mb-0 ml-6">
+      708, ILD Trade Centre, Sector 47,
+      <span>Gurugram, Haryana 122001</span>
+    </p>
+  </div>
+</div> */}
+
+            <div className="my-3 text-left ">
+              <i className="fa-solid fa-phone">
+                <span className="ml-6 text-md font-normal">
+                  +91 8500-900-100
+                </span>
+              </i>
+            </div>
+            <div className="my-2 text-left ">
+              <i className="fa-solid fa-message">
+                <span className="ml-6 font-normal">seo@100acress.com</span>
+              </i>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-start text-2xl">
+            100acress
+            <div className="mt-2">
+              <li className="list-none text-white text-sm my-1"><Link to="/" className=""target="_top" style={{ color: "white" }}>Home</Link></li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                <Link to="/contact-us/" className=""target="_top" style={{ color: "white" }}>Contact</Link>
+              </li>
+
+              <li className="list-none text-white text-sm my-1 text-justify">
+             <Link to="/blog/" className=""target="_top" style={{ color: "white" }}> Blog</Link>  
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+               <Link to="/career-with-us/" className=""target="_top" style={{ color: "white" }}>Career</Link> 
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                <Link to="/about-us/" className=""target="_top" style={{ color: "white" }}>About</Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 ">
+               <Link to="/terms-and-conditions/" className=""target="_top" style={{ color: "white" }}> Terms & Conditions</Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                <Link to="/news-and-articals/" className=""target="_top" style={{ color: "white" }}>News & Articles</Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+               <Link to="/privacy-policy/" className=""target="_top" style={{ color: "white" }}>Privacy & Policy</Link> 
+              </li>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-left text-2xl">
+            Popular Cities
+            <div className="mt-2 mr-0">
+              <li className="list-none text-white text-sm my-1"  >
+               <Link to={"/projects-in-gurugram/"} className=""target="_top" style={{ color: "white" }}>Project in Gurugram</Link> 
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                <Link to={"/project-in-noida/"} className=""target="_top" style={{ color: "white" }}>Project in Noida{" "}</Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+               <Link to={"/project-in-delhi/"} className=""target="_top" style={{ color: "white" }}>Project in Delhi</Link> 
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                <Link to="/project-in-goa/" className=""target="_top" style={{ color: "white" }}>Project in Goa</Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+               <Link to="#" className=""target="_top" style={{ color: "white" }}>Project in Ayodhya</Link> 
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                <Link to="#" className=""target="_top" style={{ color: "white" }}>Project in Mumbai</Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+               <Link to={"/project-in-panipat/"} className=""target="_top" style={{ color: "white" }}>Project in Panipat</Link> 
+              </li>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-left text-2xl">
+            Services
+            <div className="mt-2">
+              <li className="list-none text-white text-sm my-1 ">
+                <Link to="/contact-us/" className=""target="_top" style={{ color: "white" }}>Real Estate Consulting</Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+              <Link to="/contact-us/" className=""target="_top" style={{ color: "white" }}>Legal Advice</Link> 
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+              <Link to="/contact-us/" className=""target="_top" style={{ color: "white" }}>Interior Design</Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+              <Link to="/contact-us/" className=""target="_top" style={{ color: "white" }}>Home Loan</Link> 
+              </li>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-0 py-3 text-center text-xl">
+            Instant Callback
+            <div className="flex flex-col mx-4 my-2 items-center">
+              <div className="relative w-full my-2">
+                <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                <input
+                  type="name"
+                  name="name"
+                  className="w-full pl-10 pr-5 py-2 text-sm placeholder-black text-black transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  placeholder="Full Name"
+                  value={data.name}
+                  onChange={handleSubmitData}
+                  required
+                />
+              </div>
+
+              <div className="relative w-full my-2">
+                <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                <input
+                  type="number"
+                  name="mobile"
+                  className="w-full pl-10 pr-5 py-2 text-sm placeholder-black text-black transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  placeholder="Mobile Number"
+                  value={data.mobile}
+                  onChange={handleSubmitData}
+                  required
+                />
+              </div>
+              <button
+                className="w-full text-white bg-black font-normal py-1 mt-1 rounded-lg"
+                onClick={handleSubmit}
+              >
+                Submit
+              </button>
+            </div>
+            <nav
+              aria-label="Footer Navigation"
+              className="flex justify-center space-x-3 mt-4 text-start"
+            >
+              <Link
+                to="https://www.facebook.com/100Acress"
+                target="_blank"
+                className="flex items-center justify-center text-white bg-blue-400 w-7 h-7 rounded-full"
+              >
+                <FaFacebook size={20} />
+              </Link>
+              <Link
+                to="https://twitter.com/100acressdotcom"
+                target="_blank"
+                className="flex items-center justify-center text-white bg-black w-7 h-7 rounded-full"
+              >
+                <i className="fa-brands fa-x-twitter text-sm"></i>
+              </Link>
+              <Link
+                to="https://www.instagram.com/official100acress/"
+                target="_blank"
+                className="flex items-center justify-center text-white w-7 h-7 rounded-full bg-[#c32aa3]"
+              >
+                <FaInstagram size={20} />
+              </Link>
+              <Link
+                to="https://www.linkedin.com/company/100acress/"
+                target="_blank"
+                className="flex items-center justify-center text-white bg-blue-700 w-7 h-7 rounded-full"
+              >
+                <FaLinkedin size={20} />
+              </Link>
+              <Link
+                to="https://www.youtube.com/@100acress"
+                target="_blank"
+                className="flex items-center justify-center text-red-600 rounded-full bg-white w-7 h-7"
+              >
+                <FaYoutube size={20} />
+              </Link>
+              <Link
+                to="https://wa.me/918500900100"
+                target="_blank"
+                className="flex items-center justify-center text-white rounded-full bg-green-500 w-7 h-7"
+              >
+                <FaWhatsapp size={20} />
+              </Link>
+              <a
+                href="tel:+918500900100"
+                className="flex items-center justify-center text-white rounded-full bg-blue-500 w-7 h-7"
+              >
+                <IoCall size={20} className="text-white" />
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <div className="w-full px-2 py-3 bg-red-600">
+          <p className="text-center text-sm text-white mb-0">
+            Copyright © 2024,{" "}
+            <Link className="text-reset" to="https://100acress.com/">
+              100acress.com.
+            </Link>{" "}
+            All Rights Reserved
+          </p>
+        </div>
+      </div>
     </>
   );
 };

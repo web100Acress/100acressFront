@@ -1,28 +1,42 @@
 import React, { useContext } from "react";
-import Nav from "../aadharhomes/Nav";
-import Footer from "../Components/Actual_Components/Footer";
-import { DataContext } from "../MyContext";
+import Nav from "../../aadharhomes/Nav";
+import Footer from "../Actual_Components/Footer";
+import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-const GoaProject = () => {
-  const { goaCityProject } = useContext(DataContext);
+const VillasProjects = () => {
+  const { villasProject } = useContext(DataContext);
+
   return (
     <div>
       <Nav />
+
       <Helmet>
-        <title>Property in Goa - Flats, Villas, House for Sale in Goa</title>
+        <title>Top Villas for Sale in India</title>
         <meta
           name="description"
-          content="Real Estate Properties in Goa - Get Details for Residential &amp; Commercial Properties"
+          content="Buy Deen Dayal Residential Plots/Lands for Sale in Gurgaon"
         />
+        <link rel="canonical" href="https://www.100acress.com/villas/" />
       </Helmet>
 
-      <section className="flex pt-2 flex-col items-center">
-        <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          Projects in Goa
+      {/* <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
+        <h1 className="mb-2 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+          Deen Dayal Plots in Gurugram
         </h1>
+        <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+          Deen Dayal Plots in Gurugram offer a unique opportunity for
+          residential development in the rapidly growing city.With convenient
+          access to amenities, infrastructure, and transportation networks, Deen
+          Dayal Plots cater to the burgeoning demand for quality residential
+          spaces in Gurugram, making them an attractive choice for homebuyers
+          and investors alike.
+        </h2>
+      </div> */}
+
+      <section className="flex flex-col items-center pt-2">
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {goaCityProject.map((item, index) => {
+          {villasProject.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
@@ -42,9 +56,9 @@ const GoaProject = () => {
                       <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
                       </a>
-                      <span style={{ float: "right" }} className="text-sm">
-                        {item.builderName}
-                      </span>
+                      {/* <span style={{ float: "right" }} className="text-sm">
+                            {item.builderName}
+                          </span> */}
                       <br />
                       <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
                         {item.projectAddress}
@@ -78,4 +92,4 @@ const GoaProject = () => {
   );
 };
 
-export default GoaProject;
+export default VillasProjects;

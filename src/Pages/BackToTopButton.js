@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect } from "react";
+
 const BackToTopButton = () => {
   const [showButton, setShowButton] = useState(false);
 
@@ -22,10 +24,32 @@ const BackToTopButton = () => {
   return (
     <>
       {showButton && (
-        <button onClick={scrollToTop} style={styles.button} className="bg-red-600 border-white text-white px-3 py-3  flex items-center rounded-full animate-bounce">
-          <i className="fa-solid fa-arrow-up  transform rotate-360" />
+        <button
+          onClick={scrollToTop}
+          style={styles.button}
+          className="bg-red-600 text-white p-3 w-12 h-12 flex items-center justify-center opacity-100 z-50 animate-bounceUpDown"
+        >
+          <span style={{ transform: 'rotate(-45deg)' }}>
+            <i className="fa-solid fa-chevron-up"></i>
+          </span>
         </button>
       )}
+      <style jsx>{`
+        @layer utilities {
+          @keyframes bounceUpDown {
+            0%, 100% {
+              transform: translateY(0) rotate(45deg);
+            }
+            50% {
+              transform: translateY(-10px) rotate(45deg);
+            }
+          }
+
+          .animate-bounceUpDown {
+            animation: bounceUpDown 1s infinite;
+          }
+        }
+      `}</style>
     </>
   );
 };
@@ -38,9 +62,9 @@ const styles = {
     fontSize: "18px",
     color: "#fff",
     border: "none",
-    borderRadius: "50px",
     cursor: "pointer",
     boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.3)",
+    transform: "rotate(45deg)", // Ensure initial rotation is applied
   },
 };
 

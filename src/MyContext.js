@@ -28,13 +28,16 @@ export const DataProvider = ({ children }) => {
   const [noidaData, setNoidaData] = useState([]);
   const [goaData, setGoaData] = useState([]);
   const [panipat, setPanipat] = useState([]);
+  const [panchkula, setpanchkula] = useState([]);
   const [minPrice, setMinPrice] = useState(priceRange.min);
   const [maxPrice, setMaxPrice] = useState(priceRange.max);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [possessionAllData, setPossessionAllData] = useState([]);
   const [readyToMoveData, setReadyTOMoveData] = useState([]);
   const [dlfProject, setDlfProject] = useState([]);
-
+  const [goaCityProject, setGoaCityProject] = useState([]);
+  const [dlfAllProjects, setDlfAllProjects] = useState([]);
+  const [villasProject, setVillasProject] = useState([]);
    const [possessionDate, setPossessionDate] = useState(() => {
     try {
       const storedDate = localStorage.getItem('possessionDate');
@@ -84,9 +87,8 @@ export const DataProvider = ({ children }) => {
         (project) => project.projectOverview === "trending"
       );
       const upcomingProjects = projectsData
-        .filter((project) => project.projectOverview === "upcoming")
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
+        .filter((project) => project.projectOverview === "upcoming" ||  project.projectReraNo ==='upcoming')
+       
       const featuredProjects = projectsData.filter(
         (project) => project.projectOverview === "featured"
       );
@@ -134,6 +136,13 @@ export const DataProvider = ({ children }) => {
         return project.type === "Deen Dayal Plots";
       });
 
+
+      const villasProject = projectsData.filter((project)=> {
+        return project.type === "Villas";
+      })
+
+     
+
       const sohnaRoad = projectsData.filter((project) =>
         project.projectAddress.includes("Sohna Road")
       );
@@ -156,6 +165,14 @@ export const DataProvider = ({ children }) => {
         (project) => project.city === "Panipat"
       );
 
+      const panchkula = projectsData.filter(
+        (project) => project.city === "Panchkula"
+      );
+
+      const goaCityProject = projectsData.filter(
+        (project) => project.city === 'Goa'
+      )
+
 
        const  readyToMoveData = projectsData.filter((project) => project.project_Status === "readytomove")
        
@@ -168,14 +185,16 @@ export const DataProvider = ({ children }) => {
       );
 
       const dlfProject = projectsData.filter(
-        (project) => project.projectOverview === 'luxuryProject'
+        (project) => project.projectOverview === 'luxuryProject' || project.projectReraNo === 'luxuryProject'
       )
+
+      
 
 
       const goaData = projectsData.filter((project) => project.projectOverview === "goaProject");
    
 
-
+      const dlfAllProjects  = projectsData.filter((project) => project.builderName === 'DLF Homes' )
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
       setFeaturedProject(featuredProjects);
@@ -198,7 +217,11 @@ export const DataProvider = ({ children }) => {
       setPanipat(panipat);
       setFilteredProjects(filteredProjects);
       setReadyTOMoveData(readyToMoveData);
-      setDlfProject(dlfProject)
+      setDlfProject(dlfProject);
+      setGoaCityProject(goaCityProject);
+      setDlfAllProjects(dlfAllProjects);
+      setVillasProject(villasProject);
+      setpanchkula(panchkula)
     } catch (error) {
       console.log(error || error.message);
     }
@@ -337,6 +360,10 @@ export const DataProvider = ({ children }) => {
         possessionAllData,
         readyToMoveData,
         dlfProject,
+        goaCityProject,
+        dlfAllProjects,
+        villasProject,
+        panchkula,
       }}
     >
       {children}

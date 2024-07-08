@@ -40,6 +40,7 @@ function Home() {
     goaData,
     dlfProject
   } = useContext(DataContext);
+
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
@@ -271,7 +272,7 @@ function Home() {
           }}
         >
           <span className="text-white">DLF Super Luxury Homes  #100crore </span>
-          <Link to={'/dlf-super-luxury/'} target="_top">
+          <Link to={'/dlf-homes-projects/'} target="_top">
             <span
               className="float-right text-red-600 text-sm px-2 mx-4 rounded-full hidden md:flex bg-white"
               style={{ alignItems: "center", margin: "16px" }}
