@@ -38,6 +38,8 @@ export const DataProvider = ({ children }) => {
   const [goaCityProject, setGoaCityProject] = useState([]);
   const [dlfAllProjects, setDlfAllProjects] = useState([]);
   const [villasProject, setVillasProject] = useState([]);
+  const [possessionIn2029AndBeyond, setpossessionIn2029AndBeyond] = useState([]);
+
    const [possessionDate, setPossessionDate] = useState(() => {
     try {
       const storedDate = localStorage.getItem('possessionDate');
@@ -176,7 +178,9 @@ export const DataProvider = ({ children }) => {
 
        const  readyToMoveData = projectsData.filter((project) => project.project_Status === "readytomove")
        
-       
+       const possessionIn2029AndBeyond = projectsData.filter((project) => new Date(project.possessionDate).getFullYear() >= 2029);
+        
+
        setFilteredProjects(
         projectsData.filter(
           (project) =>
@@ -192,9 +196,8 @@ export const DataProvider = ({ children }) => {
 
 
       const goaData = projectsData.filter((project) => project.projectOverview === "goaProject");
-   
+      const dlfAllProjects  = projectsData.filter((project) => project.builderName === 'DLF Homes' );
 
-      const dlfAllProjects  = projectsData.filter((project) => project.builderName === 'DLF Homes' )
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
       setFeaturedProject(featuredProjects);
@@ -221,7 +224,8 @@ export const DataProvider = ({ children }) => {
       setGoaCityProject(goaCityProject);
       setDlfAllProjects(dlfAllProjects);
       setVillasProject(villasProject);
-      setpanchkula(panchkula)
+      setpanchkula(panchkula);
+      setpossessionIn2029AndBeyond(possessionIn2029AndBeyond)
     } catch (error) {
       console.log(error || error.message);
     }
@@ -355,7 +359,7 @@ export const DataProvider = ({ children }) => {
         noidaData,
         goaData,
         panipat,
-        handleFilter, // Expose handleFilter here
+        handleFilter, 
         filteredProjects,
         possessionAllData,
         readyToMoveData,
@@ -364,6 +368,7 @@ export const DataProvider = ({ children }) => {
         dlfAllProjects,
         villasProject,
         panchkula,
+        possessionIn2029AndBeyond,
       }}
     >
       {children}

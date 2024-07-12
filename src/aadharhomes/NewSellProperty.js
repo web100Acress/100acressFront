@@ -45,6 +45,7 @@ const stateCodeMapping = {
 const NewSellProperty = () => {
   const storedSellerId = localStorage.getItem("mySellerId");
   const [showSteps, setShowSteps] = useState(false);
+  const [responseMessage, setResponeMessage] = useState("");
   const sellerId = JSON.parse(storedSellerId);
 
   const propertyType = ["Select Property Type", "Commercial", "Residential"];
@@ -156,7 +157,6 @@ const NewSellProperty = () => {
     });
   };
 
-
   const resetImageData = () => {
     setFileData({
       frontImage: "",
@@ -203,7 +203,7 @@ const NewSellProperty = () => {
     }
     const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
     const formDataAPI = new FormData();
-    
+
     for (const key in sellProperty) {
       formDataAPI.append(key, sellProperty[key]);
     }
@@ -214,12 +214,10 @@ const NewSellProperty = () => {
 
     formDataAPI.append("frontImage", fileData.frontImage);
 
-    console.log(formDataAPI,"formDataAPIformDataAPI");
-
     try {
       setIsLoading(true);
-       await axios.post(apiEndpoint, formDataAPI);
-      alert("Submit Successfully, Under Review");
+      await axios.post(apiEndpoint, formDataAPI);
+      setResponeMessage("Submit Successfully, Under Review");
       resetData();
       resetImageData();
     } catch (error) {
@@ -273,8 +271,6 @@ const NewSellProperty = () => {
     }
   };
 
-  
-
   const handleProjectfurnishing = (event) => {
     setSellProperty({ ...sellProperty, furnishing: event.target.value });
   };
@@ -287,10 +283,9 @@ const NewSellProperty = () => {
           name="description"
           content="Post Free Property Listing at 100acress.com. Rent, sell, or rent hassle-free. Reach potential buyers easily with our Trusted platform for property listing."
         />
-        <title>
-          Post Free Property Listing | Rent/Sell at 100acress.com
-        </title>
+        <title>Post Free Property Listing | Rent/Sell at 100acress.com</title>
       </Helmet>
+
       <section className=" py-12 text-gray-800 ">
         <div className="mx-auto flex max-w-md flex-col rounded-lg lg:max-w-screen-xl lg:flex-row">
           <div className="max-w-xl px-4 lg:pr-24 lg:pt-20">
@@ -622,17 +617,22 @@ const NewSellProperty = () => {
                     onChange={handleOtherImageChange}
                     accept="image/*"
                     id="otherImage"
-                    className="mt-1 h-10 w-full rounded-md bg-white border text-black px-3 outline-none pt-1 mb-3"
+                    className="mt-1  h-10 w-full rounded-md bg-white border text-black px-3 outline-none pt-1 mb-0"
                   />
                 </div>
+                {responseMessage && (
+                  <p className="text-sm text-red-600 mb-0 pb-0 ">
+                    {responseMessage}
+                  </p>
+                )}
               </div>
 
-              <div className="flex justify-center items-center">
+              <div className="flex  justify-center items-center">
                 <button
-                  className="rounded-lg text-white px-4 text-md sm:text-lg md:text-md  font-normal  sm:px-6 py-1 sm:py-4 bg-red-600 hover:bg-red-700"
+                  className="rounded-lg mt-3 text-white px-4 text-md sm:text-lg md:text-md  font-normal  sm:px-6 py-1 sm:py-4 bg-red-600 hover:bg-red-700"
                   onClick={submitSellPropertyDetails}
                 >
-                  Submit
+                   {isLoading ? "Submitting" : "Submit"}
                 </button>
               </div>
             </div>

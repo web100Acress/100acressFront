@@ -43,6 +43,7 @@ const PossessionProperty = ({ deviceType }) => {
   }, [possessionDate]);
   
 
+
   return (
     <>
       <p className=" pt-2 mb-0 text-xl text-white bg-[#00314F] lg:text-3xl md:text-2xl font-bold  sm:text-xl xs:text-xl text-left px-4 mt-4">
@@ -77,22 +78,22 @@ const PossessionProperty = ({ deviceType }) => {
            onClick={() => handleDateClick("Ready to move")}>
             <div className="mx-auto transition duration-300 hover:scale-105 flex flex-wrap justify-center max-w-screen-xl">
               <div className="relative bg-[#f7c089] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 shadow-md">
-                <a className="relative flex h-48 overflow-hidden ">
+                <span className="relative flex h-48 overflow-hidden ">
                   <img
                     className="object-cover w-full h-44"
                     src="../../Images/p1.jpg"
                     alt=" Ready to move"
                   />
-                </a>
+                </span>
                 <div className="mt-3 mb-6 px-3 pb-2">
-                  <a>
+                  <span>
                     <span className=" animate-bounce focus:animate-none hover:animate-none  inline-block text-2xl tracking-tight text-[#42526E] font-medium">
                       Ready to move
                     </span>
                     <span className="block text-gray-400">
                       320+ Properties
                     </span>
-                  </a>
+                  </span>
                 </div>
               </div>
             </div>
@@ -107,22 +108,22 @@ const PossessionProperty = ({ deviceType }) => {
           >
             <div  className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
               <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                <a className="relative flex h-48 overflow-hidden ">
+                <span className="relative flex h-48 overflow-hidden ">
                   <img
                     className="object-cover w-full  h-44"
                     src="../../Images/p2.jpg"
                     alt=" Ready to move"
                   />
-                </a>
+                </span>
                 <div className="mt-3 mb-6 px-3 pb-2">
-                  <a>
+                  <span>
                     <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
                       Possession in <span>2024</span>
                     </span>
                     <span className="block text-gray-400">
                       600+ Properties
                     </span>
-                  </a>
+                  </span>
                 </div>
               </div>
             </div>
@@ -137,22 +138,22 @@ const PossessionProperty = ({ deviceType }) => {
             >
               <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
                 <div className="relative bg-[#D7F2E3] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                  <a className="relative flex h-48 overflow-hidden ">
+                  <span className="relative flex h-48 overflow-hidden ">
                     <img
                       className="object-cover w-full  h-44"
                       src="../../Images/p3.jpg"
                       alt=" Ready to move"
                     />
-                  </a>
+                  </span>
                   <div className="mt-3 mb-6 px-3 pb-2">
-                    <a>
+                    <span>
                       <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
                         Possession in <span>2025</span>
                       </span>
                       <span className="block text-gray-400">
                         400+ Properties
                       </span>
-                    </a>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -167,22 +168,22 @@ const PossessionProperty = ({ deviceType }) => {
             >
               <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
                 <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                  <a className="relative flex h-48 overflow-hidden ">
+                  <span className="relative flex h-48 overflow-hidden ">
                     <img
                       className="object-cover w-full  h-44"
                       src="../../Images/p4.jpg"
                       alt=" Ready to move"
                     />
-                  </a>
+                  </span>
                   <div className="mt-3 mb-6 px-3 pb-2">
-                    <a>
+                    <span>
                       <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
                         Possession in <span>2026</span>
                       </span>
                       <span className="block text-gray-400">
                         1000+ Properties
                       </span>
-                    </a>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -198,22 +199,22 @@ const PossessionProperty = ({ deviceType }) => {
             >
               <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
                 <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                  <a className="relative flex h-48 overflow-hidden ">
+                  <span className="relative flex h-48 overflow-hidden ">
                     <img
                       className="object-cover w-full  h-44"
                       src="../../Images/p3.jpg"
                       alt=" Ready to move"
                     />
-                  </a>
+                  </span>
                   <div className="mt-3 mb-6 px-3 pb-2">
-                    <a>
+                    <span>
                       <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
                         Possession in <span>2027</span>
                       </span>
                       <span className="block text-gray-400">
                         800+ Properties
                       </span>
-                    </a>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -229,22 +230,49 @@ const PossessionProperty = ({ deviceType }) => {
             >
               <div className="transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
                 <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                  <a className="relative flex h-48 overflow-hidden ">
+                  <span className="relative flex h-48 overflow-hidden ">
                     <img
                       className="object-cover w-full  h-44"
                       src="../../Images/p2.jpg"
                       alt=" Ready to move"
                     />
-                  </a>
+                  </span>
                   <div className="mt-3 mb-6 px-3 pb-2">
-                    <a>
+                    <span>
                       <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
                         Possession in <span>2028</span>
                       </span>
                       <span className="block text-gray-400">
                         700+ Properties
                       </span>
-                    </a>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Link>
+
+
+          <Link to="/projects-in-gurugram/possession-after-2028/property/">
+            <div className="bg-[#00314F]  pb-2 mb-[1.9rem]">
+              <div className="transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
+                <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
+                  <span className="relative flex h-48 overflow-hidden ">
+                    <img
+                      className="object-cover w-full  h-44"
+                      src="../../Images/p2.jpg"
+                      alt=" Ready to move"
+                    />
+                  </span>
+                  <div className="mt-3 mb-6 px-3 pb-2">
+                    <span>
+                      <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
+                        Possession after <span>2028</span>
+                      </span>
+                      <span className="block text-gray-400">
+                        800+ Properties
+                      </span>
+                    </span>
                   </div>
                 </div>
               </div>

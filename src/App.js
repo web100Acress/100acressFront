@@ -103,6 +103,7 @@ import ReadyToMoveProject from "./Pages/ReadyToMoveProject";
 import DlfProject from "./Pages/DlfProject";
 import VillasProjects from "./Components/HomePageComponents/VillasProjects";
 import Panchkula from "./Pages/Panchkula";
+import PossessionAfter2028 from "./Pages/PossessionAfter2028";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -127,6 +128,7 @@ function App() {
              <Route path="/projects-in-gurugram/" element={<Properties />} />
              <Route path="/projects-in-gurugram/budget" element = {<BudgetPrice/>}/>
              <Route path="/projects-in-gurugram/ready-to-move/property/" element = {<ReadyToMoveProject/>}/>
+             <Route path ="/projects-in-gurugram/possession-after-2028/property/" element={<PossessionAfter2028/>}/>
              <Route path="/projects-in-gurugram/possession" element = {<PossessionProject/>}/>
              <Route path="/rental-properties/best-rental-property-in-gurugram/" element={<RentPropViewCard />} />
              <Route  path="/buy-properties/best-resale-property-in-gurugram/"  element={<BuyPropViewCard />}  />

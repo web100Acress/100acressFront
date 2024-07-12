@@ -1,43 +1,51 @@
 import React, { useContext } from "react";
-import Nav from "../../aadharhomes/Nav";
-import Footer from "../Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
+import "react-multi-carousel/lib/styles.css";
+import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
+import Nav from "../aadharhomes/Nav";
 import { Helmet } from "react-helmet";
-const ResidentialProjects = () => {
-  const { residencialProjects } = useContext(DataContext);
+import Footer from "../Components/Actual_Components/Footer";
+const PossessionAfter2028 = () => {
+  const { possessionIn2029AndBeyond } = useContext(DataContext);
   return (
-    <div>
+    <div style={{ overflowX: "hidden" }}>
       <Nav />
 
       <Helmet>
-        <title>Residential Project in Gurgaon, Apartments in Gurgaon</title>
         <meta
           name="description"
-          content="Buy 2/3 BHK Residential Project in Gurgaon as per your desired location and budget. Checkout your desired Location and Price. Book Now"
+          content="Discover the latest new projects in Gurgaon at 100acress.com. Explore upcoming residential Projects and Commercial Properties. Explore Top Real Estate Projects."
         />
+        <title>
+          Possession after 2028 Projects in Gurgaon | Best Real Estate at
+          100acress.com
+        </title>
         <link
           rel="canonical"
-          href="https://www.100acress.com/property/residential/"
+          href="https://www.100acress.com/projects-in-gurugram/possession-after-2028/property/"
         />
       </Helmet>
 
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">
-        <h1 className="mb-2 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          RESIDENTIAL PROPERTIES
+        <h1 className="mb-2 uppercase text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+          Possession after 2028
         </h1>
         <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          Residential properties encompass a diverse range of housing options
-          tailored to meet varying lifestyle needs. From single-family homes to
-          condominiums, townhouses, and apartments, each type offers unique
-          features and amenities.
+          Gurgaon Premium Projects promises to redefine urban living by blending
+          modern architecture, luxury amenities, and strategic locations. Each
+          project aims to build vibrant communities with state-of-the-art
+          facilities that refine the modern lifestyle. Gurgaon projects
+          Possession in coming years is the perfect option for homebuyers and
+          investors. With close proximity to business hubs, educational
+          institutions, and retail centers, these project not only elevates
+          living standards but also offer excellent investment options in one of
+          India's fastest-growing areas.
         </h2>
       </div>
 
-
-      <section className="flex pt-2 flex-col items-center">
-        <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {residencialProjects.map((item, index) => {
+      <section className="flex flex-col items-center bg-white">
+        <div className="mt-6 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
+          {possessionIn2029AndBeyond.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
@@ -101,9 +109,10 @@ const ResidentialProjects = () => {
           })}
         </div>
       </section>
+
       <Footer />
     </div>
   );
 };
 
-export default ResidentialProjects;
+export default PossessionAfter2028;

@@ -456,7 +456,7 @@ const BannerPage = () => {
 
         <div className="relative">
           {showPopup && (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black-100 bg-opacity-40 ">
               <div className="absolute top-0 left-0 w-full h-full bg-opacity-50 p-5 overflow-hidden" />
               <div className="relative sm:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-white shadow-lg sm:max-w-lg">
                 <div className="bg-[#012e29] px-10 py-3 text-center text-white">
