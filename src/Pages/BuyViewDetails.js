@@ -2804,7 +2804,7 @@ const BuyViewDetails = () => {
   const { frontImage, otherImage, amenities } = rentViewDetails;
 
   const { id } = useParams();
-  console.log(id);
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {

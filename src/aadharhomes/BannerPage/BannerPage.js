@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Modal from "react-modal";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import { GrPrevious, GrNext } from "react-icons/gr";
 import styled from "styled-components";
 import { Helmet } from "react-helmet";
+import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "swiper/css";
@@ -14,7 +16,7 @@ import "swiper/css/free-mode";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { format, isValid, parseISO } from 'date-fns';
+import { format, isValid, parseISO } from "date-fns";
 const BannerPage = () => {
   //Side Form
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -93,29 +95,23 @@ const BannerPage = () => {
   const [projectViewDetails, setProjectViewDetails] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
 
-  
-  const responsive = {
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 3,
-      // partialVisibilityGutter: 30,
-      slidesToSlide: 1,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
-      partialVisibilityGutter: 30,
-      slidesToSlide: 1,
-      // optional, default to 1.
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-      partialVisibilityGutter: 30,
-      slidesToSlide: 1,
+  const slideRefs = useRef(null);
 
-      // optional, default to 1.
-    },
+  const set = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   const resetData = () => {
@@ -181,8 +177,8 @@ const BannerPage = () => {
   };
 
   const [isLoading, setIsLoading] = useState(false);
-  const [userButtonText, setUserButtonText] = useState('Submit')
-  const [userResponseMessage, setUserResponseMessage] = useState('')
+  const [userButtonText, setUserButtonText] = useState("Submit");
+  const [userResponseMessage, setUserResponseMessage] = useState("");
   const userSubmitDetails = (e) => {
     e.preventDefault();
 
@@ -194,7 +190,7 @@ const BannerPage = () => {
 
     if (mobile) {
       setIsLoading(true);
-      setUserButtonText('Submitting...');
+      setUserButtonText("Submitting...");
       axios
         .post("https://api.100acress.com/userInsert", {
           ...userDetails,
@@ -202,7 +198,7 @@ const BannerPage = () => {
           address: projectViewDetails.projectAddress,
         })
         .then((res) => {
-          setUserResponseMessage('Data submitted successfully');
+          setUserResponseMessage("Data submitted successfully");
           resetData();
         })
         .catch((error) => {
@@ -211,7 +207,7 @@ const BannerPage = () => {
         .finally(() => {
           // Set loading state to false and reset the button text when the API call is complete (success or error)
           setIsLoading(false);
-          setUserButtonText('Submit');
+          setUserButtonText("Submit");
         });
     } else {
       setUserResponseMessage("Please fill in the data");
@@ -230,44 +226,45 @@ const BannerPage = () => {
   };
 
   const [isLoading1, setIsLoading1] = useState(false);
-  const [PopUpbuttonText, setPopUpButtonText] = useState('Submit');
-  const [PopUpresponseMessage, setPopUpResponseMessage] = useState('');
+  const [PopUpbuttonText, setPopUpButtonText] = useState("Submit");
+  const [PopUpresponseMessage, setPopUpResponseMessage] = useState("");
   const popSubmitDetails = async (e) => {
     e.preventDefault();
     if (isLoading1) {
       return;
     }
-  
+
     const { mobile } = popDetails;
-    
-    
+
     if (mobile) {
-      setPopUpButtonText('Submitting...');
+      setPopUpButtonText("Submitting...");
       try {
         setIsLoading1(true);
-        const response = await axios.post("https://api.100acress.com/userInsert", {
-          ...popDetails,
-          projectName: projectViewDetails.projectName,
-          address: projectViewDetails.projectAddress,
-        });
-        setPopUpResponseMessage('Data submitted successfully');
+        const response = await axios.post(
+          "https://api.100acress.com/userInsert",
+          {
+            ...popDetails,
+            projectName: projectViewDetails.projectName,
+            address: projectViewDetails.projectAddress,
+          }
+        );
+        setPopUpResponseMessage("Data submitted successfully");
         resetData1();
       } catch (error) {
         alert(error.message);
       } finally {
         setIsLoading1(false);
-        setPopUpButtonText('Submit');
+        setPopUpButtonText("Submit");
       }
     } else {
       setPopUpResponseMessage("Please fill in the data");
     }
   };
-  
 
   const [isLoading2, setIsLoading2] = useState(false);
-  const [sideButtonText, setSideButtonText] = useState('Submit');
-  const [sideResponseMessage, setSideResponseMessage] = useState('');
-  
+  const [sideButtonText, setSideButtonText] = useState("Submit");
+  const [sideResponseMessage, setSideResponseMessage] = useState("");
+
   const SideSubmitDetails = async (e) => {
     e.preventDefault();
     if (isLoading2) {
@@ -277,23 +274,20 @@ const BannerPage = () => {
 
     if (mobile) {
       setIsLoading2(true);
-      setSideButtonText('Submitting...');
+      setSideButtonText("Submitting...");
       try {
-        const res = await axios.post(
-          "https://api.100acress.com/userInsert",
-          {
-            ...sideDetails,
-            projectName: projectViewDetails.projectName,
-            address: projectViewDetails.projectAddress,
-          }
-        );
-        setSideResponseMessage('Data submitted successfully');
+        const res = await axios.post("https://api.100acress.com/userInsert", {
+          ...sideDetails,
+          projectName: projectViewDetails.projectName,
+          address: projectViewDetails.projectAddress,
+        });
+        setSideResponseMessage("Data submitted successfully");
         resetData2();
-        setSideButtonText('Submit');
+        setSideButtonText("Submit");
       } catch (error) {
         console.error("Error:", error.message);
-        setSideResponseMessage('Error: ' + error.message);
-        setSideButtonText('Submit');
+        setSideResponseMessage("Error: " + error.message);
+        setSideButtonText("Submit");
       } finally {
         setIsLoading2(false);
       }
@@ -329,16 +323,15 @@ const BannerPage = () => {
   tomorrow.setDate(tomorrow.getDate() + 365);
   const expirationDate = tomorrow.toISOString().split("T")[0];
 
-
   const formatDate = (isoString) => {
     if (!isoString) {
-      return 'No date provided';
+      return "No date provided";
     }
     const date = parseISO(isoString);
     if (!isValid(date)) {
-      return 'Invalid date';
+      return "Invalid date";
     }
-    return format(date, 'MMMM dd, yyyy');
+    return format(date, "MMMM dd, yyyy");
   };
   return (
     <Wrapper
@@ -382,7 +375,7 @@ const BannerPage = () => {
     `}
         </script>
       </Helmet>
-         
+
       <>
         <div
           className="px-4"
@@ -456,12 +449,11 @@ const BannerPage = () => {
 
         <div className="relative">
           {showPopup && (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black-100 bg-opacity-40 ">
-              <div className="absolute top-0 left-0 w-full h-full bg-opacity-50 p-5 overflow-hidden" />
-              <div className="relative sm:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-white shadow-lg sm:max-w-lg">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+              <div className="relative sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-white shadow-lg max-w-lg">
                 <div className="bg-[#012e29] px-10 py-3 text-center text-white">
-                  <p className="font-serif text-xl mb-0 text-center font-semibold tracking-wider">
-                    GET A CALLBACK
+                  <p className="font-serif text-xl mb-0 font-semibold tracking-wider">
+                    Instant Callback
                   </p>
                   <button
                     className="text-white text-2xl absolute right-3 top-2 cursor-pointer"
@@ -471,50 +463,51 @@ const BannerPage = () => {
                   </button>
                 </div>
                 <div className="space-y-4 px-8 py-4">
-                  <label className="block" htmlFor="name">
+                  <div className="relative">
+                    <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-sm"></i>
                     <input
-                      className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
+                      className="w-full pl-10 rounded-md border bg-white px-6 py-1 placeholder-black outline-none ring-green-900 border-green-900 focus:ring-1"
                       type="text"
                       name="name"
                       placeholder="Enter your Name"
                       onChange={handlePopChange}
                       value={popDetails.name}
                     />
-                  </label>
-                  <label className="block" htmlFor="email">
+                  </div>
+                  <div className="relative">
+                    <i className="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
                     <input
-                      className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
+                      className="w-full pl-10 rounded-md border bg-white placeholder-black px-6 py-1 outline-none ring-green-900 border-green-900 focus:ring-1"
                       type="email"
                       name="email"
                       placeholder="Enter your Email"
                       onChange={handlePopChange}
                       value={popDetails.email}
                     />
-                  </label>
-                  <label className="block" htmlFor="mobile">
+                  </div>
+
+                  <div className="relative">
+                    <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
                     <input
-                      className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
-                      type="tel"
+                      className="w-full pl-10 rounded-md border bg-white placeholder-black px-6 py-1 outline-none ring-green-900 border-green-900 focus:ring-1"
+                      type="number"
                       name="mobile"
                       placeholder="Enter your Mobile"
                       onChange={handlePopChange}
                       value={popDetails.mobile}
                     />
-                  </label>
-                  {PopUpresponseMessage && <p className="text-[#012e29] text-[12px] mb-0">{PopUpresponseMessage}</p>}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    
+                  </div>
+                  {PopUpresponseMessage && (
+                    <p className="text-[#012e29] text-[12px] mb-0">
+                      {PopUpresponseMessage}
+                    </p>
+                  )}
+                  <div className="flex justify-center">
                     <button
-                      className="mt-0 rounded-full bg-[#012e29] px-10 py-2 font-semibold text-white"
+                      className="mt-0 w-full md:w-auto rounded-md bg-[#012e29] px-10 py-2 font-semibold text-white"
                       onClick={popSubmitDetails}
                     >
-                     {PopUpbuttonText}
+                      {PopUpbuttonText}
                     </button>
                   </div>
                 </div>
@@ -540,36 +533,38 @@ const BannerPage = () => {
           <div className="grid lg:grid-cols-4 md:grid-cols-4 sm:grid-cols-2 lg:gap-24 sm:gap-6 md:gap-8 p-6">
             <div className="flex flex-col">
               <span className="text-center font-normal ">Land Area</span>
-              <span className="text-center font-semibold text-xl uppercase">{projectViewDetails.totalLandArea} Acres</span>
+              <span className="text-center font-semibold text-xl uppercase">
+                {projectViewDetails.totalLandArea} Acres
+              </span>
             </div>
 
             <div className="flex flex-col">
               <span className="text-center font-normal ">About Project</span>
-              <span className="text-center font-semibold text-xl uppercase">{projectViewDetails.towerNumber} Tower - {projectViewDetails.totalUnit} Unit</span>
+              <span className="text-center font-semibold text-xl uppercase">
+                {projectViewDetails.towerNumber} Tower -{" "}
+                {projectViewDetails.totalUnit} Unit
+              </span>
             </div>
 
-
-           
             <div className="flex flex-col">
               <span className="text-center font-normal ">Price</span>
-              <span className="text-center font-semibold text-xl uppercase">₹ {projectViewDetails.minPrice} Cr - {projectViewDetails.maxPrice} Cr</span>
+              <span className="text-center font-semibold text-xl uppercase">
+                ₹ {projectViewDetails.minPrice} Cr -{" "}
+                {projectViewDetails.maxPrice} Cr
+              </span>
             </div>
-
-
 
             <div className="flex flex-col">
               <span className="text-center font-normal ">Possession</span>
-              <span className="text-center font-semibold text-xl uppercase">{formatDate(projectViewDetails.possessionDate)}</span>
+              <span className="text-center font-semibold text-xl uppercase">
+                {formatDate(projectViewDetails.possessionDate)}
+              </span>
             </div>
-
-
 
             {/* <div className="flex flex-col">
               <span className="text-center font-normal">ONGOING</span>
               <span className="text-center font-semibold text-xl uppercase">{projectViewDetails.project_Status}</span>
             </div> */}
-
-           
           </div>
         </div>
 
@@ -587,67 +582,70 @@ const BannerPage = () => {
           </div>
 
           {modalIsOpen && (
-            <div className="relative">
-              <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
-                <div className="absolute top-0 left-0 w-full h-full bg-opacity-50 p-5 overflow-hidden" />
-                <div className="relative sm:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-white shadow-lg sm:max-w-lg">
-                  <div className="bg-[#012e29] px-10 py-3 text-center text-white">
-                    <p className="font-serif text-xl mb-0 text-center font-semibold tracking-wider">
-                      GET A CALLBACK
-                    </p>
-                    <button
-                      className="text-white text-2xl absolute right-3 top-2 cursor-pointer"
-                      onClick={handleClose}
-                    >
-                      ✖
-                    </button>
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+              <div className="relative sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-white shadow-lg max-w-lg">
+                <div className="bg-[#012e29] px-10 py-3 text-center text-white">
+                  <p className="font-serif text-xl mb-0 text-center font-semibold tracking-wider">
+                    Instant Callback
+                  </p>
+                  <button
+                    className="text-white text-2xl absolute top-2 right-3 cursor-pointer"
+                    onClick={handleClose}
+                  >
+                    ✖
+                  </button>
+                </div>
+
+                <div className="space-y-4 px-8 py-4">
+                  <div className="relative">
+                    <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-sm"></i>
+                    <input
+                      className="w-full pl-10 rounded-md border bg-white px-6 py-1 placeholder-black outline-none ring-green-900 border-green-900 focus:ring-1"
+                      type="text"
+                      name="name"
+                      placeholder="Enter your Name"
+                      onChange={handleChangeSide}
+                      value={sideDetails.name}
+                    />
                   </div>
-                  <div className="space-y-4 px-8 py-4">
-                    <label className="block" htmlFor="name">
-                      <input
-                        className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
-                        type="text"
-                        name="name"
-                        placeholder="Enter your Name"
-                        onChange={handleChangeSide}
-                        value={sideDetails.name}
-                      />
-                    </label>
-                    <label className="block" htmlFor="email">
-                      <input
-                        className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
-                        type="email"
-                        name="email"
-                        placeholder="Enter your Email"
-                        onChange={handleChangeSide}
-                        value={sideDetails.email}
-                      />
-                    </label>
-                    <label className="block" htmlFor="mobile">
-                      <input
-                        className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-green-900 focus:ring-1"
-                        type="tel"
-                        name="mobile"
-                        placeholder="Enter your Mobile"
-                        onChange={handleChangeSide}
-                        value={sideDetails.mobile}
-                      />
-                    </label>
-                    {sideResponseMessage && <p className="text-[#012e29] text-[12px] mb-0">{sideResponseMessage}</p>}
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
+
+                  <div className="relative">
+                    <i className="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                    <input
+                      className="w-full pl-10 rounded-md border bg-white placeholder-black px-6 py-1 outline-none ring-green-900 border-green-900 focus:ring-1"
+                      type="email"
+                      name="email"
+                      placeholder="Enter your Email"
+                      onChange={handleChangeSide}
+                      value={sideDetails.email}
+                    />
+                  </div>
+
+                  <div className="relative">
+                    <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                    <input
+                      className="w-full pl-10 rounded-md border bg-white placeholder-black px-6 py-1 outline-none ring-green-900 border-green-900 focus:ring-1"
+                      type="number"
+                      name="mobile"
+                      placeholder="Enter your Mobile"
+                      onChange={handleChangeSide}
+                      value={sideDetails.mobile}
+                    />
+                  </div>
+
+                  {sideResponseMessage && (
+                    <p className="text-[#012e29] text-[12px] mb-0">
+                      {sideResponseMessage}
+                    </p>
+                  )}
+
+                  <div className="flex justify-center">
+                    <button
+                      className=" w-full md:w-auto rounded-md bg-[#012e29] px-10 py-2 font-semibold text-white"
+                      onClick={SideSubmitDetails}
                     >
-                      <button
-                        className="mt-2 rounded-full bg-[#012e29] px-10 py-2 font-semibold text-white"
-                        onClick={SideSubmitDetails}
-                      >
-                        {sideButtonText}
-                      </button>
-                    </div>
+                      {sideButtonText}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -749,93 +747,130 @@ const BannerPage = () => {
           </div>
           {/* //floor plan? */}
 
-          <div className="pt-8 mb-6">
-            <Carousel
-              swipeable={true}
-              draggable={true}
-              showDots={false}
-              responsive={responsive}
-              ssr={true}
-              infinite={true}
-              autoPlay={true}
-              autoPlaySpeed={1500}
-              keyBoardControl={true}
-              customTransition="all .5"
-              transitionDuration={500}
-              containerClass="carousel-container"
-              removeArrowOnDeviceType={["tablet", "mobile"]}
-              deviceType="desktop" // assuming you're not passing the device type as a prop
-              dotListClass="custom-dot-list-style"
-              itemClass="carousel-item-padding-40-px"
-            >
+          <article className="article h-80 mb-5">
+            <div className="relative">
               {sliderImages &&
                 Array.isArray(sliderImages) &&
-                sliderImages.length > 0 &&
-                sliderImages.map((item, index) => (
-                  <img
-                    src={item.url}
-                    alt={`${projectViewDetails.projectName} ${index}`}
-                    key={index}
-                    onClick={() => openImage(item.url)}
-                    className="p-3"
-                  />
-                ))}
-              <Modal
-                isOpen={isOpen}
-                style={customStyles}
-                contentLabel="Example Modal"
-              >
-                <span className="close">&times;</span>
-                <div
-                  onClick={() => closeModal()}
-                  className="modal"
-                  style={pop.modal}
-                >
-                  <div className="modal-content">
-                    <img src={imageUrl} alt="Image 1" />
-                  </div>
-                </div>
-              </Modal>
-            </Carousel>
-          </div>
+                sliderImages.length > 0 && (
+                  <>
+                    <button
+                      onClick={() => slideRefs.current.slickPrev()}
+                      className="absolute top-1/2 lg:top-1/2 sm:top-1/2 left-5 transform -translate-y-1/2 bg-white text-gray-500 p-2 rounded-full z-10"
+                    >
+                      <GrPrevious />
+                    </button>
+                    <button
+                      onClick={() => slideRefs.current.slickNext()}
+                      className="absolute top-1/2 lg:top-1/2 sm:top-1/2 right-5 transform -translate-y-1/2 text-gray-700 bg-white p-2 rounded-full z-10"
+                    >
+                      <GrNext />
+                    </button>
+                  </>
+                )}
+              <Slider ref={slideRefs} {...set}>
+                {sliderImages &&
+                  Array.isArray(sliderImages) &&
+                  sliderImages.length > 0 &&
+                  sliderImages.map((image, index) => (
+                    <div key={index} className="p-2">
+                      <img
+                        src={image.url}
+                        alt={`Image ${index + 1}`}
+                        className="w-full h-[500px] object-cover md:h-[400px] sm:h-[300px] mt-6"
+                      />
+                    </div>
+                  ))}
+              </Slider>
+            </div>
+
+            <style jsx>{`
+              .relative {
+                margin: 0;
+                padding: 0;
+              }
+
+              .p-0 {
+                padding: 0;
+              }
+
+              img {
+                display: block;
+              }
+
+              @media (max-width: 768px) {
+                .absolute {
+                  top: 50%;
+                }
+
+                .left-5 {
+                  left: 2%;
+                }
+
+                .right-5 {
+                  right: 2%;
+                }
+              }
+
+              @media (max-width: 640px) {
+                .absolute {
+                  top: 50%;
+                }
+
+                .left-5 {
+                  left: 1%;
+                }
+
+                .right-5 {
+                  right: 1%;
+                }
+              }
+            `}</style>
+          </article>
         </div>
 
         {/*Gallery Slider container */}
 
-        <Carousel
-          swipeable={true}
-          draggable={true}
-          showDots={false}
-          responsive={gallery}
-          ssr={true}
-          infinite={true}
-          autoPlay={true}
-          autoPlaySpeed={1500}
-          keyBoardControl={true}
-          customTransition="all .5"
-          transitionDuration={500}
-          containerClass="carousel-container"
-          removeArrowOnDeviceType={["tablet", "mobile"]}
-          deviceType="desktop"
-          dotListClass="custom-dot-list-style"
-          itemClass="carousel-item-padding-40-px"
-        >
-          {console.log(projectGallery, "projectGallery")}
-          {projectGallery &&
-            Array.isArray(projectGallery) &&
-            projectGallery.length > 0 &&
-            projectGallery.map((item, index) => (
-              <div key={index}>
-                {item && (
-                  <img
-                    src={item.url}
-                    alt={`${projectViewDetails.projectName} ${index}`}
-                    className="w-screen max-h-40vh object-fit z-1"
-                  />
-                )}
-              </div>
-            ))}
-        </Carousel>
+        <div>
+          <style jsx>{`
+            .carousel-container .react-multiple-carousel__arrow {
+              z-index: 100; /* Adjust the value as needed */
+            }
+          `}</style>
+          <Carousel
+            swipeable={true}
+            draggable={true}
+            showDots={false}
+            responsive={gallery}
+            ssr={true}
+            infinite={true}
+            autoPlay={true}
+            autoPlaySpeed={1500}
+            keyBoardControl={true}
+            customTransition="all .5"
+            transitionDuration={500}
+            containerClass="carousel-container"
+            removeArrowOnDeviceType={["tablet", "mobile"]}
+            deviceType="desktop"
+            dotListClass="custom-dot-list-style"
+            itemClass="carousel-item-padding-40-px"
+          >
+            {console.log(projectGallery)}
+            {projectGallery &&
+              Array.isArray(projectGallery) &&
+              projectGallery.length > 0 &&
+              projectGallery.map((item, index) => (
+                <div key={index}>
+                  {item && (
+                    <img
+                      src={item.url}
+                      alt={`${projectViewDetails.projectName} ${index}`}
+                      className="w-screen max-h-40vh object-fit z-10"
+                    />
+                  )}
+                </div>
+              ))}
+          </Carousel>
+        </div>
 
         <div
           className="text-center  text-gray-600 pt-2 font-semibold mt-2 lg:pt-4 md:pt-3  text-sm sm:text-base md:text-lg lg:text-3xl sm:pt-0 px-3 h-6"
@@ -990,61 +1025,62 @@ const BannerPage = () => {
           </span>
         </div>
 
-        <div className="sm:h-auto lg:h-[400px] xl:h-[430px] w-full sm:w-auto bg-[#012e29]">
-          <p className="text-center pt-4 text-white m-2 md:m-4 lg:m-6 xl:m-10 sm:text-sm   md:text-lg lg:text-2xl  lg:pt-2 mt-2">
+        <div className="sm:h-auto lg:h-[250px] xl:h-[330px] w-full bg-[#012e29]">
+          <p className="text-center pt-4 text-white m-2 md:m-4 lg:m-6 xl:m-10 sm:text-sm md:text-lg lg:text-2xl lg:pt-2 mt-2">
             Make an Enquiry
           </p>
-          <form className="mx-auto max-w-2xl h-auto p-4">
-            <div className="lg:pt-2 mb-5 border-b border-white">
-              <input
-                row="6"
-                type="text"
-                name="name"
-                onChange={handleChange}
-                value={userDetails.name}
-                required
-                placeholder="Enter Your Name*"
-                className="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
-              ></input>
+          <form className="mx-auto w-full max-w-7xl h-auto p-4">
+            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
+              <div className="flex items-center">
+                <i className="fa-solid fa-user text-white text-md "></i>
+                <input
+                  type="text"
+                  name="name"
+                  onChange={handleChange}
+                  value={userDetails.name}
+                  required
+                  placeholder="Enter Your Name*"
+                  className="appearance-none bg-transparent border-b border-white w-full text-white py-2 px-2 leading-tight focus:outline-none"
+                />
+              </div>
+              <div className="flex items-center">
+                <i className="fa-solid fa-envelope text-white text-md "></i>
+                <input
+                  type="email"
+                  name="email"
+                  value={userDetails.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter Your Email*"
+                  className="appearance-none bg-transparent border-b border-white w-full text-white py-2 px-2 leading-tight focus:outline-none"
+                />
+              </div>
+              <div className="flex items-center">
+                <i className="fa-solid fa-phone text-white text-md "></i>
+                <input
+                  type="tel"
+                  name="mobile"
+                  value={userDetails.mobile}
+                  onChange={handleChange}
+                  required
+                  placeholder="Contact Number*"
+                  className="appearance-none bg-transparent border-b border-white w-full text-white py-2 px-2 leading-tight focus:outline-none"
+                />
+              </div>
             </div>
-
-            <div className="mb-5 relative border-b border-white">
-              <input
-                type="text"
-                name="email"
-                row="6"
-                value={userDetails.email}
-                onChange={handleChange}
-                placeholder="Enter Your Email*"
-                className="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
-              />
-            </div>
-
-            <div className="mb-5  border-b border-white">
-              <input
-                type="text"
-                name="mobile"
-                value={userDetails.mobile}
-                onChange={handleChange}
-                required
-                placeholder="Contact Number*"
-                className="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
-              />
-            </div>
-            {userResponseMessage && <p className="text-white text-[12px] mb-0">{userResponseMessage}</p> }
-
-            {/* <div className="flex justify-center md:mt-2 p-4">
-              <strong className="text-white text-center">
-                Rera No. {projectViewDetails.projectReraNo}
-              </strong>
-            </div> */}
-
-            <div className="flex justify-center ">
+            {userResponseMessage && (
+              <p className="text-white text-[12px] mb-4">
+                {userResponseMessage}
+              </p>
+            )}
+            <div className="flex justify-center">
               <button
+                type="submit"
                 onClick={userSubmitDetails}
-                className="inline-flex gap-1 mb-0 text-white bg-[#012e29] border focus:outline-none px-3 py-2 rounded"
+                className="inline-flex gap-1 text-white bg-[#012e29] border focus:outline-none px-3 py-2 rounded"
               >
-                {userButtonText} <i className="fa-solid fa-arrow-right pt-1 "></i>
+                {userButtonText}
+                <i className="fa-solid fa-arrow-right pt-1"></i>
               </button>
             </div>
           </form>
