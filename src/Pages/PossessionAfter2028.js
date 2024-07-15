@@ -30,7 +30,7 @@ const PossessionAfter2028 = () => {
         <h1 className="mb-2 uppercase text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Possession after 2028
         </h1>
-        <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+        <h2 className="text-sm text-justify sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
           Gurgaon Premium Projects promises to redefine urban living by blending
           modern architecture, luxury amenities, and strategic locations. Each
           project aims to build vibrant communities with state-of-the-art

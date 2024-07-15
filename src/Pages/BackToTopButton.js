@@ -27,7 +27,7 @@ const BackToTopButton = () => {
         <button
           onClick={scrollToTop}
           style={styles.button}
-          className="bg-red-600 text-white p-3 w-12 h-12 flex items-center justify-center opacity-100 z-50 animate-bounceUpDown"
+          className="bg-red-600 text-white p-3 w-9 h-9 flex items-center justify-center opacity-100 z-50 animate-bounceUpDown"
         >
           <span style={{ transform: 'rotate(-45deg)' }}>
             <i className="fa-solid fa-chevron-up"></i>

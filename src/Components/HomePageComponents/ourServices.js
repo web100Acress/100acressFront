@@ -1,18 +1,20 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 function OurServices() {
   return (
     <Wrapper className="section">
       <div className="max-w-screen-xl mx-auto px-4 py-10">
         <div className="row ">
+
           <div className="col-md-3">
             <div
               className="col max-mb-30 aos-init aos-animate"
               data-aos="fade-up"
             >
               {" "}
-              <a
-                href="#"
+              <Link to={`/contact-us/`} target="_top"
+                
                 className="icon-box text-center"
                 data-bg-color="#fff"
                 style={{ backgroundColor: "rgb(255, 255, 255)" }}
@@ -25,6 +27,7 @@ function OurServices() {
                     style={{ height: "204px" }}
                     width="240"
                     height="220"
+                    alt="consulting"
                   />{" "}
                 </div>
                 <div className="content">
@@ -36,7 +39,7 @@ function OurServices() {
                     </p>
                   </div>{" "}
                 </div>
-              </a>{" "}
+              </Link>{" "}
             </div>
           </div>
 
@@ -47,8 +50,8 @@ function OurServices() {
               data-aos="fade-up"
             >
               {" "}
-              <a
-                href="#"
+              <Link to={`/contact-us/`} target="_top"
+              
                 className="icon-box text-center"
                 data-bg-color="#fff"
                 style={{ backgroundColor: "rgb(255, 255, 255)" }}
@@ -61,7 +64,8 @@ function OurServices() {
                     style={{ height: "204px" }}
                     width="220"
                     height="220"
-                    alt=""
+                    
+                    alt="lawyer"
                   />{" "}
                 </div>
                 <div className="content">
@@ -73,7 +77,7 @@ function OurServices() {
                     </p>
                   </div>{" "}
                 </div>
-              </a>{" "}
+              </Link>{" "}
             </div>
           </div>
 
@@ -84,8 +88,8 @@ function OurServices() {
               data-aos="fade-up"
             >
               {" "}
-              <a
-                href="#"
+              <Link to={`/contact-us/`} target="_top"
+               
                 className="icon-box text-center"
                 data-bg-color="#fff"
                 style={{ backgroundColor: "rgb(255, 255, 255)" }}
@@ -98,7 +102,7 @@ function OurServices() {
                     style={{ height: "204px" }}
                     width="220"
                     height="220"
-                    alt=""
+                    alt="interiordesign"
                   />{" "}
                 </div>
                 <div className="content">
@@ -110,7 +114,7 @@ function OurServices() {
                     </p>
                   </div>{" "}
                 </div>
-              </a>{" "}
+              </Link>{" "}
             </div>
           </div>
 
@@ -121,8 +125,8 @@ function OurServices() {
               data-aos="fade-up"
             >
               {" "}
-              <a
-                href="#"
+              <Link to={`/contact-us/`} target="_top"
+                
                 className="icon-box text-center"
                 data-bg-color="#fff"
                 style={{ backgroundColor: "rgb(255, 255, 255)" }}
@@ -135,7 +139,7 @@ function OurServices() {
                     style={{ height: "204px" }}
                     width="220"
                     height="220"
-                    alt=""
+                    alt="homeloan"
                   />{" "}
                 </div>
                 <div className="content">
@@ -147,7 +151,7 @@ function OurServices() {
                     </p>
                   </div>{" "}
                 </div>
-              </a>{" "}
+              </Link>{" "}
             </div>
           </div>
 
@@ -156,7 +160,7 @@ function OurServices() {
               className="col  max-mb-30 aos-init aos-animate"
               data-aos="fade-up"
             >
-              <a
+              <Link to={`/contact-us/`} target="_top"
                 className="icon-box text-center"
                 data-bg-color="#fff"
                 style={{ backgroundColor: "rgb(255, 255, 255)" }}
@@ -181,7 +185,7 @@ function OurServices() {
                     </p>
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
           </div>
 

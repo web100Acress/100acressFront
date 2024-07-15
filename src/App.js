@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import { styled } from "styled-components";
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import {  Routes, Route, Navigate } from 'react-router-dom';
 import Home from "./Pages/Home";
 import AboutPage from "./Components/AboutPageComponents/AboutPage";
 import Properties from "./Pages/Properties";
@@ -123,8 +123,8 @@ function App() {
               <Route path="/postproperty" element={token !== null ? <NewSellProperty /> : <Navigate to="/signin" />} />
               <Route path="/signup/" element={<SignUp />}/>
              <Route path="/signin/" element={<SignIn />}/>
-             <Route path="/privacypolicy/" element={<Privacy />} />
-             <Route path="/termsandconditions/" element={<TermsAndConditions />} />
+             <Route path="/privacy-policy/" element={<Privacy />} />
+             <Route path="/terms-and-conditions/" element={<TermsAndConditions />} />
              <Route path="/projects-in-gurugram/" element={<Properties />} />
              <Route path="/projects-in-gurugram/budget" element = {<BudgetPrice/>}/>
              <Route path="/projects-in-gurugram/ready-to-move/property/" element = {<ReadyToMoveProject/>}/>
@@ -149,7 +149,7 @@ function App() {
              <Route path="/project-in-goa/" element={<GoaProject/>} />
              <Route path="/deendayal/plots/" element={<DeenDayalPlots />} />
              <Route path="/projects/villas"  element = {<VillasProjects/>}/>
-             <Route path="/newsandarticals/" element={<NewsandArtical />} />
+             <Route path="/news-and-articals/" element={<NewsandArtical />} />
              <Route path="/userdashboard/" element={token !== null ? <UserDashBoard /> : <Navigate to="/" />} />
              <Route path="/useredit/:id" element={<UserEdit />} />
              <Route path="/middlemain" element={<MiddleMain />} />

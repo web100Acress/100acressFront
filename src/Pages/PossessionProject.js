@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { DataContext } from "../MyContext";
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
@@ -6,7 +6,8 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 const PossessionProject = () => {
   const { possessionAllData } = useContext(DataContext);
-
+  // const storedDate = localStorage.getItem("possessionDate");
+ 
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
@@ -25,6 +26,22 @@ const PossessionProject = () => {
         />
       </Helmet>
 
+      {/* <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">
+        <h1 className="mb-2 uppercase text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+          Possession Projects in {storedDate}
+        </h1>
+        <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+          In {storedDate}, Gurgaon appear as an exclusive goal for real estate projects,
+          Showing a vibrant blend of modernity and convenience. New residential
+          and commercial projects redefine luxury living and business
+          environments alike. These developments brag about cutting-edge
+          architecture, sustainable design, and state-of-the-art amenities.
+          Gurgaon's projects in {storedDate} cater to the wise selections of homeowners
+          and investors seeking unmatched quality and connectivity in a thriving
+          urban landscape.
+        </h2>
+      </div> */}
+
       <section className="flex flex-col items-center bg-white">
         <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
           {possessionAllData.map((item, index) => {
@@ -42,15 +59,18 @@ const PossessionProject = () => {
                       className="w-full h-48 object-fit "
                     />
                   </div>
+
                   <div className="p-4">
                     <div className="pb-2">
-                      <a className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
-                      </a>
+                      </span>
                       <br />
-                      <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                        {item.city}{", "}<span className="font-light">{item.state}</span>
-                      </a>
+                      <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                        {item.city}
+                        {", "}
+                        <span className="font-light">{item.state}</span>
+                      </span>
                     </div>
                     <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                       <li className="mr-4 flex items-center text-left">
@@ -67,7 +87,10 @@ const PossessionProject = () => {
                     <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                       <li className="text-left">
                         <span className="text-md font-extrabold  text-red-600">
-                       <span className="text-lg">₹</span>{item.minPrice}{" - "}{item.maxPrice} Cr
+                          <span className="text-lg">₹</span>
+                          {item.minPrice}
+                          {" - "}
+                          {item.maxPrice} Cr
                         </span>
                       </li>
 
@@ -87,13 +110,10 @@ const PossessionProject = () => {
           })}
         </div>
       </section>
-      
+
       <Footer />
     </div>
   );
 };
 
 export default PossessionProject;
-
-
-

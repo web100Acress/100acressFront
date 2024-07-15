@@ -253,7 +253,7 @@ const PossessionProperty = ({ deviceType }) => {
           </Link>
 
 
-          <Link to="/projects-in-gurugram/possession-after-2028/property/">
+          <Link to="/projects-in-gurugram/possession-after-2028/property/" target="_top">
             <div className="bg-[#00314F]  pb-2 mb-[1.9rem]">
               <div className="transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
                 <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
