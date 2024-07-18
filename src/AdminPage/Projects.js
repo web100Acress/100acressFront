@@ -17,7 +17,6 @@ const Projects = () => {
   const [viewAll, setViewAll] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(25);
-  const [modalIsOpen, setIsOpen] = React.useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -75,13 +74,8 @@ const Projects = () => {
     setCurrentPage(pageNumber);
   };
 
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  function closeModal() {
-    setIsOpen(false);
-  }
+ 
+  
 
   return (
     <div>

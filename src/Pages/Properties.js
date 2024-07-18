@@ -11,7 +11,7 @@ function Properties() {
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
-      {/* <ProjectSearching/> */}
+      <ProjectSearching/>
       <Helmet>
         <meta
           name="description"
@@ -24,7 +24,7 @@ function Properties() {
       </Helmet>
 
       <section className="flex flex-col items-center bg-white">
-        <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
+        <div className="mx-4 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
           {allProjectData.map((item, index) => {
             const pUrl = item.project_url;
             return (
