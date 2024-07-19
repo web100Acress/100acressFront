@@ -5,10 +5,12 @@ function SpacesAvailable() {
   return (
     <Wrapper className="section">
       <div style={{ boxShadow: "0px 0px 30px 0px #0000001a" }}>
-        <div className="px-14 font-semibold text-xl xl:text-4xl lg:text-3xl pt-4 md:text-2xl">
-        Dream Property In The Heart of Gurugram
-        </div>
-        <div className="_6sknMP">
+      <div className="flex items-center mx-6 lg:mx-6 xl:mx-14 md:mx-6">
+            <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
+            Dream Property In The Heart of Gurugram
+            </h1>
+          </div>
+        <div className="_6sknMP pb-0">
           <Link to={`/property/residential/`} target="_top">
             <div className="_ksjMM _1fe2" title="Residential Projects">
               <p className="_9gncbH">Residential</p>
@@ -63,10 +65,10 @@ const Wrapper = styled.section`
   ._6sknMP {
     display: flex;
     flex-wrap: wrap;
-    padding: 10px 20px;
+    padding: 0px 25px;
     justify-content: space-around;
     border-radius: 15px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
   }
 
   ._1fe1,

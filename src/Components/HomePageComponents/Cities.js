@@ -11,9 +11,11 @@ function Cities() {
   return (
     <Wrapper className="section ">
       <div className="dffasPL">
-        <p className="px-10 font-semibold text-xl xl:text-4xl lg:text-3xl pt-4 md:text-2xl">
-          Gurugram Prime Locations
-        </p>
+      <div className="flex items-center pt-2">
+            <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  text-center ml-12 sm:text-left ">
+            Gurugram Prime Locations
+            </h1>
+          </div>
         <div className="gdmJO d-flex justify-content-between px-4 text-center align-items-center">
           <div className="cvBMLN text-justify">
             <Link to={`/property-in-gurugram/sohna-road/`} target="_top">

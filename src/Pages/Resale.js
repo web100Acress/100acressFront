@@ -5,7 +5,7 @@ import { MdOutlineCurrencyRupee } from "react-icons/md";
 const Resale = () => {
   const { resalePropertydata } = useContext(DataContext);
   return (
-    <section className="bg-white py-6 sm:py-8 lg:py-10">
+    <section className="bg-white py-3 sm:py-6 lg:py-8">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8">
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-12 lg:grid-cols-3 xl:grid-cols-3 xl:gap-16">
           {resalePropertydata && resalePropertydata.length > 0 ? (

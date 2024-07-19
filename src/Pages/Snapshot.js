@@ -4,11 +4,11 @@ const Snapshot = () => {
   return (
     <>
       <div>
-        <p className="text-xl lg:text-3xl md:text-2xl sm:text-xl xs:text-xl text-red-600 text-left px-4 mt-4">
+      <p className="px-12 text-xl text-red-600 xl:text-4xl lg:text-3xl pt-4 md:text-2xl">
           100acress.com Snapshot
         </p>
       </div>
-      <div className="px-4 ">
+      <div className="px-12 ">
         <section className="relative overflow-hidden bg-gray-50 border-2 py-4 rounded-lg">
           <p className="px-4 text-justify mb-0 hidden sm:block">
             100acress.com Real Estate Company specializes in providing premier

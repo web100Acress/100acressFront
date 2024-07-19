@@ -46,10 +46,10 @@ const PossessionProperty = ({ deviceType }) => {
 
   return (
     <>
-      <p className=" pt-2 mb-0 text-xl text-white bg-[#00314F] lg:text-3xl md:text-2xl font-bold  sm:text-xl xs:text-xl text-left px-4 mt-4">
+      <p className=" pt-4 px-12 mb-0 text-xl text-white bg-[#00314F] lg:text-3xl md:text-2xl font-bold  sm:text-xl xs:text-xl text-left ">
         Move in now, next year or later
         <br />
-        <span className="text-sm font-medium">
+        <span className="text-sm  pt-1 font-normal">
           {" "}
           find projects that fit your preferred possession timeline.
         </span>

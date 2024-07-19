@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function OurServices() {
   return (
     <Wrapper className="section">
-      <div className="max-w-screen-xl mx-auto px-4 py-10">
+      <div className="max-w-screen-xl mx-auto px-6 py-6">
         <div className="row ">
 
           <div className="col-md-3">

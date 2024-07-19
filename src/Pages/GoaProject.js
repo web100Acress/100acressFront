@@ -15,12 +15,25 @@ const GoaProject = () => {
           name="description"
           content="Real Estate Properties in Goa - Get Details for Residential &amp; Commercial Properties"
         />
+        <link
+          rel="canonical"
+          href="https://www.100acress.com/project-in-goa/"
+        />
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Projects in Goa
         </h1>
+
+        <h2 className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+          Upcoming Projects in Goa redefine coastal living with a blend of
+          luxury and tranquillity. These developments offer modern amenities,
+          eco-friendly designs, and stunning views of beaches and greenery.
+          Catering to both residential and vacation home seekers, they provide a
+          perfect escape focusing on comfort, convenience, and natural beauty.
+        </h2>
+
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
           {goaCityProject.map((item, index) => {
             const pUrl = item.project_url;
@@ -28,13 +41,13 @@ const GoaProject = () => {
               <Link to={`/${pUrl}/`} target="_top">
                 <article
                   key={index}
-                  className="mb-4 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                  className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                 >
                   <div>
                     <img
                       src={item.frontImage.url}
                       alt="property In Gurugram"
-                      className="w-full h-48 object-fit"
+                      className="w-full h-48 object-fit "
                     />
                   </div>
                   <div className="p-4">
@@ -42,18 +55,31 @@ const GoaProject = () => {
                       <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
                       </a>
-                      <span style={{ float: "right" }} className="text-sm">
-                        {item.builderName}
-                      </span>
+
                       <br />
                       <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                        {item.projectAddress}
+                        {item.city}, {item.state}
                       </a>
                     </div>
-                    <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+
+                    <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                      <li className="mr-4 flex items-center text-left">
+                        <li className="text-left">
+                          <span className="text-[13px] text-gray-400">
+                            {item.projectAddress}
+                          </span>
+                          <p className="m-0 text-sm font-medium">{item.type}</p>
+                        </li>
+                      </li>
+                    </ul>
+
+                    <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
                       <li className="text-left">
-                        <span className="text-sm font-extrabold text-black">
-                          {item.city}
+                        <span className="text-sm font-extrabold text-red-600">
+                          <span className="text-xl">₹ </span>
+                          {item.minPrice}
+                          {" - "}
+                          {item.maxPrice} Cr
                         </span>
                       </li>
 
