@@ -547,10 +547,14 @@ const BannerPage = () => {
             </div>
 
             <div className="flex flex-col">
-              <span className="text-center font-normal ">Price</span>
+              <span className="text-center font-normal">Price</span>
               <span className="text-center font-semibold text-xl uppercase">
-                ₹ {projectViewDetails.minPrice} Cr -{" "}
-                {projectViewDetails.maxPrice} Cr
+                {projectViewDetails.minPrice < 1 ? (
+                  <span>{projectViewDetails.minPrice * 100} Lakh</span>
+                ) : (
+                  <span>{projectViewDetails.minPrice} Cr</span>
+                )}
+                - {projectViewDetails.maxPrice} Cr
               </span>
             </div>
 
