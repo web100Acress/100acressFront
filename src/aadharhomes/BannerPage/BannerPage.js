@@ -497,14 +497,16 @@ const BannerPage = () => {
                       value={popDetails.mobile}
                     />
                   </div>
+
                   {PopUpresponseMessage && (
                     <p className="text-[#012e29] text-[12px] mb-0">
                       {PopUpresponseMessage}
                     </p>
                   )}
+
                   <div className="flex justify-center">
                     <button
-                      className="mt-0 w-full md:w-auto rounded-md bg-[#012e29] px-10 py-2 font-semibold text-white"
+                      className="mt-2 w-full rounded-md bg-[#012e29] px-10 py-2 font-semibold text-white"
                       onClick={popSubmitDetails}
                     >
                       {PopUpbuttonText}
@@ -550,7 +552,7 @@ const BannerPage = () => {
               <span className="text-center font-normal">Price</span>
               <span className="text-center font-semibold text-xl uppercase">
                 {projectViewDetails.minPrice < 1 ? (
-                  <span>{projectViewDetails.minPrice * 100} Lakh</span>
+                  <span>{projectViewDetails.minPrice * 100} L</span>
                 ) : (
                   <span>{projectViewDetails.minPrice} Cr</span>
                 )}
@@ -645,7 +647,7 @@ const BannerPage = () => {
 
                   <div className="flex justify-center">
                     <button
-                      className=" w-full md:w-auto rounded-md bg-[#012e29] px-10 py-2 font-semibold text-white"
+                      className="mt-2 w-full md:w-auto rounded-md bg-[#012e29] px-10 py-2 font-semibold text-white"
                       onClick={SideSubmitDetails}
                     >
                       {sideButtonText}
@@ -1029,66 +1031,90 @@ const BannerPage = () => {
           </span>
         </div>
 
-        <div className="sm:h-auto lg:h-[250px] xl:h-[330px] w-full bg-[#012e29]">
-          <p className="text-center pt-4 text-white m-2 md:m-4 lg:m-6 xl:m-10 sm:text-sm md:text-lg lg:text-2xl lg:pt-2 mt-2">
-            Make an Enquiry
-          </p>
-          <form className="mx-auto w-full max-w-7xl h-auto p-4">
-            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
-              <div className="flex items-center">
-                <i className="fa-solid fa-user text-white text-md "></i>
-                <input
-                  type="text"
-                  name="name"
-                  onChange={handleChange}
-                  value={userDetails.name}
-                  required
-                  placeholder="Enter Your Name*"
-                  className="appearance-none bg-transparent border-b border-white w-full text-white py-2 px-2 leading-tight focus:outline-none"
-                />
-              </div>
-              <div className="flex items-center">
-                <i className="fa-solid fa-envelope text-white text-md "></i>
-                <input
-                  type="email"
-                  name="email"
-                  value={userDetails.email}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter Your Email*"
-                  className="appearance-none bg-transparent border-b border-white w-full text-white py-2 px-2 leading-tight focus:outline-none"
-                />
-              </div>
-              <div className="flex items-center">
-                <i className="fa-solid fa-phone text-white text-md "></i>
-                <input
-                  type="tel"
-                  name="mobile"
-                  value={userDetails.mobile}
-                  onChange={handleChange}
-                  required
-                  placeholder="Contact Number*"
-                  className="appearance-none bg-transparent border-b border-white w-full text-white py-2 px-2 leading-tight focus:outline-none"
-                />
-              </div>
+          <div className="sm:h-auto lg:h-[200px] xl:h-[300px] w-full sm:w-auto bg-[#012e29] px-5 py-6 sm:py-0 flex flex-col justify-between">
+          <div>
+            <p className="text-center text-white text-lg lg:text-xl xl:text-2xl mt-3">
+              Make an Enquiry
+            </p>
+            <div className="text-center mt-2">
+              <a
+                href="tel:+918527134491"
+                className="flex items-center justify-center text-white text-3xl"
+              >
+                <i className="fa-solid fa-phone text-white text-2xl"></i>
+                <span className="pl-2">8527-134-491</span>
+              </a>
             </div>
-            {userResponseMessage && (
+            <form className="max-w-full mt-8">
+              <div className="flex flex-col sm:flex-row sm:space-x-4">
+                <div className="flex items-center mb-4 sm:mb-0 border-b border-white w-full sm:w-1/3">
+                  <i className="fa-solid fa-user mb-2 text-white text-md mr-2"></i>
+                  <input
+                    type="text"
+                    name="name"
+                    onChange={handleChange}
+                    value={userDetails.name}
+                    required
+                    placeholder="Enter Your Name*"
+                    className="appearance-none bg-transparent mb-1 border-none w-full text-white py-1 px-2 leading-tight focus:outline-none"
+                  />
+                </div>
+
+                <div className="flex items-center mb-4 sm:mb-0 border-b border-white w-full sm:w-1/3">
+                  <i className="fa-solid fa-envelope mb-2 text-white text-md mr-2"></i>
+                  <input
+                    type="text"
+                    name="email"
+                    value={userDetails.email}
+                    onChange={handleChange}
+                    placeholder="Enter Your Email*"
+                    className="appearance-none bg-transparent mb-1 border-none w-full text-white py-1 px-2 leading-tight focus:outline-none"
+                  />
+                </div>
+
+                <div className="flex items-center mb-4 sm:mb-0 border-b border-white w-full sm:w-1/3">
+                  <i className="fa-solid fa-phone text-white text-md mr-2 mb-2"></i>
+                  <input
+                    type="text"
+                    name="mobile"
+                    value={userDetails.mobile}
+                    onChange={handleChange}
+                    required
+                    placeholder="Contact Number*"
+                    className="appearance-none mb-1 bg-transparent border-none w-full text-white py-1 px-2 leading-tight focus:outline-none"
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+
+          {userResponseMessage && (
               <p className="text-white text-[12px] mb-4">
                 {userResponseMessage}
               </p>
             )}
-            <div className="flex justify-center">
-              <button
-                type="submit"
-                onClick={userSubmitDetails}
-                className="inline-flex gap-1 text-white bg-[#012e29] border focus:outline-none px-3 py-2 rounded"
-              >
-                {userButtonText}
-                <i className="fa-solid fa-arrow-right pt-1"></i>
-              </button>
-            </div>
-          </form>
+
+          <div className="flex justify-center my-4">
+            <button
+              onClick={userSubmitDetails}
+              className="inline-flex items-center gap-1 text-white bg-[#012e29] border focus:outline-none px-3 py-2 rounded"
+            >
+               {userButtonText} <i className="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
         </div>
+        <div>
+          <div className="w-full py-3 text-[#012e29] bg-white mt-auto">
+            <p className="text-center text-sm mb-0">
+              Copyright © 2024,{" "}
+              <Link className="text-[#012e29]" to="https://100acress.com/">
+                100acress.com
+              </Link>{" "}
+              All Rights Reserved
+            </p>
+          </div>
+        </div>
+        
       </>
     </Wrapper>
   );

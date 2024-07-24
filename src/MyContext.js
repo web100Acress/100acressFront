@@ -38,6 +38,12 @@ export const DataProvider = ({ children }) => {
   const [goaCityProject, setGoaCityProject] = useState([]);
   const [dlfAllProjects, setDlfAllProjects] = useState([]);
   const [villasProject, setVillasProject] = useState([]);
+  const [bptp, setbptp] = useState([]);
+  const [orris, setorris] = useState([]);
+  const [jms, setJms] = useState([]);
+  const [rof, setRof] = useState([]);
+
+
   const [possessionIn2029AndBeyond, setpossessionIn2029AndBeyond] = useState([]);
 
    const [possessionDate, setPossessionDate] = useState(() => {
@@ -127,6 +133,8 @@ export const DataProvider = ({ children }) => {
         (project) => project.projectOverview === "sco"
       );
 
+     
+
       const BuilderIndependentFloor = projectsData.filter((project) => {
         return (
           project.type === "Independent Floors" ||
@@ -198,6 +206,24 @@ export const DataProvider = ({ children }) => {
       const goaData = projectsData.filter((project) => project.projectOverview === "goaProject");
       const dlfAllProjects  = projectsData.filter((project) => project.builderName === 'DLF Homes' );
 
+      const bptp = projectsData.filter(
+        (project) => project.projectOverview === 'bptp'
+      )
+
+      const orris = projectsData.filter(
+        (project) => project.projectOverview === 'orris'
+      )
+
+      const jms = projectsData.filter(
+        (project) => project.projectOverview === 'jms'
+      )
+
+      const rof = projectsData.filter(
+        (project) => project.projectOverview === 'rof'
+      )
+
+
+
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
       setFeaturedProject(featuredProjects);
@@ -225,7 +251,11 @@ export const DataProvider = ({ children }) => {
       setDlfAllProjects(dlfAllProjects);
       setVillasProject(villasProject);
       setpanchkula(panchkula);
-      setpossessionIn2029AndBeyond(possessionIn2029AndBeyond)
+      setpossessionIn2029AndBeyond(possessionIn2029AndBeyond);
+      setorris(orris);
+      setbptp(bptp);
+      setJms(jms);
+      setRof(rof);
     } catch (error) {
       console.log(error || error.message);
     }
@@ -369,6 +399,10 @@ export const DataProvider = ({ children }) => {
         villasProject,
         panchkula,
         possessionIn2029AndBeyond,
+        bptp,
+        orris,
+        jms,
+        rof,
       }}
     >
       {children}

@@ -38,7 +38,6 @@ const ContactUs = () => {
         "https://api.100acress.com/contact_Insert",
         data
       );
-      // console.log(res, "hvjn bgjhgjhbjbjhghbn fyughv ");
       alert("Data Submitted Successfully");
       resetData();
     } catch (error) {
@@ -79,7 +78,6 @@ const ContactUs = () => {
             class="w-full h-[9rem] sm:h-30 object-fit small-screen-image block sm:hidden"
           />
         </div>
-        
         <div>
           <h1 className="text-center text-bold text-3xl mt-5">
             Buy, Sell, and Rent with 100acress
@@ -93,68 +91,103 @@ const ContactUs = () => {
             </h2>
           </div>
         </div>
+        <div className="flex -mb-3 items-center justify-center px-12 py-4">
+          <div
+            className="bg-red-600 text-gray-500 w-full overflow-hidden rounded-md"
+            style={{ maxWidth: 1300 }}
+          >
+            <div className="md:flex w-full h-auto md:h-80 ">
+              <div className="hidden lg:block w-full md:w-1/2">
+                <div style={{ height: "100%", overflow: "hidden" }}>
+                  <img
+                    src="../../Images/contact-us.webp"
+                    alt="expertImage"
+                    className="object-fit w-full h-full"
+                  />
+                </div>
+              </div>
+              <div className="w-full xl:w-1/2 lg:w-1/2 md:w-full py-4 lg:px-5 md:px-2 sm:px-2 xs-px-2 ">
+                <div className="py-10">
+                  <div className="flex flex-wrap -mx-2 ">
+                    <div className="w-full md:w-1/2 px-2 mb-3">
+                      <div className="flex px-2">
+                        <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                          <i className="fa-solid fa-user text-gray-400 text-lg" />
+                        </div>
+                        <input
+                          type="text"
+                          className="w-full -ml-10 pl-10 pr-3 py-2 border-b-2 outline-none focus:border-red-600 rounded-md"
+                          placeholder="First Name"
+                          value={data.name}
+                          name="name"
+                          onChange={handleData}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="w-full md:w-1/2 px-2 mb-3 ">
+                      <div className="flex px-2">
+                        <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                          <i className="fa-solid fa-phone text-gray-400 text-lg" />
+                        </div>
+                        <input
+                          type="number"
+                          className="w-full -ml-10 pl-10 pr-3 py-2 border-b-2  outline-none focus:border-red-600 rounded-md"
+                          placeholder="Mobile"
+                          value={data.mobile}
+                          name="mobile"
+                          onChange={handleData}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-        <div className="flex justify-center">
-          <div className="w-5/5 mx-auto my-10 flex flex-col items-center md:flex-row">
-            <div className=" w-full md:w-4/5 h-full bg-[#012e29] shadow-xl text-white p-10">
-              <span></span>
-              <div className="mt-2 leading-7 text-center">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Name"
-                  value={data.name}
-                  onChange={handleData}
-                  className="border-b-2 w-[80%] mb-3 p-1 border-b-white placeholder:text-white placeholder:opacity-80 text-lg bg-[#012e29] focus:outline-none"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={data.email}
-                  onChange={handleData}
-                  className="border-b-2 w-[80%] mb-3 p-1 border-b-white placeholder:text-white placeholder:opacity-80 text-lg bg-[#012e29] focus:outline-none"
-                />
-                <input
-                  type="number"
-                  name="mobile"
-                  placeholder="Contact Number"
-                  value={data.mobile}
-                  onChange={handleData}
-                  className="border-b-2 w-[80%] mb-3 p-1 border-b-white placeholder:text-white placeholder:opacity-80 text-lg bg-[#012e29] focus:outline-none"
-                />
-                <textarea
-                  id="message"
-                  name="message"
-                  placeholder="Message here..."
-                  value={data.message}
-                  onChange={handleData}
-                  className="w-[80%] bg-[#012e29] border-2 border-white h-20 text-lg outline-none placeholder:text-white placeholder:opacity-80 py-1 px-2 mt-6 resize-none leading-6 duration-200 ease-in-out rounded-lg"
-                ></textarea>
-                <div className="mt-4">
-                  <button
-                    onClick={handleSubmitData}
-                    className="block m-auto w-[60%] md:w-[50%] text-center border bg-[#012e29] rounded-full py-1 mt-6 text-lg font-bold tracking-wide uppercase text-white brightness-105 hover:bg-green-900"
-                  >
-                    Send
-                  </button>
+                  <div className="flex mb-3 px-2">
+                    <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
+                      <i className="fa-solid fa-envelope text-gray-400 text-lg" />
+                    </div>
+                    <input
+                      type="text"
+                      className="w-full -ml-10 pl-10 pr-3 py-2 border-b-2  outline-none focus:border-red-600 rounded-md"
+                      placeholder="Email"
+                      value={data.email}
+                      name="email"
+                      onChange={handleData}
+                    />
+                  </div>
+                  <div className="flex px-2">
+                    <div className="w-10 z-10 pl-1 text-center pointer-events-none pt-2">
+                      <i className="fa-solid fa-message text-gray-400 text-lg mt-1"></i>
+                    </div>
+                    <textarea
+                      type="message"
+                      className="w-full -ml-10 pl-10 pr-3 py-2 border-b-2  outline-none focus:border-red-600 rounded-md"
+                      placeholder="Message "
+                      style={{ height: "100px" }}
+                      name="message"
+                      value={data.message}
+                      onChange={handleData}
+                    />
+                  </div>
+
+                  <div className="flex justify-center items-center mt-3">
+                    <button
+                      onClick={handleSubmitData}
+                      className="block px-5 bg-white hover:bg-red-300 focus:bg-red-500 text-red rounded-lg py-2 font-semibold"
+                    >
+                      Submit
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className=" md:block  w-[70%] md:w-[40%] bg-red-600 items-center flex flex-col justify-center leading-7 space-y-8  h-full">
-              <img
-                src="../../Images/contactpageimage.png"
-                alt=""
-                className="object-cover h-full shadow-xl"
-              />
-            </div>
           </div>
         </div>
-
-        <div class="flex justify-center bg-orange-100 mb-20 mx-5 my-5">
-          <div class="flex flex-col justify-center w-full lg:w-[96%] space-y-10 lg:space-y-0 lg:space-x-10 max-w-7xl p-8 lg:p-14">
+        <div class="flex justify-center bg-grey-100 mb-20 mx-5 my-[4.5rem]">
+          <div class="flex flex-col justify-center w-full lg:w-[100%] space-y-4 lg:space-y-0 lg:space-x-10 max-w-7xl lg:p-1">
             <div class="flex flex-col justify-center items-center lg:flex-row space-y-10 lg:space-y-0 lg:space-x-10">
-              <div class="shadow-lg flex bg-[#012e29] flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
+              <div class="shadow-lg flex bg-black hover:bg-slate-200  flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
                 <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
                   Sales
                 </div>
@@ -165,34 +198,31 @@ const ContactUs = () => {
                 </div>
                 <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
                   <a
-                    href="tel:8500900100"
-                    class="mx-2 text-[#012e29] text-lg font-bold"
+                    href="tel:+8500-900-100"
+                    class="mx-2 text-red-600 text-lg font-bold"
                   >
+                    {" "}
                     Contact Sales
                   </a>
                 </p>
               </div>
-
-              <div class="bg-[#012e29] shadow-lg flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
+              <div class="bg-black shadow-lg flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
                 <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
                   Help &amp; Support
                 </div>
                 <p class="text-center text-white text-lg p-2">
-                  We are here to help with any questions or code.
+                  We are here to help with any questions or code
                 </p>
                 <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
                   <a
                     href="mailto:seo@100acress.com"
-                    class="mx-2 text-[#012e29] text-lg font-bold"
+                    class="mx-2 text-red-600 text-lg font-bold"
                   >
                     Get Support
                   </a>
                 </p>
               </div>
-              <div class="bg-[#012e29] shadow-lg flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
-                {/* <div class="-mt-16">
-          <ion-icon name="camera-outline" class="text-3xl md:text-5xl rounded-full p-4 bg-white text-cyan-400"></ion-icon>
-        </div> */}
+              <div class="bg-black shadow-lg flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
                 <div class="font-semibold text-white text-xl lg:text-2xl mb-4 md:mb-6">
                   Media &amp; Press
                 </div>
@@ -202,7 +232,7 @@ const ContactUs = () => {
                 <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-[18px] text-[#012e29] font-medium">
                   <a
                     href="mailto:seo@100acress.com"
-                    class="mx-2 text-[#012e29] text-lg font-bold"
+                    class="mx-2 text-red-600 text-lg font-bold"
                   >
                     Visit Newsroom
                   </a>
@@ -211,7 +241,6 @@ const ContactUs = () => {
             </div>
           </div>
         </div>
-
       </div>
       <Footer />
     </div>

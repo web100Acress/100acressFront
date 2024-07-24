@@ -1732,11 +1732,11 @@ function Home() {
       </div>
 
       <SpacesAvailable />
-      {/* <BudgetPlotsInGurugraon /> */}
+      <BudgetPlotsInGurugraon />
 
-      <div className="py-3 " style={{ backgroundColor: "#00314f" }}>
+      <div style={{ backgroundColor: "#00314f" }}>
         {" "}
-        <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 mt-0">
+        <div className="flex items-center justify-between mx-6  lg:mx-6 xl:mx-14 md:mx-6 mt-0">
           <div className="flex items-center">
             <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl pt-2 pb-0 text-white text-center sm:text-left ">
               Commercial Projects in Delhi NCR
@@ -2054,7 +2054,7 @@ function Home() {
                         <div>
                           <img
                             src={item.frontImage.url}
-                            alt="property In Gurugrame"
+                            alt="property In Gurugram"
                             className="w-full h-48 object-fit"
                           />
                         </div>

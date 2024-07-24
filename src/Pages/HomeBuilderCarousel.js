@@ -80,21 +80,21 @@ const HomeBuilderCarousel = (props) => {
           <div>
             <img src="../BuilderImage/aipl.webp" alt="AIPL" />
           </div>
-          <div>
+          {/* <div>
             <img src="../BuilderImage/amb.webp" alt="BPTP" />
-          </div>
+          </div> */}
           <div>
             <img src="../BuilderImage/ambience.webp" alt="ambience" />
           </div>
           <div>
             <img src="../BuilderImage/ashiana.webp" alt="ashiana" />
           </div>
-          <div>
+          {/* <div>
             <img src="../BuilderImage/ats.webp" alt="ats" />
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <img src="../BuilderImage/bestech.webp" alt="bestech" />
-          </div>
+          </div> */}
           <div>
             <img src="../BuilderImage/bptp.webp" alt="bptp" />
           </div>

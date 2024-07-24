@@ -104,6 +104,10 @@ import DlfProject from "./Pages/DlfProject";
 import VillasProjects from "./Components/HomePageComponents/VillasProjects";
 import Panchkula from "./Pages/Panchkula";
 import PossessionAfter2028 from "./Pages/PossessionAfter2028";
+import Bptp from "./Pages/Bptp";
+import Orris from "./Pages/Orris";
+import Jms from "./Pages/Jms";
+import Rof from "./Pages/Rof";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -173,6 +177,10 @@ function App() {
             <Route path="*" element={<PageNotFound />} />
             <Route path="/contactmainpage" element={<ContactPage />} />
             <Route path="/searchdata/:key" element={<SearchData />} />
+            <Route path="/bptp-plots-gurugram/" element={<Bptp/>}/>
+            <Route path="/orris-plots-gurugram/" element={<Orris/>}/>
+            <Route path="/jms-plots-gurugram/" element={<Jms/>}/>
+            <Route path="/rof-plots-gurugram/" element={<Rof/>}/>
             <Route path="/Admin/blog" element={<Blog />} />
             </Route>
 
