@@ -1219,6 +1219,7 @@ import HomeBuilderCarousel from "./HomeBuilderCarousel";
 import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
+import TopSeoPlots from "./TopSeoPlots";
 const keyframes = `
   @keyframes moveHorizontal {
     from {
@@ -1829,7 +1830,10 @@ function Home() {
         }
       </div>
 
-      <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 mt-0 pt-4">
+
+      <TopSeoPlots/>
+
+      <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 mb-0 pt-0">
         <div className="flex items-center">
           <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left ">
             Featured Projects

@@ -131,8 +131,8 @@ function App() {
              <Route path="/terms-and-conditions/" element={<TermsAndConditions />} />
              <Route path="/projects-in-gurugram/" element={<Properties />} />
              <Route path="/projects-in-gurugram/budget" element = {<BudgetPrice/>}/>
-             <Route path="/projects-in-gurugram/ready-to-move/property/" element = {<ReadyToMoveProject/>}/>
-             <Route path ="/projects-in-gurugram/possession-after-2028/property/" element={<PossessionAfter2028/>}/>
+             <Route path="/projects-in-gurugram/property-ready-to-move/" element = {<ReadyToMoveProject/>}/>
+             <Route path ="/projects-in-gurugram/property-possession-after-2028/" element={<PossessionAfter2028/>}/>
              <Route path="/projects-in-gurugram/possession" element = {<PossessionProject/>}/>
              <Route path="/rental-properties/best-rental-property-in-gurugram/" element={<RentPropViewCard />} />
              <Route  path="/buy-properties/best-resale-property-in-gurugram/"  element={<BuyPropViewCard />}  />

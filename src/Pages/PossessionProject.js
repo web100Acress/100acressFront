@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { DataContext } from "../MyContext";
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
@@ -8,6 +8,12 @@ const PossessionProject = () => {
   const { possessionAllData } = useContext(DataContext);
   // const storedDate = localStorage.getItem("possessionDate");
  
+  // useEffect(() => {
+  //   if (storedDate) {
+  //     console.log(`Stored Date: ${storedDate}`);
+  //   }
+  // }, []);
+
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
