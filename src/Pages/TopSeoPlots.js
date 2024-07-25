@@ -18,7 +18,7 @@ const TopSeoPlots = () => {
       </div>
 
       <div className="grid  lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 grid-cols-1 mx-11 gap-3 pb-5 pt-4 ">
-        <Link to={`/bptp-plots-gurugram/`} target="_top">
+        <Link target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
               src="../../Images/emaar.jpg"
@@ -31,7 +31,7 @@ const TopSeoPlots = () => {
           </div>
         </Link>
 
-        <Link to={`/orris-plots-gurugram/`} target="_top">
+        <Link  target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
               src="../../Images/m3m.jpg"
@@ -44,7 +44,7 @@ const TopSeoPlots = () => {
           </div>
         </Link>
 
-        <Link to={`/jms-plots-gurugram/`} target="_top">
+        <Link  target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
               src="../../Images/microtek.jpg"
