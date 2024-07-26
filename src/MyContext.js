@@ -42,7 +42,9 @@ export const DataProvider = ({ children }) => {
   const [orris, setorris] = useState([]);
   const [jms, setJms] = useState([]);
   const [rof, setRof] = useState([]);
-
+  const [emaarIndia, setEmaarIndia] = useState([]);
+  const [m3mIndia, setM3mIndia] = useState([]);
+  const [microtek, setMicrotek] = useState([]);
 
   const [possessionIn2029AndBeyond, setpossessionIn2029AndBeyond] = useState([]);
 
@@ -223,6 +225,20 @@ export const DataProvider = ({ children }) => {
       )
 
 
+      const emaarIndia = projectsData.filter(
+        (project) =>  project.project_Status === 'emaar'
+      )
+
+      const m3mIndia = projectsData.filter(
+        (project) =>  project.project_Status === 'm3m'
+      )
+
+
+      const microtek = projectsData.filter(
+        (project) =>  project.project_Status === 'microtek'
+      )
+
+
 
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
@@ -256,6 +272,9 @@ export const DataProvider = ({ children }) => {
       setbptp(bptp);
       setJms(jms);
       setRof(rof);
+      setEmaarIndia(emaarIndia);
+       setM3mIndia(m3mIndia);
+       setMicrotek(microtek);
     } catch (error) {
       console.log(error || error.message);
     }
@@ -403,6 +422,9 @@ export const DataProvider = ({ children }) => {
         orris,
         jms,
         rof,
+        emaarIndia,
+        m3mIndia,
+        microtek,
       }}
     >
       {children}

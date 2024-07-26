@@ -1737,8 +1737,8 @@ function Home() {
 
       <div style={{ backgroundColor: "#00314f" }}>
         {" "}
-        <div className="flex items-center justify-between mx-6  lg:mx-6 xl:mx-14 md:mx-6 mt-0">
-          <div className="flex items-center">
+        <div className="flex items-center  justify-between mx-6  lg:mx-6 xl:mx-14 md:mx-6 mt-0">
+          <div className="flex items-center pt-3">
             <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl pt-2 pb-0 text-white text-center sm:text-left ">
               Commercial Projects in Delhi NCR
             </h1>
@@ -2158,6 +2158,12 @@ function Home() {
         </div>
       </div>
 
+      <div>
+          <a href="https://wa.me/918500900100" class="dd-m-whatsapp">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
+
       <PossessionProperty />
       <BackToTopButton />
       <Footer />
@@ -2168,11 +2174,11 @@ function Home() {
 export default Home;
 
 const Wrapper = styled.section`
-  .dd-m-phone {
+.dd-m-phone {
     position: fixed;
     z-index: 999;
-    bottom: 70px;
-    right: 10px;
+    bottom: 10px;
+    left: 10px; /* Changed from right to left */
     width: 55px;
     height: 55px;
     display: flex;
@@ -2195,6 +2201,35 @@ const Wrapper = styled.section`
 .dd-m-phone i {
     font-size: 24px; /* Adjust icon size as needed */
 }
+
+.dd-m-whatsapp {
+    position: fixed;
+    z-index: 999;
+    bottom: 70px;
+    left: 10px; /* Changed from right to left */
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #4AC557; /* Blue color for the icon background */
+    transition: 0.3s all ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff; /* Icon color */
+    font-size: 24px; /* Adjust icon size as needed */
+}
+
+.dd-m-whatsapp:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
+}
+
+.dd-m-whatsapp i {
+    font-size: 24px; /* Adjust icon size as needed */
+}
+
 
 
   @media screen and (max-width: 600px) {

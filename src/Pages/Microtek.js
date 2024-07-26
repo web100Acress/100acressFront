@@ -4,15 +4,15 @@ import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-const Bptp = () => {
-  const { bptp } = useContext(DataContext);
+const Microtek = () => {
+  const { microtek } = useContext(DataContext);
   return (
     <div>
       <Nav />
       
       <Helmet>
         <title>
-          BPTP Plots for Sale in Gurugram
+          Microtek Infra SCO Plots for Sale in Gurugram
         </title>
         <meta
           name="description"
@@ -20,13 +20,13 @@ const Bptp = () => {
         />
          <link
           rel="canonical"
-          href="https://www.100acress.com/bptp-plots-gurugram/"
+          href="https://www.100acress.com/microtek-infra-sco-plots-gurugram/"
         />
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center">
         <h1 className="mb-3 p-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          BPTP Plots in Gurugram
+          Microtek Infra SCO  Plots in Gurugram
         </h1>
 
         {/* <h2 className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
@@ -39,7 +39,7 @@ const Bptp = () => {
         </h2> */}
 
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {bptp.map((item, index) => {
+          {microtek.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
@@ -108,4 +108,4 @@ const Bptp = () => {
   );
 };
 
-export default Bptp;
+export default Microtek;

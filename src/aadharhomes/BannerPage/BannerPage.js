@@ -587,8 +587,6 @@ const BannerPage = () => {
             </a>
           </div>
 
-          
-
           {modalIsOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
               <div className="relative sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-white shadow-lg max-w-lg">
@@ -835,84 +833,85 @@ const BannerPage = () => {
             `}</style>
           </article> */}
 
-<article className="article h-80 mb-5">
-  <div className="relative">
-    {sliderImages && Array.isArray(sliderImages) && sliderImages.length > 0 && (
-      <>
-        <button
-          onClick={() => slideRefs.current.slickPrev()}
-          className="absolute top-1/2 lg:top-1/2 sm:top-1/2 left-5 transform -translate-y-1/2 bg-white text-gray-500 p-2 rounded-full z-10"
-        >
-          <GrPrevious />
-        </button>
-        <button
-          onClick={() => slideRefs.current.slickNext()}
-          className="absolute top-1/2 lg:top-1/2 sm:top-1/2 right-5 transform -translate-y-1/2 text-gray-700 bg-white p-2 rounded-full z-10"
-        >
-          <GrNext />
-        </button>
-      </>
-    )}
-    <Slider ref={slideRefs} {...set}>
-      {sliderImages && Array.isArray(sliderImages) && sliderImages.length > 0 &&
-        sliderImages.map((image, index) => (
-          <div key={index} className="p-2">
-            <img
-              src={image.url}
-              alt={`Image ${index + 1}`}
-              className="w-full h-auto object-cover md:h-[400px] sm:h-[300px] mt-6"
-            />
-          </div>
-        ))
-      }
-    </Slider>
-  </div>
+          <article className="article h-80 mb-5">
+            <div className="relative">
+              {sliderImages &&
+                Array.isArray(sliderImages) &&
+                sliderImages.length > 0 && (
+                  <>
+                    <button
+                      onClick={() => slideRefs.current.slickPrev()}
+                      className="absolute top-1/2 lg:top-1/2 sm:top-1/2 left-5 transform -translate-y-1/2 bg-white text-gray-500 p-2 rounded-full z-10"
+                    >
+                      <GrPrevious />
+                    </button>
+                    <button
+                      onClick={() => slideRefs.current.slickNext()}
+                      className="absolute top-1/2 lg:top-1/2 sm:top-1/2 right-5 transform -translate-y-1/2 text-gray-700 bg-white p-2 rounded-full z-10"
+                    >
+                      <GrNext />
+                    </button>
+                  </>
+                )}
+              <Slider ref={slideRefs} {...set}>
+                {sliderImages &&
+                  Array.isArray(sliderImages) &&
+                  sliderImages.length > 0 &&
+                  sliderImages.map((image, index) => (
+                    <div key={index} className="p-2">
+                      <img
+                        src={image.url}
+                        alt={`Image ${index + 1}`}
+                        className="w-full h-auto object-cover md:h-[400px] sm:h-[300px] mt-6"
+                      />
+                    </div>
+                  ))}
+              </Slider>
+            </div>
 
-  <style jsx>{`
-    .relative {
-      margin: 0;
-      padding: 0;
-    }
+            <style jsx>{`
+              .relative {
+                margin: 0;
+                padding: 0;
+              }
 
-    .p-0 {
-      padding: 0;
-    }
+              .p-0 {
+                padding: 0;
+              }
 
-    img {
-      display: block;
-    }
+              img {
+                display: block;
+              }
 
-    @media (max-width: 768px) {
-      .absolute {
-        top: 50%;
-      }
+              @media (max-width: 768px) {
+                .absolute {
+                  top: 50%;
+                }
 
-      .left-5 {
-        left: 2%;
-      }
+                .left-5 {
+                  left: 2%;
+                }
 
-      .right-5 {
-        right: 2%;
-      }
-    }
+                .right-5 {
+                  right: 2%;
+                }
+              }
 
-    @media (max-width: 640px) {
-      .absolute {
-        top: 50%;
-      }
+              @media (max-width: 640px) {
+                .absolute {
+                  top: 50%;
+                }
 
-      .left-5 {
-        left: 1%;
-      }
+                .left-5 {
+                  left: 1%;
+                }
 
-      .right-5 {
-        right: 1%;
-      }
-    }
-  `}</style>
-</article>
-
-
+                .right-5 {
+                  right: 1%;
+                }
+              }
+            `}</style>
+          </article>
         </div>
 
         {/*Gallery Slider container */}
@@ -1166,22 +1165,23 @@ const BannerPage = () => {
                   />
                 </div>
               </div>
+
+              {userResponseMessage && (
+                <p className="text-white text-[12px] ">{userResponseMessage}</p>
+              )}
+
+              <div className="flex justify-center pt-4 my-2">
+                <button
+                  onClick={userSubmitDetails}
+                  className="fixed-button inline-flex items-center gap-1 text-white bg-[#012e29] border focus:outline-none px-3 py-2 rounded"
+                >
+                  {userButtonText} <i className="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
             </form>
           </div>
-
-          {userResponseMessage && (
-            <p className="text-white text-[12px] mb-4">{userResponseMessage}</p>
-          )}
-
-          <div className="flex justify-center my-4">
-            <button
-              onClick={userSubmitDetails}
-              className="inline-flex items-center gap-1 text-white bg-[#012e29] border focus:outline-none px-3 py-2 rounded"
-            >
-              {userButtonText} <i className="fa-solid fa-arrow-right"></i>
-            </button>
-          </div>
         </div>
+
         <div>
           <div className="w-full py-3 text-[#012e29] bg-white mt-auto">
             <p className="text-center text-sm mb-0">
@@ -1194,14 +1194,11 @@ const BannerPage = () => {
           </div>
         </div>
 
-
         <div>
-            <a href="https://wa.me/918500900100" class="dd-m-whatsapp">
-              <i class="fa-brands fa-whatsapp"></i>
-            </a>
-          </div>
-
-
+          <a href="https://wa.me/918500900100" class="dd-m-whatsapp">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
       </>
     </Wrapper>
   );
@@ -1303,7 +1300,7 @@ const Wrapper = styled.section`
     cursor: pointer;
   }
 
-//Whtsapp Icon CSS
+  //Whtsapp Icon CSS
 
   .dd-m-whatsapp {
     position: fixed;
@@ -1316,7 +1313,7 @@ const Wrapper = styled.section`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: #47C355; /* Blue color for the icon background */
+    background-color: #47c355; /* Blue color for the icon background */
     transition: 0.3s all ease;
     cursor: pointer;
     text-decoration: none;

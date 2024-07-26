@@ -108,6 +108,9 @@ import Bptp from "./Pages/Bptp";
 import Orris from "./Pages/Orris";
 import Jms from "./Pages/Jms";
 import Rof from "./Pages/Rof";
+import EmaarIndia from "./Pages/EmaarIndia";
+import M3mIndia from "./Pages/M3mIndia";
+import Microtek from "./Pages/Microtek";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -181,6 +184,9 @@ function App() {
             <Route path="/orris-plots-gurugram/" element={<Orris/>}/>
             <Route path="/jms-plots-gurugram/" element={<Jms/>}/>
             <Route path="/rof-plots-gurugram/" element={<Rof/>}/>
+            <Route path="/emaar-india-sco-plots-gurugram/" element={<EmaarIndia/>}/>
+            <Route path="/m3m-india-sco-plots-gurugram/" element={<M3mIndia/>}/>
+            <Route path="/microtek-infra-sco-plots-gurugram/" element={<Microtek/>}/>
             <Route path="/Admin/blog" element={<Blog />} />
             </Route>
 

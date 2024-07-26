@@ -1,4 +1,4 @@
-import React, { useContext , useEffect} from "react";
+import React, { useContext, useEffect } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { DataContext } from "../MyContext";
@@ -31,18 +31,16 @@ const PossessionProperty = ({ deviceType }) => {
   const handleDateClick = (value) => {
     setPossessionDate(value);
   };
-  
+
   useEffect(() => {
     if (possessionDate) {
       try {
-        localStorage.setItem('possessionDate', JSON.stringify(possessionDate));
+        localStorage.setItem("possessionDate", JSON.stringify(possessionDate));
       } catch (error) {
-        console.error('Error storing data in localStorage:', error);
+        console.error("Error storing data in localStorage:", error);
       }
     }
   }, [possessionDate]);
-  
-
 
   return (
     <>
@@ -281,6 +279,49 @@ const PossessionProperty = ({ deviceType }) => {
 
         </Carousel>
       </div>
+
+{/* <>
+  <div className="max-w-auto px-4 py-4">
+    <span className="flex flex-row bg-white focus:outline-none mx-auto overflow-x-auto">
+
+      <div className="p-2 flex-shrink-0">
+        <img
+          className="w-[19rem] h-20 object-cover rounded-md"
+          src="https://images.unsplash.com/photo-1486299267070-83823f5448dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
+          alt="Avatar"
+        />
+      </div>
+
+      
+      <div className="p-2 flex-shrink-0">
+        <img
+          className=" h-20 w-[19rem] object-cover rounded-md"
+          src="https://images.unsplash.com/photo-1486299267070-83823f5448dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
+          alt="Avatar"
+        />
+      </div>
+
+    
+      <div className="p-2 flex-shrink-0">
+        <img
+          className=" h-20 w-[19rem] object-cover rounded-md"
+          src="https://images.unsplash.com/photo-1486299267070-83823f5448dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
+          alt="Avatar"
+        />
+      </div>
+
+    
+      <div className="p-2 flex-shrink-0">
+        <img
+          className=" h-20 w-[19rem] object-cover rounded-md"
+          src="https://images.unsplash.com/photo-1486299267070-83823f5448dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
+          alt="Avatar"
+        />
+      </div>
+    </span>
+  </div>
+</> */}
+
     </>
   );
 };
