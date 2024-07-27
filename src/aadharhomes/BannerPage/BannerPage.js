@@ -28,51 +28,6 @@ const BannerPage = () => {
     setModalIsOpen(false);
   };
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
-
-  const openImage = (imageUrl) => {
-    setImageUrl(imageUrl);
-    setIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-  };
-
-  const pop = {
-    /* Modal container */
-    modal: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      position: "fixed",
-      // left: 0,
-      // top: 0,
-      width: "100%",
-      height: "100%",
-      overflow: "auto",
-      padding: "0px",
-      border: "none",
-    },
-  };
-
-  const customStyles = {
-    content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "0%",
-      transform: "translate(-50%, -50%)",
-      padding: "0px",
-      width: "70%",
-      marginTop: "0px",
-      height: "80%",
-      backgroundColor: "red",
-    },
-  };
-
   const gallery = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -240,7 +195,7 @@ const BannerPage = () => {
       setPopUpButtonText("Submitting...");
       try {
         setIsLoading1(true);
-        const response = await axios.post(
+        await axios.post(
           "https://api.100acress.com/userInsert",
           {
             ...popDetails,
@@ -276,7 +231,7 @@ const BannerPage = () => {
       setIsLoading2(true);
       setSideButtonText("Submitting...");
       try {
-        const res = await axios.post("https://api.100acress.com/userInsert", {
+        await axios.post("https://api.100acress.com/userInsert", {
           ...sideDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
@@ -752,87 +707,7 @@ const BannerPage = () => {
             </h2>
           </div>
           {/* //floor plan? */}
-
-          {/* <article className="article h-80 mb-5">
-            <div className="relative">
-              {sliderImages &&
-                Array.isArray(sliderImages) &&
-                sliderImages.length > 0 && (
-                  <>
-                    <button
-                      onClick={() => slideRefs.current.slickPrev()}
-                      className="absolute top-1/2 lg:top-1/2 sm:top-1/2 left-5 transform -translate-y-1/2 bg-white text-gray-500 p-2 rounded-full z-10"
-                    >
-                      <GrPrevious />
-                    </button>
-                    <button
-                      onClick={() => slideRefs.current.slickNext()}
-                      className="absolute top-1/2 lg:top-1/2 sm:top-1/2 right-5 transform -translate-y-1/2 text-gray-700 bg-white p-2 rounded-full z-10"
-                    >
-                      <GrNext />
-                    </button>
-                  </>
-                )}
-              <Slider ref={slideRefs} {...set}>
-                {sliderImages &&
-                  Array.isArray(sliderImages) &&
-                  sliderImages.length > 0 &&
-                  sliderImages.map((image, index) => (
-                    <div key={index} className="p-2">
-                      <img
-                        src={image.url}
-                        alt={`Image ${index + 1}`}
-                        className="w-full h-auto object-fit md:h-[400px] sm:h-[300px] mt-6"
-                      />
-                    </div>
-                  ))}
-              </Slider>
-            </div>
-
-            <style jsx>{`
-              .relative {
-                margin: 0;
-                padding: 0;
-              }
-
-              .p-0 {
-                padding: 0;
-              }
-
-              img {
-                display: block;
-              }
-
-              @media (max-width: 768px) {
-                .absolute {
-                  top: 50%;
-                }
-
-                .left-5 {
-                  left: 2%;
-                }
-
-                .right-5 {
-                  right: 2%;
-                }
-              }
-
-              @media (max-width: 640px) {
-                .absolute {
-                  top: 50%;
-                }
-
-                .left-5 {
-                  left: 1%;
-                }
-
-                .right-5 {
-                  right: 1%;
-                }
-              }
-            `}</style>
-          </article> */}
-
+          
           <article className="article h-80 mb-5">
             <div className="relative">
               {sliderImages &&
@@ -1195,7 +1070,12 @@ const BannerPage = () => {
         </div>
 
         <div>
-          <a href="https://wa.me/918500900100" class="dd-m-whatsapp">
+          <a
+            href="https://wa.me/918500900100"
+            class="dd-m-whatsapp"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <i class="fa-brands fa-whatsapp"></i>
           </a>
         </div>

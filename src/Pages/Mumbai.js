@@ -4,33 +4,32 @@ import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-const NoidaProject = () => {
-    const { noidaData } = useContext(DataContext);
+const Mumbai = () => {
+    const { mumbaiProject } = useContext(DataContext);
     return (
       <div>
         <Nav />
-  
         <Helmet>
-        <title>Property in Noida - Flats, Villas, House for Sale in Noida</title>
+        <title>Property in mumbai - Flats, Villas, House for Sale in Panchkula</title>
         <meta
           name="description"
-          content="Real Estate Properties in Noida - Get Details for Residential &amp; Commercial Properties"
+          content="Real Estate Properties in New Panipat- Get Details for Residential &amp; Commercial Properties"
         />
       </Helmet>
     
         <section className="flex pt-2 flex-col items-center">
         <h1 className="mb-3 p-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-              Projects in Noida
+              Projects in Mumbai
             </h1>
           <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
           
-            {noidaData.map((item, index) => {
+            {mumbaiProject.map((item, index) => {
               const pUrl = item.project_url;
               return (
                 <Link to={`/${pUrl}/`} target="_top">
                   <article
                     key={index}
-                    className="mb-4 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                    className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                   >
                     <div>
                       <img
@@ -41,24 +40,41 @@ const NoidaProject = () => {
                     </div>
                     <div className="p-4">
                       <div className="pb-2">
-                        <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                        <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                           {item.projectName}
-                        </a>
-                        <span style={{ float: "right" }} className="text-sm">
-                          {item.builderName}
                         </span>
                         <br />
-                        <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                          {item.projectAddress}
-                        </a>
+                        <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                          {item.city}, {item.state}
+                        </span>
                       </div>
-                      <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+
+                      <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                        <li className="mr-4 flex items-center text-left">
+                          <li className="text-left">
+                            <span className="text-[13px] text-gray-400">
+                              {item.projectAddress}
+                            </span>
+                            <p className="m-0 text-sm font-medium">
+                              {item.type}
+                            </p>
+                          </li>
+                        </li>
+                      </ul>
+                      <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
                         <li className="text-left">
-                          <span className="text-sm font-extrabold text-black">
-                            {item.city}
+                          <span className="text-sm font-extrabold text-red-600">
+                            <span className="text-xl">₹</span>
+                            {item.minPrice < 1 ? (
+                              <>{item.minPrice * 100} L</>
+                            ) : (
+                              <>{item.minPrice}</>
+                            )}
+                            {" - "}
+                            {item.maxPrice} Cr
                           </span>
                         </li>
-  
+
                         <li className="text-left">
                           <button
                             type="button"
@@ -80,4 +96,4 @@ const NoidaProject = () => {
     );
 }
 
-export default NoidaProject
+export default Mumbai

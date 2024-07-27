@@ -742,7 +742,7 @@ export default function Nav() {
                           </Link>
 
                           <Link
-                            to="#"
+                            to={`/project-in-mumbai/`}
                             className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Projects in Mumbai

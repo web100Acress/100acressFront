@@ -1,50 +1,11 @@
 import React, { useContext, useEffect } from "react";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
-const PossessionProperty = ({ deviceType }) => {
-  const responsive = {
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 6,
-      slidesToSlide: 1, // optional, default to 1.
-    },
-    laptop: {
-      breakpoint: { max: 1440, min: 1024 },
-      items: 4,
-      slidesToSlide: 1, // optional, default to 1.
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 3,
-      slidesToSlide: 2, // optional, default to 1.
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-      slidesToSlide: 1, // optional, default to 1.
-    },
-  };
-
-  const { possessionDate, setPossessionDate } = useContext(DataContext);
-  const handleDateClick = (value) => {
-    setPossessionDate(value);
-  };
-
-  useEffect(() => {
-    if (possessionDate) {
-      try {
-        localStorage.setItem("possessionDate", JSON.stringify(possessionDate));
-      } catch (error) {
-        console.error("Error storing data in localStorage:", error);
-      }
-    }
-  }, [possessionDate]);
+const PossessionProperty = () => {
 
   return (
     <>
-      <p className=" pt-4 px-12 mb-0 text-xl text-white bg-[#00314F] lg:text-3xl md:text-2xl font-bold  sm:text-xl xs:text-xl text-left ">
+    <p className="px-8 mb-0 text-xl text-black  lg:text-3xl md:text-2xl font-bold  sm:text-xl xs:text-xl text-left ">
         Move in now, next year or later
         <br />
         <span className="text-sm  pt-1 font-normal">
@@ -53,275 +14,117 @@ const PossessionProperty = ({ deviceType }) => {
         </span>
       </p>
 
-      <div className="mb-[-34px]">
-        <Carousel
-          swipeable={false}
-          draggable={false}
-          showDots={false}
-          responsive={responsive}
-          ssr={true}
-          infinite={true}
-          autoPlay={false}
-          autoPlaySpeed={1000}
-          keyBoardControl={true}
-          customTransition="all .5"
-          transitionDuration={500}
-          containerClass="carousel-container"
-          deviceType={deviceType}
-          dotListClass="custom-dot-list-style"
-          itemClass="carousel-item-padding-40-px"
-        >
-          <Link target="_top" to='/projects-in-gurugram/property-ready-to-move/'>
-          <div className="bg-[#00314F]  pb-2 mb-[1.9rem] content"
-           onClick={() => handleDateClick("Ready to move")}>
-            <div className="mx-auto transition duration-300 hover:scale-105 flex flex-wrap justify-center max-w-screen-xl">
-              <div className="relative bg-[#f7c089] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 shadow-md">
-                <span className="relative flex h-48 overflow-hidden ">
+      <div className="max-w-full px-4 py-4 sm:px-6 lg:px-8 lg:py-4 mx-auto mb-4">  
+      
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-4 gap-3 sm:gap-6">
+         
+          <Link to="/projects-in-gurugram/property-ready-to-move/" target="_top">
+            <div className="group relative flex flex-col border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
+              <div className="p-0 md:p-5">
+                <div className="relative">
                   <img
-                    className="object-cover w-full h-44"
+                    className="rounded-xl object-fit h-32 w-full"
                     src="../../Images/p1.jpg"
-                    alt=" Ready to move"
+                    alt="ready to move"
                   />
-                </span>
-                <div className="mt-3 mb-6 px-3 pb-2">
-                  <span>
-                    <span className=" animate-bounce focus:animate-none hover:animate-none  inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                      Ready to move
-                    </span>
-                    <span className="block text-gray-400">
-                      320+ Properties
-                    </span>
-                  </span>
+                  <div className="absolute rounded-xl bg-black opacity-70 top-0 left-0 w-full h-full flex flex-col justify-center items-start p-3">
+                    <div className="p-0 w-full h-full flex flex-col justify-center">
+                      <span className="animate-bounce focus:animate-none hover:animate-none inline-block text-lg sm:text-xl lg:text-2xl tracking-tight text-white font-medium shadow-md">
+                        Ready to move
+                      </span>
+                      <span className="block text-sm sm:text-base lg:text-lg text-white font-semibold shadow-md">
+                        320+ Properties
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          </Link>
-
-          <Link    to='/projects-in-gurugram/possession'>
-          <div
-           
-            onClick={() => handleDateClick(2024)}
-            className="bg-[#00314F]  pb-2 mb-[1.9rem]"
-          >
-            <div  className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
-              <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                <span className="relative flex h-48 overflow-hidden ">
-                  <img
-                    className="object-cover w-full  h-44"
-                    src="../../Images/p2.jpg"
-                    alt=" Ready to move"
-                  />
-                </span>
-                <div className="mt-3 mb-6 px-3 pb-2">
-                  <span>
-                    <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                      Possession in <span>2024</span>
-                    </span>
-                    <span className="block text-gray-400">
-                      600+ Properties
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
           </Link>
           
-          <Link  to="/projects-in-gurugram/possession">
-            <div
-             
-              onClick={() => handleDateClick(2025)}
-              className="bg-[#00314F]  pb-2 mb-[1.9rem]"
-            >
-              <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
-                <div className="relative bg-[#D7F2E3] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                  <span className="relative flex h-48 overflow-hidden ">
-                    <img
-                      className="object-cover w-full  h-44"
-                      src="../../Images/p3.jpg"
-                      alt=" Ready to move"
-                    />
-                  </span>
-                  <div className="mt-3 mb-6 px-3 pb-2">
-                    <span>
-                      <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                        Possession in <span>2025</span>
+          <Link to={`/projects-in-gurugram/property-possession-in-2024/`} target="_top">
+            <div className="group relative flex flex-col border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
+              <div className="p-0 md:p-5">
+                <div className="relative">
+                  <img
+                    className="rounded-xl object-cover h-32 w-full"
+                    src="../../Images/p2.avif"
+                    alt="ready to move"
+                  />
+                  <div className="absolute rounded-xl bg-black opacity-70 top-0 left-0 w-full h-full flex flex-col justify-center items-start p-3">
+                    <div className="p-0 w-full h-full flex flex-col justify-center">
+                      <span className="animate-bounce focus:animate-none hover:animate-none inline-block text-lg sm:text-sm lg:text-2xl tracking-tight text-white font-medium shadow-md whitespace-nowrap">
+                        Possession in 2024
                       </span>
-                      <span className="block text-gray-400">
-                        400+ Properties
+                      <span className="block text-sm sm:text-base lg:text-lg text-white font-semibold shadow-md">
+                        600+ Properties
                       </span>
-                    </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </Link>
-
-          <Link   to="/projects-in-gurugram/possession">
-            <div
-             
-              onClick={() => handleDateClick(2026)}
-              className="bg-[#00314F]  pb-2 mb-[1.9rem]"
-            >
-              <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
-                <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                  <span className="relative flex h-48 overflow-hidden ">
-                    <img
-                      className="object-cover w-full  h-44"
-                      src="../../Images/p4.jpg"
-                      alt=" Ready to move"
-                    />
-                  </span>
-                  <div className="mt-3 mb-6 px-3 pb-2">
-                    <span>
-                      <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                        Possession in <span>2026</span>
+         
+          <Link to={`/projects-in-gurugram/property-possession-in-2025/`} target="_top">
+            <div className="group relative flex flex-col border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
+              <div className="p-0 md:p-5">
+                <div className="relative">
+                  <img
+                    className="rounded-xl object-cover h-32 w-full"
+                    src="../../Images/p5.jpg"
+                    alt="Possession in 2025"
+                  />
+                  <div className="absolute rounded-xl bg-black opacity-70 top-0 left-0 w-full h-full flex flex-col justify-center items-start p-3">
+                    <div className="p-0 w-full h-full flex flex-col justify-center">
+                      <span className="animate-bounce focus:animate-none hover:animate-none inline-block text-lg sm:text-xl lg:text-2xl tracking-tight text-white font-medium shadow-md whitespace-nowrap">
+                        Possession in 2025
                       </span>
-                      <span className="block text-gray-400">
-                        1000+ Properties
+                      <span className="block text-sm sm:text-base lg:text-lg text-white font-semibold shadow-md">
+                        500+ Properties
                       </span>
-                    </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </Link>
-
-          <Link  to="/projects-in-gurugram/possession">
-            <div
-            
-              onClick={() => handleDateClick(2027)}
-              className="bg-[#00314F]  pb-2 mb-[1.9rem]"
-              
-            >
-              <div className=" transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
-                <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                  <span className="relative flex h-48 overflow-hidden ">
-                    <img
-                      className="object-cover w-full  h-44"
-                      src="../../Images/p3.jpg"
-                      alt=" Ready to move"
-                    />
-                  </span>
-                  <div className="mt-3 mb-6 px-3 pb-2">
-                    <span>
-                      <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                        Possession in <span>2027</span>
+          
+          <Link  to="/projects-in-gurugram/property-possession-after-2025/" target="_top">
+            <div className="group relative flex flex-col border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
+              <div className="p-0 md:p-5">
+                <div className="relative">
+                  <img
+                    className="rounded-xl object-cover h-32 w-full"
+                    src="../../Images/p3.jpg"
+                    alt="Possession in 2025"
+                  />
+                  <div className="absolute rounded-xl bg-black opacity-70 top-0 left-0 w-full h-full flex flex-col justify-center items-start p-3">
+                    <div className="p-0 w-full h-full flex flex-col justify-center">
+                      <span className="animate-bounce focus:animate-none hover:animate-none inline-block text-lg sm:text-sm lg:text-2xl tracking-tight text-white font-medium shadow-md whitespace-nowrap">
+                        Possession after{" "}
+                        <span>
+                          {" "}
+                          <br />
+                          2025
+                        </span>
                       </span>
-                      <span className="block text-gray-400">
+
+                      <span className="block text-sm sm:text-base lg:text-lg text-white font-semibold shadow-md">
                         800+ Properties
                       </span>
-                    </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </Link>
 
-          <Link   to="/projects-in-gurugram/possession">
-            <div
-            
-              onClick={() => handleDateClick(2028)}
-              className="bg-[#00314F]  pb-2 mb-[1.9rem]"
-             
-            >
-              <div className="transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
-                <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                  <span className="relative flex h-48 overflow-hidden ">
-                    <img
-                      className="object-cover w-full  h-44"
-                      src="../../Images/p2.jpg"
-                      alt=" Ready to move"
-                    />
-                  </span>
-                  <div className="mt-3 mb-6 px-3 pb-2">
-                    <span>
-                      <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                        Possession in <span>2028</span>
-                      </span>
-                      <span className="block text-gray-400">
-                        700+ Properties
-                      </span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Link>
-
-
-          <Link to="/projects-in-gurugram/property-possession-after-2028/" target="_top">
-            <div className="bg-[#00314F]  pb-2 mb-[1.9rem]">
-              <div className="transition duration-300 hover:scale-105 mx-auto flex flex-wrap justify-center max-w-screen-xl">
-                <div className="relative bg-[#F0F9FF] mx-4 my-4 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100  shadow-md">
-                  <span className="relative flex h-48 overflow-hidden ">
-                    <img
-                      className="object-cover w-full  h-44"
-                      src="../../Images/p2.jpg"
-                      alt=" Ready to move"
-                    />
-                  </span>
-                  <div className="mt-3 mb-6 px-3 pb-2">
-                    <span>
-                      <span className=" animate-bounce focus:animate-none hover:animate-none inline-block text-2xl tracking-tight text-[#42526E] font-medium">
-                        Possession after <span>2028</span>
-                      </span>
-                      <span className="block text-gray-400">
-                        800+ Properties
-                      </span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Link>
-
-        </Carousel>
-      </div>
-
-{/* <>
-  <div className="max-w-auto px-4 py-4">
-    <span className="flex flex-row bg-white focus:outline-none mx-auto overflow-x-auto">
-
-      <div className="p-2 flex-shrink-0">
-        <img
-          className="w-[19rem] h-20 object-cover rounded-md"
-          src="https://images.unsplash.com/photo-1486299267070-83823f5448dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-          alt="Avatar"
-        />
-      </div>
-
+        </div>
       
-      <div className="p-2 flex-shrink-0">
-        <img
-          className=" h-20 w-[19rem] object-cover rounded-md"
-          src="https://images.unsplash.com/photo-1486299267070-83823f5448dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-          alt="Avatar"
-        />
       </div>
 
-    
-      <div className="p-2 flex-shrink-0">
-        <img
-          className=" h-20 w-[19rem] object-cover rounded-md"
-          src="https://images.unsplash.com/photo-1486299267070-83823f5448dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-          alt="Avatar"
-        />
-      </div>
-
-    
-      <div className="p-2 flex-shrink-0">
-        <img
-          className=" h-20 w-[19rem] object-cover rounded-md"
-          src="https://images.unsplash.com/photo-1486299267070-83823f5448dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-          alt="Avatar"
-        />
-      </div>
-    </span>
-  </div>
-</> */}
-
+      {/* End Card Section */}
     </>
   );
 };

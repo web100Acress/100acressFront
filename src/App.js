@@ -98,7 +98,6 @@ import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
 import BudgetPrice from "./Pages/BudgetPrice";
 import BlogViewAdmin from "./AdminPage/BlogViewAdmin";
-import PossessionProject from "./Pages/PossessionProject";
 import ReadyToMoveProject from "./Pages/ReadyToMoveProject";
 import DlfProject from "./Pages/DlfProject";
 import VillasProjects from "./Components/HomePageComponents/VillasProjects";
@@ -111,6 +110,9 @@ import Rof from "./Pages/Rof";
 import EmaarIndia from "./Pages/EmaarIndia";
 import M3mIndia from "./Pages/M3mIndia";
 import Microtek from "./Pages/Microtek";
+import Possessionin2024 from "./Pages/Possessionin2024";
+import Possessionin2025 from "./Pages/Possessionin2025";
+import Mumbai from "./Pages/Mumbai";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -135,8 +137,9 @@ function App() {
              <Route path="/projects-in-gurugram/" element={<Properties />} />
              <Route path="/projects-in-gurugram/budget" element = {<BudgetPrice/>}/>
              <Route path="/projects-in-gurugram/property-ready-to-move/" element = {<ReadyToMoveProject/>}/>
-             <Route path ="/projects-in-gurugram/property-possession-after-2028/" element={<PossessionAfter2028/>}/>
-             <Route path="/projects-in-gurugram/possession" element = {<PossessionProject/>}/>
+             <Route path ="/projects-in-gurugram/property-possession-after-2025/" element={<PossessionAfter2028/>}/>
+             <Route path ="/projects-in-gurugram/property-possession-in-2024/" element={<Possessionin2024/>}/>
+             <Route path ="/projects-in-gurugram/property-possession-in-2025/" element={<Possessionin2025/>}/>
              <Route path="/rental-properties/best-rental-property-in-gurugram/" element={<RentPropViewCard />} />
              <Route  path="/buy-properties/best-resale-property-in-gurugram/"  element={<BuyPropViewCard />}  />
              <Route path="/about-us/" element={<About />} />
@@ -152,6 +155,7 @@ function App() {
              <Route path="/project-in-noida/" element={<NoidaProject/>} />
              <Route path="/project-in-panipat/" element={<PanipatProject/>} />
              <Route path="/project-in-panchkula/" element={<Panchkula/>}/>
+             <Route path="/project-in-mumbai/" element={<Mumbai/>}/>
              <Route path="/dlf-homes-projects/" element={<DlfProject/>} />
              <Route path="/project-in-goa/" element={<GoaProject/>} />
              <Route path="/deendayal/plots/" element={<DeenDayalPlots />} />
@@ -162,7 +166,7 @@ function App() {
              <Route path="/middlemain" element={<MiddleMain />} />
              <Route path="/viewallproperty" element={<ViewAllProperty />} />
              <Route path="/contact-us/" element={<ContactUs />} />
-             <Route path="/careerwithus/" element={<CareerWithUs />} />
+             <Route path="/career-with-us/" element={<CareerWithUs />} />
              <Route path="/blog/" element={<Blogging />} />
              <Route path="/blog/:blogTitle/:id" element={<BlogView />} />
              <Route path="/blog/write" element={<BlogWrite />} />

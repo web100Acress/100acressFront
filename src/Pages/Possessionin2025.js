@@ -1,19 +1,12 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
+import "react-multi-carousel/lib/styles.css";
 import { DataContext } from "../MyContext";
-import Nav from "../aadharhomes/Nav";
-import Footer from "../Components/Actual_Components/Footer";
-import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-const PossessionProject = () => {
-  const { possessionAllData } = useContext(DataContext);
-  // const storedDate = localStorage.getItem("possessionDate");
- 
-  // useEffect(() => {
-  //   if (storedDate) {
-  //     console.log(`Stored Date: ${storedDate}`);
-  //   }
-  // }, []);
-
+import Nav from "../aadharhomes/Nav";
+import { Helmet } from "react-helmet";
+import Footer from "../Components/Actual_Components/Footer";
+const Possessionin2025 = () => {
+  const { possessionin2025 } = useContext(DataContext);
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
@@ -24,76 +17,75 @@ const PossessionProject = () => {
           content="Discover the latest new projects in Gurgaon at 100acress.com. Explore upcoming residential Projects and Commercial Properties. Explore Top Real Estate Projects."
         />
         <title>
-          New Projects in Gurgaon | Best Real Estate at 100acress.com
+          Possession In 2024 Projects in Gurgaon | Best Real Estate at
+          100acress.com
         </title>
         <link
           rel="canonical"
-          href="https://www.100acress.com/projects-in-gurugram/"
+          href="https://www.100acress.com/projects-in-gurugram/property-possession-in-2025/"
         />
       </Helmet>
 
-      {/* <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">
+      <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">
         <h1 className="mb-2 uppercase text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          Possession Projects in {storedDate}
+          Possession In 2025 PROPERTIES
         </h1>
         <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          In {storedDate}, Gurgaon appear as an exclusive goal for real estate projects,
+          In 2025, Gurgaon appear as an exclusive goal for real estate projects,
           Showing a vibrant blend of modernity and convenience. New residential
           and commercial projects redefine luxury living and business
           environments alike. These developments brag about cutting-edge
           architecture, sustainable design, and state-of-the-art amenities.
-          Gurgaon's projects in {storedDate} cater to the wise selections of homeowners
+          Gurgaon's projects in 2025 cater to the wise selections of homeowners
           and investors seeking unmatched quality and connectivity in a thriving
           urban landscape.
         </h2>
-      </div> */}
+      </div>
 
       <section className="flex flex-col items-center bg-white">
-        <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
-          {possessionAllData.map((item, index) => {
+        <div className="mt-6 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
+          {possessionin2025.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
                 <article
                   key={index}
-                  className="mb-4 transition hover:scale-105  overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                  className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                 >
                   <div>
                     <img
                       src={item.frontImage.url}
-                      alt="frontImage"
+                      alt="property In Gurugram"
                       className="w-full h-48 object-fit "
                     />
                   </div>
-
                   <div className="p-4">
                     <div className="pb-2">
-                      <span className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
                       </span>
+
                       <br />
                       <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                        {item.city}
-                        {", "}
-                        <span className="font-light">{item.state}</span>
+                        {item.city}, {item.state}
                       </span>
                     </div>
+
                     <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                       <li className="mr-4 flex items-center text-left">
                         <li className="text-left">
-                          <span className="text-sm text-gray-400">
+                          <span className="text-[13px] text-gray-400">
                             {item.projectAddress}
                           </span>
-                          <p className="m-0 text-base font-medium">
-                            {item.type}
-                          </p>
+                          <p className="m-0 text-sm font-medium">{item.type}</p>
                         </li>
                       </li>
                     </ul>
-                    <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+
+                    <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
                       <li className="text-left">
-                        <span className="text-md font-extrabold  text-red-600">
-                          <span className="text-lg">₹</span>
+                        <span className="text-sm font-extrabold text-red-600">
+                          <span className="text-xl">₹ </span>
                           {item.minPrice}
                           {" - "}
                           {item.maxPrice} Cr
@@ -122,4 +114,4 @@ const PossessionProject = () => {
   );
 };
 
-export default PossessionProject;
+export default Possessionin2025;

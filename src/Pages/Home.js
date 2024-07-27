@@ -1220,16 +1220,7 @@ import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
-const keyframes = `
-  @keyframes moveHorizontal {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(100%);
-    }
-  }
-`;
+
 function Home() {
   const {
     trendingProject,
@@ -2159,7 +2150,7 @@ function Home() {
       </div>
 
       <div>
-          <a href="https://wa.me/918500900100" class="dd-m-whatsapp">
+          <a href="https://wa.me/918500900100" class="dd-m-whatsapp" rel="noopener noreferrer" target="_blank">
             <i class="fa-brands fa-whatsapp"></i>
           </a>
         </div>

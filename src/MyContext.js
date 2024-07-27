@@ -38,6 +38,9 @@ export const DataProvider = ({ children }) => {
   const [goaCityProject, setGoaCityProject] = useState([]);
   const [dlfAllProjects, setDlfAllProjects] = useState([]);
   const [villasProject, setVillasProject] = useState([]);
+  const [possessionIn2026AndBeyond, setpossessionIn2026AndBeyond] = useState(
+    []
+  );
   const [bptp, setbptp] = useState([]);
   const [orris, setorris] = useState([]);
   const [jms, setJms] = useState([]);
@@ -45,15 +48,15 @@ export const DataProvider = ({ children }) => {
   const [emaarIndia, setEmaarIndia] = useState([]);
   const [m3mIndia, setM3mIndia] = useState([]);
   const [microtek, setMicrotek] = useState([]);
-
-  const [possessionIn2029AndBeyond, setpossessionIn2029AndBeyond] = useState([]);
-
-   const [possessionDate, setPossessionDate] = useState(() => {
+  const [possessionin2024, setPossessionin2024] = useState([]);
+  const [possessionin2025, setPossessionin2025] = useState([]);
+  const [mumbaiProject, setMumbaiProject] = useState([]);
+  const [possessionDate, setPossessionDate] = useState(() => {
     try {
-      const storedDate = localStorage.getItem('possessionDate');
+      const storedDate = localStorage.getItem("possessionDate");
       return storedDate ? JSON.parse(storedDate) : null;
     } catch (error) {
-      console.error('Error parsing localStorage data:', error);
+      console.error("Error parsing localStorage data:", error);
       return null;
     }
   });
@@ -66,16 +69,13 @@ export const DataProvider = ({ children }) => {
     buyFetchData();
   }, []);
 
-  
-
   useEffect(() => {
-    if (possessionDate !== null) { 
+    if (possessionDate !== null) {
       PossessionFilter();
     }
     handleFilter();
   }, [priceRange, possessionDate]);
 
- 
   const PossessionFilter = () => {
     setPossessionAllData([]);
     const PossFilter = allProjectData.filter((project) => {
@@ -84,7 +84,6 @@ export const DataProvider = ({ children }) => {
     });
     setPossessionAllData(PossFilter);
   };
-
 
   const fetchAllProject = async () => {
     try {
@@ -96,9 +95,12 @@ export const DataProvider = ({ children }) => {
       const trendingProjects = projectsData.filter(
         (project) => project.projectOverview === "trending"
       );
-      const upcomingProjects = projectsData
-        .filter((project) => project.projectOverview === "upcoming" ||  project.projectReraNo ==='upcoming')
-       
+      const upcomingProjects = projectsData.filter(
+        (project) =>
+          project.projectOverview === "upcoming" ||
+          project.projectReraNo === "upcoming"
+      );
+
       const featuredProjects = projectsData.filter(
         (project) => project.projectOverview === "featured"
       );
@@ -135,8 +137,6 @@ export const DataProvider = ({ children }) => {
         (project) => project.projectOverview === "sco"
       );
 
-     
-
       const BuilderIndependentFloor = projectsData.filter((project) => {
         return (
           project.type === "Independent Floors" ||
@@ -148,12 +148,9 @@ export const DataProvider = ({ children }) => {
         return project.type === "Deen Dayal Plots";
       });
 
-
-      const villasProject = projectsData.filter((project)=> {
+      const villasProject = projectsData.filter((project) => {
         return project.type === "Villas";
-      })
-
-     
+      });
 
       const sohnaRoad = projectsData.filter((project) =>
         project.projectAddress.includes("Sohna Road")
@@ -171,8 +168,6 @@ export const DataProvider = ({ children }) => {
         (project) => project.city === "Noida"
       );
 
-      
-
       const panipat = projectsData.filter(
         (project) => project.city === "Panipat"
       );
@@ -182,16 +177,28 @@ export const DataProvider = ({ children }) => {
       );
 
       const goaCityProject = projectsData.filter(
-        (project) => project.city === 'Goa'
-      )
+        (project) => project.city === "Goa"
+      );
 
+      const mumbaiProject = projectsData.filter(
+        (project) => project.city === "Mumbai"
+      );
 
-       const  readyToMoveData = projectsData.filter((project) => project.project_Status === "readytomove")
-       
-       const possessionIn2029AndBeyond = projectsData.filter((project) => new Date(project.possessionDate).getFullYear() >= 2029);
-        
+      const readyToMoveData = projectsData.filter(
+        (project) => project.project_Status === "readytomove"
+      );
+      const possessionin2024 = projectsData.filter(
+        (project) => new Date(project.possessionDate).getFullYear() === 2024
+      );
+      const possessionin2025 = projectsData.filter(
+        (project) => new Date(project.possessionDate).getFullYear() === 2025
+      );
 
-       setFilteredProjects(
+      const possessionIn2026AndBeyond = projectsData.filter(
+        (project) => new Date(project.possessionDate).getFullYear() >= 2026
+      );
+
+      setFilteredProjects(
         projectsData.filter(
           (project) =>
             project.minPrice >= minPrice && project.maxPrice <= maxPrice
@@ -199,46 +206,45 @@ export const DataProvider = ({ children }) => {
       );
 
       const dlfProject = projectsData.filter(
-        (project) => project.projectOverview === 'luxuryProject' || project.projectReraNo === 'luxuryProject'
-      )
+        (project) =>
+          project.projectOverview === "luxuryProject" ||
+          project.projectReraNo === "luxuryProject"
+      );
 
-      
-
-
-      const goaData = projectsData.filter((project) => project.projectOverview === "goaProject");
-      const dlfAllProjects  = projectsData.filter((project) => project.builderName === 'DLF Homes' );
+      const goaData = projectsData.filter(
+        (project) => project.projectOverview === "goaProject"
+      );
+      const dlfAllProjects = projectsData.filter(
+        (project) => project.builderName === "DLF Homes"
+      );
 
       const bptp = projectsData.filter(
-        (project) => project.projectOverview === 'bptp'
-      )
+        (project) => project.projectOverview === "bptp"
+      );
 
       const orris = projectsData.filter(
-        (project) => project.projectOverview === 'orris'
-      )
+        (project) => project.projectOverview === "orris"
+      );
 
       const jms = projectsData.filter(
-        (project) => project.projectOverview === 'jms'
-      )
+        (project) => project.projectOverview === "jms"
+      );
 
       const rof = projectsData.filter(
-        (project) => project.projectOverview === 'rof'
-      )
-
+        (project) => project.projectOverview === "rof"
+      );
 
       const emaarIndia = projectsData.filter(
-        (project) =>  project.project_Status === 'emaar'
-      )
+        (project) => project.project_Status === "emaar"
+      );
 
       const m3mIndia = projectsData.filter(
-        (project) =>  project.project_Status === 'm3m'
-      )
-
+        (project) => project.project_Status === "m3m"
+      );
 
       const microtek = projectsData.filter(
-        (project) =>  project.project_Status === 'microtek'
-      )
-
-
+        (project) => project.project_Status === "microtek"
+      );
 
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
@@ -267,14 +273,18 @@ export const DataProvider = ({ children }) => {
       setDlfAllProjects(dlfAllProjects);
       setVillasProject(villasProject);
       setpanchkula(panchkula);
-      setpossessionIn2029AndBeyond(possessionIn2029AndBeyond);
+      setpossessionIn2026AndBeyond(possessionIn2026AndBeyond);
       setorris(orris);
       setbptp(bptp);
       setJms(jms);
       setRof(rof);
       setEmaarIndia(emaarIndia);
-       setM3mIndia(m3mIndia);
-       setMicrotek(microtek);
+      setM3mIndia(m3mIndia);
+      setMicrotek(microtek);
+      setPossessionin2024(possessionin2024);
+      setPossessionin2025(possessionin2025);
+      setMumbaiProject(mumbaiProject);
+
     } catch (error) {
       console.log(error || error.message);
     }
@@ -408,16 +418,18 @@ export const DataProvider = ({ children }) => {
         noidaData,
         goaData,
         panipat,
-        handleFilter, 
+        handleFilter,
         filteredProjects,
         possessionAllData,
         readyToMoveData,
+        possessionin2024,
+        possessionin2025,
         dlfProject,
         goaCityProject,
         dlfAllProjects,
         villasProject,
         panchkula,
-        possessionIn2029AndBeyond,
+        possessionIn2026AndBeyond,
         bptp,
         orris,
         jms,
@@ -425,6 +437,7 @@ export const DataProvider = ({ children }) => {
         emaarIndia,
         m3mIndia,
         microtek,
+        mumbaiProject,
       }}
     >
       {children}
