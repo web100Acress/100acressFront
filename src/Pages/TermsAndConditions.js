@@ -14,7 +14,7 @@ const TermsAndConditions = () => {
         <title>
         Terms and Conditions | 100acress.com
         </title>
-        <link rel="canonical" href="https://www.100acress.com/termsandconditions/" />
+        <link rel="canonical" href="https://www.100acress.com/terms-and-conditions/" />
       </Helmet>
 
     <div className='overflow-x-hidden'>

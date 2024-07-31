@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Modal from "react-modal";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { GrPrevious, GrNext } from "react-icons/gr";
@@ -195,14 +194,11 @@ const BannerPage = () => {
       setPopUpButtonText("Submitting...");
       try {
         setIsLoading1(true);
-        await axios.post(
-          "https://api.100acress.com/userInsert",
-          {
-            ...popDetails,
-            projectName: projectViewDetails.projectName,
-            address: projectViewDetails.projectAddress,
-          }
-        );
+        await axios.post("https://api.100acress.com/userInsert", {
+          ...popDetails,
+          projectName: projectViewDetails.projectName,
+          address: projectViewDetails.projectAddress,
+        });
         setPopUpResponseMessage("Data submitted successfully");
         resetData1();
       } catch (error) {
@@ -406,12 +402,12 @@ const BannerPage = () => {
           {showPopup && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
               <div className="relative sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-white shadow-lg max-w-lg">
-                <div className="bg-[#012e29] px-10 py-3 text-center text-white">
+                <div className="bg-[#012e29] px-10 py-3 text-center text-white relative">
                   <p className="font-serif text-xl mb-0 font-semibold tracking-wider">
                     Instant Callback
                   </p>
                   <button
-                    className="text-white text-2xl absolute right-3 top-2 cursor-pointer"
+                    className="text-white text-2xl absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
                     onClick={() => setShowPopup(false)}
                   >
                     ✖
@@ -440,7 +436,6 @@ const BannerPage = () => {
                       value={popDetails.email}
                     />
                   </div>
-
                   <div className="relative">
                     <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
                     <input
@@ -452,13 +447,11 @@ const BannerPage = () => {
                       value={popDetails.mobile}
                     />
                   </div>
-
                   {PopUpresponseMessage && (
                     <p className="text-[#012e29] text-[12px] mb-0">
                       {PopUpresponseMessage}
                     </p>
                   )}
-
                   <div className="flex justify-center">
                     <button
                       className="mt-2 w-full rounded-md bg-[#012e29] px-10 py-2 font-semibold text-white"
@@ -545,12 +538,12 @@ const BannerPage = () => {
           {modalIsOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
               <div className="relative sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-white shadow-lg max-w-lg">
-                <div className="bg-[#012e29] px-10 py-3 text-center text-white">
+                <div className="bg-[#012e29] px-10 py-3 text-center text-white relative">
                   <p className="font-serif text-xl mb-0 text-center font-semibold tracking-wider">
                     Instant Callback
                   </p>
                   <button
-                    className="text-white text-2xl absolute top-2 right-3 cursor-pointer"
+                    className="text-white text-2xl absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer"
                     onClick={handleClose}
                   >
                     ✖
@@ -707,7 +700,7 @@ const BannerPage = () => {
             </h2>
           </div>
           {/* //floor plan? */}
-          
+
           <article className="article h-80 mb-5">
             <div className="relative">
               {sliderImages &&

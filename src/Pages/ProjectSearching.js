@@ -20,7 +20,8 @@ const ProjectSearching = () => {
           item.projectAddress.toLowerCase().includes(location.toLowerCase())) &&
         (projectType === "" ||
           item.type.toLowerCase().includes(projectType.toLowerCase())) &&
-        (price === "" || checkPriceRange(item.price, price))
+        (price === "" || checkPriceRange(item.price, price)) &&
+        item.city.toLowerCase() === "gurugram" 
       );
     });
 
@@ -160,15 +161,15 @@ const ProjectSearching = () => {
                   </div>
                   <div className="p-4">
                     <div className="pb-2">
-                      <a className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
-                      </a>
+                      </span>
                       <br />
-                      <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
                         {item.city}
                         {", "}
                         {item.state}
-                      </a>
+                      </span>
                     </div>
                     <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                       <li className="mr-4 flex items-center text-left">

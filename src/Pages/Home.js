@@ -1260,7 +1260,7 @@ function Home() {
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
             <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
-              Trending Properties
+              Trending Properties in Gurugram
             </h1>
           </div>
           <div className="ml-2 hidden sm:block">
@@ -1352,7 +1352,7 @@ function Home() {
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
             <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
-              Upcoming Projects
+              Upcoming Projects in Gurugram
             </h1>
           </div>
           <div className="ml-2 hidden sm:block">

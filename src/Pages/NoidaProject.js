@@ -16,6 +16,10 @@ const NoidaProject = () => {
           name="description"
           content="Real Estate Properties in Noida - Get Details for Residential &amp; Commercial Properties"
         />
+        <link
+          rel="canonical"
+          href="https://www.100acress.com/project-in-noida/"
+        />
       </Helmet>
     
         <section className="flex pt-2 flex-col items-center">
@@ -28,9 +32,9 @@ const NoidaProject = () => {
               const pUrl = item.project_url;
               return (
                 <Link to={`/${pUrl}/`} target="_top">
-                  <article
+                    <article
                     key={index}
-                    className="mb-4 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                    className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                   >
                     <div>
                       <img
@@ -41,24 +45,41 @@ const NoidaProject = () => {
                     </div>
                     <div className="p-4">
                       <div className="pb-2">
-                        <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                        <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                           {item.projectName}
-                        </a>
-                        <span style={{ float: "right" }} className="text-sm">
-                          {item.builderName}
                         </span>
                         <br />
-                        <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                          {item.projectAddress}
-                        </a>
+                        <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                          {item.city}, {item.state}
+                        </span>
                       </div>
-                      <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
+
+                      <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                        <li className="mr-4 flex items-center text-left">
+                          <li className="text-left">
+                            <span className="text-[13px] text-gray-400">
+                              {item.projectAddress}
+                            </span>
+                            <p className="m-0 text-sm font-medium">
+                              {item.type}
+                            </p>
+                          </li>
+                        </li>
+                      </ul>
+                      <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
                         <li className="text-left">
-                          <span className="text-sm font-extrabold text-black">
-                            {item.city}
+                          <span className="text-sm font-extrabold text-red-600">
+                            <span className="text-xl">₹</span>
+                            {item.minPrice < 1 ? (
+                              <>{item.minPrice * 100} L</>
+                            ) : (
+                              <>{item.minPrice}</>
+                            )}
+                            {" - "}
+                            {item.maxPrice} Cr
                           </span>
                         </li>
-  
+
                         <li className="text-left">
                           <button
                             type="button"

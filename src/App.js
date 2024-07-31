@@ -1,9 +1,8 @@
 import React from "react";
 import "./App.css";
 import { styled } from "styled-components";
-import {  Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./Pages/Home";
-import AboutPage from "./Components/AboutPageComponents/AboutPage";
 import Properties from "./Pages/Properties";
 import MiddleMain from "./Components/PropertyViewComponents/MiddleMain";
 import AdminMain from "./Components/AdminPanelComponents/AdminMain";
@@ -44,7 +43,6 @@ import ViewPropertyAdmin from "./AdminPage/ViewPropertyAdmin";
 import ClientDetails from "./AdminPage/ViewDetails";
 import EditDetails from "./AdminPage/EditDetails";
 import PropViewCardPro from "./Components/Actual_Components/PropViewCardPro";
-import AshishRoughPage from "./RoughComponent/AshishRoughPage";
 import RentPropViewCard from "./Components/Actual_Components/RentPropViewCard";
 import BuyPropViewCard from "./Components/Actual_Components/BuyPropViewCard";
 import RentViewDetails from "./Pages/RentViewDetails";
@@ -120,129 +118,249 @@ function App() {
     mobile: "1234567890",
   };
   const token = localStorage.getItem("myToken");
-  
+
   return (
     <DataProvider>
-    <AuthProvider>    
-      <Wrapper className="section">
-        {/* <Router> */}
+      <AuthProvider>
+        <Wrapper className="section">
+          {/* <Router> */}
           <Routes>
-              <Route path="/" element={<PublicRoute />}>
-              <Route index element={<Home />}/>
-              <Route path="/postproperty" element={token !== null ? <NewSellProperty /> : <Navigate to="/signin" />} />
-              <Route path="/signup/" element={<SignUp />}/>
-             <Route path="/signin/" element={<SignIn />}/>
-             <Route path="/privacy-policy/" element={<Privacy />} />
-             <Route path="/terms-and-conditions/" element={<TermsAndConditions />} />
-             <Route path="/projects-in-gurugram/" element={<Properties />} />
-             <Route path="/projects-in-gurugram/budget" element = {<BudgetPrice/>}/>
-             <Route path="/projects-in-gurugram/property-ready-to-move/" element = {<ReadyToMoveProject/>}/>
-             <Route path ="/projects-in-gurugram/property-possession-after-2025/" element={<PossessionAfter2028/>}/>
-             <Route path ="/projects-in-gurugram/property-possession-in-2024/" element={<Possessionin2024/>}/>
-             <Route path ="/projects-in-gurugram/property-possession-in-2025/" element={<Possessionin2025/>}/>
-             <Route path="/rental-properties/best-rental-property-in-gurugram/" element={<RentPropViewCard />} />
-             <Route  path="/buy-properties/best-resale-property-in-gurugram/"  element={<BuyPropViewCard />}  />
-             <Route path="/about-us/" element={<About />} />
-             <Route path="/rental-properties/:pUrl/:id/"   element={<RentViewDetails />}  />
-             <Route  path="/buy-properties/:pUrl/:id/"  element={<BuyViewDetails />}  />
-             <Route path="/propviewcard" element={<PropViewCardPro />} />
-             <Route path="/property/residential/"   element={<ResidentialProjects />} />
-             <Route path="/projects/upcoming-projects-in-gurgaon"  element={<UpComingProjects />}  />
-             <Route  path="/projects/commerial/"  element={<CommercialProject />} />
-             <Route path="/sco/plots/" element={<ScoPlots />} />
-             <Route path="/projects/independentfloors/" element={<BuilderIndependentFloor />}  />
-             <Route path="/project-in-delhi/" element={<DelhiProject />} />
-             <Route path="/project-in-noida/" element={<NoidaProject/>} />
-             <Route path="/project-in-panipat/" element={<PanipatProject/>} />
-             <Route path="/project-in-panchkula/" element={<Panchkula/>}/>
-             <Route path="/project-in-mumbai/" element={<Mumbai/>}/>
-             <Route path="/dlf-homes-projects/" element={<DlfProject/>} />
-             <Route path="/project-in-goa/" element={<GoaProject/>} />
-             <Route path="/deendayal/plots/" element={<DeenDayalPlots />} />
-             <Route path="/projects/villas"  element = {<VillasProjects/>}/>
-             <Route path="/news-and-articals/" element={<NewsandArtical />} />
-             <Route path="/userdashboard/" element={token !== null ? <UserDashBoard /> : <Navigate to="/" />} />
-             <Route path="/useredit/:id" element={<UserEdit />} />
-             <Route path="/middlemain" element={<MiddleMain />} />
-             <Route path="/viewallproperty" element={<ViewAllProperty />} />
-             <Route path="/contact-us/" element={<ContactUs />} />
-             <Route path="/career-with-us/" element={<CareerWithUs />} />
-             <Route path="/blog/" element={<Blogging />} />
-             <Route path="/blog/:blogTitle/:id" element={<BlogView />} />
-             <Route path="/blog/write" element={<BlogWrite />} />
-             <Route path="/resetpassword/:token" element={<ForgetPassword />} />
-             <Route path="/forgetpassword" element={<ResetEmailPassword />} />
-             <Route path="/form" element={<Form registeredData={registeredData} />}  />
-             <Route path="/protected/private/admin" element={<AdminMain />} />
-             <Route path="/protected/private/admin/editProject/:url"  element={<EditableProperty />}  />
-             <Route path="/knowabouts" element={<PropertyKnow />} />
-             <Route path="/profile/:id" element={<Profile />} />
-             <Route path="/:pUrl" element={<BannerPage />} />
-             <Route path="/userviewproperty/:id"  element={<UserViewProperty />} />
-             <Route path="/usereditproperty" element={<UserEditProperty />} />
-             <Route path="/property-in-gurugram/:location" element={<GurugramPrimeLocation />} />
-            <Route path="*" element={<PageNotFound />} />
-            <Route path="/contactmainpage" element={<ContactPage />} />
-            <Route path="/searchdata/:key" element={<SearchData />} />
-            <Route path="/bptp-plots-gurugram/" element={<Bptp/>}/>
-            <Route path="/orris-plots-gurugram/" element={<Orris/>}/>
-            <Route path="/jms-plots-gurugram/" element={<Jms/>}/>
-            <Route path="/rof-plots-gurugram/" element={<Rof/>}/>
-            <Route path="/emaar-india-sco-plots-gurugram/" element={<EmaarIndia/>}/>
-            <Route path="/m3m-india-sco-plots-gurugram/" element={<M3mIndia/>}/>
-            <Route path="/microtek-infra-sco-plots-gurugram/" element={<Microtek/>}/>
-            <Route path="/Admin/blog" element={<Blog />} />
+            <Route element={<PublicRoute />}>
+              <Route index element={<Home />} />
+              <Route
+                path="/postproperty"
+                element={
+                  token !== null ? (
+                    <NewSellProperty />
+                  ) : (
+                    <Navigate to="/signin" />
+                  )
+                }
+              />
+              <Route path="/signup/" element={<SignUp />} />
+              <Route path="/signin/" element={<SignIn />} />
+              <Route path="/privacy-policy/" element={<Privacy />} />
+              <Route
+                path="/terms-and-conditions/"
+                element={<TermsAndConditions />}
+              />
+              <Route path="/projects-in-gurugram/" element={<Properties />} />
+              <Route
+                path="/projects-in-gurugram/budget"
+                element={<BudgetPrice />}
+              />
+              <Route
+                path="/projects-in-gurugram/property-ready-to-move/"
+                element={<ReadyToMoveProject />}
+              />
+              <Route
+                path="/projects-in-gurugram/property-possession-after-2025/"
+                element={<PossessionAfter2028 />}
+              />
+              <Route
+                path="/projects-in-gurugram/property-possession-in-2024/"
+                element={<Possessionin2024 />}
+              />
+              <Route
+                path="/projects-in-gurugram/property-possession-in-2025/"
+                element={<Possessionin2025 />}
+              />
+              <Route
+                path="/rental-properties/best-rental-property-in-gurugram/"
+                element={<RentPropViewCard />}
+              />
+              <Route
+                path="/buy-properties/best-resale-property-in-gurugram/"
+                element={<BuyPropViewCard />}
+              />
+              <Route path="/about-us/" element={<About />} />
+              <Route
+                path="/rental-properties/:pUrl/:id/"
+                element={<RentViewDetails />}
+              />
+              <Route
+                path="/buy-properties/:pUrl/:id/"
+                element={<BuyViewDetails />}
+              />
+              <Route path="/propviewcard" element={<PropViewCardPro />} />
+              <Route
+                path="/property/residential/"
+                element={<ResidentialProjects />}
+              />
+              <Route
+                path="/projects/upcoming-projects-in-gurgaon"
+                element={<UpComingProjects />}
+              />
+              <Route
+                path="/projects/commerial/"
+                element={<CommercialProject />}
+              />
+              <Route path="/sco/plots/" element={<ScoPlots />} />
+              <Route
+                path="/projects/independentfloors/"
+                element={<BuilderIndependentFloor />}
+              />
+              <Route path="/project-in-delhi/" element={<DelhiProject />} />
+              <Route path="/project-in-noida/" element={<NoidaProject />} />
+              <Route path="/project-in-panipat/" element={<PanipatProject />} />
+              <Route path="/project-in-panchkula/" element={<Panchkula />} />
+              <Route path="/project-in-mumbai/" element={<Mumbai />} />
+              <Route path="/dlf-homes-projects/" element={<DlfProject />} />
+              <Route path="/project-in-goa/" element={<GoaProject />} />
+              <Route path="/deendayal/plots/" element={<DeenDayalPlots />} />
+              <Route path="/projects/villas" element={<VillasProjects />} />
+              <Route path="/news-and-articals/" element={<NewsandArtical />} />
+              <Route
+                path="/userdashboard/"
+                element={
+                  token !== null ? <UserDashBoard /> : <Navigate to="/" />
+                }
+              />
+              <Route path="/useredit/:id" element={<UserEdit />} />
+              <Route path="/middlemain" element={<MiddleMain />} />
+              <Route path="/viewallproperty" element={<ViewAllProperty />} />
+              <Route path="/contact-us/" element={<ContactUs />} />
+              <Route path="/career-with-us/" element={<CareerWithUs />} />
+              <Route path="/blog/" element={<Blogging />} />
+              <Route path="/blog/:blogTitle/:id" element={<BlogView />} />
+              <Route path="/blog/write" element={<BlogWrite />} />
+              <Route
+                path="/resetpassword/:token"
+                element={<ForgetPassword />}
+              />
+              <Route path="/forgetpassword" element={<ResetEmailPassword />} />
+              <Route
+                path="/form"
+                element={<Form registeredData={registeredData} />}
+              />
+              <Route path="/protected/private/admin" element={<AdminMain />} />
+              <Route
+                path="/protected/private/admin/editProject/:url"
+                element={<EditableProperty />}
+              />
+              <Route path="/knowabouts" element={<PropertyKnow />} />
+              <Route path="/profile/:id" element={<Profile />} />
+              <Route path="/:pUrl" element={<BannerPage />} />
+              <Route
+                path="/userviewproperty/:id"
+                element={<UserViewProperty />}
+              />
+              <Route path="/usereditproperty" element={<UserEditProperty />} />
+              <Route
+                path="/property-in-gurugram/:location"
+                element={<GurugramPrimeLocation />}
+              />
+              <Route path="*" element={<PageNotFound />} />
+              <Route path="/contactmainpage" element={<ContactPage />} />
+              <Route path="/searchdata/:key" element={<SearchData />} />
+              <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
+              <Route path="/orris-plots-gurugram/" element={<Orris />} />
+              <Route path="/jms-plots-gurugram/" element={<Jms />} />
+              <Route path="/rof-plots-gurugram/" element={<Rof />} />
+              <Route
+                path="/emaar-india-sco-plots-gurugram/"
+                element={<EmaarIndia />}
+              />
+              <Route
+                path="/m3m-india-sco-plots-gurugram/"
+                element={<M3mIndia />}
+              />
+              <Route
+                path="/microtek-infra-sco-plots-gurugram/"
+                element={<Microtek />}
+              />
+              <Route path="/Admin/blog" element={<Blog />} />
             </Route>
 
             {/* Admin Routing */}
             <Route element={<PrivateRoute />}>
-           <Route path="/Admin/acress/dashboard" element={<PrivateRoute/>} />
-            <Route path="/Admin/viewproperty/:id" element={<ViewPropertyAdmin />} />
-            <Route path="/Admin/viewproperty/viewdetails/:id"  element={<ClientDetails />}  />
-             <Route path="/Admin/viewproperty/editdetails/:id"  element={<EditDetails />} />
-             <Route path="/Admin/addnew" element={<Addnew />} />
-            <Route path="/Admin/project-insert" element={<InsertProject />} />
-            <Route path="/Admin/adminproperty" element={<Adminproperty />} />
-            <Route path="/Admin/blog/view/:id" element={<BlogViewAdmin/>}/>
-           <Route path="/Admin/blog/edit/:id" element={<BlogEdit />} />
-             <Route path="/Admin/career" element={<Career />} />
-            <Route path="/Admin/user" element={<UserAdmin />} />
-             <Route path="/Admin/userdetails" element={<UserDetails />} />
-           <Route path="/Admin/contact" element={<AdminContact />} />
-            <Route path="/Admin/editProject" element={<EditProject />} />
-             <Route path="/Admin/enquiries" element={<Enquiries />} />
-            <Route path="/Admin/header" element={<Header />} />
-             <Route path="/Admin/Projects/property" element={<Projects />} />
-            <Route path="/Admin/resale-enquiries" element={<Rent />} />
-             <Route path="/Admin/jobposting" element={<JobPosting />} />
-            <Route path="/Admin/jobposting/view/:id" element={<JobPostingView />} />
-             <Route  path="/Admin/jobposting/edit/:id"  element={<JobPostingEdit />}  />
-             <Route path="/Admin/rent/view/:id" element={<RentView />} />
-            <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
-            <Route path="/admin/acress/property/aadhar" element={<Sidebar />} />
-            <Route path="/Admin/buy" element={<Buy />} />
-            <Route path="/Admin/buy/view/:id" element={<BuyView />} />
-             <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
-             <Route path="/Admin/contactpage" element={<ContactPage />} />
-             <Route path="/Admin/ContactUs/UserProfile" element={<UserProfile />}  />
-            <Route path="/Admin/ProjectsView/:pUrl" element={<ProjectView />} />
-            <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
-             <Route path="/Admin/careerview/:id" element={<CareerView />} />
-            <Route path="/Admin/careerEdit/:id" element={<CareerEdit />} />
-             <Route path="/Admin/projecteditbhk/:id"  element={<ProjectEditBHK />} />
-            <Route path="/Admin/projectedithighlight/:id"  element={<ProjectEditHighlight />} />
-            <Route path="/Admin/ProjectsAddBhk/:id"  element={<ProjectsAddBhk />}  />
-            <Route path="/Admin/adminProperty" element={<Adminproperty />} />
-            <Route path="/Admin/ProjectAddHighlights/:id" element={<ProjectAddHighligths />} />
-            <Route path="/dashboard"  element={<PrivateRoute element={<Dashboard />} />}  />
+              <Route
+                path="/Admin/acress/dashboard"
+                element={<PrivateRoute />}
+              />
+              <Route
+                path="/Admin/viewproperty/:id"
+                element={<ViewPropertyAdmin />}
+              />
+              <Route
+                path="/Admin/viewproperty/viewdetails/:id"
+                element={<ClientDetails />}
+              />
+              <Route
+                path="/Admin/viewproperty/editdetails/:id"
+                element={<EditDetails />}
+              />
+              <Route path="/Admin/addnew" element={<Addnew />} />
+              <Route path="/Admin/project-insert" element={<InsertProject />} />
+              <Route path="/Admin/adminproperty" element={<Adminproperty />} />
+              <Route path="/Admin/blog/view/:id" element={<BlogViewAdmin />} />
+              <Route path="/Admin/blog/edit/:id" element={<BlogEdit />} />
+              <Route path="/Admin/career" element={<Career />} />
+              <Route path="/Admin/user" element={<UserAdmin />} />
+              <Route path="/Admin/userdetails" element={<UserDetails />} />
+              <Route path="/Admin/contact" element={<AdminContact />} />
+              <Route path="/Admin/editProject" element={<EditProject />} />
+              <Route path="/Admin/enquiries" element={<Enquiries />} />
+              <Route path="/Admin/header" element={<Header />} />
+              <Route path="/Admin/Projects/property" element={<Projects />} />
+              <Route path="/Admin/resale-enquiries" element={<Rent />} />
+              <Route path="/Admin/jobposting" element={<JobPosting />} />
+              <Route
+                path="/Admin/jobposting/view/:id"
+                element={<JobPostingView />}
+              />
+              <Route
+                path="/Admin/jobposting/edit/:id"
+                element={<JobPostingEdit />}
+              />
+              <Route path="/Admin/rent/view/:id" element={<RentView />} />
+              <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
+              <Route
+                path="/admin/acress/property/aadhar"
+                element={<Sidebar />}
+              />
+              <Route path="/Admin/buy" element={<Buy />} />
+              <Route path="/Admin/buy/view/:id" element={<BuyView />} />
+              <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
+              <Route path="/Admin/contactpage" element={<ContactPage />} />
+              <Route
+                path="/Admin/ContactUs/UserProfile"
+                element={<UserProfile />}
+              />
+              <Route
+                path="/Admin/ProjectsView/:pUrl"
+                element={<ProjectView />}
+              />
+              <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
+              <Route path="/Admin/careerview/:id" element={<CareerView />} />
+              <Route path="/Admin/careerEdit/:id" element={<CareerEdit />} />
+              <Route
+                path="/Admin/projecteditbhk/:id"
+                element={<ProjectEditBHK />}
+              />
+              <Route
+                path="/Admin/projectedithighlight/:id"
+                element={<ProjectEditHighlight />}
+              />
+              <Route
+                path="/Admin/ProjectsAddBhk/:id"
+                element={<ProjectsAddBhk />}
+              />
+              <Route path="/Admin/adminProperty" element={<Adminproperty />} />
+              <Route
+                path="/Admin/ProjectAddHighlights/:id"
+                element={<ProjectAddHighligths />}
+              />
+              <Route
+                path="/dashboard"
+                element={<PrivateRoute element={<Dashboard />} />}
+              />
             </Route>
           </Routes>
-        {/* </Router> */}
-      </Wrapper>
-    </AuthProvider>
-  </DataProvider>
-  
-
+          {/* </Router> */}
+        </Wrapper>
+      </AuthProvider>
+    </DataProvider>
   );
 }
 

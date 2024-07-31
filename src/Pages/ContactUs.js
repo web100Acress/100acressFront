@@ -34,7 +34,7 @@ const ContactUs = () => {
       return;
     }
     try {
-      const res = await axios.post(
+     await axios.post(
         "https://api.100acress.com/contact_Insert",
         data
       );
@@ -53,6 +53,7 @@ const ContactUs = () => {
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
+      
       <Helmet>
         <title>Contact Us | Reach Out to 100acress.com Experts Guidance</title>
         <meta
@@ -61,7 +62,7 @@ const ContactUs = () => {
         />
         <link
           rel="canonical"
-          href="https://www.100acress.com/deendayal/plots/"
+          href="https://www.100acress.com/contact-us/"
         />
       </Helmet>
 
@@ -73,7 +74,7 @@ const ContactUs = () => {
             class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
           />
           <img
-            src="../../Images/contact.png"
+            src="../../Images/contactmobile.png"
             alt="About Us"
             class="w-full h-[9rem] sm:h-30 object-fit small-screen-image block sm:hidden"
           />
