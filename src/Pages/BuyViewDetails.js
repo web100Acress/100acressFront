@@ -2804,7 +2804,7 @@ const BuyViewDetails = () => {
   const { frontImage, otherImage, amenities } = rentViewDetails;
 
   const { id } = useParams();
- 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -2840,6 +2840,7 @@ const BuyViewDetails = () => {
     const { name, value } = e.target;
     setAgentForm1({ ...agentFrom1, [name]: value });
   };
+  const [responseMessage, setResponseMessage] = useState("");
 
   const handleSubmitAgentForm1 = (e) => {
     e.preventDefault();
@@ -2854,7 +2855,7 @@ const BuyViewDetails = () => {
         })
 
         .then((response) => {
-          alert("Data Submitted Successfully");
+          setResponseMessage("Data Submitted Successfully");
           resetData1();
         })
         .catch((error) => {
@@ -2868,7 +2869,7 @@ const BuyViewDetails = () => {
           }
         });
     } else {
-      alert("Please fill the data");
+      setResponseMessage("Please fill the data");
     }
     setShowContact(true);
   };
@@ -3381,10 +3382,15 @@ const BuyViewDetails = () => {
                                     className="form-control"
                                     type="hidden"
                                   />
+                                  {responseMessage && (
+                                    <p className="text-sm italic text-red-600">
+                                      {responseMessage}
+                                    </p>
+                                  )}
                                 </div>
                               </div>
 
-                              <div className="col-md-12 pt-2">
+                              <div className="col-md-12 pt-2 -mb-2">
                                 <div className="form-group">
                                   <input
                                     name="agentNumber"

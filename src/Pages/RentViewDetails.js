@@ -38,7 +38,7 @@
 
 //   const [buttonText, setButtonText] = useState('Submit');
 //   const [responseMessage, setResponseMessage] = useState('');
-  
+
 //   const handleSubmitAgentForm1 = (e) => {
 //     e.preventDefault();
 //     const { custEmail, custNumber } = agentFrom1;
@@ -81,7 +81,6 @@
 //     custNumber: "",
 //     propertyAddress: "",
 //   });
-
 
 //   const resetData = () => {
 //     setAgentForm({
@@ -310,7 +309,6 @@
 //                       </div>
 //                     )}
 
-      
 //                   <div className="article-title">
 //                     <span className="text-lg  text-red-500 m-0">
 //                       Property Type:{" "}
@@ -331,7 +329,7 @@
 
 //                 {rentViewDetails.email ? (
 //                   <>
-                  
+
 //                   </>
 //                 ) : (
 //                   <>
@@ -437,12 +435,11 @@
 //                     <p><span className="text-red-500">Price:</span> {rentViewDetails.price}</p>
 //                   </div>
 
-
 //                   <div className="widget-title ">
 //                     <p>
 //                       <div className="flex justify-center items-center">
 //                         <div className="text-red-500 font-semibold text-xl text-center">
-//                         {rentViewDetails.role}  {"-"}  {rentViewDetails.agentName} 
+//                         {rentViewDetails.role}  {"-"}  {rentViewDetails.agentName}
 //                         </div>
 //                       </div>
 
@@ -472,8 +469,6 @@
 //                       </div>
 //                     </p>
 //                   </div>
-
-
 
 //                   {rentViewDetails.email ? (
 //                   <>
@@ -693,7 +688,6 @@
 //                   </div>
 //                 </div>
 
-        
 //                 <div className="widget widget-post">
 //                   <div className="widget-title">
 //                     <p className="text-lg text-red-500">Trending Properties</p>
@@ -728,7 +722,7 @@
 //                   </div>
 //                   {upcoming.slice(0, 5).map((item, index) => {
 //                     return (
-                  
+
 //                       <Link  to={`/${item.project_url}/`} target="_top">
 //                       <div className="flex items-center pt-3 hover:bg-gray-100" key={index}>
 //                         <img
@@ -772,7 +766,7 @@
 //   .gray-bg {
 //     background-color: #f5f5f5;
 //   }
-//   /* Blog 
+//   /* Blog
 // ---------------------*/
 //   .blog-grid {
 //     box-shadow: 0 0 30px rgba(31, 45, 61, 0.125);
@@ -1167,7 +1161,6 @@
 //   }
 // `;
 
-
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { styled } from "styled-components";
 import Nav from "../aadharhomes/Nav";
@@ -1227,14 +1220,14 @@ const RentViewDetails = () => {
     }
   }
 `;
-const [rentViewDetails, setRentViewDetails] = useState({
-  descripation: "",
-});
-const [isExpanded, setIsExpanded] = useState(false);
+  const [rentViewDetails, setRentViewDetails] = useState({
+    descripation: "",
+  });
+  const [isExpanded, setIsExpanded] = useState(false);
 
-const toggleDescription = () => {
-  setIsExpanded(!isExpanded);
-};
+  const toggleDescription = () => {
+    setIsExpanded(!isExpanded);
+  };
   const [showForm, setShowForm] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [getContact, setGetContact] = useState("");
@@ -1279,7 +1272,7 @@ const toggleDescription = () => {
     const { name, value } = e.target;
     setAgentForm1({ ...agentFrom1, [name]: value });
   };
-
+const  [responseMessage, setResponseMessage] = useState("");
   const handleSubmitAgentForm1 = (e) => {
     e.preventDefault();
     const { custEmail, custNumber } = agentFrom1;
@@ -1293,7 +1286,7 @@ const toggleDescription = () => {
         })
 
         .then((response) => {
-          alert("Data Submitted Successfully");
+          setResponseMessage("Data Submitted Successfully");
           resetData1();
         })
         .catch((error) => {
@@ -1307,7 +1300,7 @@ const toggleDescription = () => {
           }
         });
     } else {
-      alert("Please fill the data");
+      setResponseMessage("Please fill the data");
     }
     setShowContact(true);
   };
@@ -1440,7 +1433,7 @@ const toggleDescription = () => {
       const res = await axios.get(
         "https://api.100acress.com/property/buy/ViewAll"
       );
-      setBuyData(res.data.collectdata, "abcdefghijklmn");
+      setBuyData(res.data.collectdata);
     } catch (error) {
       console.error("Error fetching Data", error);
     }
@@ -1450,8 +1443,8 @@ const toggleDescription = () => {
     fetchData();
   }, []);
 
-  const { trendingProject, upcoming } = useContext(DataContext);
-  console.log(trendingProject);
+  const { trendingProject } = useContext(DataContext);
+
   return (
     <div style={{ overflowX: "hidden" }}>
       <Nav />
@@ -1547,26 +1540,26 @@ const toggleDescription = () => {
                     </span>
                   </div>
                 </article> */}
-                               <article className="article">
-  <div className="flex flex-col sm:flex-row items-start sm:items-center border-b border-gray-100 w-full pb-2 mt-1">
-    <span className="text-lg text-red-500 min-w-[120px]">
-      Description:
-    </span>
-    <span className="text-md font-medium mt-2 sm:mt-0 sm:ml-2">
-      {isExpanded || !rentViewDetails.descripation
-        ? rentViewDetails.descripation
-        : `${rentViewDetails.descripation.slice(0, 100)}...`}
-      {rentViewDetails.descripation && (
-        <button
-          className="text-red-600 ml-2"
-          onClick={toggleDescription}
-        >
-          {isExpanded ? "Read less" : "Read more"}
-        </button>
-      )}
-    </span>
-  </div>
-</article>
+                <article className="article">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center border-b border-gray-100 w-full pb-2 mt-1">
+                    <span className="text-lg text-red-500 min-w-[120px]">
+                      Description:
+                    </span>
+                    <span className="text-md font-medium mt-2 sm:mt-0 sm:ml-2">
+                      {isExpanded || !rentViewDetails.descripation
+                        ? rentViewDetails.descripation
+                        : `${rentViewDetails.descripation.slice(0, 100)}...`}
+                      {rentViewDetails.descripation && (
+                        <button
+                          className="text-red-600 ml-2"
+                          onClick={toggleDescription}
+                        >
+                          {isExpanded ? "Read less" : "Read more"}
+                        </button>
+                      )}
+                    </span>
+                  </div>
+                </article>
 
                 <article className="article">
                   <span className="text-lg text-red-500 m-0 ml-1 pb-2 flex items-center">
@@ -1817,6 +1810,7 @@ const toggleDescription = () => {
                                     type="hidden"
                                   />
                                 </div>
+                                {responseMessage && <p className="text-sm italic text-red-600">{responseMessage}</p>}
                               </div>
 
                               <div className="col-md-12 pt-2">
@@ -2004,8 +1998,6 @@ const toggleDescription = () => {
                       </Link>
                     );
                   })}
-
-                  
                 </div>
 
                 <div className="p-4 shadow-2xl bg-white rounded-md mt-1">
@@ -2015,15 +2007,13 @@ const toggleDescription = () => {
                         Post your Property for{" "}
                         <em className="font-damion font-serif text-3xl flex ml-1">
                           Free!
-                        </em> 
+                        </em>
                       </p>
-                     
                     </div>
-                    <Link to="/SignIn" target="_top" >
-                    <div className="w-full flex justify-center px-2 py-2 "> 
-                     
-                        <button className="text-black px-3 bg-blue-300 py-2 rounded-full flex items-center justify-center" >
-                          Post Property 
+                    <Link to="/SignIn" target="_top">
+                      <div className="w-full flex justify-center px-2 py-2 ">
+                        <button className="text-black px-3 bg-blue-300 py-2 rounded-full flex items-center justify-center">
+                          Post Property
                           <span className="text-white text-sm px-2 mx-2 rounded-full bg-red-600 flex items-center ml-2">
                             <ScaleLoader
                               color="#FFFFFF"
@@ -2034,8 +2024,7 @@ const toggleDescription = () => {
                             <span style={{ marginLeft: "8px" }}>Free</span>
                           </span>
                         </button>
-                      
-                    </div>
+                      </div>
                     </Link>
                   </div>
                 </div>
@@ -2110,7 +2099,10 @@ const toggleDescription = () => {
                                           </div>
                                           <div className="flex justify-end mt-auto">
                                             <Link
-                                             to={`/rental-properties/${nestedItem.propertyName.replace(/\s+/g, '-')}/${nestedItem._id}/`}
+                                              to={`/rental-properties/${nestedItem.propertyName.replace(
+                                                /\s+/g,
+                                                "-"
+                                              )}/${nestedItem._id}/`}
                                               target="_blank"
                                             >
                                               <button

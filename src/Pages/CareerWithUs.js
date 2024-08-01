@@ -467,7 +467,7 @@ const CareerWithUs = () => {
             come join us!
           </p>
         </div>
-        <div className="bg-red-600 border-2 text-center pt-2 pb-2 text-white ">
+        {/* <div className="bg-red-600 border-2 text-center pt-2 pb-2 text-white ">
           <h4 className="lg:text-2xl mt-4 sm:text:sm">WE ARE COMMITTED</h4>
           <p className="lg:text-xl px-4 sm:text:sm  text-justify sm:mx-10 md:mx-16 lg:mx-20 xl:mx-24 2xl:mx-20 ">
             We aim to provide exceptional service, and user-friendly tools to
@@ -476,7 +476,7 @@ const CareerWithUs = () => {
             If you have the zeal to achieve great milestones in your career,
             come join us!
           </p>
-        </div>
+        </div> */}
         <div className="bg-gray-100 pb-5">
           <div className="bg-gray-100  sm:mx-10 md:mx-16 lg:mx-20 xl:mx-24 2xl:mx-20 ">
             <h3 className="lg:text-2xl sm:text:sm text-center font-bold text-black py-3 pt-3">

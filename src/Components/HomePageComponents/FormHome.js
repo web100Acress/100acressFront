@@ -241,7 +241,7 @@ const FormHome = () => {
       </div>
       <div className="w-full md:w-2/3 p-4 bg-red-600">
         <div className="text-center">
-          <p className="font-bold text-sm lg:text-2xl md:text-xl sm:text-xl xs:text-sm text-white mb-4 mt-2">
+          <p className="font-bold text-xl lg:text-2xl md:text-2xl sm:text-xl xs:text-xl text-white mb-4 mt-2">
             Connect to Property Expert Now
           </p>
         </div>

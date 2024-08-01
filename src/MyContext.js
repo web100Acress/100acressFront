@@ -299,7 +299,7 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-  const handleUserLogin = async (userLogin) => {
+  const handleUserLogin = async (userLogin) => {  
     const { email, password } = userLogin;
     if (email && password) {
       try {
