@@ -145,8 +145,9 @@ export const DataProvider = ({ children }) => {
       });
 
       const deenDayalPlots = projectsData.filter((project) => {
-        return project.type === "Deen Dayal Plots";
+        return (project.type === "Deen Dayal Plots" || project.type === "Residential Plots") && project.city === 'Gurugram';
       });
+      
 
       const villasProject = projectsData.filter((project) => {
         return project.type === "Villas";

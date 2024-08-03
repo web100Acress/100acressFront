@@ -1299,10 +1299,11 @@ const  [responseMessage, setResponseMessage] = useState("");
             alert(`Error setting up the request: ${error.message}`);
           }
         });
+        setShowContact(true);
     } else {
       setResponseMessage("Please fill the data");
     }
-    setShowContact(true);
+  
   };
 
   const [agentFrom, setAgentForm] = useState({

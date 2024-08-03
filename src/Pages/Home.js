@@ -2230,7 +2230,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 17vh !important;
-      background-image: url("../../Images/P.png");
+      background-image: url("../../Images/P1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -2244,7 +2244,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/P.png");
+      background-image: url("../../Images/P1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -2258,7 +2258,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 20vh !important;
-      background-image: url("../../Images/P.png");
+      background-image: url("../../Images/P1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -2272,7 +2272,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/P.png");
+      background-image: url("../../Images/P1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -2281,7 +2281,7 @@ const Wrapper = styled.section`
 
   @media screen and (max-width: 1800px) and (min-width: 601px) {
     .djqwUUJNCO {
-      background-image: url("../../Images/C.png");
+      background-image: url("../../Images/B.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;

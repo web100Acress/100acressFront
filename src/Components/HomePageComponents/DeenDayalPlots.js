@@ -24,10 +24,10 @@ const DeenDayalPlots = () => {
 
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
         <h1 className="mb-2 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          Deen Dayal Plots in Gurugram
+          Plots in Gurugram
         </h1>
         <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          Deen Dayal Plots in Gurugram offer a unique opportunity for
+          Plots in Gurugram offer a unique opportunity for
           residential development in the rapidly growing city.With convenient
           access to amenities, infrastructure, and transportation networks, Deen
           Dayal Plots cater to the burgeoning demand for quality residential
@@ -49,20 +49,20 @@ const DeenDayalPlots = () => {
                       <div>
                         <img
                           src={item.frontImage.url}
-                          alt="property In Gurugram"
+                          alt="Property In Gurugram"
                           className="w-full h-48 object-fit "
                         />
                       </div>
                       <div className="p-4">
                         <div className="pb-2">
-                          <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
-                          </a>
+                          </span>
 
                           <br />
-                          <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                          <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
                             {item.city}, {item.state}
-                          </a>
+                          </span>
                         </div>
 
                         <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">

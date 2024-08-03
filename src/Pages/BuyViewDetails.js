@@ -2817,10 +2817,6 @@ const BuyViewDetails = () => {
         } else {
           setRentViewDetails(res.data.postData.postProperty[0]);
         }
-        console.log(
-          res.data.postData.postProperty[0],
-          "res.data.postData.postProperty[0]"
-        );
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -2868,10 +2864,12 @@ const BuyViewDetails = () => {
             alert(`Error setting up the request: ${error.message}`);
           }
         });
+        setShowContact(true);
     } else {
       setResponseMessage("Please fill the data");
+     
     }
-    setShowContact(true);
+   
   };
 
   const [agentFrom, setAgentForm] = useState({
@@ -3012,8 +3010,8 @@ const BuyViewDetails = () => {
     fetchData();
   }, []);
 
-  const { trendingProject, upcoming } = useContext(DataContext);
-  console.log(trendingProject);
+  const { trendingProject } = useContext(DataContext);
+  
 
   return (
     <div style={{ overflowX: "hidden" }}>
@@ -3023,6 +3021,7 @@ const BuyViewDetails = () => {
           <div className="mx-10">
             <div className="row align-items-start">
               <div className="col-lg-8 m-15px-tb">
+
                 <article className="article">
                   <div className="article-img">
                     {frontImage && frontImage.url && (
@@ -3284,7 +3283,7 @@ const BuyViewDetails = () => {
                         className="flex justify-center items-center pt-2"
                       >
                         {" "}
-                        {getContact.length !== null ? (
+                        {showContact.length !== null ? (
                           <>
                             {showContact && rentViewDetails.number
                               ? rentViewDetails.number
@@ -3318,6 +3317,7 @@ const BuyViewDetails = () => {
                           </div>
                           <div className="widget-body">
                             <div className="row">
+
                               <div className="col-md-12">
                                 <div className="form-group">
                                   <input

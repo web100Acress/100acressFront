@@ -39,10 +39,10 @@ function SpacesAvailable() {
             </div>
           </Link>
 
-          <Link to={`/deendayal/plots/`} target="_top">
+          <Link to={`/plots-in-gurugram/`} target="_top">
             <div className="_ksjMM _1fe8" title="Deen Dayal Plots">
-              <p className="_9gncbH">Deen Dayal</p>
-              <p className="_4rgjvNN">Plots</p>
+              <p className="_9gncbH">Plots In</p>
+              <p className="_4rgjvNN">Gurugram</p>
             </div>
           </Link>
 

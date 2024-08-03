@@ -30,7 +30,7 @@ const SpacerComponent = () => <Box width="60px" />;
 
 const MenuListContainer = ({ isOpen }) => {
   const history = useNavigate();
-  const showToastMessage = () => {
+  const   showToastMessage = () => {
     toast.success("Logging out!", {
       position: toast.POSITION.TOP_RIGHT,
       autoClose: 1000,

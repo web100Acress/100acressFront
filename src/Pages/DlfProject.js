@@ -24,7 +24,7 @@ const DlfProject = () => {
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center">
-        <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+        <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           DLF Super Luxury Homes #100crore
         </h1>
 

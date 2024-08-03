@@ -207,8 +207,8 @@ function App() {
               <Route path="/project-in-mumbai/" element={<Mumbai />} />
               <Route path="/dlf-homes-projects/" element={<DlfProject />} />
               <Route path="/project-in-goa/" element={<GoaProject />} />
-              <Route path="/deendayal/plots/" element={<DeenDayalPlots />} />
-              <Route path="/projects/villas" element={<VillasProjects />} />
+              <Route path="/plots-in-gurugram/" element={<DeenDayalPlots />} />
+              <Route path="/projects/villas/" element={<VillasProjects />} />
               <Route path="/news-and-articals/" element={<NewsandArtical />} />
               <Route
                 path="/userdashboard/"
@@ -240,7 +240,7 @@ function App() {
               />
               <Route path="/knowabouts" element={<PropertyKnow />} />
               <Route path="/profile/:id" element={<Profile />} />
-              <Route path="/:pUrl" element={<BannerPage />} />
+              <Route path="/:pUrl/" element={<BannerPage />} />
               <Route
                 path="/userviewproperty/:id"
                 element={<UserViewProperty />}
