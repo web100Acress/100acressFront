@@ -17,6 +17,7 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { format, isValid, parseISO } from "date-fns";
 const BannerPage = () => {
+  
   //Side Form
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const handleShow = () => {
@@ -780,6 +781,8 @@ const BannerPage = () => {
               }
             `}</style>
           </article>
+
+      
         </div>
 
         {/*Gallery Slider container */}
@@ -828,7 +831,7 @@ const BannerPage = () => {
 
         <div
           className="text-center  text-gray-600 pt-2 font-semibold mt-2 lg:pt-4 md:pt-3  text-sm sm:text-base md:text-lg lg:text-3xl sm:pt-0 px-3 h-6"
-          style={{ backgroundColor: "#f7f1ec" }}
+          // style={{ backgroundColor: "#f7f1ec" }}
         >
           <h3 className="leading-relaxed font-bold">
             {projectViewDetails.projectName} Amenities
@@ -837,7 +840,7 @@ const BannerPage = () => {
 
         <div
           className="grid grid-cols-1 md:grid-cols-3  lg:grid-cols-6 gap-2 px-4 pt-8"
-          style={{ backgroundColor: "#f7f1ec" }}
+          // style={{ backgroundColor: "#f7f1ec" }}
         >
           {Amenities &&
             Array.isArray(Amenities) &&
@@ -845,7 +848,7 @@ const BannerPage = () => {
             Amenities.map((item, index) => (
               <div
                 key={index}
-                className="uppercase p-3 m-4  text-black text-center border-[#d9a253]  rounded-lg border-2 hover:bg-[#d9a253]"
+                className="uppercase p-3 m-4  text-black text-center border-[#012e29]  rounded-lg border-2 hover:bg-[#d9a253]"
               >
                 {" "}
                 {item}
@@ -853,7 +856,7 @@ const BannerPage = () => {
             ))}
         </div>
 
-        <div className="flex flex-col items-center justify-center mt-2 md:mt-8 lg:h-32 sm:h-28 shadow-xl">
+        {/* <div className="flex flex-col items-center justify-center mt-2 md:mt-8 lg:h-32 sm:h-28 shadow-xl">
           <span className="font-semibold lg:text-xl md:text-xl sm:text-base text-gray-600 text-center mb-2">
             CALL NOW
           </span>
@@ -863,7 +866,7 @@ const BannerPage = () => {
           >
             <i className="fa-solid fa-phone mb-2"></i> +91 8527134491
           </Link>
-        </div>
+        </div> */}
 
         <div className="">
           <div className="h-auto bg-[#F1F1FE]">
