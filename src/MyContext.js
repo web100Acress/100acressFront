@@ -29,6 +29,7 @@ export const DataProvider = ({ children }) => {
   const [goaData, setGoaData] = useState([]);
   const [panipat, setPanipat] = useState([]);
   const [panchkula, setpanchkula] = useState([]);
+  const [kasauli, setKasauli] = useState([]);
   const [minPrice, setMinPrice] = useState(priceRange.min);
   const [maxPrice, setMaxPrice] = useState(priceRange.max);
   const [filteredProjects, setFilteredProjects] = useState([]);
@@ -177,6 +178,10 @@ export const DataProvider = ({ children }) => {
         (project) => project.city === "Panchkula"
       );
 
+      const kasauli = projectsData.filter(
+        (project) => project.city === "Kasauli"
+      );
+
       const goaCityProject = projectsData.filter(
         (project) => project.city === "Goa"
       );
@@ -274,6 +279,7 @@ export const DataProvider = ({ children }) => {
       setDlfAllProjects(dlfAllProjects);
       setVillasProject(villasProject);
       setpanchkula(panchkula);
+      setKasauli(kasauli);
       setpossessionIn2026AndBeyond(possessionIn2026AndBeyond);
       setorris(orris);
       setbptp(bptp);
@@ -430,6 +436,7 @@ export const DataProvider = ({ children }) => {
         dlfAllProjects,
         villasProject,
         panchkula,
+        kasauli,
         possessionIn2026AndBeyond,
         bptp,
         orris,

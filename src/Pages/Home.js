@@ -2170,8 +2170,8 @@ const Wrapper = styled.section`
     z-index: 999;
     bottom: 10px;
     left: 10px; /* Changed from right to left */
-    width: 55px;
-    height: 55px;
+    width: 45px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2198,8 +2198,8 @@ const Wrapper = styled.section`
     z-index: 999;
     bottom: 70px;
     left: 10px; /* Changed from right to left */
-    width: 55px;
-    height: 55px;
+    width: 45px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;

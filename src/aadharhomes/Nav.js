@@ -30,7 +30,7 @@ const SpacerComponent = () => <Box width="60px" />;
 
 const MenuListContainer = ({ isOpen }) => {
   const history = useNavigate();
-  const   showToastMessage = () => {
+  const showToastMessage = () => {
     toast.success("Logging out!", {
       position: toast.POSITION.TOP_RIGHT,
       autoClose: 1000,
@@ -128,14 +128,11 @@ const MenuListContainer = ({ isOpen }) => {
 
 export default function Nav() {
   // Filter Data budget wise
-  const {priceRange, setPriceRange} = useContext(DataContext);
-  
+  const { priceRange, setPriceRange } = useContext(DataContext);
+
   const handlePriceClick = (min, max) => {
     setPriceRange({ min, max });
   };
-
- 
-  
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -761,8 +758,15 @@ export default function Nav() {
                           >
                             Projects in Panchkula
                           </Link>
+
+                          <Link
+                            to={`/project-in-Kasauli/`}
+                            className="block text-sm px-4    hover:text-red-600"
+                          >
+                            Projects in Kasauli
+                          </Link>
                         </div>
-                        
+
                         {/* I am Working here */}
 
                         <div className="w-40">
@@ -781,7 +785,7 @@ export default function Nav() {
                             Under ₹1 Cr
                           </Link>
                           <Link
-                             to={`/projects-in-gurugram/budget`}
+                            to={`/projects-in-gurugram/budget`}
                             className="block text-sm px-4 py-1 hover:text-red-600"
                             onClick={() => handlePriceClick(1, 5)}
                           >
@@ -795,29 +799,27 @@ export default function Nav() {
                             ₹5 Cr - ₹10 Cr
                           </Link>
                           <Link
-                             to={`/projects-in-gurugram/budget`}
+                            to={`/projects-in-gurugram/budget`}
                             className="block text-sm px-4 py-1 hover:text-red-600"
                             onClick={() => handlePriceClick(10, 20)}
                           >
                             ₹10 Cr - ₹20 Cr
                           </Link>
                           <Link
-                             to={`/projects-in-gurugram/budget`}
+                            to={`/projects-in-gurugram/budget`}
                             className="block text-sm px-4  hover:text-red-600"
                             onClick={() => handlePriceClick(20, 50)}
                           >
                             ₹20 Cr - ₹50 Cr
                           </Link>
                           <Link
-                             to={`/projects-in-gurugram/budget`}
+                            to={`/projects-in-gurugram/budget`}
                             className="block text-sm px-4 py-1 hover:text-red-600"
                             onClick={() => handlePriceClick(50, Infinity)}
                           >
                             Above ₹50 Cr
                           </Link>
                         </div>
-
-                        
                       </div>
                     </div>
                   </div>
@@ -826,10 +828,11 @@ export default function Nav() {
             </HStack>
 
             <Flex alignItems="center">
-              <div className="" style={{ marginRight: "-40px" }}>
+            
+              {/* <div className="" style={{ marginRight: "-40px" }}>
                 {token ? (
                   <Link to="/postproperty/">
-                    <button className="btn flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
+                    <button className="btn  flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
                         className="text-red-600 mr-2"
@@ -868,12 +871,12 @@ export default function Nav() {
                   </Link>
                 ) : (
                   <Link to="/signin/">
-                    <button className="btn flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
+                    <button className="btn  flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
                         className="text-red-600 mr-2"
                       >
-                        Post Property
+                        Post Property  
                       </strong>
                       <Link className="d-none d-xl-inline d-md-inline">
                         <button
@@ -906,7 +909,106 @@ export default function Nav() {
                     </button>
                   </Link>
                 )}
+              </div> */}
+
+              <div
+                className=""
+                style={{
+                  marginRight: window.innerWidth <= 768 ? "-80px" : "-40px",
+                }}
+              >
+                {token ? (
+                  <Link to="/postproperty/">
+                    <button className="btn flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
+                      <strong
+                        onClick={checkUserAuth}
+                        className="text-red-600 mr-2"
+                      >
+                        Post Property
+                      </strong>
+                      <Link className="d-inline">
+                        <button
+                          className="btn btn-danger p-0 text-bold"
+                          style={{
+                            position: "relative",
+                            overflow: "hidden",
+                            width: "50px",
+                            height: "20px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              animation: "moveHorizontal 1s linear infinite",
+                              backdropFilter: "blur(5px)",
+                              filter: "blur(5px)",
+                              width: "50px", // Set your fixed width here
+                              display: "flex",
+                              justifyContent: "center", // Center the loader horizontally
+                              alignItems: "center", // Center the loader vertically
+                            }}
+                          >
+                            <ScaleLoader color="#FFFFFF" />
+                          </div>
+                          FREE
+                          <style>{keyframes}</style>
+                        </button>
+                      </Link>
+                    </button>
+                  </Link>
+                ) : (
+                  <Link to="/signin/">
+                    <button className="btn flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
+                      <strong
+                        onClick={checkUserAuth}
+                        className="text-red-600 mr-2"
+                      >
+                        Post Property
+                      </strong>
+                      <Link className="d-inline">
+                        <button
+                          className="btn btn-danger p-0 text-bold"
+                          style={{
+                            position: "relative",
+                            overflow: "hidden",
+                            width: "50px", // Adjust this value for the desired width
+                            height: "20px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              animation: "moveHorizontal 1s linear infinite",
+                              backdropFilter: "blur(5px)",
+                              filter: "blur(5px)",
+                              width: "100%", // Ensures the loader fills the button width
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <ScaleLoader color="#FFFFFF" />
+                          </div>
+                          <span style={{ position: "relative", zIndex: 1 }}>
+                            FREE
+                          </span>{" "}
+                          {/* Ensure 'FREE' is above the loader */}
+                          <style>{keyframes}</style>
+                        </button>
+                      </Link>
+                    </button>
+                  </Link>
+                )}
               </div>
+
               <SpacerComponent />
 
               <div className="flex gap-4 ">
@@ -1024,7 +1126,7 @@ export default function Nav() {
                   )}
                 </div>
 
-                <Menu>
+                {/* <Menu>
                   <MenuButton
                     as={Button}
                     borderRadius="l"
@@ -1037,7 +1139,7 @@ export default function Nav() {
                         <Avatar
                           boxSize={{ base: "1.7em", md: "1.8em" }}
                           bgColor="white"
-                          marginLeft={{ base: 0, md: "0" }}
+                          marginRight={{ base: "1em", md: "0" }}
                           icon={
                             <AvatarBadge
                               boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
@@ -1062,6 +1164,74 @@ export default function Nav() {
                           boxSize={{ base: "1.7em", md: "1.8em" }}
                           bgColor="white"
                           marginLeft={{ base: 0, md: "0" }}
+                          icon={
+                            <AvatarBadge
+                              boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
+                              bg="red.500"
+                              border="2px"
+                              borderColor="white"
+                              darkBorderColor="gray.800"
+                              rounded="full"
+                            />
+                          }
+                        >
+                          <img
+                            className="w-16 h-10 rounded-full"
+                            src="../../Images/logoAvtar.png"
+                            alt="logoAvtar"
+                          />
+                        </Avatar>
+                      </>
+                    )}
+                  </MenuButton>
+
+                  <MenuListContainer
+                    isOpen={isDropdownOpen}
+                    onClose={onClose}
+                    onLoginRegisterClick={handleLoginRegisterClick}
+                  />
+                </Menu> */}
+
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    borderRadius="l"
+                    variant="unstyled"
+                    aria-label="Profile"
+                    onClick={handleAvatarClick}
+                  >
+                    {token ? (
+                      <>
+                        <Avatar
+                          boxSize={{ base: "1.2em", md: "1.8em" }} // Smaller size on mobile
+                          bgColor="white"
+                          marginRight={{ base: "1em", md: "0" }}
+                          display={{ base: "none", md: "block" }} // Hide on mobile
+                          icon={
+                            <AvatarBadge
+                              boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
+                              bg="green.500"
+                              border="2px"
+                              borderColor="white"
+                              darkBorderColor="gray.800"
+                              rounded="full"
+                            />
+                          }
+                        >
+                          <img
+                            className="w-16 h-10 rounded-full"
+                            src="../../Images/logoAvtar.png"
+                            alt="logoAvtar"
+                          />
+                        </Avatar>
+                      </>
+                    ) : (
+                      <>
+                        <Avatar
+                          boxSize={{ base: "1.2em", md: "1.8em" }} // Smaller size on mobile
+                          bgColor="white"
+                          marginLeft={{ base: 0, md: "0" }}
+                          display={{ base: "none", md: "block" }} // Hide on mobile
                           icon={
                             <AvatarBadge
                               boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
@@ -1149,6 +1319,7 @@ export default function Nav() {
     </Wrapper>
   );
 }
+
 const Wrapper = styled.section`
   .shimmer-container {
     position: relative;

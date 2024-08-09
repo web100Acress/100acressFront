@@ -1,66 +1,62 @@
 import React, { useContext } from "react";
-import Nav from "../../aadharhomes/Nav";
-import Footer from "../Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
+import Nav from "../aadharhomes/Nav";
+import Footer from "../Components/Actual_Components/Footer";
+import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-const VillasProjects = () => {
-  const { villasProject } = useContext(DataContext);
-
+const KasauliProject = () => {
+  const { kasauli } = useContext(DataContext);
+  console.log(kasauli,"kasauli")
   return (
     <div>
       <Nav />
-
       <Helmet>
-        <title>Top Villas for Sale in India</title>
+        <title>
+          Property in kasauli - Flats, Villas, House for Sale in kasauli
+        </title>
         <meta
           name="description"
-          content="Buy Deen Dayal Residential Plots/Lands for Sale in Gurgaon"
+          content="Real Estate Properties in New Panipat- Get Details for Residential &amp; Commercial Properties"
         />
-        <link rel="canonical" href="https://www.100acress.com/villas/" />
       </Helmet>
 
-      <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
-        <h1 className="mb-2 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-         India's Luxury Villas
+      <section className="flex pt-2 flex-col items-center">
+        <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+          Projects in kasauli
         </h1>
-        <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          Luxury villas in Gurgaon come with top-notch facilities and amenities.
-          With privacy and exclusivity, the villa provides a haven for those
-          seeking outstanding luxury living, where every detail caters to the
-          wise tastes of its residents. They combine elegant design with modern
-          comforts ideal for wise individuals selecting amazing living
-          experiences.
-        </h2>
-      </div>
 
-      <section className="flex flex-col items-center pt-2">
+        <h2 className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+          kasauli is transforming with major enterprises, including new housing
+          complexes, commercial space, and infrastructure improvements. These
+          developments focus on improving connectivity by developing networks
+          and modern amenities, to enhance the standard of urban living and
+          encourage investment from businesses in the rapidly growing city.
+        </h2>
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {villasProject.map((item, index) => {
+          {kasauli.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
                 <article
                   key={index}
-                  className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                  className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                 >
                   <div>
                     <img
                       src={item.frontImage.url}
                       alt="property In Gurugram"
-                      className="w-full h-48 object-fit "
+                      className="w-full h-48 object-fit"
                     />
                   </div>
                   <div className="p-4">
                     <div className="pb-2">
-                      <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
-                      </a>
-
+                      </span>
                       <br />
-                      <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
                         {item.city}, {item.state}
-                      </a>
+                      </span>
                     </div>
 
                     <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
@@ -73,12 +69,15 @@ const VillasProjects = () => {
                         </li>
                       </li>
                     </ul>
-
                     <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
                       <li className="text-left">
                         <span className="text-sm font-extrabold text-red-600">
-                          <span className="text-xl">₹ </span>
-                          {item.minPrice}
+                          <span className="text-xl">₹</span>
+                          {item.minPrice < 1 ? (
+                            <>{item.minPrice * 100} L</>
+                          ) : (
+                            <>{item.minPrice}</>
+                          )}
                           {" - "}
                           {item.maxPrice} Cr
                         </span>
@@ -105,4 +104,4 @@ const VillasProjects = () => {
   );
 };
 
-export default VillasProjects;
+export default KasauliProject;

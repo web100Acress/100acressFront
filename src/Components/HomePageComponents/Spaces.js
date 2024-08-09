@@ -5,11 +5,11 @@ function SpacesAvailable() {
   return (
     <Wrapper className="section">
       <div style={{ boxShadow: "0px 0px 30px 0px #0000001a" }}>
-      <div className="flex items-center mx-6 lg:mx-6 xl:mx-14 md:mx-6">
-            <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
+        <div className="flex items-center mx-6 lg:mx-6 xl:mx-14 md:mx-6">
+          <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
             Dream Property In The Heart of Gurugram
-            </h1>
-          </div>
+          </h1>
+        </div>
         <div className="_6sknMP pb-0">
           <Link to={`/property/residential/`} target="_top">
             <div className="_ksjMM _1fe2" title="Residential Projects">
@@ -32,7 +32,7 @@ function SpacesAvailable() {
             </div>
           </Link>
 
-          <Link to={`/projects/independentfloors/`}  target="_top">
+          <Link to={`/projects/independentfloors/`} target="_top">
             <div className="_ksjMM _1fe7" title="Builder & Independent Floor">
               <p className="_9gncbH">Builder & Independent</p>
               <p className="_4rgjvNN">Floor</p>
@@ -46,14 +46,12 @@ function SpacesAvailable() {
             </div>
           </Link>
 
-          <Link to={'/projects/villas'}  target="_top">
+          <Link to={"/projects/villas/"} target="_top">
             <div className="_ksjMM _1fe9" title="Villa's">
               <p className="_9gncbH">Luxury</p>
               <p className="_4rgjvNN">Villas</p>
             </div>
           </Link>
-
-      
         </div>
       </div>
     </Wrapper>

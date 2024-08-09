@@ -105,7 +105,7 @@ const BannerPage = () => {
       }
     };
     fetchData();
-  }, []);
+  });
 
   useEffect(() => {}, [projectViewDetails]);
 
@@ -839,7 +839,7 @@ const BannerPage = () => {
         </div>
 
         <div
-          className="grid grid-cols-1 md:grid-cols-3  lg:grid-cols-6 gap-2 px-4 pt-8"
+          className="grid grid-cols-1  md:grid-cols-3  lg:grid-cols-6 gap-2 px-4 pt-8"
           // style={{ backgroundColor: "#f7f1ec" }}
         >
           {Amenities &&
@@ -848,10 +848,10 @@ const BannerPage = () => {
             Amenities.map((item, index) => (
               <div
                 key={index}
-                className="uppercase p-3 m-4  text-black text-center border-[#012e29]  rounded-lg border-2 hover:bg-[#d9a253]"
+                 className="uppercase p-3 m-4 text-black text-center border-[#012e29] rounded-lg border-2 transition-colors duration-300  hover:bg-[#012e29]"
               >
                 {" "}
-                {item}
+               <span className="hover:text-white"> {item}</span>
               </div>
             ))}
         </div>
@@ -1054,12 +1054,9 @@ const BannerPage = () => {
         </div>
 
         <div>
-          <div className="w-full py-3 text-[#012e29] bg-white mt-auto">
+          <div className="w-full py-3 text-[#012e29]  mt-auto">
             <p className="text-center text-sm mb-0">
               Copyright © 2024,{" "}
-              <Link className="text-[#012e29]" to="https://100acress.com/">
-                100acress.com
-              </Link>{" "}
               All Rights Reserved
             </p>
           </div>

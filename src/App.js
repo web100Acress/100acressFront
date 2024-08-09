@@ -111,6 +111,7 @@ import Microtek from "./Pages/Microtek";
 import Possessionin2024 from "./Pages/Possessionin2024";
 import Possessionin2025 from "./Pages/Possessionin2025";
 import Mumbai from "./Pages/Mumbai";
+import KasauliProject from "./Pages/KasauliProject";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -204,6 +205,7 @@ function App() {
               <Route path="/project-in-noida/" element={<NoidaProject />} />
               <Route path="/project-in-panipat/" element={<PanipatProject />} />
               <Route path="/project-in-panchkula/" element={<Panchkula />} />
+              <Route path="/project-in-kasauli/" element={<KasauliProject />} />
               <Route path="/project-in-mumbai/" element={<Mumbai />} />
               <Route path="/dlf-homes-projects/" element={<DlfProject />} />
               <Route path="/project-in-goa/" element={<GoaProject />} />
