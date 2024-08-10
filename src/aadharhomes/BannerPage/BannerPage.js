@@ -17,7 +17,6 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { format, isValid, parseISO } from "date-fns";
 const BannerPage = () => {
-  
   //Side Form
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const handleShow = () => {
@@ -383,7 +382,7 @@ const BannerPage = () => {
           </span>
         </div>
 
-        <div className="w-full mt-10 lg:mt-16 md:mt-10 sm:mt-24 relative overflow-hidden bg-cover bg-no-repeat text-center">
+        <div className="w-full  mt-10  lg:mt-16 md:mt-10 sm:mt-24  bg-cover bg-no-repeat text-center">
           <div className="w-full overflow-hidden object-fit">
             <div className="flex justify-center">
               {frontImage?.url && (
@@ -781,8 +780,6 @@ const BannerPage = () => {
               }
             `}</style>
           </article>
-
-      
         </div>
 
         {/*Gallery Slider container */}
@@ -838,20 +835,16 @@ const BannerPage = () => {
           </h3>
         </div>
 
-        <div
-          className="grid grid-cols-1  md:grid-cols-3  lg:grid-cols-6 gap-2 px-4 pt-8"
-          // style={{ backgroundColor: "#f7f1ec" }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2 px-4 pt-8">
           {Amenities &&
             Array.isArray(Amenities) &&
             Amenities.length > 0 &&
             Amenities.map((item, index) => (
               <div
                 key={index}
-                 className="uppercase p-3 m-4 text-black text-center border-[#012e29] rounded-lg border-2 transition-colors duration-300  hover:bg-[#012e29]"
+                className="group uppercase p-3 m-4 text-black text-center border-[#012e29] rounded-lg border-2 transition-colors duration-300 hover:bg-[#012e29]"
               >
-                {" "}
-               <span className="hover:text-white"> {item}</span>
+                <span className="group-hover:text-white">{item}</span>
               </div>
             ))}
         </div>
@@ -1056,8 +1049,7 @@ const BannerPage = () => {
         <div>
           <div className="w-full py-3 text-[#012e29]  mt-auto">
             <p className="text-center text-sm mb-0">
-              Copyright © 2024,{" "}
-              All Rights Reserved
+              Copyright © 2024, All Rights Reserved
             </p>
           </div>
         </div>

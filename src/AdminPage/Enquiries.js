@@ -7,36 +7,31 @@ const customStyle = {
 };
 
 const Enquiries = () => {
+  const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
-  const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const pageSize = 50;
-
-  const loadMore = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
-
-  const loadback = () => {
-    setPage((prevPage) => prevPage - 1);
-  };
+  const pageSize = 10; // Number of items per page displayed in the table
 
   const fetchData = async () => {
-    setLoading(true);
+    setLoading(true); // Change to true when loading
     try {
-      const res = await fetch(
-        `https://api.100acress.com/userViewAll?page=${page}&limit=${pageSize}`
-      );
-      const result = await res.json();
+      const response = await fetch(
+        `https://api.100acress.com/userViewAll?page=${page}&limit=100`
+      ); // Fetch 100 items in one go
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
       setData(result.data);
-      const totalItems = result.totalItems || result.data.length;
-      setTotalPages(Math.ceil(totalItems / pageSize));
+      setTotalPages(Math.ceil(result.data.length / pageSize));
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    setLoading(false);
+    setLoading(false); // Set loading to false once data is fetched
   };
 
   useEffect(() => {
@@ -47,28 +42,27 @@ const Enquiries = () => {
     setCurrentPage(pageNumber);
   };
 
-  const getSerialNumber = (index) => {
-    return (currentPage - 1) * pageSize + index + 1;
-  };
-
-  const filteredData = data.filter((item) => {
-    const searchLower = search.toLowerCase();
-    return (
-      (item.name ? item.name.toLowerCase().includes(searchLower) : false) ||
-      (item.mobile ? item.mobile.toString().includes(searchLower) : false) ||
-      (item.projectName
-        ? item.projectName.toLowerCase().includes(searchLower)
-        : false) ||
-      (item.status ? item.status.toLowerCase().includes(searchLower) : false) ||
-      (item.assign ? item.assign.toLowerCase().includes(searchLower) : false)
-    );
-  });
+  const filteredData = data.filter((item) => 
+    item.name.toLowerCase().includes(search.toLowerCase()) ||
+    item.mobile.includes(search) ||
+    item.projectName.toLowerCase().includes(search.toLowerCase())
+  );
 
   const currentData = filteredData.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
-  console.log(data,"data")
+
+  const loadMore = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  const loadback = () => {
+    setPage((prevPage) => prevPage - 1);
+  };
+
+  const updatedLength = Math.ceil(filteredData.length / pageSize);
+
   return (
     <>
       <Sidebar />
@@ -112,139 +106,129 @@ const Enquiries = () => {
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {currentData.length > 0 ? (
-                currentData.map((item, index) => (
+
+            {currentData.length !== 0 ? (
+              <tbody className="bg-white divide-y divide-gray-200">
+                {currentData.map((item, index) => (
                   <tr key={index}>
                     <td className="px-6 py-2 text-center text-sm text-gray-800">
-                      {getSerialNumber(index)}
+                      {index + 1 + (currentPage - 1) * pageSize}
                     </td>
                     <td className="px-6 py-2 text-center text-sm text-gray-800">
-                      {item.name || "N/A"}
+                      {item.name}
                     </td>
                     <td className="px-6 py-2 text-center text-sm text-gray-800">
-                      {item.mobile || "N/A"}
+                      {item.mobile}
                     </td>
                     <td className="px-6 py-2 text-center text-sm text-gray-800">
-                      {item.projectName || "N/A"}
+                      {item.projectName}
                     </td>
                     <td className="px-6 py-2 text-center text-sm text-gray-800">
-                      {item.status || "N/A"}
-                      <div className="flex flex-col items-center mt-2">
+                      <div className="flex flex-col items-center">
                         <div className="flex items-center">
                           <input
                             type="radio"
-                            id={`complete-${index}`}
-                            name={`status-${index}`}
+                            name={`status_${index}`}
                             value="Complete"
                             className="mr-1"
                           />
-                          <label
-                            htmlFor={`complete-${index}`}
-                            className="text-sm"
-                          >
-                            Complete
-                          </label>
+                          <label className="text-sm">Complete</label>
                         </div>
                         <div className="flex items-center">
                           <input
                             type="radio"
-                            id={`notcomplete-${index}`}
-                            name={`status-${index}`}
+                            name={`status_${index}`}
                             value="Uncomplete"
                             className="mr-1"
                           />
-                          <label
-                            htmlFor={`notcomplete-${index}`}
-                            className="text-sm"
-                          >
-                            Not Complete
-                          </label>
+                          <label className="text-sm">Not Complete</label>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-2 text-center text-sm text-gray-800">
-                      {item.assign || "N/A"}
-                      <div className="flex justify-center mt-2">
-                        <input
-                          type="radio"
-                          id={`assign-${index}-parul`}
-                          name={`assign-${index}`}
-                          value="Parul"
-                          className="mr-1"
-                        />
-                        <label
-                          htmlFor={`assign-${index}-parul`}
-                          className="text-sm"
-                        >
-                          Parul
-                        </label>
-                        <input
-                          type="radio"
-                          id={`assign-${index}-anurag`}
-                          name={`assign-${index}`}
-                          value="Anurag"
-                          className="ml-2 mr-1"
-                        />
-                        <label
-                          htmlFor={`assign-${index}-anurag`}
-                          className="text-sm"
-                        >
-                          Anurag
-                        </label>
+                      <div className="flex justify-center">
+                        <div className="flex items-center">
+                          <input
+                            type="radio"
+                            name={`assign_${index}`}
+                            value="Parul"
+                            className="mr-1"
+                          />
+                          <label className="text-sm">Parul</label>
+                        </div>
+                        <div className="flex items-center ml-4">
+                          <input
+                            type="radio"
+                            name={`assign_${index}`}
+                            value="Anurag"
+                            className="mr-1"
+                          />
+                          <label className="text-sm">Anurag</label>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-2 text-center text-sm text-gray-800"></td>
+                    <td className="px-6 py-2 text-center text-sm text-gray-800">
+                      {new Date(item.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: "long", year: 'numeric' })}
+                    </td>
                   </tr>
-                ))
-              ) : (
+                ))}
+              </tbody>
+            ) : (
+              <tbody>
                 <tr>
-                  <td colSpan="7" className="text-center py-4 text-gray-500">
-                    No more data
+                  <td colSpan="7" className="text-center py-4">
+                    No more data.
                   </td>
                 </tr>
-              )}
-            </tbody>
+              </tbody>
+            )}
           </table>
-        </div>
+          {loading && <p>Loading...</p>}
+          <div className="flex justify-center items-center my-4">
+            {page === 1 ? (
+              <button
+                className="px-4 py-2 mx-1 rounded bg-gray-200 text-gray-700 cursor-not-allowed"
+                disabled={loading}
+              >
+                Previous
+              </button>
+            ) : (
+              <button
+                className="px-4 py-2 mx-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
+                onClick={loadback}
+                disabled={loading}
+              >
+                Previous
+              </button>
+            )}
 
-        <div className="flex items-center justify-center space-x-2">
-          {page === 1 ? (
-            <button className="hidden" onClick={loadback} disabled={loading}>
-              previous
-            </button>
-          ) : (
-            <button
-              className="px-4 py-2 bg-gray-500 text-white rounded-lg transition duration-200 ease-in-out hover:bg-gray-700"
-              onClick={loadback}
-              disabled={loading}
-            >
-              previous
-            </button>
-          )}
-          {Array.from({ length: 10 }, (_, index) => (
-            <button
-              className={`px-4 py-2 rounded-lg transition duration-200 ease-in-out 
-        ${
-          currentPage === index + 1
-            ? "bg-blue-600 text-white cursor-not-allowed"
-            : "bg-gray-500 text-white hover:bg-gray-700"
-        }`}
-              key={index + 1}
-              onClick={() => handleClick(index + 1)}
-              disabled={currentPage === index + 1}
-            >
-              {index + 1 + (page - 1) * 10}
-            </button>
-          ))}
+            {Array.from({ length: updatedLength }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handleClick(index + 1)}
+                disabled={currentPage === index + 1}
+                className={`px-4 py-2 mx-1 rounded ${
+                  currentPage === index + 1
+                    ? "bg-red-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                {index + 1 + (page - 1) * pageSize}
+              </button>
+            ))}
 
-          <button
-            className="px-4 py-2 bg-gray-500 text-white rounded-lg transition duration-200 ease-in-out hover:bg-gray-700"
-            onClick={loadMore}
-            disabled={loading}
-          >
-            next
-          </button>
+            {currentData.length === 0 ? (
+              <> </>
+            ) : (
+              <button
+                className="px-4 py-2 mx-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
+                onClick={loadMore}
+                disabled={loading}
+              >
+                Next
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </>

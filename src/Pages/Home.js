@@ -1233,7 +1233,7 @@ function Home() {
     goaData,
     dlfProject,
   } = useContext(DataContext);
-
+ 
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
@@ -1365,6 +1365,7 @@ function Home() {
           </div>
         </div>
         {
+          
           <section className="flex flex-col items-center bg-orange-100">
             <div className="grid max-w-md bg-orange-100 grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {upcoming.map((item, index) => {

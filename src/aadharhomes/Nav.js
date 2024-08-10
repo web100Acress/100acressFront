@@ -760,7 +760,7 @@ export default function Nav() {
                           </Link>
 
                           <Link
-                            to={`/project-in-Kasauli/`}
+                            to={`/project-in-kasauli/`}
                             className="block text-sm px-4    hover:text-red-600"
                           >
                             Projects in Kasauli

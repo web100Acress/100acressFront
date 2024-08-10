@@ -99,7 +99,7 @@ export const DataProvider = ({ children }) => {
       const upcomingProjects = projectsData.filter(
         (project) =>
           project.projectOverview === "upcoming" ||
-          project.projectReraNo === "upcoming"
+          project.projectReraNo === "upcoming"   
       );
 
       const featuredProjects = projectsData.filter(
