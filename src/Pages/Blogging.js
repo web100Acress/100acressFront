@@ -31,7 +31,7 @@ const Blogging = () => {
         </p>
       </div>
 
-      <section className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-16 mx-4">
+      <section className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-16 mx-10">
         {" "}
         {blogData.slice(0, 4).map((item, index) => {
           const blogTitle = item.blog_Title;
@@ -67,6 +67,9 @@ const Blogging = () => {
           );
         })}
       </section>
+
+
+
 
       <div className="mx-4 sm:mx-10 max-w-screen-xl pt-4 text-center">
         <img

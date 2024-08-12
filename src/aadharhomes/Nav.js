@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { BarLoader } from "react-spinners";
 import {
   Box,
   Flex,
@@ -202,14 +203,15 @@ export default function Nav() {
   }, []);
 
   const keyframes = `
-  @keyframes moveHorizontal {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(100%);
-    }
+ @keyframes moveHorizontal {
+  0% {
+    transform: translateX(0);
   }
+  100% {
+    transform: translateX(100%); // Adjust this based on how far you want the loader to move
+  }
+}
+
 `;
 
   const [formDataInquiry, setFormDataInquiry] = useState({
@@ -828,7 +830,6 @@ export default function Nav() {
             </HStack>
 
             <Flex alignItems="center">
-            
               {/* <div className="" style={{ marginRight: "-40px" }}>
                 {token ? (
                   <Link to="/postproperty/">
@@ -941,18 +942,26 @@ export default function Nav() {
                               position: "absolute",
                               top: 0,
                               left: 0,
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                              animation: "moveHorizontal 1s linear infinite",
-                              backdropFilter: "blur(5px)",
-                              filter: "blur(5px)",
-                              width: "50px", // Set your fixed width here
+                              width: "100%", // Ensures the loader fills the button width
                               display: "flex",
-                              justifyContent: "center", // Center the loader horizontally
-                              alignItems: "center", // Center the loader vertically
+                              justifyContent: "flex-start", // Align items to the start (left)
+                              alignItems: "center",
+                              animation: "moveHorizontal 2s linear infinite", // Increased duration for slower movement
                             }}
                           >
-                            <ScaleLoader color="#FFFFFF" />
+                            <div
+                              className="rounded-full"
+                              style={{
+                                transform: "rotate(30deg)", // Rotate the loader to 30 degrees
+                              }}
+                            >
+                              <BarLoader
+                                color="#FFFFFF"
+                                width={5} // Width of the loader, adjust as needed
+                                height={22} // Thickness of the line
+                                speedMultiplier={0.05} // Lowered speed multiplier for slower animation
+                              />
+                            </div>
                           </div>
                           FREE
                           <style>{keyframes}</style>
@@ -984,23 +993,30 @@ export default function Nav() {
                               position: "absolute",
                               top: 0,
                               left: 0,
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                              animation: "moveHorizontal 1s linear infinite",
-                              backdropFilter: "blur(5px)",
-                              filter: "blur(5px)",
                               width: "100%", // Ensures the loader fills the button width
                               display: "flex",
-                              justifyContent: "center",
+                              justifyContent: "flex-start", // Align items to the start (left)
                               alignItems: "center",
+                              animation: "moveHorizontal 2s linear infinite", // Increased duration for slower movement
                             }}
                           >
-                            <ScaleLoader color="#FFFFFF" />
+                            <div
+                              className="rounded-full"
+                              style={{
+                                transform: "rotate(30deg)", // Rotate the loader to 30 degrees
+                              }}
+                            >
+                              <BarLoader
+                                color="#FFFFFF"
+                                width={5} // Width of the loader, adjust as needed
+                                height={22} // Thickness of the line
+                                speedMultiplier={0.05} // Lowered speed multiplier for slower animation
+                              />
+                            </div>
                           </div>
                           <span style={{ position: "relative", zIndex: 1 }}>
                             FREE
                           </span>{" "}
-                          {/* Ensure 'FREE' is above the loader */}
                           <style>{keyframes}</style>
                         </button>
                       </Link>

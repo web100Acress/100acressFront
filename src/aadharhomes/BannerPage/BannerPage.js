@@ -284,6 +284,22 @@ const BannerPage = () => {
     }
     return format(date, "MMMM dd, yyyy");
   };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
+
+  const openModal = (image) => {
+    setCurrentImage(image);
+    setIsModalOpen(true);
+    document.body.style.overflow = "hidden"; // Prevent background scroll
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setCurrentImage(null);
+    document.body.style.overflow = "auto"; // Restore background scroll
+  };
+
   return (
     <Wrapper
       className="section"
@@ -730,56 +746,75 @@ const BannerPage = () => {
                       <img
                         src={image.url}
                         alt={`Image ${index + 1}`}
-                        className="w-full h-auto object-cover md:h-[400px] sm:h-[300px] mt-6"
+                        className="w-full h-auto object-cover md:h-[400px] sm:h-[300px] mt-6 cursor-pointer"
+                        onClick={() => openModal(image.url)}
                       />
                     </div>
                   ))}
               </Slider>
             </div>
-
-            <style jsx>{`
-              .relative {
-                margin: 0;
-                padding: 0;
-              }
-
-              .p-0 {
-                padding: 0;
-              }
-
-              img {
-                display: block;
-              }
-
-              @media (max-width: 768px) {
-                .absolute {
-                  top: 50%;
-                }
-
-                .left-5 {
-                  left: 2%;
-                }
-
-                .right-5 {
-                  right: 2%;
-                }
-              }
-
-              @media (max-width: 640px) {
-                .absolute {
-                  top: 50%;
-                }
-
-                .left-5 {
-                  left: 1%;
-                }
-
-                .right-5 {
-                  right: 1%;
-                }
-              }
-            `}</style>
           </article>
+
+          {isModalOpen && (
+            <div className="fixed inset-0 pt-20 bg-black bg-opacity-75 flex justify-center items-center z-50">
+              <div className="relative">
+                <button
+                  onClick={closeModal}
+                  className="absolute top-2 right-2 text-white text-xl bg-gray-800 p-2 rounded-full z-10"
+                >
+                  &times;
+                </button>
+                <img
+                  src={currentImage}
+                  alt="Full View"
+                  className="max-w-[80vw] max-h-[80vh] object-contain"
+                />
+              </div>
+            </div>
+          )}
+
+          <style jsx>{`
+            .relative {
+              margin: 0;
+              padding: 0;
+            }
+
+            .p-0 {
+              padding: 0;
+            }
+
+            img {
+              display: block;
+            }
+
+            @media (max-width: 768px) {
+              .absolute {
+                top: 50%;
+              }
+
+              .left-5 {
+                left: 2%;
+              }
+
+              .right-5 {
+                right: 2%;
+              }
+            }
+
+            @media (max-width: 640px) {
+              .absolute {
+                top: 50%;
+              }
+
+              .left-5 {
+                left: 1%;
+              }
+
+              .right-5 {
+                right: 1%;
+              }
+            }
+          `}</style>
         </div>
 
         {/*Gallery Slider container */}
