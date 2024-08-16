@@ -122,7 +122,7 @@ function Cities() {
           </div>
 
           <div className="cvBMLN text-justify">
-            <Link to={`/property-in-gurugram/NH-48/`} target="_top">
+            <Link to={`/property-in-gurugram/nh-48/`} target="_top">
               <div
                 className={`asdDRsfVN bg-nine ${
                   selectedRoad === "NH-48" ? "selected" : ""

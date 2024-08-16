@@ -52,6 +52,8 @@ export const DataProvider = ({ children }) => {
   const [possessionin2024, setPossessionin2024] = useState([]);
   const [possessionin2025, setPossessionin2025] = useState([]);
   const [mumbaiProject, setMumbaiProject] = useState([]);
+  const [nh48, setNh48] = useState([]);
+  const [mgRoad, setMgRoad] = useState([]);
   const [possessionDate, setPossessionDate] = useState(() => {
     try {
       const storedDate = localStorage.getItem("possessionDate");
@@ -99,7 +101,7 @@ export const DataProvider = ({ children }) => {
       const upcomingProjects = projectsData.filter(
         (project) =>
           project.projectOverview === "upcoming" ||
-          project.projectReraNo === "upcoming"   
+          project.projectReraNo === "upcoming"
       );
 
       const featuredProjects = projectsData.filter(
@@ -146,9 +148,12 @@ export const DataProvider = ({ children }) => {
       });
 
       const deenDayalPlots = projectsData.filter((project) => {
-        return (project.type === "Deen Dayal Plots" || project.type === "Residential Plots") && project.city === 'Gurugram';
+        return (
+          (project.type === "Deen Dayal Plots" ||
+            project.type === "Residential Plots") &&
+          project.city === "Gurugram"
+        );
       });
-      
 
       const villasProject = projectsData.filter((project) => {
         return project.type === "Villas";
@@ -252,6 +257,18 @@ export const DataProvider = ({ children }) => {
         (project) => project.project_Status === "microtek"
       );
 
+      const nh48 = projectsData.filter(
+        (project) =>
+          project.projectAddress.includes("Sector 15B, NH-48") ||
+          project.projectAddress.includes("Sector 15 (2), NH 48") ||
+          project.projectAddress.includes("NH-48")
+      );
+
+      const mgRoad = projectsData.filter(
+        (project) => project.projectAddress.includes("MG Road")
+      )
+      
+
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
       setFeaturedProject(featuredProjects);
@@ -291,7 +308,8 @@ export const DataProvider = ({ children }) => {
       setPossessionin2024(possessionin2024);
       setPossessionin2025(possessionin2025);
       setMumbaiProject(mumbaiProject);
-
+      setNh48(nh48);
+      setMgRoad(mgRoad);
     } catch (error) {
       console.log(error || error.message);
     }
@@ -306,7 +324,7 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-  const handleUserLogin = async (userLogin) => {  
+  const handleUserLogin = async (userLogin) => {
     const { email, password } = userLogin;
     if (email && password) {
       try {
@@ -446,6 +464,8 @@ export const DataProvider = ({ children }) => {
         m3mIndia,
         microtek,
         mumbaiProject,
+        nh48,
+        mgRoad
       }}
     >
       {children}

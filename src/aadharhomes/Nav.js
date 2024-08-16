@@ -279,6 +279,7 @@ export default function Nav() {
               _focus={{ boxShadow: "none" }}
               color="white"
             />
+
             <HStack
               spacing={isSmallerThan768 ? 0 : 8}
               alignItems="center"
@@ -295,6 +296,27 @@ export default function Nav() {
                   />
                 </Link>
               </Box>
+
+              {/* <Box position="relative">
+                <Link to="/">
+                  <Image
+                    maxW={["160px", "200px"]}
+                    minW={["50px", "70px"]}
+                    width={["xs", "sm", "md", "lg"]}
+                    src={logoImage}
+                    alt="100acress logo"
+                  />
+                  <Image
+                    src="../../../Images/IndiaFlag.avif"
+                    alt="Country Flag"
+                    position="absolute"
+                    top="1"
+                    left="200"
+                    width={["20px", "25px"]}
+                    height={["20px", "25px"]}
+                  />
+                </Link>
+              </Box> */}
 
               {!isSmallerThan768 && (
                 <>

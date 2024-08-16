@@ -16,11 +16,11 @@ const Enquiries = () => {
   const pageSize = 10; // Number of items per page displayed in the table
 
   const fetchData = async () => {
-    setLoading(true); // Change to true when loading
+    setLoading(true);
     try {
       const response = await fetch(
         `https://api.100acress.com/userViewAll?page=${page}&limit=100`
-      ); // Fetch 100 items in one go
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -31,7 +31,7 @@ const Enquiries = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    setLoading(false); // Set loading to false once data is fetched
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const Enquiries = () => {
     setCurrentPage(pageNumber);
   };
 
-  const filteredData = data.filter((item) => 
+  const filteredData = data.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase()) ||
     item.mobile.includes(search) ||
     item.projectName.toLowerCase().includes(search.toLowerCase())
@@ -63,6 +63,57 @@ const Enquiries = () => {
 
   const updatedLength = Math.ceil(filteredData.length / pageSize);
 
+  // Function to generate SVG content
+  const generateSVG = () => {
+    const headers = `
+      <tr>
+        ${["Sr.No", "Name", "Mobile", "Project Name", "Status", "Assign", "Date"]
+          .map(header => `<th>${header}</th>`)
+          .join('')}
+      </tr>
+    `;
+    const rows = currentData
+      .map((item, index) => `
+        <tr>
+          <td>${index + 1 + (currentPage - 1) * pageSize}</td>
+          <td>${item.name}</td>
+          <td>${item.mobile}</td>
+          <td>${item.projectName}</td>
+          <td>${item.status ? 'Complete' : 'Not Complete'}</td>
+          <td>${item.assign}</td>
+          <td>${new Date(item.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: "long", year: 'numeric' })}</td>
+        </tr>
+      `)
+      .join('');
+    const svgContent = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+        <foreignObject x="0" y="0" width="800" height="600">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: Arial, sans-serif;">
+            <table border="1" style="width: 100%; border-collapse: collapse; font-size: 14px;">
+              <thead>${headers}</thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </foreignObject>
+      </svg>
+    `;
+    return svgContent;
+  };
+
+  // Function to trigger download of SVG file
+  const downloadSVG = () => {
+    const svgContent = generateSVG();
+    const blob = new Blob([svgContent], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "data.svg";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <>
       <Sidebar />
@@ -80,7 +131,10 @@ const Enquiries = () => {
               Search
             </button>
           </div>
-          <button className="bg-blue-700 p-2 rounded-lg text-white ml-4">
+          <button
+            className="bg-blue-700 p-2 rounded-lg text-white ml-4"
+            onClick={downloadSVG}
+          >
             Download Data
           </button>
         </div>
@@ -124,48 +178,10 @@ const Enquiries = () => {
                       {item.projectName}
                     </td>
                     <td className="px-6 py-2 text-center text-sm text-gray-800">
-                      <div className="flex flex-col items-center">
-                        <div className="flex items-center">
-                          <input
-                            type="radio"
-                            name={`status_${index}`}
-                            value="Complete"
-                            className="mr-1"
-                          />
-                          <label className="text-sm">Complete</label>
-                        </div>
-                        <div className="flex items-center">
-                          <input
-                            type="radio"
-                            name={`status_${index}`}
-                            value="Uncomplete"
-                            className="mr-1"
-                          />
-                          <label className="text-sm">Not Complete</label>
-                        </div>
-                      </div>
+                      {item.status ? 'Complete' : 'Not Complete'}
                     </td>
                     <td className="px-6 py-2 text-center text-sm text-gray-800">
-                      <div className="flex justify-center">
-                        <div className="flex items-center">
-                          <input
-                            type="radio"
-                            name={`assign_${index}`}
-                            value="Parul"
-                            className="mr-1"
-                          />
-                          <label className="text-sm">Parul</label>
-                        </div>
-                        <div className="flex items-center ml-4">
-                          <input
-                            type="radio"
-                            name={`assign_${index}`}
-                            value="Anurag"
-                            className="mr-1"
-                          />
-                          <label className="text-sm">Anurag</label>
-                        </div>
-                      </div>
+                      {item.assign}
                     </td>
                     <td className="px-6 py-2 text-center text-sm text-gray-800">
                       {new Date(item.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: "long", year: 'numeric' })}
@@ -213,7 +229,7 @@ const Enquiries = () => {
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                 }`}
               >
-                {index + 1 + (page - 1) * pageSize}
+                {index + 1}
               </button>
             ))}
 

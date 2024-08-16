@@ -1,51 +1,26 @@
-import React, { useContext } from "react";
-import Nav from "../aadharhomes/Nav";
-import Footer from "../Components/Actual_Components/Footer";
-import { DataContext } from "../MyContext";
-import { Link, useParams } from "react-router-dom";
-const GurugramPrimeLocation = () => {
-  const { allProjectData } = useContext(DataContext);
-  const { location } = useParams();
- 
-  const stringWithSpaces = location.replace(/-/g, " ");
-  const words = stringWithSpaces.toLowerCase().split(" ");
-  const capitalizedWords = words.map(
-    (word) => word.charAt(0).toUpperCase() + word.slice(1)
-  );
-  const primel = capitalizedWords.join(" ");
-  let filteredProjects;
-
-  if (primel === "sohna") {
-    filteredProjects = allProjectData.filter(
-      (project) => project.projectAddress === "Sohna"
-    );
-  } else {
-    filteredProjects = allProjectData.filter((project) =>
-      project.projectAddress.includes(primel)
-    );
-  }
-
-  let result = location
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-
+import React, { useContext } from 'react'
+import Nav from '../aadharhomes/Nav';
+import Footer from '../Components/Actual_Components/Footer';
+import { DataContext } from '../MyContext';
+import { Link } from 'react-router-dom';
+const Nh48 = () => {
+  const {nh48} = useContext(DataContext)
   return (
     <div>
-      <Nav />
+       <Nav />
       <section className="flex flex-col items-center pt-2">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          Projects in {result}
+          Projects in NH-48
         </h1>
 
         <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
           Looking for prime Real Estate in Gurgaon? Explore our exquisite
           collection of Residential Apartments, Commercial Space, and SCO in{" "}
-          {result} Gurugram, offering unparalleled luxury and comfort. Find your
+          NH-48 Gurugram, offering unparalleled luxury and comfort. Find your
           dream property in Gurgaon today!
         </h2>
         <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {filteredProjects.map((item, index) => {
+          {nh48.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top" key={index}>
@@ -111,7 +86,7 @@ const GurugramPrimeLocation = () => {
       </section>
       <Footer />
     </div>
-  );
-};
+  )
+}
 
-export default GurugramPrimeLocation;
+export default Nh48

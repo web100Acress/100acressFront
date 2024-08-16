@@ -112,6 +112,8 @@ import Possessionin2024 from "./Pages/Possessionin2024";
 import Possessionin2025 from "./Pages/Possessionin2025";
 import Mumbai from "./Pages/Mumbai";
 import KasauliProject from "./Pages/KasauliProject";
+import Nh48 from "./Pages/Nh48";
+import MgRoad from "./Pages/MgRoad";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -252,6 +254,13 @@ function App() {
                 path="/property-in-gurugram/:location"
                 element={<GurugramPrimeLocation />}
               />
+              <Route path="/property-in-gurugram/nh-48" element={<Nh48 />} />
+
+              <Route
+                path="/property-in-gurugram/mg-road"
+                element={<MgRoad />}
+              />
+
               <Route path="*" element={<PageNotFound />} />
               <Route path="/contactmainpage" element={<ContactPage />} />
               <Route path="/searchdata/:key" element={<SearchData />} />

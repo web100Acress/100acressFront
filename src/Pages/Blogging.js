@@ -69,8 +69,6 @@ const Blogging = () => {
       </section>
 
 
-
-
       <div className="mx-4 sm:mx-10 max-w-screen-xl pt-4 text-center">
         <img
           className="sm:h-96 w-full object-cover my-4"

@@ -1220,6 +1220,7 @@ import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
+import Flag from "../Components/Flag";
 
 function Home() {
   const {
@@ -1233,11 +1234,11 @@ function Home() {
     goaData,
     dlfProject,
   } = useContext(DataContext);
- 
+
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
-
+      {/* <Flag/> */}
       <Helmet>
         <meta
           name="description"
@@ -1365,7 +1366,6 @@ function Home() {
           </div>
         </div>
         {
-          
           <section className="flex flex-col items-center bg-orange-100">
             <div className="grid max-w-md bg-orange-100 grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {upcoming.map((item, index) => {
@@ -1822,8 +1822,7 @@ function Home() {
         }
       </div>
 
-
-      <TopSeoPlots/>
+      <TopSeoPlots />
 
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 mb-0 pt-0">
         <div className="flex items-center">
@@ -2151,10 +2150,15 @@ function Home() {
       </div>
 
       <div>
-          <a href="https://wa.me/918500900100" class="dd-m-whatsapp" rel="noopener noreferrer" target="_blank">
-            <i class="fa-brands fa-whatsapp"></i>
-          </a>
-        </div>
+        <a
+          href="https://wa.me/918500900100"
+          class="dd-m-whatsapp"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+      </div>
 
       <PossessionProperty />
       <BackToTopButton />
@@ -2166,7 +2170,7 @@ function Home() {
 export default Home;
 
 const Wrapper = styled.section`
-.dd-m-phone {
+  .dd-m-phone {
     position: fixed;
     z-index: 999;
     bottom: 10px;
@@ -2183,18 +2187,18 @@ const Wrapper = styled.section`
     text-decoration: none;
     color: #fff; /* Icon color */
     font-size: 24px; /* Adjust icon size as needed */
-}
+  }
 
-.dd-m-phone:hover {
+  .dd-m-phone:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
-}
+  }
 
-.dd-m-phone i {
+  .dd-m-phone i {
     font-size: 24px; /* Adjust icon size as needed */
-}
+  }
 
-.dd-m-whatsapp {
+  .dd-m-whatsapp {
     position: fixed;
     z-index: 999;
     bottom: 70px;
@@ -2205,24 +2209,22 @@ const Wrapper = styled.section`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: #4AC557; /* Blue color for the icon background */
+    background-color: #4ac557; /* Blue color for the icon background */
     transition: 0.3s all ease;
     cursor: pointer;
     text-decoration: none;
     color: #fff; /* Icon color */
     font-size: 24px; /* Adjust icon size as needed */
-}
+  }
 
-.dd-m-whatsapp:hover {
+  .dd-m-whatsapp:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
-}
+  }
 
-.dd-m-whatsapp i {
+  .dd-m-whatsapp i {
     font-size: 24px; /* Adjust icon size as needed */
-}
-
-
+  }
 
   @media screen and (max-width: 600px) {
     .xjUWI {
@@ -2231,7 +2233,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 17vh !important;
-      background-image: url("../../Images/P1.png");
+      background-image: url("../../Images/RakhiM.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -2245,7 +2247,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/P1.png");
+      background-image: url("../../Images/RakhiM.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -2259,7 +2261,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 20vh !important;
-      background-image: url("../../Images/P1.png");
+      background-image: url("../../Images/RakhiM.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -2273,7 +2275,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/P1.png");
+      background-image: url("../../Images/RakhiM.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -2282,7 +2284,7 @@ const Wrapper = styled.section`
 
   @media screen and (max-width: 1800px) and (min-width: 601px) {
     .djqwUUJNCO {
-      background-image: url("../../Images/B.png");
+      background-image: url("../../Images/Rakhi.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
