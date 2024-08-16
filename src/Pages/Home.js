@@ -2233,7 +2233,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 17vh !important;
-      background-image: url("../../Images/RakhiM.png");
+      background-image: url("../../Images/RakhiM.svg");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -2247,7 +2247,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/RakhiM.png");
+      background-image: url("../../Images/RakhiM.svg");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -2261,7 +2261,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 20vh !important;
-      background-image: url("../../Images/RakhiM.png");
+      background-image: url("../../Images/RakhiM.svg");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -2275,7 +2275,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/RakhiM.png");
+      background-image: url("../../Images/RakhiM.svg");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
