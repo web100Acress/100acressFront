@@ -96,7 +96,7 @@ const BlogView = () => {
       <div className="flex flex-col">
         <div className="bg-white py-8">
           <div className="px-4 flex flex-col md:flex-row">
-            <div className="w-full md:w-3/4 px-4">
+            <div className="w-full md:w-[70%] px-4">
               <img
                 src={blog_Image && blog_Image.url}
                 alt="Blog"
@@ -112,38 +112,8 @@ const BlogView = () => {
               </div>
             </div>
 
-            <div className="w-full md:w-1/4 px-2">
-              <div>
-                {allupcomingProject.slice(0, 5).map((project, index) => {
-                  return (
-                    <Link
-                      to={`/${project.project_url}`}
-                      key={index}
-                      className="block mb-4 rounded-lg"
-                    >
-                      <div className="flex items-center rounded-md border border-gray-100 bg-white">
-                        <div className="h-20 w-20 overflow-hidden rounded-md flex-shrink-0">
-                          <img
-                            className="h-full w-full object-cover"
-                            src={project.frontImage.url}
-                            alt={project.frontImage.url}
-                          />
-                        </div>
-                        <div className="ml-4 w-64">
-                          <p className="text-lg mb-0 font-medium">
-                            {project.projectName}
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            {project.projectAddress}
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-
-              <div className="article-comment">
+            <div className="w-full md:w-[30%] px-2">
+            <div className="article-comment">
                 <h4 className="text-lg  text-red-500 m-0">Contact Us </h4>
                 <form id="contact-form">
                   <div className="row pt-3">
@@ -227,6 +197,38 @@ const BlogView = () => {
                   </div>
                 </form>
               </div>
+              <div>
+                {allupcomingProject.slice(0, 5).map((project, index) => {
+                  return (
+                    <Link
+                      to={`/${project.project_url}`}
+                      key={index}
+                      className="block mb-4 rounded-lg"
+                    >
+                      <div className="flex items-center rounded-md border border-gray-100 bg-white">
+                        <div className="flex flex-row h-[7rem] w-20 overflow-hidden rounded-md flex-shrink-0">
+                          <img
+                            className="h-auto w-full object-fit"
+                            src={project.frontImage.url}
+                            alt={project.frontImage.url}
+                          />
+                        </div>
+                        <div className="ml-3 w-64 ">
+                          <p className="lg:text-lg md:text-xs text-lg mb-0 font-bold">
+                            {project.projectName}
+                          </p>
+                          <p className="lg:text-sm md:text-xs sm:text-sm text-sm text-gray-400 mb-1">
+                            {project.projectAddress}
+                          </p>
+                          <p className="lg:text-sm md:text-xs sm:text-sm text-sm text-gray-400 ">
+                            {project.city},{project.state}
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>      
             </div>
           </div>
         </div>

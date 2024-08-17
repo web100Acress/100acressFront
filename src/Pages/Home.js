@@ -2197,6 +2197,7 @@ const Wrapper = styled.section`
   .dd-m-phone i {
     font-size: 24px; /* Adjust icon size as needed */
   }
+    
 
   .dd-m-whatsapp {
     position: fixed;
