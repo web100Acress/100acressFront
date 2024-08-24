@@ -6,7 +6,7 @@ import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
 import ProjectSearching from "./ProjectSearching";
 function Properties() {
-  const { allProjectData } = useContext(DataContext);
+  const { gurugramProject } = useContext(DataContext);
 
   return (
     <div style={{ overflowX: "hidden" }}>
@@ -29,7 +29,7 @@ function Properties() {
 
       <section className="flex flex-col items-center bg-white">
         <div className="mx-4 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
-          {allProjectData.map((item, index) => {
+          {gurugramProject.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">

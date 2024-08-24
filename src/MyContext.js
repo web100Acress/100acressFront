@@ -39,9 +39,7 @@ export const DataProvider = ({ children }) => {
   const [goaCityProject, setGoaCityProject] = useState([]);
   const [dlfAllProjects, setDlfAllProjects] = useState([]);
   const [villasProject, setVillasProject] = useState([]);
-  const [possessionIn2026AndBeyond, setpossessionIn2026AndBeyond] = useState(
-    []
-  );
+  const [possessionIn2026AndBeyond, setpossessionIn2026AndBeyond] = useState([]);
   const [bptp, setbptp] = useState([]);
   const [orris, setorris] = useState([]);
   const [jms, setJms] = useState([]);
@@ -54,6 +52,7 @@ export const DataProvider = ({ children }) => {
   const [mumbaiProject, setMumbaiProject] = useState([]);
   const [nh48, setNh48] = useState([]);
   const [mgRoad, setMgRoad] = useState([]);
+  const [gurugramProject, setGurugramProject] = useState([]);
   const [possessionDate, setPossessionDate] = useState(() => {
     try {
       const storedDate = localStorage.getItem("possessionDate");
@@ -267,6 +266,10 @@ export const DataProvider = ({ children }) => {
       const mgRoad = projectsData.filter(
         (project) => project.projectAddress.includes("MG Road")
       )
+
+      const gurugramProject =  projectsData.filter(
+        (project) => project.city === "Gurugram"
+      )
       
 
       setTrendingProject(trendingProjects);
@@ -310,6 +313,7 @@ export const DataProvider = ({ children }) => {
       setMumbaiProject(mumbaiProject);
       setNh48(nh48);
       setMgRoad(mgRoad);
+      setGurugramProject(gurugramProject)
     } catch (error) {
       console.log(error || error.message);
     }
@@ -409,6 +413,7 @@ export const DataProvider = ({ children }) => {
     );
     setFilteredProjects(filtered);
   };
+ 
 
   return (
     <DataContext.Provider
@@ -465,7 +470,8 @@ export const DataProvider = ({ children }) => {
         microtek,
         mumbaiProject,
         nh48,
-        mgRoad
+        mgRoad,
+        gurugramProject
       }}
     >
       {children}
