@@ -9,8 +9,8 @@ const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
   const [data, setData] = useState([]);
   const { id } = useParams();
-  const [buttonText, setButtonText] = useState('Submit');
-  const [responseMessage, setResponseMessage] = useState('');
+  const [buttonText, setButtonText] = useState("Submit");
+  const [responseMessage, setResponseMessage] = useState("");
   const [blogQuery, setBlogQuery] = useState({
     name: "",
     mobile: "",
@@ -18,7 +18,7 @@ const BlogView = () => {
     message: "",
     status: "",
   });
-   
+
   const resetData = () => {
     setBlogQuery({
       name: "",
@@ -42,15 +42,15 @@ const BlogView = () => {
       return;
     }
 
-    setButtonText('Submitting...');
+    setButtonText("Submitting...");
     try {
       const res = await axios.post(
         "https://api.100acress.com/contact_Insert",
         blogQuery
       );
-      setResponseMessage('Data submitted successfully');
+      setResponseMessage("Data submitted successfully");
       resetData();
-      setButtonText('Submit');
+      setButtonText("Submit");
     } catch (error) {
       if (error.response) {
         console.error("Server error:", error.response.data);
@@ -59,7 +59,7 @@ const BlogView = () => {
       } else {
         console.error("Error:", error.message);
       }
-      setButtonText('Submit');
+      setButtonText("Submit");
     }
   };
 
@@ -112,92 +112,94 @@ const BlogView = () => {
               </div>
             </div>
 
-            <div className="w-full md:w-[30%] px-2">
-            <div className="article-comment">
-                <h4 className="text-lg  text-red-500 m-0">Contact Us </h4>
+            <div className="w-full md:w-[30%] px-2 ">
+             
+
+              <div className="shadow-xl p-2 rounded-lg mb-4" style={{backgroundColor:"rgb(0,49,79)"}}>
+                <h4 className="text-xl text-white mb-3 text-center ">
+                Enquire Now
+                </h4>
                 <form id="contact-form">
-                  <div className="row pt-3">
-                    <div className="widget widget-tags">
-                      <div className="widget-body">
-                        <div className="row">
-                          <div className="col-md-12">
-                            <div className="form-group">
-                              <input
-                                name="name"
-                                onChange={handleBlogQueryChange}
-                                value={blogQuery.name}
-                                placeholder="Name *"
-                                className="form-control"
-                                type="text"
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-12 pt-2">
-                            <div className="form-group">
-                              <input
-                                name="email"
-                                value={blogQuery.email}
-                                onChange={handleBlogQueryChange}
-                                placeholder="Email *"
-                                className="form-control"
-                                type="email"
-                              />
-                            </div>
-                          </div>
+                  <div className="space-y-4 px-2">
+                    <div className="relative ">
+                    <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                      <input
+                        name="name"
+                        onChange={handleBlogQueryChange}
+                        value={blogQuery.name}
+                        placeholder="Name *"
+                        className="w-full pl-10 py-2 placeholder-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        type="text"
+                      />
+                    </div>
+                   
 
-                          <div className="col-md-12 pt-2">
-                            <div className="form-group">
-                              <input
-                                name="mobile"
-                                value={blogQuery.mobile}
-                                onChange={handleBlogQueryChange}
-                                placeholder="Mobile *"
-                                className="form-control"
-                                type="number"
-                              />
-                            </div>
-                          </div>
+                    <div className="relative">
+                    <i className="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                      <input
+                        name="email"
+                        value={blogQuery.email}
+                        onChange={handleBlogQueryChange}
+                        placeholder="Email *"
+                        className="w-full py-2 pl-10 placeholder-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        type="email"
+                      />
+                    </div>
 
-                          <div className="col-md-12 pt-2 ">
-                            <div className="form-group">
-                              <input
-                                name="message"
-                                value={blogQuery.message}
-                                onChange={handleBlogQueryChange}
-                                placeholder="Message *"
-                                className="form-control"
-                              />
-                            </div>
-                          </div>
+                    <div className="relative">
+                      <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                      <input
+                        name="mobile"
+                        value={blogQuery.mobile}
+                        onChange={handleBlogQueryChange}
+                        placeholder="Mobile *"
+                        className="w-full py-2 pl-10 placeholder-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        type="number"
+                      />
+                    </div>
 
-                          <div className="col-md-12 pt-2  ">
-                            <div className="form-group">
-                              <input
-                                name="addresss"
-                                id="address"
-                                placeholder="Address *"
-                                className="form-control"
-                                type="hidden"
-                              />
-                            </div>
-                          </div>
-                          {responseMessage && <p className="text-[12px] mb-0 text-red-600">{responseMessage}</p>}
-                          <div className="col-md-12 pt-2">
-                            <button
-                              className="px-btn theme px-2 py-1 rounded-md bg-red-500 text-red-500"
-                              onClick={handleBlogSubmitQueryData}
-                            >
-                              <span className="text-white">{buttonText}</span>{" "}
-                              <i className="arrow text-red-500" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+                    <div className="relative">
+                    <i className="fa-solid fa-message absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                      <input
+                        name="message"
+                        value={blogQuery.message}
+                        onChange={handleBlogQueryChange}
+                        placeholder="Message *"
+                        className="w-full py-2 pl-10 placeholder-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                      />
+                    </div>
+
+                    <div className="form-group hidden">
+                      <input
+                        name="addresss"
+                        id="address"
+                        placeholder="Address *"
+                        className="w-full p-2 placeholder-black rounded-md"
+                        type="hidden"
+                      />
+                    </div>
+
+                    {responseMessage && (
+                      <p className="text-xs mb-0 text-red-600">
+                        {responseMessage}
+                      </p>
+                    )}
+
+                    <div>
+                      <button
+                        className="w-full py-2 px-4 rounded-md bg-red-500 text-white flex items-center justify-center space-x-2 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                        onClick={handleBlogSubmitQueryData}
+                      >
+                        <span>{buttonText}</span>
+                        <i className="arrow text-red-500" />
+                      </button>
                     </div>
                   </div>
                 </form>
               </div>
               <div>
+                <p className="text-xl xl:text-2xl lg:text-lg md:text-sm sm:text-3xl text-bold text-red-600">Trending Projects in Gurugram</p></div>
+              <div className="">
                 {allupcomingProject.slice(0, 5).map((project, index) => {
                   return (
                     <Link
@@ -205,8 +207,8 @@ const BlogView = () => {
                       key={index}
                       className="block mb-4 rounded-lg"
                     >
-                      <div className="flex items-center rounded-md border border-gray-100 bg-white">
-                        <div className="flex flex-row h-[7rem] w-20 overflow-hidden rounded-md flex-shrink-0">
+                      <div className="flex items-center rounded-md shadow-lg bg-white">
+                        <div className="flex flex-row h-[7rem] lg:w-[8rem] md:w-[5rem] sm:[6rem]  w-[6rem] overflow-hidden rounded-md flex-shrink-0">
                           <img
                             className="h-auto w-full object-fit"
                             src={project.frontImage.url}
@@ -214,13 +216,13 @@ const BlogView = () => {
                           />
                         </div>
                         <div className="ml-3 w-64 ">
-                          <p className="lg:text-lg md:text-xs text-lg mb-0 font-bold">
+                          <p className="lg:text-sm md:text-xs text-lg mb-0 font-bold">
                             {project.projectName}
                           </p>
-                          <p className="lg:text-sm md:text-xs sm:text-sm text-sm text-gray-400 mb-1">
+                          <p className="lg:text-xs md:text-xs sm:text-sm text-sm text-gray-400 mb-1">
                             {project.projectAddress}
                           </p>
-                          <p className="lg:text-sm md:text-xs sm:text-sm text-sm text-gray-400 ">
+                          <p className="lg:text-xs md:text-xs sm:text-sm text-sm text-gray-400 ">
                             {project.city},{project.state}
                           </p>
                         </div>
@@ -228,7 +230,7 @@ const BlogView = () => {
                     </Link>
                   );
                 })}
-              </div>      
+              </div>
             </div>
           </div>
         </div>

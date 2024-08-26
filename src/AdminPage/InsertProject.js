@@ -301,7 +301,7 @@ const InsertProject = () => {
                 </option>
                 <option value="underconstruction">Under Construction</option>
                 <option value="comingsoon">Coming Soon</option>
-                <option value="newlunch">New Lunch</option>
+                <option value="newlaunch">New Launch</option>
                 <option value="readytomove">Ready To Move</option>
               </select>
             </div>
@@ -698,7 +698,7 @@ const InsertProject = () => {
 
             <input
               className="w-full mt-4 rounded-md border bg-white px-2 py-2 outline-none ring-black focus:ring-1"
-              type="email"
+              type="text"
               placeholder="Meta Title*"
               name="meta_title"
               value={editFromData.meta_title}
@@ -707,7 +707,7 @@ const InsertProject = () => {
 
             <input
               className="w-full mt-4 rounded-md border bg-white px-2 py-2 outline-none ring-black focus:ring-1"
-              type="email"
+              type="text"
               placeholder="Meta Description*"
               name="meta_description"
               value={editFromData.meta_description}

@@ -14,6 +14,7 @@ import {
   FormControl,
   FormHelperText,
 } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -50,80 +51,172 @@ const avatars = [
 ];
 
 export default function SignUp() {
-  const [isValidEmail, setIsValidEmail] = useState(true); // Step 2
-
-  // Step 3
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
   const history = useNavigate();
+  const toast = useToast();
+
+  const [onlyEmail, setOnlyEmail] = useState({
+    email: "",
+  });
 
   const [userSignUp, setUserSignUp] = useState({
     name: "",
-    email: "",
     mobile: "",
     password: "",
     cpassword: "",
+    email: "",
     role: "propertyOwner",
   });
 
+  const [checkOtp, setCheckOtp] = useState({
+    otp: "",
+  });
 
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [verificationStatus, setVerificationStatus] = useState("");
+  const [verificationOtp, setVerificationOtp] = useState("");
+  const handleChangeOnlyEmail = (e) => {
+    const { name, value } = e.target;
+    setOnlyEmail({ ...onlyEmail, [name]: value });
+  };
+
+  const handleCheckOtp = (e) => {
+    const { name, value } = e.target;
+    setCheckOtp((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const VerifyEmailCheck = async () => {
+    const { email } = onlyEmail;
+    if (!email) {
+      setVerificationStatus("Please enter a valid email.");
+      return;
+    }
+    try {
+      const res = await axios.post(
+        "https://api.100acress.com/postPerson/verifyEmail",
+        onlyEmail
+      );
+      if (res.status === 200) {
+        setUserSignUp((prevState) => ({
+          ...prevState,
+          email: onlyEmail.email,
+        }));
+  
+        toast({
+          description: "OTP sent successfully. Check your email!",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+          position: "top-right",
+        });
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {  // Assuming 409 is the status code for already registered email
+        toast({
+          description: "Email already registered. Please enter a different email.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+          position: "top-right",
+        });
+      } else {
+        console.log(error);
+      }
+    }
+  };
+  
+
+  const VerifyOtp = async () => {
+    const { otp } = checkOtp;
+  
+    if (!otp) {
+      setVerificationOtp("Please enter OTP!");
+      return;
+    }
+    try {
+      const res = await axios.post(
+        "https://api.100acress.com/postPerson/otp",
+        checkOtp
+      );
+  
+      if (res.status === 200) {
+        toast({
+          description: "OTP verified successfully!",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+          position: "top-right",
+        });
+        setOtpVerified(true);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) { 
+        toast({
+          description: "Incorrect OTP. Please try again.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+          position: "top-right",
+        });
+      } else {
+        console.log(error);
+      }
+    }
+  };
+  
 
   const resetData = () => {
     setUserSignUp({
       name: "",
-      email: "",
       mobile: "",
       password: "",
       cpassword: "",
+      email: onlyEmail.email,
     });
   };
 
   const [passwordHide, setpasswordHide] = useState(true);
+
   const handleHideUnHide = () => {
     setpasswordHide(!passwordHide);
   };
 
   const handleRegisterChange = (e) => {
     const { name, value } = e.target;
-
-    if (name === "email") {
-      setIsValidEmail(validateEmail(value));
-    }
-
     setUserSignUp({ ...userSignUp, [name]: value });
   };
 
+  const [buttonText, setButtonText] = useState("Create your Account");
 
-  const [buttonText, setButtonText] = useState('Create your Account');
-  const [responseMessage, setResponseMessage] = useState('')
+  const [responseMessage, setResponseMessage] = useState("");
+
   const handleUserRegister = () => {
-    const { name, email, mobile, password, cpassword } = userSignUp;
-   
-    if (name && email && mobile && password && password === cpassword) {
-     
+    const { name, mobile, password, cpassword, email } = userSignUp;
+
+    if (name && mobile && email && password && password === cpassword) {
       axios
         .post("https://api.100acress.com/postPerson/register", userSignUp)
-        
         .then((response) => {
-          setResponseMessage("Your accout is created, Please Signin");
+          // setResponseMessage("Your account is created, Please Sign in");
           history("/signin");
           resetData();
+
+          // Show the toast notification
+          toast({
+            description: "Your account is created, Please LogIn",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+            position: "top-right",
+          });
         })
-        
         .catch((error) => {
           console.error("Registration failed:", error);
-          if (error.response) {
-            setResponseMessage("The email is already registered.");
-          } else if (error.request) {
-            setResponseMessage("No response received from the server");
-          } else {
-            setResponseMessage(`Error setting up the request: ${error.message}`);
-          }
         });
     } else {
-      setResponseMessage("Please filled all data");
+      setResponseMessage("Please fill all fields");
     }
   };
 
@@ -137,13 +230,12 @@ export default function SignUp() {
   };
 
   const avatarSize = useBreakpointValue({ base: "md", md: "lg" });
-  const { name, email, mobile, password, cpassword } = userSignUp;
+  const { name, mobile, password, cpassword } = userSignUp;
   return (
     <>
       <Nav />
       <Box position={"relative"}>
         {name !== "" &&
-          email !== "" &&
           mobile !== "" &&
           password !== "" &&
           cpassword !== "" && <ToastContainer />}
@@ -164,7 +256,6 @@ export default function SignUp() {
               <Text
                 as={"span"}
                 bgGradient="linear(to-r, red.400,pink.500)"
-                
                 bgClip="text"
               >
                 100acress
@@ -255,111 +346,28 @@ export default function SignUp() {
             <Stack spacing={4}></Stack>
             <Box as={"form"}>
               <form>
-                <Stack spacing={4}>
-                  <Stack direction="row" isRequired spacing={4}>
-                  
-                    <RadioGroup
-                      onChange={(value) =>
-                        setUserSignUp({ ...userSignUp, role: value })
-                      }
-                      value={userSignUp.role}
-                      isRequired
-                      className="m-2"
-                      defaultValue="2"
+                <Stack spacing={2}>
+                  {/* We are working here */}
+                  <Flex direction="column" align="center" justify="center">
+                    <Text
+                      bgGradient="linear(to-r, red.400, pink.500)"
+                      bgClip="text"
+                      fontWeight="bold"
+                      textAlign="center"
+                      className="text-md xl:text-xl lg:text-lg md:text-sm sm:text-lg"
                     >
-                      <Stack spacing={5} direction="row" color="black">
-                        <Radio
-                          colorScheme="red"
-                          value="Agent"
-                          size="lg"
-                          isRequired
-                        >
-                          Agent
-                        </Radio>
-                        <Radio
-                          colorScheme="red"
-                          value="Owner"
-                          size="lg"
-                          isRequired
-                        >
-                          Owner
-                        </Radio>
-                        <Radio
-                          colorScheme="red"
-                          value="Developer"
-                          size="lg"
-                          isRequired
-                        >
-                          Developer
-                        </Radio>
-                      </Stack>
-                    </RadioGroup>
-                  </Stack>
-
-                  <FormControl>
-                    <Input
-                      placeholder="Full Name"
-                      name="name"
-                      type="text"
-                      onChange={handleRegisterChange}
-                      value={userSignUp.name}
-                      bg={"gray.100"}
-                      border={0}
-                      color={"gray.500"}
-                      _placeholder={{
-                        color: "gray.500",
-                      }}
-                    />
-                  </FormControl>
-
-                  <FormControl>
-                    <Input
-                      placeholder="Email@provider.com"
-                      name="email"
-                      type="email"
-                      value={userSignUp.email}
-                      onChange={handleRegisterChange}
-                      bg={"gray.100"}
-                      border={0}
-                      color={"gray.500"}
-                      _placeholder={{
-                        color: "gray.500",
-                      }}
-                    />
-                    {!isValidEmail && (
-                      <FormHelperText color="red.500">
-                        Invalid email format
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-
-                  <FormControl>
-                    <Input
-                      placeholder="+91 ____"
-                      name="mobile"
-                      type="tel"
-                      required
-                      onChange={handleRegisterChange}
-                      value={userSignUp.mobile}
-                      bg={"gray.100"}
-                      border={0}
-                      color={"gray.500"}
-                      _placeholder={{
-                        color: "gray.500",
-                      }}
-                      pattern="^[0-9]{10,}$"
-                      title="Please enter a valid numeric mobile number with at least 10 digits"
-                    />
-                  </FormControl>
+                      Please Fill The Form To Verify Your Email
+                    </Text>
+                  </Flex>
 
                   <FormControl>
                     <InputGroup>
                       <Input
-                        placeholder="Enter password"
-                        name="password"
-                        type={passwordHide ? "password" : "text"}
-                        onChange={handleRegisterChange}
-                        value={userSignUp.password}
+                        placeholder="Email@provider.com"
+                        name="email"
+                        type="email"
+                        value={onlyEmail.email}
+                        onChange={handleChangeOnlyEmail}
                         bg={"gray.100"}
                         border={0}
                         color={"gray.500"}
@@ -367,39 +375,202 @@ export default function SignUp() {
                           color: "gray.500",
                         }}
                       />
-                      <InputRightElement>
-                        {passwordHide ? (
-                          <FaEyeSlash onClick={handleHideUnHide} />
-                        ) : (
-                          <FaEye onClick={handleHideUnHide} />
-                        )}
+
+                      <InputRightElement width="auto">
+                        <Button
+                          size="xs"
+                          bgGradient="linear(to-r, red.400, pink.400)"
+                          color="white"
+                          _hover={{
+                            bgGradient: "linear(to-r, red.400, pink.400)",
+                          }}
+                          onClick={VerifyEmailCheck}
+                          className="lg:mr-4 mr-1 sm:mr-1"
+                        >
+                          Send OTP
+                        </Button>
                       </InputRightElement>
                     </InputGroup>
+                    {verificationStatus && (
+                      <p className="text-sm italic text-red-600 -mb-6">
+                        {verificationStatus}
+                      </p>
+                    )}
+                    <FormHelperText color={"green.500"}></FormHelperText>
                   </FormControl>
 
-                  <FormControl>
-                    <Input
-                      placeholder="Confirm password"
-                      name="cpassword"
-                      type="password"
-                      onChange={handleRegisterChange}
-                      value={userSignUp.cpassword}
-                      bg={"gray.100"}
-                      border={0}
-                      color={"gray.500"}
-                      _placeholder={{
-                        color: "gray.500",
-                      }}
-                    />
+                  <FormControl mt={4}>
+                    <InputGroup>
+                      <Input
+                        placeholder="Enter OTP"
+                        bg="gray.100"
+                        border={0}
+                        color="gray.500"
+                        _placeholder={{ color: "gray.500" }}
+                        name="otp"
+                        value={checkOtp.otp}
+                        onChange={handleCheckOtp}
+                        width="100%"
+                      />
+                      <InputRightElement width="auto">
+                        <Button
+                          size="xs"
+                          bgGradient="linear(to-r, green.400, teal.400)"
+                          color="white"
+                          _hover={{
+                            bgGradient: "linear(to-r, green.400, teal.400)",
+                          }}
+                          onClick={VerifyOtp}
+                          className="lg:mr-4 sm:mr-1"
+                        >
+                          Verify OTP
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
+                    {verificationOtp && (
+                      <p className="text-sm italic text-red-600 -mb-6">
+                        {verificationOtp}
+                      </p>
+                    )}
+                    <FormHelperText color={"green.500"}></FormHelperText>
                   </FormControl>
 
-                  {responseMessage && <p className="mb-0 text-red-600 text-sm ">{responseMessage}</p>}
+                  {/* We are working here End */}
+                  {otpVerified && (
+                    <>
+                      <Stack direction="row" isRequired spacing={4} mt={4}>
+                        <RadioGroup
+                          onChange={(value) =>
+                            setUserSignUp({ ...userSignUp, role: value })
+                          }
+                          value={userSignUp.role}
+                          isRequired
+                          className="m-2"
+                          defaultValue="2"
+                        >
+                          <Stack spacing={5} direction="row" color="black">
+                            <Radio
+                              colorScheme="red"
+                              value="Agent"
+                              size="lg"
+                              isRequired
+                            >
+                              Agent
+                            </Radio>
+                            <Radio
+                              colorScheme="red"
+                              value="Owner"
+                              size="lg"
+                              isRequired
+                            >
+                              Owner
+                            </Radio>
+                            <Radio
+                              colorScheme="red"
+                              value="Developer"
+                              size="lg"
+                              isRequired
+                            >
+                              Developer
+                            </Radio>
+                          </Stack>
+                        </RadioGroup>
+                      </Stack>
+
+                      <FormControl mt={4}>
+                        <Input
+                          placeholder="Email"
+                          name="email"
+                          type="text"
+                          value={userSignUp.email}
+                          bg={"gray.100"}
+                          border={0}
+                          color={"gray.500"}
+                          _placeholder={{ color: "gray.500" }}
+                          className="hidden"
+                        />
+                      </FormControl>
+                      <FormControl mt={-3}>
+                        <Input
+                          placeholder="Full Name"
+                          name="name"
+                          type="text"
+                          onChange={handleRegisterChange}
+                          value={userSignUp.name}
+                          bg={"gray.100"}
+                          border={0}
+                          color={"gray.500"}
+                          _placeholder={{ color: "gray.500" }}
+                        />
+                      </FormControl>
+
+                      <FormControl mt={4}>
+                        <Input
+                          placeholder="+91 ____"
+                          name="mobile"
+                          type="tel"
+                          required
+                          onChange={handleRegisterChange}
+                          value={userSignUp.mobile}
+                          bg={"gray.100"}
+                          border={0}
+                          color={"gray.500"}
+                          _placeholder={{ color: "gray.500" }}
+                          pattern="^[0-9]{10,}$"
+                          title="Please enter a valid numeric mobile number with at least 10 digits"
+                        />
+                      </FormControl>
+
+                      <FormControl mt={4}>
+                        <InputGroup>
+                          <Input
+                            placeholder="Enter password"
+                            name="password"
+                            type={passwordHide ? "password" : "text"}
+                            onChange={handleRegisterChange}
+                            value={userSignUp.password}
+                            bg={"gray.100"}
+                            border={0}
+                            color={"gray.500"}
+                            _placeholder={{ color: "gray.500" }}
+                          />
+                          <InputRightElement>
+                            {passwordHide ? (
+                              <FaEyeSlash onClick={handleHideUnHide} />
+                            ) : (
+                              <FaEye onClick={handleHideUnHide} />
+                            )}
+                          </InputRightElement>
+                        </InputGroup>
+                      </FormControl>
+
+                      <FormControl mt={4}>
+                        <Input
+                          placeholder="Confirm password"
+                          name="cpassword"
+                          type="password"
+                          onChange={handleRegisterChange}
+                          value={userSignUp.cpassword}
+                          bg={"gray.100"}
+                          border={0}
+                          color={"gray.500"}
+                          _placeholder={{ color: "gray.500" }}
+                        />
+                      </FormControl>
+                    </>
+                  )}
+
+                  {responseMessage && (
+                    <p className="mb-0 text-red-600 text-sm ">
+                      {responseMessage}
+                    </p>
+                  )}
                 </Stack>
 
                 <Button
                   fontFamily={"heading"}
                   onClick={handleClick}
-                  mt={3}
+                  mt={4}
                   w={"full"}
                   bgGradient="linear(to-r, red.400,pink.400)"
                   color={"white"}
@@ -416,7 +587,7 @@ export default function SignUp() {
                   fontFamily={"heading"}
                   bg={"gray.200"}
                   color={"gray.800"}
-                  mt={4}
+                  mt={6}
                   w={"full"}
                 >
                   Sign In
