@@ -6,7 +6,7 @@ const PossessionProperty = () => {
   return (
     <>
     <p className="px-8 mb-0 text-xl text-black  lg:text-3xl md:text-2xl font-bold  sm:text-xl xs:text-xl text-left ">
-        Move in now, next year or later
+       Timing is Everything: Move In Now or Wait?
         <br />
         <span className="text-sm  pt-1 font-normal">
           {" "}

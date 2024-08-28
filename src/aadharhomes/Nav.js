@@ -791,8 +791,6 @@ export default function Nav() {
                           </Link>
                         </div>
 
-                        {/* I am Working here */}
-
                         <div className="w-40">
                           <Link
                             to="#"
@@ -843,6 +841,39 @@ export default function Nav() {
                           >
                             Above ₹50 Cr
                           </Link>
+                        </div>
+                        {/* I am Working here */}
+                        <div className="w-48">
+                          <Link className="block text-black text-lg px-4 py-1 hover:text-red-600">
+                            Project Status
+                            <hr className="mt-1" />
+                          </Link>
+
+                          <Link
+                            to={"/projects/upcoming-projects-in-gurgaon/"}
+                            className="block text-sm px-4  hover:text-red-600"
+                          >
+                            Upcoming Projects
+                          </Link>
+
+                          <Link className="block text-sm px-4 py-1  hover:text-red-600">
+                            New Launch Projects
+                          </Link>
+
+                          <Link className="block text-sm px-4  hover:text-red-600">
+                            Under Construction
+                          </Link>
+
+
+                          <Link
+                            to={"/projects-in-gurugram/property-ready-to-move/"}
+                            className="block  py-1 text-sm px-4 hover:text-red-600"
+                          >
+                            Ready To Move
+                          </Link>
+                          
+                         
+                         
                         </div>
                       </div>
                     </div>

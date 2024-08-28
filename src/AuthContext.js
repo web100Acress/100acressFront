@@ -30,67 +30,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // const login = async (formData) => {
-  //   try {
-  //     const { email, password } = formData;
-  //     if (email && password) {
-  //       try {
-  //         const loginResponse = await axios.post(
-  //           "https://api.100acress.com/postPerson/verify_Login",
-  //           { email, password }
-  //         );
-  //         const newToken = loginResponse.data.token;
-  //         localStorage.setItem("myToken", JSON.stringify(newToken));
-  //         setToken(newToken);
-
-  //         if (loginResponse.status === 200) {
-  //           const roleResponse = await axios.get(
-  //             `https://api.100acress.com/postPerson/Role/${email}`
-  //           );
-  //           setAgentData(roleResponse.data.User);
-  //           // Save agentData to local storage
-  //           localStorage.setItem(
-  //             "agentData",
-  //             JSON.stringify(roleResponse.data.User)
-  //           );
-  //           if (roleResponse.status === 200) {
-  //             localStorage.setItem(
-  //               "userRole",
-  //               JSON.stringify(roleResponse.data.User.role)
-  //             );
-  //             const sellerId = roleResponse.data.User._id;
-  //             localStorage.setItem("mySellerId", JSON.stringify(sellerId));
-  //             if (roleResponse.data.User.role === "admin") {
-  //               history("/admin/acress/property/aadhar");
-  //             } else {
-  //               history("/userdashboard/");
-  //             }  
-  //           } else {
-  //             console.error("Role fetch failed:", roleResponse);
-  //             alert(
-  //               `Failed to fetch role information. Server responded with an error: ${roleResponse.status}`
-  //             );
-  //           }
-  //         } else {
-  //           console.error("Login failed:", loginResponse);
-  //           alert(
-  //             `Invalid credentials. Server responded with an error: ${loginResponse.status}`
-  //           );
-  //         }
-  //       } catch (error) {
-  //         console.error("Error during login:", error);
-  //         alert("The email address or password entered is not valid");
-  //       }
-  //     } else {
-  //       alert("Please Enter both Email and Password");
-  //     }
-  //     setIsAuthenticated(true);
-  //   } catch (error) {
-  //     throw new Error("Invalid username or password");
-  //   }
-  // };
-
-
   const login = async (formData) => {
     try {
       const { email, password } = formData;
@@ -121,7 +60,7 @@ export const AuthProvider = ({ children }) => {
               const sellerId = roleResponse.data.User._id;
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
               if (roleResponse.data.User.role === "Admin") {
-                history("/admin/acress/property/aadhar");
+                history("/Admin/dashboard");
               } else {
                 history("/userdashboard/");
                 window.location.reload()

@@ -939,7 +939,7 @@ function Home() {
       <WhyChoose />
 
       <Snapshot />
-      <HomeBuilderCarousel />
+      {/* <HomeBuilderCarousel /> */}
       <Free />
       <div>
         <div>
