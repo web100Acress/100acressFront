@@ -53,6 +53,8 @@ export const DataProvider = ({ children }) => {
   const [nh48, setNh48] = useState([]);
   const [mgRoad, setMgRoad] = useState([]);
   const [gurugramProject, setGurugramProject] = useState([]);
+  const [underConstruction, setUnderConstruction] = useState([]);
+  const [newLaunch, setNewLaunch] = useState([]);
   const [possessionDate, setPossessionDate] = useState(() => {
     try {
       const storedDate = localStorage.getItem("possessionDate");
@@ -270,6 +272,14 @@ export const DataProvider = ({ children }) => {
       const gurugramProject =  projectsData.filter(
         (project) => project.city === "Gurugram"
       )
+
+      const underConstruction = projectsData.filter(
+        (project) => project.project_Status === "underconstruction"
+      )
+
+      const newLaunch = projectsData.filter(
+        (project) => project.project_Status === "newlunch" || project.project_Status === "newlaunch"
+      )
       
 
       setTrendingProject(trendingProjects);
@@ -313,7 +323,9 @@ export const DataProvider = ({ children }) => {
       setMumbaiProject(mumbaiProject);
       setNh48(nh48);
       setMgRoad(mgRoad);
-      setGurugramProject(gurugramProject)
+      setGurugramProject(gurugramProject);
+      setUnderConstruction(underConstruction);
+      setNewLaunch(newLaunch)
     } catch (error) {
       console.log(error || error.message);
     }
@@ -471,7 +483,9 @@ export const DataProvider = ({ children }) => {
         mumbaiProject,
         nh48,
         mgRoad,
-        gurugramProject
+        gurugramProject,
+        underConstruction,
+        newLaunch,
       }}
     >
       {children}

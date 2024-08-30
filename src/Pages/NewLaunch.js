@@ -1,44 +1,52 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
+import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-const BudgetPrice = () => {
-  const { filteredProjects } = useContext(DataContext);
-  return (
-    <div style={{ overflowX: "hidden" }}>
-      <Nav />
 
+const NewLaunch = () => {
+  const { newLaunch } = useContext(DataContext);
+  return (
+    <div>
+      <Nav />
       <Helmet>
+        <title>
+          Projects in New Launch - Flats, Villas, House in gurugram.
+        </title>
         <meta
           name="description"
-          content="Discover the latest new projects in Gurgaon at 100acress.com. Explore upcoming residential Projects and Commercial Properties. Explore Top Real Estate Projects."
-        />
-        <title>
-          New Projects in Gurgaon | Best Real Estate at 100acress.com
-        </title>
-        <link
-          rel="canonical"
-          href="https://www.100acress.com/projects-in-gurugram/"
+          content="Real Estate Properties in New Panipat- Get Details for Residential &amp; Commercial Properties"
         />
       </Helmet>
 
-      <section className="flex flex-col items-center bg-white">
-        <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
-          {filteredProjects.map((item, index) => {
+      <section className="flex pt-2 flex-col items-center">
+        <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+          Projects in New Launch
+        </h1>
+
+        {/* <h2 className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+              Panipat is moving with important projects focusing on infrastructure
+              and industrial expansion. Logistics hubs and industrial parks are
+              helping to increase connectivity and the potential for financial
+              growth. Commercial and residential developments are also gaining
+              speed, aiming to improve urban living and aiding the city's growing
+              role as a logistics and business center.
+            </h2> */}
+        <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+          {newLaunch.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
                 <article
                   key={index}
-                  className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                  className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                 >
                   <div>
                     <img
                       src={item.frontImage.url}
                       alt="property In Gurugram"
-                      className="w-full h-48 object-fit "
+                      className="w-full h-48 object-fit"
                     />
                   </div>
                   <div className="p-4">
@@ -46,7 +54,6 @@ const BudgetPrice = () => {
                       <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
                       </span>
-
                       <br />
                       <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
                         {item.city}, {item.state}
@@ -63,7 +70,6 @@ const BudgetPrice = () => {
                         </li>
                       </li>
                     </ul>
-
                     <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
                       <li className="text-left">
                         <span className="text-sm font-extrabold text-red-600">
@@ -87,7 +93,6 @@ const BudgetPrice = () => {
                         </button>
                       </li>
                     </ul>
-                    
                   </div>
                 </article>
               </Link>
@@ -100,4 +105,4 @@ const BudgetPrice = () => {
   );
 };
 
-export default BudgetPrice;
+export default NewLaunch;

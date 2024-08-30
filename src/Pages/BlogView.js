@@ -38,7 +38,7 @@ const BlogView = () => {
     e.preventDefault();
     const { name, email, mobile, message } = blogQuery;
     if (!name || !email || !mobile || !message) {
-      alert("Please fill out all fields.");
+      setResponseMessage("Please fill out all fields.");
       return;
     }
 
@@ -180,7 +180,7 @@ const BlogView = () => {
                     </div>
 
                     {responseMessage && (
-                      <p className="text-xs mb-0 text-red-600">
+                      <p className="text-xs italic -mb-2 text-red-600">
                         {responseMessage}
                       </p>
                     )}

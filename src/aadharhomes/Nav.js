@@ -856,11 +856,11 @@ export default function Nav() {
                             Upcoming Projects
                           </Link>
 
-                          <Link className="block text-sm px-4 py-1  hover:text-red-600">
+                          <Link to={'/projects-in-newlaunch/'} className="block text-sm px-4 py-1  hover:text-red-600">
                             New Launch Projects
                           </Link>
 
-                          <Link className="block text-sm px-4  hover:text-red-600">
+                          <Link to={'/project-in-underconstruction/'} className="block text-sm px-4  hover:text-red-600">
                             Under Construction
                           </Link>
 
