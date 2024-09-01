@@ -15,13 +15,10 @@ import { DataContext } from "../MyContext";
 import { ScaleLoader } from "react-spinners";
 import Snapshot from "./Snapshot";
 import Resale from "./Resale";
-import HomeBuilderCarousel from "./HomeBuilderCarousel";
 import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
-import Flag from "../Components/Flag";
-
 function Home() {
   const {
     trendingProject,
@@ -38,7 +35,7 @@ function Home() {
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
-      {/* <Flag/> */}
+   
       <Helmet>
         <meta
           name="description"

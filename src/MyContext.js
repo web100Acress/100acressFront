@@ -64,7 +64,7 @@ export const DataProvider = ({ children }) => {
       return null;
     }
   });
-
+ 
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
@@ -102,7 +102,7 @@ export const DataProvider = ({ children }) => {
       const upcomingProjects = projectsData.filter(
         (project) =>
           project.projectOverview === "upcoming" ||
-          project.projectReraNo === "upcoming"
+          project.projectReraNo === "upcoming" ||project.projectName === 'Emaar Amaris - Digi Homes 2'
       );
 
       const featuredProjects = projectsData.filter(
@@ -216,6 +216,10 @@ export const DataProvider = ({ children }) => {
             project.minPrice >= minPrice && project.maxPrice <= maxPrice
         )
       );
+
+   
+
+
 
       const dlfProject = projectsData.filter(
         (project) =>

@@ -135,6 +135,8 @@ export default function Nav() {
     setPriceRange({ min, max });
   };
 
+  
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

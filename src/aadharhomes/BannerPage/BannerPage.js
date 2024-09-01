@@ -99,6 +99,15 @@ const BannerPage = () => {
           `https://api.100acress.com/projectView/${pUrl}`
         );
         setProjectViewDetails(res.data.dataview[0]);
+
+        // Construct the WhatsApp link with the dynamic data
+        const message = encodeURIComponent(
+          `Hello, I am interested in ${projectViewDetails.projectName}.`
+        );
+        const whatsappLink = `https://wa.me/918500900100?text=${message}`;
+        // Update the href attribute of the anchor tag
+        document.querySelector(".dd-m-whatsapp").href = whatsappLink;
+
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -1089,9 +1098,20 @@ const BannerPage = () => {
           </div>
         </div>
 
-        <div>
+        {/* <div>
           <a
             href="https://wa.me/918500900100"
+            class="dd-m-whatsapp"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div> */}
+
+        <div>
+          <a
+            href="#"
             class="dd-m-whatsapp"
             target="_blank"
             rel="noopener noreferrer"

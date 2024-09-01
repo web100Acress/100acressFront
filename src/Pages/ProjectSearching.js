@@ -7,9 +7,18 @@ const ProjectSearching = () => {
   const [project, setProject] = useState("");
   const [location, setLocation] = useState("");
   const [projectType, setProjectType] = useState("");
-  const [price, setPrice] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
   const [filteredProjects, setFilteredProjects] = useState([]);
+
+  const handlePriceChange = (e) => {
+    const [min, max] = e.target.value.split(",").map(value => value === "Infinity" ? Infinity : parseFloat(value));
+  
+    setMinPrice(min);
+    setMaxPrice(max);
+  };
+  
 
   const handleSearch = () => {
     const filtered = allProjectData.filter((item) => {
@@ -20,32 +29,13 @@ const ProjectSearching = () => {
           item.projectAddress.toLowerCase().includes(location.toLowerCase())) &&
         (projectType === "" ||
           item.type.toLowerCase().includes(projectType.toLowerCase())) &&
-        (price === "" || checkPriceRange(item.price, price)) &&
-        item.city.toLowerCase() === "gurugram" 
+        (minPrice === "" || item.minPrice >= minPrice) &&
+        (maxPrice === "" || item.maxPrice <= maxPrice) &&
+        item.city.toLowerCase() === "gurugram"
       );
     });
 
     setFilteredProjects(filtered);
-  };
-
-  // Function to check price range
-  const checkPriceRange = (itemPrice, selectedPrice) => {
-    switch (selectedPrice) {
-      case "under1cr":
-        return itemPrice < 10000000; // Assuming price is in integer format
-      case "1to5cr":
-        return itemPrice >= 10000000 && itemPrice <= 50000000;
-      case "5to10cr":
-        return itemPrice > 50000000 && itemPrice <= 100000000;
-      case "10to20cr":
-        return itemPrice > 100000000 && itemPrice <= 200000000;
-      case "20to50cr":
-        return itemPrice > 200000000 && itemPrice <= 500000000;
-      case "above50cr":
-        return itemPrice > 500000000;
-      default:
-        return true;
-    }
   };
 
   return (
@@ -53,6 +43,7 @@ const ProjectSearching = () => {
       <div className="hidden lg:flex items-center px-14 bg-gray-200 pt-3 justify-center">
         <div className="w-full">
           <div className="grid grid-cols-1 lg:grid-cols-5 md:grid-cols-1 sm:grid-cols-1 gap-4 pt-6 mb-4">
+
             <div className="relative">
               <input
                 type="text"
@@ -117,18 +108,22 @@ const ProjectSearching = () => {
             <div className="relative sm:col-span-1 hidden lg:block">
               <select
                 className="border-[1px] border-red-500 outline-none p-2 pr-8 w-full"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={handlePriceChange}
+                value={
+                  minPrice === "" && maxPrice === ""
+                    ? ""
+                    : `${minPrice},${maxPrice}`
+                }
               >
                 <option value="" disabled hidden>
                   Price
                 </option>
-                <option value="under1cr">Under 1 Cr</option>
-                <option value="1to5cr">1 to 5 Cr</option>
-                <option value="5to10cr">5 to 10 Cr</option>
-                <option value="10to20cr">10 to 20 Cr</option>
-                <option value="20to50cr">20 to 50 Cr</option>
-                <option value="above50cr">Above 50 Cr</option>
+                <option value="0,1">Under 1 Cr</option>
+                <option value="1,5">1 to 5 Cr</option>
+                <option value="5,10">5 to 10 Cr</option>
+                <option value="10,20">10 to 20 Cr</option>
+                <option value="20,50">20 to 50 Cr</option>
+                <option value="50,Infinity">Above 50 Cr</option>
               </select>
             </div>
 
@@ -138,6 +133,7 @@ const ProjectSearching = () => {
             >
               Search
             </button>
+            
           </div>
         </div>
       </div>

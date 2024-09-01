@@ -1,12 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 const Search = ({ data1 }) => {
- const [formData, setFormData] = useState({
+  const primeLocatons = [
+    "Sohna Road",
+    "Golf Course Road",
+    "MG Road",
+    "Northern Peripheral Road",
+    "Dwarka Expressway",
+    "New Gurgaon",
+    "Sohna",
+    "Southern Peripheral Road",
+    "NH-48",
+    "Golf Course Extn Road",
+  ];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const next = () => {
+    if (currentIndex < primeLocatons.length - 3) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+  
+  const prev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const [formData, setFormData] = useState({
     location: "",
     query: "",
     collectionName: data1,
   });
-
 
   useEffect(() => {
     setFormData((prevState) => ({
@@ -22,7 +46,6 @@ const Search = ({ data1 }) => {
       [name]: value,
     });
   };
-
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -42,7 +65,7 @@ const Search = ({ data1 }) => {
               placeholder="Enter Your Query"
               value={formData.query}
               onChange={handleInputChange}
-              onKeyPress={handleKeyPress} 
+              onKeyPress={handleKeyPress}
             />
           </div>
 
@@ -53,16 +76,37 @@ const Search = ({ data1 }) => {
               )}`,
               state: formData,
             }}
-            id="searchButton" 
+            id="searchButton"
             className="ml-2 my-1 mt-1 lg:mt-3 md:mt-3 sm:mt-2 lg:ml-0 md:ml-0 sm:ml-0"
           >
             <div className="w-8 h-8 flex items-center justify-center rounded-full bg-red-500">
               <i className="fas fa-search text-white"></i>
             </div>
           </Link>
-          
         </div>
       </div>
+
+      {/* Horizontal scrolling */}
+      
+      {/* <div className="w-full flex items-center justify-center pt-3   mx-auto">
+    <marquee>
+    <div className="flex overflow-hidden w-full ">
+      <div
+        className="flex transition-transform duration-300"
+        style={{ transform: `translateX(-${currentIndex * (100 / 3)}%)` }}
+      >
+        {primeLocatons.map((location, index) => (
+          <div key={index} className="w-auto flex-shrink-0 px-[2px]">
+            <span className="bg-gray-100 rounded-sm text-[15px] px-1 py-1 block text-center">
+              {location}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+    </marquee>
+  </div> */}
+  
     </>
   );
 };
