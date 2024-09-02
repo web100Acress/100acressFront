@@ -135,8 +135,6 @@ export default function Nav() {
     setPriceRange({ min, max });
   };
 
-  
-
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -758,7 +756,7 @@ export default function Nav() {
                           </Link>
 
                           <Link
-                            to="#"
+                            to="/project-in-ayodhya/"
                             className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Ayodhya
@@ -790,6 +788,16 @@ export default function Nav() {
                             className="block text-sm px-4    hover:text-red-600"
                           >
                             Projects in Kasauli
+                          </Link>
+
+                          <Link
+                            to=""
+                            className="block text-sm px-4 py-1 font-semibold text-red-600 hover:text-red-600 hover:underline"
+                          >
+                            Projects in Dubai{" "}
+                            <span className="font-bold text-sm text-red-600">
+                              *
+                            </span>
                           </Link>
                         </div>
 
@@ -858,14 +866,19 @@ export default function Nav() {
                             Upcoming Projects
                           </Link>
 
-                          <Link to={'/projects-in-newlaunch/'} className="block text-sm px-4 py-1  hover:text-red-600">
+                          <Link
+                            to={"/projects-in-newlaunch/"}
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
                             New Launch Projects
                           </Link>
 
-                          <Link to={'/project-in-underconstruction/'} className="block text-sm px-4  hover:text-red-600">
+                          <Link
+                            to={"/project-in-underconstruction/"}
+                            className="block text-sm px-4  hover:text-red-600"
+                          >
                             Under Construction
                           </Link>
-
 
                           <Link
                             to={"/projects-in-gurugram/property-ready-to-move/"}
@@ -873,9 +886,6 @@ export default function Nav() {
                           >
                             Ready To Move
                           </Link>
-                          
-                         
-                         
                         </div>
                       </div>
                     </div>

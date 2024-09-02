@@ -91,7 +91,7 @@ const NewSellProperty = () => {
     subType: "",
   });
 
-  const [selectedState, setSelectedState] = useState("Haryana");
+  const [selectedState, setSelectedState] = useState("Kerala");
   const [selectedCity, setSelectedCity] = useState("City");
 
   const countryCode = "IN";

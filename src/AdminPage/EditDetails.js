@@ -151,6 +151,7 @@ const EditDetails = () => {
                       <input
                         type="file"
                         name="otherImage"
+                        multiple
                         onChange={(e) => {
                           const file = e.target.files[0];
                           setValues({ ...values, otherImage: file });

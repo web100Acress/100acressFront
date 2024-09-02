@@ -55,6 +55,7 @@ export const DataProvider = ({ children }) => {
   const [gurugramProject, setGurugramProject] = useState([]);
   const [underConstruction, setUnderConstruction] = useState([]);
   const [newLaunch, setNewLaunch] = useState([]);
+  const [ayodhya, setAyodhya] = useState([]);
   const [possessionDate, setPossessionDate] = useState(() => {
     try {
       const storedDate = localStorage.getItem("possessionDate");
@@ -187,6 +188,10 @@ export const DataProvider = ({ children }) => {
       const kasauli = projectsData.filter(
         (project) => project.city === "Kasauli"
       );
+
+      const ayodhya = projectsData.filter(
+        (project) => project.city === "Ayodhya"
+      )
 
       const goaCityProject = projectsData.filter(
         (project) => project.city === "Goa"
@@ -329,7 +334,8 @@ export const DataProvider = ({ children }) => {
       setMgRoad(mgRoad);
       setGurugramProject(gurugramProject);
       setUnderConstruction(underConstruction);
-      setNewLaunch(newLaunch)
+      setNewLaunch(newLaunch);
+      setAyodhya(ayodhya);
     } catch (error) {
       console.log(error || error.message);
     }
@@ -490,6 +496,7 @@ export const DataProvider = ({ children }) => {
         gurugramProject,
         underConstruction,
         newLaunch,
+        ayodhya,
       }}
     >
       {children}

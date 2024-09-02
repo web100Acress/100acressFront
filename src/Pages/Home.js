@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Cities from "../Components/HomePageComponents/Cities";
 import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
@@ -32,10 +32,19 @@ function Home() {
     dlfProject,
   } = useContext(DataContext);
 
+  let reorderedTrendingProjects = [];
+  if (trendingProject.length > 0) {
+    reorderedTrendingProjects = [...trendingProject];
+    const lastElement = reorderedTrendingProjects.pop(); // Remove the last element
+    if (lastElement) {
+      reorderedTrendingProjects.unshift(lastElement); // Move the last element to the first position
+    }
+  }
+
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
-   
+
       <Helmet>
         <meta
           name="description"
@@ -73,7 +82,7 @@ function Home() {
         {
           <section className="flex flex-col bg-white items-center pt-1 ">
             <div className="grid max-w-md grid-cols-1  px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-              {trendingProject.map((item, index) => {
+              {reorderedTrendingProjects.map((item, index) => {
                 const pUrl = item.project_url;
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
@@ -994,7 +1003,6 @@ const Wrapper = styled.section`
   .dd-m-phone i {
     font-size: 24px; /* Adjust icon size as needed */
   }
-    
 
   .dd-m-whatsapp {
     position: fixed;

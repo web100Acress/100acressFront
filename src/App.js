@@ -116,6 +116,7 @@ import Nh48 from "./Pages/Nh48";
 import MgRoad from "./Pages/MgRoad";
 import UnderConstruction from "./Pages/UnderConstruction";
 import NewLaunch from "./Pages/NewLaunch";
+import Ayodhya from "./Pages/Ayodhya";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -210,6 +211,7 @@ function App() {
               <Route path="/project-in-panipat/" element={<PanipatProject />} />
               <Route path="/project-in-panchkula/" element={<Panchkula />} />
               <Route path="/project-in-kasauli/" element={<KasauliProject />} />
+              <Route path="/project-in-ayodhya/" element={<Ayodhya />} />
               <Route path="/project-in-mumbai/" element={<Mumbai />} />
               <Route path="/project-in-underconstruction/" element={<UnderConstruction />} />
               <Route path="/projects-in-newlaunch/" element={<NewLaunch />} />
