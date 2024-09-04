@@ -19,6 +19,7 @@ import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
+import DubaiDesign from "./DubaiDesign";
 function Home() {
   const {
     trendingProject,
@@ -61,6 +62,9 @@ function Home() {
           <SearchBar />
         </div>
       </div>
+
+
+     
 
       <div className="">
         {" "}
@@ -630,6 +634,10 @@ function Home() {
 
       <TopSeoPlots />
 
+
+      {/* <DubaiDesign/> */}
+
+
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 mb-0 pt-0">
         <div className="flex items-center">
           <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left ">
@@ -815,6 +823,10 @@ function Home() {
       </div>
 
       <Cities />
+
+
+      
+      
       {/* <StarCarousel /> */}
       <FormHome />
 

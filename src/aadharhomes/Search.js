@@ -94,7 +94,7 @@
 // };
 
 // export default Search;
-
+import { FaArrowRight } from "react-icons/fa";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 const Search = ({ data1 }) => {
@@ -116,6 +116,10 @@ const Search = ({ data1 }) => {
     {
       name: "Golf Course Extn Road",
       to: "/property-in-gurugram/golf-course-extn-road/",
+    },
+    {
+      name: "New Gurgaon",
+      to: "/property-in-gurugram/new-gurgaon/",
     },
   ];
 
@@ -176,11 +180,15 @@ const Search = ({ data1 }) => {
       {/* Horizontal scrolling */}
 
       <div className="w-full hidden lg:flex justify-center pt-1  mx-auto">
+        <span className="text-white  text-sm pt-1 font-semibold flex items-center">
+          Popular Search
+        </span>
+
         <div className="flex animate-scroll pt-1">
           {primeLocations.map((location, index) => (
-            <div key={index} className="w-auto flex-shrink-0 px-[1px]">
+            <div key={index} className="w-auto flex-shrink-0 px-[2px]">
               <Link to={location.to} target="_top" rel="noopener noreferrer">
-                <span className="bg-white rounded-sm text-black font-semibold text-[12px] px-2 py-1 hover:text-red-500 hover:underline-offset-8 cursor-pointer text-center">
+                <span className="bg-white rounded-full  text-black font-semibold text-[12px] px-2 py-1 hover:text-red-500 hover:underline-offset-8 cursor-pointer text-center">
                   {location.name}
                 </span>
               </Link>
