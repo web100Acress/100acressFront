@@ -22,7 +22,6 @@ import logoImage from "../Images/100acress.png";
 import axios from "axios";
 import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
-import { ScaleLoader } from "react-spinners";
 import { IoHeadsetOutline } from "react-icons/io5";
 import { IoCall } from "react-icons/io5";
 import { Ri24HoursLine } from "react-icons/ri";
@@ -129,14 +128,14 @@ const MenuListContainer = ({ isOpen }) => {
 
 export default function Nav() {
   // Filter Data budget wise
-  const { priceRange, setPriceRange } = useContext(DataContext);
+  const {  setPriceRange } = useContext(DataContext);
 
   const handlePriceClick = (min, max) => {
     setPriceRange({ min, max });
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [setShowLoginModal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
 
@@ -182,9 +181,9 @@ export default function Nav() {
     setMenuOpen1(false);
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  // const toggleDropdown = () => {
+  //   setIsDropdownOpen(!isDropdownOpen);
+  // };
 
   const handleLoginRegisterClick = () => {
     setShowLoginModal(true);
@@ -239,7 +238,7 @@ export default function Nav() {
       return;
     }
     try {
-      const res = await axios.post(
+      await axios.post(
         "https://api.100acress.com/contact_Insert",
         formDataInquiry
       );

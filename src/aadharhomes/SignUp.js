@@ -188,7 +188,7 @@ export default function SignUp() {
     setUserSignUp({ ...userSignUp, [name]: value });
   };
 
-  const [buttonText, setButtonText] = useState("Create your Account");
+  const [buttonText] = useState("Create your Account");
 
   const [responseMessage, setResponseMessage] = useState("");
 

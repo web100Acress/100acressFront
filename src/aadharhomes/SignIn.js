@@ -35,7 +35,6 @@ import Nav from "./Nav";
 import Free from "../../src/Pages/Free";
 import { AuthContext } from "../AuthContext";
 import { Helmet } from "react-helmet";
-import { useToast } from '@chakra-ui/react'
 const avatars = [
   {
     name: "Ashish Bhadauriya",
@@ -61,7 +60,6 @@ const avatars = [
 
 export default function SignIn() {
   const history = useNavigate();
-  const toast = useToast()
   const avatarSize = useBreakpointValue({ base: "md", md: "lg" });
   const { isOpen, onClose } = useDisclosure();
   const initialRef = React.useRef(null);
