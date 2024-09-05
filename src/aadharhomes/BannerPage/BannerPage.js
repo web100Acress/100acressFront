@@ -337,14 +337,13 @@ const BannerPage = () => {
            projectViewDetails.frontImage && projectViewDetails.frontImage.url
              ? `"image": "${projectViewDetails.frontImage.url}",`
              : ""
-         }
-       
+         },
         "location": {
-          "name": "${projectViewDetails.projectAddress}",
+          "name": "${projectViewDetails.projectAddress}${projectViewDetails.city}",
           "@type": "Place",
           "address": {
             "@type": "PostalAddress",
-            "name": "${projectViewDetails.projectAddress}"
+            "name": "${projectViewDetails.projectAddress}${projectViewDetails.city}"
           }
         }
       }

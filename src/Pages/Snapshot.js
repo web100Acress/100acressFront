@@ -1,16 +1,19 @@
 import React from "react";
 import { FaAward } from "react-icons/fa6";
+import "aos/dist/aos.css";
+import AOS from "aos";
+AOS.init(); 
 const Snapshot = () => {
   return (
     <>
       <div>
-        <p className="px-12 text-xl text-red-600 xl:text-4xl lg:text-3xl pt-4 md:text-2xl">
-          100acress.com Snapshot
+        <p data-aos="fade-up" data-aos-delay="200" className="px-12 text-xl text-red-600 xl:text-4xl lg:text-3xl pt-4 md:text-2xl">
+          100acress.com Snapshot 
         </p>
       </div>
       <div className="px-12 ">
-        <section className="relative overflow-hidden bg-gray-50 border-2 py-4 rounded-lg">
-          <p className="px-4 text-justify mb-0 hidden sm:block">
+        <section data-aos="fade-down" data-aos-delay="200" className="relative overflow-hidden bg-gray-50 border-2 py-4 rounded-lg">
+          <p  className="px-4 text-justify mb-0 hidden sm:block">
             100acress.com Real Estate Company specializes in providing premier
             property solutions tailored to meet your needs. With a diverse
             portfolio spanning residential, commercial, and industrial

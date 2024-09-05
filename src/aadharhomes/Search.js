@@ -47,6 +47,30 @@ const Search = ({ data1 }) => {
     }
   };
 
+  const placeholders = [
+    'Search "Villas"',
+    'Search "3 BHK Ready To Move Flat For Sale In Gurgaon"',
+    'Search "Best Properties"',
+    'Search "Delhi NCR"',
+    'Search "3 BHK Sale For Goa"',
+    'Search "Commercial Space For Sale In Gurgaon"' 
+    // Add more placeholders as needed
+  ];
+
+  const [currentPlaceholder, setCurrentPlaceholder] = useState(placeholders[0]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentPlaceholder((prev) => {
+        const currentIndex = placeholders.indexOf(prev);
+        const nextIndex = (currentIndex + 1) % placeholders.length;
+        return placeholders[nextIndex];
+      });
+    }, 3000); // Change the placeholder every second (1000 milliseconds)
+
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  }, []);
+
   return (
     <>
       <div className="w-70 bg-white border-white border-none lg:h-14 md:h-10 sm:h-8 rounded-lg lg:rounded-2xl md:rounded-xl sm:rounded-lg px-2 lg:px-4 md:px-3  sm:px-2">
@@ -56,7 +80,7 @@ const Search = ({ data1 }) => {
               className="outline-none w-full"
               type="text"
               name="query"
-              placeholder="Enter Your Query"
+              placeholder={currentPlaceholder}
               value={formData.query}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}

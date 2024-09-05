@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import Cities from "../Components/HomePageComponents/Cities";
 import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
@@ -823,10 +823,6 @@ function Home() {
       </div>
 
       <Cities />
-
-
-      
-      
       {/* <StarCarousel /> */}
       <FormHome />
 
@@ -956,7 +952,7 @@ function Home() {
       <OurServices />
       <WhyChoose />
 
-      <Snapshot />
+      {/* <Snapshot /> */}
       {/* <HomeBuilderCarousel /> */}
       <Free />
       <div>

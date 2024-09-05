@@ -1,14 +1,16 @@
 import React from 'react';
-
+import "aos/dist/aos.css";
+import AOS from "aos";
+AOS.init(); 
 function WhyChoose() {
   return (
     <section className="font-sans px-4">
       <div className="flex flex-col md:flex-row">
         <div className='w-full bg-white px-4 flex flex-col md:flex-row'>
-          <div className='w-full md:w-1/2 bg-white rounded-lg mb-4 xl:mt-2 lg:mt-10 md:mt-20'>
+          <div data-aos="fade-left" data-aos-delay="200" className='w-full md:w-1/2 bg-white rounded-lg mb-4 xl:mt-2 lg:mt-10 md:mt-20'>
             <img src="../Images/djfML.png" alt="100acress" className="w-full object-fit md:h-auto lg:h-auto rounded-lg" />
           </div>
-          <div className='w-full md:w-1/2 px-2'>
+          <div data-aos="fade-right" data-aos-delay="200" className='w-full md:w-1/2 px-2'>
             <p className="fw-semibold xl:mt-14 lg:mt-10 text-lg lg:text-4xl md:text-3xl sm:text-xl  ">
               Why 100acress.com?
             </p>
