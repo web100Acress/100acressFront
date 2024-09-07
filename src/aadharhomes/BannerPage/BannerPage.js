@@ -107,7 +107,6 @@ const BannerPage = () => {
         const whatsappLink = `https://wa.me/918500900100?text=${message}`;
         // Update the href attribute of the anchor tag
         document.querySelector(".dd-m-whatsapp").href = whatsappLink;
-
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -309,6 +308,19 @@ const BannerPage = () => {
     document.body.style.overflow = "auto"; // Restore background scroll
   };
 
+  let description = projectViewDetails?.project_discripation || "";
+
+  // Regular expression to find <a> tags with a URL
+  const linkRegex = /<a\s+href="([^"]+)"\s+style="color:black"><\/a>/;
+
+  // Define the link text you want to insert
+  const linkText = projectViewDetails.projectName;
+
+  // Replace the placeholder <a> tags with a new <a> tag containing the link text
+  description = description.replace(linkRegex, (match, p1) => {
+    return `<a href="${p1}" style="color:black">${linkText}</a>`;
+  });
+
   return (
     <Wrapper
       className="section"
@@ -326,27 +338,30 @@ const BannerPage = () => {
         />
         <script type="application/ld+json">
           {`
-      {
-        "@context": "https://schema.org",
-        "@type": "Event",
-        "name": "${projectViewDetails.projectName}",
-        "description":"${projectViewDetails.meta_description}" ,
-        "startDate": "${today.toISOString().split("T")[0]}",
-        "endDate": "${expirationDate}",
-         ${
-           projectViewDetails.frontImage && projectViewDetails.frontImage.url
-             ? `"image": "${projectViewDetails.frontImage.url}",`
-             : ""
-         },
-        "location": {
-          "name": "${projectViewDetails.projectAddress}${projectViewDetails.city}",
-          "@type": "Place",
-          "address": {
-            "@type": "PostalAddress",
-            "name": "${projectViewDetails.projectAddress}${projectViewDetails.city}"
-          }
+    {
+      "@context": "https://schema.org",
+      "@type": "Event",
+      "name": "${projectViewDetails.projectName}",
+      "description": "${projectViewDetails.meta_description}",
+      "startDate": "${today.toISOString().split("T")[0]}",
+      "endDate": "${expirationDate}",
+      ${
+        projectViewDetails.frontImage && projectViewDetails.frontImage.url
+          ? `"image": "${projectViewDetails.frontImage.url}",`
+          : ""
+      }
+      "location": {
+        "name": "${projectViewDetails.projectAddress} ${
+            projectViewDetails.city
+          }",
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "${projectViewDetails.city}",
+          "streetAddress": "${projectViewDetails.projectAddress}"
         }
       }
+    }
     `}
         </script>
       </Helmet>
@@ -496,9 +511,10 @@ const BannerPage = () => {
         </h1>
 
         <div className=" text-justify text-gray-700 m-4 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl pt-0 mt-1">
-          <span className="leading-relaxed">
-            {projectViewDetails.project_discripation}
-          </span>
+          <p className="leading-relaxed">
+            {/* {projectViewDetails.project_discripation} */}
+            <div dangerouslySetInnerHTML={{ __html: description }} />
+          </p>
         </div>
 
         {/* New Data  Design */}
@@ -851,10 +867,8 @@ const BannerPage = () => {
             dotListClass="custom-dot-list-style"
             itemClass="carousel-item-padding-40-px"
           >
-            {console.log(projectGallery)}
-            {projectGallery &&
-              Array.isArray(projectGallery) &&
-              projectGallery.length > 0 &&
+            {/* Check if projectGallery exists and is an array */}
+            {Array.isArray(projectGallery) && projectGallery.length > 0 ? (
               projectGallery.map((item, index) => (
                 <div key={index}>
                   {item && (
@@ -865,7 +879,10 @@ const BannerPage = () => {
                     />
                   )}
                 </div>
-              ))}
+              ))
+            ) : (
+              <p>No images available</p> // Fallback content if projectGallery is empty or undefined
+            )}
           </Carousel>
         </div>
 
