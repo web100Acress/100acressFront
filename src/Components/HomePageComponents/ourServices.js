@@ -1,261 +1,211 @@
 import React from "react";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
-function OurServices() {
-  return (
-    <Wrapper className="section">
-      <div className="max-w-screen-xl mx-auto px-6 py-6">
-        <div className="row ">
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-          <div className="col-md-3">
-            <div
-              className="col max-mb-30 aos-init aos-animate"
-              data-aos="fade-up"
-            >
-              {" "}
-              <Link to={`/contact-us/`} target="_top"
-                
-                className="icon-box text-center"
-                data-bg-color="#fff"
-                style={{ backgroundColor: "rgb(255, 255, 255)" }}
-                data-abc="true"
-              >
-                <div className="icon">
-                  {" "}
+
+function OurServices() {
+  const sliderSettings = {
+    dots: false,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows: true,
+  autoplay: true, 
+  autoplaySpeed: 3000, 
+  };
+  
+  return (
+    <div className="section bg-gray-100 font-poppins font-light">
+      <div className="max-w-screen-xl mx-auto px-6 py-6">
+      <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left  bg-gray-100">
+        Services We Offer
+      </h1>
+        <div className="md:hidden h-96">
+          <Slider {...sliderSettings} >
+            <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
+              <Link to={`/contact-us/`} target="_top" className="text-center">
+                <div className="mb-4">
                   <img
                     src="../../Images/consulting.jpg"
-                    style={{ height: "204px" }}
-                    width="240"
-                    height="220"
+                    className="h-52 w-60 object-fit"
                     alt="consulting"
-                  />{" "}
-                </div>
-                <div className="content">
-                  <h3 className="title fz-20">Real Estate Consulting</h3>
-                  <div className="desc ">
-                    <p className="text-justify items-center">
-                      We Provide the best services to help you get your dream
-                      home as per your expectations.
-                    </p>
-                  </div>{" "}
-                </div>
-              </Link>{" "}
-            </div>
-          </div>
-
-
-          <div className="col-md-3">
-            <div
-              className="col max-mb-30 aos-init aos-animate"
-              data-aos="fade-up"
-            >
-              {" "}
-              <Link to={`/contact-us/`} target="_top"
-              
-                className="icon-box text-center"
-                data-bg-color="#fff"
-                style={{ backgroundColor: "rgb(255, 255, 255)" }}
-                data-abc="true"
-              >
-                <div className="icon">
-                  {" "}
-                  <img
-                    src="../../Images/lawyer.jpg"
-                    style={{ height: "204px" }}
-                    width="220"
-                    height="220"
-                    
-                    alt="lawyer"
-                  />{" "}
-                </div>
-                <div className="content">
-                  <h3 className="title fz-20 ">Legal Advice</h3>
-                  <div className="desc">
-                    <p className="text-justify items-center">
-                      The major issue is trust worthy legal assistance. We will
-                      help you through all the aspect.
-                    </p>
-                  </div>{" "}
-                </div>
-              </Link>{" "}
-            </div>
-          </div>
-
-
-          <div className="col-md-3">
-            <div
-              className="col max-mb-10 aos-init aos-animate"
-              data-aos="fade-up"
-            >
-              {" "}
-              <Link to={`/contact-us/`} target="_top"
-               
-                className="icon-box text-center"
-                data-bg-color="#fff"
-                style={{ backgroundColor: "rgb(255, 255, 255)" }}
-                data-abc="true"
-              >
-                <div className="icon ">
-                  {" "}
-                  <img
-                    src="../../../Images/interiordesign.png"
-                    style={{ height: "204px" }}
-                    width="220"
-                    height="220"
-                    alt="interiordesign"
-                  />{" "}
-                </div>
-                <div className="content">
-                  <h3 className="title fz-20 ">Interior Design</h3>
-                  <div className="desc">
-                    <p className="text-justify items-center">
-                      These interior decoration ideas, tips, and tricks will
-                      help you make home decisions.
-                    </p>
-                  </div>{" "}
-                </div>
-              </Link>{" "}
-            </div>
-          </div>
-
-
-          <div className="col-md-3">
-            <div
-              className="col max-mb-30 aos-init aos-animate"
-              data-aos="fade-up"
-            >
-              {" "}
-              <Link to={`/contact-us/`} target="_top"
-                
-                className="icon-box text-center"
-                data-bg-color="#fff"
-                style={{ backgroundColor: "rgb(255, 255, 255)" }}
-                data-abc="true"
-              >
-                <div className="icon">
-                  {" "}
-                  <img
-                    src="../../Images/homeloan.jpg"
-                    style={{ height: "204px" }}
-                    width="220"
-                    height="220"
-                    alt="homeloan"
-                  />{" "}
-                </div>
-                <div className="content">
-                  <h3 className="title fz-20">Home Loan</h3>
-                  <div className="desc">
-                    <p className="text-justify items-center">
-                      We will help you to provide best home loan to complete
-                      your dream and guide.
-                    </p>
-                  </div>{" "}
-                </div>
-              </Link>{" "}
-            </div>
-          </div>
-
-          <div className="col-md-3 d-lg-none d-md-none">
-            <div
-              className="col  max-mb-30 aos-init aos-animate"
-              data-aos="fade-up"
-            >
-              <Link to={`/contact-us/`} target="_top"
-                className="icon-box text-center"
-                data-bg-color="#fff"
-                style={{ backgroundColor: "rgb(255, 255, 255)" }}
-                data-abc="true"
-              >
-                <div className="icon">
-                  <img
-                    src="../../Images/Construction.JPG"
-                    style={{ height: "204px" }}
-                    width="220"
-                    height="220"
-                    alt="Construction"
                   />
                 </div>
-                <div className="content">
-                  <h3 className="title fz-20">Construction</h3>
-                  <div className="desc">
-                    <p className="text-justify items-center">
-                      Skilled talents in real estate and construction are
-                      essential for translating social visions into tangible
-                      Smart Cities.
-                    </p>
-                  </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold mb-2">Real Estate Consulting</h3>
+                  <p className="text-gray-600 text-justify">
+                    We Provide the best services to help you get your dream home as per your expectations.
+                  </p>
                 </div>
               </Link>
             </div>
+            <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
+              <Link to={`/contact-us/`} target="_top" className="text-center">
+                <div className="mb-4">
+                  <img
+                    src="../../Images/lawyer.jpg"
+                    className="h-52 w-60 object-fit"
+                    alt="lawyer"
+                  />
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold mb-2">Legal Advice</h3>
+                  <p className="text-gray-600 text-justify">
+                  The major issue is trust worthy legal assistance. We will help you through all the aspects.
+                  </p>
+                </div>
+              </Link>
+            </div>
+            <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
+              <Link to={`/contact-us/`} target="_top" className="text-center">
+                <div className="mb-4">
+                  <img
+                    src="../../../Images/interiordesign.png"
+                    className="h-52 w-60 object-fit"
+                    alt="legal"
+                  />
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold mb-2">Interior Design</h3>
+                  <p className="text-gray-600 text-justify">
+                    We Provide the best services to help you get your dream home as per your expectations.
+                  </p>
+                </div>
+              </Link>
+            </div>
+            <div className="flex flex-col items-center bg-white p-4 rounded-lg">
+              <Link to={`/contact-us/`} target="_top" className="text-center">
+                <div className="mb-4">
+                  <img
+                    src="../../Images/homeloan.jpg"
+                    className="h-52 w-60 object-fit"
+                    alt="homeloan"
+                  />
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold mb-2">Home Loan</h3>
+                  <p className="text-gray-600 text-justify">
+                  We will help you to provide the best home loan to complete your dream and guide.
+                  </p>
+                </div>
+              </Link>
+            </div>
+            <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
+              <Link to={`/contact-us/`} target="_top" className="text-center">
+                <div className="mb-4">
+                  <img
+                    src="../../Images/Construction.JPG"
+                    className="h-52 w-60 object-fit"
+                    alt="construction"
+                  />
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold mb-2">Construction</h3>
+                  <p className="text-gray-600 text-justify">
+                  Skilled talents in real estate and construction are essential for translating social visions into tangible Smart Cities.
+                  </p>
+                </div>
+              </Link>
+            </div>
+          </Slider>
+          <style jsx>{`
+        .slick-prev {
+          left: 10px;
+          z-index: 1;
+        }
+        .slick-next {
+          right: 10px;
+          z-index: 1;
+        }
+        .slick-prev:before, .slick-next:before {
+          font-size: 24px;
+          color: #4a5568; /* Tailwind color-gray-600 */
+        }
+        .slick-prev:hover:before, .slick-next:hover:before {
+          color: #3182ce; /* Tailwind color-blue-600 */
+        }
+      `}</style>
+      
+        </div>
+
+ 
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
+          <Link to={`/contact-us/`} target="_top" className="text-center">
+                <div className="mb-4">
+                  <img
+                    src="../../Images/consulting.jpg"
+                    className="h-52 w-60 object-fit"
+                    alt="consulting"
+                  />
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold mb-2">Real Estate Consulting</h3>
+                  <p className="text-gray-600 text-justify">
+                    We Provide the best services to help you get your dream home as per your expectations.
+                  </p>
+                </div>
+              </Link>
           </div>
-
-
+          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
+          <Link to={`/contact-us/`} target="_top" className="text-center">
+                <div className="mb-4">
+                  <img
+                    src="../../Images/lawyer.jpg"
+                    className="h-52 w-60 object-fit"
+                    alt="lawyer"
+                  />
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold mb-2">Legal Advice</h3>
+                  <p className="text-gray-600 text-justify">
+                  The major issue is trust worthy legal assistance. We will help you through all the aspects.
+                  </p>
+                </div>
+              </Link>
+          </div>
+          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
+          <Link to={`/contact-us/`} target="_top" className="text-center">
+                <div className="mb-4">
+                  <img
+                    src="../../../Images/interiordesign.png"
+                    className="h-52 w-60 object-fit"
+                    alt="legal"
+                  />
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold mb-2">Interior Design</h3>
+                  <p className="text-gray-600 text-justify">
+                    We Provide the best services to help you get your dream home as per your expectations.
+                  </p>
+                </div>
+              </Link>
+          </div>
+          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
+          <Link to={`/contact-us/`} target="_top" className="text-center">
+                <div className="mb-4">
+                  <img
+                    src="../../Images/homeloan.jpg"
+                    className="h-52 w-60 object-fit"
+                    alt="homeloan"
+                  />
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold mb-2">Home Loan</h3>
+                  <p className="text-gray-600 text-justify">
+                  We will help you to provide the best home loan to complete your dream and guide.
+                  </p>
+                </div>
+              </Link>
+          </div>
+        
         </div>
       </div>
-    </Wrapper>
+    </div>
   );
 }
 
 export default OurServices;
-const Wrapper = styled.section`
-  body {
-    background-color: #d6d2d2;
-    font-family: "Poppins", sans-serif;
-    font-weight: 300;
-  }
-
-  .icon-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px 30px;
-    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-    border-radius: 5px;
-    z-index: 99;
-    text-decoration: none;
-    margin-bottom: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 40px rgba(51, 51, 51, 0.1);
-  }
-
-  .icon-box:hover {
-    transform: translateY(-15px);
-  }
-
-  .icon-box .content .title.fz-20 {
-    font-size: 20px;
-  }
-
-  .icon-box .content .title {
-    font-size: 24px;
-    line-height: 1.5;
-    margin: 0;
-    color: #3f3a64;
-  }
-
-  .icon-box .content .desc {
-    margin-top: 10px;
-  }
-
-  .icon-box .content .desc p {
-    line-height: 1.6;
-    color: #696969;
-  }
-
-  .icon-box .content .link {
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    margin-top: 34px;
-    padding: 5px 0;
-    color: #8c89a2;
-  }
-
-  .icon-box .content .link i {
-    font-size: 16px;
-    line-height: 14px;
-    margin-left: 14px;
-  }
-`;

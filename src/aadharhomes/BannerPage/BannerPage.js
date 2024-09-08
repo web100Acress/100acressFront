@@ -311,14 +311,15 @@ const BannerPage = () => {
   let description = projectViewDetails?.project_discripation || "";
 
   // Regular expression to find <a> tags with a URL
-  const linkRegex = /<a\s+href="([^"]+)"\s+style="color:black"><\/a>/;
+  const linkRegex =
+    /<a\s+href="([^"]+)"\s+style="color:black"\s*target="_blank"\s*><\/a>/;
 
   // Define the link text you want to insert
   const linkText = projectViewDetails.projectName;
 
   // Replace the placeholder <a> tags with a new <a> tag containing the link text
   description = description.replace(linkRegex, (match, p1) => {
-    return `<a href="${p1}" style="color:black">${linkText}</a>`;
+    return `<a href="${p1}" style="color:black" target="_blank">${linkText}</a>`;
   });
 
   return (

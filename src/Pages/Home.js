@@ -63,9 +63,6 @@ function Home() {
         </div>
       </div>
 
-
-     
-
       <div className="">
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
@@ -184,63 +181,47 @@ function Home() {
                   <Link to={`/${pUrl}/`} target="_top">
                     <article
                       key={index}
-                      className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                      className="mb-4 bg-white overflow-hidden border text-gray-700 shadow-md hover:shadow-xl"
                     >
-                      <div>
+                      <div className="relative">
                         <img
                           src={item.frontImage.url}
                           alt="property In Gurugram"
-                          className="w-full h-48 object-fit "
+                          className="w-full h-[24rem] object-cover"
                         />
-                      </div>
-                      <div className="p-4">
-                        <div className="pb-2">
-                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectName}
-                          </span>
 
-                          <br />
-                          <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.city}, {item.state}
-                          </span>
-                        </div>
-
-                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
-                          <li className="mr-4 flex items-center text-left">
-                            <li className="text-left">
-                              <span className="text-[13px] text-gray-400">
-                                {item.projectAddress}
-                              </span>
-                              <p className="m-0 text-sm font-medium">
-                                {item.type}
-                              </p>
-                            </li>
-                          </li>
-                        </ul>
-
-                        <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
-                          <li className="text-left">
-                            <span className="text-sm font-extrabold text-red-600">
-                              <span className="text-xl">₹</span>
-                              {item.minPrice < 1 ? (
-                                <>{item.minPrice * 100} L</>
-                              ) : (
-                                <>{item.minPrice}</>
-                              )}
-                              {" - "}
-                              {item.maxPrice} Cr
+                        {/* Content Overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 p-2 bg-white backdrop-blur-sm m-4 transition-colors duration-500 ease-in-out hover:bg-red-600">
+                          <div className="text-center mb-2 pt-2">
+                            <span className="text-[15px] font-semibold block">
+                              {item.projectName}
                             </span>
-                          </li>
+                          </div>
 
-                          <li className="text-left">
-                            <button
-                              type="button"
-                              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
-                            >
-                              View Details
-                            </button>
-                          </li>
-                        </ul>
+                          <ul className="list-none px-0 py-0 text-center">
+                            <li>
+                              <div>
+                                <span className="text-[13px] text-gray-400 block">
+                                  {item.projectAddress}
+                                </span>
+                                <p className="m-0 text-sm font-medium pt-2">
+                                  {item.type}
+                                </p>
+                              </div>
+                            </li>
+                          </ul>
+
+                          <ul className="m-0 flex list-none justify-center px-0 pb-0">
+                            <li>
+                              <span
+                                type="button"
+                                className="text-red-600 text-xl"
+                              >
+                                <i className="fa-solid fa-arrow-right"></i>
+                              </span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     </article>
                   </Link>
@@ -299,7 +280,7 @@ function Home() {
                           </span>
                         </div>
 
-                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                        <ul className="box-border flex list-none items-center  px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
                               <span className="text-[13px] text-gray-400">
@@ -397,7 +378,7 @@ function Home() {
                           </span>
                         </div>
 
-                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                        <ul className="box-border flex list-none items-center  px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
                               <span className="text-[13px] text-gray-400">
@@ -634,9 +615,7 @@ function Home() {
 
       <TopSeoPlots />
 
-
       {/* <DubaiDesign/> */}
-
 
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 mb-0 pt-0">
         <div className="flex items-center">
@@ -946,13 +925,10 @@ function Home() {
       </div>
       <Resale />
 
-      <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left px-14 pt-1">
-        Services We Offer
-      </h1>
       <OurServices />
       <WhyChoose />
 
-      {/* <Snapshot /> */}
+      <Snapshot />
       {/* <HomeBuilderCarousel /> */}
       <Free />
       <div>
