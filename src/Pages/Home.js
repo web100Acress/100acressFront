@@ -181,7 +181,7 @@ function Home() {
                   <Link to={`/${pUrl}/`} target="_top">
                     <article
                       key={index}
-                      className="mb-4 bg-white overflow-hidden border text-gray-700 shadow-md hover:shadow-xl"
+                      className="mb-4 bg-white group overflow-hidden border text-gray-700 shadow-md "
                     >
                       <div className="relative">
                         <img
@@ -191,7 +191,7 @@ function Home() {
                         />
 
                         {/* Content Overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 p-2 bg-white backdrop-blur-sm m-4 transition-colors duration-500 ease-in-out hover:bg-red-600">
+                        <div className="absolute bottom-0 group hover:bg-red-600 hover:text-white left-0 right-0 p-2 bg-[#fff] backdrop-blur-sm m-4 transition-colors duration-500 ease-in-out">
                           <div className="text-center mb-2 pt-2">
                             <span className="text-[15px] font-semibold block">
                               {item.projectName}
@@ -201,7 +201,7 @@ function Home() {
                           <ul className="list-none px-0 py-0 text-center">
                             <li>
                               <div>
-                                <span className="text-[13px] text-gray-400 block">
+                                <span className="text-[13px]  hover:text-white block">
                                   {item.projectAddress}
                                 </span>
                                 <p className="m-0 text-sm font-medium pt-2">
@@ -215,7 +215,7 @@ function Home() {
                             <li>
                               <span
                                 type="button"
-                                className="text-red-600 text-xl"
+                                className="text-black text-xl"
                               >
                                 <i className="fa-solid fa-arrow-right"></i>
                               </span>
