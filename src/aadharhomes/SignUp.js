@@ -72,6 +72,7 @@ export default function SignUp() {
   });
 
   const [otpVerified, setOtpVerified] = useState(false);
+  const [emailVerifid, setEmailVerified] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState("");
   const [verificationOtp, setVerificationOtp] = useState("");
   const handleChangeOnlyEmail = (e) => {
@@ -98,12 +99,13 @@ export default function SignUp() {
         "https://api.100acress.com/postPerson/verifyEmail",
         onlyEmail
       );
+      setEmailVerified(true);
       if (res.status === 200) {
         setUserSignUp((prevState) => ({
           ...prevState,
           email: onlyEmail.email,
         }));
-  
+
         toast({
           description: "OTP sent successfully. Check your email!",
           status: "success",
@@ -113,9 +115,11 @@ export default function SignUp() {
         });
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {  // Assuming 409 is the status code for already registered email
+      if (error.response && error.response.status === 401) {
+        // Assuming 409 is the status code for already registered email
         toast({
-          description: "Email already registered. Please enter a different email.",
+          description:
+            "Email already registered. Please enter a different email.",
           status: "error",
           duration: 9000,
           isClosable: true,
@@ -126,11 +130,10 @@ export default function SignUp() {
       }
     }
   };
-  
 
   const VerifyOtp = async () => {
     const { otp } = checkOtp;
-  
+
     if (!otp) {
       setVerificationOtp("Please enter OTP!");
       return;
@@ -140,7 +143,7 @@ export default function SignUp() {
         "https://api.100acress.com/postPerson/otp",
         checkOtp
       );
-  
+     
       if (res.status === 200) {
         toast({
           description: "OTP verified successfully!",
@@ -150,9 +153,10 @@ export default function SignUp() {
           position: "top-right",
         });
         setOtpVerified(true);
+        
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) { 
+      if (error.response && error.response.status === 401) {
         toast({
           description: "Incorrect OTP. Please try again.",
           status: "error",
@@ -165,7 +169,6 @@ export default function SignUp() {
       }
     }
   };
-  
 
   const resetData = () => {
     setUserSignUp({
@@ -399,41 +402,45 @@ export default function SignUp() {
                     <FormHelperText color={"green.500"}></FormHelperText>
                   </FormControl>
 
-                  <FormControl mt={4}>
-                    <InputGroup>
-                      <Input
-                        placeholder="Enter OTP"
-                        bg="gray.100"
-                        border={0}
-                        color="gray.500"
-                        _placeholder={{ color: "gray.500" }}
-                        name="otp"
-                        value={checkOtp.otp}
-                        onChange={handleCheckOtp}
-                        width="100%"
-                      />
-                      <InputRightElement width="auto">
-                        <Button
-                          size="xs"
-                          bgGradient="linear(to-r, green.400, teal.400)"
-                          color="white"
-                          _hover={{
-                            bgGradient: "linear(to-r, green.400, teal.400)",
-                          }}
-                          onClick={VerifyOtp}
-                          className="lg:mr-4 sm:mr-1"
-                        >
-                          Verify OTP
-                        </Button>
-                      </InputRightElement>
-                    </InputGroup>
-                    {verificationOtp && (
-                      <p className="text-sm italic text-red-600 -mb-6">
-                        {verificationOtp}
-                      </p>
-                    )}
-                    <FormHelperText color={"green.500"}></FormHelperText>
-                  </FormControl>
+                  {emailVerifid && (
+                    <>
+                      <FormControl mt={4}>
+                        <InputGroup>
+                          <Input
+                            placeholder="Enter OTP"
+                            bg="gray.100"
+                            border={0}
+                            color="gray.500"
+                            _placeholder={{ color: "gray.500" }}
+                            name="otp"
+                            value={checkOtp.otp}
+                            onChange={handleCheckOtp}
+                            width="100%"
+                          />
+                          <InputRightElement width="auto">
+                            <Button
+                              size="xs"
+                              bgGradient="linear(to-r, green.400, teal.400)"
+                              color="white"
+                              _hover={{
+                                bgGradient: "linear(to-r, green.400, teal.400)",
+                              }}
+                              onClick={VerifyOtp}
+                              className="lg:mr-4 sm:mr-1"
+                            >
+                              Verify OTP
+                            </Button>
+                          </InputRightElement>
+                        </InputGroup>
+                        {verificationOtp && (
+                          <p className="text-sm italic text-red-600 -mb-6">
+                            {verificationOtp}
+                          </p>
+                        )}
+                        <FormHelperText color={"green.500"}></FormHelperText>
+                      </FormControl>
+                    </>
+                  )}
 
                   {/* We are working here End */}
                   {otpVerified && (

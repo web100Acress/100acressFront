@@ -102,7 +102,7 @@ const BannerPage = () => {
 
         // Construct the WhatsApp link with the dynamic data
         const message = encodeURIComponent(
-          `Hello, I am interested in ${projectViewDetails.projectName}.`
+          `Hello, I am interested in ${projectViewDetails.projectName} ${projectViewDetails.city} ${projectViewDetails.state}.`
         );
         const whatsappLink = `https://wa.me/918500900100?text=${message}`;
         // Update the href attribute of the anchor tag

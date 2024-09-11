@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,7 +10,6 @@ import {
   LinearScale,
 } from "chart.js";
 
-
 ChartJS.register(
   Title,
   Tooltip,
@@ -20,8 +19,11 @@ ChartJS.register(
   LinearScale
 );
 
-const Chart = ({ leads, totalleads }) => {
-  //    console.log(leads)
+const Chart = memo(({ leads = [], totalleads = null }) => {
+  if (!leads.length || totalleads === null) {
+    return <div>Loading...</div>; 
+  }
+
   const options = {
     plugins: {
       legend: {
@@ -32,32 +34,41 @@ const Chart = ({ leads, totalleads }) => {
         text: "Monthly Leads Data",
       },
     },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Month"
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Leads Count"
+        },
+        beginAtZero: true,
+      }
+    },
   };
 
-  const lineData = {
-    // labels: leads.map(d => `${d._id.month}/${d._id.year}`),
-    labels: ["Sept","Aug", "Jul", "Jun", "May", "Apr", "Mar", "Feb"],
-
+  const barData = {
+    labels: ["Sept", "Aug", "Jul", "Jun", "May", "Apr", "Mar", "Feb"],
     datasets: [
       {
-        label: `Total Leads -${totalleads}`,
+        label: `Total Leads - ${totalleads}`,
         data: leads.map((d) => d.count),
-        fill: true,
-        borderColor: "rgb(75, 192, 192)",
-        backgroundColor:"rgba(209, 250, 229, 1)",
-        tension: 0.1,
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
       },
     ],
   };
 
   return (
-    <>
-      <div className="h-[400px]">
-        <Bar data={lineData} options={options} />
-      </div>
-     
-    </>
+    <div className="h-[400px]">
+      <Bar data={barData} options={options} />
+    </div>
   );
-};
+});
 
 export default Chart;
