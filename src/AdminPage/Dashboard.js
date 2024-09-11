@@ -215,7 +215,8 @@ import { GoProjectRoadmap } from "react-icons/go";
 import { HiOutlineUsers } from "react-icons/hi";
 import { GrProjects } from "react-icons/gr";
 import { SiOpenproject } from "react-icons/si";
-import {LineChart,Line, CartesianGrid,XAxis,YAxis,Tooltip,Legend} from "recharts";
+import {LineChart,Line, CartesianGrid,XAxis,YAxis,Tooltip,Legend,
+} from "recharts";
 const data = [
   { name: "Page A", uv: 400, pv: 2400, amt: 2400 },
   { name: "Page B", uv: 300, pv: 2400, amt: 2210 },
@@ -238,7 +239,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get("https://api.100acress.com/snapShot");
-        // console.log(res,"yugyugygyg")
+      
         setRent(res.data.totalRentposted);
         setSell(res.data.totalSellposted);
         setTotalProject(res.data.totalProject);
