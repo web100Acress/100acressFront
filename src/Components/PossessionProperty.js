@@ -183,7 +183,7 @@ const PossessionProperty = () => {
             title: "Possession after 2025",
             propertiesCount: "800+ Properties"
           }].map((item, index) => (
-            <div key={index} className="max-w-full px-4  sm:px-6 lg:px-8  mx-auto ">
+            <div key={index} className="max-w-full px-3  sm:px-6 lg:px-8  mx-auto ">
               <Link to={item.to} target="_top">
                 <div className="group relative flex flex-col border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
                   <div className="p-0 md:p-5">
