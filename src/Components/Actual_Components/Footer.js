@@ -47,7 +47,9 @@ const Footer = () => {
       <div className="w-full divide-y divide-gray-200 bg-red-600">
         <div className="flex flex-wrap py-3">
           <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-6 py-2 text-center text-sm">
-            <img src={logoImage} className="mx-auto" alt="Logo" />
+          <Link to="/" target="_top">
+              <img src={logoImage} className="mx-auto" alt="Logo" />
+            </Link>
             <p className="text-md my-3 mt-2 text-justify font-normal">
               100acress.com Real Estate Company specializes in providing premier
               property solutions tailored to meet your needs.

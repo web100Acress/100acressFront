@@ -189,7 +189,7 @@ function App() {
                 element={<ResidentialProjects />}
               />
               <Route
-                path="/projects/upcoming-projects-in-gurgaon"
+                path="/projects/upcoming-projects-in-gurgaon/"
                 element={<UpComingProjects />}
               />
               <Route

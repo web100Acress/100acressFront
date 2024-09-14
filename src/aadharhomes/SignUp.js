@@ -27,6 +27,7 @@ import { Radio, RadioGroup } from "@chakra-ui/react";
 import Footer from "../Components/Actual_Components/Footer";
 import Nav from "./Nav";
 import Free from "../../src/Pages/Free";
+import ClipLoader from "react-spinners/ClipLoader";
 const avatars = [
   {
     name: "Ashish Bhadauriya",
@@ -75,6 +76,7 @@ export default function SignUp() {
   const [emailVerifid, setEmailVerified] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState("");
   const [verificationOtp, setVerificationOtp] = useState("");
+  let [loading, setLoading] = useState(false);
   const handleChangeOnlyEmail = (e) => {
     const { name, value } = e.target;
     setOnlyEmail({ ...onlyEmail, [name]: value });
@@ -94,12 +96,14 @@ export default function SignUp() {
       setVerificationStatus("Please enter a valid email.");
       return;
     }
+    setLoading(true);
     try {
       const res = await axios.post(
         "https://api.100acress.com/postPerson/verifyEmail",
         onlyEmail
-      );
+      ); 
       setEmailVerified(true);
+      setLoading(false);
       if (res.status === 200) {
         setUserSignUp((prevState) => ({
           ...prevState,
@@ -115,8 +119,10 @@ export default function SignUp() {
         });
       }
     } catch (error) {
+      setLoading(false);
       if (error.response && error.response.status === 401) {
         // Assuming 409 is the status code for already registered email
+        
         toast({
           description:
             "Email already registered. Please enter a different email.",
@@ -128,6 +134,8 @@ export default function SignUp() {
       } else {
         console.log(error);
       }
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -143,7 +151,7 @@ export default function SignUp() {
         "https://api.100acress.com/postPerson/otp",
         checkOtp
       );
-     
+
       if (res.status === 200) {
         toast({
           description: "OTP verified successfully!",
@@ -153,7 +161,6 @@ export default function SignUp() {
           position: "top-right",
         });
         setOtpVerified(true);
-        
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -390,7 +397,16 @@ export default function SignUp() {
                           onClick={VerifyEmailCheck}
                           className="lg:mr-4 mr-1 sm:mr-1"
                         >
-                          Send OTP
+                          {loading ? (
+                            <ClipLoader
+                              color="white"
+                              loading={loading}
+                              size={30}
+                              className="text-blue-200"
+                            />
+                          ) : (
+                            "Send OTP"
+                          )}
                         </Button>
                       </InputRightElement>
                     </InputGroup>

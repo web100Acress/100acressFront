@@ -34,14 +34,18 @@ function Home() {
   } = useContext(DataContext);
 
   let reorderedTrendingProjects = [];
-  if (trendingProject.length > 0) {
-    reorderedTrendingProjects = [...trendingProject];
-    const lastElement = reorderedTrendingProjects.pop(); // Remove the last element
-    if (lastElement) {
-      reorderedTrendingProjects.unshift(lastElement); // Move the last element to the first position
-    }
-  }
 
+  if (trendingProject.length > 0) {
+    reorderedTrendingProjects[0] = trendingProject[6];
+    reorderedTrendingProjects[1] = trendingProject[0];
+    reorderedTrendingProjects[2] = trendingProject[2];
+    reorderedTrendingProjects[3] = trendingProject[3];
+    reorderedTrendingProjects[4] = trendingProject[1];
+    reorderedTrendingProjects[5] = trendingProject[5];
+    reorderedTrendingProjects[6] = trendingProject[4]; 
+    reorderedTrendingProjects[7] = trendingProject[7];
+  }
+  
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
@@ -100,11 +104,11 @@ function Home() {
                       </div>
                       <div className="p-4">
                         <div className="pb-2">
-                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                          <span className="text-[13px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </span>
                           <br />
-                          <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                          <span className="text-[12px] hover:text-red-600  duration-500 ease-in-out">
                             {item.city}, {item.state}
                           </span>
                         </div>
@@ -112,10 +116,10 @@ function Home() {
                         <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
-                              <span className="text-[13px] text-gray-400">
+                              <span className="text-[12px] text-gray-400">
                                 {item.projectAddress}
                               </span>
-                              <p className="m-0 text-sm font-medium ">
+                              <p className="m-0 text-[12px] font-medium ">
                                 {item.type}
                               </p>
                             </li>
@@ -1023,7 +1027,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 17vh !important;
-      background-image: url("../../Images/P1.png");
+      background-image: url("../../Images/DM.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -1037,7 +1041,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/P1.png");
+      background-image: url("../../Images/DM.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -1051,7 +1055,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 20vh !important;
-      background-image: url("../../Images/P1.png");
+      background-image: url("../../Images/DM.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -1065,7 +1069,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/P1.png");
+      background-image: url("../../Images/DM.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -1074,7 +1078,7 @@ const Wrapper = styled.section`
 
   @media screen and (max-width: 1800px) and (min-width: 601px) {
     .djqwUUJNCO {
-      background-image: url("../../Images/B.png");
+      background-image: url("../../Images/D.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
