@@ -42,10 +42,10 @@ function Home() {
     reorderedTrendingProjects[3] = trendingProject[3];
     reorderedTrendingProjects[4] = trendingProject[1];
     reorderedTrendingProjects[5] = trendingProject[5];
-    reorderedTrendingProjects[6] = trendingProject[4]; 
+    reorderedTrendingProjects[6] = trendingProject[4];
     reorderedTrendingProjects[7] = trendingProject[7];
   }
-  
+
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
@@ -61,7 +61,27 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-      <div className="h-screen w-full zoom  zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
+  <Link to={'/signature-global-plots/'} >
+  <div className="relative ">
+        <img
+          src="../../Images/extra.png"
+          className="absolute w-60 h-80 hidden xl:block rounded"
+          style={{ top: "15px", left: "3px" }}
+          alt="image"
+        />
+      </div>
+  </Link>
+  <Link to={'/signature-global-plots/'} >
+  <div className="relative flex justify-end">
+        <img
+          src="../../Images/extraRes.png"
+          className="absolute w-60 h-80 hidden xl:block rounded "
+          style={{ top: "15px", right: "3px",  }}
+          alt="image"
+        />
+      </div>
+  </Link>
+      <div className="h-screen w-full  element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
         <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
           <SearchBar />
         </div>
@@ -1120,11 +1140,11 @@ const Wrapper = styled.section`
     cursor: pointer;
   }
 
-  .element {
-    transition: transform 0.5s ease-in-out;
-  }
+  // .element {
+  //   transition: transform 0.5s ease-in-out;
+  // }
 
-  .element:hover {
-    transform: scale(1.02);
-  }
+  // .element:hover {
+  //   transform: scale(1.02);
+  // }
 `;

@@ -112,6 +112,7 @@ import MgRoad from "./Pages/MgRoad";
 import UnderConstruction from "./Pages/UnderConstruction";
 import NewLaunch from "./Pages/NewLaunch";
 import Ayodhya from "./Pages/Ayodhya";
+import SignatureGlobal from "./Pages/SignatureGlobal";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -261,6 +262,7 @@ function App() {
               <Route path="/orris-plots-gurugram/" element={<Orris />} />
               <Route path="/jms-plots-gurugram/" element={<Jms />} />
               <Route path="/rof-plots-gurugram/" element={<Rof />} />
+              <Route path="/signatureglobal-plots-gurugram/" element={<SignatureGlobal/>} />
               <Route
                 path="/emaar-india-sco-plots-gurugram/"
                 element={<EmaarIndia />}
