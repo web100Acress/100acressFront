@@ -61,26 +61,26 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-  <Link to={'/signature-global-plots/'} >
-  <div className="relative ">
-        <img
-          src="../../Images/extra.png"
-          className="absolute w-60 h-80 hidden xl:block rounded"
-          style={{ top: "15px", left: "3px" }}
-          alt="image"
-        />
-      </div>
-  </Link>
-  <Link to={'/signature-global-plots/'} >
-  <div className="relative flex justify-end">
-        <img
-          src="../../Images/extraRes.png"
-          className="absolute w-60 h-80 hidden xl:block rounded "
-          style={{ top: "15px", right: "3px",  }}
-          alt="image"
-        />
-      </div>
-  </Link>
+      <Link to={"/signature-global-plots/"}>
+        <div className="relative ">
+          <img
+            src="../../Images/extra.png"
+            className="absolute w-60 h-80 hidden xl:block rounded"
+            style={{ top: "15px", left: "3px" }}
+            alt="image"
+          />
+        </div>
+      </Link>
+      <Link to={"/signature-global-plots/"}>
+        <div className="relative flex justify-end">
+          <img
+            src="../../Images/extraRes.jpeg"
+            className="absolute w-60 h-80 hidden xl:block rounded "
+            style={{ top: "15px", right: "3px" }}
+            alt="image"
+          />
+        </div>
+      </Link>
       <div className="h-screen w-full  element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
         <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
           <SearchBar />
@@ -109,6 +109,13 @@ function Home() {
             <div className="grid max-w-md grid-cols-1  px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {reorderedTrendingProjects.map((item, index) => {
                 const pUrl = item.project_url;
+                // Check if project_url exists before render
+                if (!pUrl) {
+                  console.warn(
+                    `project_url is missing for item at index ${index}`
+                  );
+                  return null;
+                }
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
                     <article
