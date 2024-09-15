@@ -34,16 +34,16 @@ function Home() {
   } = useContext(DataContext);
 
   let reorderedTrendingProjects = [];
-
+// tr-0,trevoc-1,max-2,krisum-3,consi-4,emaae-5,God-6,Sign-7
   if (trendingProject.length > 0) {
-    reorderedTrendingProjects[0] = trendingProject[6];
+    reorderedTrendingProjects[0] = trendingProject[5];
     reorderedTrendingProjects[1] = trendingProject[0];
-    reorderedTrendingProjects[2] = trendingProject[2];
-    reorderedTrendingProjects[3] = trendingProject[3];
-    reorderedTrendingProjects[4] = trendingProject[1];
-    reorderedTrendingProjects[5] = trendingProject[5];
+    reorderedTrendingProjects[2] = trendingProject[1];
+    reorderedTrendingProjects[3] = trendingProject[2];
+    reorderedTrendingProjects[4] = trendingProject[7];
+    reorderedTrendingProjects[5] = trendingProject[3];
     reorderedTrendingProjects[6] = trendingProject[4];
-    reorderedTrendingProjects[7] = trendingProject[7];
+    reorderedTrendingProjects[7] = trendingProject[6];
   }
 
   return (

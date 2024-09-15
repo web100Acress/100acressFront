@@ -528,15 +528,21 @@ const BannerPage = () => {
                 {projectViewDetails.totalLandArea} Acres
               </span>
             </div>
-
+  
+ 
             <div className="flex flex-col">
               <span className="text-center font-normal ">About Project</span>
-              <span className="text-center font-semibold text-xl uppercase">
+              {projectViewDetails.type=="Residential Flats" ? <>
+                <span className="text-center font-semibold text-xl uppercase">
                 {projectViewDetails.towerNumber} Tower -{" "}
                 {projectViewDetails.totalUnit} Unit
               </span>
+              </>:<>  <span className="text-center font-semibold text-xl uppercase">
+                {projectViewDetails.totalUnit} Unit
+              </span></>}
+            
             </div>
-
+            
             <div className="flex flex-col">
               <span className="text-center font-normal">Price</span>
               <span className="text-center font-semibold text-xl uppercase">
