@@ -61,26 +61,6 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-      <Link to={"/signature-global-plots/"}>
-        <div className="relative ">
-          <img
-            src="../../Images/extra.png"
-            className="absolute w-60 h-80 hidden xl:block rounded"
-            style={{ top: "15px", left: "3px" }}
-            alt="image"
-          />
-        </div>
-      </Link>
-      <Link to={"/signature-global-plots/"}>
-        <div className="relative flex justify-end">
-          <img
-            src="../../Images/extraRes.jpeg"
-            className="absolute w-60 h-80 hidden xl:block rounded "
-            style={{ top: "15px", right: "3px" }}
-            alt="image"
-          />
-        </div>
-      </Link>
       <div className="h-screen w-full  element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
         <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
           <SearchBar />
