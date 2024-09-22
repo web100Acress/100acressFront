@@ -20,7 +20,6 @@ import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
 import DubaiDesign from "./DubaiDesign";
-import Glide from "@glidejs/glide";
 function Home() {
   const {
     trendingProject,
@@ -35,50 +34,18 @@ function Home() {
   } = useContext(DataContext);
 
   let reorderedTrendingProjects = [];
-  // tr-0,trevoc-1,max-2,krisum-3,consi-4,emaae-5,God-6,Sign-7
   if (trendingProject.length > 0) {
-    reorderedTrendingProjects[0] = trendingProject[5];
-    reorderedTrendingProjects[1] = trendingProject[0];
-    reorderedTrendingProjects[2] = trendingProject[1];
-    reorderedTrendingProjects[3] = trendingProject[2];
-    reorderedTrendingProjects[4] = trendingProject[7];
-    reorderedTrendingProjects[5] = trendingProject[3];
-    reorderedTrendingProjects[6] = trendingProject[4];
-    reorderedTrendingProjects[7] = trendingProject[6];
+    reorderedTrendingProjects = [...trendingProject];
+    const lastElement = reorderedTrendingProjects.pop(); // Remove the last element
+    if (lastElement) {
+      reorderedTrendingProjects.unshift(lastElement); // Move the last element to the first position
+    }
   }
-
-  useEffect(() => {
-    const slider = new Glide(".glide-03", {
-      type: "carousel",
-      focusAt: "center",
-      perView: 1,
-      autoplay: 4000,
-      dots: false,
-      navigation: false, // Disable navigation buttons
-      animationDuration: 700,
-      gap: 24,
-      classNames: {
-        nav: {
-          active: "[&>*]:bg-wuiSlate-700",
-        },
-      },
-      breakpoints: {
-        1024: {
-          perView: 1,
-        },
-        640: {
-          perView: 1,
-        },
-      },
-    }).mount();
-
-    return () => {
-      slider.destroy();
-    };
-  }, []);
 
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
+      <Nav />
+
       <Helmet>
         <meta
           name="description"
@@ -90,88 +57,20 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-      <div className="relative w-full">
-        <Nav className="absolute top-0 left-0 w-full z-20" />
-        <div className="glide-03 relative w-full">
-          <div className="overflow-hidden" data-glide-el="track">
-            <ul className="whitespace-no-wrap flex-no-wrap [backface-visibility: hidden] [transform-style: preserve-3d] [touch-action: pan-Y] [will-change: transform] relative flex w-full overflow-hidden p-0">
-             <Link to={'https://www.100acress.com/signature-twin-towers-sector-84-gurgaon/'}>
-             <li>
-                {/* Desktop Image */}
-                <img
-                  src="../../Images/twintower.webp"
-                  className="hidden md:block m-auto max-h-[25rem] w-full max-w-full"
-                  alt="desktop image"
-                />
-                {/* Mobile Image */}
-                <img
-                  src="../../Images/twinmobile.png"
-                  className="block md:hidden m-auto max-h-[15rem] w-full max-w-full"
-                  alt="mobile image"
-                />
-              </li>
-             </Link>
-
-              <Link to={'https://www.100acress.com/signature-global-daxin-vistas/'}>
-              <li>
-                {/* Desktop Image */}
-                <img
-                  src="../../Images/signatureglobal.webp"
-                  className="hidden md:block m-auto max-h-[25rem] w-full max-w-full"
-                  alt="desktop image"
-                />
-                {/* Mobile Image */}
-                <img
-                  src="../../Images/signaturemobile.png"
-                  className="block md:hidden m-auto max-h-[15rem] w-full max-w-full"
-                  alt="mobile image"
-                />
-              </li>
-              </Link>
-
-            <Link to={'https://www.100acress.com/emaar-amaris/'}>
-            <li>
-                {/* Desktop Image */}
-                <img
-                  src="../../Images/emaar.webp"
-                  className="hidden md:block m-auto h-full w-full max-w-full"
-                  alt="desktop image"
-                />
-                {/* Mobile Image */}
-                <img
-                  src="../../Images/emaarmobile.png"
-                  className="block md:hidden m-auto max-h-[15rem] w-full max-w-full"
-                  alt="mobile image"
-                />
-              </li>
-            </Link>
-
-             <Link to={'https://www.100acress.com/tarc-ishva/'}>
-             <li>
-                {/* Desktop Image */}
-                <img
-                  src="../../Images/tarc.jpg"
-                  className="hidden md:block m-auto h-full w-full max-w-full"
-                  alt="desktop image"
-                />
-                {/* Mobile Image */}
-                <img
-                  src="../../Images/tarcmobile.png"
-                  className="block md:hidden m-auto max-h-[15rem] w-full max-w-full"
-                  alt="mobile image"
-                />
-              </li>
-             </Link>
-            </ul>
-          </div>
+      {/* <div className="h-screen w-full zoom  zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
+        <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
+          <SearchBar />
         </div>
-
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30">
+      </div> */}
+ <div className="h-screen w-full zoom  zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
+        <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
           <SearchBar />
         </div>
       </div>
 
-      <div className="pt-10 lg:pt-20 md:pt-5  sm:pt-0">
+     
+
+      <div className="">
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
@@ -193,13 +92,6 @@ function Home() {
             <div className="grid max-w-md grid-cols-1  px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {reorderedTrendingProjects.map((item, index) => {
                 const pUrl = item.project_url;
-                // Check if project_url exists before render
-                if (!pUrl) {
-                  console.warn(
-                    `project_url is missing for item at index ${index}`
-                  );
-                  return null;
-                }
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
                     <article
@@ -215,11 +107,11 @@ function Home() {
                       </div>
                       <div className="p-4">
                         <div className="pb-2">
-                          <span className="text-[13px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
                           </span>
                           <br />
-                          <span className="text-[12px] hover:text-red-600  duration-500 ease-in-out">
+                          <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
                             {item.city}, {item.state}
                           </span>
                         </div>
@@ -227,10 +119,10 @@ function Home() {
                         <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
-                              <span className="text-[12px] text-gray-400">
+                              <span className="text-[13px] text-gray-400">
                                 {item.projectAddress}
                               </span>
-                              <p className="m-0 text-[12px] font-medium ">
+                              <p className="m-0 text-sm font-medium ">
                                 {item.type}
                               </p>
                             </li>
@@ -296,47 +188,63 @@ function Home() {
                   <Link to={`/${pUrl}/`} target="_top">
                     <article
                       key={index}
-                      className="mb-4 bg-white group overflow-hidden border text-gray-700 shadow-md "
+                      className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                     >
-                      <div className="relative">
+                      <div>
                         <img
                           src={item.frontImage.url}
                           alt="property In Gurugram"
-                          className="w-full h-[24rem] object-cover"
+                          className="w-full h-48 object-fit "
                         />
+                      </div>
+                      <div className="p-4">
+                        <div className="pb-2">
+                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                            {item.projectName}
+                          </span>
 
-                        {/* Content Overlay */}
-                        <div className="absolute bottom-0 group hover:bg-red-600 hover:text-white left-0 right-0 p-2 bg-[#fff] backdrop-blur-sm m-4 transition-colors duration-500 ease-in-out">
-                          <div className="text-center mb-2 pt-2">
-                            <span className="text-[15px] font-semibold block">
-                              {item.projectName}
-                            </span>
-                          </div>
-
-                          <ul className="list-none px-0 py-0 text-center">
-                            <li>
-                              <div>
-                                <span className="text-[13px]  hover:text-white block">
-                                  {item.projectAddress}
-                                </span>
-                                <p className="m-0 text-sm font-medium pt-2">
-                                  {item.type}
-                                </p>
-                              </div>
-                            </li>
-                          </ul>
-
-                          <ul className="m-0 flex list-none justify-center px-0 pb-0">
-                            <li>
-                              <span
-                                type="button"
-                                className="text-black text-xl"
-                              >
-                                <i className="fa-solid fa-arrow-right"></i>
-                              </span>
-                            </li>
-                          </ul>
+                          <br />
+                          <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                            {item.city}, {item.state}
+                          </span>
                         </div>
+
+                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                          <li className="mr-4 flex items-center text-left">
+                            <li className="text-left">
+                              <span className="text-[13px] text-gray-400">
+                                {item.projectAddress}
+                              </span>
+                              <p className="m-0 text-sm font-medium">
+                                {item.type}
+                              </p>
+                            </li>
+                          </li>
+                        </ul>
+
+                        <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
+                          <li className="text-left">
+                            <span className="text-sm font-extrabold text-red-600">
+                              <span className="text-xl">₹</span>
+                              {item.minPrice < 1 ? (
+                                <>{item.minPrice * 100} L</>
+                              ) : (
+                                <>{item.minPrice}</>
+                              )}
+                              {" - "}
+                              {item.maxPrice} Cr
+                            </span>
+                          </li>
+
+                          <li className="text-left">
+                            <button
+                              type="button"
+                              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
+                            >
+                              View Details
+                            </button>
+                          </li>
+                        </ul>
                       </div>
                     </article>
                   </Link>
@@ -395,7 +303,7 @@ function Home() {
                           </span>
                         </div>
 
-                        <ul className="box-border flex list-none items-center  px-0 py-2">
+                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
                               <span className="text-[13px] text-gray-400">
@@ -493,7 +401,7 @@ function Home() {
                           </span>
                         </div>
 
-                        <ul className="box-border flex list-none items-center  px-0 py-2">
+                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
                               <span className="text-[13px] text-gray-400">
@@ -730,7 +638,9 @@ function Home() {
 
       <TopSeoPlots />
 
+
       {/* <DubaiDesign/> */}
+
 
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 mb-0 pt-0">
         <div className="flex items-center">
@@ -917,6 +827,10 @@ function Home() {
       </div>
 
       <Cities />
+
+
+      
+      
       {/* <StarCarousel /> */}
       <FormHome />
 
@@ -1040,6 +954,9 @@ function Home() {
       </div>
       <Resale />
 
+      <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left px-14 pt-1">
+        Services We Offer
+      </h1>
       <OurServices />
       <WhyChoose />
 
@@ -1138,7 +1055,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 17vh !important;
-      background-image: url("../../Images/DM.png");
+      background-image: url("../../Images/P1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -1152,7 +1069,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/DM.png");
+      background-image: url("../../Images/P1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -1166,7 +1083,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 20vh !important;
-      background-image: url("../../Images/DM.png");
+      background-image: url("../../Images/P1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -1180,7 +1097,7 @@ const Wrapper = styled.section`
     }
     .djqwUUJNCO {
       height: 60vh !important;
-      background-image: url("../../Images/DM.png");
+      background-image: url("../../Images/P1.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -1189,7 +1106,7 @@ const Wrapper = styled.section`
 
   @media screen and (max-width: 1800px) and (min-width: 601px) {
     .djqwUUJNCO {
-      background-image: url("../../Images/11.jpeg");
+      background-image: url("../../Images/B.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
@@ -1231,11 +1148,11 @@ const Wrapper = styled.section`
     cursor: pointer;
   }
 
-  // .element {
-  //   transition: transform 0.5s ease-in-out;
-  // }
+  .element {
+    transition: transform 0.5s ease-in-out;
+  }
 
-  // .element:hover {
-  //   transform: scale(1.02);
-  // }
+  .element:hover {
+    transform: scale(1.02);
+  }
 `;
