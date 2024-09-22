@@ -3,6 +3,7 @@ import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Navbar from "../aadharhomes/Navbar";
 
 const UserViewProperty = () => {
 
@@ -29,7 +30,7 @@ const UserViewProperty = () => {
 
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Nav />
+      <Navbar/>
       <section className="flex flex-col bg-white ">
         <div className="grid max-w-md grid-cols-1 p-4  sm:max-w-lg  md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 sm:gap-2 lg:gap-4">
           {userViewProperty.map((item, index) => {

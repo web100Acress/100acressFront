@@ -126,7 +126,7 @@ const MenuListContainer = ({ isOpen }) => {
   );
 };
 
-export default function Nav() {
+export default function Navbar() {
   // Filter Data budget wise
   const {  setPriceRange } = useContext(DataContext);
 
@@ -261,55 +261,16 @@ export default function Nav() {
   };
 
 
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [screenType, setScreenType] = useState('');
 
-  const handleScroll = () => {
-    const scrollY = window.scrollY;
-    const width = window.innerWidth;
 
-    // Mobile (less than 768px)
-    if (width < 768) {
-      if (scrollY > 100) { // Mobile specific scroll condition
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    }
-    // Tablet (768px to 1023px)
-    else if (width >= 768 && width < 1024) {
-      if (scrollY > 100) { // Tablet specific scroll condition
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    }
-    // Laptop (1024px and above)
-    else {
-      if (scrollY > 150) { // Laptop specific scroll condition
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    }
-  };
 
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
   
 
   return (
     <Wrapper className="section">
       <Box>
         {/* #c13335  #ab2727 #7a3351  #A10302  #AD5971 #F20808*/}
-        {/* <Box bg="transparent" className="fixed top-0 w-full z-50"  px={{ base: 0, md: 4, lg: 7 }} blur={12}> */}
-        <Box   className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-red-500' : 'bg-transparent'}`}
-         px={{ base: 0, md: 4, lg: 7 }} >
+        <Box bg="red" px={{ base: 0, md: 4, lg: 7 }} blur={12}>
           <Flex h={16} alignItems="center" justifyContent="space-between">
             <IconButton
               size={"md"}
@@ -341,26 +302,7 @@ export default function Nav() {
                 </Link>
               </Box>
 
-              {/* <Box position="relative">
-                <Link to="/">
-                  <Image
-                    maxW={["160px", "200px"]}
-                    minW={["50px", "70px"]}
-                    width={["xs", "sm", "md", "lg"]}
-                    src={logoImage}
-                    alt="100acress logo"
-                  />
-                  <Image
-                    src="../../../Images/IndiaFlag.avif"
-                    alt="Country Flag"
-                    position="absolute"
-                    top="1"
-                    left="200"
-                    width={["20px", "25px"]}
-                    height={["20px", "25px"]}
-                  />
-                </Link>
-              </Box> */}
+             
 
               {!isSmallerThan768 && (
                 <>
@@ -939,88 +881,7 @@ export default function Nav() {
             </HStack>
 
             <Flex alignItems="center">
-              {/* <div className="" style={{ marginRight: "-40px" }}>
-                {token ? (
-                  <Link to="/postproperty/">
-                    <button className="btn  flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
-                      <strong
-                        onClick={checkUserAuth}
-                        className="text-red-600 mr-2"
-                      >
-                        Post Property
-                      </strong>
-                      <Link className="d-none d-xl-inline d-md-inline">
-                        <button
-                          className="btn btn-danger p-0 text-bold"
-                          style={{
-                            position: "relative",
-                            overflow: "hidden",
-                            width: "50px",
-                            height: "20px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                              animation: "moveHorizontal 1s linear infinite",
-                              backdropFilter: "blur(5px)",
-                              filter: "blur(5px)",
-                            }}
-                          >
-                            <ScaleLoader color="#FFFFFF" />
-                          </div>
-                          FREE
-                          <style>{keyframes}</style>
-                        </button>
-                      </Link>
-                    </button>
-                  </Link>
-                ) : (
-                  <Link to="/signin/">
-                    <button className="btn  flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
-                      <strong
-                        onClick={checkUserAuth}
-                        className="text-red-600 mr-2"
-                      >
-                        Post Property  
-                      </strong>
-                      <Link className="d-none d-xl-inline d-md-inline">
-                        <button
-                          className="btn btn-danger p-0 text-bold"
-                          style={{
-                            position: "relative",
-                            overflow: "hidden",
-                            width: "50px",
-                            height: "20px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                              animation: "moveHorizontal 1s linear infinite",
-                              backdropFilter: "blur(5px)",
-                              filter: "blur(5px)",
-                            }}
-                          >
-                            <ScaleLoader color="#FFFFFF" />
-                          </div>
-                          FREE
-                          <style>{keyframes}</style>
-                        </button>
-                      </Link>
-                    </button>
-                  </Link>
-                )}
-              </div> */}
-
+            
               <div
                 className=""
                 style={{
@@ -1251,71 +1112,6 @@ export default function Nav() {
                   )}
                 </div>
 
-                {/* <Menu>
-                  <MenuButton
-                    as={Button}
-                    borderRadius="l"
-                    variant="unstyled"
-                    aria-label="Profile"
-                    onClick={handleAvatarClick}
-                  >
-                    {token ? (
-                      <>
-                        <Avatar
-                          boxSize={{ base: "1.7em", md: "1.8em" }}
-                          bgColor="white"
-                          marginRight={{ base: "1em", md: "0" }}
-                          icon={
-                            <AvatarBadge
-                              boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
-                              bg="green.500"
-                              border="2px"
-                              borderColor="white"
-                              darkBorderColor="gray.800"
-                              rounded="full"
-                            />
-                          }
-                        >
-                          <img
-                            className="w-16 h-10 rounded-full "
-                            src="../../Images/logoAvtar.png"
-                            alt=""
-                          />
-                        </Avatar>
-                      </>
-                    ) : (
-                      <>
-                        <Avatar
-                          boxSize={{ base: "1.7em", md: "1.8em" }}
-                          bgColor="white"
-                          marginLeft={{ base: 0, md: "0" }}
-                          icon={
-                            <AvatarBadge
-                              boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
-                              bg="red.500"
-                              border="2px"
-                              borderColor="white"
-                              darkBorderColor="gray.800"
-                              rounded="full"
-                            />
-                          }
-                        >
-                          <img
-                            className="w-16 h-10 rounded-full"
-                            src="../../Images/logoAvtar.png"
-                            alt="logoAvtar"
-                          />
-                        </Avatar>
-                      </>
-                    )}
-                  </MenuButton>
-
-                  <MenuListContainer
-                    isOpen={isDropdownOpen}
-                    onClose={onClose}
-                    onLoginRegisterClick={handleLoginRegisterClick}
-                  />
-                </Menu> */}
 
                 <Menu>
                   <MenuButton

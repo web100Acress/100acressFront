@@ -5,11 +5,12 @@ import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import UpcomingSearch from "../../Pages/UpcomingSearch";
+import Navbar from "../../aadharhomes/Navbar";
 const UpComingProjects = () => {
   const { allupcomingProject } = useContext(DataContext);
   return (
     <div>
-      <Nav />
+      <Navbar/>
       <UpcomingSearch />
       <Helmet>
         <meta

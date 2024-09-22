@@ -7,6 +7,7 @@ import Nav from "../../aadharhomes/Nav";
 import Footer from "./Footer";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Navbar from "../../aadharhomes/Navbar";
 const BuyPropViewCard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [toOpen, setToOpen] = useState(false);
@@ -214,8 +215,7 @@ const BuyPropViewCard = () => {
   return (
     <>
       <Wrapper className="Section">
-        <Nav />
-
+        <Navbar/>
         <nav className="navbar d-lg-none d-xl-none d-xxl-none">
           <div className="container-fluid">
             {/* on tablet screen */}

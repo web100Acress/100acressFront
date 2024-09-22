@@ -5,6 +5,7 @@ import axios from "axios";
 import { RadioGroup, Radio, Stack } from "@chakra-ui/react";
 import { State, City } from "country-state-city";
 import { Helmet } from "react-helmet";
+import Navbar from "./Navbar";
 const stateCodeMapping = {
   "Andhra Pradesh": "AP",
   "Arunachal Pradesh": "AR",
@@ -277,7 +278,7 @@ const NewSellProperty = () => {
 
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Nav />
+      <Navbar/>
       <Helmet>
         <meta
           name="description"

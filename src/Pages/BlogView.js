@@ -5,6 +5,7 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
+import Navbar from "../aadharhomes/Navbar";
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
   const [data, setData] = useState([]);
@@ -87,7 +88,7 @@ const BlogView = () => {
 
   return (
     <>
-      <Nav />
+      <Navbar/>
       <Helmet>
         <title>{`${blog_Title} ${blog_Category}`}</title>
         <link rel="canonical" href="https://www.100acress.com/" />

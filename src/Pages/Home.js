@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Cities from "../Components/HomePageComponents/Cities";
 import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
@@ -20,6 +20,7 @@ import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
 import DubaiDesign from "./DubaiDesign";
+import Glide from "@glidejs/glide";
 function Home() {
   const {
     trendingProject,
@@ -34,7 +35,7 @@ function Home() {
   } = useContext(DataContext);
 
   let reorderedTrendingProjects = [];
-// tr-0,trevoc-1,max-2,krisum-3,consi-4,emaae-5,God-6,Sign-7
+  // tr-0,trevoc-1,max-2,krisum-3,consi-4,emaae-5,God-6,Sign-7
   if (trendingProject.length > 0) {
     reorderedTrendingProjects[0] = trendingProject[5];
     reorderedTrendingProjects[1] = trendingProject[0];
@@ -46,10 +47,38 @@ function Home() {
     reorderedTrendingProjects[7] = trendingProject[6];
   }
 
+  useEffect(() => {
+    const slider = new Glide(".glide-03", {
+      type: "carousel",
+      focusAt: "center",
+      perView: 1,
+      autoplay: 4000,
+      dots: false,
+      navigation: false, // Disable navigation buttons
+      animationDuration: 700,
+      gap: 24,
+      classNames: {
+        nav: {
+          active: "[&>*]:bg-wuiSlate-700",
+        },
+      },
+      breakpoints: {
+        1024: {
+          perView: 1,
+        },
+        640: {
+          perView: 1,
+        },
+      },
+    }).mount();
+
+    return () => {
+      slider.destroy();
+    };
+  }, []);
+
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
-      <Nav />
-
       <Helmet>
         <meta
           name="description"
@@ -61,13 +90,88 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-      <div className="h-screen w-full  element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
-        <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
+      <div className="relative w-full">
+        <Nav className="absolute top-0 left-0 w-full z-20" />
+        <div className="glide-03 relative w-full">
+          <div className="overflow-hidden" data-glide-el="track">
+            <ul className="whitespace-no-wrap flex-no-wrap [backface-visibility: hidden] [transform-style: preserve-3d] [touch-action: pan-Y] [will-change: transform] relative flex w-full overflow-hidden p-0">
+             <Link to={'https://www.100acress.com/signature-twin-towers-sector-84-gurgaon/'}>
+             <li>
+                {/* Desktop Image */}
+                <img
+                  src="../../Images/twintower.webp"
+                  className="hidden md:block m-auto max-h-[25rem] w-full max-w-full"
+                  alt="desktop image"
+                />
+                {/* Mobile Image */}
+                <img
+                  src="../../Images/twinmobile.png"
+                  className="block md:hidden m-auto max-h-[15rem] w-full max-w-full"
+                  alt="mobile image"
+                />
+              </li>
+             </Link>
+
+              <Link to={'https://www.100acress.com/signature-global-daxin-vistas/'}>
+              <li>
+                {/* Desktop Image */}
+                <img
+                  src="../../Images/signatureglobal.webp"
+                  className="hidden md:block m-auto max-h-[25rem] w-full max-w-full"
+                  alt="desktop image"
+                />
+                {/* Mobile Image */}
+                <img
+                  src="../../Images/signaturemobile.png"
+                  className="block md:hidden m-auto max-h-[15rem] w-full max-w-full"
+                  alt="mobile image"
+                />
+              </li>
+              </Link>
+
+            <Link to={'https://www.100acress.com/emaar-amaris/'}>
+            <li>
+                {/* Desktop Image */}
+                <img
+                  src="../../Images/emaar.webp"
+                  className="hidden md:block m-auto h-full w-full max-w-full"
+                  alt="desktop image"
+                />
+                {/* Mobile Image */}
+                <img
+                  src="../../Images/emaarmobile.png"
+                  className="block md:hidden m-auto max-h-[15rem] w-full max-w-full"
+                  alt="mobile image"
+                />
+              </li>
+            </Link>
+
+             <Link to={'https://www.100acress.com/tarc-ishva/'}>
+             <li>
+                {/* Desktop Image */}
+                <img
+                  src="../../Images/tarc.jpg"
+                  className="hidden md:block m-auto h-full w-full max-w-full"
+                  alt="desktop image"
+                />
+                {/* Mobile Image */}
+                <img
+                  src="../../Images/tarcmobile.png"
+                  className="block md:hidden m-auto max-h-[15rem] w-full max-w-full"
+                  alt="mobile image"
+                />
+              </li>
+             </Link>
+            </ul>
+          </div>
+        </div>
+
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30">
           <SearchBar />
         </div>
       </div>
 
-      <div className="">
+      <div className="pt-10 lg:pt-20 md:pt-5  sm:pt-0">
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
@@ -1085,7 +1189,7 @@ const Wrapper = styled.section`
 
   @media screen and (max-width: 1800px) and (min-width: 601px) {
     .djqwUUJNCO {
-      background-image: url("../../Images/D.png");
+      background-image: url("../../Images/11.jpeg");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;

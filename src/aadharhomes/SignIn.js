@@ -35,6 +35,7 @@ import Nav from "./Nav";
 import Free from "../../src/Pages/Free";
 import { AuthContext } from "../AuthContext";
 import { Helmet } from "react-helmet";
+import Navbar from "./Navbar";
 const avatars = [
   {
     name: "Ashish Bhadauriya",
@@ -104,7 +105,7 @@ export default function SignIn() {
 
   return (
     <>
-      <Nav />
+      <Navbar/>
       <Helmet>
         <title>Sell Your Property in Gurgaon | 100acress.com</title>
         <meta

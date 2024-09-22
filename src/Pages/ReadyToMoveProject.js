@@ -6,11 +6,12 @@ import Nav from "../aadharhomes/Nav";
 import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
 import ReadyToMoveSearch from "./ReadyToMoveSearch";
+import Navbar from "../aadharhomes/Navbar";
 const ReadyToMoveProject = () => {
   const { readyToMoveData } = useContext(DataContext);
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Nav />
+      <Navbar/>
       <ReadyToMoveSearch />
       <Helmet>
         <meta

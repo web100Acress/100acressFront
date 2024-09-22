@@ -3,10 +3,11 @@ import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { IoMdArrowBack } from "react-icons/io";
 import { Link } from "react-router-dom";
+import Navbar from "../aadharhomes/Navbar";
 const PageNotFound = () => {
   return (
     <>
-      <Nav />
+     <Navbar/>
       <div className="mb-4 w-full mx-auto">
         <div className=" flex items-center justify-center ">
           <img src="../../Images/errorimage.jpg" className="h-80 w-[50rem]" />

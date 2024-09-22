@@ -28,6 +28,7 @@ import Footer from "../Components/Actual_Components/Footer";
 import Nav from "./Nav";
 import Free from "../../src/Pages/Free";
 import ClipLoader from "react-spinners/ClipLoader";
+import Navbar from "./Navbar";
 const avatars = [
   {
     name: "Ashish Bhadauriya",
@@ -243,7 +244,7 @@ export default function SignUp() {
   const { name, mobile, password, cpassword } = userSignUp;
   return (
     <>
-      <Nav />
+      <Navbar/>
       <Box position={"relative"}>
         {name !== "" &&
           mobile !== "" &&

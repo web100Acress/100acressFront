@@ -53,7 +53,7 @@ const Search = ({ data1 }) => {
     'Search "Best Properties"',
     'Search "Delhi NCR"',
     'Search "3 BHK Sale For Goa"',
-    'Search "Commercial Space For Sale In Gurgaon"' 
+    'Search "Commercial Space For Sale In Gurgaon"',
     // Add more placeholders as needed
   ];
 
@@ -66,16 +66,19 @@ const Search = ({ data1 }) => {
         const nextIndex = (currentIndex + 1) % placeholders.length;
         return placeholders[nextIndex];
       });
-    }, 3000); // Change the placeholder every second (1000 milliseconds)
+    }, 3000);
 
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
     <>
-      <div className="w-70 bg-white border-white border-none lg:h-14 md:h-10 sm:h-8 rounded-lg lg:rounded-2xl md:rounded-xl sm:rounded-lg px-2 lg:px-4 md:px-3  sm:px-2">
+      <div
+        className="w-70 shadow-xl bg-white border-none lg:h-14 md:h-10 sm:h-8 px-2 lg:px-4 md:px-3 sm:px-2"
+        style={{ marginTop: window.innerWidth < 640 ? "200px" : "0" }}
+      >
         <div className="flex items-center xl:h-14 lg:h-14 md:h-10 sm:h-8">
-          <div className="w-60 mt-1 lg:mt-3 md:mt-3 sm:mt-2 ml-2 lg:ml-8 md:ml-6 sm:ml-4 lg:w-[820px] md:w-full sm:w-70 outline-none">
+          <div className="w-60 mt-1 lg:mt-3 md:mt-3 sm:mt-12 ml-2 lg:ml-8 md:ml-6 sm:ml-4 lg:w-[620px] md:w-full sm:w-70">
             <input
               className="outline-none w-full"
               type="text"
@@ -95,7 +98,7 @@ const Search = ({ data1 }) => {
               state: formData,
             }}
             id="searchButton"
-            className="ml-2 my-1 mt-1 lg:mt-3 md:mt-3 sm:mt-2 lg:ml-0 md:ml-0 sm:ml-0"
+            className="ml-2 my-1 mt-1 lg:mt-3 md:mt-3 sm:mt-2 lg:ml-10 md:ml-0 sm:ml-0"
           >
             <div className="w-8 h-8 flex items-center justify-center rounded-full bg-red-500">
               <i className="fas fa-search text-white"></i>
@@ -104,18 +107,22 @@ const Search = ({ data1 }) => {
         </div>
       </div>
 
+
+      
       {/* Horizontal scrolling */}
 
-      <div className="w-full hidden lg:flex justify-center pt-1  mx-auto">
-        <span className="text-white  text-sm pt-1 font-semibold flex items-center">
-          Popular Search
-        </span>
+      <div className="w-full hidden  p-2 lg:flex justify-center pt-1 mx-auto">
+        {/* <span className="text-white text-sm pt-1 font-semibold flex items-center">
+    Popular Search
+  </span> */}
 
-        <div className="flex animate-scroll pt-1">
+        <div className="flex animate-scroll pt-2  flex-nowrap overflow-hidden">
           {primeLocations.map((location, index) => (
-            <div key={index} className="w-auto flex-shrink-0 px-[2px]">
+            <div key={index} className="flex-shrink-0 px-1">
+              {" "}
+              {/* Reduce px spacing */}
               <Link to={location.to} target="_top" rel="noopener noreferrer">
-                <span className="bg-white rounded-full  text-black font-semibold text-[12px] px-2 py-1 hover:text-red-500 hover:underline-offset-8 cursor-pointer text-center">
+                <span className="bg-white  rounded-full text-red-600 font-semibold text-[12px] px-2 py-1 hover:text-red-500 hover:underline-offset-8 cursor-pointer text-center whitespace-nowrap">
                   {location.name}
                 </span>
               </Link>
@@ -123,6 +130,7 @@ const Search = ({ data1 }) => {
           ))}
         </div>
       </div>
+
     </>
   );
 };

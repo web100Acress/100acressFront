@@ -4,11 +4,12 @@ import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import Navbar from "../aadharhomes/Navbar";
 const GoaProject = () => {
   const { goaCityProject } = useContext(DataContext);
   return (
     <div>
-      <Nav />
+      <Navbar/>
       <Helmet>
         <title>Property in Goa - Flats, Villas, House for Sale in Goa</title>
         <meta

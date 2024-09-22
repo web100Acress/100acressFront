@@ -255,6 +255,7 @@ import Footer from "../Components/Actual_Components/Footer";
 import Nav from "../aadharhomes/Nav";
 import axios from "axios";
 import { Helmet } from "react-helmet";
+import Navbar from "../aadharhomes/Navbar";
 const ContactUs = () => {
   const [formDataInquiry, setFormDataInquiry] = useState({
     name: "",
@@ -317,7 +318,7 @@ const ContactUs = () => {
   };
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Nav />
+     <Navbar/>
       <Helmet>
         <title>Contact Us | Reach Out to 100acress.com Experts Guidance</title>
         <meta

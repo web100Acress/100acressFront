@@ -2,10 +2,11 @@ import React from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import Nav from "../aadharhomes/Nav";
 import { Helmet } from "react-helmet";
+import Navbar from "../aadharhomes/Navbar";
 const Privacy = () => {
   return (
     <>
-      <Nav />
+      <Navbar/>
       <Helmet>
         <meta
           name="description"

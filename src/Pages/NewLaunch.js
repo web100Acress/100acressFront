@@ -5,12 +5,13 @@ import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import NewLaunchSearch from '../Pages/NewLaunchSearch.js'
+import Navbar from "../aadharhomes/Navbar.js";
 
 const NewLaunch = () => {
   const { newLaunch } = useContext(DataContext);
   return (
     <div>
-      <Nav />
+    <Navbar/>
       <NewLaunchSearch />
       <Helmet>
         <title>

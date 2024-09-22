@@ -4,11 +4,12 @@ import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import Navbar from "../aadharhomes/Navbar";
 const DelhiProject = () => {
   const { delhiData } = useContext(DataContext);
   return (
     <div>
-      <Nav />
+    <Navbar/>
 
       <Helmet>
         <title>

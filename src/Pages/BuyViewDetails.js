@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import { DataContext } from "../MyContext";
 import { GrPrevious, GrNext } from "react-icons/gr";
 import { ScaleLoader } from "react-spinners";
+import Navbar from "../aadharhomes/Navbar";
 
 const BuyViewDetails = () => {
   const sliderRef = useRef(null);
@@ -301,7 +302,7 @@ const BuyViewDetails = () => {
 
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Nav />
+     <Navbar/>
       <Wrapper>
         <div className="blog-single gray-bg">
           <div className="mx-10">
