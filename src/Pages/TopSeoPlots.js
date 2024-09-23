@@ -10,6 +10,7 @@ const TopSeoPlots = () => {
           Top SCO Plots in Gurugram
         </h1>
         <div className="hidden sm:block">
+          <Link to="/sco/plots/" target="_top">
           <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
             <ScaleLoader color="#FFFFFF" height={20} width={3} />
             <span className="ml-2">View All</span>
