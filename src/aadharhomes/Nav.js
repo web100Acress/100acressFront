@@ -718,6 +718,81 @@ export default function Nav() {
                       }`}
                     >
                       <div className="flex mb-3">
+                      <div className="w-48">
+                          <Link className="block text-black text-lg px-4 py-1 hover:text-red-600">
+                            Project Status
+                            <hr className="mt-1" />
+                          </Link>
+
+                          <Link
+                            to={"/projects/upcoming-projects-in-gurgaon/"}
+                            className="block text-sm px-4  hover:text-red-600"
+                          >
+                            Upcoming Projects
+                          </Link>
+
+                          <Link
+                            to={"/projects-in-newlaunch/"}
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            New Launch Projects
+                          </Link>
+
+                          <Link
+                            to={"/project-in-underconstruction/"}
+                            className="block text-sm px-4  hover:text-red-600"
+                          >
+                            Under Construction
+                          </Link>
+
+                          <Link
+                            to={"/projects-in-gurugram/property-ready-to-move/"}
+                            className="block  py-1 text-sm px-4 hover:text-red-600"
+                          >
+                            Ready To Move
+                          </Link>
+                          <div className="w-48">
+                          <Link className="block text-black text-lg px-4 py-1 hover:text-red-600">
+                            Project Types
+                            <hr className="mt-1" />
+                          </Link>
+
+                          <Link
+                            to={"/property/residential/"}
+                            className="block text-sm px-4 py-1 hover:text-red-600"
+                          >
+                            Residential Projects
+                          </Link>
+
+                          <Link
+                            to={"/projects/commerial/"}
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            Commercial Projects
+                          </Link>
+
+                          <Link
+                            to={"/sco/plots/"}
+                            className="block text-sm px-4 py-1 hover:text-red-600"
+                          >
+                            SCO Plots
+                          </Link>
+
+                          <Link
+                            to={"/projects/independentfloors/"}
+                            className="block  py-1 text-sm px-4 hover:text-red-600"
+                          >
+                            Luxury Floors
+                          </Link>
+                          <Link
+                            to={"/plots-in-gurugram/"}
+                            className="block  py-1 text-sm px-4 hover:text-red-600"
+                          >
+                            Residential Plots
+                          </Link>
+                         
+                        </div>
+                        </div>
                         <div className="w-48">
                           <Link
                             to="#"
@@ -853,40 +928,9 @@ export default function Nav() {
                           </Link>
                         </div>
                         {/* I am Working here */}
-                        <div className="w-48">
-                          <Link className="block text-black text-lg px-4 py-1 hover:text-red-600">
-                            Project Status
-                            <hr className="mt-1" />
-                          </Link>
+                       
 
-                          <Link
-                            to={"/projects/upcoming-projects-in-gurgaon/"}
-                            className="block text-sm px-4  hover:text-red-600"
-                          >
-                            Upcoming Projects
-                          </Link>
-
-                          <Link
-                            to={"/projects-in-newlaunch/"}
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            New Launch Projects
-                          </Link>
-
-                          <Link
-                            to={"/project-in-underconstruction/"}
-                            className="block text-sm px-4  hover:text-red-600"
-                          >
-                            Under Construction
-                          </Link>
-
-                          <Link
-                            to={"/projects-in-gurugram/property-ready-to-move/"}
-                            className="block  py-1 text-sm px-4 hover:text-red-600"
-                          >
-                            Ready To Move
-                          </Link>
-                        </div>
+                       
                       </div>
                     </div>
                   </div>

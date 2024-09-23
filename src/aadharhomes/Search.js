@@ -92,7 +92,6 @@
 //     </>
 //   );
 // };
-
 // export default Search;
 import { FaArrowRight } from "react-icons/fa";
 import React, { useState, useEffect } from "react";
