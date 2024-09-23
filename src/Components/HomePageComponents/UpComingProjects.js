@@ -4,11 +4,14 @@ import Footer from "../Actual_Components/Footer";
 import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import UpcomingSearch from "../../Pages/UpcomingSearch";
+import Navbar from "../../aadharhomes/Navbar";
 const UpComingProjects = () => {
   const { allupcomingProject } = useContext(DataContext);
   return (
     <div>
-      <Nav />
+      <Navbar/>
+      <UpcomingSearch />
       <Helmet>
         <meta
           name="description"
@@ -23,9 +26,7 @@ const UpComingProjects = () => {
         />
       </Helmet>
       <div className="max-w-screen pt-2 sm:pt-2 md:pt-2" target="_top">
-        <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          Upcoming Projects
-        </h1>
+     
 
         <h2 className="text-sm text-justify mb-4  sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
           Upcoming Projects in Gurugram include commercial and residential

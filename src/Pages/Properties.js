@@ -5,12 +5,13 @@ import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
 import ProjectSearching from "./ProjectSearching";
+import Navbar from "../aadharhomes/Navbar";
 function Properties() {
   const { gurugramProject } = useContext(DataContext);
 
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Nav />
+      <Navbar/>
       <ProjectSearching />
 
       <Helmet>

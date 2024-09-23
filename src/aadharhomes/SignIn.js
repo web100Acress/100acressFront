@@ -35,7 +35,7 @@ import Nav from "./Nav";
 import Free from "../../src/Pages/Free";
 import { AuthContext } from "../AuthContext";
 import { Helmet } from "react-helmet";
-import { useToast } from '@chakra-ui/react'
+import Navbar from "./Navbar";
 const avatars = [
   {
     name: "Ashish Bhadauriya",
@@ -61,7 +61,6 @@ const avatars = [
 
 export default function SignIn() {
   const history = useNavigate();
-  const toast = useToast()
   const avatarSize = useBreakpointValue({ base: "md", md: "lg" });
   const { isOpen, onClose } = useDisclosure();
   const initialRef = React.useRef(null);
@@ -106,7 +105,7 @@ export default function SignIn() {
 
   return (
     <>
-      <Nav />
+      <Navbar/>
       <Helmet>
         <title>Sell Your Property in Gurgaon | 100acress.com</title>
         <meta

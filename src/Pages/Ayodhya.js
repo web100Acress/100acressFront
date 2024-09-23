@@ -4,11 +4,12 @@ import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import Navbar from "../aadharhomes/Navbar";
 const Ayodhya = () => {
   const { ayodhya } = useContext(DataContext);
   return (
     <div>
-      <Nav />
+     <Navbar/>
       <Helmet>
         <title>
           Property in Ayodhya - Flats, Villas, House for Sale in Ayodhya

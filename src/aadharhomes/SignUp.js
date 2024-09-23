@@ -27,6 +27,8 @@ import { Radio, RadioGroup } from "@chakra-ui/react";
 import Footer from "../Components/Actual_Components/Footer";
 import Nav from "./Nav";
 import Free from "../../src/Pages/Free";
+import ClipLoader from "react-spinners/ClipLoader";
+import Navbar from "./Navbar";
 const avatars = [
   {
     name: "Ashish Bhadauriya",
@@ -72,8 +74,10 @@ export default function SignUp() {
   });
 
   const [otpVerified, setOtpVerified] = useState(false);
+  const [emailVerifid, setEmailVerified] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState("");
   const [verificationOtp, setVerificationOtp] = useState("");
+  let [loading, setLoading] = useState(false);
   const handleChangeOnlyEmail = (e) => {
     const { name, value } = e.target;
     setOnlyEmail({ ...onlyEmail, [name]: value });
@@ -93,17 +97,20 @@ export default function SignUp() {
       setVerificationStatus("Please enter a valid email.");
       return;
     }
+    setLoading(true);
     try {
       const res = await axios.post(
         "https://api.100acress.com/postPerson/verifyEmail",
         onlyEmail
-      );
+      ); 
+      setEmailVerified(true);
+      setLoading(false);
       if (res.status === 200) {
         setUserSignUp((prevState) => ({
           ...prevState,
           email: onlyEmail.email,
         }));
-  
+
         toast({
           description: "OTP sent successfully. Check your email!",
           status: "success",
@@ -113,9 +120,13 @@ export default function SignUp() {
         });
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {  // Assuming 409 is the status code for already registered email
+      setLoading(false);
+      if (error.response && error.response.status === 401) {
+        // Assuming 409 is the status code for already registered email
+        
         toast({
-          description: "Email already registered. Please enter a different email.",
+          description:
+            "Email already registered. Please enter a different email.",
           status: "error",
           duration: 9000,
           isClosable: true,
@@ -124,13 +135,14 @@ export default function SignUp() {
       } else {
         console.log(error);
       }
+    }finally {
+      setLoading(false);
     }
   };
-  
 
   const VerifyOtp = async () => {
     const { otp } = checkOtp;
-  
+
     if (!otp) {
       setVerificationOtp("Please enter OTP!");
       return;
@@ -140,7 +152,7 @@ export default function SignUp() {
         "https://api.100acress.com/postPerson/otp",
         checkOtp
       );
-  
+
       if (res.status === 200) {
         toast({
           description: "OTP verified successfully!",
@@ -152,7 +164,7 @@ export default function SignUp() {
         setOtpVerified(true);
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) { 
+      if (error.response && error.response.status === 401) {
         toast({
           description: "Incorrect OTP. Please try again.",
           status: "error",
@@ -165,7 +177,6 @@ export default function SignUp() {
       }
     }
   };
-  
 
   const resetData = () => {
     setUserSignUp({
@@ -188,7 +199,7 @@ export default function SignUp() {
     setUserSignUp({ ...userSignUp, [name]: value });
   };
 
-  const [buttonText, setButtonText] = useState("Create your Account");
+  const [buttonText] = useState("Create your Account");
 
   const [responseMessage, setResponseMessage] = useState("");
 
@@ -233,7 +244,7 @@ export default function SignUp() {
   const { name, mobile, password, cpassword } = userSignUp;
   return (
     <>
-      <Nav />
+      <Navbar/>
       <Box position={"relative"}>
         {name !== "" &&
           mobile !== "" &&
@@ -387,7 +398,16 @@ export default function SignUp() {
                           onClick={VerifyEmailCheck}
                           className="lg:mr-4 mr-1 sm:mr-1"
                         >
-                          Send OTP
+                          {loading ? (
+                            <ClipLoader
+                              color="white"
+                              loading={loading}
+                              size={30}
+                              className="text-blue-200"
+                            />
+                          ) : (
+                            "Send OTP"
+                          )}
                         </Button>
                       </InputRightElement>
                     </InputGroup>
@@ -399,41 +419,45 @@ export default function SignUp() {
                     <FormHelperText color={"green.500"}></FormHelperText>
                   </FormControl>
 
-                  <FormControl mt={4}>
-                    <InputGroup>
-                      <Input
-                        placeholder="Enter OTP"
-                        bg="gray.100"
-                        border={0}
-                        color="gray.500"
-                        _placeholder={{ color: "gray.500" }}
-                        name="otp"
-                        value={checkOtp.otp}
-                        onChange={handleCheckOtp}
-                        width="100%"
-                      />
-                      <InputRightElement width="auto">
-                        <Button
-                          size="xs"
-                          bgGradient="linear(to-r, green.400, teal.400)"
-                          color="white"
-                          _hover={{
-                            bgGradient: "linear(to-r, green.400, teal.400)",
-                          }}
-                          onClick={VerifyOtp}
-                          className="lg:mr-4 sm:mr-1"
-                        >
-                          Verify OTP
-                        </Button>
-                      </InputRightElement>
-                    </InputGroup>
-                    {verificationOtp && (
-                      <p className="text-sm italic text-red-600 -mb-6">
-                        {verificationOtp}
-                      </p>
-                    )}
-                    <FormHelperText color={"green.500"}></FormHelperText>
-                  </FormControl>
+                  {emailVerifid && (
+                    <>
+                      <FormControl mt={4}>
+                        <InputGroup>
+                          <Input
+                            placeholder="Enter OTP"
+                            bg="gray.100"
+                            border={0}
+                            color="gray.500"
+                            _placeholder={{ color: "gray.500" }}
+                            name="otp"
+                            value={checkOtp.otp}
+                            onChange={handleCheckOtp}
+                            width="100%"
+                          />
+                          <InputRightElement width="auto">
+                            <Button
+                              size="xs"
+                              bgGradient="linear(to-r, green.400, teal.400)"
+                              color="white"
+                              _hover={{
+                                bgGradient: "linear(to-r, green.400, teal.400)",
+                              }}
+                              onClick={VerifyOtp}
+                              className="lg:mr-4 sm:mr-1"
+                            >
+                              Verify OTP
+                            </Button>
+                          </InputRightElement>
+                        </InputGroup>
+                        {verificationOtp && (
+                          <p className="text-sm italic text-red-600 -mb-6">
+                            {verificationOtp}
+                          </p>
+                        )}
+                        <FormHelperText color={"green.500"}></FormHelperText>
+                      </FormControl>
+                    </>
+                  )}
 
                   {/* We are working here End */}
                   {otpVerified && (

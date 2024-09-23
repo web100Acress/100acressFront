@@ -4,12 +4,13 @@ import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import Navbar from "../aadharhomes/Navbar";
 const KasauliProject = () => {
   const { kasauli } = useContext(DataContext);
   console.log(kasauli,"kasauli")
   return (
     <div>
-      <Nav />
+      <Navbar/>
       <Helmet>
         <title>
           Property in kasauli - Flats, Villas, House for Sale in kasauli

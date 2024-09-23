@@ -15,6 +15,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@trendyol-js/react-carousel": "^3.0.2",
+    "aos": "^2.3.4",
     "axios": "^1.5.1",
     "bootstrap": "^5.3.1",
     "chart.js": "^4.4.0",

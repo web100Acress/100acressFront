@@ -57,12 +57,16 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-      <div className="h-screen w-full zoom  zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
+      {/* <div className="h-screen w-full zoom  zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
+        <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
+          <SearchBar />
+        </div>
+      </div> */}
+ <div className="h-screen w-full zoom  zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
         <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
           <SearchBar />
         </div>
       </div>
-
 
      
 

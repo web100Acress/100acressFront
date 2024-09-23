@@ -4,6 +4,7 @@ import Footer from "../Components/Actual_Components/Footer";
 import Nav from "../aadharhomes/Nav";
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
+import Navbar from "../aadharhomes/Navbar";
 const Blogging = () => {
   const { blogData } = useContext(DataContext);
 
@@ -14,7 +15,7 @@ const Blogging = () => {
 
   return (
     <>
-      <Nav />
+      <Navbar/>
       <Helmet>
         <meta
           name="description"
@@ -30,34 +31,6 @@ const Blogging = () => {
         </p>
       </div>
 
-      {/* <div className="w-full px-4 sm:px-10">
-  <div className="w-full grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4 border-gray-500">
-    {blogData.slice(0, 4).map((item, index) => {
-      const blogTitle = item.blog_Title;
-      return (
-        <div key={index} className="flex flex-col sm:flex-row border border-gray-300 rounded-md overflow-hidden">
-          <div className="w-full sm:w-1/2 h-52 relative">
-            <img
-              src={item.blog_Image.url}
-              alt={blogTitle}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          </div>
-          <div className="w-full sm:w-1/2 p-4 flex flex-col justify-between">
-            <p className="text-lg font-semibold mb-2">{blogTitle}</p>
-            <Link
-              to={`/blog/${blogTitle.replace(/\s+/g, "-").toLowerCase()}/${item._id}`}
-            >
-              <button className="bg-red-600 text-white p-2 rounded-md self-start">
-                Read More
-              </button>
-            </Link>
-          </div>
-        </div>
-      );
-    })}
-  </div>
-</div> */}
 
       <div className="w-full px-4 sm:px-10">
         <div className="w-full grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4">
@@ -166,3 +139,134 @@ const Blogging = () => {
 };
 
 export default Blogging;
+
+
+// import React, { useContext, useState } from "react";
+// import { Link } from "react-router-dom";
+// import Footer from "../Components/Actual_Components/Footer";
+// import Nav from "../aadharhomes/Nav";
+// import { DataContext } from "../MyContext";
+// import { Helmet } from "react-helmet";
+// import Free from "./Free";
+// const Blogging = () => {
+//   const { blogData } = useContext(DataContext);
+
+//   const [showFullDescription, setShowFullDescription] = useState(false);
+//   const toggleDescription = () => {
+//     setShowFullDescription(!showFullDescription);
+//   };
+
+//   return (
+//     <>
+//       <Nav />
+//       <Helmet>
+//         <meta
+//           name="description"
+//           content="Discover the latest insights, tips, and Expert guidance on real estate trends, investment strategies, and property management on our blog at 100acress.com. Stay informed!"
+//         />
+//         <title>Blog | Expert Guidance on Real Estate | 100acress.com</title>
+//         <link rel="canonical" href="https://www.100acress.com/blog/" />
+//       </Helmet>
+
+//       <div class="">
+//         <p class="my-8 lg:mt-10 text-3xl text-center text-red-600 font-medium sm:text-4xl xl:text-5xl">
+//           100acress Blog
+//         </p>
+//       </div>
+
+    
+
+// <div className="w-full px-4 sm:px-10">
+//   <div className="w-full grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-6">
+//     {blogData.slice(0, 4).map((item, index) => {
+//       const blogTitle = item.blog_Title;
+//       return (
+//         <article
+//           key={index}
+//           className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md flex flex-col border-2 items-center gap-2 md:flex-row lg:gap-4 rounded-lg overflow-hidden"
+//         >
+//           <span className="group relative block h-56 w-full self-start overflow-hidden rounded-l-lg  md:h-24 md:w-24 lg:h-32 lg:w-32">
+//             {item.blog_Image && (
+//               <img
+//                 src={item.blog_Image.url}
+//                 loading="lazy"
+//                 alt="blogImage"
+//                 className="absolute inset-0 h-full w-full object-cover object-center rounded-none md:rounded-full p-2"
+//               />
+//             )}
+//           </span>
+//           <div className="flex flex-col justify-center lg:p-2 md:p-0 p-0">
+//             <p className="lg:text-lg md:text-md sm:text-sm text-sm text-black mb-2">
+//               <span className="transition hover:text-red-600 duration-500 ease-in-out">
+//                 {blogTitle}
+//               </span>
+//             </p>
+//             <Link
+//               to={`/blog/${blogTitle.replace(/\s+/g, "-").toLowerCase()}/${item._id}`}
+//             >
+//               <button className="bg-red-600 text-white px-2 py-0 rounded-md self-start mt-2">
+//                 Read More
+//               </button>
+//             </Link>
+//           </div>
+//         </article>
+//       );
+//     })}
+//   </div>
+// </div>
+
+
+
+//        {/* <div className="mx-4 sm:mx-10 lg:mx-20 max-w-screen-2xl pt-4 text-center">
+//         <img
+//           className="w-full h-72 object-cover my-4"
+//           src="../../Images/blogpage.png"
+//           alt="Featured Image"
+//         />
+//       </div>  */}
+
+//       <div className="w-full px-4 sm:px-10">
+//   <div className="w-full grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-6">
+//     {blogData.slice(4).map((item, index) => {
+//       const blogTitle = item.blog_Title;
+//       return (
+//         <article
+//           key={index}
+//           className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md flex flex-col border-2 items-center gap-2 md:flex-row lg:gap-4 rounded-lg overflow-hidden"
+//         >
+//           <span className="group relative block h-56 w-full self-start overflow-hidden rounded-l-lg  md:h-24 md:w-24 lg:h-32 lg:w-32">
+//             {item.blog_Image && (
+//               <img
+//                 src={item.blog_Image.url}
+//                 loading="lazy"
+//                 alt="blogImage"
+//                 className="absolute inset-0 h-full w-full object-cover object-center rounded-none md:rounded-full p-2"
+//               />
+//             )}
+//           </span>
+//           <div className="flex flex-col justify-center px-3 py-2">
+//             <p className="text-lg text-black mb-2">
+//               <span className="transition hover:text-red-600 duration-500 ease-in-out">
+//                 {blogTitle}
+//               </span>
+//             </p>
+//             <Link
+//               to={`/blog/${blogTitle.replace(/\s+/g, "-").toLowerCase()}/${item._id}`}
+//             >
+//               <button className="bg-red-600 text-white px-2 py-0 rounded-md self-start mt-2">
+//                 Read More
+//               </button>
+//             </Link>
+//           </div>
+//         </article>
+//       );
+//     })}
+//   </div>
+// </div>
+//       <Free />
+//       <Footer />
+//     </>
+//   );
+// };
+
+// export default Blogging;

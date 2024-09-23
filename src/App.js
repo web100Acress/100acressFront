@@ -4,13 +4,8 @@ import { styled } from "styled-components";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./Pages/Home";
 import Properties from "./Pages/Properties";
-import MiddleMain from "./Components/PropertyViewComponents/MiddleMain";
-import AdminMain from "./Components/AdminPanelComponents/AdminMain";
 import PropertyKnow from "./Components/KnowAbouts/PropertyKnow";
-import Profile from "./Components/ProfileSec_Components/Profile";
 import PageNotFound from "./Pages/PageNotFound";
-import EditableProperty from "./Components/AdminPanelComponents/EditableProperty";
-import Form from "./Pages/Form";
 import SignUp from "./aadharhomes/SignUp";
 import SignIn from "./aadharhomes/SignIn";
 
@@ -117,6 +112,7 @@ import MgRoad from "./Pages/MgRoad";
 import UnderConstruction from "./Pages/UnderConstruction";
 import NewLaunch from "./Pages/NewLaunch";
 import Ayodhya from "./Pages/Ayodhya";
+import SignatureGlobal from "./Pages/SignatureGlobal";
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -194,7 +190,7 @@ function App() {
                 element={<ResidentialProjects />}
               />
               <Route
-                path="/projects/upcoming-projects-in-gurgaon"
+                path="/projects/upcoming-projects-in-gurgaon/"
                 element={<UpComingProjects />}
               />
               <Route
@@ -213,7 +209,10 @@ function App() {
               <Route path="/project-in-kasauli/" element={<KasauliProject />} />
               <Route path="/project-in-ayodhya/" element={<Ayodhya />} />
               <Route path="/project-in-mumbai/" element={<Mumbai />} />
-              <Route path="/project-in-underconstruction/" element={<UnderConstruction />} />
+              <Route
+                path="/project-in-underconstruction/"
+                element={<UnderConstruction />}
+              />
               <Route path="/projects-in-newlaunch/" element={<NewLaunch />} />
               <Route path="/dlf-homes-projects/" element={<DlfProject />} />
               <Route path="/project-in-goa/" element={<GoaProject />} />
@@ -227,7 +226,6 @@ function App() {
                 }
               />
               <Route path="/useredit/:id" element={<UserEdit />} />
-              <Route path="/middlemain" element={<MiddleMain />} />
               <Route path="/viewallproperty" element={<ViewAllProperty />} />
               <Route path="/contact-us/" element={<ContactUs />} />
               <Route path="/career-with-us/" element={<CareerWithUs />} />
@@ -239,17 +237,7 @@ function App() {
                 element={<ForgetPassword />}
               />
               <Route path="/forgetpassword" element={<ResetEmailPassword />} />
-              <Route
-                path="/form"
-                element={<Form registeredData={registeredData} />}
-              />
-              <Route path="/protected/private/admin" element={<AdminMain />} />
-              <Route
-                path="/protected/private/admin/editProject/:url"
-                element={<EditableProperty />}
-              />
               <Route path="/knowabouts" element={<PropertyKnow />} />
-              <Route path="/profile/:id" element={<Profile />} />
               <Route path="/:pUrl/" element={<BannerPage />} />
               <Route
                 path="/userviewproperty/:id"
@@ -274,6 +262,7 @@ function App() {
               <Route path="/orris-plots-gurugram/" element={<Orris />} />
               <Route path="/jms-plots-gurugram/" element={<Jms />} />
               <Route path="/rof-plots-gurugram/" element={<Rof />} />
+              <Route path="/signatureglobal-plots-gurugram/" element={<SignatureGlobal/>} />
               <Route
                 path="/emaar-india-sco-plots-gurugram/"
                 element={<EmaarIndia />}
@@ -307,7 +296,7 @@ function App() {
                 path="/Admin/viewproperty/editdetails/:id"
                 element={<EditDetails />}
               />
-              <Route path="/Admin/dashboard" element = {<Dashboard/>} />
+              <Route path="/Admin/dashboard" element={<Dashboard />} />
               <Route path="/Admin/addnew" element={<Addnew />} />
               <Route path="/Admin/project-insert" element={<InsertProject />} />
               <Route path="/Admin/adminproperty" element={<Adminproperty />} />

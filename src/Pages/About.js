@@ -2,10 +2,11 @@ import React from "react";
 import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { Helmet } from "react-helmet";
+import Navbar from "../aadharhomes/Navbar";
 const About = () => {
   return (
     <>
-      <Nav />
+      <Navbar/>
 
       <Helmet>
         <meta

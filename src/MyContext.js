@@ -44,6 +44,7 @@ export const DataProvider = ({ children }) => {
   const [orris, setorris] = useState([]);
   const [jms, setJms] = useState([]);
   const [rof, setRof] = useState([]);
+  const [signatureglobal, setSignatureGlobal] = useState([]);
   const [emaarIndia, setEmaarIndia] = useState([]);
   const [m3mIndia, setM3mIndia] = useState([]);
   const [microtek, setMicrotek] = useState([]);
@@ -103,7 +104,7 @@ export const DataProvider = ({ children }) => {
       const upcomingProjects = projectsData.filter(
         (project) =>
           project.projectOverview === "upcoming" ||
-          project.projectReraNo === "upcoming" ||project.projectName === 'Emaar Amaris - Digi Homes 2'
+          project.projectReraNo === "upcoming" ||project.projectName === 'Emaar Amaris - Digi Homes 2' || project.projectName === 'Trump Towers 2'
       );
 
       const featuredProjects = projectsData.filter(
@@ -255,6 +256,10 @@ export const DataProvider = ({ children }) => {
         (project) => project.projectOverview === "rof"
       );
 
+      const signatureglobal = projectsData.filter(
+        (project) => project.projectName === "Signature Global Plots"
+      )
+
       const emaarIndia = projectsData.filter(
         (project) => project.project_Status === "emaar"
       );
@@ -336,6 +341,7 @@ export const DataProvider = ({ children }) => {
       setUnderConstruction(underConstruction);
       setNewLaunch(newLaunch);
       setAyodhya(ayodhya);
+      setSignatureGlobal(signatureglobal)
     } catch (error) {
       console.log(error || error.message);
     }
@@ -497,6 +503,7 @@ export const DataProvider = ({ children }) => {
         underConstruction,
         newLaunch,
         ayodhya,
+        signatureglobal,
       }}
     >
       {children}
