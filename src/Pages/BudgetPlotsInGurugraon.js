@@ -23,7 +23,7 @@ const BudgetPlotsInGurugraon = () => {
         <Link to={`/signatureglobal-plots-gurugram/`} target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
-              src="../../Images/signatureglobal.webp"
+              src="../../Images/signatureimge.webp"
               className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black opacity-30"></div>
