@@ -27,7 +27,7 @@ const SearchData = () => {
   const [buySearchData, setBuySearchData] = useState([]);
   const [rentSearchData, setRentSearchData] = useState([]);
 
-  console.log(key, "key");
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +41,7 @@ const SearchData = () => {
           const res = await axios.get(
             `https://api.100acress.com/rentproperty/search/${key}`
           );
-          setRentSearchData(res.data.data1);
+          setRentSearchData(res.data.data);
         } else {
           const res = await axios.get(
             `https://api.100acress.com/property/search/${key}`
@@ -147,11 +147,20 @@ const SearchData = () => {
                         className="mb-4 transition hover:scale-105 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                       >
                         <div>
-                          <img
-                            src={nestedItem.frontImage.url}
-                            alt="frontImage"
-                            className="w-full h-48 object-cover"
-                          />
+                          {nestedItem.frontImage &&
+                          nestedItem.frontImage.url ? (
+                            <img
+                              src={nestedItem.frontImage.url}
+                              alt="frontImage"
+                              className="w-full h-48 object-cover"
+                            />
+                          ) : (
+                            <img
+                              src="default-image-url.jpg" // Placeholder image in case frontImage is missing
+                              alt="default"
+                              className="w-full h-48 object-cover"
+                            />
+                          )}
                         </div>
                         <div className="p-4">
                           <div className="pb-2">
@@ -217,7 +226,6 @@ const SearchData = () => {
       ) : null}
 
       {/* Rendering rentSearchData if available */}
-
       {rentSearchData && rentSearchData.length > 0 ? (
         <section className="flex flex-col items-center bg-white">
           <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
@@ -230,11 +238,20 @@ const SearchData = () => {
                         className="mb-4 transition hover:scale-105 overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                       >
                         <div>
-                          <img
-                            src={nestedItem.frontImage.url}
-                            alt="frontImage"
-                            className="w-full h-48 object-cover"
-                          />
+                          {nestedItem.frontImage &&
+                          nestedItem.frontImage.url ? (
+                            <img
+                              src={nestedItem.frontImage.url}
+                              alt="frontImage"
+                              className="w-full h-48 object-cover"
+                            />
+                          ) : (
+                            <img
+                              src="default-image-url.jpg" // Fallback image
+                              alt="default"
+                              className="w-full h-48 object-cover"
+                            />
+                          )}
                         </div>
                         <div className="p-4">
                           <div className="pb-2">
@@ -250,8 +267,7 @@ const SearchData = () => {
                             <li className="mr-4 flex items-center text-left">
                               <div className="text-left">
                                 <span className="text-sm text-gray-400">
-                                  {nestedItem.address}{" "}
-                                  {/* Corrected from propertyAddress */}
+                                  {nestedItem.address}
                                 </span>
                                 <div className="flex justify-between">
                                   <p className="m-0 text-base font-medium">
