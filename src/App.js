@@ -113,6 +113,8 @@ import UnderConstruction from "./Pages/UnderConstruction";
 import NewLaunch from "./Pages/NewLaunch";
 import Ayodhya from "./Pages/Ayodhya";
 import SignatureGlobal from "./Pages/SignatureGlobal";
+import DlfSco from "./Pages/DlfSco";
+
 function App() {
   const registeredData = {
     name: "John Doe",
@@ -198,6 +200,7 @@ function App() {
                 element={<CommercialProject />}
               />
               <Route path="/sco/plots/" element={<ScoPlots />} />
+              <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} />
               <Route
                 path="/projects/independentfloors/"
                 element={<BuilderIndependentFloor />}
@@ -262,7 +265,10 @@ function App() {
               <Route path="/orris-plots-gurugram/" element={<Orris />} />
               <Route path="/jms-plots-gurugram/" element={<Jms />} />
               <Route path="/rof-plots-gurugram/" element={<Rof />} />
-              <Route path="/signatureglobal-plots-gurugram/" element={<SignatureGlobal/>} />
+              <Route
+                path="/signatureglobal-plots-gurugram/"
+                element={<SignatureGlobal />}
+              />
               <Route
                 path="/emaar-india-sco-plots-gurugram/"
                 element={<EmaarIndia />}
@@ -275,6 +281,8 @@ function App() {
                 path="/microtek-infra-sco-plots-gurugram/"
                 element={<Microtek />}
               />
+
+            
               <Route path="/Admin/blog" element={<Blog />} />
             </Route>
 

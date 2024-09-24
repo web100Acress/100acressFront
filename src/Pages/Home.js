@@ -36,10 +36,14 @@ function Home() {
   let reorderedTrendingProjects = [];
   if (trendingProject.length > 0) {
     reorderedTrendingProjects = [...trendingProject];
-    const lastElement = reorderedTrendingProjects.pop(); // Remove the last element
-    if (lastElement) {
-      reorderedTrendingProjects.unshift(lastElement); // Move the last element to the first position
-    }
+    reorderedTrendingProjects[0] = trendingProject[5];
+    reorderedTrendingProjects[1] = trendingProject[0];
+    reorderedTrendingProjects[2] = trendingProject[7];
+    reorderedTrendingProjects[3] = trendingProject[1];
+    reorderedTrendingProjects[4] = trendingProject[6];
+    reorderedTrendingProjects[5] = trendingProject[2];
+    reorderedTrendingProjects[6] = trendingProject[4];
+    reorderedTrendingProjects[7] = trendingProject[3];
   }
 
   return (
@@ -57,18 +61,11 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-      {/* <div className="h-screen w-full zoom  zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
-        <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
-          <SearchBar />
-        </div>
-      </div> */}
- <div className="h-screen w-full zoom  zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
+      <div className="h-screen w-full zoom  zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
         <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
           <SearchBar />
         </div>
       </div>
-
-     
 
       <div className="">
         {" "}
@@ -638,9 +635,7 @@ function Home() {
 
       <TopSeoPlots />
 
-
       {/* <DubaiDesign/> */}
-
 
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 mb-0 pt-0">
         <div className="flex items-center">
@@ -828,9 +823,6 @@ function Home() {
 
       <Cities />
 
-
-      
-      
       {/* <StarCarousel /> */}
       <FormHome />
 
@@ -954,9 +946,7 @@ function Home() {
       </div>
       <Resale />
 
-      <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left px-14 pt-1">
-        Services We Offer
-      </h1>
+     
       <OurServices />
       <WhyChoose />
 

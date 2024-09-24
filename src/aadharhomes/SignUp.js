@@ -12,7 +12,6 @@ import {
   AvatarGroup,
   useBreakpointValue,
   FormControl,
-  FormHelperText,
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import axios from "axios";
@@ -25,10 +24,9 @@ import "react-toastify/dist/ReactToastify.css";
 import React from "react";
 import { Radio, RadioGroup } from "@chakra-ui/react";
 import Footer from "../Components/Actual_Components/Footer";
-import Nav from "./Nav";
 import Free from "../../src/Pages/Free";
-import ClipLoader from "react-spinners/ClipLoader";
 import Navbar from "./Navbar";
+
 const avatars = [
   {
     name: "Ashish Bhadauriya",
@@ -56,9 +54,6 @@ export default function SignUp() {
   const history = useNavigate();
   const toast = useToast();
 
-  const [onlyEmail, setOnlyEmail] = useState({
-    email: "",
-  });
 
   const [userSignUp, setUserSignUp] = useState({
     name: "",
@@ -69,114 +64,6 @@ export default function SignUp() {
     role: "propertyOwner",
   });
 
-  const [checkOtp, setCheckOtp] = useState({
-    otp: "",
-  });
-
-  const [otpVerified, setOtpVerified] = useState(false);
-  const [emailVerifid, setEmailVerified] = useState(false);
-  const [verificationStatus, setVerificationStatus] = useState("");
-  const [verificationOtp, setVerificationOtp] = useState("");
-  let [loading, setLoading] = useState(false);
-  const handleChangeOnlyEmail = (e) => {
-    const { name, value } = e.target;
-    setOnlyEmail({ ...onlyEmail, [name]: value });
-  };
-
-  const handleCheckOtp = (e) => {
-    const { name, value } = e.target;
-    setCheckOtp((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const VerifyEmailCheck = async () => {
-    const { email } = onlyEmail;
-    if (!email) {
-      setVerificationStatus("Please enter a valid email.");
-      return;
-    }
-    setLoading(true);
-    try {
-      const res = await axios.post(
-        "https://api.100acress.com/postPerson/verifyEmail",
-        onlyEmail
-      ); 
-      setEmailVerified(true);
-      setLoading(false);
-      if (res.status === 200) {
-        setUserSignUp((prevState) => ({
-          ...prevState,
-          email: onlyEmail.email,
-        }));
-
-        toast({
-          description: "OTP sent successfully. Check your email!",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-          position: "top-right",
-        });
-      }
-    } catch (error) {
-      setLoading(false);
-      if (error.response && error.response.status === 401) {
-        // Assuming 409 is the status code for already registered email
-        
-        toast({
-          description:
-            "Email already registered. Please enter a different email.",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-          position: "top-right",
-        });
-      } else {
-        console.log(error);
-      }
-    }finally {
-      setLoading(false);
-    }
-  };
-
-  const VerifyOtp = async () => {
-    const { otp } = checkOtp;
-
-    if (!otp) {
-      setVerificationOtp("Please enter OTP!");
-      return;
-    }
-    try {
-      const res = await axios.post(
-        "https://api.100acress.com/postPerson/otp",
-        checkOtp
-      );
-
-      if (res.status === 200) {
-        toast({
-          description: "OTP verified successfully!",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-          position: "top-right",
-        });
-        setOtpVerified(true);
-      }
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        toast({
-          description: "Incorrect OTP. Please try again.",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-          position: "top-right",
-        });
-      } else {
-        console.log(error);
-      }
-    }
-  };
 
   const resetData = () => {
     setUserSignUp({
@@ -184,7 +71,7 @@ export default function SignUp() {
       mobile: "",
       password: "",
       cpassword: "",
-      email: onlyEmail.email,
+      email: "",
     });
   };
 
@@ -349,7 +236,7 @@ export default function SignUp() {
           <Stack
             bg={"gray.50"}
             rounded={"xl"}
-            p={{ base: 4, sm: 6, md: 8 }}
+            p={{ base: 4, sm: 6, md: 8, lg: 4 }}
             spacing={{ base: 8 }}
             maxW={{ lg: "lg" }}
             boxShadow="2xl"
@@ -359,110 +246,8 @@ export default function SignUp() {
               <form>
                 <Stack spacing={2}>
                   {/* We are working here */}
-                  <Flex direction="column" align="center" justify="center">
-                    <Text
-                      bgGradient="linear(to-r, red.400, pink.500)"
-                      bgClip="text"
-                      fontWeight="bold"
-                      textAlign="center"
-                      className="text-md xl:text-xl lg:text-lg md:text-sm sm:text-lg"
-                    >
-                      Please Fill The Form To Verify Your Email
-                    </Text>
-                  </Flex>
-
-                  <FormControl>
-                    <InputGroup>
-                      <Input
-                        placeholder="Email@provider.com"
-                        name="email"
-                        type="email"
-                        value={onlyEmail.email}
-                        onChange={handleChangeOnlyEmail}
-                        bg={"gray.100"}
-                        border={0}
-                        color={"gray.500"}
-                        _placeholder={{
-                          color: "gray.500",
-                        }}
-                      />
-
-                      <InputRightElement width="auto">
-                        <Button
-                          size="xs"
-                          bgGradient="linear(to-r, red.400, pink.400)"
-                          color="white"
-                          _hover={{
-                            bgGradient: "linear(to-r, red.400, pink.400)",
-                          }}
-                          onClick={VerifyEmailCheck}
-                          className="lg:mr-4 mr-1 sm:mr-1"
-                        >
-                          {loading ? (
-                            <ClipLoader
-                              color="white"
-                              loading={loading}
-                              size={30}
-                              className="text-blue-200"
-                            />
-                          ) : (
-                            "Send OTP"
-                          )}
-                        </Button>
-                      </InputRightElement>
-                    </InputGroup>
-                    {verificationStatus && (
-                      <p className="text-sm italic text-red-600 -mb-6">
-                        {verificationStatus}
-                      </p>
-                    )}
-                    <FormHelperText color={"green.500"}></FormHelperText>
-                  </FormControl>
-
-                  {emailVerifid && (
-                    <>
-                      <FormControl mt={4}>
-                        <InputGroup>
-                          <Input
-                            placeholder="Enter OTP"
-                            bg="gray.100"
-                            border={0}
-                            color="gray.500"
-                            _placeholder={{ color: "gray.500" }}
-                            name="otp"
-                            value={checkOtp.otp}
-                            onChange={handleCheckOtp}
-                            width="100%"
-                          />
-                          <InputRightElement width="auto">
-                            <Button
-                              size="xs"
-                              bgGradient="linear(to-r, green.400, teal.400)"
-                              color="white"
-                              _hover={{
-                                bgGradient: "linear(to-r, green.400, teal.400)",
-                              }}
-                              onClick={VerifyOtp}
-                              className="lg:mr-4 sm:mr-1"
-                            >
-                              Verify OTP
-                            </Button>
-                          </InputRightElement>
-                        </InputGroup>
-                        {verificationOtp && (
-                          <p className="text-sm italic text-red-600 -mb-6">
-                            {verificationOtp}
-                          </p>
-                        )}
-                        <FormHelperText color={"green.500"}></FormHelperText>
-                      </FormControl>
-                    </>
-                  )}
-
-                  {/* We are working here End */}
-                  {otpVerified && (
-                    <>
-                      <Stack direction="row" isRequired spacing={4} mt={4}>
+                
+                      <Stack direction="row" isRequired spacing={4}>
                         <RadioGroup
                           onChange={(value) =>
                             setUserSignUp({ ...userSignUp, role: value })
@@ -505,16 +290,18 @@ export default function SignUp() {
                         <Input
                           placeholder="Email"
                           name="email"
-                          type="text"
+                          type="email"
                           value={userSignUp.email}
+                          onChange={handleRegisterChange}
                           bg={"gray.100"}
                           border={0}
                           color={"gray.500"}
                           _placeholder={{ color: "gray.500" }}
-                          className="hidden"
+                        
                         />
                       </FormControl>
-                      <FormControl mt={-3}>
+
+                      <FormControl mt={4}>
                         <Input
                           placeholder="Full Name"
                           name="name"
@@ -581,8 +368,7 @@ export default function SignUp() {
                           _placeholder={{ color: "gray.500" }}
                         />
                       </FormControl>
-                    </>
-                  )}
+                   
 
                   {responseMessage && (
                     <p className="mb-0 text-red-600 text-sm ">
@@ -619,6 +405,8 @@ export default function SignUp() {
               </form>
             </Box>
           </Stack>
+
+
         </Container>
       </Box>
       <Free />

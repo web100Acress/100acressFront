@@ -24,6 +24,7 @@ const TopSeoPlots = () => {
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
               src="../../Images/emaar.jpg"
+              alt="emaar"
               className="w-full  h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black opacity-30"></div>
@@ -37,6 +38,7 @@ const TopSeoPlots = () => {
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
               src="../../Images/m3m.jpg"
+              alt="m3m"
               className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black opacity-30"></div>
@@ -46,15 +48,16 @@ const TopSeoPlots = () => {
           </div>
         </Link>
 
-        <Link to={`/microtek-infra-sco-plots-gurugram/`} target="_top">
+        <Link to={`/dlf-homes-sco-plots/`} target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
-              src="../../Images/microtek.jpg"
+              src="../../Images/dlf.avif"
+              alt="dlf"
               className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black opacity-30"></div>
             <h3 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white font-bold text-center text-3xl whitespace-nowrap overflow-hidden text-ellipsis">
-              Microtek Infra
+             DLF Limited
             </h3>
           </div>
         </Link>

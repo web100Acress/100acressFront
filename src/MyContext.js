@@ -37,7 +37,7 @@ export const DataProvider = ({ children }) => {
   const [readyToMoveData, setReadyTOMoveData] = useState([]);
   const [dlfProject, setDlfProject] = useState([]);
   const [goaCityProject, setGoaCityProject] = useState([]);
-  const [dlfAllProjects, setDlfAllProjects] = useState([]);
+  const [dlfProjects, setDlfProjects] = useState([]);
   const [villasProject, setVillasProject] = useState([]);
   const [possessionIn2026AndBeyond, setpossessionIn2026AndBeyond] = useState([]);
   const [bptp, setbptp] = useState([]);
@@ -48,6 +48,7 @@ export const DataProvider = ({ children }) => {
   const [emaarIndia, setEmaarIndia] = useState([]);
   const [m3mIndia, setM3mIndia] = useState([]);
   const [microtek, setMicrotek] = useState([]);
+  const [dlfAllProjects, setDlfAllProjects] = useState([]);
   const [possessionin2024, setPossessionin2024] = useState([]);
   const [possessionin2025, setPossessionin2025] = useState([]);
   const [mumbaiProject, setMumbaiProject] = useState([]);
@@ -57,6 +58,7 @@ export const DataProvider = ({ children }) => {
   const [underConstruction, setUnderConstruction] = useState([]);
   const [newLaunch, setNewLaunch] = useState([]);
   const [ayodhya, setAyodhya] = useState([]);
+  const [dlfSco, setDlfSco] = useState([]);
   const [possessionDate, setPossessionDate] = useState(() => {
     try {
       const storedDate = localStorage.getItem("possessionDate");
@@ -272,6 +274,8 @@ export const DataProvider = ({ children }) => {
         (project) => project.project_Status === "microtek"
       );
 
+     
+
       const nh48 = projectsData.filter(
         (project) =>
           project.projectAddress.includes("Sector 15B, NH-48") ||
@@ -293,6 +297,11 @@ export const DataProvider = ({ children }) => {
 
       const newLaunch = projectsData.filter(
         (project) => project.project_Status === "newlunch" || project.project_Status === "newlaunch"
+      )
+
+
+      const dlfSco = projectsData.filter(
+        (project) => project.builderName === 'DLF Homes' &&  project.type ==='SCO Plots'
       )
       
 
@@ -341,7 +350,8 @@ export const DataProvider = ({ children }) => {
       setUnderConstruction(underConstruction);
       setNewLaunch(newLaunch);
       setAyodhya(ayodhya);
-      setSignatureGlobal(signatureglobal)
+      setSignatureGlobal(signatureglobal);
+      setDlfSco(dlfSco)
     } catch (error) {
       console.log(error || error.message);
     }
@@ -504,6 +514,7 @@ export const DataProvider = ({ children }) => {
         newLaunch,
         ayodhya,
         signatureglobal,
+        dlfSco,
       }}
     >
       {children}
