@@ -146,6 +146,7 @@ import Nav from "../aadharhomes/Nav";
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
 import Free from "./Free";
+import Navbar from "../aadharhomes/Navbar";
 const Blogging = () => {
   const { blogData } = useContext(DataContext);
 
@@ -156,7 +157,7 @@ const Blogging = () => {
 
   return (
     <>
-      <Nav />
+    <Navbar/>
       <Helmet>
         <meta
           name="description"
@@ -223,7 +224,7 @@ const Blogging = () => {
 
       <div className="w-full px-4 sm:px-10">
         <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6">
-          {blogData.slice(4).map((item, index) => {
+          {blogData.slice(6).map((item, index) => {
             const blogTitle = item.blog_Title;
             return (
               <article

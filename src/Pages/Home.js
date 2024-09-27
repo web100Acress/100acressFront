@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Cities from "../Components/HomePageComponents/Cities";
 import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
@@ -46,6 +46,8 @@ function Home() {
     reorderedTrendingProjects[7] = trendingProject[3];
   }
 
+
+
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
@@ -61,16 +63,30 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-      <div className="h-screen w-full zoom  zoom-out element  md:h-60 lg:h-96 sm:h-24 p-8 box-border djqwUUJNCO 9999 mb-4 shadow-2xl">
-        <div className="mt-12 lg:pt-14 sm:pt-1 sm:h-6  md:pt-0 ">
-          <SearchBar />
-        </div>
+      <div class="w-full">
+        <Link to={'https://www.100acress.com/tarc-ishva/'}>
+        <img
+          src="../../Images/tarc.jpg"
+          alt="Banner Image"
+          class="hidden md:block w-full h-auto"
+        />
+       
+        <img
+          src="../../Images/tarcmobile.png"
+          alt="Mobile Banner Image"
+          class="block md:hidden w-full h-auto"
+        />
+        </Link>
+
+       <div className="relative xl:mb-0 sm:mb-0 lg:mb-0 md:mb-4">
+       <SearchBar />
+       </div>
       </div>
 
-      <div className="">
+      <div className="pt-2">
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
-          <div className="flex items-center">
+          <div className="flex items-center ">
             <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
               Trending Properties in Gurugram
             </h1>
@@ -946,7 +962,6 @@ function Home() {
       </div>
       <Resale />
 
-     
       <OurServices />
       <WhyChoose />
 
@@ -1096,10 +1111,11 @@ const Wrapper = styled.section`
 
   @media screen and (max-width: 1800px) and (min-width: 601px) {
     .djqwUUJNCO {
-      background-image: url("../../Images/B.png");
+      background-image: url("../../Images/tarc.jpg");
       background-repeat: no-repeat;
       background-size: cover;
-      background-position: center;
+      background-position: cover;
+      height: 60vh !important;
     }
   }
 
@@ -1138,11 +1154,31 @@ const Wrapper = styled.section`
     cursor: pointer;
   }
 
-  .element {
-    transition: transform 0.5s ease-in-out;
+  .banner {
+    position: relative;
   }
 
-  .element:hover {
-    transform: scale(1.02);
+  .banner-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .default-image {
+    display: block; /* Show default image by default */
+  }
+
+  .mobile-image {
+    display: none; /* Hide mobile image by default */
+  }
+
+  /* Media query for mobile devices */
+  @media (max-width: 768px) {
+    .default-image {
+      display: none; /* Hide default image on mobile */
+    }
+
+    .mobile-image {
+      display: block; /* Show mobile image on mobile */
+    }
   }
 `;
