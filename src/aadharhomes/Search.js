@@ -52,7 +52,7 @@ const Search = ({ data1 }) => {
     'Search "3 BHK Ready To Move Flat For Sale In Gurgaon"',
     'Search "Best Properties"',
     'Search "Delhi NCR"',
-    'Search "3 BHK Sale For Goa"',
+    'Search "3 BHK Flats in Gurgaon"',
     'Search "Commercial Space For Sale In Gurgaon"',
     // Add more placeholders as needed
   ];
@@ -74,20 +74,20 @@ const Search = ({ data1 }) => {
   return (
     <>
       <div
-        className="w-full   shadow-xl bg-white border-none h-auto px-2" // Use full width and set height to auto
+        className="w-full  shadow-xl bg-white border-none h-auto px-2" // Use full width and set height to auto
         style={{
-          marginTop: window.innerWidth < 640 ? "-35px" : "0",
-          marginBottom: window.innerWidth == 768 ? "140px" : "0px",
+          marginTop: window.innerWidth < 640 ? "-65px" : "0",
+          marginBottom: window.innerWidth == 768 ? "90px" : "",
         }}
       >
-        <div className="flex items-center h-auto">
+        <div className="flex items-center h-auto ">
           {" "}
           {/* Set height to auto for flex items */}
-          <div className="w-full mt-2 ml-2 lg:ml-8 md:ml-6 sm:ml-4">
+          <div className="w-full mt-2 ml-2 p-1 mb-3 lg:ml-8 md:ml-6 sm:ml-4">
             {" "}
             {/* Use full width on mobile */}
             <input
-              className="outline-none w-full"
+              className="outline-none w-full "
               type="text"
               name="query"
               placeholder={currentPlaceholder}
@@ -115,7 +115,7 @@ const Search = ({ data1 }) => {
 
       {/* Horizontal scrolling */}
 
-      <div className="w-full hidden   p-2 lg:flex justify-center  mx-auto ">
+      <div className="w-full hidden pt-6 mb-6  p-2 lg:flex justify-center  mx-auto ">
         <div className="flex animate-scroll pt-2  flex-nowrap">
           {primeLocations.map((location, index) => (
             <div key={index} className="flex-shrink-0 px-1">

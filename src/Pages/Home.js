@@ -20,6 +20,7 @@ import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
 import DubaiDesign from "./DubaiDesign";
+import Glide from "@glidejs/glide";
 function Home() {
   const {
     trendingProject,
@@ -46,7 +47,32 @@ function Home() {
     reorderedTrendingProjects[7] = trendingProject[3];
   }
 
+  useEffect(() => {
+    const slider = new Glide(".glide-02", {
+      type: "carousel",
+      focusAt: "center",
+      perView: 1,
+      autoplay: 4000,
+      animationDuration: 700,
+      classNames: {
+        nav: {
+          active: "[&>*]:bg-wuiSlate-700",
+        },
+      },
+      breakpoints: {
+        1024: {
+          perView: 1,
+        },
+        640: {
+          perView: 1,
+        },
+      },
+    }).mount();
 
+    return () => {
+      slider.destroy();
+    };
+  }, []);
 
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
@@ -63,27 +89,92 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-      <div class="w-full">
-        <Link to={'https://www.100acress.com/tarc-ishva/'}>
-        <img
-          src="../../Images/tarc.jpg"
-          alt="Banner Image"
-          class="hidden md:block w-full h-auto"
-        />
-       
-        <img
-          src="../../Images/tarcmobile.png"
-          alt="Mobile Banner Image"
-          class="block md:hidden w-full h-auto"
-        />
-        </Link>
+      <div className="glide-02  w-full">
+        {/*    <!-- Slides --> */}
+        <div data-glide-el="track">
+          <ul className="whitespace-no-wrap flex-no-wrap  flex w-full  p-0">
 
-       <div className="relative xl:mb-0 sm:mb-0 lg:mb-0 md:mb-4">
-       <SearchBar />
-       </div>
+          <Link
+              to={"https://www.100acress.com/4s-the-aurum/"}
+            >
+              <li>
+                <img
+                  src="../../Images/4s.webp"
+                  alt="Banner Image"
+                  class="hidden md:block w-full h-auto"
+                />
+                <img
+                  src="../../Images/4smobile.webp"
+                  alt="Mobile Banner Image"
+                  class="block md:hidden w-full h-auto"
+                />
+              </li>
+            </Link>
+
+            <Link to={"https://www.100acress.com/tarc-ishva/"}>
+              <li>
+                <img
+                  src="../../Images/tarc.webp"
+                  alt="Banner Image"
+                  class="hidden md:block w-full h-auto"
+                />
+                <img
+                  src="../../Images/tarcmobile.png"
+                  alt="Mobile Banner Image"
+                  class="block md:hidden w-full h-auto"
+                />
+              </li>
+            </Link>
+
+            <Link
+              to={
+                "https://www.100acress.com/signature-twin-towers-sector-84-gurgaon/"
+              }
+            >
+              <li>
+                <img
+                  src="../../Images/twintower.png"
+                  alt="Banner Image"
+                  class="hidden md:block w-full h-auto"
+                />
+                <img
+                  src="../../Images/twinmobile.png"
+                  alt="Mobile Banner Image"
+                  class="block md:hidden w-full h-auto"
+                />
+              </li>
+            </Link>
+
+           
+
+            <Link to={"https://www.100acress.com/emaar-amaris/"}>
+              <li>
+                <img
+                  src="../../Images/emaar.png"
+                  alt="Banner Image"
+                  class="hidden md:block w-full h-auto"
+                />
+                <img
+                  src="../../Images/emaarmobile.png"
+                  alt="Mobile Banner Image"
+                  class="block md:hidden w-full h-auto"
+                />
+              </li>
+            </Link>
+          </ul>
+          <div className="relative pt-0 sm:pt-0 md:pt-3  xl:pt-3 xl:mb-0 sm:mb-0 lg:mb-0 md:mb-6">
+            <SearchBar />
+          </div>
+        </div>
+        {/*    <!-- Indicators --> */}
+        <div
+          className="absolute bottom-0 flex w-full items-center justify-center gap-2"
+          data-glide-el="controls[nav]"
+        ></div>
       </div>
+      {/*<!-- End Carousel with indicators inside --> */}
 
-      <div className="pt-2">
+      <div>
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center ">

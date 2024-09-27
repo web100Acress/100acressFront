@@ -101,12 +101,13 @@ export const DataProvider = ({ children }) => {
       const projectsData = res.data.data;
 
       const trendingProjects = projectsData.filter(
-        (project) => project.projectOverview === "trending"
+        (project) => project.projectOverview === "trending" 
       );
+
       const upcomingProjects = projectsData.filter(
         (project) =>
           project.projectOverview === "upcoming" ||
-          project.projectReraNo === "upcoming" ||project.projectName === 'Emaar Amaris - Digi Homes 2' || project.projectName === 'Trump Towers 2'
+          project.projectReraNo === "upcoming" || project.projectName === 'Emaar Amaris - Digi Homes 2' || project.projectName === 'Trump Towers 2' 
       );
 
       const featuredProjects = projectsData.filter(
