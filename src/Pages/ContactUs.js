@@ -334,12 +334,12 @@ const ContactUs = () => {
       <div className="overflow-x-hidden">
         <div class="w-full">
           <img
-            src="../../Images/contact.png"
+            src="../../Images/contact.webp"
             alt="Contact Us"
             class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
           />
           <img
-            src="../../Images/contactmobile.png"
+            src="../../Images/contactmobile.webp"
             alt="Contact Us"
             class="w-full h-[9rem] sm:h-30 object-fit small-screen-image block sm:hidden"
           />
@@ -362,7 +362,7 @@ const ContactUs = () => {
         <div className="flex flex-wrap">
           <div className="w-full md:w-1/3 bg-white flex items-center justify-center h-80 md:h-96 hidden md:block">
             <img
-              src="../../Images/tele.png"
+              src="../../Images/tele.webp"
               alt="Image"
               className="w-full h-full object-fit"
             />

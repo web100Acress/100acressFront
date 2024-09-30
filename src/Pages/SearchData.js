@@ -26,7 +26,7 @@ const SearchData = () => {
   const [searchData, setSearchData] = useState([]);
   const [buySearchData, setBuySearchData] = useState([]);
   const [rentSearchData, setRentSearchData] = useState([]);
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -281,7 +281,7 @@ const SearchData = () => {
                           to={
                             item.postProperty.propertyName &&
                             item.postProperty._id
-                              ? `/rent-properties/${item.postProperty.propertyName.replace(
+                              ? `/rental-properties/${item.postProperty.propertyName.replace(
                                   /\s+/g,
                                   "-"
                                 )}/${item.postProperty._id}/`

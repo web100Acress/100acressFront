@@ -284,7 +284,7 @@ export default function Nav() {
     <Wrapper className="section">
       <Box>
         {/* #c13335  #ab2727 #7a3351  #A10302 */}
-        <Box bg={isRed ? 'red' : ''}  className="fixed top-0 z-50 w-full " px={{ base: 0, md: 4, lg: 7 }}>
+        <Box bg={isRed ? 'red' : 'red'}  className="top-0 z-50 w-full " px={{ base: 0, md: 4, lg: 7 }}>
           <Flex h={16} alignItems="center" justifyContent="space-between">
             <IconButton
               size={"md"}
@@ -1320,8 +1320,8 @@ export default function Nav() {
                         >
                           <img
                             className="w-16 h-10 rounded-full"
-                            src="../../Images/logoAvtar.png"
-                            alt="logoAvtar"
+                            src="../../Images/logoavtar.webp"
+                            alt="logoavtar"
                           />
                         </Avatar>
                       </>
@@ -1345,8 +1345,8 @@ export default function Nav() {
                         >
                           <img
                             className="w-16 h-10 rounded-full"
-                            src="../../Images/logoAvtar.png"
-                            alt="logoAvtar"
+                            src="../../Images/logoavtar.webp"
+                            alt="logoavtar"
                           />
                         </Avatar>
                       </>

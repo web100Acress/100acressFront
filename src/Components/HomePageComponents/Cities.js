@@ -215,52 +215,52 @@ const Wrapper = styled.section`
   }
 
   .bg-one {
-    background-image: url(../../OtherImages/sohnaRoad.PNG);
+    background-image: url(../../OtherImages/sohnaroad.webp);
     background-position: center;
   }
 
   .bg-two {
-    background-image: url(../../OtherImages/golfCourse.jpg);
+    background-image: url(../../OtherImages/golfcourse.webp);
     background-position: center;
   }
 
   .bg-three {
-    background-image: url(../../OtherImages/mgRoad.PNG);
+    background-image: url(../../OtherImages/mgroad.webp);
     background-position: center;
   }
 
   .bg-four {
-    background-image: url(../../OtherImages/sikanderpur.jpg);
+    background-image: url(../../OtherImages/sikanderpur.webp);
     background-position: center;
   }
 
   .bg-five {
-    background-image: url(../../OtherImages/capture1.PNG);
+    background-image: url(../../OtherImages/capture1.webp);
     background-position: center;
   }
 
   .bg-six {
-    background-image: url(../../OtherImages/capture2.PNG);
+    background-image: url(../../OtherImages/capture2.webp);
     background-position: center;
   }
 
   .bg-seven {
-    background-image: url(../../OtherImages/capture3.PNG);
+    background-image: url(../../OtherImages/capture3.webp);
     background-position: center;
   }
 
   .bg-eight {
-    background-image: url(../../OtherImages/bgseven.PNG);
+    background-image: url(../../OtherImages/bgseven.webp);
     background-position: center;
   }
 
   .bg-nine {
-    background-image: url(../../OtherImages/capture5.PNG);
+    background-image: url(../../OtherImages/capture5.webp);
     background-position: center;
   }
 
   .bg-ten {
-    background-image: url(../../OtherImages/capture6.PNG);
+    background-image: url(../../OtherImages/capture6.webp);
     background-position: center;
   }
   .bg-one:hover,

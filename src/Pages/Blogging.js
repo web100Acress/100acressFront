@@ -157,7 +157,7 @@ const Blogging = () => {
 
   return (
     <>
-    <Navbar/>
+      <Navbar />
       <Helmet>
         <meta
           name="description"
@@ -175,38 +175,45 @@ const Blogging = () => {
 
       <div className="w-full px-4 sm:px-10">
         <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6">
-          {blogData.slice(0, 4).map((item, index) => {
+          {blogData.slice(0, 6).map((item, index) => {
             const blogTitle = item.blog_Title;
             return (
               <article
                 key={index}
                 className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md flex flex-col border-[1px] items-center gap-2 md:flex-row lg:gap-4 rounded-lg overflow-hidden"
               >
-                <span className="group relative block h-56 w-full self-start overflow-hidden rounded-l-lg  md:h-24 md:w-24 lg:h-32 lg:w-32">
+                {/* Circular Image */}
+                <span className="relative block h-24 w-24 lg:h-32 lg:w-32 overflow-hidden rounded-full flex-shrink-0">
                   {item.blog_Image && (
                     <img
                       src={item.blog_Image.url}
                       loading="lazy"
                       alt="blogImage"
-                      className="absolute inset-0 h-full w-full object-cover object-center rounded-l-lg"
+                      className="h-full w-full p-2 object-cover rounded-full"
                     />
                   )}
                 </span>
-                <div className="flex flex-col justify-center lg:p-2 md:p-0 p-0">
-                  <p className="lg:text-lg md:text-md sm:text-sm text-sm text-black mb-2">
-                    <span className="transition hover:text-red-600 duration-500 ease-in-out">
+
+                {/* Blog Content */}
+                <div className="flex flex-col justify-center lg:p-2 md:p-0 p-0 w-full">
+                  <p className="text-black mb-2">
+                    <span className="transition text-center hover:text-red-600 text-sm sm:text-base md:text-sm lg:text-sm xl:text-lg duration-500 ease-in-out">
                       {blogTitle}
                     </span>
                   </p>
-                  <Link
-                    to={`/blog/${blogTitle
-                      .replace(/\s+/g, "-")
-                      .toLowerCase()}/${item._id}`}
-                  >
-                    <button className="bg-red-600 text-white px-2 py-0 rounded-md self-start mt-2">
-                      Read More
-                    </button>
-                  </Link>
+
+                  {/* "Read More" Button after the description */}
+                  <div className="flex justify-end">
+                    <Link
+                      to={`/blog/${blogTitle
+                        .replace(/\s+/g, "-")
+                        .toLowerCase()}/${item._id}`}
+                    >
+                      <button className="bg-red-600 text-white mr-2 px-3 py-1 rounded-md mt-1">
+                        Read More
+                      </button>
+                    </Link>
+                  </div>
                 </div>
               </article>
             );
@@ -221,7 +228,7 @@ const Blogging = () => {
           alt="Featured Image"
         />
       </div>  */}
-
+      <Free />
       <div className="w-full px-4 sm:px-10">
         <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6">
           {blogData.slice(6).map((item, index) => {
@@ -229,40 +236,47 @@ const Blogging = () => {
             return (
               <article
                 key={index}
-                className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md flex flex-col border-2 items-center gap-2 md:flex-row lg:gap-4 rounded-lg overflow-hidden"
+                className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md flex flex-col border-[1px] items-center gap-2 md:flex-row lg:gap-4 rounded-lg overflow-hidden"
               >
-                <span className="group relative block h-56 w-full self-start overflow-hidden rounded-l-lg  md:h-24 md:w-24 lg:h-32 lg:w-32">
+                {/* Circular Image */}
+                <span className="relative block h-24 w-24 lg:h-32 lg:w-32 overflow-hidden rounded-full flex-shrink-0">
                   {item.blog_Image && (
                     <img
                       src={item.blog_Image.url}
                       loading="lazy"
                       alt="blogImage"
-                      className="absolute inset-0 h-full w-full object-cover object-center rounded-none md:rounded-full p-2"
+                      className="h-full w-full p-2 object-cover rounded-full"
                     />
                   )}
                 </span>
-                <div className="flex flex-col justify-center px-3 py-2">
-                  <p className="text-lg text-black mb-2">
-                    <span className="transition hover:text-red-600 duration-500 ease-in-out">
+
+                {/* Blog Content */}
+                <div className="flex flex-col justify-center lg:p-2 md:p-0 p-0 w-full">
+                  <p className="text-black mb-2">
+                    <span className="transition text-center hover:text-red-600 text-sm sm:text-base md:text-sm lg:text-sm xl:text-lg duration-500 ease-in-out">
                       {blogTitle}
                     </span>
                   </p>
-                  <Link
-                    to={`/blog/${blogTitle
-                      .replace(/\s+/g, "-")
-                      .toLowerCase()}/${item._id}`}
-                  >
-                    <button className="bg-red-600 text-white px-2 py-0 rounded-md self-start mt-2">
-                      Read More
-                    </button>
-                  </Link>
+
+                  {/* "Read More" Button after the description */}
+                  <div className="flex justify-end">
+                    <Link
+                      to={`/blog/${blogTitle
+                        .replace(/\s+/g, "-")
+                        .toLowerCase()}/${item._id}`}
+                    >
+                      <button className="bg-red-600 text-white mr-2 px-3 py-1 rounded-md mt-1">
+                        Read More
+                      </button>
+                    </Link>
+                  </div>
                 </div>
               </article>
             );
           })}
         </div>
       </div>
-      <Free />
+
       <Footer />
     </>
   );

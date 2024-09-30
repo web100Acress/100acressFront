@@ -23,7 +23,7 @@ const TopSeoPlots = () => {
         <Link to={`/emaar-india-sco-plots-gurugram/`} target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
-              src="../../Images/emaar.jpg"
+              src="../../Images/emaarsco.webp"
               alt="emaar"
               className="w-full  h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
@@ -37,7 +37,7 @@ const TopSeoPlots = () => {
         <Link to={`https://www.100acress.com/reach-sco-114/`} target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
-              src="../../Images/reach.jpg"
+              src="../../Images/reach.webp"
               alt="m3m"
               className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
@@ -51,7 +51,7 @@ const TopSeoPlots = () => {
         <Link to={`/dlf-homes-sco-plots/`} target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
-              src="../../Images/dlfsco.jpg"
+              src="../../Images/dlfsco.webp"
               alt="dlf"
               className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />

@@ -36,7 +36,7 @@ function WhyChoose() {
             className="w-full md:w-1/2 bg-white rounded-lg mb-4 xl:mt-2 lg:mt-10 md:mt-20"
           >
             <img
-              src="../Images/djfML.png"
+              src="../Images/djfML.webp"
               alt="100acress"
               className="w-full object-fit md:h-auto lg:h-auto rounded-lg"
             />

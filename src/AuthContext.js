@@ -1,14 +1,15 @@
 import axios from "axios";
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { DataContext } from "./MyContext";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const {admin} =useContext(DataContext)
   const [loading, setLoading] = useState(false);
   const history = useNavigate();
   const [token, setToken] = useState("");
-
   const [agentData, setAgentData] = useState({
     name: "",
     email: "",
@@ -59,7 +60,9 @@ export const AuthProvider = ({ children }) => {
               );
               const sellerId = roleResponse.data.User._id;
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
-              if (roleResponse.data.User.role === "Admin") {
+            
+              if (roleResponse.data.User.role === "Admin" || roleResponse.data.User.role === admin) {
+                console.log(roleResponse.data.User.role,"roleResponse.data.User.role")
                 history("/Admin/dashboard");
               } else {
                 history("/userdashboard/");

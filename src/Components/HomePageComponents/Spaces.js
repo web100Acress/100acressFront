@@ -101,7 +101,7 @@ const Wrapper = styled.section`
         rgba(0, 0, 0, 0.5),
         rgba(0, 0, 0, 0.7)
       ),
-      url("../../OtherImages/residencial.jpeg");
+      url("../../OtherImages/residencial.webp");
     background-size: 400px 180px;
   }
   ._1fe2 {
@@ -112,7 +112,7 @@ const Wrapper = styled.section`
         rgba(0, 0, 0, 0.5),
         rgba(0, 0, 0, 0.7)
       ),
-      url("../../OtherImages/residencialProject.jpeg");
+      url("../../OtherImages/residencialproject.webp");
     background-size: 400px 180px;
   }
   ._1fe3 {
@@ -123,7 +123,7 @@ const Wrapper = styled.section`
         rgba(0, 0, 0, 0.5),
         rgba(0, 0, 0, 0.7)
       ),
-      url("../../OtherImages/coliving.jpeg");
+      url("../../OtherImages/coliving.webp");
     background-size: 400px 180px;
   }
   ._1fe4 {
@@ -134,7 +134,7 @@ const Wrapper = styled.section`
         rgba(0, 0, 0, 0.5),
         rgba(0, 0, 0, 0.7)
       ),
-      url("../../OtherImages/commercialProperty.jpeg");
+      url("../../OtherImages/commercialproperty.webp");
     background-size: 400px 200px;
   }
   ._1fe5 {
@@ -145,7 +145,7 @@ const Wrapper = styled.section`
         rgba(0, 0, 0, 0.5),
         rgba(0, 0, 0, 0.7)
       ),
-      url("../../OtherImages/commecialProject.jpeg");
+      url("../../OtherImages/commecialproject.webp");
     background-size: 400px 180px;
   }
   ._1fe6 {
@@ -156,7 +156,7 @@ const Wrapper = styled.section`
         rgba(0, 0, 0, 0.5),
         rgba(0, 0, 0, 0.7)
       ),
-      url("../../OtherImages/sco.PNG");
+      url("../../OtherImages/sco.webp");
     background-size: 400px 180px;
   }
 
@@ -168,7 +168,7 @@ const Wrapper = styled.section`
         rgba(0, 0, 0, 0.5),
         rgba(0, 0, 0, 0.7)
       ),
-      url("../../OtherImages/Builder & Independent.PNG");
+      url("../../OtherImages/builderandindepedent.webp");
     background-size: 400px 180px;
   }
 
@@ -180,7 +180,7 @@ const Wrapper = styled.section`
         rgba(0, 0, 0, 0.5),
         rgba(0, 0, 0, 0.7)
       ),
-      url("../../OtherImages/Deen Dayal.PNG");
+      url("../../OtherImages/deendayal.webp");
     background-size: 400px 180px;
   }
 
@@ -192,7 +192,7 @@ const Wrapper = styled.section`
         rgba(0, 0, 0, 0.5),
         rgba(0, 0, 0, 0.7)
       ),
-      url("../../OtherImages/Villas.PNG");
+      url("../../OtherImages/villas.webp");
     background-size: 400px 180px;
   }
   ._ksjMM {

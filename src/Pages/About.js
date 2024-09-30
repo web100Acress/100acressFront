@@ -19,12 +19,12 @@ const About = () => {
       <div className="overflow-x-hidden">
         <div class="w-full">
           <img
-            src="../../Images/aboutus.png"
+            src="../../Images/aboutus.webp"
             alt="About Us"
             class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
           />
           <img
-            src="../../Images/aboutusmobile.png"
+            src="../../Images/aboutusmobile.webp"
             alt="About Us"
             class="w-full h-60 sm:h-30 object-fit small-screen-image block sm:hidden"
           />
@@ -58,7 +58,7 @@ const About = () => {
 
           <div className="flex items-center pt-2 px-1">
             <img
-              src="../../Images/housefooter.jpg"
+              src="../../Images/housefooter.webp"
               alt="image"
               className="h-10 w-10  "
             />
@@ -85,7 +85,7 @@ const About = () => {
 
           <div className="flex items-center pt-6 px-1">
             <img
-              src="../../Images/Houseaward.PNG"
+              src="../../Images/houseaward.webp"
               alt="img"
               className="h-10 w-10 "
             />

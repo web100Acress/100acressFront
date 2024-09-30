@@ -29,7 +29,7 @@ function OurServices() {
               <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <img
-                    src="../../Images/consulting.jpg"
+                    src="../../Images/consulting.webp"
                     className="h-52 w-60 object-fit"
                     alt="consulting"
                   />
@@ -46,7 +46,7 @@ function OurServices() {
               <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <img
-                    src="../../Images/lawyer.jpg"
+                    src="../../Images/lawyer.webp"
                     className="h-52 w-60 object-fit"
                     alt="lawyer"
                   />
@@ -63,7 +63,7 @@ function OurServices() {
               <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <img
-                    src="../../../Images/interiordesign.png"
+                    src="../../../Images/interiordesign.webp"
                     className="h-52 w-60 object-fit"
                     alt="legal"
                   />
@@ -80,7 +80,7 @@ function OurServices() {
               <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <img
-                    src="../../Images/homeloan.jpg"
+                    src="../../Images/homeloan.webp"
                     className="h-52 w-60 object-fit"
                     alt="homeloan"
                   />
@@ -97,7 +97,7 @@ function OurServices() {
               <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <img
-                    src="../../Images/Construction.JPG"
+                    src="../../Images/construction.webp"
                     className="h-52 w-60 object-fit"
                     alt="construction"
                   />
@@ -137,7 +137,7 @@ function OurServices() {
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <img
-                    src="../../Images/consulting.jpg"
+                    src="../../Images/consulting.webp"
                     className="h-52 w-60 object-fit"
                     alt="consulting"
                   />
@@ -154,7 +154,7 @@ function OurServices() {
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <img
-                    src="../../Images/lawyer.jpg"
+                    src="../../Images/lawyer.webp"
                     className="h-52 w-60 object-fit"
                     alt="lawyer"
                   />
@@ -171,7 +171,7 @@ function OurServices() {
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <img
-                    src="../../../Images/interiordesign.png"
+                    src="../../../Images/interiordesign.webp"
                     className="h-52 w-60 object-fit"
                     alt="legal"
                   />
@@ -188,7 +188,7 @@ function OurServices() {
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <img
-                    src="../../Images/homeloan.jpg"
+                    src="../../Images/homeloan.webp"
                     className="h-52 w-60 object-fit"
                     alt="homeloan"
                   />

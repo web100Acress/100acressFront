@@ -37,7 +37,7 @@ const BudgetPlotsInGurugraon = () => {
         <Link to={`/bptp-plots-gurugram/`} target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
-              src="../../Images/bptp.jpg"
+              src="../../Images/bptp.webp"
               className="w-full  h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black opacity-30"></div>
@@ -63,7 +63,7 @@ const BudgetPlotsInGurugraon = () => {
         <Link to={`/jms-plots-gurugram/`} target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
-              src="../../Images/jms.jpg"
+              src="../../Images/jms.webp"
               className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black opacity-30"></div>

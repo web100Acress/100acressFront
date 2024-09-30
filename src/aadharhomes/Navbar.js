@@ -1301,7 +1301,7 @@ export default function Navbar() {
                         >
                           <img
                             className="w-16 h-10 rounded-full"
-                            src="../../Images/logoAvtar.png"
+                            src="../../Images/logoavtar.webp"
                             alt="logoAvtar"
                           />
                         </Avatar>
@@ -1326,7 +1326,7 @@ export default function Navbar() {
                         >
                           <img
                             className="w-16 h-10 rounded-full"
-                            src="../../Images/logoAvtar.png"
+                            src="../../Images/logoavtar.webp"
                             alt="logoAvtar"
                           />
                         </Avatar>

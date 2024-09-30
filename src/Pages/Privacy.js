@@ -21,12 +21,12 @@ const Privacy = () => {
       <div className="overflow-x-hidden">
       <div class="w-full">
           <img
-            src="../../Images/privacy.png"
+            src="../../Images/privacy.webp"
             alt="About Us"
             class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
           />
           <img
-            src="../../Images/privacymobile.png"
+            src="../../Images/privacymobile.webp"
             alt="About Us"
             class="w-full h-60 sm:h-30 object-fit small-screen-image block sm:hidden"
           />
@@ -60,7 +60,7 @@ const Privacy = () => {
 
         <div className="flex items-center pt-2 px-3">
           <img
-            src="../../Images/housefooter.jpg"
+            src="../../Images/housefooter.webp"
             alt="image"
             className="h-10 w-10  "
           />
@@ -86,7 +86,7 @@ const Privacy = () => {
 
         <div className="flex items-center pt-6 px-3">
           <img
-            src="../../Images/Houseaward.PNG"
+            src="../../Images/houseaward.webp"
             alt="img"
             className="h-10 w-10 "
           />

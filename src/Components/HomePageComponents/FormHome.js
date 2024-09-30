@@ -69,7 +69,7 @@ const FormHome = () => {
     <div className="flex flex-wrap">
       <div data-aos="zoom-in" data-aos-delay="200" className="w-full md:w-1/3 bg-white flex items-center justify-center h-80 md:h-96 hidden md:block">
         <img
-          src="../../../Images/tele.png"
+          src="../../../Images/tele.webp"
           alt="Image"
           className="w-full h-full object-fit"
         />

@@ -18,6 +18,7 @@ export const DataProvider = ({ children }) => {
   const [blogData, setBlogData] = useState([]);
   const [sohnaRoad, setSohnaRoad] = useState([]);
   const [golfCourse, setGolfCourse] = useState([]);
+  const [searching, setSearching] = useState("Ownering");
   const [token, setToken] = useState(null);
   const [careerData, setCareerData] = useState([]);
   const [jobPostingData, setJobPostingData] = useState([]);
@@ -54,11 +55,13 @@ export const DataProvider = ({ children }) => {
   const [mumbaiProject, setMumbaiProject] = useState([]);
   const [nh48, setNh48] = useState([]);
   const [mgRoad, setMgRoad] = useState([]);
+  const [admin, setAdmin] = useState(searching)
   const [gurugramProject, setGurugramProject] = useState([]);
   const [underConstruction, setUnderConstruction] = useState([]);
   const [newLaunch, setNewLaunch] = useState([]);
   const [ayodhya, setAyodhya] = useState([]);
   const [dlfSco, setDlfSco] = useState([]);
+  const [project, setProject] = useState([])
   const [possessionDate, setPossessionDate] = useState(() => {
     try {
       const storedDate = localStorage.getItem("possessionDate");
@@ -75,6 +78,7 @@ export const DataProvider = ({ children }) => {
     fetchCareerData();
     fetchJobPostingData();
     buyFetchData();
+    fetchProject();
   }, []);
 
   useEffect(() => {
@@ -92,6 +96,16 @@ export const DataProvider = ({ children }) => {
     });
     setPossessionAllData(PossFilter);
   };
+
+  const fetchProject = async () => {
+    try {
+      const response = await axios.get('https://api.100acress.com/project/viewAll/data');
+      setProject(response.data.data); 
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
 
   const fetchAllProject = async () => {
     try {
@@ -453,6 +467,7 @@ export const DataProvider = ({ children }) => {
     setFilteredProjects(filtered);
   };
  
+  
 
   return (
     <DataContext.Provider
@@ -466,6 +481,7 @@ export const DataProvider = ({ children }) => {
         affordable,
         upcoming,
         city,
+        admin,
         allProjectData,
         residencialProjects,
         allupcomingProject,
@@ -516,6 +532,7 @@ export const DataProvider = ({ children }) => {
         ayodhya,
         signatureglobal,
         dlfSco,
+        project
       }}
     >
       {children}

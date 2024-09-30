@@ -89,14 +89,11 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-      <div className="glide-02  w-full">
+      <div className="glide-02   w-full">
         {/*    <!-- Slides --> */}
         <div data-glide-el="track">
           <ul className="whitespace-no-wrap flex-no-wrap  flex w-full  p-0">
-
-          <Link
-              to={"https://www.100acress.com/4s-the-aurum/"}
-            >
+            <Link to={"https://www.100acress.com/4s-the-aurum/"}>
               <li>
                 <img
                   src="../../Images/4s.webp"
@@ -144,8 +141,6 @@ function Home() {
                 />
               </li>
             </Link>
-
-           
 
             <Link to={"https://www.100acress.com/emaar-amaris/"}>
               <li>
@@ -360,9 +355,8 @@ function Home() {
       </div>
 
       {/* dlf prject */}
-      <div className="bg-[#F83CB0] py-3 ">
-        {" "}
-        <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6  py-2">
+      <div className="bg-[#F83CB0] py-3">
+        <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
             <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl text-white text-center sm:text-left">
               DLF Super Luxury Homes #100crore
@@ -377,80 +371,56 @@ function Home() {
             </Link>
           </div>
         </div>
-        {
-          <section className="flex flex-col items-center bg-[#F83CB0]">
-            <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-              {dlfProject.map((item, index) => {
-                const pUrl = item.project_url;
-                return (
-                  <Link to={`/${pUrl}/`} target="_top">
-                    <article
-                      key={index}
-                      className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                    >
-                      <div>
-                        <img
-                          src={item.frontImage.url}
-                          alt="property In Gurugram"
-                          className="w-full h-48 object-fit "
-                        />
+        <section className="flex flex-col items-center bg-[#F83CB0]">
+          <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4">
+            {dlfProject.map((item, index) => {
+              const pUrl = item.project_url;
+              return (
+                <Link to={`/${pUrl}/`} target="_top" key={index}>
+                  <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
+                    {" "}
+                    {/* Increase height here */}
+                    <img
+                      src={item.frontImage.url}
+                      alt="property In Gurugram"
+                      className="w-[100%] h-[100%] object-cover"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[40%]">
+                      <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
+                        <span className="text-[13px] font-semibold duration-500 ease-in-out">
+                          {item.projectName}
+                        </span>
+                        <span className="text-sm duration-500 ease-in-out ">
+                          {item.city}, {item.state}
+                        </span>
+                        <span className="text-[12px] text-gray-700">
+                          {item.projectAddress}
+                        </span>
+                        <p className="m-0 text-sm font-medium">{item.type}</p>
+                        <span className="text-sm font-extrabold text-red-600">
+                          <span className="text-xl">₹</span>
+                          {item.minPrice < 1 ? (
+                            <>{item.minPrice * 100} L</>
+                          ) : (
+                            <>{item.minPrice}</>
+                          )}
+                          {" - "}
+                          {item.maxPrice} Cr
+                        </span>
+                        <button
+                          type="button"
+                          className="text-red-600 rounded-lg text-sm px-2 text-center mt-2"
+                        >
+                          <i className="fa-solid fa-arrow-right text-xl"></i>
+                        </button>
                       </div>
-                      <div className="p-4">
-                        <div className="pb-2">
-                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectName}
-                          </span>
-
-                          <br />
-                          <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.city}, {item.state}
-                          </span>
-                        </div>
-
-                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
-                          <li className="mr-4 flex items-center text-left">
-                            <li className="text-left">
-                              <span className="text-[13px] text-gray-400">
-                                {item.projectAddress}
-                              </span>
-                              <p className="m-0 text-sm font-medium">
-                                {item.type}
-                              </p>
-                            </li>
-                          </li>
-                        </ul>
-
-                        <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
-                          <li className="text-left">
-                            <span className="text-sm font-extrabold text-red-600">
-                              <span className="text-xl">₹</span>
-                              {item.minPrice < 1 ? (
-                                <>{item.minPrice * 100} L</>
-                              ) : (
-                                <>{item.minPrice}</>
-                              )}
-                              {" - "}
-                              {item.maxPrice} Cr
-                            </span>
-                          </li>
-
-                          <li className="text-left">
-                            <button
-                              type="button"
-                              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
-                            >
-                              View Details
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                    </article>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-        }
+                    </div>
+                  </article>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
       </div>
 
       {/* Goa */}
@@ -574,66 +544,45 @@ function Home() {
                 const pUrl = item.project_url;
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
-                    <article
-                      key={index}
-                      className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                    >
-                      <div>
-                        <img
-                          src={item.frontImage.url}
-                          alt="property In Gurugram"
-                          className="w-full h-48 object-fit "
-                        />
+                    <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
+                    {" "}
+                    {/* Increase height here */}
+                    <img
+                      src={item.frontImage.url}
+                      alt="property In Gurugram"
+                      className="w-[100%] h-[100%] object-cover"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[40%]">
+                      <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
+                        <span className="text-[13px] font-semibold duration-500 ease-in-out">
+                          {item.projectName}
+                        </span>
+                        <span className="text-sm duration-500 ease-in-out ">
+                          {item.city}, {item.state}
+                        </span>
+                        <span className="text-[12px] text-gray-700">
+                          {item.projectAddress}
+                        </span>
+                        <p className="m-0 text-sm font-medium">{item.type}</p>
+                        <span className="text-sm font-extrabold text-red-600">
+                          <span className="text-xl">₹</span>
+                          {item.minPrice < 1 ? (
+                            <>{item.minPrice * 100} L</>
+                          ) : (
+                            <>{item.minPrice}</>
+                          )}
+                          {" - "}
+                          {item.maxPrice} Cr
+                        </span>
+                        <button
+                          type="button"
+                          className="text-red-600 rounded-lg text-sm px-2 text-center mt-2"
+                        >
+                          <i className="fa-solid fa-arrow-right text-xl"></i>
+                        </button>
                       </div>
-                      <div className="p-4">
-                        <div className="pb-2">
-                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectName}
-                          </span>
-
-                          <br />
-                          <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.city}, {item.state}
-                          </span>
-                        </div>
-
-                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
-                          <li className="mr-4 flex items-center text-left">
-                            <li className="text-left">
-                              <span className="text-[13px] text-gray-400">
-                                {item.projectAddress}
-                              </span>
-                              <p className="m-0 text-sm font-medium">
-                                {item.type}
-                              </p>
-                            </li>
-                          </li>
-                        </ul>
-                        <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
-                          <li className="text-left">
-                            <span className="text-sm font-extrabold text-red-600">
-                              <span className="text-xl">₹</span>
-                              {item.minPrice < 1 ? (
-                                <>{item.minPrice * 100} L</>
-                              ) : (
-                                <>{item.minPrice}</>
-                              )}
-                              {" - "}
-                              {item.maxPrice} Cr
-                            </span>
-                          </li>
-
-                          <li className="text-left">
-                            <button
-                              type="button"
-                              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
-                            >
-                              View Details
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                    </article>
+                    </div>
+                  </article>
                   </Link>
                 );
               })}
@@ -861,65 +810,45 @@ function Home() {
                 const pUrl = item.project_url;
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
-                    <article
-                      key={index}
-                      className="mb-4 transition hover:scale-105  bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                    >
-                      <div>
-                        <img
-                          src={item.frontImage.url}
-                          alt="property In Gurugram"
-                          className="w-full h-48 object-fit"
-                        />
+                     <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
+                    {" "}
+                    {/* Increase height here */}
+                    <img
+                      src={item.frontImage.url}
+                      alt="property In Gurugram"
+                      className="w-[100%] h-[100%] object-cover"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[40%]">
+                      <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
+                        <span className="text-[13px] font-semibold duration-500 ease-in-out">
+                          {item.projectName}
+                        </span>
+                        <span className="text-sm duration-500 ease-in-out ">
+                          {item.city}, {item.state}
+                        </span>
+                        <span className="text-[12px] text-gray-700">
+                          {item.projectAddress}
+                        </span>
+                        <p className="m-0 text-sm font-medium">{item.type}</p>
+                        <span className="text-sm font-extrabold text-red-600">
+                          <span className="text-xl">₹</span>
+                          {item.minPrice < 1 ? (
+                            <>{item.minPrice * 100} L</>
+                          ) : (
+                            <>{item.minPrice}</>
+                          )}
+                          {" - "}
+                          {item.maxPrice} Cr
+                        </span>
+                        <button
+                          type="button"
+                          className="text-red-600 rounded-lg text-sm px-2 text-center mt-2"
+                        >
+                          <i className="fa-solid fa-arrow-right text-xl"></i>
+                        </button>
                       </div>
-                      <div className="p-4">
-                        <div className="pb-2">
-                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectName}
-                          </span>
-                          <br />
-                          <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.city}, {item.state}
-                          </span>
-                        </div>
-
-                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
-                          <li className="mr-4 flex items-center text-left">
-                            <li className="text-left">
-                              <span className="text-[13px] text-gray-400">
-                                {item.projectAddress}
-                              </span>
-                              <p className="m-0 text-sm font-medium">
-                                {item.type}
-                              </p>
-                            </li>
-                          </li>
-                        </ul>
-                        <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
-                          <li className="text-left">
-                            <span className="text-sm font-extrabold text-red-600">
-                              <span className="text-xl">₹</span>
-                              {item.minPrice < 1 ? (
-                                <>{item.minPrice * 100} L</>
-                              ) : (
-                                <>{item.minPrice}</>
-                              )}
-                              {" - "}
-                              {item.maxPrice} Cr
-                            </span>
-                          </li>
-
-                          <li className="text-left">
-                            <button
-                              type="button"
-                              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
-                            >
-                              View Details
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                    </article>
+                    </div>
+                  </article>
                   </Link>
                 );
               })}

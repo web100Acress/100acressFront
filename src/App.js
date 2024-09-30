@@ -371,6 +371,7 @@ function App() {
                 element={<PrivateRoute element={<Dashboard />} />}
               />
             </Route>
+            
           </Routes>
           {/* </Router> */}
         </Wrapper>

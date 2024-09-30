@@ -442,12 +442,12 @@ const CareerWithUs = () => {
         <section className="relative">
         <div class="w-full">
           <img
-            src="../../Images/career.png"
+            src="../../Images/career.webp"
             alt="About Us"
             class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
           />
           <img
-            src="../../Images/careermobile.png"
+            src="../../Images/careermobile.webp"
             alt="About Us"
             class="w-full h-60 sm:h-30 object-fit small-screen-image block sm:hidden"
           />

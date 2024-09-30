@@ -164,22 +164,22 @@ const PossessionProperty = () => {
         <Slider {...carouselSettings}>
           {[{
             to: "/projects-in-gurugram/property-ready-to-move/",
-            imgSrc: "../../Images/p1.jpg",
+            imgSrc: "../../Images/p1.webp",
             title: "Ready to move",
             propertiesCount: "320+ Properties"
           }, {
             to: "/projects-in-gurugram/property-possession-in-2024/",
-            imgSrc: "../../Images/p2.avif",
+            imgSrc: "../../Images/p2.webp",
             title: "Possession in 2024",
             propertiesCount: "600+ Properties"
           }, {
             to: "/projects-in-gurugram/property-possession-in-2025/",
-            imgSrc: "../../Images/p5.jpg",
+            imgSrc: "../../Images/p5.webp",
             title: "Possession in 2025",
             propertiesCount: "500+ Properties"
           }, {
             to: "/projects-in-gurugram/property-possession-after-2025/",
-            imgSrc: "../../Images/p3.jpg",
+            imgSrc: "../../Images/p3.webp",
             title: "Possession after 2025",
             propertiesCount: "800+ Properties"
           }].map((item, index) => (
@@ -217,22 +217,22 @@ const PossessionProperty = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-4 gap-3 sm:gap-6">
             {[{
               to: "/projects-in-gurugram/property-ready-to-move/",
-              imgSrc: "../../Images/p1.jpg",
+              imgSrc: "../../Images/p1.webp",
               title: "Ready to move",
               propertiesCount: "320+ Properties"
             }, {
               to: "/projects-in-gurugram/property-possession-in-2024/",
-              imgSrc: "../../Images/p2.avif",
+              imgSrc: "../../Images/p2.webp",
               title: "Possession in 2024",
               propertiesCount: "600+ Properties"
             }, {
               to: "/projects-in-gurugram/property-possession-in-2025/",
-              imgSrc: "../../Images/p5.jpg",
+              imgSrc: "../../Images/p5.webp",
               title: "Possession in 2025",
               propertiesCount: "500+ Properties"
             }, {
               to: "/projects-in-gurugram/property-possession-after-2025/",
-              imgSrc: "../../Images/p3.jpg",
+              imgSrc: "../../Images/p3.webp",
               title: "Possession after 2025",
               propertiesCount: "800+ Properties"
             }].map((item, index) => (

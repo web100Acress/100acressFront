@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link, useParams } from "react-router-dom";
@@ -16,8 +16,11 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { format, isValid, parseISO } from "date-fns";
+
+import { DataContext } from "../../MyContext";
 const BannerPage = () => {
   //Side Form
+  const { project } = useContext(DataContext);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const handleShow = () => {
     setModalIsOpen(true);
@@ -48,6 +51,7 @@ const BannerPage = () => {
   const { pUrl } = useParams();
   const [projectViewDetails, setProjectViewDetails] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [builderName, setBuilderName] = useState([]);
 
   const slideRefs = useRef(null);
 
@@ -93,26 +97,28 @@ const BannerPage = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          `https://api.100acress.com/projectView/${pUrl}`
-        );
-        setProjectViewDetails(res.data.dataview[0]);
-
-        // Construct the WhatsApp link with the dynamic data
-        const message = encodeURIComponent(
-          `Hello, I am interested in ${projectViewDetails.projectName} ${projectViewDetails.city} ${projectViewDetails.state}.`
-        );
-        const whatsappLink = `https://wa.me/918500900100?text=${message}`;
-        // Update the href attribute of the anchor tag
-        document.querySelector(".dd-m-whatsapp").href = whatsappLink;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
     fetchData();
-  });
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(
+        `https://api.100acress.com/projectView/${pUrl}`
+      );
+      setProjectViewDetails(res.data.dataview[0]);
+      setBuilderName(res.data.dataview[0].builderName);
+
+      // Construct the WhatsApp link with the dynamic data
+      const message = encodeURIComponent(
+        `Hello, I am interested in ${projectViewDetails.projectName} ${projectViewDetails.city} ${projectViewDetails.state}.`
+      );
+      const whatsappLink = `https://wa.me/918500900100?text=${message}`;
+      // Update the href attribute of the anchor tag
+      document.querySelector(".dd-m-whatsapp").href = whatsappLink;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {}, [projectViewDetails]);
 
@@ -322,6 +328,22 @@ const BannerPage = () => {
     return `<a href="${p1}" style="color:black" target="_blank">${linkText}</a>`;
   });
 
+  const filterProjectsByBuilder = () => {
+    const normalizedBuilderName =
+      typeof builderName === "string" ? builderName.trim().toLowerCase() : "";
+
+    return project.filter(
+      (p) => p.builderName.trim().toLowerCase() === normalizedBuilderName
+    );
+  };
+
+  const filteredProjects = filterProjectsByBuilder();
+  const [showAllProjects, setShowAllProjects] = useState(false);
+
+  const projectsToShow = showAllProjects
+    ? filteredProjects
+    : filteredProjects.slice(0, 4);
+
   return (
     <Wrapper
       className="section"
@@ -528,21 +550,26 @@ const BannerPage = () => {
                 {projectViewDetails.totalLandArea} Acres
               </span>
             </div>
-  
- 
+
             <div className="flex flex-col">
               <span className="text-center font-normal ">About Project</span>
-              {projectViewDetails.type=="Residential Flats" ? <>
-                <span className="text-center font-semibold text-xl uppercase">
-                {projectViewDetails.towerNumber} Tower -{" "}
-                {projectViewDetails.totalUnit} Unit
-              </span>
-              </>:<>  <span className="text-center font-semibold text-xl uppercase">
-                {projectViewDetails.totalUnit} Unit
-              </span></>}
-            
+              {projectViewDetails.type == "Residential Flats" ? (
+                <>
+                  <span className="text-center font-semibold text-xl uppercase">
+                    {projectViewDetails.towerNumber} Tower -{" "}
+                    {projectViewDetails.totalUnit} Unit
+                  </span>
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <span className="text-center font-semibold text-xl uppercase">
+                    {projectViewDetails.totalUnit} Unit
+                  </span>
+                </>
+              )}
             </div>
-            
+
             <div className="flex flex-col">
               <span className="text-center font-normal">Price</span>
               <span className="text-center font-semibold text-xl uppercase">
@@ -1041,6 +1068,65 @@ const BannerPage = () => {
             {projectViewDetails.AboutDeveloper}
           </span>
         </div>
+
+        {/* <RelatedProject/> */}
+
+        <section className="w-full px-4 mb-4 bg-gray-200 py-10">
+          <div className="p-6 rounded-lg relative">
+            {/* Background color and padding */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {projectsToShow.map((project, idx) => (
+                <div
+                  key={idx}
+                  className="relative m-auto w-full max-w-lg flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-md transition-transform duration-200 hover:scale-105"
+                >
+                  <span className="relative flex h-40 overflow-hidden rounded-t-lg">
+                    <img
+                      className="object-fit w-full h-full"
+                      src={project.frontImage && project.frontImage.url}
+                      alt="Product image"
+                    />
+                  </span>
+                  <div className="p-2">
+                    <h5 className="tracking-tight text-center text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl text-gray-700">
+                      {project.projectName}
+                    </h5>
+                    <div className="mt-2 flex items-center justify-center">
+                      <span className="text-lg font-bold text-gray-900 text-center">
+                        <span className="mr-1">₹</span>
+                        {project.minPrice < 1 ? (
+                          <span>{project.minPrice * 100} L</span>
+                        ) : (
+                          <span>{project.minPrice} Cr </span>
+                        )}
+                        - {project.maxPrice} Cr
+                      </span>
+                    </div>
+                    <Link
+                      to={`/${project.project_url}/`}
+                      className="mt-2 flex items-center justify-center w-full rounded-md bg-[#012E29] px-4 py-2 text-sm text-white focus:ring-4 hover:bg-[#013b35] transition duration-200"
+                    >
+                      View More Details
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {filteredProjects.length > 4 && (
+              <div className="flex justify-end mt-2">
+                {" "}
+                {/* Center the button */}
+                <button
+                  onClick={() => setShowAllProjects((prev) => !prev)}
+                  className="rounded-md bg-[#012E29] px-4 py-2 text-white text-sm sm:text-base transition duration-200" // Use relative positioning
+                >
+                  {showAllProjects ? "View Less" : "View More"}
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
 
         <div className="sm:h-auto lg:h-[200px] xl:h-[300px] w-full sm:w-auto bg-[#012e29] px-5 py-6 sm:py-0 flex flex-col justify-between">
           <div>
