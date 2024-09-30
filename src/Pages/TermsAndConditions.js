@@ -21,12 +21,12 @@ const TermsAndConditions = () => {
     <div className='overflow-x-hidden'>
     <div class="w-full">
           <img
-            src="../../Images/term.png"
+            src="../../Images/term.webp"
             alt="termandcondition"
             class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
           />
           <img
-            src="../../Images/termmobile.png"
+            src="../../Images/termmobile.webp"
             alt="termandcondition"
             class="w-full h-60 sm:h-30 object-fit small-screen-image block sm:hidden"
           />
@@ -46,7 +46,7 @@ const TermsAndConditions = () => {
        the best price to fulfil clients’ demands by engaging through a large circle of people with every possible transparency.</p>
 
      <div className="flex items-center pt-2 px-3">
-       <img src="../../Images/housefooter.jpg"
+       <img src="../../Images/housefooter.webp"
          alt="housefooter"
          className='h-10 w-10 ' />
        <h3 className="pt-1 text-red-600 sm:text-xs md:text-xl lg:text-2xl xl:text-3xl">Why 100Acress.com ?</h3>
@@ -63,7 +63,7 @@ const TermsAndConditions = () => {
 
      <div className="flex items-center pt-6 px-3">
        <img
-         src="../../Images/Houseaward.PNG"
+         src="../../Images/houseaward.webp"
          alt="houseaward"
          className="h-10 w-10 "
        />

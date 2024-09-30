@@ -377,15 +377,15 @@ function Home() {
               const pUrl = item.project_url;
               return (
                 <Link to={`/${pUrl}/`} target="_top" key={index}>
-                  <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
+                    <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
                     {" "}
-                    {/* Increase height here */}
+                  
                     <img
                       src={item.frontImage.url}
                       alt="property In Gurugram"
                       className="w-[100%] h-[100%] object-cover"
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[40%]">
+                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%]">
                       <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
                         <span className="text-[13px] font-semibold duration-500 ease-in-out">
                           {item.projectName}
@@ -544,15 +544,15 @@ function Home() {
                 const pUrl = item.project_url;
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
-                    <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
+                     <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
                     {" "}
-                    {/* Increase height here */}
+                  
                     <img
                       src={item.frontImage.url}
                       alt="property In Gurugram"
                       className="w-[100%] h-[100%] object-cover"
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[40%]">
+                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%]">
                       <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
                         <span className="text-[13px] font-semibold duration-500 ease-in-out">
                           {item.projectName}
@@ -810,15 +810,15 @@ function Home() {
                 const pUrl = item.project_url;
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
-                     <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
+                      <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
                     {" "}
-                    {/* Increase height here */}
+                  
                     <img
                       src={item.frontImage.url}
                       alt="property In Gurugram"
                       className="w-[100%] h-[100%] object-cover"
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[40%]">
+                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%]">
                       <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
                         <span className="text-[13px] font-semibold duration-500 ease-in-out">
                           {item.projectName}

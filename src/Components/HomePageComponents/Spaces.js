@@ -112,7 +112,7 @@ const Wrapper = styled.section`
         rgba(0, 0, 0, 0.5),
         rgba(0, 0, 0, 0.7)
       ),
-      url("../../OtherImages/residencialproject.webp");
+      url("../../OtherImages/residencialprojects.webp");
     background-size: 400px 180px;
   }
   ._1fe3 {
