@@ -1103,7 +1103,7 @@ const BannerPage = () => {
                       </span>
                     </div>
                     <Link
-                      to={`/${project.project_url}/`}
+                      to={`/${project.project_url}/`} target="_black"
                       className="mt-2 flex items-center justify-center w-full rounded-md bg-[#012E29] px-4 py-2 text-sm text-white focus:ring-4 hover:bg-[#013b35] transition duration-200"
                     >
                       View More Details

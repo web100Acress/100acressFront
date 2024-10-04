@@ -14,7 +14,7 @@ function SearchBar() {
   return (
     <Wrapper className="section">
     <div
-      className="qsbWrapper pt-4   px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto   lg:pb-14 md:pb-14 xl:pb-14 md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-10 sm:h-8 md:-mt-8 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-2" // Add negative margin on md (tablet) screens
+      className="qsbWrapper pt-4 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto   lg:pb-14 md:pb-14  md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-10 sm:h-8 md:-mt-8 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-2" // Add negative margin on md (tablet) screens
       style={{ maxWidth: "800px" }}
     >
       <div className="SJDMls xl:h-14 lg:h-14 md:h-8 sm:h-8 lg:p-3 sm:p-0 md:p-3">

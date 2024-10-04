@@ -21,6 +21,7 @@ import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
 import DubaiDesign from "./DubaiDesign";
 import Glide from "@glidejs/glide";
+import NavBarNewDesign from "../aadharhomes/NavBarNewDesign";
 function Home() {
   const {
     trendingProject,
@@ -47,36 +48,38 @@ function Home() {
     reorderedTrendingProjects[7] = trendingProject[3];
   }
 
-  useEffect(() => {
-    const slider = new Glide(".glide-02", {
-      type: "carousel",
-      focusAt: "center",
-      perView: 1,
-      autoplay: 4000,
-      animationDuration: 700,
-      classNames: {
-        nav: {
-          active: "[&>*]:bg-wuiSlate-700",
-        },
-      },
-      breakpoints: {
-        1024: {
-          perView: 1,
-        },
-        640: {
-          perView: 1,
-        },
-      },
-    }).mount();
+  // useEffect(() => {
+  //   const slider = new Glide(".glide-02", {
+  //     type: "carousel",
+  //     focusAt: "center",
+  //     perView: 1,
+  //     autoplay: 4000,
+  //     animationDuration: 700,
+  //     classNames: {
+  //       nav: {
+  //         active: "[&>*]:bg-wuiSlate-700",
+  //       },
+  //     },
+  //     breakpoints: {
+  //       1024: {
+  //         perView: 1,
+  //       },
+  //       640: {
+  //         perView: 1,
+  //       },
+  //     },
+  //   }).mount();
 
-    return () => {
-      slider.destroy();
-    };
-  }, []);
+  //   return () => {
+  //     slider.destroy();
+  //   };
+  // }, []);
 
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
+
+      {/* <NavBarNewDesign/> */}
 
       <Helmet>
         <meta
@@ -89,8 +92,8 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-      <div className="glide-02   w-full">
-        {/*    <!-- Slides --> */}
+      {/* <div className="glide-02   w-full">
+      
         <div data-glide-el="track">
           <ul className="whitespace-no-wrap flex-no-wrap  flex w-full  p-0">
             <Link to={"https://www.100acress.com/4s-the-aurum/"}>
@@ -161,12 +164,30 @@ function Home() {
             <SearchBar />
           </div>
         </div>
-        {/*    <!-- Indicators --> */}
+      
         <div
           className="absolute bottom-0 flex w-full items-center justify-center gap-2"
           data-glide-el="controls[nav]"
         ></div>
+      </div> */}
+
+      <div className="w-full">
+          <img
+            src="../../Images/A7.png"
+            alt="Banner Image"
+            class="hidden md:block w-full h-auto"
+          />
+          <img
+            src="../../Images/4smobile.webp"
+            alt="Mobile Banner Image"
+            class="block md:hidden w-full h-auto"
+          />
+
+        <div className="relative pt-0 sm:pt-0 md:pt-3  xl:pt-3 xl:mb-0 sm:mb-0 lg:mb-0 md:mb-6">
+          <SearchBar />
+        </div>
       </div>
+
       {/*<!-- End Carousel with indicators inside --> */}
 
       <div>
@@ -377,9 +398,8 @@ function Home() {
               const pUrl = item.project_url;
               return (
                 <Link to={`/${pUrl}/`} target="_top" key={index}>
-                    <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
+                  <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
                     {" "}
-                  
                     <img
                       src={item.frontImage.url}
                       alt="property In Gurugram"
@@ -544,45 +564,44 @@ function Home() {
                 const pUrl = item.project_url;
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
-                     <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
-                    {" "}
-                  
-                    <img
-                      src={item.frontImage.url}
-                      alt="property In Gurugram"
-                      className="w-[100%] h-[100%] object-cover"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%]">
-                      <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
-                        <span className="text-[13px] font-semibold duration-500 ease-in-out">
-                          {item.projectName}
-                        </span>
-                        <span className="text-sm duration-500 ease-in-out ">
-                          {item.city}, {item.state}
-                        </span>
-                        <span className="text-[12px] text-gray-700">
-                          {item.projectAddress}
-                        </span>
-                        <p className="m-0 text-sm font-medium">{item.type}</p>
-                        <span className="text-sm font-extrabold text-red-600">
-                          <span className="text-xl">₹</span>
-                          {item.minPrice < 1 ? (
-                            <>{item.minPrice * 100} L</>
-                          ) : (
-                            <>{item.minPrice}</>
-                          )}
-                          {" - "}
-                          {item.maxPrice} Cr
-                        </span>
-                        <button
-                          type="button"
-                          className="text-red-600 rounded-lg text-sm px-2 text-center mt-2"
-                        >
-                          <i className="fa-solid fa-arrow-right text-xl"></i>
-                        </button>
+                    <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
+                      {" "}
+                      <img
+                        src={item.frontImage.url}
+                        alt="property In Gurugram"
+                        className="w-[100%] h-[100%] object-cover"
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%]">
+                        <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
+                          <span className="text-[13px] font-semibold duration-500 ease-in-out">
+                            {item.projectName}
+                          </span>
+                          <span className="text-sm duration-500 ease-in-out ">
+                            {item.city}, {item.state}
+                          </span>
+                          <span className="text-[12px] text-gray-700">
+                            {item.projectAddress}
+                          </span>
+                          <p className="m-0 text-sm font-medium">{item.type}</p>
+                          <span className="text-sm font-extrabold text-red-600">
+                            <span className="text-xl">₹</span>
+                            {item.minPrice < 1 ? (
+                              <>{item.minPrice * 100} L</>
+                            ) : (
+                              <>{item.minPrice}</>
+                            )}
+                            {" - "}
+                            {item.maxPrice} Cr
+                          </span>
+                          <button
+                            type="button"
+                            className="text-red-600 rounded-lg text-sm px-2 text-center mt-2"
+                          >
+                            <i className="fa-solid fa-arrow-right text-xl"></i>
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </article>
+                    </article>
                   </Link>
                 );
               })}
@@ -810,45 +829,44 @@ function Home() {
                 const pUrl = item.project_url;
                 return (
                   <Link to={`/${pUrl}/`} target="_top">
-                      <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
-                    {" "}
-                  
-                    <img
-                      src={item.frontImage.url}
-                      alt="property In Gurugram"
-                      className="w-[100%] h-[100%] object-cover"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%]">
-                      <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
-                        <span className="text-[13px] font-semibold duration-500 ease-in-out">
-                          {item.projectName}
-                        </span>
-                        <span className="text-sm duration-500 ease-in-out ">
-                          {item.city}, {item.state}
-                        </span>
-                        <span className="text-[12px] text-gray-700">
-                          {item.projectAddress}
-                        </span>
-                        <p className="m-0 text-sm font-medium">{item.type}</p>
-                        <span className="text-sm font-extrabold text-red-600">
-                          <span className="text-xl">₹</span>
-                          {item.minPrice < 1 ? (
-                            <>{item.minPrice * 100} L</>
-                          ) : (
-                            <>{item.minPrice}</>
-                          )}
-                          {" - "}
-                          {item.maxPrice} Cr
-                        </span>
-                        <button
-                          type="button"
-                          className="text-red-600 rounded-lg text-sm px-2 text-center mt-2"
-                        >
-                          <i className="fa-solid fa-arrow-right text-xl"></i>
-                        </button>
+                    <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
+                      {" "}
+                      <img
+                        src={item.frontImage.url}
+                        alt="property In Gurugram"
+                        className="w-[100%] h-[100%] object-cover"
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%]">
+                        <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
+                          <span className="text-[13px] font-semibold duration-500 ease-in-out">
+                            {item.projectName}
+                          </span>
+                          <span className="text-sm duration-500 ease-in-out ">
+                            {item.city}, {item.state}
+                          </span>
+                          <span className="text-[12px] text-gray-700">
+                            {item.projectAddress}
+                          </span>
+                          <p className="m-0 text-sm font-medium">{item.type}</p>
+                          <span className="text-sm font-extrabold text-red-600">
+                            <span className="text-xl">₹</span>
+                            {item.minPrice < 1 ? (
+                              <>{item.minPrice * 100} L</>
+                            ) : (
+                              <>{item.minPrice}</>
+                            )}
+                            {" - "}
+                            {item.maxPrice} Cr
+                          </span>
+                          <button
+                            type="button"
+                            className="text-red-600 rounded-lg text-sm px-2 text-center mt-2"
+                          >
+                            <i className="fa-solid fa-arrow-right text-xl"></i>
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </article>
+                    </article>
                   </Link>
                 );
               })}

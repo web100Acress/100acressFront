@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import logoImage from "../Images/100acress.png";
+// import logoImage from "../Images/100acress.png";
 import axios from "axios";
 import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
@@ -261,31 +261,33 @@ export default function Nav() {
     setFormDataInquiry({ ...formDataInquiry, [name]: value });
   };
 
-
   const [isRed, setIsRed] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-        // Define your scroll threshold based on the device width
-        const scrollThreshold = window.innerWidth <= 768 ? 50 : 150; // Example threshold for mobile/tablet vs. desktop
+      // Define your scroll threshold based on the device width
+      const scrollThreshold = window.innerWidth <= 768 ? 50 : 150; // Example threshold for mobile/tablet vs. desktop
 
-        setIsRed(window.scrollY > scrollThreshold);
+      setIsRed(window.scrollY > scrollThreshold);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    
+    window.addEventListener("scroll", handleScroll);
+
     // Cleanup the event listener on component unmount
     return () => {
-        window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
-}, []);
+  }, []);
 
   return (
     <Wrapper className="section">
       <Box>
-        {/* #c13335  #ab2727 #7a3351  #A10302 */}
-        <Box bg={isRed ? 'red' : 'red'}  className="top-0 z-50 w-full " px={{ base: 0, md: 4, lg: 7 }}>
-          <Flex h={16} alignItems="center" justifyContent="space-between">
+        <Box
+          bg={"white"}
+          className="top-0 z-50 w-full "
+          px={{ base: 0, md: 4, lg: 7 }}
+        >
+          <Flex h={12} alignItems="center" justifyContent="space-between">
             <IconButton
               size={"md"}
               icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -296,7 +298,7 @@ export default function Nav() {
               _hover={{ bg: "none" }}
               _active={{ bg: "none" }}
               _focus={{ boxShadow: "none" }}
-              color="white"
+              color="red"
             />
 
             <HStack
@@ -310,32 +312,12 @@ export default function Nav() {
                     maxW={["160px", "200px"]}
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
-                    src={logoImage}
+                    src="../../Images/logo.png"
                     alt="100acress logo"
+                    marginBottom={2}
                   />
                 </Link>
               </Box>
-
-              {/* <Box position="relative">
-                <Link to="/">
-                  <Image
-                    maxW={["160px", "200px"]}
-                    minW={["50px", "70px"]}
-                    width={["xs", "sm", "md", "lg"]}
-                    src={logoImage}
-                    alt="100acress logo"
-                  />
-                  <Image
-                    src="../../../Images/IndiaFlag.avif"
-                    alt="Country Flag"
-                    position="absolute"
-                    top="1"
-                    left="200"
-                    width={["20px", "25px"]}
-                    height={["20px", "25px"]}
-                  />
-                </Link>
-              </Box> */}
 
               {!isSmallerThan768 && (
                 <>
@@ -345,7 +327,7 @@ export default function Nav() {
                     onMouseLeave={handleLeave1}
                   >
                     <Link to="/buy-properties/best-resale-property-in-gurugram/">
-                      <button className=" text-white font-semibold text-lg ">
+                      <button className=" text-red-600 font-semibold text-lg ">
                         Buy
                       </button>
                     </Link>
@@ -524,7 +506,7 @@ export default function Nav() {
                     onMouseLeave={handleLeave}
                   >
                     <Link to="/rental-properties/best-rental-property-in-gurugram/">
-                      <button className="text-white font-semibold text-lg ">
+                      <button className="text-red-600 font-semibold text-lg ">
                         Rent
                       </button>
                     </Link>
@@ -706,20 +688,22 @@ export default function Nav() {
                   {token ? (
                     <Link
                       to={"/postproperty/"}
-                      className="text-white font-semibold text-lg"
+                      _hover={{ bg: "red", opacity: 0.8 }}
+                      className="text-red-600 font-semibold text-lg"
                     >
                       <span onClick={checkUserAuth}>Sell</span>
                     </Link>
                   ) : (
                     <Link
                       to={"/signin/"}
-                      className="text-white font-semibold text-lg"
+                      _hover={{ bg: "red", opacity: 0.8 }}
+                      className="text-red-600 font-semibold text-lg"
                     >
                       Sell
                     </Link>
                   )}
 
-<div
+                  <div
                     className="relative group "
                     onMouseEnter={handleHover2}
                     onMouseLeave={handleLeave2}
@@ -727,7 +711,7 @@ export default function Nav() {
                     <Link
                     // to={"/projects-in-gurugram/"}
                     >
-                      <button className="text-white font-semibold text-lg ">
+                      <button className="text-red-600 font-semibold text-lg ">
                         Projects
                       </button>
                     </Link>
@@ -914,88 +898,6 @@ export default function Nav() {
             </HStack>
 
             <Flex alignItems="center">
-              {/* <div className="" style={{ marginRight: "-40px" }}>
-                {token ? (
-                  <Link to="/postproperty/">
-                    <button className="btn  flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
-                      <strong
-                        onClick={checkUserAuth}
-                        className="text-red-600 mr-2"
-                      >
-                        Post Property
-                      </strong>
-                      <Link className="d-none d-xl-inline d-md-inline">
-                        <button
-                          className="btn btn-danger p-0 text-bold"
-                          style={{
-                            position: "relative",
-                            overflow: "hidden",
-                            width: "50px",
-                            height: "20px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                              animation: "moveHorizontal 1s linear infinite",
-                              backdropFilter: "blur(5px)",
-                              filter: "blur(5px)",
-                            }}
-                          >
-                            <ScaleLoader color="#FFFFFF" />
-                          </div>
-                          FREE
-                          <style>{keyframes}</style>
-                        </button>
-                      </Link>
-                    </button>
-                  </Link>
-                ) : (
-                  <Link to="/signin/">
-                    <button className="btn  flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
-                      <strong
-                        onClick={checkUserAuth}
-                        className="text-red-600 mr-2"
-                      >
-                        Post Property  
-                      </strong>
-                      <Link className="d-none d-xl-inline d-md-inline">
-                        <button
-                          className="btn btn-danger p-0 text-bold"
-                          style={{
-                            position: "relative",
-                            overflow: "hidden",
-                            width: "50px",
-                            height: "20px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                              animation: "moveHorizontal 1s linear infinite",
-                              backdropFilter: "blur(5px)",
-                              filter: "blur(5px)",
-                            }}
-                          >
-                            <ScaleLoader color="#FFFFFF" />
-                          </div>
-                          FREE
-                          <style>{keyframes}</style>
-                        </button>
-                      </Link>
-                    </button>
-                  </Link>
-                )}
-              </div> */}
-
               <div
                 className=""
                 style={{
@@ -1021,34 +923,7 @@ export default function Nav() {
                             height: "20px",
                           }}
                         >
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              width: "100%", // Ensures the loader fills the button width
-                              display: "flex",
-                              justifyContent: "flex-start", // Align items to the start (left)
-                              alignItems: "center",
-                              animation: "moveHorizontal 2s linear infinite", // Increased duration for slower movement
-                            }}
-                          >
-                            <div
-                              className="rounded-full"
-                              style={{
-                                transform: "rotate(30deg)", // Rotate the loader to 30 degrees
-                              }}
-                            >
-                              <BarLoader
-                                color="#FFFFFF"
-                                width={5} // Width of the loader, adjust as needed
-                                height={22} // Thickness of the line
-                                speedMultiplier={0.05} // Lowered speed multiplier for slower animation
-                              />
-                            </div>
-                          </div>
                           FREE
-                          <style>{keyframes}</style>
                         </button>
                       </Link>
                     </button>
@@ -1072,36 +947,9 @@ export default function Nav() {
                             height: "20px",
                           }}
                         >
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              width: "100%", // Ensures the loader fills the button width
-                              display: "flex",
-                              justifyContent: "flex-start", // Align items to the start (left)
-                              alignItems: "center",
-                              animation: "moveHorizontal 2s linear infinite", // Increased duration for slower movement
-                            }}
-                          >
-                            <div
-                              className="rounded-full"
-                              style={{
-                                transform: "rotate(30deg)", // Rotate the loader to 30 degrees
-                              }}
-                            >
-                              <BarLoader
-                                color="#FFFFFF"
-                                width={5} // Width of the loader, adjust as needed
-                                height={22} // Thickness of the line
-                                speedMultiplier={0.05} // Lowered speed multiplier for slower animation
-                              />
-                            </div>
-                          </div>
                           <span style={{ position: "relative", zIndex: 1 }}>
                             FREE
                           </span>{" "}
-                          <style>{keyframes}</style>
                         </button>
                       </Link>
                     </button>
@@ -1226,72 +1074,6 @@ export default function Nav() {
                   )}
                 </div>
 
-                {/* <Menu>
-                  <MenuButton
-                    as={Button}
-                    borderRadius="l"
-                    variant="unstyled"
-                    aria-label="Profile"
-                    onClick={handleAvatarClick}
-                  >
-                    {token ? (
-                      <>
-                        <Avatar
-                          boxSize={{ base: "1.7em", md: "1.8em" }}
-                          bgColor="white"
-                          marginRight={{ base: "1em", md: "0" }}
-                          icon={
-                            <AvatarBadge
-                              boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
-                              bg="green.500"
-                              border="2px"
-                              borderColor="white"
-                              darkBorderColor="gray.800"
-                              rounded="full"
-                            />
-                          }
-                        >
-                          <img
-                            className="w-16 h-10 rounded-full "
-                            src="../../Images/logoAvtar.png"
-                            alt=""
-                          />
-                        </Avatar>
-                      </>
-                    ) : (
-                      <>
-                        <Avatar
-                          boxSize={{ base: "1.7em", md: "1.8em" }}
-                          bgColor="white"
-                          marginLeft={{ base: 0, md: "0" }}
-                          icon={
-                            <AvatarBadge
-                              boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
-                              bg="red.500"
-                              border="2px"
-                              borderColor="white"
-                              darkBorderColor="gray.800"
-                              rounded="full"
-                            />
-                          }
-                        >
-                          <img
-                            className="w-16 h-10 rounded-full"
-                            src="../../Images/logoAvtar.png"
-                            alt="logoAvtar"
-                          />
-                        </Avatar>
-                      </>
-                    )}
-                  </MenuButton>
-
-                  <MenuListContainer
-                    isOpen={isDropdownOpen}
-                    onClose={onClose}
-                    onLoginRegisterClick={handleLoginRegisterClick}
-                  />
-                </Menu> */}
-
                 <Menu>
                   <MenuButton
                     as={Button}
@@ -1377,14 +1159,14 @@ export default function Nav() {
               <Stack color="white" as="nav" spacing={4}>
                 <Link
                   to={"/rental-properties/best-rental-property-in-gurugram/"}
-                  className="text-white font-semibold mx-3 text-lg"
+                  className="text-red-600 font-semibold mx-3 text-lg"
                 >
                   Rent
                 </Link>
 
                 <Link
                   to={"/buy-properties/best-resale-property-in-gurugram/"}
-                  className="text-white font-semibold text-lg mx-3"
+                  className="text-red-600 font-semibold text-lg mx-3"
                 >
                   Buy
                 </Link>
@@ -1392,14 +1174,14 @@ export default function Nav() {
                 {token ? (
                   <Link
                     to={"/postproperty/"}
-                    className="text-white font-semibold text-lg mx-3"
+                    className="text-red-600 font-semibold text-lg mx-3 hover:bg-red-500 hover:opacity-80"
                   >
                     <span onClick={checkUserAuth}>Sell</span>
                   </Link>
                 ) : (
                   <Link
                     to={"/signin/"}
-                    className="text-white font-semibold text-lg mx-3"
+                    className="text-red-600 font-semibold text-lg mx-3 hover:bg-red-500 hover:opacity-80"
                   >
                     Sell
                   </Link>
@@ -1407,7 +1189,7 @@ export default function Nav() {
 
                 <Link
                   to={"/projects-in-gurugram/"}
-                  className="text-white font-semibold text-lg mx-3"
+                  className="text-red-600 font-semibold text-lg mx-3"
                 >
                   Projects
                 </Link>
