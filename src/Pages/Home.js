@@ -92,6 +92,9 @@ function Home() {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
+
+
+
       {/* <div className="glide-02   w-full">
       
         <div data-glide-el="track">
@@ -172,21 +175,22 @@ function Home() {
       </div> */}
 
       <div className="w-full">
-          <img
-            src="../../Images/A7.png"
-            alt="Banner Image"
-            class="hidden md:block w-full h-auto"
-          />
-          <img
-            src="../../Images/4smobile.webp"
-            alt="Mobile Banner Image"
-            class="block md:hidden w-full h-auto"
-          />
+        <img
+          src="../../Images/img-02.jpg"
+          alt="Banner Image"
+          className="hidden md:block w-full h-[50vh]"
+        />
+        <img
+          src="../../Images/001.jpg"
+          alt="Mobile Banner Image"
+          className="block md:hidden vh w-full h-auto"
+        />
 
         <div className="relative pt-0 sm:pt-0 md:pt-3  xl:pt-3 xl:mb-0 sm:mb-0 lg:mb-0 md:mb-6">
           <SearchBar />
         </div>
       </div>
+
 
       {/*<!-- End Carousel with indicators inside --> */}
 
@@ -195,7 +199,7 @@ function Home() {
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center ">
             <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
-              Trending Properties in Gurugram
+              Trending Properties in Gurugram 
             </h1>
           </div>
           <div className="ml-2 hidden sm:block">
@@ -1218,5 +1222,10 @@ const Wrapper = styled.section`
     .mobile-image {
       display: block; /* Show mobile image on mobile */
     }
+  }
+
+  .vh {
+    height: 15rem;
+    width : 45rem
   }
 `;

@@ -99,7 +99,7 @@ export const DataProvider = ({ children }) => {
 
   const fetchProject = async () => {
     try {
-      const response = await axios.get('https://api.100acress.com/project/viewAll/data');
+      const response = await axios.get('https://acress-backend-8ca2b68c56f4.herokuapp.com/project/viewAll/data');
       setProject(response.data.data); 
     } catch (error) {
       console.log(error);
@@ -110,10 +110,10 @@ export const DataProvider = ({ children }) => {
   const fetchAllProject = async () => {
     try {
       const res = await axios.get(
-        "https://api.100acress.com/project/viewAll/data"
+        "https://acress-backend-8ca2b68c56f4.herokuapp.com/project/viewAll/data"
       );
       const projectsData = res.data.data;
-
+    
       const trendingProjects = projectsData.filter(
         (project) => project.projectOverview === "trending" 
       );
@@ -374,7 +374,7 @@ export const DataProvider = ({ children }) => {
 
   const fetchBlogData = async () => {
     try {
-      const res = await axios.get("https://api.100acress.com/blog/view");
+      const res = await axios.get("https://acress-backend-8ca2b68c56f4.herokuapp.com/blog/view");
       setBlogData(res.data.data);
     } catch (error) {
       console.log(error || error.message);
@@ -386,7 +386,7 @@ export const DataProvider = ({ children }) => {
     if (email && password) {
       try {
         const loginResponse = await axios.post(
-          "https://api.100acress.com/postPerson/verify_Login",
+          "https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/verify_Login",
           { email, password }
         );
         const newToken = loginResponse.data.token;
@@ -395,7 +395,7 @@ export const DataProvider = ({ children }) => {
 
         if (loginResponse.status === 200) {
           const roleResponse = await axios.get(
-            `https://api.100acress.com/postPerson/Role/${email}`
+            `https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/Role/${email}`
           );
 
           if (roleResponse.status === 200) {
@@ -428,7 +428,7 @@ export const DataProvider = ({ children }) => {
 
   const fetchCareerData = async () => {
     try {
-      const res = await axios.get("https://api.100acress.com/career/page/view");
+      const res = await axios.get("https://acress-backend-8ca2b68c56f4.herokuapp.com/career/page/view");
       setCareerData(res.data.data);
     } catch (error) {
       console.log(error || error.message);
@@ -438,7 +438,7 @@ export const DataProvider = ({ children }) => {
   const fetchJobPostingData = async () => {
     try {
       const res = await axios.get(
-        "https://api.100acress.com/career/opening/ViewAll"
+        "https://acress-backend-8ca2b68c56f4.herokuapp.com/career/opening/ViewAll"
       );
       setJobPostingData(res.data.data);
     } catch (error) {
@@ -449,7 +449,7 @@ export const DataProvider = ({ children }) => {
   const buyFetchData = async () => {
     try {
       const res = await axios.get(
-        "https://api.100acress.com/property/buy/ViewAll"
+        "https://acress-backend-8ca2b68c56f4.herokuapp.com/property/buy/ViewAll"
       );
       setResalePropertydata(res.data.collectdata);
     } catch (error) {

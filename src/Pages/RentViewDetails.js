@@ -93,7 +93,7 @@ const RentViewDetails = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://api.100acress.com/property/view/${id}`
+          `https://acress-backend-8ca2b68c56f4.herokuapp.com/property/view/${id}`
         );
         if (res.data.data) {
           setRentViewDetails(res.data.data);
@@ -129,7 +129,7 @@ const RentViewDetails = () => {
     const { custEmail, custNumber } = agentFrom1;
     if (custEmail && custNumber) {
       axios
-        .post("https://api.100acress.com/postEnquiry", {
+        .post("https://acress-backend-8ca2b68c56f4.herokuapp.com/postEnquiry", {
           ...agentFrom1,
           propertyAddress: rentViewDetails.city,
           agentEmail: rentViewDetails.email,
@@ -196,7 +196,7 @@ const RentViewDetails = () => {
     if (custNumber && custName) {
       try {
         const response = await axios.post(
-          "https://api.100acress.com/postEnquiry",
+          "https://acress-backend-8ca2b68c56f4.herokuapp.com/postEnquiry",
           {
             ...userForm,
             propertyAddress: rentViewDetails.address,
@@ -238,7 +238,7 @@ const RentViewDetails = () => {
     if (custNumber && custName) {
       try {
         const response = await axios.post(
-          "https://api.100acress.com/postEnquiry",
+          "https://acress-backend-8ca2b68c56f4.herokuapp.com/postEnquiry",
           {
             ...userForm1,
             propertyAddress: rentViewDetails.address,
@@ -275,7 +275,7 @@ const RentViewDetails = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        "https://api.100acress.com/property/buy/ViewAll"
+        "https://acress-backend-8ca2b68c56f4.herokuapp.com/property/buy/ViewAll"
       );
       setBuyData(res.data.collectdata, "abcdefghijklmn");
     } catch (error) {

@@ -12,7 +12,7 @@ function PropViewCardPro() {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://api.100acress.com/property/viewAll"
+          "https://acress-backend-8ca2b68c56f4.herokuapp.com/property/viewAll"
         );
         setRentData(res.data.data);
       } catch (error) {

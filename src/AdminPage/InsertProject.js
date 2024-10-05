@@ -193,7 +193,7 @@ const InsertProject = () => {
 
   const handleSubmitProject = async (e) => {
     e.preventDefault();
-    const apiEndpoint = "https://api.100acress.com/projectInsert";
+    const apiEndpoint = "https://acress-backend-8ca2b68c56f4.herokuapp.com/projectInsert";
 
     const formDataAPI = new FormData();
 

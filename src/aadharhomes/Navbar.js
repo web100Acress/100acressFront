@@ -40,7 +40,7 @@ const MenuListContainer = ({ isOpen }) => {
 
   const HandleUserLogout = async () => {
     try {
-      await axios.get("https://api.100acress.com/postPerson/logout");
+      await axios.get("https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/logout");
       history("/");
       localStorage.removeItem("myToken");
       localStorage.removeItem("mySellerId");
@@ -240,7 +240,7 @@ export default function Navbar() {
     }
     try {
       const res = await axios.post(
-        "https://api.100acress.com/contact_Insert",
+        "https://acress-backend-8ca2b68c56f4.herokuapp.com/contact_Insert",
         formDataInquiry
       );
       alert("Data submitted successfully");
@@ -895,88 +895,6 @@ export default function Navbar() {
             </HStack>
 
             <Flex alignItems="center">
-              {/* <div className="" style={{ marginRight: "-40px" }}>
-                {token ? (
-                  <Link to="/postproperty/">
-                    <button className="btn  flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
-                      <strong
-                        onClick={checkUserAuth}
-                        className="text-red-600 mr-2"
-                      >
-                        Post Property
-                      </strong>
-                      <Link className="d-none d-xl-inline d-md-inline">
-                        <button
-                          className="btn btn-danger p-0 text-bold"
-                          style={{
-                            position: "relative",
-                            overflow: "hidden",
-                            width: "50px",
-                            height: "20px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                              animation: "moveHorizontal 1s linear infinite",
-                              backdropFilter: "blur(5px)",
-                              filter: "blur(5px)",
-                            }}
-                          >
-                            <ScaleLoader color="#FFFFFF" />
-                          </div>
-                          FREE
-                          <style>{keyframes}</style>
-                        </button>
-                      </Link>
-                    </button>
-                  </Link>
-                ) : (
-                  <Link to="/signin/">
-                    <button className="btn  flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
-                      <strong
-                        onClick={checkUserAuth}
-                        className="text-red-600 mr-2"
-                      >
-                        Post Property  
-                      </strong>
-                      <Link className="d-none d-xl-inline d-md-inline">
-                        <button
-                          className="btn btn-danger p-0 text-bold"
-                          style={{
-                            position: "relative",
-                            overflow: "hidden",
-                            width: "50px",
-                            height: "20px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              overflow: "hidden",
-                              whiteSpace: "nowrap",
-                              animation: "moveHorizontal 1s linear infinite",
-                              backdropFilter: "blur(5px)",
-                              filter: "blur(5px)",
-                            }}
-                          >
-                            <ScaleLoader color="#FFFFFF" />
-                          </div>
-                          FREE
-                          <style>{keyframes}</style>
-                        </button>
-                      </Link>
-                    </button>
-                  </Link>
-                )}
-              </div> */}
-
               <div
                 className=""
                 style={{
@@ -1002,34 +920,7 @@ export default function Navbar() {
                             height: "20px",
                           }}
                         >
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              width: "100%", // Ensures the loader fills the button width
-                              display: "flex",
-                              justifyContent: "flex-start", // Align items to the start (left)
-                              alignItems: "center",
-                              animation: "moveHorizontal 2s linear infinite", // Increased duration for slower movement
-                            }}
-                          >
-                            <div
-                              className="rounded-full"
-                              style={{
-                                transform: "rotate(30deg)", // Rotate the loader to 30 degrees
-                              }}
-                            >
-                              <BarLoader
-                                color="#FFFFFF"
-                                width={5} // Width of the loader, adjust as needed
-                                height={22} // Thickness of the line
-                                speedMultiplier={0.05} // Lowered speed multiplier for slower animation
-                              />
-                            </div>
-                          </div>
                           FREE
-                          <style>{keyframes}</style>
                         </button>
                       </Link>
                     </button>
@@ -1207,71 +1098,7 @@ export default function Navbar() {
                   )}
                 </div>
 
-                {/* <Menu>
-                  <MenuButton
-                    as={Button}
-                    borderRadius="l"
-                    variant="unstyled"
-                    aria-label="Profile"
-                    onClick={handleAvatarClick}
-                  >
-                    {token ? (
-                      <>
-                        <Avatar
-                          boxSize={{ base: "1.7em", md: "1.8em" }}
-                          bgColor="white"
-                          marginRight={{ base: "1em", md: "0" }}
-                          icon={
-                            <AvatarBadge
-                              boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
-                              bg="green.500"
-                              border="2px"
-                              borderColor="white"
-                              darkBorderColor="gray.800"
-                              rounded="full"
-                            />
-                          }
-                        >
-                          <img
-                            className="w-16 h-10 rounded-full "
-                            src="../../Images/logoAvtar.png"
-                            alt=""
-                          />
-                        </Avatar>
-                      </>
-                    ) : (
-                      <>
-                        <Avatar
-                          boxSize={{ base: "1.7em", md: "1.8em" }}
-                          bgColor="white"
-                          marginLeft={{ base: 0, md: "0" }}
-                          icon={
-                            <AvatarBadge
-                              boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
-                              bg="red.500"
-                              border="2px"
-                              borderColor="white"
-                              darkBorderColor="gray.800"
-                              rounded="full"
-                            />
-                          }
-                        >
-                          <img
-                            className="w-16 h-10 rounded-full"
-                            src="../../Images/logoAvtar.png"
-                            alt="logoAvtar"
-                          />
-                        </Avatar>
-                      </>
-                    )}
-                  </MenuButton>
-
-                  <MenuListContainer
-                    isOpen={isDropdownOpen}
-                    onClose={onClose}
-                    onLoginRegisterClick={handleLoginRegisterClick}
-                  />
-                </Menu> */}
+  
 
                 <Menu>
                   <MenuButton

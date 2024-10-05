@@ -59,7 +59,7 @@ const ViewPropertyAdmin = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://api.100acress.com/postPerson/propertyView/${id}`
+          `https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/propertyView/${id}`
         );
         setViewAllProperty(res.data.data.postProperty);
       } catch (error) {
@@ -74,7 +74,7 @@ const ViewPropertyAdmin = () => {
   const handleDeleteUser = async (id) => {
     try {
       const res = await axios.delete(
-        `https://api.100acress.com/postPerson/propertyDelete/${id}`
+        `https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/propertyDelete/${id}`
       );
       if (res.status >= 200 && res.status < 300) {
         window.location.reload();

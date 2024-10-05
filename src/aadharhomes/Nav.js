@@ -40,7 +40,7 @@ const MenuListContainer = ({ isOpen }) => {
 
   const HandleUserLogout = async () => {
     try {
-      await axios.get("https://api.100acress.com/postPerson/logout");
+      await axios.get("https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/logout");
       history("/");
       localStorage.removeItem("myToken");
       localStorage.removeItem("mySellerId");
@@ -240,7 +240,7 @@ export default function Nav() {
     }
     try {
       const res = await axios.post(
-        "https://api.100acress.com/contact_Insert",
+        "https://acress-backend-8ca2b68c56f4.herokuapp.com/contact_Insert",
         formDataInquiry
       );
       alert("Data submitted successfully");
@@ -290,6 +290,7 @@ export default function Nav() {
           <Flex h={12} alignItems="center" justifyContent="space-between">
             <IconButton
               size={"md"}
+              marginRight={2}
               icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
               aria-label={"Open Menu"}
               display={{ lg: "none" }}
@@ -306,7 +307,9 @@ export default function Nav() {
               alignItems="center"
               flex="1"
             >
-              <Box>
+              <Box marginLeft={"-18px"}>
+                {" "}
+                {/* Adjust values as needed */}
                 <Link to={"/"}>
                   <Image
                     maxW={["160px", "200px"]}
@@ -327,8 +330,8 @@ export default function Nav() {
                     onMouseLeave={handleLeave1}
                   >
                     <Link to="/buy-properties/best-resale-property-in-gurugram/">
-                      <button className=" text-red-600 font-semibold text-lg ">
-                        Buy
+                      <button className=" text-red-600 pt-1  text-sm  uppercase font-bold ">
+                        Resale
                       </button>
                     </Link>
                     <div
@@ -506,8 +509,8 @@ export default function Nav() {
                     onMouseLeave={handleLeave}
                   >
                     <Link to="/rental-properties/best-rental-property-in-gurugram/">
-                      <button className="text-red-600 font-semibold text-lg ">
-                        Rent
+                      <button className="text-red-600 pt-1 text-sm font-bold uppercase ">
+                        Rental
                       </button>
                     </Link>
                     <div
@@ -688,18 +691,16 @@ export default function Nav() {
                   {token ? (
                     <Link
                       to={"/postproperty/"}
-                      _hover={{ bg: "red", opacity: 0.8 }}
-                      className="text-red-600 font-semibold text-lg"
+                      className="text-red-600   font-bold  uppercase pt-1  text-sm"
                     >
-                      <span onClick={checkUserAuth}>Sell</span>
+                      <span onClick={checkUserAuth}>List Property </span>
                     </Link>
                   ) : (
                     <Link
                       to={"/signin/"}
-                      _hover={{ bg: "red", opacity: 0.8 }}
-                      className="text-red-600 font-semibold text-lg"
+                      className="text-red-600 font-bold uppercase pt-1 text-sm"
                     >
-                      Sell
+                      List Property
                     </Link>
                   )}
 
@@ -711,7 +712,7 @@ export default function Nav() {
                     <Link
                     // to={"/projects-in-gurugram/"}
                     >
-                      <button className="text-red-600 font-semibold text-lg ">
+                      <button className="text-red-600 uppercase font-bold pt-1  text-sm ">
                         Projects
                       </button>
                     </Link>
@@ -901,12 +902,12 @@ export default function Nav() {
               <div
                 className=""
                 style={{
-                  marginRight: window.innerWidth <= 768 ? "-80px" : "-40px",
+                  marginRight: window.innerWidth <= 768 ? "-80px" : "-80px",
                 }}
               >
                 {token ? (
                   <Link to="/postproperty/">
-                    <button className="btn flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
+                    <button className=" flex btn  btn-sm sm:p-1 sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
                         className="text-red-600 mr-2"
@@ -930,7 +931,7 @@ export default function Nav() {
                   </Link>
                 ) : (
                   <Link to="/signin/">
-                    <button className="btn flex btn-light text-black btn-sm sm:p-1 sm:text-sm">
+                    <button className=" flex btn   btn-sm sm:p-1 sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
                         className="text-red-600 mr-2"
@@ -943,13 +944,11 @@ export default function Nav() {
                           style={{
                             position: "relative",
                             overflow: "hidden",
-                            width: "50px", // Adjust this value for the desired width
+                            width: "50px",
                             height: "20px",
                           }}
                         >
-                          <span style={{ position: "relative", zIndex: 1 }}>
-                            FREE
-                          </span>{" "}
+                          FREE
                         </button>
                       </Link>
                     </button>
@@ -959,121 +958,7 @@ export default function Nav() {
 
               <SpacerComponent />
 
-              <div className="flex gap-4 ">
-                <div
-                  className="relative group hidden md:block "
-                  onMouseEnter={handleHeadMouseEnter}
-                  onMouseLeave={handleHeadMouseLeave}
-                >
-                  <IoHeadsetOutline
-                    size="32"
-                    className="inline-block"
-                    style={{
-                      borderRadius: "50%",
-                      backgroundColor: "white",
-                      padding: "4px",
-                      marginRight: "-14px",
-                      marginTop: "5px",
-                    }}
-                  />
-                  <div
-                    className={`absolute mt-1 right-[-80] bg-gray-100 p-3 shadow-md rounded-lg ${
-                      showHeadsetDropdown ? "block" : "hidden"
-                    }`}
-                    style={{ zIndex: 10 }}
-                  >
-                    <div className="w-44 h-30 ">
-                      <p className="font-bold text-gray-500 mb-0">Call Now</p>
-                      <div className="flex items-center">
-                        <Ri24HoursLine />
-                        <p
-                          className="text-sm ml-2 font-semibold text-gray-600"
-                          style={{ marginBottom: "0px" }}
-                        >
-                          24 x 7
-                        </p>
-                      </div>
-                      <span className="flex items-center pt-1  ">
-                        <IoCall className="text-gray-600" />
-                        <span className="text-sm font-semibold text-gray-600 ml-2">
-                          +91 8500-900-100
-                        </span>
-                      </span>
-                      <div className="flex justify-center ">
-                        <button
-                          className="bg-red-600 text-white px-3 py-1 rounded-lg"
-                          style={{ marginTop: "14px" }}
-                          onClick={() => setShowSteps(!showSteps)}
-                        >
-                          Request a Callback
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  {showSteps && (
-                    <div className="fixed inset-0 hidden sm:block md:block lg:flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
-                      <div className="rounded-xl px-4 py-4 relative w-1/2 h-70">
-                        <div>
-                          <div className="flex justify-center homeFrom_modal ">
-                            <div className="w-4/5 my-5 mx-auto flex flex-col items-center justify-center md:flex-row ">
-                              <div className="border w-[70%] h-full bg-white text-black p-2 lg:p-10 md:p-10 sm:p-4 rounded-xl relative">
-                                <button
-                                  type="button"
-                                  className="btn-close absolute top-2 right-2"
-                                  data-bs-dismiss="modal"
-                                  aria-label="Close"
-                                  onClick={() => setShowSteps(false)}
-                                ></button>
-                                <div className="my-4 leading-7 text-center">
-                                  <input
-                                    type="text"
-                                    name="name"
-                                    value={formDataInquiry.name}
-                                    onChange={handleInquiryDataChange}
-                                    placeholder="Full Name"
-                                    className="border-b-2 w-[80%] mb-4 p-1 border-b-black placeholder:text-black text-sm text-black bg-white focus:outline-none"
-                                  />
-                                  <input
-                                    type="email"
-                                    name="email"
-                                    value={formDataInquiry.email}
-                                    onChange={handleInquiryDataChange}
-                                    placeholder="Email Address"
-                                    className="border-b-2 w-[80%] mb-4 p-1 border-b-black placeholder:text-black placeholder:opacity-80 text-sm bg-white  focus:outline-none"
-                                  />
-                                  <input
-                                    type="number"
-                                    name="mobile"
-                                    value={formDataInquiry.mobile}
-                                    onChange={handleInquiryDataChange}
-                                    placeholder="Mobile"
-                                    className="border-b-2 w-[80%] mb-4 p-1 border-b-black placeholder:text-black placeholder:opacity-80 text-sm  bg-white focus:outline-none"
-                                  />
-                                  <textarea
-                                    id="message"
-                                    name="message"
-                                    value={formDataInquiry.message}
-                                    onChange={handleInquiryDataChange}
-                                    placeholder="Write us a message"
-                                    className="w-[80%] bg-white border-b-2 border-b-black h-10 text-sm  placeholder:text-black placeholder:opacity-80  py-1 px-2 resize-none leading-6 duration-200 ease-in-out focus:outline-none"
-                                    defaultValue={""}
-                                  />
-                                  <button
-                                    className="block m-auto w-[60%] mt-4 md:w-[50%] text-center border bg-red-600 hover:bg-red-400 rounded-full py-1  text-lg font-bold tracking-wide uppercase text-white brightness-105"
-                                    onClick={handleInquirySubmitData}
-                                  >
-                                    Send
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
+              <div className="flex gap-4 pt-1 justify-end">
                 <Menu>
                   <MenuButton
                     as={Button}
@@ -1081,57 +966,30 @@ export default function Nav() {
                     variant="unstyled"
                     aria-label="Profile"
                     onClick={handleAvatarClick}
+                    style={{ backgroundColor: "transparent", border: "none" }} // Transparent background
                   >
                     {token ? (
-                      <>
-                        <Avatar
-                          boxSize={{ base: "1.2em", md: "1.8em" }} // Smaller size on mobile
-                          bgColor="white"
-                          marginRight={{ base: "1em", md: "0" }}
-                          display={{ base: "none", md: "block" }} // Hide on mobile
-                          icon={
-                            <AvatarBadge
-                              boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
-                              bg="green.500"
-                              border="2px"
-                              borderColor="white"
-                              darkBorderColor="gray.800"
-                              rounded="full"
-                            />
-                          }
-                        >
-                          <img
-                            className="w-16 h-10 rounded-full"
-                            src="../../Images/logoavtar.webp"
-                            alt="logoavtar"
-                          />
-                        </Avatar>
-                      </>
+                      <Button
+                        className="font-bold w-24 outline-offset-2 underline"
+                        style={{
+                          color: "#DC2626",
+                          backgroundColor: "transparent",
+                          border: "none",
+                        }}
+                      >
+                        Signin
+                      </Button>
                     ) : (
-                      <>
-                        <Avatar
-                          boxSize={{ base: "1.2em", md: "1.8em" }} // Smaller size on mobile
-                          bgColor="white"
-                          marginLeft={{ base: 0, md: "0" }}
-                          display={{ base: "none", md: "block" }} // Hide on mobile
-                          icon={
-                            <AvatarBadge
-                              boxSize={{ base: "0", md: "0.8em", sm: "0.8em" }}
-                              bg="red.500"
-                              border="2px"
-                              borderColor="white"
-                              darkBorderColor="gray.800"
-                              rounded="full"
-                            />
-                          }
-                        >
-                          <img
-                            className="w-16 h-10 rounded-full"
-                            src="../../Images/logoavtar.webp"
-                            alt="logoavtar"
-                          />
-                        </Avatar>
-                      </>
+                      <Button
+                        className="outline-offset-2 font-bold w-24"
+                        style={{
+                          color: "red",
+                          backgroundColor: "transparent",
+                          border: "none",
+                        }} // Ensure button is transparent
+                      >
+                        Signin
+                      </Button>
                     )}
                   </MenuButton>
 
@@ -1159,37 +1017,37 @@ export default function Nav() {
               <Stack color="white" as="nav" spacing={4}>
                 <Link
                   to={"/rental-properties/best-rental-property-in-gurugram/"}
-                  className="text-red-600 font-semibold mx-3 text-lg"
+                  className="text-red-600  mx-3 text-sm pt-1 font-bold uppercase"
                 >
-                  Rent
+                  Rental Property
                 </Link>
 
                 <Link
                   to={"/buy-properties/best-resale-property-in-gurugram/"}
-                  className="text-red-600 font-semibold text-lg mx-3"
+                  className="text-red-600 pt-1  text-sm uppercase font-bold mx-3"
                 >
-                  Buy
+                  Resale Property
                 </Link>
 
                 {token ? (
                   <Link
                     to={"/postproperty/"}
-                    className="text-red-600 font-semibold text-lg mx-3 hover:bg-red-500 hover:opacity-80"
+                    className="text-red-600 font-bold pt-1 uppercase text-sm mx-3 hover:bg-red-500 hover:opacity-80"
                   >
-                    <span onClick={checkUserAuth}>Sell</span>
+                    <span onClick={checkUserAuth}>List Property</span>
                   </Link>
                 ) : (
                   <Link
                     to={"/signin/"}
-                    className="text-red-600 font-semibold text-lg mx-3 hover:bg-red-500 hover:opacity-80"
+                    className="text-red-600 font-bold text-sm pt-1 mx-3 uppercase hover:bg-red-500 hover:opacity-80"
                   >
-                    Sell
+                    List Property
                   </Link>
                 )}
 
                 <Link
                   to={"/projects-in-gurugram/"}
-                  className="text-red-600 font-semibold text-lg mx-3"
+                  className="text-red-600  text-sm font-bold uppercase mx-3"
                 >
                   Projects
                 </Link>

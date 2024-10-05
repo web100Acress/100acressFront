@@ -141,7 +141,7 @@ const BuyPropViewCard = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        "https://api.100acress.com/property/buy/ViewAll"
+        "https://acress-backend-8ca2b68c56f4.herokuapp.com/property/buy/ViewAll"
       );
       setBuyData(res.data.collectdata);
     } catch (error) {

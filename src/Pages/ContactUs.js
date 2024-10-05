@@ -292,7 +292,7 @@ const ContactUs = () => {
     setIsSubmitting(true);
     try {
       await axios.post(
-        "https://api.100acress.com/contact_Insert",
+        "https://acress-backend-8ca2b68c56f4.herokuapp.com/contact_Insert",
         formDataInquiry
       );
       alert("Data submitted successfully");
