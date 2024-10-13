@@ -132,7 +132,7 @@ export default function SignUp() {
 
     if (name && mobile && email && password && password === cpassword) {
       axios
-        .post("http://api.100acress.com:3500/postPerson/register", userSignUp)
+        .post("https://api.100acress.com/postPerson/register", userSignUp)
         .then((response) => {
           // setResponseMessage("Your account is created, Please Sign in");
           history("/signin");

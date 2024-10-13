@@ -35,7 +35,7 @@
 //     }
 //     try {
 //      await axios.post(
-//         "http://api.100acress.com:3500/contact_Insert",
+//         "https://api.100acress.com/contact_Insert",
 //         data
 //       );
 //       alert("Data Submitted Successfully");
@@ -292,7 +292,7 @@ const ContactUs = () => {
     setIsSubmitting(true);
     try {
       await axios.post(
-        "http://api.100acress.com:3500/contact_Insert",
+        "https://api.100acress.com/contact_Insert",
         formDataInquiry
       );
       alert("Data submitted successfully");

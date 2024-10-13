@@ -30,7 +30,7 @@ const ForgetPassword = () => {
         return;
       }
       if (password === cpassword) {
-        const apiUrl = `http://api.100acress.com:3500/postPerson/reset/${token.token}`;
+        const apiUrl = `https://api.100acress.com/postPerson/reset/${token.token}`;
         console.log(apiUrl.message)
         const response = await axios.post(apiUrl, {
           password: password,

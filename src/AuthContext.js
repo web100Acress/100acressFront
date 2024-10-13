@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       if (email && password) {
         try {
           const loginResponse = await axios.post(
-            "http://api.100acress.com:3500/postPerson/verify_Login",
+            "https://api.100acress.com/postPerson/verify_Login",
             { email, password }
           );
           const newToken = loginResponse.data.token;
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
   
           if (loginResponse.status === 200) {
             const roleResponse = await axios.get(
-              `http://api.100acress.com:3500/postPerson/Role/${email}`
+              `https://api.100acress.com/postPerson/Role/${email}`
             );
             setAgentData(roleResponse.data.User);
             localStorage.setItem(
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
       );
       if (confirmDelete) {
         const res = await axios.delete(
-          `http://api.100acress.com:3500/postPerson/propertyDelete/${id}`
+          `https://api.100acress.com/postPerson/propertyDelete/${id}`
         );
         if (res.status >= 200 && res.status < 300) {
           setAgentData(prevData => ({

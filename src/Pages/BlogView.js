@@ -46,7 +46,7 @@ const BlogView = () => {
     setButtonText("Submitting...");
     try {
       const res = await axios.post(
-        "http://api.100acress.com:3500/contact_Insert",
+        "https://api.100acress.com/contact_Insert",
         blogQuery
       );
       setResponseMessage("Data submitted successfully");
@@ -66,7 +66,7 @@ const BlogView = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(`http://api.100acress.com:3500/blog/view/${id}`);
+      const res = await axios.get(`https://api.100acress.com/blog/view/${id}`);
       setData(res.data.data);
     } catch (error) {
       console.log(error || error.message);

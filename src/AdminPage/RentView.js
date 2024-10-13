@@ -21,7 +21,7 @@ const RentView = () => {
         const fetchData = async () => {
             try {
                 const res = await axios.get(
-                    `https://acress-backend-8ca2b68c56f4.herokuapp.com/property/rent/${id}`
+                    `https://api.100acress.com/property/rent/${id}`
                 );
                 setViewDetails(res.data.data);
 

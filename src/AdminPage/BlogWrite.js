@@ -40,7 +40,7 @@ const BlogWrite = () => {
       return;
     }
     const formDataAPI = new FormData();
-    const apiEndpoint = "http://api.100acress.com:3500/blog/insert";
+    const apiEndpoint = "https://api.100acress.com/blog/insert";
     for (const key in editForm) {
       formDataAPI.append(key, editForm[key]);
     }

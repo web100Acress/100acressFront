@@ -51,7 +51,7 @@ const EditDetails = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `http://api.100acress.com:3500/postPerson/propertyoneEdit/${id}`
+          `https://api.100acress.com/postPerson/propertyoneEdit/${id}`
         );
         setValues(res.data.data.postProperty[0]);
       } catch (error) {
@@ -64,7 +64,7 @@ const EditDetails = () => {
   const handleUpdateUser = async () => {
     try {
       const response = await axios.post(
-        `http://api.100acress.com:3500/postPerson/propertyoneUpdate/${id}`,
+        `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
         values
       );
       if (response.status === 200) {

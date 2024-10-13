@@ -18,7 +18,7 @@ const Blog = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://api.100acress.com:3500/blog/view");
+        const res = await axios.get("https://api.100acress.com/blog/view");
        
         setViewAll(res.data.data);
       } catch (error) {
@@ -31,7 +31,7 @@ const Blog = () => {
   const handleDeleteUser = async (id) => {
     try {
       const response = await axios.delete(
-        `http://api.100acress.com:3500/blog/Delete/${id}`
+        `https://api.100acress.com/blog/Delete/${id}`
       );
       if (response.status >= 200 && response.status < 300) {
         window.location.reload();

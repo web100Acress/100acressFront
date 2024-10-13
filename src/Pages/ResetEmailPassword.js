@@ -7,7 +7,7 @@ const ResetEmailPassword = () => {
   const history = useNavigate();
   const [email, setEmail] = useState("");
 
-  const apiUrl = "http://api.100acress.com:3500/postPerson/postProperty_forget";
+  const apiUrl = "https://api.100acress.com/postPerson/postProperty_forget";
 
   const showToastMessage = () => {
     toast.success("You will receive a reset email!", {

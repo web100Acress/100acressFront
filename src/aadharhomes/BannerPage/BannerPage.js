@@ -103,7 +103,7 @@ const BannerPage = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        `http://api.100acress.com:3500/projectView/${pUrl}`
+        `https://api.100acress.com/projectView/${pUrl}`
       );
       setProjectViewDetails(res.data.dataview[0]);
       setBuilderName(res.data.dataview[0].builderName);
@@ -160,7 +160,7 @@ const BannerPage = () => {
       setIsLoading(true);
       setUserButtonText("Submitting...");
       axios
-        .post("http://api.100acress.com:3500/userInsert", {
+        .post("https://api.100acress.com/userInsert", {
           ...userDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
@@ -208,7 +208,7 @@ const BannerPage = () => {
       setPopUpButtonText("Submitting...");
       try {
         setIsLoading1(true);
-        await axios.post("http://api.100acress.com:3500/userInsert", {
+        await axios.post("https://api.100acress.com/userInsert", {
           ...popDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
@@ -241,7 +241,7 @@ const BannerPage = () => {
       setIsLoading2(true);
       setSideButtonText("Submitting...");
       try {
-        await axios.post("http://api.100acress.com:3500/userInsert", {
+        await axios.post("https://api.100acress.com/userInsert", {
           ...sideDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
