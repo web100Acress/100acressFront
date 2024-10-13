@@ -51,7 +51,7 @@ const EditDetails = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/propertyoneEdit/${id}`
+          `http://api.100acress.com:3500/postPerson/propertyoneEdit/${id}`
         );
         setValues(res.data.data.postProperty[0]);
       } catch (error) {
@@ -64,7 +64,7 @@ const EditDetails = () => {
   const handleUpdateUser = async () => {
     try {
       const response = await axios.post(
-        `https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/propertyoneUpdate/${id}`,
+        `http://api.100acress.com:3500/postPerson/propertyoneUpdate/${id}`,
         values
       );
       if (response.status === 200) {

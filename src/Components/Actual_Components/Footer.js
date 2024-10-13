@@ -47,7 +47,7 @@ const Footer = () => {
       <div className="w-full divide-y divide-gray-200 bg-red-600">
         <div className="flex flex-wrap py-3">
           <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-6 py-2 text-center text-sm">
-          <Link to="/" target="_top">
+            <Link to="/" target="_top">
               <img src={logoImage} className="mx-auto" alt="Logo" />
             </Link>
             <p className="text-md my-3 mt-2 text-justify font-normal">
@@ -55,17 +55,22 @@ const Footer = () => {
               property solutions tailored to meet your needs.
             </p>
 
-            <div className="my-3 text-left ">
-              <i className="fa-solid fa-phone">
+            <div className="my-3 text-left">
+              <a href="tel:+918500900100" className="flex items-center hover:text-white">
+                <i className="fa-solid fa-phone"></i>
                 <span className="ml-6 text-md font-normal">
                   +91 8500-900-100
                 </span>
-              </i>
+              </a>
             </div>
             <div className="my-2 text-left ">
-              <i className="fa-solid fa-message">
-                <span className="ml-6 font-normal">seo@100acress.com</span>
-              </i>
+              <a
+                href="mailto:support@100acress.com"
+                className="flex items-center hover:text-white"
+              >
+                <i className="fa-solid fa-message"></i>
+                <span className="ml-6 font-normal">support@100acress.com</span>
+              </a>
             </div>
           </div>
 

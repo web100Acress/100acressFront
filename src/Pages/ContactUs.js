@@ -35,7 +35,7 @@
 //     }
 //     try {
 //      await axios.post(
-//         "https://api.100acress.com/contact_Insert",
+//         "http://api.100acress.com:3500/contact_Insert",
 //         data
 //       );
 //       alert("Data Submitted Successfully");
@@ -216,7 +216,7 @@
 //                 </p>
 //                 <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-5 text-[#012e29] font-medium">
 //                   <a
-//                     href="mailto:seo@100acress.com"
+//                     href="mailto:support@100acress.com"
 //                     class="mx-2 text-red-600 text-lg font-bold"
 //                   >
 //                     Get Support
@@ -232,7 +232,7 @@
 //                 </p>
 //                 <p class="text-center text-sm px-6 bg-white py-2 rounded-3xl p-[18px] text-[#012e29] font-medium">
 //                   <a
-//                     href="mailto:seo@100acress.com"
+//                     href="mailto:support@100acress.com"
 //                     class="mx-2 text-red-600 text-lg font-bold"
 //                   >
 //                     Visit Newsroom
@@ -292,7 +292,7 @@ const ContactUs = () => {
     setIsSubmitting(true);
     try {
       await axios.post(
-        "https://acress-backend-8ca2b68c56f4.herokuapp.com/contact_Insert",
+        "http://api.100acress.com:3500/contact_Insert",
         formDataInquiry
       );
       alert("Data submitted successfully");
@@ -482,7 +482,7 @@ const ContactUs = () => {
                 </p>
                 <p className="text-center text-sm px-6 bg-red-600 py-2 rounded-3xl p-5 text-[#012e29] font-medium">
                   <a
-                    href="mailto:seo@100acress.com"
+                    href="mailto:support@100acress.com"
                     className="mx-2 text-white text-lg font-bold"
                   >
                     Get Support
@@ -498,7 +498,7 @@ const ContactUs = () => {
                 </p>
                 <p className="text-center text-sm px-6 bg-red-600 py-2 rounded-3xl p-[18px] text-[#012e29] font-medium">
                   <a
-                    href="mailto:seo@100acress.com"
+                    href="mailto:support@100acress.com"
                     className="mx-2 text-white text-lg font-bold"
                   >
                     Visit Newsroom

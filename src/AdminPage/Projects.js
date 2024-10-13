@@ -23,7 +23,7 @@ const Projects = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://api.100acress.com/project/viewAll/data"
+          "http://api.100acress.com:3500/project/viewAll/data"
         );
         setViewAll(res.data.data);
       } catch (error) {
@@ -36,7 +36,7 @@ const Projects = () => {
   const handleDeleteUser = async (id) => {
     try {
       const response = await axios.delete(
-        `https://api.100acress.com/project/Delete/${id}`
+        `http://api.100acress.com:3500/project/Delete/${id}`
       );
       if (response.status >= 200 && response.status < 300) {
         window.location.reload();

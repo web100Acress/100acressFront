@@ -12,7 +12,7 @@ const UserDetails = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        "https://api.100acress.com/property/buy/ViewAll"
+        "http://api.100acress.com:3500/property/buy/ViewAll"
       );
       setUserData(res.data.collectdata);
     } catch (error) {

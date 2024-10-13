@@ -103,7 +103,7 @@ const BannerPage = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        `https://acress-backend-8ca2b68c56f4.herokuapp.com/projectView/${pUrl}`
+        `http://api.100acress.com:3500/projectView/${pUrl}`
       );
       setProjectViewDetails(res.data.dataview[0]);
       setBuilderName(res.data.dataview[0].builderName);
@@ -160,7 +160,7 @@ const BannerPage = () => {
       setIsLoading(true);
       setUserButtonText("Submitting...");
       axios
-        .post("https://acress-backend-8ca2b68c56f4.herokuapp.com/userInsert", {
+        .post("http://api.100acress.com:3500/userInsert", {
           ...userDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
@@ -208,7 +208,7 @@ const BannerPage = () => {
       setPopUpButtonText("Submitting...");
       try {
         setIsLoading1(true);
-        await axios.post("https://acress-backend-8ca2b68c56f4.herokuapp.com/userInsert", {
+        await axios.post("http://api.100acress.com:3500/userInsert", {
           ...popDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
@@ -241,7 +241,7 @@ const BannerPage = () => {
       setIsLoading2(true);
       setSideButtonText("Submitting...");
       try {
-        await axios.post("https://acress-backend-8ca2b68c56f4.herokuapp.com/userInsert", {
+        await axios.post("http://api.100acress.com:3500/userInsert", {
           ...sideDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,

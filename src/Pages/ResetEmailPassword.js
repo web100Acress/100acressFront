@@ -7,7 +7,7 @@ const ResetEmailPassword = () => {
   const history = useNavigate();
   const [email, setEmail] = useState("");
 
-  const apiUrl = "https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/postProperty_forget";
+  const apiUrl = "http://api.100acress.com:3500/postPerson/postProperty_forget";
 
   const showToastMessage = () => {
     toast.success("You will receive a reset email!", {

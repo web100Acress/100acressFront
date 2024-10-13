@@ -19,7 +19,7 @@ const UserAdmin = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://api.100acress.com/postPerson/view"
+          "http://api.100acress.com:3500/postPerson/view"
         );
         setViewAll(res.data.data);
       } catch (error) {

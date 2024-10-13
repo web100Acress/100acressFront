@@ -22,7 +22,7 @@ const BuyView = () => {
         const fetchData = async () => {
             try {
                 const res = await axios.get(
-                    `https://api.100acress.com/property/view/${id}`
+                    `http://api.100acress.com:3500/property/view/${id}`
                 );
                 setViewDetails(res.data.data);
 

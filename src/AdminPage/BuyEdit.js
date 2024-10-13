@@ -33,7 +33,7 @@ const BuyEdit = () => {
         const fetchData = async () => {
             try {
                 const res = await axios.get(
-                    `https://api.100acress.com/property/buy/edit/${id}`
+                    `http://api.100acress.com:3500/property/buy/edit/${id}`
                 );
                 setViewDetails(res.data.dataedit);
 

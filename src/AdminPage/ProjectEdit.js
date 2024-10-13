@@ -55,7 +55,7 @@ const ProjectEdit = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://api.100acress.com/project/Edit/${id}`
+          `http://api.100acress.com:3500/project/Edit/${id}`
         );
         setValues(res.data.dataedit);
       } catch (error) {
@@ -124,7 +124,7 @@ const ProjectEdit = () => {
   //     }
   
   //     const response = await axios.post(
-  //       `https://api.100acress.com/project/Update/${id}`,
+  //       `http://api.100acress.com:3500/project/Update/${id}`,
   //       fromData
   //     );
 
@@ -185,7 +185,7 @@ const ProjectEdit = () => {
       }
   
       const response = await axios.post(
-        `https://api.100acress.com/project/Update/${id}`,
+        `http://api.100acress.com:3500/project/Update/${id}`,
         fromData
       );
       
@@ -205,7 +205,7 @@ const ProjectEdit = () => {
     const IndexNumber = index;
     try {
       const response = await axios.delete(
-        `https://api.100acress.com/floorImage/${id}/${IndexNumber}`
+        `http://api.100acress.com:3500/floorImage/${id}/${IndexNumber}`
       );
       if (response.status >= 200 && response.status < 300) {
         window.location.reload();

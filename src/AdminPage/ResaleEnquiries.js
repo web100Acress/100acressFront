@@ -16,7 +16,7 @@ const ResaleEnquiries = () => {
 
   const fetchEnquiriesData = async () => {
     try {
-      const res = await axios.get("https://api.100acress.com/postEnq_view");
+      const res = await axios.get("http://api.100acress.com:3500/postEnq_view");
       setEnquiries(res.data.data);
     } catch (error) {
       console.log(error || error.message);

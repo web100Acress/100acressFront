@@ -27,7 +27,7 @@ const CareerEdit = () => {
   const fetchViewData = async () => {
     try {
       const res = await axios.get(
-        `https://api.100acress.com/career/page/edit/${id}`
+        `http://api.100acress.com:3500/career/page/edit/${id}`
       );
       setValue(res.data.data);
     } catch (error) {
@@ -137,7 +137,7 @@ const handleUpdateUser = async () => {
         }
       }
       formData.append("bannerImage", value.bannerImage.file);
-      const res = await axios.put(`https://api.100acress.com/career/page/update/${id}`, formData, {
+      const res = await axios.put(`http://api.100acress.com:3500/career/page/update/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

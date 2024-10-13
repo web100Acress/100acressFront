@@ -23,7 +23,7 @@ const BlogViewAdmin = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://acress-backend-8ca2b68c56f4.herokuapp.com/blog/view/${id}`
+          `http://api.100acress.com:3500/blog/view/${id}`
         );
    
         setViewDetails(res.data.data);

@@ -202,7 +202,7 @@ const NewSellProperty = () => {
     if (isLoading) {
       return;
     }
-    const apiEndpoint = `https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/propertyInsert/${sellerId}`;
+    const apiEndpoint = `http://api.100acress.com:3500/postPerson/propertyInsert/${sellerId}`;
     const formDataAPI = new FormData();
 
     for (const key in sellProperty) {

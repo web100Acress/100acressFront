@@ -58,7 +58,7 @@ const AdminContact = () => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const res = await axios.get("https://api.100acress.com/preLaunch/viewAll");
+          const res = await axios.get("http://api.100acress.com:3500/preLaunch/viewAll");
           setViewAll(res.data.data);
           console.log(res);
         } catch (error) {

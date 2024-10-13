@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
-import { BarLoader } from "react-spinners";
 import {
   Box,
   Flex,
   IconButton,
   Button,
   useDisclosure,
-  Avatar,
   Menu,
   MenuButton,
   MenuItem,
   Image,
-  AvatarBadge,
   HStack,
   Stack,
   useMediaQuery,
@@ -22,10 +19,6 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
-import { ScaleLoader } from "react-spinners";
-import { IoHeadsetOutline } from "react-icons/io5";
-import { IoCall } from "react-icons/io5";
-import { Ri24HoursLine } from "react-icons/ri";
 import { DataContext } from "../MyContext";
 const SpacerComponent = () => <Box width="60px" />;
 
@@ -40,7 +33,7 @@ const MenuListContainer = ({ isOpen }) => {
 
   const HandleUserLogout = async () => {
     try {
-      await axios.get("https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/logout");
+      await axios.get("http://api.100acress.com:3500/postPerson/logout");
       history("/");
       localStorage.removeItem("myToken");
       localStorage.removeItem("mySellerId");
@@ -129,14 +122,13 @@ const MenuListContainer = ({ isOpen }) => {
 
 export default function Navbar() {
   // Filter Data budget wise
-  const { priceRange, setPriceRange } = useContext(DataContext);
+  const {  setPriceRange } = useContext(DataContext);
 
   const handlePriceClick = (min, max) => {
     setPriceRange({ min, max });
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
 
@@ -144,16 +136,7 @@ export default function Navbar() {
   const [isMenuOpen1, setMenuOpen1] = useState(false);
   const [isMenuOpen2, setMenuOpen2] = useState(false);
 
-  const [showHeadsetDropdown, setShowHeadsetDropdown] = useState(false);
-  const [showSteps, setShowSteps] = useState(false);
 
-  const handleHeadMouseEnter = () => {
-    setShowHeadsetDropdown(true);
-  };
-
-  const handleHeadMouseLeave = () => {
-    setShowHeadsetDropdown(false);
-  };
 
   const handleAvatarClick = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -182,15 +165,6 @@ export default function Navbar() {
     setMenuOpen1(false);
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const handleLoginRegisterClick = () => {
-    setShowLoginModal(true);
-    onClose();
-  };
-
   const [token, setToken] = useState();
 
   const checkUserAuth = () => {
@@ -200,83 +174,6 @@ export default function Navbar() {
 
   useEffect(() => {
     checkUserAuth();
-  }, []);
-
-  const keyframes = `
- @keyframes moveHorizontal {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(100%); // Adjust this based on how far you want the loader to move
-  }
-}
-
-`;
-
-  const [formDataInquiry, setFormDataInquiry] = useState({
-    name: "",
-    mobile: "",
-    email: "",
-    message: "",
-    status: "",
-  });
-
-  const resetData = () => {
-    setFormDataInquiry({
-      name: "",
-      mobile: "",
-      email: "",
-      message: "",
-      status: "",
-    });
-  };
-  const handleInquirySubmitData = async (e) => {
-    e.preventDefault();
-    const { name, email, mobile, message } = formDataInquiry;
-    if (!name || !email || !mobile || !message) {
-      alert("Please fill out all fields.");
-      return;
-    }
-    try {
-      const res = await axios.post(
-        "https://acress-backend-8ca2b68c56f4.herokuapp.com/contact_Insert",
-        formDataInquiry
-      );
-      alert("Data submitted successfully");
-      resetData();
-    } catch (error) {
-      if (error.response) {
-        console.error("Server error:", error.response.data);
-      } else if (error.request) {
-        console.error("Request error:", error.request);
-      } else {
-        console.error("Error:", error.message);
-      }
-    }
-  };
-
-  const handleInquiryDataChange = (e) => {
-    const { name, value } = e.target;
-    setFormDataInquiry({ ...formDataInquiry, [name]: value });
-  };
-
-  const [isRed, setIsRed] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // Define your scroll threshold based on the device width
-      const scrollThreshold = window.innerWidth <= 768 ? 50 : 150; // Example threshold for mobile/tablet vs. desktop
-
-      setIsRed(window.scrollY > scrollThreshold);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    // Cleanup the event listener on component unmount
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
   }, []);
 
   return (
@@ -972,18 +869,18 @@ export default function Navbar() {
                       <Button
                         className="font-bold w-23 outline-offset-2 underline"
                         style={{
-                          color: "#DC2626",
+                          color: "#DC4C64",
                           backgroundColor: "transparent",
                           border: "none",
                         }}
                       >
-                       <i class="fa-solid fa-user ml-5 text-xl"></i>
+                       <i class="fa-solid fa-user  ml-5 text-xl"></i>
                       </Button>
                     ) : (
                       <Button
                         className="outline-offset-2 font-bold w-23"
                         style={{
-                          color: "red",
+                          color: "#DC4C64",
                           backgroundColor: "transparent",
                           border: "none",
                         }} // Ensure button is transparent
@@ -996,7 +893,6 @@ export default function Navbar() {
                   <MenuListContainer
                     isOpen={isDropdownOpen}
                     onClose={onClose}
-                    onLoginRegisterClick={handleLoginRegisterClick}
                   />
                 </Menu>
               </div>

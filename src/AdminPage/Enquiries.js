@@ -18,7 +18,7 @@ const Enquiries = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://api.100acress.com/userViewAll?limit=1000` 
+        `http://api.100acress.com:3500/userViewAll?limit=1000` 
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");

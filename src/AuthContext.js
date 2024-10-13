@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       if (email && password) {
         try {
           const loginResponse = await axios.post(
-            "https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/verify_Login",
+            "http://api.100acress.com:3500/postPerson/verify_Login",
             { email, password }
           );
           const newToken = loginResponse.data.token;
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
   
           if (loginResponse.status === 200) {
             const roleResponse = await axios.get(
-              `https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/Role/${email}`
+              `http://api.100acress.com:3500/postPerson/Role/${email}`
             );
             setAgentData(roleResponse.data.User);
             localStorage.setItem(
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
       );
       if (confirmDelete) {
         const res = await axios.delete(
-          `https://acress-backend-8ca2b68c56f4.herokuapp.com/postPerson/propertyDelete/${id}`
+          `http://api.100acress.com:3500/postPerson/propertyDelete/${id}`
         );
         if (res.status >= 200 && res.status < 300) {
           setAgentData(prevData => ({

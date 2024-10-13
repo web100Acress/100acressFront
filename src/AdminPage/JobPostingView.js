@@ -17,7 +17,7 @@ const JobPostingView = () => {
 
    const fetchJobPostingData = async () =>{
     try {
-        const res = await axios.get(`https://api.100acress.com/career/opening/View/${id}`);
+        const res = await axios.get(`http://api.100acress.com:3500/career/opening/View/${id}`);
         setData(res.data.data);
     } catch (error) {
         console.log(error || error.message)

@@ -21,7 +21,7 @@
 //     const fetchData = async () => {
 //       try {
 //         const res = await axios.get(
-//           `https://api.100acress.com/career/page/view`
+//           `http://api.100acress.com:3500/career/page/view`
 //         );
 //         setViewCareer(res.data.data[0]);
 //       } catch (error) {

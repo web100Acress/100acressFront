@@ -107,7 +107,7 @@ const Career = () => {
 
   const handleSubmitData = async (e) => {
     e.preventDefault();
-    const apiEndPoint = "https://api.100acress.com/career/page/Insert";
+    const apiEndPoint = "http://api.100acress.com:3500/career/page/Insert";
     const careerDataApi = new FormData();
     for (const key in career) {
       careerDataApi.append(key, career[key]);
@@ -135,7 +135,7 @@ const Career = () => {
   const handleDeleteUser = async (id) => {
     try {
       const res = await axios.delete(
-        `https://api.100acress.com/career/page/delete/${id}`
+        `http://api.100acress.com:3500/career/page/delete/${id}`
       );
       if (res.status >= 200 && res.status < 300) {
         window.location.reload();
