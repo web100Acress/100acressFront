@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import Cities from "../Components/HomePageComponents/Cities";
 import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
@@ -19,9 +19,7 @@ import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
-import DubaiDesign from "./DubaiDesign";
-import Glide from "@glidejs/glide";
-import NavBarNewDesign from "../aadharhomes/NavBarNewDesign";
+
 function Home() {
   const {
     trendingProject,
@@ -78,9 +76,6 @@ function Home() {
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
       <Nav />
-
-      {/* <NavBarNewDesign/> */}
-
       <Helmet>
         <meta
           name="description"
@@ -177,20 +172,19 @@ function Home() {
       <div className="w-full">
         <img
           src="../../Images/img-02.jpg"
-          alt="Banner Image"
-          className="hidden md:block w-full h-[50vh]"
+          alt="Banner"
+          className="hidden md:block w-full h-auto"
         />
         <img
           src="../../Images/001.jpg"
-          alt="Mobile Banner Image"
-          className="block md:hidden vh w-full h-auto"
+          alt="Mobile Banner"
+          className="block md:hidden w-full h-auto"
         />
 
         <div className="relative pt-0 sm:pt-0 md:pt-3  xl:pt-3 xl:mb-0 sm:mb-0 lg:mb-0 md:mb-6">
           <SearchBar />
         </div>
       </div>
-
 
       {/*<!-- End Carousel with indicators inside --> */}
 
@@ -380,6 +374,7 @@ function Home() {
       </div>
 
       {/* dlf prject */}
+      
       <div className="bg-[#F83CB0] py-3">
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
@@ -714,7 +709,7 @@ function Home() {
 
       <TopSeoPlots />
 
-      {/* <DubaiDesign/> */}
+
 
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 mb-0 pt-0">
         <div className="flex items-center">
@@ -1002,6 +997,7 @@ function Home() {
           </Link>
         </div>
       </div>
+      
       <Resale />
 
       <OurServices />
@@ -1224,8 +1220,4 @@ const Wrapper = styled.section`
     }
   }
 
-  .vh {
-    height: 15rem;
-    width : 45rem
-  }
 `;

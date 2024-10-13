@@ -55,9 +55,10 @@ const Snapshot = () => {
           data-aos-delay="200"
           className="px-12 text-xl text-red-600 xl:text-4xl lg:text-3xl pt-4 md:text-2xl"
         >
-          100acress.com Snapshot
+          100acres.com Key Insights
         </p>
       </div>
+      
       <div className="px-12">
         <section
           data-aos="fade-down"

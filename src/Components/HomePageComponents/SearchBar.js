@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Search from "../../aadharhomes/Search";
 import { Link } from "react-router-dom";
+
 function SearchBar() {
   const [activeLink, setActiveLink] = useState("");
   const [data, setData] = useState(null);
@@ -13,124 +14,121 @@ function SearchBar() {
 
   return (
     <Wrapper className="section">
-    <div
-      className="qsbWrapper pt-6 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto   lg:pb-14 md:pb-14  md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-10 sm:h-8 md:-mt-8 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-2" // Add negative margin on md (tablet) screens
-      style={{ maxWidth: "800px" }}
-    >
-      <div className="SJDMls xl:h-14 lg:h-14 md:h-8 sm:h-8 lg:p-3 sm:p-0 md:p-3">
-        {["Buy", "Rent", "New Launch", "Commercial", "Land/Plots", "SCO"].map(
-          (linkName) => (
-            <Link
-              key={linkName}
-              className={`options hidden sm:block font-semibold hover:underline hover:underline-offset-8 cursor-pointer whitespace-nowrap ${
-                activeLink === linkName
-                  ? "active underline underline-offset-8 text-red-500"
-                  : ""
-              } hover:text-red-500`}
-              onClick={() => handleLinkClick(linkName)}
-            >
-              {linkName}
-            </Link>
-          )
-        )}
+      <div
+        className="qsbWrapper pt-0 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto lg:pb-14 md:pb-14 md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-10 sm:h-8 md:-mt-8 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-2"
+        style={{ maxWidth: "760px" }}
+      >
+        <div className="SJDMls xl:h-14 lg:h-14 md:h-10 sm:h-8 lg:p-0 sm:p-0 md:p-0">
+          {["Buy", "Rent", "New Launch", "Commercial", "Land/Plots", "SCO"].map(
+            (linkName) => (
+              <Link
+                key={linkName}
+                className={`options text-white hidden sm:block font-semibold hover:underline hover:underline-offset-8 cursor-pointer whitespace-nowrap ${
+                  activeLink === linkName
+                    ? "active underline underline-offset-8 text-red-500"
+                    : ""
+                } hover:text-red-500`}
+                onClick={() => handleLinkClick(linkName)}
+              >
+                {linkName}
+              </Link>
+            )
+          )}
+        </div>
+
+        <div>
+          <Search data1={data} />
+        </div>
       </div>
-  
-      <div>
-        <Search data1={data} />
-      </div>
-    </div>
-  </Wrapper>
-  
+    </Wrapper>
   );
 }
 
 export default SearchBar;
+
 const Wrapper = styled.section`
   font-weight: 400;
-  line-height: 0px;
+  line-height: 1.5;
 
   div {
     box-sizing: border-box;
   }
- @media screen and (min-width: 1024px) {
-  .qsbWrapper {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+
+  /* Desktop and large screens */
+  @media screen and (min-width: 1024px) {
+    .qsbWrapper {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    }
   }
-}
-@meadia screen and(min-width:375px){
-   .hello{
-    font-weight: 400;
-    line-height: 1px;
-   }
-}
+
+  /* Tablet screens */
+  @media screen and (max-width: 1024px) {
+    .SJDMls {
+      width: 80%; /* Adjust width for tablet */
+    }
+  }
+
+  /* Medium screens */
+  @media screen and (max-width: 900px) {
+    .SJDMls {
+      width: 90%; /* Adjust width for medium screens */
+    }
+  }
+
+  /* Small screens and mobile */
+  @media screen and (max-width: 770px) {
+    .SJDMls {
+      width: 100%;
+      flex-wrap: wrap; /* Allow wrapping for better alignment */
+      justify-content: center; /* Center the options */
+      margin-bottom: 10px; /* Add margin at the bottom */
+    }
+
+    .options {
+      padding: 9px 15px; /* Reduce padding on smaller screens */
+      font-size: 14px; /* Smaller font size for better fit */
+    }
+  }
+
+  /* Extra small screens (mobile) */
+  @media screen and (max-width: 500px) {
+    .SJDMls {
+      display: flex; /* Show SJDMls on small screens */
+      flex-wrap: wrap; /* Allow wrapping */
+    }
+  }
 
   .SJDMls {
     display: flex;
     box-shadow: 0 25px 60px rgba(113, 106, 147, 0.2);
     width: fit-content;
-    border-radius: 10px 10px 0px 0px;
-    background: #fff;
+    border-radius: 20px 20px 0px 0px;
+    background: #EF4444;
     margin-left: 0px;
   }
 
   .options {
-    padding: 9px 30px 13px 30px;
+    padding: 9px 30px;
     font-size: 16px;
+    transition: color 0.3s ease;
   }
 
-  .SJDMls > div:hover {
-    cursor: pointer;
-  }
-
-  .SJDMls > div.active {
-    font-size: 20px;
+  .options:hover {
     color: red;
   }
 
-  @media screen and (max-width: 1200px) {
-    .SJDMls {
-      width: 100%; /* Increased to 85% for screens smaller than 1200px */
-    }
+  .options.active {
+    font-size: 18px;
+    color: red;
   }
 
-  @media screen and (max-width: 900px) {
-    .SJDMls {
-      width: 95%; /* Increased to 95% for screens smaller than 900px */
-      
-    }
-  }
-
-  @media screen and (max-width: 770px) {
-    .SJDMls {
-      width: 100%; /* Full width for screens smaller than 770px */
-    }
-
-     .qsb .keywordSugg .suggestor-box {
-      width: 223px;
-    }
-  }
-
-
-
-    .SJDMls {
-      width: 100%; /* Full width for mobile screens */
-    }
-
-    .suggestor-wrapper {
-      width: 90%;
-    }
-  }
-
-  @media screen and (max-width: 500px) {
-    .SJDMls {
-      display: none; /* Hide SJDMls on very small screens */
-    }
-
-  
+  .suggestor-wrapper {
+    width: 90%;
   }
 `;
+
 
 // import React, { useState } from "react";
 // import styled from "styled-components";

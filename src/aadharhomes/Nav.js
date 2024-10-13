@@ -691,14 +691,14 @@ export default function Nav() {
                   {token ? (
                     <Link
                       to={"/postproperty/"}
-                      className="text-red-600   font-bold  uppercase pt-1  text-sm"
+                      className="text-red-600 hover:text-red-600  font-bold  uppercase pt-1  text-sm"
                     >
                       <span onClick={checkUserAuth}>List Property </span>
                     </Link>
                   ) : (
                     <Link
                       to={"/signin/"}
-                      className="text-red-600 font-bold uppercase pt-1 text-sm"
+                      className="text-red-600 hover:text-red-600 font-bold uppercase pt-1 text-sm"
                     >
                       List Property
                     </Link>
@@ -907,12 +907,12 @@ export default function Nav() {
               >
                 {token ? (
                   <Link to="/postproperty/">
-                    <button className=" flex btn  btn-sm sm:p-1 sm:text-sm">
+                    <button className=" flex  sm:p-1 sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
-                        className="text-red-600 mr-2"
+                        className="text-red-600  mr-2"
                       >
-                        Post Property
+                        List Property
                       </strong>
                       <Link className="d-inline">
                         <button
@@ -931,12 +931,12 @@ export default function Nav() {
                   </Link>
                 ) : (
                   <Link to="/signin/">
-                    <button className=" flex btn   btn-sm sm:p-1 sm:text-sm">
+                    <button className=" flex pt-1  sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
                         className="text-red-600 mr-2"
                       >
-                        Post Property
+                        List Property
                       </strong>
                       <Link className="d-inline">
                         <button
@@ -970,25 +970,25 @@ export default function Nav() {
                   >
                     {token ? (
                       <Button
-                        className="font-bold w-24 outline-offset-2 underline"
+                        className="font-bold w-23 outline-offset-2 underline"
                         style={{
                           color: "#DC2626",
                           backgroundColor: "transparent",
                           border: "none",
                         }}
                       >
-                        Signin
+                       <i class="fa-solid fa-user ml-5 text-xl"></i>
                       </Button>
                     ) : (
                       <Button
-                        className="outline-offset-2 font-bold w-24"
+                        className="outline-offset-2 font-bold w-23"
                         style={{
                           color: "red",
                           backgroundColor: "transparent",
                           border: "none",
                         }} // Ensure button is transparent
                       >
-                        Signin
+                        <i class="fa-solid fa-user ml-5 text-xl"></i>
                       </Button>
                     )}
                   </MenuButton>
@@ -1032,14 +1032,14 @@ export default function Nav() {
                 {token ? (
                   <Link
                     to={"/postproperty/"}
-                    className="text-red-600 font-bold pt-1 uppercase text-sm mx-3 hover:bg-red-500 hover:opacity-80"
+                    className="text-red-600 font-bold pt-1 uppercase text-sm mx-3 hover:bg-red-600 hover:opacity-80"
                   >
                     <span onClick={checkUserAuth}>List Property</span>
                   </Link>
                 ) : (
                   <Link
                     to={"/signin/"}
-                    className="text-red-600 font-bold text-sm pt-1 mx-3 uppercase hover:bg-red-500 hover:opacity-80"
+                    className="text-red-600 font-bold text-sm pt-1 mx-3 uppercase hover:bg-red-600 hover:opacity-80"
                   >
                     List Property
                   </Link>

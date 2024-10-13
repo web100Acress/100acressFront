@@ -100,7 +100,6 @@ const Projects = () => {
             <div className="flex justify-end ml-20">
               <Link to={"/admin/project-insert"}>
                 <button
-                  // onClick={openModal}
                   className="bg-blue-700 p-2 sm:rounded-lg text-white ml-2"
                 >
                   Add New
@@ -155,6 +154,7 @@ const Projects = () => {
                       <td className="px-2 py-1">{item.projectAddress}</td>
 
                       <td className="px-2 py-1 flex space-x-1">
+
                         <Link to={`/Admin/ProjectsView/${pUrl}`}>
                           <button
                             type="button"
@@ -202,6 +202,7 @@ const Projects = () => {
                         >
                           Delete
                         </button>
+
                       </td>
                     </tr>
                   );

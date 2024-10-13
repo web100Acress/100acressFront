@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
@@ -30,15 +29,6 @@ const Jms = () => {
           JMS Plots in Gurugram
         </h1>
 
-        {/* <h2 className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          DLF Super Luxury Homes stand out due to their unmatched quality and
-          style. They are built with care and attention to detail, with spacious
-          plans, luxurious finishings, and modern facilities. In prime locations
-          with breathtaking views, unparalleled privacy, and access to
-          world-class amenities that redefine the definition of luxury living in
-          all aspects.
-        </h2> */}
-
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-3 sm:gap-4 lg:gap-4 w-full">
           {jms.map((item, index) => {
             const pUrl = item.project_url;
@@ -57,14 +47,14 @@ const Jms = () => {
                   </div>
                   <div className="p-4">
                     <div className="pb-2">
-                      <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
-                      </a>
+                      </span>
 
                       <br />
-                      <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
                         {item.city}, {item.state}
-                      </a>
+                      </span>
                     </div>
 
                     <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
@@ -103,6 +93,7 @@ const Jms = () => {
             );
           })}
         </div>
+        
       </section>
       <Footer />
     </div>

@@ -77,7 +77,7 @@ const FormHome = () => {
       <div  data-aos="zoom-in" data-aos-delay="200" className="w-full md:w-2/3 p-4 bg-red-600">
         <div className="text-center">
           <p className="font-bold text-xl lg:text-2xl md:text-2xl sm:text-xl xs:text-xl text-white mb-4 mt-2">
-            Connect to Property Expert Now
+          Consult a Property Expert Now
           </p>
         </div>
         <form className="space-y-4" onSubmit={handleInquirySubmitData}>

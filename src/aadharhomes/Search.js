@@ -26,6 +26,7 @@ const Search = ({ data1 }) => {
     },
   ];
 
+
   useEffect(() => {
     setFormData((prevState) => ({
       ...prevState,
@@ -72,25 +73,28 @@ const Search = ({ data1 }) => {
   }, []);
 
   return (
-    <>
+   
       <div
-        className="w-full  shadow-xl bg-white border-none h-auto px-2" // Use full width and set height to auto
-        style={{
-          marginTop: window.innerWidth < 640 ? "-65px" : "0",
-          marginBottom: window.innerWidth == 768 ? "90px" : "",
+        className={`w-full mb-3  shadow-xl bg-white border-[1px] border-red-600  h-12 px-2 ${
+          window.innerWidth < 640 ? "border-red-600" : ""
+        }`}
+        style={{ marginTop: window.innerWidth < 640 ? "-50px"  : window.innerWidth >= 640 && window.innerWidth <= 768   ? "-12px" : "0",
+          marginBottom: window.innerWidth === 768 ? "90px" : "0",
+          borderRadius: window.innerWidth < 640 ? "0" : "0px 0px 20px 20px", // Apply border-radius only for screens larger than mobile
         }}
       >
-        <div className="flex items-center h-auto ">
-          {" "}
-          {/* Set height to auto for flex items */}
-          <div className="w-full mt-2 ml-2 p-1 mb-3 lg:ml-8 md:ml-6 sm:ml-4">
-            {" "}
-            {/* Use full width on mobile */}
+        <div className="flex items-center h-auto">
+          <div
+            className={`w-full mt-2 ml-2 p-1 mb-3 ${
+              window.innerWidth < 640 ? "ml-2" : "lg:ml-8 md:ml-6 sm:ml-4"
+            }`}
+          >
             <input
-              className="outline-none w-full "
+              className="outline-none w-full"
               type="text"
               name="query"
-              placeholder={currentPlaceholder}
+              // placeholder={currentPlaceholder}
+              placeholder="Search Property"
               value={formData.query}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
@@ -104,32 +108,15 @@ const Search = ({ data1 }) => {
               state: formData,
             }}
             id="searchButton"
-            className="ml-2 my-1 mt-2" // Adjust margins for better spacing on mobile
+            className="ml-2 my-1 mt-0"
           >
-            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-red-500">
+            <div className="w-8 h-8 mb-2 flex items-center justify-center rounded-full bg-red-500">
               <i className="fas fa-search text-white"></i>
             </div>
           </Link>
         </div>
       </div>
-
-      {/* Horizontal scrolling */}
-
-      <div className="w-full hidden pt-6 mb-6  p-2 lg:flex justify-center  mx-auto ">
-        <div className="flex animate-scroll pt-2  flex-nowrap">
-          {primeLocations.map((location, index) => (
-            <div key={index} className="flex-shrink-0 px-1">
-              {" "}
-              <Link to={location.to} target="_top" rel="noopener noreferrer">
-                <span className="bg-white  rounded-full text-red-600 font-semibold text-[12px] px-2 py-1 hover:text-red-500 hover:underline-offset-8 cursor-pointer text-center whitespace-nowrap">
-                  {location.name}
-                </span>
-              </Link>
-            </div>
-          ))}
-        </div>
-      </div>
-    </>
+   
   );
 };
 export default Search;
