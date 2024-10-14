@@ -1,36 +1,29 @@
 import React, { useState, useEffect } from "react";
-import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import Navbar from "../aadharhomes/Navbar";
 
 const UserViewProperty = () => {
-
   const [userViewProperty, setUserViewProperty] = useState([]);
-   const userId =  localStorage.getItem("mySellerId");
+  const userId = localStorage.getItem("mySellerId");
   
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(
+        `https://api.100acress.com/postPerson/propertyView/${userId}`
+      );
+      setUserViewProperty(res.data.data.postProperty);
+    } catch (error) {
+      console.log(error.res || error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          `https://api.100acress.com/postPerson/propertyView/${userId}`
-        );
-        setUserViewProperty(res.data.data.postProperty);
-  
-      } catch (error) {
-        console.log(error.res || error);
-      }
-    };
-
     fetchData();
   }, []);
-  
 
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Navbar/>
       <section className="flex flex-col bg-white ">
         <div className="grid max-w-md grid-cols-1 p-4  sm:max-w-lg  md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 sm:gap-2 lg:gap-4">
           {userViewProperty.map((item, index) => {
@@ -44,7 +37,7 @@ const UserViewProperty = () => {
                     <div>
                       <img
                         src={item.frontImage.url}
-                        alt="image"
+                        alt="Project"
                         className="w-full h-48 object-fit"
                       />
                     </div>
@@ -52,13 +45,13 @@ const UserViewProperty = () => {
 
                   <div className="p-4">
                     <div className="pb-2">
-                      <a className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-lg font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
-                      </a>
+                      </span>
                       <br />
-                      <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
                         {item.city}
-                      </a>
+                      </span>
                     </div>
                     <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                       <li className="text-left">

@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import Nav from "../../aadharhomes/Nav";
+
 import Footer from "../Actual_Components/Footer";
 import { AuthContext } from "../../AuthContext";
 import { Link } from "react-router-dom";
-import Navbar from "../../aadharhomes/Navbar";
+
 const UserDashBoard = () => {
   const { agentData, handleDeleteUser } = useContext(AuthContext);
   let filteredRentProperties = [];
@@ -22,7 +22,6 @@ const UserDashBoard = () => {
 
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Navbar/>
       <div className="mx-10 my-10">
         <div className="max-w-full mx-auto my-10 flex flex-col md:flex-row items-start rounded-xl border p-4 text-center md:max-w-[83rem]">
           <div className="w-full md:w-1/2 md:mr-6">

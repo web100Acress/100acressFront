@@ -1,16 +1,13 @@
 import React, { useContext } from "react";
-import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import Navbar from "../aadharhomes/Navbar";
+
 const DlfSco = () => {
   const { dlfSco } = useContext(DataContext);
   return (
     <div>
-      <Navbar/>
-      
       <Helmet>
         <title>
           DLF Limited Sco Plots for Sale in Gurugram
@@ -57,14 +54,14 @@ const DlfSco = () => {
                   </div>
                   <div className="p-4">
                     <div className="pb-2">
-                      <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
-                      </a>
+                      </span>
 
                       <br />
-                      <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
                         {item.city}, {item.state}
-                      </a>
+                      </span>
                     </div>
 
                     <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">

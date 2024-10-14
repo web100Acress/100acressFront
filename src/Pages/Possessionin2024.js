@@ -2,16 +2,12 @@ import React, { useContext } from "react";
 import "react-multi-carousel/lib/styles.css";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
-import Nav from "../aadharhomes/Nav";
 import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
-import Navbar from "../aadharhomes/Navbar";
 const Possessionin2024 = () => {
   const { possessionin2024 } = useContext(DataContext);
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Navbar/>
-
       <Helmet>
         <meta
           name="description"

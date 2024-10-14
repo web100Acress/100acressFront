@@ -8,7 +8,6 @@ import styled from "styled-components";
 import OurServices from "../Components/HomePageComponents/ourServices";
 import Free from "../../src/Pages/Free";
 import { Helmet } from "react-helmet";
-import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { DataContext } from "../MyContext";
@@ -46,36 +45,8 @@ function Home() {
     reorderedTrendingProjects[7] = trendingProject[3];
   }
 
-  // useEffect(() => {
-  //   const slider = new Glide(".glide-02", {
-  //     type: "carousel",
-  //     focusAt: "center",
-  //     perView: 1,
-  //     autoplay: 4000,
-  //     animationDuration: 700,
-  //     classNames: {
-  //       nav: {
-  //         active: "[&>*]:bg-wuiSlate-700",
-  //       },
-  //     },
-  //     breakpoints: {
-  //       1024: {
-  //         perView: 1,
-  //       },
-  //       640: {
-  //         perView: 1,
-  //       },
-  //     },
-  //   }).mount();
-
-  //   return () => {
-  //     slider.destroy();
-  //   };
-  // }, []);
-
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
-      <Nav />
       <Helmet>
         <meta
           name="description"

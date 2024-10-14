@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Nav from "../../aadharhomes/Nav";
 import Footer from "./Footer";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import Navbar from "../../aadharhomes/Navbar";
 
 const RentPropViewCard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -215,8 +213,6 @@ const RentPropViewCard = () => {
     <>
       {" "}
       <Wrapper className="Section">
-        <Navbar/>
-
         <nav className="navbar d-lg-none d-xl-none d-xxl-none">
           <div className="container-fluid">
             {/* on tablet screen */}

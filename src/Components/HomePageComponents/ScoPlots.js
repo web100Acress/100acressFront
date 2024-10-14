@@ -1,16 +1,13 @@
 import React, { useContext } from "react";
-import Nav from "../../aadharhomes/Nav";
 import Footer from "../Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { DataContext } from "../../MyContext";
 import { Helmet } from "react-helmet";
-import Navbar from "../../aadharhomes/Navbar";
+
 const ScoPlots = () => {
   const { scoPlots } = useContext(DataContext);
   return (
     <div>
-     <Navbar/>
-
       <Helmet>
         <title>SCO Plots in Gurgaon, Top 10 SCO Plots in Gurgaon</title>
         <meta

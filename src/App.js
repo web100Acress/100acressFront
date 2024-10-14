@@ -116,11 +116,7 @@ import SignatureGlobal from "./Pages/SignatureGlobal";
 import DlfSco from "./Pages/DlfSco";
 
 function App() {
-  const registeredData = {
-    name: "John Doe",
-    email: "johndoe@example.com",
-    mobile: "1234567890",
-  };
+
   const token = localStorage.getItem("myToken");
 
   return (
@@ -130,6 +126,7 @@ function App() {
           {/* <Router> */}
           <Routes>
             <Route element={<PublicRoute />}>
+           
               <Route index element={<Home />} />
               <Route
                 path="/postproperty"

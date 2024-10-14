@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
-import Navbar from "../aadharhomes/Navbar";
+
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
   const [data, setData] = useState([]);
@@ -45,7 +44,7 @@ const BlogView = () => {
 
     setButtonText("Submitting...");
     try {
-      const res = await axios.post(
+      await axios.post(
         "https://api.100acress.com/contact_Insert",
         blogQuery
       );
@@ -88,7 +87,6 @@ const BlogView = () => {
 
   return (
     <>
-      <Navbar/>
       <Helmet>
         <title>{`${blog_Title} ${blog_Category}`}</title>
         <link rel="canonical" href="https://www.100acress.com/" />

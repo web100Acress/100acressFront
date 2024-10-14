@@ -26,7 +26,6 @@ import React from "react";
 import { Radio, RadioGroup } from "@chakra-ui/react";
 import Footer from "../Components/Actual_Components/Footer";
 import Free from "../../src/Pages/Free";
-import Navbar from "./Navbar";
 
 const avatars = [
   {
@@ -168,7 +167,6 @@ export default function SignUp() {
   const { name, mobile, password, cpassword } = userSignUp;
   return (
     <>
-      <Navbar />
       <Box position={"relative"}>
         {name !== "" &&
           mobile !== "" &&

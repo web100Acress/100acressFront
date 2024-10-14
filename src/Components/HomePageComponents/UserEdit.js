@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Nav from "../../aadharhomes/Nav";
 import Footer from "../Actual_Components/Footer";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import Navbar from "../../aadharhomes/Navbar";
+
 const UserEdit = () => {
   const [values, setValues] = useState({
     propertyType: "",
@@ -86,7 +85,6 @@ const UserEdit = () => {
 
   return (
     <>
-    <Navbar/>
       <div>
         <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
           <div className="card-body">

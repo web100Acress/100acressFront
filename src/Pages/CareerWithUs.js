@@ -424,12 +424,12 @@
 // export default CareerWithUs;
 
 
-import React, { useContext, useState } from "react";
-import Nav from "../aadharhomes/Nav";
+import React, { useContext} from "react";
+
 import Footer from "../Components/Actual_Components/Footer";
-import axios from "axios";
+
 import { DataContext } from "../MyContext";
-import Navbar from "../aadharhomes/Navbar";
+
 const CareerWithUs = () => {
   
   const {jobPostingData} = useContext(DataContext);
@@ -437,7 +437,6 @@ const CareerWithUs = () => {
  
   return (
     <div style={{overflowX:"hidden"}}>
-    <Navbar/>
       <div className="overflow-x-hidden">
         <section className="relative">
         <div class="w-full">

@@ -142,11 +142,11 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../Components/Actual_Components/Footer";
-import Nav from "../aadharhomes/Nav";
+
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
 import Free from "./Free";
-import Navbar from "../aadharhomes/Navbar";
+
 const Blogging = () => {
   const { blogData } = useContext(DataContext);
 
@@ -157,7 +157,6 @@ const Blogging = () => {
 
   return (
     <>
-      <Navbar />
       <Helmet>
         <meta
           name="description"

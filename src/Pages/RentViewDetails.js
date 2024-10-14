@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { styled } from "styled-components";
-import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import "slick-carousel/slick/slick.css";
@@ -12,7 +11,7 @@ import { useParams } from "react-router-dom";
 import { DataContext } from "../MyContext";
 import { GrPrevious, GrNext } from "react-icons/gr";
 import { ScaleLoader } from "react-spinners";
-import Navbar from "../aadharhomes/Navbar";
+
 const RentViewDetails = () => {
   const sliderRef = useRef(null);
   const slideRefs = useRef(null);
@@ -93,7 +92,7 @@ const RentViewDetails = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://acress-backend-8ca2b68c56f4.herokuapp.com/property/view/${id}`
+          `https://api.100acress.com/property/view/${id}`
         );
         if (res.data.data) {
           setRentViewDetails(res.data.data);
@@ -129,7 +128,7 @@ const RentViewDetails = () => {
     const { custEmail, custNumber } = agentFrom1;
     if (custEmail && custNumber) {
       axios
-        .post("https://acress-backend-8ca2b68c56f4.herokuapp.com/postEnquiry", {
+        .post("https://api.100acress.com/postEnquiry", {
           ...agentFrom1,
           propertyAddress: rentViewDetails.city,
           agentEmail: rentViewDetails.email,
@@ -196,7 +195,7 @@ const RentViewDetails = () => {
     if (custNumber && custName) {
       try {
         const response = await axios.post(
-          "https://acress-backend-8ca2b68c56f4.herokuapp.com/postEnquiry",
+          "https://api.100acress.com/postEnquiry",
           {
             ...userForm,
             propertyAddress: rentViewDetails.address,
@@ -238,7 +237,7 @@ const RentViewDetails = () => {
     if (custNumber && custName) {
       try {
         const response = await axios.post(
-          "https://acress-backend-8ca2b68c56f4.herokuapp.com/postEnquiry",
+          "https://api.100acress.com/postEnquiry",
           {
             ...userForm1,
             propertyAddress: rentViewDetails.address,
@@ -275,9 +274,9 @@ const RentViewDetails = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        "https://acress-backend-8ca2b68c56f4.herokuapp.com/property/buy/ViewAll"
+        "https://api.100acress.com/property/buy/ViewAll"
       );
-      setBuyData(res.data.collectdata, "abcdefghijklmn");
+      setBuyData(res.data.collectdata);
     } catch (error) {
       console.error("Error fetching Data", error);
     }
@@ -287,11 +286,10 @@ const RentViewDetails = () => {
     fetchData();
   }, []);
 
-  const { trendingProject, upcoming } = useContext(DataContext);
-  console.log(trendingProject);
+  const { trendingProject } = useContext(DataContext);
+ 
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Navbar/>
       <Wrapper>
         <div className="blog-single gray-bg">
           <div className="mx-10">

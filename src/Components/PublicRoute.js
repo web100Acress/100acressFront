@@ -1,7 +1,14 @@
 import React from "react";
-import { Outlet} from "react-router-dom";
-const PublicRoute = () => {
-    return <Outlet />;
-}
+import { Outlet } from "react-router-dom";
+import Navbar from "../aadharhomes/Navbar"; // Adjust the path to your Navbar component
 
-export default PublicRoute
+const PublicRoute = () => {
+    return (
+      <>
+        <Navbar />
+        <Outlet />
+      </>
+    );
+};
+
+export default PublicRoute;

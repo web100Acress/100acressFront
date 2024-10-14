@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import Nav from "./Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import { RadioGroup, Radio, Stack } from "@chakra-ui/react";
 import { State, City } from "country-state-city";
 import { Helmet } from "react-helmet";
-import Navbar from "./Navbar";
+
 const stateCodeMapping = {
   "Andhra Pradesh": "AP",
   "Arunachal Pradesh": "AR",
@@ -278,7 +277,6 @@ const NewSellProperty = () => {
 
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Navbar/>
       <Helmet>
         <meta
           name="description"

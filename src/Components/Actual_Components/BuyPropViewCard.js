@@ -1,13 +1,8 @@
-
-
-
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Nav from "../../aadharhomes/Nav";
 import Footer from "./Footer";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import Navbar from "../../aadharhomes/Navbar";
 const BuyPropViewCard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [toOpen, setToOpen] = useState(false);
@@ -141,7 +136,7 @@ const BuyPropViewCard = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        "https://acress-backend-8ca2b68c56f4.herokuapp.com/property/buy/ViewAll"
+        "https://api.100acress.com/property/buy/ViewAll"
       );
       setBuyData(res.data.collectdata);
     } catch (error) {
@@ -215,7 +210,6 @@ const BuyPropViewCard = () => {
   return (
     <>
       <Wrapper className="Section">
-        <Navbar/>
         <nav className="navbar d-lg-none d-xl-none d-xxl-none">
           <div className="container-fluid">
             {/* on tablet screen */}

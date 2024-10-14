@@ -1,16 +1,13 @@
 import React, { useContext } from "react";
-import Nav from "../../aadharhomes/Nav";
 import Footer from "../Actual_Components/Footer";
 import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import UpcomingSearch from "../../Pages/UpcomingSearch";
-import Navbar from "../../aadharhomes/Navbar";
 const UpComingProjects = () => {
   const { allupcomingProject } = useContext(DataContext);
   return (
     <div>
-      <Navbar/>
       <UpcomingSearch />
       <Helmet>
         <meta
@@ -56,16 +53,16 @@ const UpComingProjects = () => {
                   </div>
                   <div className="p-4">
                     <div className="pb-2">
-                      <a className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
-                      </a>
+                      </span>
                       <span style={{ float: "right" }} className="text-sm">
                         {item.builderName}
                       </span>
                       <br />
-                      <a className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
                         {item.projectAddress}
-                      </a>
+                      </span>
                     </div>
                     <ul className="m-0 flex list-none items-center justify-between px-0 pt-6 pb-0">
                       <li className="text-left">

@@ -1,12 +1,11 @@
 import React from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import Nav from "../aadharhomes/Nav";
 import { Helmet } from "react-helmet";
-import Navbar from "../aadharhomes/Navbar";
+
 const NewsandArtical = () => {
   return (
     <>
-      <Navbar/>
+   
       
       <Helmet>
         <meta
@@ -34,25 +33,25 @@ const NewsandArtical = () => {
           >
             <div className="absolute top-0 mt-20 right-0 bottom-0 left-0 bg-gradient-to-b from-transparent to-gray-900"></div>
             <div className="absolute top-0 right-0 left-0 mx-5 mt-2 flex justify-between items-center">
-              <a
-                href="#"
+              <span
+                
                 className="text-xs bg-red-600 text-white px-5 py-2 uppercase hover:bg-white hover:text-red-600 transition ease-in-out duration-500"
               >
                 Real Estate
-              </a>
+              </span>
               <div className="text-white font-regular flex flex-col justify-start">
                 <span className="text-3xl leading-0 font-semibold">25</span>
                 <span className="-mt-3">May</span>
               </div>
             </div>
             <main className="p-5 z-10">
-              <a
+              <span
                 href="https://realty.economictimes.indiatimes.com/news/residential/gurugram-project-held-up-mahira-homes-buyers-seek-temporary-accommodation-or-rent/107612991?utm_source=top_news&utm_medium=tagListing"
                 className="text-md tracking-tight font-medium leading-7 font-regular text-white hover:underline"
               >
                 Gurugram: Project held up, Mahira Homes' buyers seek temporary
                 accommodation or ..
-              </a>
+              </span>
             </main>
           </div>
           <div
@@ -65,25 +64,25 @@ const NewsandArtical = () => {
           >
             <div className="absolute top-0 mt-20 right-0 bottom-0 left-0 bg-gradient-to-b from-transparent to-gray-900"></div>
             <div className="absolute top-0 right-0 left-0 mx-5 mt-2 flex justify-between items-center">
-              <a
-                href="#"
+              <span
+                
                 className="text-xs bg-red-600 text-white px-5 py-2 uppercase hover:bg-white hover:text-red-600 transition ease-in-out duration-500"
               >
                 Real Estate
-              </a>
+              </span>
               <div className="text-white font-regular flex flex-col justify-start">
                 <span className="text-3xl leading-0 font-semibold">10</span>
                 <span className="-mt-3">Mar</span>
               </div>
             </div>
             <main className="p-5 z-10">
-              <a
+              <span
                 href="https://realty.economictimes.indiatimes.com/news/infrastructure/gurugram-civic-body-to-survey-294-unauthorised-colonies-before-regularisation/107572885?utm_source=top_news&utm_medium=tagListing"
                 className="text-md tracking-tight font-medium leading-7 font-regular text-white hover:underline"
               >
                 Gurugram civic body to survey 294 unauthorised colonies before
                 regularisation
-              </a>
+              </span>
             </main>
           </div>
           <div
@@ -96,24 +95,24 @@ const NewsandArtical = () => {
           >
             <div className="absolute top-0 mt-20 right-0 bottom-0 left-0 bg-gradient-to-b from-transparent to-gray-900"></div>
             <div className="absolute top-0 right-0 left-0 mx-5 mt-2 flex justify-between items-center">
-              <a
-                href="#"
+              <span
+                
                 className="text-xs bg-red-600 text-white px-5 py-2 uppercase hover:bg-white hover:text-red-600 transition ease-in-out duration-500"
               >
                 Real Estate
-              </a>
+              </span>
               <div className="text-white font-regular flex flex-col justify-start">
                 <span className="text-3xl leading-0 font-semibold">20</span>
                 <span className="-mt-3">Jan</span>
               </div>
             </div>
             <main className="p-5 z-10">
-              <a
-                href="#"
+              <span
+               
                 className="text-md tracking-tight font-medium leading-7 font-regular text-white hover:underline"
               >
                 Middle East Participants Gather In Warsaw
-              </a>
+              </span>
             </main>
           </div>
           <div
@@ -126,25 +125,25 @@ const NewsandArtical = () => {
           >
             <div className="absolute top-0 mt-20 right-0 bottom-0 left-0 bg-gradient-to-b from-transparent to-gray-900"></div>
             <div className="absolute top-0 right-0 left-0 mx-5 mt-2 flex justify-between items-center">
-              <a
-                href="#"
+              <span
+               
                 className="text-xs bg-red-600 text-white px-5 py-2 uppercase hover:bg-white hover:text-red-600 transition ease-in-out duration-500"
               >
                 Real Estate
-              </a>
+              </span>
               <div className="text-white font-regular flex flex-col justify-start">
                 <span className="text-3xl leading-0 font-semibold">25</span>
                 <span className="-mt-3">May</span>
               </div>
             </div>
             <main className="p-5 z-10">
-              <a
+              <span
                 href="https://realty.economictimes.indiatimes.com/news/infrastructure/dtcp-ramps-up-checks-demolishes-12-houses-in-colony-off-golf-course-road/107131009?utm_source=top_news&utm_medium=tagListing"
                 className="text-md tracking-tight font-medium leading-7 font-regular text-white hover:underline"
               >
                 DTCP ramps up checks, demolishes 12 houses in colony off Golf
                 Course Road
-              </a>
+              </span>
             </main>
           </div>
         </div>

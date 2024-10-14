@@ -1,17 +1,14 @@
 import React, { useContext } from "react";
-import Nav from "../../aadharhomes/Nav";
+
 import Footer from "../Actual_Components/Footer";
 import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import Navbar from "../../aadharhomes/Navbar";
 const VillasProjects = () => {
   const { villasProject } = useContext(DataContext);
 
   return (
     <div>
-    <Navbar/>
-
       <Helmet>
         <title>Top Villas for Sale in India</title>
         <meta

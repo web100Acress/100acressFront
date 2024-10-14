@@ -108,22 +108,18 @@
 // export default UnderConstruction
 
 import React, { useContext } from "react";
-import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import UnderConstructionSearching from "./UnderConstructionSearching";
-import Navbar from "../aadharhomes/Navbar";
+
 
 
 const UnderConstruction = () => {
   const { underConstruction } = useContext(DataContext);
   return (
     <div>
-    <Navbar/>
-      
- 
      <UnderConstructionSearching/>
       <Helmet>
         <title>

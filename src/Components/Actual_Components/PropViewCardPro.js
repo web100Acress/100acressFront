@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
-import { AiFillStar } from "react-icons/ai";
-import { CiBookmark } from "react-icons/ci";
-import { BsFillCameraFill } from "react-icons/bs";
 import axios from "axios";
 
 function PropViewCardPro() {
@@ -12,7 +9,7 @@ function PropViewCardPro() {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://acress-backend-8ca2b68c56f4.herokuapp.com/property/viewAll"
+          "https://api.100acress.com/property/viewAll"
         );
         setRentData(res.data.data);
       } catch (error) {

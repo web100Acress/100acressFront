@@ -2,16 +2,13 @@ import React, { useContext } from "react";
 import "react-multi-carousel/lib/styles.css";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
-import Nav from "../aadharhomes/Nav";
 import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
 import ReadyToMoveSearch from "./ReadyToMoveSearch";
-import Navbar from "../aadharhomes/Navbar";
 const ReadyToMoveProject = () => {
   const { readyToMoveData } = useContext(DataContext);
   return (
     <div style={{ overflowX: "hidden" }}>
-      <Navbar/>
       <ReadyToMoveSearch />
       <Helmet>
         <meta

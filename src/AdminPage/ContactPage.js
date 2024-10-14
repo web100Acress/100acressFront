@@ -11,8 +11,6 @@ import { FaLinkedin } from "react-icons/fa";
 const ContactPage = () => {
   return (
     <>
-
-
       <div className='w-full bg-cover relative' style={{
         backgroundImage:
           "url('https://www.dp.ae/videos/img/a9c3fbd0-0883-43b4-a627-1fa0252286fdoverview-img.jpg?metadata=true&quality=65')",

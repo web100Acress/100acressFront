@@ -1,12 +1,9 @@
 import React from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import Nav from "../aadharhomes/Nav";
 import { Helmet } from "react-helmet";
-import Navbar from "../aadharhomes/Navbar";
 const Privacy = () => {
   return (
     <>
-      <Navbar/>
       <Helmet>
         <meta
           name="description"
@@ -61,7 +58,7 @@ const Privacy = () => {
         <div className="flex items-center pt-2 px-3">
           <img
             src="../../Images/housefooter.webp"
-            alt="image"
+            alt="house footer"
             className="h-10 w-10  "
           />
           <h3 className="pt-1 text-red-600 md:text-xl  lg:text-2xl xl:text-3xl">
@@ -87,7 +84,7 @@ const Privacy = () => {
         <div className="flex items-center pt-6 px-3">
           <img
             src="../../Images/houseaward.webp"
-            alt="img"
+            alt="award"
             className="h-10 w-10 "
           />
           <h3 className="pt-1 text-red-600 md:text-xl  lg:text-2xl xl:text-3xl">

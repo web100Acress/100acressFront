@@ -1,17 +1,14 @@
 import React, { useContext } from "react";
-import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import NewLaunchSearch from '../Pages/NewLaunchSearch.js'
-import Navbar from "../aadharhomes/Navbar.js";
 
 const NewLaunch = () => {
   const { newLaunch } = useContext(DataContext);
   return (
     <div>
-    <Navbar/>
       <NewLaunchSearch />
       <Helmet>
         <title>

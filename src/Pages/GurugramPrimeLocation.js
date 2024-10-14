@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
-import Nav from "../aadharhomes/Nav";
 import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link, useParams } from "react-router-dom";
-import Navbar from "../aadharhomes/Navbar";
+
 const GurugramPrimeLocation = () => {
   const { allProjectData } = useContext(DataContext);
   const { location } = useParams();
@@ -33,7 +32,6 @@ const GurugramPrimeLocation = () => {
 
   return (
     <div>
-      <Navbar/>
       <section className="flex flex-col items-center pt-2">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Projects in {result}
