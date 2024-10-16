@@ -363,7 +363,7 @@ function Home() {
           </div>
         </div>
         <section className="flex flex-col items-center bg-[#F83CB0]">
-          <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4">
+          <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-2 sm:gap-4 lg:gap-4 ">
             {dlfProject.map((item, index) => {
               const pUrl = item.project_url;
               return (
@@ -375,8 +375,9 @@ function Home() {
                       alt="property In Gurugram"
                       className="w-[100%] h-[100%] object-cover"
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%]">
-                      <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
+                    <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%] rounded-md">
+                      <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2 h-full">
+                      <div className="pt-4 items-center flex flex-col">
                         <span className="text-[13px] font-semibold duration-500 ease-in-out">
                           {item.projectName}
                         </span>
@@ -386,7 +387,7 @@ function Home() {
                         <span className="text-[12px] text-gray-700">
                           {item.projectAddress}
                         </span>
-                        <p className="m-0 text-sm font-medium">{item.type}</p>
+                        {/* <p className="m-0 text-sm font-medium">{item.type}</p> */}
                         <span className="text-sm font-extrabold text-red-600">
                           <span className="text-xl">₹</span>
                           {item.minPrice < 1 ? (
@@ -397,12 +398,13 @@ function Home() {
                           {" - "}
                           {item.maxPrice} Cr
                         </span>
-                        <button
+                        {/* <button
                           type="button"
                           className="text-red-600 rounded-lg text-sm px-2 text-center mt-2"
                         >
                           <i className="fa-solid fa-arrow-right text-xl"></i>
-                        </button>
+                        </button> */}
+                      </div>
                       </div>
                     </div>
                   </article>
@@ -541,8 +543,9 @@ function Home() {
                         alt="property In Gurugram"
                         className="w-[100%] h-[100%] object-cover"
                       />
-                      <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%]">
-                        <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
+                      <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%] rounded-md hover:rounded-lg" >
+                        <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2 h-full text-blue ">
+                          <div className="pt-8 items-center flex flex-col ">  
                           <span className="text-[13px] font-semibold duration-500 ease-in-out">
                             {item.projectName}
                           </span>
@@ -552,7 +555,7 @@ function Home() {
                           <span className="text-[12px] text-gray-700">
                             {item.projectAddress}
                           </span>
-                          <p className="m-0 text-sm font-medium">{item.type}</p>
+                          {/* <p className="m-0 text-sm font-medium">{item.type}</p>
                           <span className="text-sm font-extrabold text-red-600">
                             <span className="text-xl">₹</span>
                             {item.minPrice < 1 ? (
@@ -568,7 +571,8 @@ function Home() {
                             className="text-red-600 rounded-lg text-sm px-2 text-center mt-2"
                           >
                             <i className="fa-solid fa-arrow-right text-xl"></i>
-                          </button>
+                          </button> */}
+                          </div>
                         </div>
                       </div>
                     </article>
@@ -794,7 +798,7 @@ function Home() {
             className="flex flex-col pt-2 
            items-center"
           >
-            <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+            <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full ">
               {city.map((item, index) => {
                 const pUrl = item.project_url;
                 return (
@@ -806,7 +810,7 @@ function Home() {
                         alt="property In Gurugram"
                         className="w-[100%] h-[100%] object-cover"
                       />
-                      <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%]">
+                      <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%] rounded-md">
                         <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
                           <span className="text-[13px] font-semibold duration-500 ease-in-out">
                             {item.projectName}
