@@ -346,7 +346,7 @@ function Home() {
 
       {/* dlf prject */}
       
-      <div className="bg-[#F83CB0] py-3">
+      {/* <div className="bg-[#F83CB0] py-3">
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
             <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl text-white text-center sm:text-left">
@@ -413,7 +413,7 @@ function Home() {
             })}
           </div>
         </section>
-      </div>
+      </div> */}
 
       {/* Goa */}
 
