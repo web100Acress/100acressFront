@@ -143,7 +143,7 @@ const RentPropViewCard = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get("http://api.100acress.com:3500/property/viewAll");
+      const res = await axios.get("http://api.100acress.com/property/viewAll");
       setBuyData(res.data.collectdata);
     } catch (error) {
       console.error("Error fetching data:", error);

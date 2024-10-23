@@ -39,7 +39,7 @@ const ProjectView = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `http://api.100acress.com:3500/projectView/${pUrl}`
+          `http://api.100acress.com/projectView/${pUrl}`
         );
         setViewDetails(res.data.dataview[0]);
       } catch (error) {
