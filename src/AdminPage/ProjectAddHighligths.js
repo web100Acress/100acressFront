@@ -50,7 +50,7 @@ const ProjectAddHighligths = () => {
   const ViewHighLights = async () => {
     try {
       const fetchData = await axios.get(
-        `http://api.100acress.com:3500/highlight/view/${id}`
+        `http://api.100acress.com/highlight/view/${id}`
       );
       setViewAll(fetchData.data.data);
     } catch (error) {
@@ -66,7 +66,7 @@ const ProjectAddHighligths = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        `http://api.100acress.com:3500/highlight/${id}`,
+        `http://api.100acress.com/highlight/${id}`,
         highlights
       );
       alert("User data inserted successfully");
@@ -90,7 +90,7 @@ const ProjectAddHighligths = () => {
 
     try {
       const response = await axios.delete(
-        `http://api.100acress.com:3500/highlight/delete/${id}`
+        `http://api.100acress.com/highlight/delete/${id}`
       );
       if (response.status >= 200 && response.status < 300) {
         window.location.reload();

@@ -17,7 +17,7 @@ const CareerView = () => {
   const fetchViewData = async () => {
     try {
       const res = await axios.get(
-        `http://api.100acress.com:3500/career/page/edit/${id}`
+        `http://api.100acress.com/career/page/edit/${id}`
       );
       setViewData(res.data.data);
     } catch (error) {
