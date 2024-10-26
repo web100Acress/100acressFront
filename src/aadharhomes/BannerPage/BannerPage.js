@@ -107,11 +107,10 @@ const BannerPage = () => {
       );
       setProjectViewDetails(res.data.dataview[0]);
       setBuilderName(res.data.dataview[0].builderName);
-
       // Construct the WhatsApp link with the dynamic data
       const message = encodeURIComponent(
-        `Hello, I am interested in ${projectViewDetails.projectName} ${projectViewDetails.city} ${projectViewDetails.state}.`
-      );
+        `Hello, I am interested in ${res.data.dataview[0].projectName} ${res.data.dataview[0].city} ${res.data.dataview[0].state}.`
+      );      
       const whatsappLink = `https://wa.me/918500900100?text=${message}`;
       // Update the href attribute of the anchor tag
       document.querySelector(".dd-m-whatsapp").href = whatsappLink;
@@ -553,7 +552,7 @@ const BannerPage = () => {
 
             <div className="flex flex-col">
               <span className="text-center font-normal ">About Project</span>
-              {projectViewDetails.type == "Residential Flats" ? (
+              {projectViewDetails.type === "Residential Flats" ? (
                 <>
                   <span className="text-center font-semibold text-xl uppercase">
                     {projectViewDetails.towerNumber} Tower -{" "}
