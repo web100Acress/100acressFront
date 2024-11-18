@@ -443,7 +443,7 @@ const BannerPage = () => {
           </span>
         </div>
 
-        <div className="w-full  mt-10  lg:mt-16 md:mt-10 sm:mt-24  bg-cover bg-no-repeat text-center">
+        <div className="w-full mt-0 lg:mt-16 md:mt-10 sm:mt-24  bg-cover bg-no-repeat text-center">
           <div className="w-full overflow-hidden object-fit">
             <div className="flex justify-center">
               {frontImage?.url && (
