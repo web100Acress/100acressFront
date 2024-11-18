@@ -93,7 +93,7 @@ const Buy = () => {
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const filteredRows = viewAll.filter((item) => {
+  const filteredRows = viewAll?.filter((item) => {
     if (item && item.name !== undefined &&
       item.email !== undefined &&
       item.mobile !== undefined) {
@@ -108,7 +108,7 @@ const Buy = () => {
   }
 
   )
-  const currentRows = filteredRows.slice(indexOfFirstRow, indexOfLastRow)
+  const currentRows = filteredRows?.slice(indexOfFirstRow, indexOfLastRow)
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -215,7 +215,7 @@ const Buy = () => {
                 </tr>
               </thead>
               <tbody>
-                {viewAll.map((item, index) => {
+                {viewAll?.map((item, index) => {
                   const serialNumber = indexOfFirstRow + index + 1;
                   const id = item._id;
                   return (
@@ -262,7 +262,7 @@ const Buy = () => {
             </table>
 
             <div className="flex justify-center mt-2 mb-2">
-              {Array.from({ length: Math.ceil(viewAll.length / rowsPerPage) }, (_, index) => (
+              {Array.from({ length: Math.ceil(viewAll?.length / rowsPerPage) }, (_, index) => (
                 <button
                   key={index}
                   onClick={() => paginate(index + 1)}
