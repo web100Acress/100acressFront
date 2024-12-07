@@ -114,6 +114,7 @@ import NewLaunch from "./Pages/NewLaunch";
 import Ayodhya from "./Pages/Ayodhya";
 import SignatureGlobal from "./Pages/SignatureGlobal";
 import DlfSco from "./Pages/DlfSco";
+import NewBanner from "./aadharhomes/BannerPage/NewBanner";
 
 function App() {
 
@@ -238,7 +239,7 @@ function App() {
               />
               <Route path="/forgetpassword" element={<ResetEmailPassword />} />
               <Route path="/knowabouts" element={<PropertyKnow />} />
-              <Route path="/:pUrl/" element={<BannerPage />} />
+              <Route path="/:pUrl/" element={<NewBanner />} />
               <Route
                 path="/userviewproperty/:id"
                 element={<UserViewProperty />}

@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
 
 ::-webkit-scrollbar {
     width: 10px;
@@ -25,6 +26,12 @@
     .contactImage {
       height: 250px; /* Adjust height for extra small screens */
     }
+  }
+
+  .abril-fatface-regular {
+    font-family: "Abril Fatface", serif;
+    font-weight: 400;
+    font-style: normal;
   }
   
   /* For small screens (sm) */
