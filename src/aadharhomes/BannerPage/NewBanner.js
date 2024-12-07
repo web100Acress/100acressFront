@@ -417,6 +417,33 @@ const NewBanner = () => {
 
   return (
     <>
+    {false && <div
+                  style={{ maxHeight: '25rem', maxWidth: '30rem', justifyContent: 'center', alignItems: 'center' }}
+                  className="absolute bottom-64 right-20 bg-[#000000] bg-opacity-70 text-white py-2 z-[100] text-left p-2 pl-4 rounded-lg mr-10 p-4"
+                >
+                  <h1 className="text-5xl font-bold mt-10">{projectViewDetails.projectName}</h1>
+                  <h5>{projectViewDetails?.builderName}</h5>
+                  <p className="text-xs">
+                    <LocationSmallIcon />
+                    {projectViewDetails?.projectAddress}
+                  </p>
+                  <h2 className="font-abril text-xl" >
+                    ₹{' '}
+                    {projectViewDetails.minPrice < 1 ? (
+                      <span>{projectViewDetails.minPrice * 100} L</span>
+                    ) : (
+                      <span>{projectViewDetails.minPrice} Cr</span>
+                    )}
+                    {' '} - {projectViewDetails.maxPrice} Cr
+                  </h2>
+                  <div className="flex items-center justify-between p-1 mt-10">
+                    <div className="flex items-center">
+                      <FavouriteIcon className="pr-4" />
+                      <SHAREIcon className="pr-4" />
+                    </div>
+                    <Button className="ml-auto text-white">Book Free Site Visit</Button>
+                  </div>
+                </div>}
       <div>
         <Wrapper className="section" style={{ overflow: "hidden", overflowX: "hidden" }}>
           <Helmet>
@@ -752,33 +779,6 @@ const NewBanner = () => {
                     />
                   )}
                 </div>
-                {false && <div
-                  style={{ maxHeight: '25rem', maxWidth: '30rem', justifyContent: 'center', alignItems: 'center' }}
-                  className="absolute bottom-64 right-20 bg-[#000000] bg-opacity-70 text-white py-2 z-[100] text-left p-2 pl-4 rounded-lg mr-10 p-4"
-                >
-                  <h1 style={{ fontFamily: "Abril Fatface" }} className="text-5xl font-bold mt-10">{projectViewDetails.projectName}</h1>
-                  <h5>{projectViewDetails?.builderName}</h5>
-                  <p className="text-xs">
-                    <LocationSmallIcon />
-                    {projectViewDetails?.projectAddress}
-                  </p>
-                  <h2 className="font-abril text-xl" >
-                    ₹{' '}
-                    {projectViewDetails.minPrice < 1 ? (
-                      <span>{projectViewDetails.minPrice * 100} L</span>
-                    ) : (
-                      <span style={{ fontFamily: "Abril Fatface" }}>{projectViewDetails.minPrice} Cr</span>
-                    )}
-                    {' '} - {projectViewDetails.maxPrice} Cr
-                  </h2>
-                  <div className="flex items-center justify-between p-1 mt-10">
-                    <div className="flex items-center">
-                      <FavouriteIcon className="pr-4" />
-                      <SHAREIcon className="pr-4" />
-                    </div>
-                    <Button className="ml-auto text-white">Book Free Site Visit</Button>
-                  </div>
-                </div>}
               </div>
             </div>
 
