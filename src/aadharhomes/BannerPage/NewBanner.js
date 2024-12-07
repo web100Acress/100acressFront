@@ -42,11 +42,13 @@ const NewBanner = () => {
   const [sideButtonText, setSideButtonText] = useState("Submit");
   const [sideResponseMessage, setSideResponseMessage] = useState("");
   const [isModalOpenFloor, setIsModalOpenFloor] = useState(false);
+  const [isModalOpenMasterPlan, setIsModalOpenMasterPlan] = useState(false);
   const [selectedImagefloor, setSelectedImagefloor] = useState(null);
   const [isLoading1, setIsLoading1] = useState(false);
   const [PopUpbuttonText, setPopUpButtonText] = useState("Submit");
   const [PopUpresponseMessage, setPopUpResponseMessage] = useState("");
-
+  const [isModalOpenGallery, setIsModalOpenGallery] = useState(false);
+  const [modalImageGallery, setModalImageGallery] = useState(null);
 
   const set = {
     dots: true,
@@ -158,6 +160,19 @@ const NewBanner = () => {
     email: "",
     mobile: "",
   });
+  
+
+  const openModalGallery = (image) => {
+    setModalImageGallery(image);
+    setIsModalOpenGallery(true);
+    document.body.style.overflow = "hidden"; // Prevent background scroll
+  };
+
+  const closeModalGallery = () => {
+    setIsModalOpenGallery(false);
+    setModalImageGallery(null);
+    document.body.style.overflow = "auto"; // Restore background scroll
+  };
 
   const openModalfloor = (image) => {
     setSelectedImagefloor(image);
@@ -170,6 +185,19 @@ const NewBanner = () => {
     setSelectedImagefloor(null);
     document.body.style.overflow = "auto"; // Restore background scroll
   };
+
+  const openModalMasterPlan = (image) => {
+    setSelectedImagefloor(image);
+    setIsModalOpenFloor(true);
+    document.body.style.overflow = "hidden"; // Prevent background scroll
+  };
+
+  const closeModalMasterPlan = () => {
+    setIsModalOpenFloor(false);
+    setSelectedImagefloor(null);
+    document.body.style.overflow = "auto"; // Restore background scroll
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserDetails({ ...userDetails, [name]: value });
@@ -343,63 +371,6 @@ const NewBanner = () => {
   };
 
 
-  const Gallery = ({ images }) => {
-    const [isModalOpenGallery, setIsModalOpenGallery] = useState(false);
-    const [modalImage, setModalImage] = useState(null);
-
-
-    const openModal = (image) => {
-      setModalImage(image);
-      setIsModalOpenGallery(true);
-    };
-
-    const closeModal = () => {
-      setIsModalOpenGallery(false);
-      setModalImage(null);
-    };
-
-    return (
-      <div className="p-4 max-w-screen-xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {/* Display Images */}
-          {images?.map((image, index) => (
-            <div
-              key={index}
-              className="relative"
-              onClick={() => openModal(image)}
-            >
-              <img
-                src={image.url}
-                alt={projectViewDetails.projectName}
-                className="w-full h-auto rounded-lg object-cover transition-transform duration-200 hover:scale-105"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Modal */}
-        {isModalOpenGallery && (
-          <div className="fixed inset-0 pt-20 bg-black bg-opacity-75 flex justify-center items-center z-50">
-            <div className="relative">
-              <button
-                onClick={closeModal}
-                className="absolute top-2 right-2 text-white text-xl bg-gray-800 p-2 rounded-full z-10"
-              >
-                &times;
-              </button>
-              <img
-                src={modalImage.url}
-                alt={projectViewDetails.projectName}
-                className="max-w-[80vw] max-h-[80vh] object-contain"
-              />
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
-
   const filterProjectsByBuilder = () => {
     const normalizedBuilderName =
       typeof builderName === "string" ? builderName.trim().toLowerCase() : "";
@@ -417,33 +388,33 @@ const NewBanner = () => {
 
   return (
     <>
-    {false && <div
-                  style={{ maxHeight: '25rem', maxWidth: '30rem', justifyContent: 'center', alignItems: 'center' }}
-                  className="absolute bottom-64 right-20 bg-[#000000] bg-opacity-70 text-white py-2 z-[100] text-left p-2 pl-4 rounded-lg mr-10 p-4"
-                >
-                  <h1 className="text-5xl font-bold mt-10">{projectViewDetails.projectName}</h1>
-                  <h5>{projectViewDetails?.builderName}</h5>
-                  <p className="text-xs">
-                    <LocationSmallIcon />
-                    {projectViewDetails?.projectAddress}
-                  </p>
-                  <h2 className="font-abril text-xl" >
-                    ₹{' '}
-                    {projectViewDetails.minPrice < 1 ? (
-                      <span>{projectViewDetails.minPrice * 100} L</span>
-                    ) : (
-                      <span>{projectViewDetails.minPrice} Cr</span>
-                    )}
-                    {' '} - {projectViewDetails.maxPrice} Cr
-                  </h2>
-                  <div className="flex items-center justify-between p-1 mt-10">
-                    <div className="flex items-center">
-                      <FavouriteIcon className="pr-4" />
-                      <SHAREIcon className="pr-4" />
-                    </div>
-                    <Button className="ml-auto text-white">Book Free Site Visit</Button>
-                  </div>
-                </div>}
+      {false && <div
+        style={{ maxHeight: '25rem', maxWidth: '30rem', justifyContent: 'center', alignItems: 'center' }}
+        className="absolute bottom-64 right-20 bg-[#000000] bg-opacity-70 text-white py-2 z-[100] text-left p-2 pl-4 rounded-lg mr-10 p-4"
+      >
+        <h1 className="text-5xl font-bold mt-10">{projectViewDetails.projectName}</h1>
+        <h5>{projectViewDetails?.builderName}</h5>
+        <p className="text-xs">
+          <LocationSmallIcon />
+          {projectViewDetails?.projectAddress}
+        </p>
+        <h2 className="font-abril text-xl" >
+          ₹{' '}
+          {projectViewDetails.minPrice < 1 ? (
+            <span>{projectViewDetails.minPrice * 100} L</span>
+          ) : (
+            <span>{projectViewDetails.minPrice} Cr</span>
+          )}
+          {' '} - {projectViewDetails.maxPrice} Cr
+        </h2>
+        <div className="flex items-center justify-between p-1 mt-10">
+          <div className="flex items-center">
+            <FavouriteIcon className="pr-4" />
+            <SHAREIcon className="pr-4" />
+          </div>
+          <Button className="ml-auto text-white">Book Free Site Visit</Button>
+        </div>
+      </div>}
       <div>
         <Wrapper className="section" style={{ overflow: "hidden", overflowX: "hidden" }}>
           <Helmet>
@@ -896,7 +867,7 @@ const NewBanner = () => {
                     style={{ fontFamily: "Abril Fatface" }}
                     className=" font-abril mt-2 text-4xl sm:text-5xl md:text-6xl "
                   >
-                    Highlights of {projectViewDetails.projectName}
+                    {projectViewDetails.projectName}
                   </h2>
 
                   <div className="mt-5 md:mt-20 overflow-y-auto">
@@ -1134,7 +1105,7 @@ const NewBanner = () => {
         right: 1%;
       }
     }
-  `}</style>
+             `}</style>
             </div>
 
 
@@ -1159,7 +1130,43 @@ const NewBanner = () => {
                         </span>
                       </h2>
                       </div>
-                      <Gallery images={projectGallery} />
+                      <div className="p-4 max-w-screen-xl mx-auto">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                          {/* Display Images */}
+                          {projectGallery?.map((image, index) => (
+                            <div
+                              key={index}
+                              className="relative"
+                            >
+                              <img
+                                src={image.url}
+                                alt={projectViewDetails.projectName}
+                                className="w-full h-auto rounded-lg object-cover transition-transform duration-200 hover:scale-105"
+                                onClick={() => openModalGallery(image.url)}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Modal */}
+                        {isModalOpenGallery && (
+                          <div className="fixed inset-0 pt-20 bg-black bg-opacity-75 flex justify-center items-center z-50">
+                            <div className="relative">
+                              <button
+                                onClick={closeModalGallery}
+                                className="absolute top-2 right-2 text-white text-xl bg-gray-800 p-2 rounded-full z-10"
+                              >
+                                &times;
+                              </button>
+                              <img
+                                src={modalImageGallery}
+                                alt={projectViewDetails.projectName}
+                                className="max-w-[80vw] max-h-[80vh] object-contain"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1181,7 +1188,7 @@ const NewBanner = () => {
                       </span>
                       <div><h2 class="lg:text-5xl md:text-3xl sm:text-base text-justify text-black-600" style={{ fontFamily: "Abril Fatface" }}>
                         <h3 className='text-5xl pt-2' style={{ fontFamily: "Abril Fatface" }}>
-                          {projectViewDetails?.projectName} Ameniteis
+                          {projectViewDetails?.projectName} Amenities
                         </h3><span>
 
                         </span>
@@ -1216,7 +1223,7 @@ const NewBanner = () => {
                               return (
                                 <div
                                   key={idx}
-                                  className="relative m-auto w-full p-2 max-w-lg flex flex-col overflow-y-auto rounded-lg border border-gray-200 transition-transform duration-200 hover:scale-105 overflow-hidden  "
+                                  className="relative m-auto w-full p-2 max-w-lg flex flex-col rounded-lg border border-gray-200 transition-transform duration-200 hover:scale-105 overflow-hidden"
                                   style={{
                                     backgroundColor: backgroundColor,
                                     color: Textcolor,
@@ -1234,6 +1241,7 @@ const NewBanner = () => {
                                     {project}
                                   </span>
                                 </div>
+
 
 
                               );
@@ -1374,6 +1382,7 @@ const NewBanner = () => {
                           src={projectViewDetails.highlightImage.url}
                           alt={`${projectViewDetails.projectName}`}
                           className="w-full h-full object-cover"
+                          onClick={() => openModalMasterPlan(projectViewDetails.highlightImage.url)}
                         />
                       )}
                     </div>
@@ -1382,6 +1391,24 @@ const NewBanner = () => {
                 </div>
               </div>
             </div>
+
+            {isModalOpenMasterPlan && (
+                <div className="fixed inset-0 pt-20 bg-black bg-opacity-75 flex justify-center items-center z-50">
+                  <div className="relative">
+                    <button
+                      onClick={closeModalMasterPlan}
+                      className="absolute top-2 right-2 text-white text-xl bg-gray-800 p-2 rounded-full z-10"
+                    >
+                      &times;
+                    </button>
+                    <img
+                      src={selectedImagefloor}
+                      alt={projectViewDetails.projectName}
+                      className="max-w-[80vw] max-h-[80vh] object-contain"
+                    />
+                  </div>
+                </div>
+              )}
 
             {/* Builder */}
             <div className="p-6 h-fit" >
@@ -1417,7 +1444,7 @@ const NewBanner = () => {
 
             {/* Related property */}
 
-            <div className="p-6 pb-2 h-fit" >
+            <div className="p-6 pt-0 pb-2 h-fit" >
               <div className="flex flex-justify-center items-stretch rounded h-auto">
                 <div className="text-black w-full flex flex-col">
                   <div className="flex flex-col md:flex-row h-full">
@@ -1429,7 +1456,7 @@ const NewBanner = () => {
                         {" "}Others
                       </span>
                       <div><h2 class="lg:text-5xl md:text-3xl sm:text-base text-justify text-black-600" style={{ fontFamily: "Abril Fatface" }}>
-                        Properties by {projectViewDetails?.projectName}
+                        Properties by {projectViewDetails?.builderName}
                       </h2>
                       </div>
                       <section className="w-full  mb-2">
