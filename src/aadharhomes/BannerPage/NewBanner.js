@@ -19,7 +19,8 @@ import {
   WhiteLineIcon, 
   ShareFrameIcon, 
   ForwardIcon, 
-  BackwardIcon 
+  BackwardIcon,
+  ScrollIcon
 } from '../../Assets/icons';
 import { DataContext } from '../../MyContext';
 import Slider from "react-slick";
@@ -33,7 +34,7 @@ const NewBanner = () => {
   const slideRefs = useRef(null);
   const [showPopup, setShowPopup] = useState(false);
   const [emailError, setEmailError] = useState("");
-  const [userButtonText, setUserButtonText] = useState("Raise a Enquiry ");
+  const [userButtonText, setUserButtonText] = useState("Submit");
   const [userResponseMessage, setUserResponseMessage] = useState("");
   const [instantcallbackmodal, setInstantCallbackmodal] = useState(false);
   const [showAllProjects, setShowAllProjects] = useState(false);
@@ -77,8 +78,6 @@ const NewBanner = () => {
     ),
     afterChange: (index) => setCurrentIndex(index),
   };
-
-
 
   const {
     frontImage,
@@ -165,37 +164,37 @@ const NewBanner = () => {
   const openModalGallery = (image) => {
     setModalImageGallery(image);
     setIsModalOpenGallery(true);
-    document.body.style.overflow = "hidden"; // Prevent background scroll
+    document.body.style.overflow = "hidden";
   };
 
   const closeModalGallery = () => {
     setIsModalOpenGallery(false);
     setModalImageGallery(null);
-    document.body.style.overflow = "auto"; // Restore background scroll
+    document.body.style.overflow = "auto";
   };
 
   const openModalfloor = (image) => {
     setSelectedImagefloor(image);
     setIsModalOpenFloor(true);
-    document.body.style.overflow = "hidden"; // Prevent background scroll
+    document.body.style.overflow = "hidden"; 
   };
 
   const closeModalfloor = () => {
     setIsModalOpenFloor(false);
     setSelectedImagefloor(null);
-    document.body.style.overflow = "auto"; // Restore background scroll
+    document.body.style.overflow = "auto"; 
   };
 
   const openModalMasterPlan = (image) => {
     setSelectedImagefloor(image);
     setIsModalOpenFloor(true);
-    document.body.style.overflow = "hidden"; // Prevent background scroll
+    document.body.style.overflow = "hidden"; 
   };
 
   const closeModalMasterPlan = () => {
     setIsModalOpenFloor(false);
     setSelectedImagefloor(null);
-    document.body.style.overflow = "auto"; // Restore background scroll
+    document.body.style.overflow = "auto"; 
   };
 
   const handleChange = (e) => {
@@ -755,13 +754,13 @@ const NewBanner = () => {
 
             {/* Details */}
             <div className="bg-[#263238]">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-1">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-1">
                 <section
                   className="text-white p-4 rounded-md flex justify-center items-center"
                 >
                   <AcresIcon className="mr-2" />
                   <div className='mt-2'>
-                    <span className="text-2xl font-customFont" style={{ fontFamily: "Abril Fatface" }}>{projectViewDetails.totalLandArea} Acres</span>
+                    <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>{projectViewDetails.totalLandArea} Acres</span>
                     <h6 className='text-sm'>Land Area</h6>
                   </div>
                 </section>
@@ -1283,7 +1282,7 @@ const NewBanner = () => {
                 </div>
 
                 {/* Text Section */}
-                <div className="w-full md:w-1/2 p-4 text-black flex flex-col justify-center items-start" >
+                <div className="w-full md:w-1/2 p-4 text-black flex flex-col justify-center items-stretch overflow-hidden" >
                   <span className="lg:text-3xl md:text-2xl sm:text-base text-black-600 flex items-center justify-start space-x-2">
                     <span className="flex items-center justify-center p-1">
                       <LineIcon />
@@ -1300,7 +1299,7 @@ const NewBanner = () => {
                     </h2>
                     <h2
                       style={{ fontFamily: "Abril Fatface" }}
-                      className="mt-2 text-5xl sm:text-6xl md:text-7xl"
+                      className="mt-2 text-5xl sm:text-6xl md:text-7xl overflow-y-auto"
                     >
                       {projectViewDetails.projectName}
                     </h2>
@@ -1516,15 +1515,19 @@ const NewBanner = () => {
                           </div>
 
                           {filteredProjects.length > 4 && (
-                            <div className="flex justify-end mt-2">
+                            <div className="flex justify-end mt-2 animate-bounce">
                               {" "}
                               {/* Center the button */}
-                              {/* <button
+                              <button
                                 onClick={() => setShowAllProjects((prev) => !prev)}
-                                className="rounded-md bg-[#012E29] px-4 py-2 text-white text-sm sm:text-base transition duration-200" // Use relative positioning
+                                className="rounded-md mt-2 px-4 justify-center py-2 bg-[#263238] text-white text-sm sm:text-base ml-auto mr-auto transition duration-200"
                               >
                                 {showAllProjects ? "View Less" : "View More"}
-                              </button> */}
+                                <span className='ml-4'>
+
+                                <ScrollIcon/>
+                                </span>
+                              </button>
                             </div>
                           )}
                         </div>
@@ -1578,18 +1581,7 @@ const NewBanner = () => {
                         className="w-full px-4 py-3 rounded-lg bg-[#263238] text-white focus:ring-2 focus:ring-blue-500 border border-gray-600 outline-none"
                       />
                     </div>
-                    <div className="flex gap-4">
-                      <div className="w-1/5">
-                        <label htmlFor="country-code" className="sr-only">Country Code</label>
-                        <input
-                          type="text"
-                          id="country-code"
-                          value="+91"
-                          disabled
-                          className="w-full px-4 py-3 rounded-lg bg-[#263238] text-white border border-gray-600 outline-none"
-                        />
-                      </div>
-                      <div className="w-4/5">
+                      <div>
                         <label htmlFor="mobile" className="sr-only">Mobile Number</label>
                         <input
                           type="text"
@@ -1613,7 +1605,6 @@ const NewBanner = () => {
 
 
                       </div>
-                    </div>
                     <div>
                       <label htmlFor="email" className="sr-only">Email Address</label>
                       <input
