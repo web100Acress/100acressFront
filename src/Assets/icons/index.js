@@ -30,6 +30,8 @@ import GymSVG from '../../../src/Assets/icons/svg/gym.svg';
 import ShareFrameSVG from '../../../src/Assets/icons/svg/ShareFrame.svg';
 import ForwardSVG from '../../../src/Assets/icons/svg/forwardarrow.svg';
 import BackwardSVG from '../../../src/Assets/icons/svg/backwardarrow.svg';
+import ScrollSVG from '../../../src/Assets/icons/svg/scroll.svg';
+import WhiteLineSVG from '../../../src/Assets/icons/svg/whiteline.svg';
 
 
 const getSVG = (path, style = {}) => (
@@ -38,6 +40,14 @@ const getSVG = (path, style = {}) => (
 
 export const PhoneIcon = (props) => {
   return <Icon component={() => getSVG(PHONEICONSVG, props.iconstyle)} {...props} />;
+};
+
+export const WhiteLinestreakIcon = (props) => {
+  return <Icon component={() => getSVG(WhiteLineSVG, props.iconstyle)} {...props} />;
+};
+
+export const ScrollIcon = (props) => {
+  return <Icon component={() => getSVG(ScrollSVG, props.iconstyle)} {...props} />;
 };
 
 export const ShareFrameIcon = (props) => {
