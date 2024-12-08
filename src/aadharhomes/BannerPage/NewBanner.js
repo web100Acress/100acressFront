@@ -5,22 +5,23 @@ import { Link, useParams } from 'react-router-dom';
 import { format, isValid, parseISO } from "date-fns";
 import styled from "styled-components";
 import { Helmet } from 'react-helmet';
-import { 
+import {
   PhoneIcon,
-  AcresIcon, 
-  ArrowIcon, 
-  CalenderIcon, 
-  PriceIcon, 
-  TowerIcon, 
-  LocationSmallIcon, 
-  SHAREIcon, 
-  FavouriteIcon, 
-  LineIcon, 
-  WhiteLineIcon, 
-  ShareFrameIcon, 
-  ForwardIcon, 
+  AcresIcon,
+  ArrowIcon,
+  CalenderIcon,
+  PriceIcon,
+  TowerIcon,
+  LocationSmallIcon,
+  SHAREIcon,
+  FavouriteIcon,
+  LineIcon,
+  WhiteLineIcon,
+  ShareFrameIcon,
+  ForwardIcon,
   BackwardIcon,
-  ScrollIcon
+  ScrollIcon,
+  WhiteLinestreakIcon
 } from '../../Assets/icons';
 import { DataContext } from '../../MyContext';
 import Slider from "react-slick";
@@ -159,7 +160,7 @@ const NewBanner = () => {
     email: "",
     mobile: "",
   });
-  
+
 
   const openModalGallery = (image) => {
     setModalImageGallery(image);
@@ -176,25 +177,25 @@ const NewBanner = () => {
   const openModalfloor = (image) => {
     setSelectedImagefloor(image);
     setIsModalOpenFloor(true);
-    document.body.style.overflow = "hidden"; 
+    document.body.style.overflow = "hidden";
   };
 
   const closeModalfloor = () => {
     setIsModalOpenFloor(false);
     setSelectedImagefloor(null);
-    document.body.style.overflow = "auto"; 
+    document.body.style.overflow = "auto";
   };
 
   const openModalMasterPlan = (image) => {
     setSelectedImagefloor(image);
     setIsModalOpenFloor(true);
-    document.body.style.overflow = "hidden"; 
+    document.body.style.overflow = "hidden";
   };
 
   const closeModalMasterPlan = () => {
     setIsModalOpenFloor(false);
     setSelectedImagefloor(null);
-    document.body.style.overflow = "auto"; 
+    document.body.style.overflow = "auto";
   };
 
   const handleChange = (e) => {
@@ -387,33 +388,7 @@ const NewBanner = () => {
 
   return (
     <>
-      {false && <div
-        style={{ maxHeight: '25rem', maxWidth: '30rem', justifyContent: 'center', alignItems: 'center' }}
-        className="absolute bottom-64 right-20 bg-[#000000] bg-opacity-70 text-white py-2 z-[100] text-left p-2 pl-4 rounded-lg mr-10 p-4"
-      >
-        <h1 className="text-5xl font-bold mt-10">{projectViewDetails.projectName}</h1>
-        <h5>{projectViewDetails?.builderName}</h5>
-        <p className="text-xs">
-          <LocationSmallIcon />
-          {projectViewDetails?.projectAddress}
-        </p>
-        <h2 className="font-abril text-xl" >
-          ₹{' '}
-          {projectViewDetails.minPrice < 1 ? (
-            <span>{projectViewDetails.minPrice * 100} L</span>
-          ) : (
-            <span>{projectViewDetails.minPrice} Cr</span>
-          )}
-          {' '} - {projectViewDetails.maxPrice} Cr
-        </h2>
-        <div className="flex items-center justify-between p-1 mt-10">
-          <div className="flex items-center">
-            <FavouriteIcon className="pr-4" />
-            <SHAREIcon className="pr-4" />
-          </div>
-          <Button className="ml-auto text-white">Book Free Site Visit</Button>
-        </div>
-      </div>}
+
       <div>
         <Wrapper className="section" style={{ overflow: "hidden", overflowX: "hidden" }}>
           <Helmet>
@@ -499,7 +474,6 @@ const NewBanner = () => {
                 ></Link>
               </span>
             </div>
-
 
             {/* sideform */}
             <div>
@@ -718,18 +692,18 @@ const NewBanner = () => {
                         </p>
                       )}
                       <div className="flex justify-center">
-                          <button
-                            className="group mt-2 w-full md:w-auto rounded-md bg-[#263238] px-10 py-2 font-semibold text-white border border-gray-600 outline-none relative overflow-hidden transition-all duration-500 hover:pr-10 flex items-center justify-center"
-                            onClick={popSubmitDetails}
-                          >
-                            <span className="relative inline-block transition-all px-3 duration-500">
-                              {PopUpbuttonText}
-                            </span>
-                            <span className="absolute top-1/2 -translate-y-1/2 right-0 opacity-0 transition-all duration-500 transform translate-x-5 group-hover:opacity-100 group-hover:translate-x-0">
-                              <ForwardIcon />
-                            </span>
-                          </button>
-                        </div>
+                        <button
+                          className="group mt-2 w-full md:w-auto rounded-md bg-[#263238] px-10 py-2 font-semibold text-white border border-gray-600 outline-none relative overflow-hidden transition-all duration-500 hover:pr-10 flex items-center justify-center"
+                          onClick={popSubmitDetails}
+                        >
+                          <span className="relative inline-block transition-all px-3 duration-500">
+                            {PopUpbuttonText}
+                          </span>
+                          <span className="absolute top-1/2 -translate-y-1/2 right-0 opacity-0 transition-all duration-500 transform translate-x-5 group-hover:opacity-100 group-hover:translate-x-0">
+                            <ForwardIcon />
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -739,7 +713,7 @@ const NewBanner = () => {
 
             {/* mainImage */}
             <div className="w-full mt-0 lg:mt-16 md:mt-10 sm:mt-24 bg-cover bg-no-repeat text-center">
-              <div className="w-full relative overflow-hidden object-fit">
+              <div className="w-full relative overflow-hidden object-cover">
                 <div className="flex justify-center">
                   {frontImage?.url && (
                     <img
@@ -749,8 +723,19 @@ const NewBanner = () => {
                     />
                   )}
                 </div>
+                {/* Text Overlay */}
+                <div
+                  className="absolute bottom-0 left-0 right-0 flex justify-center items-center bg-[#000000] bg-opacity-20 text-white py-2 z-[10] text-center rounded-b-lg p-4"
+                >
+                  <h1 className="text-xl font-bold">
+                    {projectViewDetails.projectName}{" "}
+                    <LocationSmallIcon />
+                    {projectViewDetails?.projectAddress}
+                  </h1>
+                </div>
               </div>
             </div>
+
 
             {/* Details */}
             <div className="bg-[#263238]">
@@ -827,12 +812,12 @@ const NewBanner = () => {
                     About Project
                   </span>
 
-                  <h2
+                  <h4
                     className="mt-2 text-4xl sm:text-5xl md:text-6xl font-abril"
                     style={{ fontFamily: "Abril Fatface" }}
                   >
                     {projectViewDetails.projectName}
-                  </h2>
+                  </h4>
 
                   <div
                     className="text-justify text-gray-700 mt-5 md:mt-8 lg:mt-12 xl:mt-16 text-sm sm:text-sm md:text-base lg:text-lg xl:text-lg overflow-y-auto"
@@ -862,12 +847,12 @@ const NewBanner = () => {
                     Highlights
                   </span>
 
-                  <h2
+                  <h4
                     style={{ fontFamily: "Abril Fatface" }}
                     className=" font-abril mt-2 text-4xl sm:text-5xl md:text-6xl "
                   >
                     {projectViewDetails.projectName}
-                  </h2>
+                  </h4>
 
                   <div className="mt-5 md:mt-20 overflow-y-auto">
                     {highlight &&
@@ -913,12 +898,12 @@ const NewBanner = () => {
                         </span>
                         {" "}How Much
                       </span>
-                      <div><h2 class="lg:text-5xl md:text-3xl sm:text-base text-justify text-black-600" style={{ fontFamily: "Abril Fatface" }}>
+                      <div><h4 class="lg:text-5xl md:text-3xl sm:text-base text-justify text-black-600" style={{ fontFamily: "Abril Fatface" }}>
                         <h3 className='text-5xl pt-2' style={{ fontFamily: "Abril Fatface" }}>
                           {projectViewDetails?.projectName} Size and Price
                         </h3><span>
                         </span>
-                      </h2>
+                      </h4>
                       </div>
 
                     </div>
@@ -981,7 +966,7 @@ const NewBanner = () => {
                         Floor Plan
                       </span>
                       <div>
-                        <h2
+                        <h4
                           className="lg:text-5xl md:text-3xl sm:text-base text-justify text-black-600"
                           style={{ fontFamily: "Abril Fatface" }}
                         >
@@ -991,7 +976,7 @@ const NewBanner = () => {
                           >
                             {projectViewDetails?.projectName} Floor Plan
                           </h3>
-                        </h2>
+                        </h4>
                       </div>
                     </div>
                   </div>
@@ -1034,9 +1019,9 @@ const NewBanner = () => {
                             onClick={() => openModalfloor(image.url)}
                           />
                           <div className="bg-[#263238] text-white w-full text-center py-2 rounded-b-lg">
-                            <h2 className="text-xl font-bold">
+                            <h4 className="text-xl font-bold">
                               {BhK_Details[index]?.bhk_type || BhK_Details[0]?.bhk_type}
-                            </h2>
+                            </h4>
                             <p className="text-sm">{BhK_Details[index]?.bhk_Area || BhK_Details[0]?.bhk_Area}</p>
                           </div>
                         </div>
@@ -1121,13 +1106,13 @@ const NewBanner = () => {
                         </span>
                         {" "}Gallery
                       </span>
-                      <div><h2 class="lg:text-5xl md:text-3xl sm:text-base text-justify text-black-600" style={{ fontFamily: "Abril Fatface" }}>
+                      <div><h4 class="lg:text-5xl md:text-3xl sm:text-base text-justify text-black-600" style={{ fontFamily: "Abril Fatface" }}>
                         <h3 className='text-5xl pt-2' style={{ fontFamily: "Abril Fatface" }}>
                           {projectViewDetails?.projectName} Images
                         </h3><span>
 
                         </span>
-                      </h2>
+                      </h4>
                       </div>
                       <div className="p-4 max-w-screen-xl mx-auto">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -1185,13 +1170,13 @@ const NewBanner = () => {
                         </span>
                         {" "}Project Facilities
                       </span>
-                      <div><h2 class="lg:text-5xl md:text-3xl sm:text-base text-justify text-black-600" style={{ fontFamily: "Abril Fatface" }}>
+                      <div><h4 class="lg:text-5xl md:text-3xl sm:text-base text-justify text-black-600" style={{ fontFamily: "Abril Fatface" }}>
                         <h3 className='text-5xl pt-2' style={{ fontFamily: "Abril Fatface" }}>
                           {projectViewDetails?.projectName} Amenities
                         </h3><span>
 
                         </span>
-                      </h2>
+                      </h4>
                       </div>
                       <section className="w-full mb-2">
                         <div className="pt-4 rounded-lg relative" >
@@ -1291,18 +1276,18 @@ const NewBanner = () => {
                   </span>
 
                   <div className="mt-4">
-                    <h2
+                    <h4
                       style={{ fontFamily: "Abril Fatface" }}
                       className="text-4xl sm:text-5xl md:text-6xl"
                     >
                       Connectivity of
-                    </h2>
-                    <h2
+                    </h4>
+                    <h4
                       style={{ fontFamily: "Abril Fatface" }}
                       className="mt-2 text-5xl sm:text-6xl md:text-7xl overflow-y-auto"
                     >
                       {projectViewDetails.projectName}
-                    </h2>
+                    </h4>
                   </div>
 
                   <div className="mt-10 md:mt-20">
@@ -1360,18 +1345,18 @@ const NewBanner = () => {
                       </span>
 
                       <div className="mt-4">
-                        <h2
+                        <h4
                           style={{ fontFamily: "Abril Fatface" }}
                           className="text-4xl sm:text-5xl md:text-6xl"
                         >
                           Master Plan of
-                        </h2>
-                        <h2
+                        </h4>
+                        <h4
                           style={{ fontFamily: "Abril Fatface" }}
                           className="mt-2 text-5xl sm:text-6xl md:text-7xl"
                         >
                           {projectViewDetails.projectName}
-                        </h2>
+                        </h4>
                       </div>
                     </div>
 
@@ -1392,29 +1377,29 @@ const NewBanner = () => {
             </div>
 
             {isModalOpenMasterPlan && (
-                <div className="fixed inset-0 pt-20 bg-black bg-opacity-75 flex justify-center items-center z-50">
-                  <div className="relative">
-                    <button
-                      onClick={closeModalMasterPlan}
-                      className="absolute top-2 right-2 text-white text-xl bg-gray-800 p-2 rounded-full z-10"
-                    >
-                      &times;
-                    </button>
-                    <img
-                      src={selectedImagefloor}
-                      alt={projectViewDetails.projectName}
-                      className="max-w-[80vw] max-h-[80vh] object-contain"
-                    />
-                  </div>
+              <div className="fixed inset-0 pt-20 bg-black bg-opacity-75 flex justify-center items-center z-50">
+                <div className="relative">
+                  <button
+                    onClick={closeModalMasterPlan}
+                    className="absolute top-2 right-2 text-white text-xl bg-gray-800 p-2 rounded-full z-10"
+                  >
+                    &times;
+                  </button>
+                  <img
+                    src={selectedImagefloor}
+                    alt={projectViewDetails.projectName}
+                    className="max-w-[80vw] max-h-[80vh] object-contain"
+                  />
                 </div>
-              )}
+              </div>
+            )}
 
             {/* Builder */}
             <div className="p-6 h-fit" >
               <div className="flex flex-justify-center items-stretch rounded h-auto">
                 <div className="text-black w-full flex flex-col">
                   <div className="flex flex-col md:flex-row h-full">
-                    
+
                     <div className="w-full md:w-1/1 sm:w-full p-4 text-black flex flex-col justify-center items-start">
                       <span className="lg:text-2xl md:text-2xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
                         <span className="flex items-center justify-center p-1">
@@ -1423,9 +1408,9 @@ const NewBanner = () => {
                         {" "}Builder
                       </span>
                       <div>
-                        <h2 style={{ fontFamily: "Abril Fatface" }} class="lg:text-5xl md:text-2xl sm:text-base text-justify text-black-600">
+                        <h4 style={{ fontFamily: "Abril Fatface" }} class="lg:text-5xl md:text-2xl sm:text-base text-justify text-black-600">
                           About {projectViewDetails.builderName}
-                        </h2>
+                        </h4>
                         <div className="text-justify text-gray-700 m-0 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-sm md:text-base lg:text-lg xl:text-lg pt-0">
                           <p className="leading-relaxed mt-4">
                             <div dangerouslySetInnerHTML={{ __html: builderdescription }} />
@@ -1454,9 +1439,9 @@ const NewBanner = () => {
                         </span>
                         {" "}Others
                       </span>
-                      <div><h2 class="lg:text-5xl md:text-3xl sm:text-base text-justify text-black-600" style={{ fontFamily: "Abril Fatface" }}>
+                      <div><h4 class="lg:text-5xl md:text-3xl sm:text-base text-justify text-black-600" style={{ fontFamily: "Abril Fatface" }}>
                         Properties by {projectViewDetails?.builderName}
-                      </h2>
+                      </h4>
                       </div>
                       <section className="w-full  mb-2">
                         <div className="pt-4 rounded-lg relative">
@@ -1525,7 +1510,7 @@ const NewBanner = () => {
                                 {showAllProjects ? "View Less" : "View More"}
                                 <span className='ml-4'>
 
-                                <ScrollIcon/>
+                                  <ScrollIcon />
                                 </span>
                               </button>
                             </div>
@@ -1581,30 +1566,30 @@ const NewBanner = () => {
                         className="w-full px-4 py-3 rounded-lg bg-[#263238] text-white focus:ring-2 focus:ring-blue-500 border border-gray-600 outline-none"
                       />
                     </div>
-                      <div>
-                        <label htmlFor="mobile" className="sr-only">Mobile Number</label>
-                        <input
-                          type="text"
-                          name="mobile"
-                          value={userDetails.mobile}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            // Allow only numbers and ensure length is between 9 and 10 digits
-                            if (/^\d*$/.test(value) && value.length <= 10) {
-                              handleChange(e);
-                            }
-                          }}
-                          required
-                          placeholder="Contact Number*"
-                          className="w-full px-4 py-3 rounded-lg bg-[#263238] text-white focus:ring-2 focus:ring-blue-500 border border-gray-600 outline-none"
-                        />
+                    <div>
+                      <label htmlFor="mobile" className="sr-only">Mobile Number</label>
+                      <input
+                        type="text"
+                        name="mobile"
+                        value={userDetails.mobile}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Allow only numbers and ensure length is between 9 and 10 digits
+                          if (/^\d*$/.test(value) && value.length <= 10) {
+                            handleChange(e);
+                          }
+                        }}
+                        required
+                        placeholder="Contact Number*"
+                        className="w-full px-4 py-3 rounded-lg bg-[#263238] text-white focus:ring-2 focus:ring-blue-500 border border-gray-600 outline-none"
+                      />
 
-                        {userDetails.mobile && userDetails.mobile.length < 10 && (
-                          <p className="text-red-500 text-sm">Mobile number must be at least 10 digits.</p>
-                        )}
+                      {userDetails.mobile && userDetails.mobile.length < 10 && (
+                        <p className="text-red-500 text-sm">Mobile number must be at least 10 digits.</p>
+                      )}
 
 
-                      </div>
+                    </div>
                     <div>
                       <label htmlFor="email" className="sr-only">Email Address</label>
                       <input
