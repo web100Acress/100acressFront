@@ -570,6 +570,8 @@ const NewBanner = () => {
                             Email (Optional)
                           </span>
                         </div>
+                        <p className='text-xs text-gray-300'> * Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
+
 
                         {sideResponseMessage && (
                           <p className="text-grey text-[12px] mb-0">
@@ -685,6 +687,7 @@ const NewBanner = () => {
                           Email (Optional)
                         </span>
                       </div>
+                      <p className='text-xs text-gray-300'> * Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
 
                       {PopUpresponseMessage && (
                         <p className="text-grey text-[12px] mb-0">
@@ -730,7 +733,8 @@ const NewBanner = () => {
                   <h1 className="text-xl font-bold">
                     {projectViewDetails.projectName}{" "}
                     <LocationSmallIcon />
-                    {projectViewDetails?.projectAddress}
+                    {projectViewDetails?.projectAddress}{" "}
+                    {projectViewDetails?.city}
                   </h1>
                 </div>
               </div>
@@ -1617,6 +1621,8 @@ const NewBanner = () => {
                       {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
 
                     </div>
+                    <p className='text-xs text-gray-300'> * Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
+
 
                     {userResponseMessage && (
                       <p className="text-white text-[12px] ">{userResponseMessage}</p>
