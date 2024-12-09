@@ -730,7 +730,8 @@ const NewBanner = () => {
                   <h1 className="text-xl font-bold">
                     {projectViewDetails.projectName}{" "}
                     <LocationSmallIcon />
-                    {projectViewDetails?.projectAddress}
+                    {projectViewDetails?.projectAddress}{" "}
+                    {projectViewDetails?.city}
                   </h1>
                 </div>
               </div>
