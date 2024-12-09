@@ -10,10 +10,10 @@ const BudgetPrice = () => {
       <Helmet>
         <meta
           name="description"
-          content="Discover the latest new projects in Gurgaon at 100acress.com. Explore upcoming residential Projects and Commercial Properties. Explore Top Real Estate Projects."
+          content="Upgrade your lifestyle with best real estate Projects in Gurugram. Browse modern apartments, villas, and investment properties at 100acress. Contact us now!"
         />
         <title>
-          New Projects in Gurgaon | Best Real Estate at 100acress.com
+          Best Real Estate Projects in Gurugram - 100acress
         </title>
         <link
           rel="canonical"

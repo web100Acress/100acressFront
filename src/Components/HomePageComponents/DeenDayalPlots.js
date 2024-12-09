@@ -11,11 +11,11 @@ const DeenDayalPlots = () => {
     <div>
       <Helmet>
         <title>
-          Plots in Gurgaon - Residential Deen Dayal Plots &amp; Lands in Gurgaon
+        Buy Plots in Gurugram | Best Investment Opportunities
         </title>
         <meta
           name="description"
-          content="Buy Deen Dayal Residential Plots/Lands for Sale in Gurgaon"
+          content="Find affordable plots in Gurugram. Invest in land with strong potential for growth and future returns. Visit 100acress now!"
         />
            <link rel="canonical" href="https://www.100acress.com/plots-in-gurugram/" />
       </Helmet>

@@ -9,11 +9,11 @@ const Orris = () => {
     <div>
       <Helmet>
         <title>
-          Orris Plots for Sale in Gurugram
+        Buy Plots in Gurugram | Best Investment Opportunities
         </title>
         <meta
           name="description"
-          content="Real Estate Properties in Goa - Get Details for Residential &amp; Commercial Properties"
+          content="Find affordable plots in Gurugram. Invest in land with strong potential for growth and future returns. Connect with 100acress now!"
         />
          <link
           rel="canonical"

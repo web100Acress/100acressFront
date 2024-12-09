@@ -10,11 +10,11 @@ const NoidaProject = () => {
      
       <Helmet>
         <title>
-          Property in Noida - Flats, Villas, House for Sale in Noida
+        Find Your Ideal  real estate projects  in Noida – 100acress
         </title>
         <meta
           name="description"
-          content="Real Estate Properties in Noida - Get Details for Residential &amp; Commercial Properties"
+          content="Invest in exclusive real estate projects in Noida with world-class features and amenities. Visit 100acress for more."
         />
         <link
           rel="canonical"

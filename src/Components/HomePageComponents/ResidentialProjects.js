@@ -11,8 +11,11 @@ const ResidentialProjects = () => {
         <title>Residential Project in Gurgaon, Apartments in Gurgaon</title>
         <meta
           name="description"
-          content="Buy 2/3 BHK Residential Project in Gurgaon as per your desired location and budget. Checkout your desired Location and Price. Book Now"
+          content="Discover top residential properties for sale or rent in the best locations. Find your dream home today at 100acress."
         />
+        <title>
+        Explore Residential Properties in Prime Locations
+        </title>
         <link
           rel="canonical"
           href="https://www.100acress.com/property/residential/"

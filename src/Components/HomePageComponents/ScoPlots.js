@@ -12,8 +12,11 @@ const ScoPlots = () => {
         <title>SCO Plots in Gurgaon, Top 10 SCO Plots in Gurgaon</title>
         <meta
           name="description"
-          content="Find New Upcoming projects of SCO (Shop Cum Office) Property in Gurgaon. It helps to find Retail Shops and F&amp;B. Find SCO Price in Gurgaon"
+          content="Find exclusive SCO plots in Gurgaon for retail, offices, and more. Premium locations designed to grow your business or investment portfolio"
         />
+        <title>
+        Buy SCO Plots in Gurgaon with 100acress
+        </title>
          <link rel="canonical" href="https://www.100acress.com/sco/plots/" />
       </Helmet>
 

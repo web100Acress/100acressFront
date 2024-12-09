@@ -10,11 +10,11 @@ const DlfProject = () => {
     <div>
       <Helmet>
         <title>
-          DLF Super Luxury Homes- Flats, Villas, House for Sale in Gurugram
+        Explore Premium DLF Homes Projects with 100acress
         </title>
         <meta
           name="description"
-          content="Real Estate Properties in Goa - Get Details for Residential &amp; Commercial Properties"
+          content="Discover best DLF homes with 100acress. Luxury residences customized to your lifestyle. Start your journey to premium living today."
         />
          <link
           rel="canonical"

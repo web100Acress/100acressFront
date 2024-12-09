@@ -10,10 +10,10 @@ const GoaProject = () => {
     <div>
 
       <Helmet>
-        <title>Property in Goa - Flats, Villas, House for Sale in Goa</title>
+        <title>Discover Your Ideal Property in Goa with 100acress</title>
         <meta
           name="description"
-          content="Real Estate Properties in Goa - Get Details for Residential &amp; Commercial Properties"
+          content="Explore the finest project in Goa with 100acress. Invest in stunning properties located in Goa’s most desirable locations."
         />
         <link
           rel="canonical"
