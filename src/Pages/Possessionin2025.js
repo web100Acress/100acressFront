@@ -12,11 +12,10 @@ const Possessionin2025 = () => {
       <Helmet>
         <meta
           name="description"
-          content="Discover the latest new projects in Gurgaon at 100acress.com. Explore upcoming residential Projects and Commercial Properties. Explore Top Real Estate Projects."
+          content="Explore best real estate projects in Gurugram with property possession in 2025. Secure your future home today and be part of this exciting real estate journey!"
         />
         <title>
-          Possession In 2024 Projects in Gurgaon | Best Real Estate at
-          100acress.com
+        Upcoming Property Possession in 2025 | Gurugram Projects
         </title>
         <link
           rel="canonical"

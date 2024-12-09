@@ -12,11 +12,11 @@ const Jms = () => {
     
       <Helmet>
         <title>
-          JMS Plots for Sale in Gurugram
+        Explore JMS Plots in Gurugram – A Smart Investment Choice
         </title>
         <meta
           name="description"
-          content="Real Estate Properties in Goa - Get Details for Residential &amp; Commercial Properties"
+          content="Invest in JMS plots in Gurugram. High potential for growth and development. Make a smart move for your future investments!"
         />
          <link
           rel="canonical"

@@ -12,10 +12,10 @@ const UpComingProjects = () => {
       <Helmet>
         <meta
           name="description"
-          content="Explore upcoming projects in Gurgaon at 100acress.com. Discover the latest upcoming affordable housing projects in Gurgaon and invest in real estate Projects."
+          content="Explore best upcoming projects in Gurgaon with modern amenities. Find residential & commercial spaces customized to your lifestyle. Visit 100acress today!"
         />
         <title>
-          Upcoming Projects in Gurgaon at 100acress.com | Real Estate
+        Discover Upcoming Projects in Gurgaon - 100acress
         </title>
         <link
           rel="canonical"

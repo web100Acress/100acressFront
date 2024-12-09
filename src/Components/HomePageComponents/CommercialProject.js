@@ -10,11 +10,11 @@ const CommercialProject = () => {
     <div>
       <Helmet>
         <title>
-          Commercial Projects in Gurgaon, Office Space &amp; Retail Shops
+        Explore Commercial Properties in India - 100acress
         </title>
         <meta
           name="description"
-          content="Invest Wisely, Buy Commercial Projects in Gurgaon. Book Retail Shops, Food Courts, and Commercial Spaces with High Rental &amp; Flexible Payment Plan. Book Now"
+          content="Unlock growth with 100acress's commercial projects. Modern spaces, strategic locations, and excellent connectivity await. Call now!"
         />
           <link rel="canonical" href="https://www.100acress.com/projects/commerial/" />
       </Helmet>

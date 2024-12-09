@@ -11,11 +11,11 @@ const Rof = () => {
 
       <Helmet>
         <title>
-          ROF Plots for Sale in Gurugram
+        Affordable ROF Plots in Gurugram | Buy Now
         </title>
         <meta
           name="description"
-          content="Real Estate Properties in Goa - Get Details for Residential &amp; Commercial Properties"
+          content="Find the perfect ROF plot in Gurugram to build your dream home. Great investment for future prosperity. Connect with us today!"
         />
          <link
           rel="canonical"
