@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Cities from "../Components/HomePageComponents/Cities";
 import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
@@ -18,7 +18,9 @@ import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
-
+import { PropertyIcon, RupeeIcon, LocationRedIcon, ShareFrameIcon, ArrowIcon, LcoationBiggerIcon } from '../Assets/icons/index';
+import { ArrowBackIcon } from "@chakra-ui/icons";
+import { EyeIcon } from "lucide-react";
 function Home() {
   const {
     trendingProject,
@@ -30,6 +32,7 @@ function Home() {
     typeScoPlots,
     goaData,
     dlfProject,
+    resalePropertydata,
   } = useContext(DataContext);
 
   let reorderedTrendingProjects = [];
@@ -44,6 +47,45 @@ function Home() {
     reorderedTrendingProjects[6] = trendingProject[4];
     reorderedTrendingProjects[7] = trendingProject[3];
   }
+
+  const [activeFilter, setActiveFilter] = useState("Trending");
+
+  // Determine which data to display based on the active filter
+  let displayedProjects = [];
+  if (activeFilter === "Trending") {
+    displayedProjects = trendingProject;
+  } else if (activeFilter === "Featured") {
+    displayedProjects = featuredProject;
+  } else if (activeFilter === "Upcoming") {
+    displayedProjects = upcoming;
+  } else if (activeFilter === "Commercial") {
+    displayedProjects = commercialProject;
+  } else if (activeFilter === "ScoPlots") {
+    displayedProjects = typeScoPlots;
+  } else if (activeFilter === "Affordable") {
+    displayedProjects = affordable;
+  }
+  else if (activeFilter === "Resale") {
+    displayedProjects = resalePropertydata;
+  }
+
+  const handleShare = (project) => {
+
+    console.log("test the data", project)
+    if (navigator.share) {
+      navigator
+        .share({
+          title: project?.projectName,
+          text: `Check out this project: ${project.projectName}`,
+          url: `${window.location.origin}/${project.project_url}`,
+        })
+        .then(() => console.log("Shared successfully"))
+        .catch((error) => console.log("Error sharing:", error));
+    } else {
+      // Fallback for browsers that don't support the Web Share API
+      alert("Share functionality is not supported on this device/browser.");
+    }
+  };
 
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
@@ -158,43 +200,219 @@ function Home() {
       </div>
 
       {/*<!-- End Carousel with indicators inside --> */}
-
       <div>
-        {" "}
-        <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
-          <div className="flex items-center ">
-            <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
-              Trending Properties in Gurugram 
-            </h1>
-          </div>
-          <div className="ml-2 hidden sm:block">
-            <Link to="/projects-in-gurugram/" target="_top">
-              <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-                <ScaleLoader color="#FFFFFF" height={20} width={3} />
-                <span className="ml-2">View All</span>
-              </span>
-            </Link>
-          </div>
+        <div className="flex items-center justify-between mx-6 py-2">
+          <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl">
+            Trending Properties in Gurugram
+          </h1>
         </div>
-        {
-          <section className="flex flex-col bg-white items-center pt-1 ">
-            <div className="grid max-w-md grid-cols-1  px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-              {reorderedTrendingProjects.map((item, index) => {
-                const pUrl = item.project_url;
-                return (
+
+        {/* Filter Buttons */}
+        <div className="flex space-x-4 mx-6 p-6 pl-0 pt-0">
+          <button
+            onClick={() => setActiveFilter("Trending")}
+            className={`px-8 py-0 rounded-full text-xs ${activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"
+              }`}
+          >
+            Trending
+          </button>
+          <button
+            onClick={() => setActiveFilter("Featured")}
+            className={`px-4 py-0 rounded-full text-xs ${activeFilter === "Featured" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"
+              }`}
+          >
+            Featured
+          </button>
+          <button
+            onClick={() => setActiveFilter("Upcoming")}
+            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Upcoming" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"
+              }`}
+          >
+            Upcoming
+          </button>
+          <button
+            onClick={() => setActiveFilter("Commercial")}
+            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Commercial" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"
+              }`}
+          >
+            Commercial
+          </button>
+          <button
+            onClick={() => setActiveFilter("Affordable")}
+            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Affordable" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"
+              }`}
+          >
+            Affordable
+          </button>
+          <button
+            onClick={() => setActiveFilter("ScoPlots")}
+            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "ScoPlots" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"
+              }`}
+          >
+            SCO Plots
+          </button>
+        </div>
+
+        {/* Display Filtered Projects */}
+        <section className="flex flex-col bg-white items-center pt-1">
+          <div className="grid max-w-md grid-cols-1 px-6 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+            {displayedProjects.map((item, index) => {
+              const pUrl = item.project_url;
+              return (
+                <span className="relative flex  rounded-t-lg cursor-pointer">
                   <Link to={`/${pUrl}/`} target="_top">
                     <article
                       key={index}
-                      className="mb-4  transition hover:scale-105 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                      className="mb-2  transition hover:scale-105 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                     >
-                      <div>
+                      <div className="p-3">
                         <img
                           src={item.frontImage.url}
                           alt="property In Gurugram"
-                          className="w-full h-48 object-fit"
+                          className="w-full h-48 object-fit rounded-lg"
                         />
                       </div>
-                      <div className="p-4">
+                      <div className="pt-0 p-3">
+                        <div className="pb-2">
+                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                            {item.projectName}
+                          </span>
+                          <br />
+                          <span className="text-sm  text-gray-500 hover:text-red-600  duration-500 ease-in-out">
+                            {item.city}, {item.state}
+                          </span>
+                        </div>
+
+                        <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
+                          <li className="mr-4 flex items-center text-left">
+                            <li className="text-left">
+                              <p className="m-0 text-sm font-medium ">
+                                <PropertyIcon />{" "}{item.type}
+                              </p>
+                              <span className="text-[10px] text-gray-400 truncate">
+                                <LocationRedIcon />{" "}{item.projectAddress}
+                              </span>
+
+                            </li>
+                          </li>
+                        </ul>
+
+                        <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
+                          <li className="text-left">
+                            <span className="text-sm font-extrabold text-red-600">
+                              <span className="text-xl"><RupeeIcon /></span>
+                              {item.minPrice < 1 ? (
+                                <>{item.minPrice * 100} L</>
+                              ) : (
+                                <>{item.minPrice}</>
+                              )}
+                              {" - "}
+                              {item.maxPrice} Cr
+                            </span>
+                          </li>
+
+                          <li className="text-left">
+                            <button
+                              type="button"
+                              className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
+                            >
+                              View Details
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    </article>
+                  </Link>
+                  <div className="absolute top-5 right-5"
+                    onClick={() => handleShare(item)}
+                  >
+                    <ShareFrameIcon />
+                  </div>
+                </span>
+
+              );
+            })}
+          </div>
+        </section>
+      </div>
+
+      {/* <div>
+        <div className="flex items-center justify-between mx-6 py-2">
+          <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl">
+            Gurugram Prime Locations
+          </h1>
+        </div>
+
+        <div className="flex space-x-4 mx-6 p-6 pl-0 pt-0">
+          <button
+            onClick={() => setActiveFilter("Trending")}
+            className={`px-8 py-0 rounded-full text-xs ${
+              activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "bg-gray-200"
+            }`}
+          >
+            Sohna Road
+          </button>
+          <button
+            onClick={() => setActiveFilter("Featured")}
+            className={`px-4 py-0 rounded-full text-xs ${
+              activeFilter === "Featured" ? "bg-[#C13B44] text-white" : "bg-gray-200"
+            }`}
+          >
+            Golf Course Road
+          </button>
+          <button
+            onClick={() => setActiveFilter("Upcoming")}
+            className={`px-4 py-2 rounded-full text-xs ${
+              activeFilter === "Upcoming" ? "bg-[#C13B44] text-white" : "bg-gray-200"
+            }`}
+          >
+            MG Road
+          </button>
+          <button
+            onClick={() => setActiveFilter("Commercial")}
+            className={`px-4 py-2 rounded-full text-xs ${
+              activeFilter === "Commercial" ? "bg-[#C13B44] text-white" : "bg-gray-200"
+            }`}
+          >
+            North
+          </button>
+          <button
+            onClick={() => setActiveFilter("Affordable")}
+            className={`px-4 py-2 rounded-full text-xs ${
+              activeFilter === "Affordable" ? "bg-[#C13B44] text-white" : "bg-gray-200"
+            }`}
+          >
+            Affordable
+          </button>
+          <button
+            onClick={() => setActiveFilter("ScoPlots")}
+            className={`px-4 py-2 rounded-full text-xs ${
+              activeFilter === "ScoPlots" ? "bg-[#C13B44] text-white" : "bg-gray-200"
+            }`}
+          >
+            Sco Plots
+          </button>
+        </div>
+
+        <section className="flex flex-col bg-white items-center pt-1">
+          <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+            {displayedProjects.map((item, index) => {
+              const pUrl = item.project_url;
+              return (
+                <Link to={`/${pUrl}/`} target="_top">
+                    <article
+                      key={index}
+                      className="mb-2  transition hover:scale-105 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                      style={{border:'1px solid red'}}
+                    >
+                      <div className="p-3">
+                        <img
+                          src={item.frontImage.url}
+                          alt="property In Gurugram"
+                          className="w-full h-48 object-fit rounded-lg"
+                        />
+                      </div>
+                      <div className="pt-0 p-3">
                         <div className="pb-2">
                           <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                             {item.projectName}
@@ -208,12 +426,13 @@ function Home() {
                         <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
                           <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
-                              <span className="text-[13px] text-gray-400">
-                                {item.projectAddress}
-                              </span>
-                              <p className="m-0 text-sm font-medium ">
-                                {item.type}
+                            <p className="m-0 text-sm font-medium ">
+                                <PropertyIcon/>{" "}{item.type}
                               </p>
+                              <span className="text-[13px] text-gray-400">
+                                <LocationRedIcon/>{" "}{item.projectAddress}
+                              </span>
+                              
                             </li>
                           </li>
                         </ul>
@@ -221,7 +440,7 @@ function Home() {
                         <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
                           <li className="text-left">
                             <span className="text-sm font-extrabold text-red-600">
-                              <span className="text-xl">₹</span>
+                              <span className="text-xl"><RupeeIcon/></span>
                               {item.minPrice < 1 ? (
                                 <>{item.minPrice * 100} L</>
                               ) : (
@@ -244,6 +463,107 @@ function Home() {
                       </div>
                     </article>
                   </Link>
+              );
+            })}
+          </div>
+        </section>
+      </div> */}
+
+      {/* Upcoming Project */}
+      <div>
+        {" "}
+        <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-6 md:mx-6 py-4">
+          <div className="flex items-center ">
+            <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
+              Upcoming Projects in Gurugram
+            </h1>
+          </div>
+          <div className="ml-2 hidden sm:block">
+            <Link to="/projects-in-gurugram/" target="_top">
+              <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
+                <EyeIcon />
+                <span className="ml-2">View All</span>
+              </span>
+            </Link>
+          </div>
+        </div>
+        {
+          <section className="flex flex-col bg-white items-center pt-1 ">
+            <div className="grid max-w-md grid-cols-1  px-4 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+              {upcoming.map((item, index) => {
+                const pUrl = item.project_url;
+                return (
+                  <span className="relative flex  rounded-t-lg cursor-pointer">
+
+                    <Link to={`/${pUrl}/`} target="_top">
+                      <article
+                        key={index}
+                        className="mb-2 transition hover:scale-105 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                      >
+                        <div className="p-3">
+                          <img
+                            src={item.frontImage.url}
+                            alt="property In Gurugram"
+                            className="w-full h-48 object-fit rounded-lg"
+                          />
+                        </div>
+                        <div className="pt-0 p-3">
+                          <div className="pb-2">
+                            <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                              {item.projectName}
+                            </span>
+                            <br />
+                            <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                              {item.city}, {item.state}
+                            </span>
+                          </div>
+
+                          <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
+                            <li className="mr-4 flex items-center text-left">
+                              <li className="text-left">
+                                <p className="m-0 text-sm font-medium ">
+                                  <PropertyIcon />{" "}{item.type}
+                                </p>
+                                <span className="text-[10px] text-gray-400">
+                                  <LocationRedIcon />{" "}{item.projectAddress}
+                                </span>
+
+                              </li>
+                            </li>
+                          </ul>
+
+                          <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
+                            <li className="text-left">
+                              <span className="text-sm font-extrabold text-red-600">
+                                <span className="text-xl"><RupeeIcon /></span>
+                                {item.minPrice < 1 ? (
+                                  <>{item.minPrice * 100} L</>
+                                ) : (
+                                  <>{item.minPrice}</>
+                                )}
+                                {" - "}
+                                {item.maxPrice} Cr
+                              </span>
+                            </li>
+
+                            <li className="text-left">
+                              <button
+                                type="button"
+                                className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
+                              >
+                                View Details
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                      </article>
+                    </Link>
+                    <div className="absolute top-5 right-5"
+                      onClick={() => handleShare(item)}
+                    >
+                      <ShareFrameIcon />
+                    </div>
+                  </span>
                 );
               })}
             </div>
@@ -251,7 +571,7 @@ function Home() {
         }
       </div>
 
-      <div className="bg-orange-100 py-3 ">
+      {/* <div className="bg-orange-100 py-3 ">
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
@@ -342,11 +662,11 @@ function Home() {
             </div>
           </section>
         }
-      </div>
+      </div> */}
 
       {/* Goa */}
 
-      <div className="py-3 " style={{ backgroundColor: "#00314f" }}>
+      {/* <div className="py-3 " style={{ backgroundColor: "#00314f" }}>
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6  py-2">
           <div className="flex items-center">
@@ -439,73 +759,80 @@ function Home() {
             </div>
           </section>
         }
-      </div>
+      </div> */}
 
-      <div className="bg-orange-100 py-3 ">
+      <div className=" py-3 ">
         {" "}
-        <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6  py-2">
-          <div className="flex items-center">
-            <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
+        <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-6 md:mx-6 py-4">
+          <div className="flex items-center ">
+            <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
               SCO Plots in Gurugram
             </h1>
           </div>
           <div className="ml-2 hidden sm:block">
             <Link to="/sco/plots/" target="_top">
               <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-                <ScaleLoader color="#FFFFFF" height={20} width={3} />
-                <span className="ml-2">View All</span>
+                <EyeIcon />                <span className="ml-2">View All</span>
               </span>
             </Link>
           </div>
         </div>
         {
-          <section className="flex flex-col items-center bg-orange-100">
-            <div className="grid max-w-md bg-orange-100 grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+          <section className="flex flex-col items-center bg-transparent">
+            <div className="grid max-w-md bg-transparent grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {typeScoPlots.map((item, index) => {
                 const pUrl = item.project_url;
                 return (
-                  <Link to={`/${pUrl}/`} target="_top">
-                    <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
-                      {" "}
-                      <img
-                        src={item.frontImage.url}
-                        alt="property In Gurugram"
-                        className="w-[100%] h-[100%] object-cover"
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%] rounded-md hover:rounded-lg" >
-                        <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2 h-full text-blue ">
-                          <div className="pt-8 items-center flex flex-col ">  
-                          <span className="text-[13px] font-semibold duration-500 ease-in-out">
+                  <span>
+                    <Link to={`/${pUrl}/`} target="_top">
+                      <article
+                        key={index}
+                        className="mb-2 transition overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                        style={{ border: '1px solid red' }}
+                      >
+                        <div className="p-3 relative overflow-hidden">
+                          <img
+                            src={item.frontImage.url}
+                            alt="property In Gurugram"
+                            className="w-full h-64 object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
+                          />
+                        </div>
+                        <div className="pt-0 p-3">
+                          <span className="text-[15px] font-semibold text-black-600 hover:text-red-600 duration-500 ease-in-out">
                             {item.projectName}
                           </span>
-                          <span className="text-sm duration-500 ease-in-out ">
-                            {item.city}, {item.state}
-                          </span>
-                          <span className="text-[12px] text-gray-700">
-                            {item.projectAddress}
-                          </span>
-                          {/* <p className="m-0 text-sm font-medium">{item.type}</p>
-                          <span className="text-sm font-extrabold text-red-600">
-                            <span className="text-xl">₹</span>
-                            {item.minPrice < 1 ? (
-                              <>{item.minPrice * 100} L</>
-                            ) : (
-                              <>{item.minPrice}</>
-                            )}
-                            {" - "}
-                            {item.maxPrice} Cr
-                          </span>
-                          <button
-                            type="button"
-                            className="text-red-600 rounded-lg text-sm px-2 text-center mt-2"
-                          >
-                            <i className="fa-solid fa-arrow-right text-xl"></i>
-                          </button> */}
-                          </div>
+
+                          <ul className="m-0 p-0 flex text-white-600 justify-between px-0 pb-0">
+                            <li className="text-left flex items-end gap-2">
+                              {/* Icon */}
+                              <span className="text-red-600 flex-shrink-0">
+                                <LcoationBiggerIcon />
+                              </span>
+                              {/* Text */}
+                              <div className="text-sm font-thin truncate">
+                                <span className="text-sm text-white-600 hover:text-red-600 duration-500 ease-in-out block truncate">
+                                  {item.city}, {item.state}
+                                </span>
+                                <span className="text-xs text-[#656565] block truncate">
+                                  {item.projectAddress}
+                                </span>
+                              </div>
+                            </li>
+
+                            <li className="text-left">
+                              <button
+                                type="button"
+                                className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-1 py-1 text-center me-2"
+                              >
+                                <ArrowIcon />
+                              </button>
+                            </li>
+                          </ul>
                         </div>
-                      </div>
-                    </article>
-                  </Link>
+                      </article>
+                    </Link>
+
+                  </span>
                 );
               })}
             </div>
@@ -901,7 +1228,7 @@ function Home() {
           </Link>
         </div>
       </div>
-      
+
       <Resale />
 
       <OurServices />
