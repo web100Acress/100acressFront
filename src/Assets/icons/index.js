@@ -35,6 +35,8 @@ import RupeeSignSVG from '../../../src/Assets/icons/svg/rupeesign.svg';
 import LocationSmallhomeSVG from '../../../src/Assets/icons/svg/redlocation.svg';
 import EyeSVG from '../../../src/Assets/icons/svg/eye.svg';
 import LocationBiggerSVG from '../../../src/Assets/icons/svg/locationbigger.svg';
+import ScrollSVG from '../../../src/Assets/icons/svg/scroll.svg';
+import WhiteLineSVG from '../../../src/Assets/icons/svg/whiteline.svg';
 
 
 const getSVG = (path, style = {}) => (
@@ -43,6 +45,14 @@ const getSVG = (path, style = {}) => (
 
 export const PhoneIcon = (props) => {
   return <Icon component={() => getSVG(PHONEICONSVG, props.iconstyle)} {...props} />;
+};
+
+export const WhiteLinestreakIcon = (props) => {
+  return <Icon component={() => getSVG(WhiteLineSVG, props.iconstyle)} {...props} />;
+};
+
+export const ScrollIcon = (props) => {
+  return <Icon component={() => getSVG(ScrollSVG, props.iconstyle)} {...props} />;
 };
 
 export const ShareFrameIcon = (props) => {
