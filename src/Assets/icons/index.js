@@ -30,6 +30,11 @@ import GymSVG from '../../../src/Assets/icons/svg/gym.svg';
 import ShareFrameSVG from '../../../src/Assets/icons/svg/ShareFrame.svg';
 import ForwardSVG from '../../../src/Assets/icons/svg/forwardarrow.svg';
 import BackwardSVG from '../../../src/Assets/icons/svg/backwardarrow.svg';
+import PropertyTypeSVG from '../../../src/Assets/icons/svg/propertyicon.svg';
+import RupeeSignSVG from '../../../src/Assets/icons/svg/rupeesign.svg';
+import LocationSmallhomeSVG from '../../../src/Assets/icons/svg/redlocation.svg';
+import EyeSVG from '../../../src/Assets/icons/svg/eye.svg';
+import LocationBiggerSVG from '../../../src/Assets/icons/svg/locationbigger.svg';
 
 
 const getSVG = (path, style = {}) => (
@@ -149,4 +154,24 @@ export const ForwardIcon = (props) => {
 
 export const BackwardIcon = (props) => {
   return <Icon component={() => getSVG(BackwardSVG, props.iconstyle)} {...props} />;
+};
+
+export const PropertyIcon = (props) => {
+  return <Icon component={() => getSVG(PropertyTypeSVG, props.iconstyle)} {...props} />;
+};
+
+export const RupeeIcon = (props) => {
+  return <Icon component={() => getSVG(RupeeSignSVG, props.iconstyle)} {...props} />;
+};
+
+export const LocationRedIcon = (props) => {
+  return <Icon component={() => getSVG(LocationSmallhomeSVG, props.iconstyle)} {...props} />;
+};
+
+export const EyeIcon = (props) => {
+  return <Icon component={() => getSVG(EyeSVG, props.iconstyle)} {...props} />;
+};
+
+export const LcoationBiggerIcon = (props) => {
+  return <Icon component={() => getSVG(LocationBiggerSVG, props.iconstyle)} {...props} />;
 };
