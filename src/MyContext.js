@@ -121,7 +121,7 @@ export const DataProvider = ({ children }) => {
       const upcomingProjects = projectsData.filter(
         (project) =>
           project.projectOverview === "upcoming" ||
-          project.projectReraNo === "upcoming" || project.projectName === 'Emaar Amaris - Digi Homes 2' || project.projectName === 'Trump Towers 2' 
+          project.projectReraNo === "upcoming" || project.projectName === 'Trump Towers 2' 
       );
 
       const featuredProjects = projectsData.filter(
