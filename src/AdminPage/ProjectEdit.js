@@ -17,6 +17,7 @@ const ProjectEdit = () => {
     otherImage: [],
     project_floorplan_Image: [],
     projectGallery:[],
+    highlightImage:"",
     project_locationImage: "",
     logo: "",
     projectName: "",
@@ -299,6 +300,41 @@ const ProjectEdit = () => {
                         />
                       </div>
                     </section>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Project Highlight Image</th>
+                </tr>
+
+                <tr>
+                  <td>
+                    <tr>
+                      <td>
+                        <img
+                          src={
+                            values.highlightImage
+                              ? values.highlightImage.url
+                              : ""
+                          }
+                          alt="highlightImage"
+                          style={{ maxWidth: "50%" }}
+                          id="previewImage"
+                        />
+                        <br />
+                        <input
+                          type="file"
+                          name="highlightImage"
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+
+                            setValues({
+                              ...values,
+                              highlightImage: file,
+                            });
+                          }}
+                        />
+                      </td>
+                    </tr>
                   </td>
                 </tr>
 
