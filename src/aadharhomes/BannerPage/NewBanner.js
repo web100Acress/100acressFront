@@ -252,7 +252,7 @@ const NewBanner = () => {
       setPopUpResponseMessage("Please fill in the data");
     }
   };
-
+  
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       setShowPopup(true);
@@ -263,7 +263,6 @@ const NewBanner = () => {
 
   const handleShare = (project) => {
 
-    console.log("test the data", project)
     if (navigator.share) {
       navigator
         .share({
@@ -798,7 +797,7 @@ const NewBanner = () => {
                 <div className="w-full md:w-1/2 overflow-hidden flex items-center">
                   {projectViewDetails?.highlightImage?.url && (
                     <img
-                      src={projectViewDetails.highlightImage.url}
+                      src={projectViewDetails?.projectGallery[0]?.url}
                       alt={`${projectViewDetails.projectName}`}
                       className="w-full h-64 sm:h-80 md:h-screen object-cover animate-fadeInLeft"
                     />
@@ -1282,13 +1281,7 @@ const NewBanner = () => {
                   <div className="mt-4">
                     <h4
                       style={{ fontFamily: "Abril Fatface" }}
-                      className="text-4xl sm:text-5xl md:text-6xl"
-                    >
-                      Connectivity of
-                    </h4>
-                    <h4
-                      style={{ fontFamily: "Abril Fatface" }}
-                      className="mt-2 text-5xl sm:text-6xl md:text-7xl overflow-y-auto"
+                      className="mt-2 text-5xl sm:text-6xl md:text-7xl"
                     >
                       {projectViewDetails.projectName}
                     </h4>
@@ -1335,8 +1328,45 @@ const NewBanner = () => {
               </div>
             </div>
 
+            {/* Master Plan */}
+            <div className="p-6 h-fit" >
+              <div className="flex flex-justify-center items-stretch rounded h-auto">
+                <div className="text-black w-full flex flex-col">
+                  <div className="flex flex-col md:flex-row h-full">
+
+                    <div className="w-full md:w-1/1 sm:w-full p-4 text-black flex flex-col justify-center items-start">
+                      <span className="lg:text-2xl md:text-2xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
+                        <span className="flex items-center justify-center p-1">
+                          <LineIcon />{" "}
+                        </span>
+                        {" "}Site Plan
+                      </span>
+                      <div>
+                        <h4 style={{ fontFamily: "Abril Fatface" }} class="lg:text-5xl md:text-2xl sm:text-base text-justify text-black-600">
+                        Master Plan of {projectViewDetails.builderName}
+                        </h4>
+                        <div className="text-justify text-gray-700 m-0 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-sm md:text-base lg:text-lg xl:text-lg pt-0">
+                        {projectViewDetails?.projectMaster_plan?.url && (
+                        <img
+                          src={projectViewDetails.projectMaster_plan.url}
+                          alt={`${projectViewDetails.projectName}`}
+                          className="w-full h-full object-fit"
+                          onClick={() => openModalMasterPlan(projectViewDetails.projectMaster_plan.url)}
+                        />
+                      )}
+                        </div>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Master plan */}
-            <div className="p-0 h-fit" >
+            {/* <div className="p-0 h-fit" >
               <div className="flex flex-justify-center items-stretch rounded h-auto">
                 <div className="text-black w-full flex flex-col">
                   <div className="flex flex-col md:flex-row h-full">
@@ -1365,12 +1395,12 @@ const NewBanner = () => {
                     </div>
 
                     <div className="w-full md:w-1/2 overflow-hidden flex items-center ">
-                      {projectViewDetails?.highlightImage?.url && (
+                      {projectViewDetails?.projectMaster_plan?.url && (
                         <img
-                          src={projectViewDetails.highlightImage.url}
+                          src={projectViewDetails.projectMaster_plan.url}
                           alt={`${projectViewDetails.projectName}`}
                           className="w-full h-full object-cover"
-                          onClick={() => openModalMasterPlan(projectViewDetails.highlightImage.url)}
+                          onClick={() => openModalMasterPlan(projectViewDetails.projectMaster_plan.url)}
                         />
                       )}
                     </div>
@@ -1378,7 +1408,7 @@ const NewBanner = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {isModalOpenMasterPlan && (
               <div className="fixed inset-0 pt-20 bg-black bg-opacity-75 flex justify-center items-center z-50">
