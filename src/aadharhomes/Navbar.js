@@ -221,6 +221,7 @@ export default function Navbar() {
 
               {!isSmallerThan768 && (
                 <>
+                <span className="flex" style={{border:'1px solid red'}}>
                   <div
                     className="relative group"
                     onMouseEnter={handleHover1}
@@ -585,7 +586,7 @@ export default function Navbar() {
                     </div>
                   </div>
 
-                  {token ? (
+                  {/* {token ? (
                     <Link
                       to={"/postproperty/"}
                       className="text-red-600 hover:text-red-600  font-bold  uppercase pt-1  text-sm"
@@ -595,11 +596,11 @@ export default function Navbar() {
                   ) : (
                     <Link
                       to={"/signin/"}
-                      className="text-red-600 hover:text-red-600 font-bold uppercase pt-1 text-sm"
+                      className="text-red-600 hidden hover:text-red-600 font-bold uppercase pt-1 text-sm"
                     >
                       List Property
                     </Link>
-                  )}
+                  )} */}
 
                   <div
                     className="relative group "
@@ -791,6 +792,7 @@ export default function Navbar() {
                       </div>
                     </div>
                   </div>
+                  </span>
                 </>
               )}
             </HStack>

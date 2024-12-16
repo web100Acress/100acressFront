@@ -35,6 +35,10 @@ import RupeeSignSVG from '../../../src/Assets/icons/svg/rupeesign.svg';
 import LocationSmallhomeSVG from '../../../src/Assets/icons/svg/redlocation.svg';
 import EyeSVG from '../../../src/Assets/icons/svg/eye.svg';
 import LocationBiggerSVG from '../../../src/Assets/icons/svg/locationbigger.svg';
+import TopLocalitiesSVG from '../../../src/Assets/icons/svg/toplocalities.svg';
+import SearchSVG from '../../../src/Assets/icons/svg/searchicon.svg';
+import LeftArrowSVG from '../../../src/Assets/icons/svg/leftarrow.svg';
+import RightArrowSVG from '../../../src/Assets/icons/svg/rightarrow.svg';
 
 
 const getSVG = (path, style = {}) => (
@@ -174,4 +178,20 @@ export const EyeIcon = (props) => {
 
 export const LcoationBiggerIcon = (props) => {
   return <Icon component={() => getSVG(LocationBiggerSVG, props.iconstyle)} {...props} />;
+};
+
+export const TopLocalitesIcon = (props) => {
+  return <Icon component={() => getSVG(TopLocalitiesSVG, props.iconstyle)} {...props} />;
+};
+
+export const SearchIcon = (props) => {
+  return <Icon component={() => getSVG(SearchSVG, props.iconstyle)} {...props} />;
+};
+
+export const RightArrowIcon = (props) => {
+  return <Icon component={() => getSVG(RightArrowSVG, props.iconstyle)} {...props} />;
+};
+
+export const LeftArrowIcon = (props) => {
+  return <Icon component={() => getSVG(LeftArrowSVG, props.iconstyle)} {...props} />;
 };
