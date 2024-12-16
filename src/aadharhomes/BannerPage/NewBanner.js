@@ -1329,7 +1329,7 @@ const NewBanner = () => {
             </div>
 
             {/* Master Plan */}
-            <div className="p-6 h-fit" >
+            <div className="h-fit" >
               <div className="flex flex-justify-center items-stretch rounded h-auto">
                 <div className="text-black w-full flex flex-col">
                   <div className="flex flex-col md:flex-row h-full">
