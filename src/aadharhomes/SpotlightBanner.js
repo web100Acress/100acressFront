@@ -16,7 +16,6 @@ const SpotlightBanner = () => {
   ];
 
 
-  console.log("dfdsjkh",projectViewDetails)
   return (
     <div className="bg-gray-100 flex items-center justify-center">
       <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-5 md:p-8 lg:flex lg:items-center">
