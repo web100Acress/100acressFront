@@ -16,8 +16,8 @@ const ProjectEdit = () => {
     frontImage: "",
     otherImage: [],
     project_floorplan_Image: [],
-    projectGallery:[],
-    highlightImage:"",
+    projectGallery: [],
+    highlightImage: "",
     project_locationImage: "",
     logo: "",
     projectName: "",
@@ -37,18 +37,18 @@ const ProjectEdit = () => {
     meta_title: "",
     meta_description: "",
     project_Status: "",
-    launchingDate:"",
-    totalLandArea:"",
-    totalUnit:"",
-    towerNumber:"",
-    mobileNumber:"",
-    possessionDate:"",
-    minPrice:"",
-    maxPrice:"",
+    launchingDate: "",
+    totalLandArea: "",
+    totalUnit: "",
+    towerNumber: "",
+    mobileNumber: "",
+    possessionDate: "",
+    minPrice: "",
+    maxPrice: "",
   });
 
   const { id } = useParams();
-  const { project_floorplan_Image,projectGallery } = values;
+  const { project_floorplan_Image, projectGallery } = values;
   const floorPlanLength = values.project_floorplan_Image.length;
   const projectGalleryLength = values.projectGallery.length;
 
@@ -88,14 +88,14 @@ const ProjectEdit = () => {
   // const handleUpdateUser = async () => {
   //   try {
   //     const fromData = new FormData();
-  
+
   //     // Append all key-value pairs from values
   //     for (const key in values) {
   //       if (values[key] !== undefined && values[key] !== null) {
   //         fromData.append(key, values[key]);
   //       }
   //     }
-  
+
   //     // Append floor plan images if they exist
   //     if (values.project_floorplan_Image && Array.isArray(values.project_floorplan_Image)) {
   //       for (let i = 0; i < floorPlanLength; i++) {
@@ -104,7 +104,7 @@ const ProjectEdit = () => {
   //         }
   //       }
   //     }
-  
+
   //     // Append project gallery images if they exist
   //     if (values.projectGallery && Array.isArray(values.projectGallery)) {
   //       for (let i = 0; i < projectGalleryLength; i++) {
@@ -113,17 +113,17 @@ const ProjectEdit = () => {
   //         }
   //       }
   //     }
-  
+
   //     // Append front image if it exists
   //     if (values.frontImage && values.frontImage.file) {
   //       fromData.append('frontImage', values.frontImage.file);
   //     }
-  
+
   //     // Append project master plan image if it exists
   //     if (values.projectMaster_plan && values.projectMaster_plan.file) {
   //       fromData.append('projectMaster_plan', values.projectMaster_plan.file);
   //     }
-  
+
   //     const response = await axios.post(
   //       `https://api.100acress.com/project/Update/${id}`,
   //       fromData
@@ -138,21 +138,21 @@ const ProjectEdit = () => {
   //     console.error("Error updating user:", error);
   //   }
   // };
-  
+
 
 
 
   const handleUpdateUser = async () => {
     try {
       const fromData = new FormData();
-  
+
       // Append all key-value pairs from values
       for (const key in values) {
         if (values[key] !== undefined && values[key] !== null) {
           fromData.append(key, values[key]);
         }
       }
-  
+
       // Append floor plan images if they exist
       if (values.project_floorplan_Image && Array.isArray(values.project_floorplan_Image)) {
         values.project_floorplan_Image.forEach((item, index) => {
@@ -162,7 +162,7 @@ const ProjectEdit = () => {
           }
         });
       }
-  
+
       // Append project gallery images if they exist
       if (values.projectGallery && Array.isArray(values.projectGallery)) {
         values.projectGallery.forEach((item, index) => {
@@ -172,24 +172,24 @@ const ProjectEdit = () => {
           }
         });
       }
-  
+
       // Append front image if it exists
       if (values.frontImage && values.frontImage.file) {
         fromData.append('frontImage', values.frontImage.file);
         console.log(`Appending front image: frontImage`, values.frontImage.file);
       }
-  
+
       // Append project master plan image if it exists
       if (values.projectMaster_plan && values.projectMaster_plan.file) {
         fromData.append('projectMaster_plan', values.projectMaster_plan.file);
         console.log(`Appending master plan image: projectMaster_plan`, values.projectMaster_plan.file);
       }
-  
+
       const response = await axios.post(
         `https://api.100acress.com/project/Update/${id}`,
         fromData
       );
-      
+
       if (response.status === 200) {
         alert("Data updated successfully");
       } else {
@@ -199,8 +199,8 @@ const ProjectEdit = () => {
       console.error("Error updating user:", error);
     }
   };
-  
-  
+
+
 
   const handleDeleteUser = async (index) => {
     const IndexNumber = index;
@@ -266,18 +266,18 @@ const ProjectEdit = () => {
                           Array.isArray(project_floorplan_Image) &&
                           project_floorplan_Image.length > 0 &&
                           project_floorplan_Image.map((image, index) => (
-                        
+
                             <article
                               key={index}
                               className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
                             >
-                              
+
                               <MdOutlineDeleteOutline
                                 onClick={() => deleteFloorPlanImage(index)}
                                 size={30}
                                 className="group-hover:text-red-500"
                               />
-                            
+
                               <img
                                 src={image.url}
                                 alt={`Image ${index + 1}`}
@@ -289,14 +289,23 @@ const ProjectEdit = () => {
                         <input
                           type="file"
                           name="project_floorplan_Image"
+                          accept="image/*"
                           onChange={(e) => {
-                            const file = e.target.files[0];
+                            const files = Array.from(e.target.files);
+                            const updatedImages = files.map((file) => ({
+                              url: URL.createObjectURL(file),
+                              file,
+                            }));
                             setValues({
                               ...values,
-                              project_floorplan_Image: file,
+                              project_floorplan_Image: [
+                                ...(project_floorplan_Image || []),
+                                ...updatedImages,
+                              ],
                             });
                           }}
-                          multiple 
+                          multiple
+                          className="mt-2"
                         />
                       </div>
                     </section>
@@ -350,18 +359,18 @@ const ProjectEdit = () => {
                           Array.isArray(projectGallery) &&
                           projectGallery.length > 0 &&
                           projectGallery.map((image, index) => (
-                        
+
                             <article
                               key={index}
                               className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
                             >
-                              
+
                               <MdOutlineDeleteOutline
                                 onClick={() => deleteFloorPlanImage(index)}
                                 size={30}
                                 className="group-hover:text-red-500"
                               />
-                            
+
                               <img
                                 src={image.url}
                                 alt={`Image ${index + 1}`}
@@ -373,15 +382,23 @@ const ProjectEdit = () => {
                         <input
                           type="file"
                           name="projectGallery"
+                          accept="image/*"
                           onChange={(e) => {
-                            const file = e.target.files[0];
-
+                            const files = Array.from(e.target.files);
+                            const updatedImages = files.map((file) => ({
+                              url: URL.createObjectURL(file),
+                              file,
+                            }));
                             setValues({
                               ...values,
-                              projectGallery: file,
+                              projectGallery: [
+                                ...(projectGallery || []),
+                                ...updatedImages,
+                              ],
                             });
                           }}
-                          multiple 
+                          multiple
+                          className="mt-2"
                         />
                         
                       </div>
@@ -594,7 +611,7 @@ const ProjectEdit = () => {
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
-                     Possession Date :{" "}
+                      Possession Date :{" "}
                       <span style={{ color: "black", fontWeight: "normal" }}>
                         <input
                           type="text"
@@ -616,7 +633,7 @@ const ProjectEdit = () => {
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
-                     Launching Date :{" "}
+                      Launching Date :{" "}
                       <span style={{ color: "black", fontWeight: "normal" }}>
                         <input
                           type="text"
