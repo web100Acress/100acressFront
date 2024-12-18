@@ -213,7 +213,7 @@ export default function Navbar() {
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
                     src="../../Images/logo.png"
-                    alt="100acress logo"
+                    alt="100acress"
                     marginBottom={2}
                   />
                 </Link>
