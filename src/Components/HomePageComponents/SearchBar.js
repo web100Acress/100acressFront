@@ -1,40 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Search from "../../aadharhomes/Search";
 import { Link } from "react-router-dom";
-import { TopLocalitesIcon ,LeftArrowIcon ,RightArrowIcon } from "../../Assets/icons";
+import { TopLocalitesIcon, LeftArrowIcon, RightArrowIcon } from "../../Assets/icons";
+import Slider from "react-slick";
 
 function SearchBar() {
   const [activeLink, setActiveLink] = useState("Buy");
   const [data, setData] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentindeximgae, setCurrentImageIndex] = useState(0);
+  const [imageSrc, setImageSrc] = useState([]);
+
 
   const handleLinkClick = (linkName) => {
     setActiveLink(linkName);
     setData(`${linkName}`);
   };
 
-   const localities = [
+  const localities = [
     { name: "Sohna Road", link: "/property-in-gurugram/sohna-road/" },
     { name: "Golf Course Road", link: "/property-in-gurugram/golf-course/" },
     { name: "MG Road", link: "/property-in-gurugram/mg-road/" },
     { name: "Northern Peripheral Road", link: "/property-in-gurugram/northern-peripheral-road/" },
-    { name: "Dwarka Expressway", link: "/property-in-gurugram/dwarka-expressway/"},
+    { name: "Dwarka Expressway", link: "/property-in-gurugram/dwarka-expressway/" },
     { name: "New Gurgaon", link: "/property-in-gurugram/new-gurgaon/" },
-    { name: "Sohna", link: "/property-in-gurugram/sohna/"},
+    { name: "Sohna", link: "/property-in-gurugram/sohna/" },
     { name: "Southern Peripheral Road", link: "/property-in-gurugram/southern-peripheral-road/" },
-    { name: "NH-48", link: "/property-in-gurugram/nh-48/"},
+    { name: "NH-48", link: "/property-in-gurugram/nh-48/" },
     { name: "Golf Course Extn Road", link: "/property-in-gurugram/golf-course-extn-road/" },
   ];
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const itemsPerPage = 6; 
+  const itemsPerPage = 6;
   const nextpage = 1;
 
-  // Determine visible localities
-  const visibleLocalities = localities.slice(
-    currentIndex,
-    currentIndex + itemsPerPage
-  );
+  const visibleLocalities = localities.slice(currentIndex, currentIndex + itemsPerPage);
 
   const handleNext = () => {
     if (currentIndex + itemsPerPage < localities.length) {
@@ -42,81 +42,123 @@ function SearchBar() {
     }
   };
 
-  const handlePrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prev) => prev - nextpage);
-    }
+  // const handlePrev = () => {
+  //   if (currentIndex > 0) {
+  //     setCurrentIndex((prev) => prev - nextpage);
+  //   }
+  // };
+
+  useEffect(() => {
+    const updateImageSrc = () => {
+      if (window.innerWidth <= 600) {
+        setImageSrc(['../../Imgaes/mobile.png']);
+      } else if (window.innerWidth <= 1024) {
+        setImageSrc(['../../Images/Laptop.png']);
+      } else {
+        setImageSrc(['../../Images/Laptop.png']);
+      }
+    };
+
+    updateImageSrc();
+    window.addEventListener('resize', updateImageSrc);
+
+    return () => {
+      window.removeEventListener('resize', updateImageSrc);
+    };
+  }, []);
+
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 600,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 4000,
+    arrows: false,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+    customPaging: (i) => (
+      <button
+        className={`rounded-full mt-4 mr-2 ${i === currentindeximgae ? 'bg-gray-800 h-2 w-5' : 'bg-gray-400 h-3 w-3'}`}
+      ></button>
+    ),
+    afterChange: (index) => setCurrentImageIndex(index),
   };
 
-
   return (
-    <Wrapper className="section">
 
-      <div
-        className="qsbWrapper pt-0 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto lg:pb-14 md:pb-14 md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-10 sm:h-8 md:-mt-8 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-2"
-        style={{ maxWidth: '860px', border: '1px solid white', minHeight: "300px", marginTop: '-40px' }}
-      >
-        <div className="text-center mb-4 text-[#FFFFFF] text-2xl" style={{ fontFamily: 'gluten' }}>
-          Find Your Perfect Place to Call Home.
+    <Wrapper className="section">
+      <div className="qsbWrapper pt-0 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto lg:pb-14 md:pb-14 md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-14 sm:h-8 md:-mt-32 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-2 " style={{ maxWidth: '860px' }}>
+        <div className="text-center break-words mb-4 text-[#FFFFFF] text-3xl sm:text-2xl">
+          <span className="block sm:inline"style={{ fontFamily: 'gluten' }}>Find Your Perfect</span>
+          <span className="block sm:inline"style={{ fontFamily: 'gluten' }}> Place to Call Home.</span>
         </div>
         <div className="SJDMls xl:h-12 lg:h-12 md:h-10 sm:h-8 lg:p-0 sm:p-0 md:p-0">
-          {["Buy", "Rent", "New Launch", "Commercial", "Land/Plots", "SCO"].map(
-            (linkName) => (
-              <Link
-                key={linkName}
-                className={`options hidden sm:block hover:underline hover:underline-offset-8 cursor-pointer whitespace-nowrap ${activeLink === linkName
-                    ? "active text-red-500 bg-[#FFFFFF] rounded-t-lg"
-                    : "text-[#FFFFFF]"
-                  } hover:text-red-500`}
-                onClick={() => handleLinkClick(linkName)}
-              >
-                {linkName}
-              </Link>
-            )
-          )}
+          {["Buy", "Rent", "New Launch", "Commercial", "Plots", "SCO"].map((linkName) => (
+            <Link
+              key={linkName}
+              className={`options hidden sm:block hover:underline hover:underline-offset-8 cursor-pointer whitespace-nowrap ${activeLink === linkName
+                ? "active bg-[#FFFFFF] rounded-t-lg"
+                : "text-[#FFFFFF]"
+                }`}
+              onClick={() => handleLinkClick(linkName)}
+            >
+              {linkName}
+            </Link>
+          ))}
         </div>
 
         <div className="mb-0">
           <Search data1={data} />
         </div>
-        <div className="flex justify-start mt-2 flex-nowrap">
-          <span className="text-[#FFFFFF]">
+
+        <div className=" flex justify-start mt-2 flex-nowrap w-160 md:w-112">
+          <span className="text-[#FFFFFF] text-xs md:text-xs whitespace-nowrap">
             <TopLocalitesIcon /> Top Localities:
           </span>
-          <span className="flex flex-nowrap align-center ml-2"> 
 
-          {currentIndex > 0 && (
-        <button
-          onClick={handlePrev}
-        >
-          <LeftArrowIcon/>
-        </button>
-      )}
+          <div className=" flex flex-nowrap align-center ml-2">
+            {/* <button onClick={handlePrev} disabled={currentIndex === 0} className={`cursor-pointer ${currentIndex === 0 ? 'opacity-50 pointer-events-none' : ''}`}>
+              <LeftArrowIcon />
+            </button> */}
+            <marquee className="text-[10px] px-2 py-1  rounded-xl whitespace-nowrap snap-center  transition flex flex-nowrap">
+            <div className="flex space-x-2 flex-nowrap w-128 md-w-96 overflow-x-auto no-scrollbar">
+              {visibleLocalities.map((locality, index) => (
+                <Link to={locality.link} target="_blank" key={index} className="cvBMLN">
+                 
+                  <button className="SDFEDVx text-white text-[10px] px-2 py-1 border border-white rounded-xl whitespace-nowrap snap-center hover:bg-white hover:text-black transition flex flex-nowrap">
+                    {locality.name}
+                  </button>
+                </Link>
+              ))}
+            </div>
+              </marquee>
 
-      {/* Scrollable Localities */}
-      <div className=" flex space-x-2 flex-nowrap scrollbar-hide snap-x snap-mandatory">
-        {visibleLocalities.map((locality, index) => (
-          <Link to={locality.link} target="_blank" key={index} className="cvBMLN">
-          <button
-            key={index}
-            className="SDFEDVx text-white text-[10px] px-2 py-1 border border-white rounded-xl whitespace-nowrap snap-center hover:bg-white hover:text-black transition flex flex-nowrap"
-          >
-            {locality.name}
-          </button>
-          </Link>
-        ))}
-      </div>
+            <button onClick={handleNext} disabled={currentIndex + itemsPerPage >= localities.length} className={`cursor-pointer ${currentIndex + itemsPerPage >= localities.length ? 'opacity-50 pointer-events-none' : ''}`}>
+              <RightArrowIcon />
+            </button>
+          </div>
+        </div>
 
-      {/* Next Button */}
-      {currentIndex + itemsPerPage < localities.length && (
-        <button
-          onClick={handleNext}
-        >
-          <RightArrowIcon/>
-        </button>
-      )}
-                </span>
-
+        <div className="hidden md:block mt-2 lg:w-[600px] lg:h-[150px] md:h-[100px] md:w-[450px] mx-auto mt-3">
+          <Wrapper className="section">
+            <Slider {...settings}>
+              {imageSrc.map((src, index) => (
+                <div key={index}>
+                  <img src={src} alt={`Slide ${index}`} className="w-full h-auto" />
+                </div>
+              ))}
+            </Slider>
+          </Wrapper>
         </div>
       </div>
     </Wrapper>
@@ -177,6 +219,15 @@ const Wrapper = styled.section`
       display: flex; /* Show SJDMls on small screens */
       flex-wrap: wrap; /* Allow wrapping */
     }
+
+    .options {
+      font-size: 12px; /* Further reduce font size for extra small screens */
+      padding: 8px 12px; /* Reduce padding for extra small screens */
+    }
+
+    .flex-nowrap {
+      flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    }
   }
 
   .SJDMls {
@@ -184,13 +235,13 @@ const Wrapper = styled.section`
     box-shadow: 0 25px 60px rgba(113, 106, 147, 0.2);
     width: auto;
     border-radius: 20px 20px 0px 0px;
-    background:rgba(255, 255, 255, 0.21);
+    background: rgba(255, 255, 255, 0.21);
     margin-left: 30px;
-    margin-right:30px;
+    margin-right: 30px;
   }
 
   .SDFEDVx {
-    background:rgba(255, 255, 255, 0.36);
+    background: rgba(255, 255, 255, 0.36);
   }
 
   .options {
@@ -200,7 +251,7 @@ const Wrapper = styled.section`
   }
 
   .options:hover {
-    color: red;
+    color: white;
   }
 
   .options.active {
@@ -213,123 +264,3 @@ const Wrapper = styled.section`
   }
 `;
 
-
-// import React, { useState } from "react";
-// import styled from "styled-components";
-// import Search from "../../aadharhomes/Search";
-// import { Link } from "react-router-dom";
-// function SearchBar() {
-//   const [activeLink, setActiveLink] = useState("");
-//   const [data, setData] = useState(null);
-
-//   const handleLinkClick = (linkName) => {
-//     setActiveLink(linkName);
-//     setData(`${linkName}`);
-//   };
-
-//   return (
-//     <Wrapper className="section">
-//       <div
-//         className="qsbWrapper pt-2 mr-auto ml-auto lg:mr-auto md:ml-auto md:mr-auto ml:ml-auto sm:mr-4 sm:ml-4  xs:py-2 lg:h-14 md:h-10 sm:h-8"
-//         style={{ maxWidth: "800px", marginTop: "110px" }}
-//       >
-
-//         <div className="SJDMls xl:h-14 lg:h-14 md:h-8 sm:h-8">
-//           {["Buy", "Rent", "New Launch", "Commercial", "Land/Plots", "SCO"].map(
-//             (linkName) => (
-//               <Link
-//                 key={linkName}
-//                 className={`options font-semibold hover:underline hover:underline-offset-8 cursor-pointer ${
-//                   activeLink === linkName ? "active underline underline-offset-8 text-red-500" : ""
-//                 } hover:text-red-500`}
-//                 onClick={() => handleLinkClick(linkName)}
-//               >
-
-//                 {linkName}
-//               </Link>
-//             )
-//           )}
-
-//         </div>
-
-//         <Search data1={data} />
-//       </div>
-//     </Wrapper>
-//   );
-// }
-
-// export default SearchBar;
-// const Wrapper = styled.section`
-//   font-weight: 400;
-//   line-height: 18px;
-//   div {
-//     box-sizing: border-box;
-//   }
-
-//   .qsbWrapper {
-//     display: flex;
-//     justify-content: center;
-//     flex-direction: column;
-//   }
-
-//   .SJDMls {
-//     display: flex;
-//     box-shadow: 0 25px 60px rgba(113, 106, 147, 0.2);
-//     width: fit-content;
-//     border-radius: 20px 20px 0px 0px;
-//     background: #fff;
-//     margin-left: 32px;
-//   }
-//   .options {
-//     padding: 9px 30px 13px 30px;
-//     font-size: 16px;
-//   }
-//   // .options:hover {
-//   //   font-size: 18px;
-//   // }
-//   .SJDMls > div:hover {
-//     cursor: pointer;
-//   }
-//   .SJDMls > div.active {
-//     font-size: 20px;
-//     color: red;
-//   }
-//   @media screen and (max-width: 500px) {
-//     .SJDMls{
-//       display: none;
-//     }
-//   }
-//   @media screen and (max-width: 900px) {
-//     .qsbWrapper {
-//       margin: 8rem auto !important;
-//     }
-//     @media screen and (max-width: 640px) {
-//       .qsbWrapper {
-//         margin: 3rem auto !important;
-//       }
-//     .suggestor-wrapper {
-//       width: 90%;
-//     }
-
-//   @media screen and (max-width: 500px) {
-//     .qsbWrapper {
-//       flex-direction: column-reverse;
-//       align-items: center;
-//     }
-//   }
-//   @media screen and (max-width: 885px) and (min-width: 860px) {
-//     .qsbWrapper .qsb .keywordSugg .suggestor-box {
-//       width: 293px;
-//     }
-//   }
-//   @media screen and (max-width: 770px) and (min-width: 750px) {
-//     .qsbWrapper .qsb .keywordSugg .suggestor-box {
-//       width: 223px;
-//     }
-//   }
-//   @media screen and (max-width: 1200px) and (min-width: 900px) {
-//     .qsbWrapper {
-//       margin: 10rem auto !important;
-//     }
-//   }
-// `;

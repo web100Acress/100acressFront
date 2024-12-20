@@ -39,6 +39,11 @@ import TopLocalitiesSVG from '../../../src/Assets/icons/svg/toplocalities.svg';
 import SearchSVG from '../../../src/Assets/icons/svg/searchicon.svg';
 import LeftArrowSVG from '../../../src/Assets/icons/svg/leftarrow.svg';
 import RightArrowSVG from '../../../src/Assets/icons/svg/rightarrow.svg';
+import ScrollSVG from '../../../src/Assets/icons/svg/scroll.svg';
+import WhiteLineSVG from '../../../src/Assets/icons/svg/whiteline.svg';
+import PeopleSVG from '../../../src/Assets/icons/svg/people.svg';
+import FillSVG from '../../../src/Assets/icons/svg/Fill.svg';
+
 
 
 const getSVG = (path, style = {}) => (
@@ -47,6 +52,14 @@ const getSVG = (path, style = {}) => (
 
 export const PhoneIcon = (props) => {
   return <Icon component={() => getSVG(PHONEICONSVG, props.iconstyle)} {...props} />;
+};
+
+export const WhiteLinestreakIcon = (props) => {
+  return <Icon component={() => getSVG(WhiteLineSVG, props.iconstyle)} {...props} />;
+};
+
+export const ScrollIcon = (props) => {
+  return <Icon component={() => getSVG(ScrollSVG, props.iconstyle)} {...props} />;
 };
 
 export const ShareFrameIcon = (props) => {
@@ -194,4 +207,12 @@ export const RightArrowIcon = (props) => {
 
 export const LeftArrowIcon = (props) => {
   return <Icon component={() => getSVG(LeftArrowSVG, props.iconstyle)} {...props} />;
+};
+
+export const PeopleIcon = (props) => {
+  return <Icon component={() => getSVG(PeopleSVG, props.iconstyle)} {...props} />;
+};
+
+export const FillIcon = (props) => {
+  return <Icon component={() => getSVG(FillSVG, props.iconstyle)} {...props} />;
 };

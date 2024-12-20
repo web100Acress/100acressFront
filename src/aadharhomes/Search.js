@@ -74,16 +74,16 @@ const Search = ({ data1 }) => {
 
   return (
     <div
-      className={`w-full shadow-xl rounded-full bg-white h-16 flex items-center justify-center`}
+      className={`w-2rem shadow-xl rounded-full bg-white h-16 lg:w-[48rem] flex items-center justify-center`}
       style={{
         marginTop:
           window.innerWidth < 640
-            ? "-50px"
+            ? "-0px"
             : window.innerWidth >= 640 && window.innerWidth <= 768
             ? "-12px"
             : "0",
-        marginBottom: window.innerWidth === 768 ? "90px" : "0",
-        borderRadius: window.innerWidth < 640 ? "0" : "30px",
+        marginBottom: window.innerWidth === 768 ? "0px" : "0",
+        borderRadius: window.innerWidth < 640 ? "30px" : "30px",
       }}
     >
       <div
@@ -107,8 +107,10 @@ const Search = ({ data1 }) => {
           }}
           id="searchButton"
         >
-          <div className="px-5 py-2.5 bg-[#C13B44] text-white rounded-full flex items-center justify-center gap-1">
-            <SearchIcon /> Search
+          <div className="px-2.5 md:px-5 py-2.5 bg-[#C13B44] text-white rounded-full flex items-center justify-center gap-1 ">
+            <SearchIcon /> {" "}<span className="hidden sm:block">
+              Search
+              </span>
           </div>
         </Link>
       </div>

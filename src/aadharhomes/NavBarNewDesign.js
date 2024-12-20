@@ -68,7 +68,7 @@ export default function WithAction() {
                   minW={["50px", "70px"]}
                   width={["xs", "sm", "md", "lg"]}
                   src="../../Images/logo.png"
-                  alt="100acress logo"
+                  alt="100acress"
                 />
               </Link>
             </Box>

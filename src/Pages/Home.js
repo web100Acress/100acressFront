@@ -104,14 +104,14 @@ function Home() {
 
       <div className="relative w-full">
         <img
-          src="../../Images/mainbg.png"
+          src="../../Images/mainbg.webp"
           alt="Banner"
-          className="hidden md:block w-full h-[23rem] opacity-75"
+          className="hidden opacity-80 md:block w-full h-[25rem] md:h-[28rem] sm:h-[35rem] "
         />
         <img
-          src="../../Images/mainbg.png"
+          src="../../Images/mainbg.webp"
           alt="Mobile Banner"
-          className="block md:hidden w-full h-auto"
+          className="block md:hidden w-full h-[23rem]"
         />
 
         {/* Center the SearchBar */}
@@ -123,7 +123,7 @@ function Home() {
 
 
       {/*<!-- End Carousel with indicators inside --> */}
-      <SpotlightBanner/>
+      {/* <SpotlightBanner/> */}
       <div>
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl">
@@ -132,7 +132,7 @@ function Home() {
         </div>
 
         {/* Filter Buttons */}
-        <div className="flex items-center justify-start gap-3 mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
+        <div className="flex items-center justify-start gap-3 mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2 overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveFilter("Trending")}
             className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"

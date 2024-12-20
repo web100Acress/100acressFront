@@ -20,6 +20,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
 import { DataContext } from "../MyContext";
+import { FillIcon, PeopleIcon } from "../Assets/icons";
 const SpacerComponent = () => <Box width="60px" />;
 
 const MenuListContainer = ({ isOpen }) => {
@@ -202,6 +203,7 @@ export default function Navbar() {
             <HStack
               spacing={isSmallerThan768 ? 0 : 8}
               alignItems="center"
+              justifyContent={isSmallerThan768 ? "space-x-0" : "space-x-0"}
               flex="1"
             >
               <Box marginLeft={"-18px"}>
@@ -213,22 +215,22 @@ export default function Navbar() {
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
                     src="../../Images/logo.png"
-                    alt="100acress logo"
+                    alt="100acress"
                     marginBottom={2}
                   />
                 </Link>
               </Box>
 
               {!isSmallerThan768 && (
-                <>
-                <span className="flex" style={{border:'1px solid red'}}>
+                <HStack spacing={10} justify="center" flex="1">
+                
                   <div
                     className="relative group"
                     onMouseEnter={handleHover1}
                     onMouseLeave={handleLeave1}
                   >
                     <Link to="/buy-properties/best-resale-property-in-gurugram/">
-                      <button className=" text-red-600 pt-1  text-sm  uppercase font-bold ">
+                      <button className=" text-red-600 pt-1  text-sm  uppercase font-bold text-center">
                         Resale
                       </button>
                     </Link>
@@ -237,167 +239,167 @@ export default function Navbar() {
                         isMenuOpen1 ? "block" : "hidden"
                       }`}
                     >
-                      <div className="flex ">
-                        <div className="w-48">
-                          <Link
-                            to="#"
-                            className="block px-4 py-1  text-black text-lg "
-                          >
-                            Popular Choices
-                            <hr className="mt-1" />
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Ready to Move
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Owner Choices
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Budget Homes
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Premium homes
-                          </Link>
-                          <Link
-                            to="#"
-                            className=" text-sm px-4  hover:text-red-600 flex items-center"
-                          >
-                            NewlyLaunched
-                            <span className="flex border rounded-md text-white bg-red-600 py-0 px-1 ">
-                              Free
-                            </span>
-                          </Link>
-                        </div>
-
-                        <div className="w-52 mb-4">
-                          <Link
-                            to="#"
-                            className="block text-black  text-lg px-2 py-1 "
-                          >
-                            Property Types <hr className="mt-1" />
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2   hover:text-red-600"
-                          >
-                            Flats in Gurugram
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
-                          >
-                            House For Sale in Gurugram
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2   hover:text-red-600"
-                          >
-                            Villa in Gurugram
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
-                          >
-                            Plots in Gurugram
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2   hover:text-red-600"
-                          >
-                            Office Place in Gurugram
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
-                          >
-                            Retail Space in Gurugram
-                          </Link>
-                        </div>
-                        <div className="w-40">
-                          <Link
-                            to="#"
-                            className="block text-black  text-lg px-4 py-1  hover:text-red-600"
-                          >
-                            Budget
-                            <hr className="mt-1" />
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            under ₹50 Lac
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            ₹50 Lac - ₹1 Cr
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            ₹1 Cr - ₹2.5 Cr
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            ₹2.5 Cr - ₹5 Cr
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Above ₹5 Cr
-                          </Link>
-                        </div>
-                        <div className="w-48">
-                          <Link
-                            to="#"
-                            className="block text-black  text-lg px-2 py-1 "
-                          >
-                            Explore
-                            <hr className="mt-1" />
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2  hover:text-red-600"
-                          >
-                            Localities in Gurugram
-                          </Link>
-                          <Link
-                            to="/projects-in-gurugram/"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
-                          >
-                            Projects in Gurugram
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2   hover:text-red-600"
-                          >
-                            Investment Hotspot
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2  py-1  hover:text-red-600"
-                          >
-                            Find an Agent
-                          </Link>
-                        </div>
-                      </div>
+                     {false && <div className="flex ">
+                       <div className="w-48">
+                         <Link
+                           to="#"
+                           className="block px-4 py-1  text-black text-lg "
+                         >
+                           Popular Choices
+                           <hr className="mt-1" />
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4   hover:text-red-600"
+                         >
+                           Ready to Move
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4 py-1  hover:text-red-600"
+                         >
+                           Owner Choices
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4   hover:text-red-600"
+                         >
+                           Budget Homes
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4 py-1  hover:text-red-600"
+                         >
+                           Premium homes
+                         </Link>
+                         <Link
+                           to="#"
+                           className=" text-sm px-4  hover:text-red-600 flex items-center"
+                         >
+                           NewlyLaunched
+                           <span className="flex border rounded-md text-white bg-red-600 py-0 px-1 ">
+                             Free
+                           </span>
+                         </Link>
+                       </div>
+                     
+                       <div className="w-52 mb-4">
+                         <Link
+                           to="#"
+                           className="block text-black  text-lg px-2 py-1 "
+                         >
+                           Property Types <hr className="mt-1" />
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2   hover:text-red-600"
+                         >
+                           Flats in Gurugram
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2 py-1  hover:text-red-600"
+                         >
+                           House For Sale in Gurugram
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2   hover:text-red-600"
+                         >
+                           Villa in Gurugram
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2 py-1  hover:text-red-600"
+                         >
+                           Plots in Gurugram
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2   hover:text-red-600"
+                         >
+                           Office Place in Gurugram
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2 py-1  hover:text-red-600"
+                         >
+                           Retail Space in Gurugram
+                         </Link>
+                       </div>
+                       <div className="w-40">
+                         <Link
+                           to="#"
+                           className="block text-black  text-lg px-4 py-1  hover:text-red-600"
+                         >
+                           Budget
+                           <hr className="mt-1" />
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4   hover:text-red-600"
+                         >
+                           under ₹50 Lac
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4 py-1  hover:text-red-600"
+                         >
+                           ₹50 Lac - ₹1 Cr
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4   hover:text-red-600"
+                         >
+                           ₹1 Cr - ₹2.5 Cr
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4 py-1  hover:text-red-600"
+                         >
+                           ₹2.5 Cr - ₹5 Cr
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4   hover:text-red-600"
+                         >
+                           Above ₹5 Cr
+                         </Link>
+                       </div>
+                       <div className="w-48">
+                         <Link
+                           to="#"
+                           className="block text-black  text-lg px-2 py-1 "
+                         >
+                           Explore
+                           <hr className="mt-1" />
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2  hover:text-red-600"
+                         >
+                           Localities in Gurugram
+                         </Link>
+                         <Link
+                           to="/projects-in-gurugram/"
+                           className="block text-sm px-2 py-1  hover:text-red-600"
+                         >
+                           Projects in Gurugram
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2   hover:text-red-600"
+                         >
+                           Investment Hotspot
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2  py-1  hover:text-red-600"
+                         >
+                           Find an Agent
+                         </Link>
+                       </div>
+                     </div>}
                     </div>
                   </div>
 
@@ -416,191 +418,175 @@ export default function Navbar() {
                         isMenuOpen ? "block" : "hidden"
                       }`}
                     >
-                      <div className="flex">
-                        <div className="w-48">
-                          <Link
-                            to="#"
-                            className="block px-4 py-1 text-black  text-lg "
-                          >
-                            Popular Choices
-                            <hr className="mt-1" />
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Owner Properties
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Verified Properties
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Furnished Homes
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Bachelor Friendly Homes
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Immediately Available
-                          </Link>
-                        </div>
-
-                        <div className="w-52">
-                          <Link
-                            to="#"
-                            className="block text-black  text-lg px-2 py-1 "
-                          >
-                            Property Types
-                            <hr className="mt-1" />
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2   hover:text-red-600"
-                          >
-                            Flats for Rent in Gurugram
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
-                          >
-                            House for Rent in Gurugram
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2   hover:text-red-600"
-                          >
-                            Villa for Rent in Gurugram
-                          </Link>
-
-                          <Link
-                            to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
-                          >
-                            Office Space in Gurugram
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2  hover:text-red-600"
-                          >
-                            Commercial Space in Gurugram
-                          </Link>
-                        </div>
-
-                        <div className="w-40">
-                          <Link
-                            to="#"
-                            className="block text-black  text-lg px-4 py-1  hover:text-red-600"
-                          >
-                            Budget
-                            <hr className="mt-1" />
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Under ₹50 Lac
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            ₹50 Lac - ₹1 Cr
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4  hover:text-red-600"
-                          >
-                            ₹1 Cr - ₹2.5 Cr
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            ₹2.5 Cr - ₹5 Cr
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Above ₹5 Cr
-                          </Link>
-                        </div>
-                        <div className="w-48">
-                          <Link
-                            to="#"
-                            className="block text-black text-lg px-4 py-1 "
-                          >
-                            Explore
-                            <hr className="mt-1" />
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4  hover:text-red-600"
-                          >
-                            Localities
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Buy vs Rent
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Find an Agent
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Share Requirement
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Property Services
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Rent Agreement
-                          </Link>
-                        </div>
-                      </div>
+                     {false && <div className="flex">
+                       <div className="w-48">
+                         <Link
+                           to="#"
+                           className="block px-4 py-1 text-black  text-lg "
+                         >
+                           Popular Choices
+                           <hr className="mt-1" />
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4   hover:text-red-600"
+                         >
+                           Owner Properties
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4 py-1  hover:text-red-600"
+                         >
+                           Verified Properties
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4   hover:text-red-600"
+                         >
+                           Furnished Homes
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4 py-1  hover:text-red-600"
+                         >
+                           Bachelor Friendly Homes
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4   hover:text-red-600"
+                         >
+                           Immediately Available
+                         </Link>
+                       </div>
+                     
+                       <div className="w-52">
+                         <Link
+                           to="#"
+                           className="block text-black  text-lg px-2 py-1 "
+                         >
+                           Property Types
+                           <hr className="mt-1" />
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2   hover:text-red-600"
+                         >
+                           Flats for Rent in Gurugram
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2 py-1  hover:text-red-600"
+                         >
+                           House for Rent in Gurugram
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2   hover:text-red-600"
+                         >
+                           Villa for Rent in Gurugram
+                         </Link>
+                     
+                         <Link
+                           to="#"
+                           className="block text-sm px-2 py-1  hover:text-red-600"
+                         >
+                           Office Space in Gurugram
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-2  hover:text-red-600"
+                         >
+                           Commercial Space in Gurugram
+                         </Link>
+                       </div>
+                     
+                       <div className="w-40">
+                         <Link
+                           to="#"
+                           className="block text-black  text-lg px-4 py-1  hover:text-red-600"
+                         >
+                           Budget
+                           <hr className="mt-1" />
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4   hover:text-red-600"
+                         >
+                           Under ₹50 Lac
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4 py-1  hover:text-red-600"
+                         >
+                           ₹50 Lac - ₹1 Cr
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4  hover:text-red-600"
+                         >
+                           ₹1 Cr - ₹2.5 Cr
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4 py-1  hover:text-red-600"
+                         >
+                           ₹2.5 Cr - ₹5 Cr
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4   hover:text-red-600"
+                         >
+                           Above ₹5 Cr
+                         </Link>
+                       </div>
+                       <div className="w-48">
+                         <Link
+                           to="#"
+                           className="block text-black text-lg px-4 py-1 "
+                         >
+                           Explore
+                           <hr className="mt-1" />
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4  hover:text-red-600"
+                         >
+                           Localities
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4 py-1  hover:text-red-600"
+                         >
+                           Buy vs Rent
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4   hover:text-red-600"
+                         >
+                           Find an Agent
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4 py-1  hover:text-red-600"
+                         >
+                           Share Requirement
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4   hover:text-red-600"
+                         >
+                           Property Services
+                         </Link>
+                         <Link
+                           to="#"
+                           className="block text-sm px-4 py-1  hover:text-red-600"
+                         >
+                           Rent Agreement
+                         </Link>
+                       </div>
+                     </div>} 
                     </div>
                   </div>
-
-                  {/* {token ? (
-                    <Link
-                      to={"/postproperty/"}
-                      className="text-red-600 hover:text-red-600  font-bold  uppercase pt-1  text-sm"
-                    >
-                      <span onClick={checkUserAuth}>List Property </span>
-                    </Link>
-                  ) : (
-                    <Link
-                      to={"/signin/"}
-                      className="text-red-600 hidden hover:text-red-600 font-bold uppercase pt-1 text-sm"
-                    >
-                      List Property
-                    </Link>
-                  )} */}
 
                   <div
                     className="relative group "
@@ -628,70 +614,70 @@ export default function Navbar() {
                             Popular Cities
                             <hr className="mt-1" />
                           </Link>
-
+                      
                           <Link
                             to={"/projects-in-gurugram/"}
                             className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Gurugram
                           </Link>
-
+                      
                           <Link
                             to={"/project-in-delhi/"}
                             className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Projects in Delhi
                           </Link>
-
+                      
                           <Link
                             to={`/project-in-noida/`}
                             className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Noida
                           </Link>
-
+                      
                           <Link
                             to={`/project-in-goa/`}
                             className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Projects in Goa
                           </Link>
-
+                      
                           <Link
                             to="/project-in-ayodhya/"
                             className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Ayodhya
                           </Link>
-
+                      
                           <Link
                             to={`/project-in-mumbai/`}
                             className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             Projects in Mumbai
                           </Link>
-
+                      
                           <Link
                             to={`/project-in-panipat/`}
                             className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Panipat
                           </Link>
-
+                      
                           <Link
                             to={`/project-in-panchkula/`}
                             className="block text-sm px-4 py-1   hover:text-red-600"
                           >
                             Projects in Panchkula
                           </Link>
-
+                      
                           <Link
                             to={`/project-in-kasauli/`}
                             className="block text-sm px-4    hover:text-red-600"
                           >
                             Projects in Kasauli
                           </Link>
-
+                      
                           <Link
                             to=""
                             className="block text-sm px-4 py-1 font-semibold text-red-600 hover:text-red-600 hover:underline"
@@ -702,7 +688,7 @@ export default function Navbar() {
                             </span>
                           </Link>
                         </div>
-
+                      
                         <div className="w-40">
                           <Link
                             to="#"
@@ -760,28 +746,28 @@ export default function Navbar() {
                             Project Status
                             <hr className="mt-1" />
                           </Link>
-
+                      
                           <Link
                             to={"/projects/upcoming-projects-in-gurgaon/"}
                             className="block text-sm px-4  hover:text-red-600"
                           >
                             Upcoming Projects
                           </Link>
-
+                      
                           <Link
                             to={"/projects-in-newlaunch/"}
                             className="block text-sm px-4 py-1  hover:text-red-600"
                           >
                             New Launch Projects
                           </Link>
-
+                      
                           <Link
                             to={"/project-in-underconstruction/"}
                             className="block text-sm px-4  hover:text-red-600"
                           >
                             Under Construction
                           </Link>
-
+                      
                           <Link
                             to={"/projects-in-gurugram/property-ready-to-move/"}
                             className="block  py-1 text-sm px-4 hover:text-red-600"
@@ -790,32 +776,32 @@ export default function Navbar() {
                           </Link>
                         </div>
                       </div>
+                      
                     </div>
                   </div>
-                  </span>
-                </>
+                </HStack>
               )}
             </HStack>
 
             <Flex alignItems="center">
               <div
-                className=""
+                className="bg-[#C13B44] py-0.5 lg:p-1 md:p-1 rounded-3xl lg:px-5 sm:px-0"
                 style={{
-                  marginRight: window.innerWidth <= 768 ? "-80px" : "-80px",
+                  marginRight: window.innerWidth <= 768 ? "-50px" : "-50px",
                 }}
               >
                 {token ? (
                   <Link to="/postproperty/">
-                    <button className=" flex  sm:p-1 sm:text-sm">
+                    <button className="flex pt-0 items-center justify-center sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
-                        className="text-red-600  mr-2"
+                        className="text-[#FFFFFF]  md:mr-2 lg:mr-2"
                       >
                         List Property
                       </strong>
                       <Link className="d-inline">
                         <button
-                          className="btn btn-danger p-0 text-bold"
+                          className="bg-[#FFFFFF] text-red-600 rounded-lg text-[10px] flex items-center justify-center"
                           style={{
                             position: "relative",
                             overflow: "hidden",
@@ -830,21 +816,21 @@ export default function Navbar() {
                   </Link>
                 ) : (
                   <Link to="/signin/">
-                    <button className=" flex pt-1  sm:text-sm">
+                    <button className="flex p-1 items-center justify-center sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
-                        className="text-red-600 mr-2"
+                        className="text-[#FFFFFF] md:mr-2 lg:mr-2"
                       >
                         List Property
                       </strong>
                       <Link className="d-inline">
                         <button
-                          className="btn btn-danger p-0 text-bold"
+                          className="bg-[#FFFFFF] text-red-600 rounded-lg text-[10px] flex items-center justify-center "
                           style={{
                             position: "relative",
                             overflow: "hidden",
                             width: "50px",
-                            height: "20px",
+                            height: "15px",
                           }}
                         >
                           FREE
@@ -857,7 +843,7 @@ export default function Navbar() {
 
               <SpacerComponent />
 
-              <div className="flex gap-4 pt-1 justify-end">
+              <div className="flex justify-center">
                 <Menu>
                   <MenuButton
                     as={Button}
@@ -868,27 +854,27 @@ export default function Navbar() {
                     style={{ backgroundColor: "transparent", border: "none" }} // Transparent background
                   >
                     {token ? (
-                      <Button
-                        className="font-bold w-23 outline-offset-2 underline"
+                      <button
+                        className="font-bold w-23 flex items-center space-x-1 outline-offset-2 underline border border-sky-500 rounded-2xl"
                         style={{
                           color: "#DC4C64",
                           backgroundColor: "transparent",
                           border: "none",
                         }}
                       >
-                       <i class="fa-solid fa-user  ml-5 text-xl"></i>
-                      </Button>
+                        <PeopleIcon/><FillIcon/>
+                      </button>
                     ) : (
-                      <Button
-                        className="outline-offset-2 font-bold w-23"
+                      <button
+                        className="outline-offset-2 p-0.5 flex items-center space-x-1 font-bold w-23 border border-sky-500 rounded-2xl"
                         style={{
                           color: "#DC4C64",
                           backgroundColor: "transparent",
                           border: "none",
                         }} // Ensure button is transparent
                       >
-                        <i class="fa-solid fa-user ml-5 text-xl"></i>
-                      </Button>
+                        <PeopleIcon/><FillIcon/>
+                      </button>
                     )}
                   </MenuButton>
 
