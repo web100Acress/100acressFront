@@ -785,7 +785,7 @@ export default function Navbar() {
 
             <Flex alignItems="center">
               <div
-                className="bg-[#C13B44] py-0.5 lg:p-1 md:p-1 rounded-3xl lg:px-5 sm:px-0"
+                className="bg-[#C13B44] py-0.5 lg:p-1 md:p-1 rounded-3xl lg:px-5 sm:px-0 shine-button"
                 style={{
                   marginRight: window.innerWidth <= 768 ? "-50px" : "-50px",
                 }}
@@ -816,7 +816,7 @@ export default function Navbar() {
                   </Link>
                 ) : (
                   <Link to="/signin/">
-                    <button className="flex p-1 items-center justify-center sm:text-sm">
+                    <button className="flex p-1 text-xs items-center justify-center sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
                         className="text-[#FFFFFF] md:mr-2 lg:mr-2"
