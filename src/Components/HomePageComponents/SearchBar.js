@@ -126,11 +126,11 @@ function SearchBar() {
             <TopLocalitesIcon /> Top Localities:
           </span>
 
-          <div className=" flex flex-nowrap align-center ml-2">
+          <div className=" flex flex-nowrap align-center ml-2 w-[200px] md:w-[600px] lg:w-[630px]">
             {/* <button onClick={handlePrev} disabled={currentIndex === 0} className={`cursor-pointer ${currentIndex === 0 ? 'opacity-50 pointer-events-none' : ''}`}>
               <LeftArrowIcon />
             </button> */}
-            <marquee className="text-[10px] px-2 py-1  rounded-xl whitespace-nowrap snap-center  transition flex flex-nowrap">
+            <marquee className="text-[10px] px-1 py-1  rounded-xl whitespace-nowrap snap-center  transition flex flex-nowrap">
             <div className="flex space-x-2 flex-nowrap w-128 md-w-96 overflow-x-auto no-scrollbar">
               {visibleLocalities.map((locality, index) => (
                 <Link to={locality.link} target="_blank" key={index} className="cvBMLN">
