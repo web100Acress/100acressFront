@@ -20,11 +20,15 @@ module.exports = {
           '0%': { opacity: '0', transform: 'translateX(50px)' },
           '100%': { opacity: '1', transform: 'translateX(0)' },
         },
+        rotate: {
+          '0%': { transform: 'rotate(0deg) scale(10)' },
+          '100%': { transform: 'rotate(-360deg) scale(10)' },
+        },
       },
       animation: {
         fadeInLeft: 'fadeInLeft 2s ease-in-out', 
         fadeInRight: 'fadeInRight 1s ease-in-out', 
-
+        rotate: 'rotate 10s linear infinite',
       },
     },
   },
