@@ -126,16 +126,16 @@ function SearchBar() {
             <TopLocalitesIcon /> Top Localities:
           </span>
 
-          <div className=" flex flex-nowrap align-center ml-2 w-[200px] md:w-[600px] lg:w-[630px]">
+          <div className=" flex flex-nowrap align-center ml-2 w-[230px] md:w-[600px] lg:w-[630px]">
             {/* <button onClick={handlePrev} disabled={currentIndex === 0} className={`cursor-pointer ${currentIndex === 0 ? 'opacity-50 pointer-events-none' : ''}`}>
               <LeftArrowIcon />
             </button> */}
-            <marquee className="text-[10px] px-1 py-1  rounded-xl whitespace-nowrap snap-center  transition flex flex-nowrap">
+            <marquee scrollamount="3" className="text-[10px] px-1 py-1  rounded-xl whitespace-nowrap snap-center  transition flex flex-nowrap">
             <div className="flex space-x-2 flex-nowrap w-128 md-w-96 overflow-x-auto no-scrollbar">
               {visibleLocalities.map((locality, index) => (
                 <Link to={locality.link} target="_blank" key={index} className="cvBMLN">
                  
-                  <button className="SDFEDVx text-white text-[10px] px-2 py-1 border border-white rounded-xl whitespace-nowrap snap-center hover:bg-white hover:text-black transition flex flex-nowrap">
+                  <button className="SDFEDVx text-white text-[10px] px-2 py-1 border border-[#FFF5EE] rounded-xl whitespace-nowrap snap-center hover:bg-white hover:text-black transition flex flex-nowrap shine-button">
                     {locality.name}
                   </button>
                 </Link>
@@ -143,13 +143,13 @@ function SearchBar() {
             </div>
               </marquee>
 
-            <button onClick={handleNext} disabled={currentIndex + itemsPerPage >= localities.length} className={`cursor-pointer ${currentIndex + itemsPerPage >= localities.length ? 'opacity-50 pointer-events-none' : ''}`}>
+            {/* <button onClick={handleNext} disabled={currentIndex + itemsPerPage >= localities.length} className={`cursor-pointer ${currentIndex + itemsPerPage >= localities.length ? 'opacity-50 pointer-events-none' : ''}`}>
               <RightArrowIcon />
-            </button>
+            </button> */}
           </div>
         </div>
 
-        <div className="hidden md:block mt-2 lg:w-[600px] lg:h-[150px] md:h-[100px] md:w-[450px] mx-auto mt-3">
+        <div className="hidden md:block mt-2 lg:w-[700px] lg:h-[150px] md:h-[100px] md:w-[650px] mx-auto mt-3">
           <Wrapper className="section">
             <Slider {...settings}>
               {imageSrc.map((src, index) => (

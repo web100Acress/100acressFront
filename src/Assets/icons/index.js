@@ -43,7 +43,9 @@ import ScrollSVG from '../../../src/Assets/icons/svg/scroll.svg';
 import WhiteLineSVG from '../../../src/Assets/icons/svg/whiteline.svg';
 import PeopleSVG from '../../../src/Assets/icons/svg/people.svg';
 import FillSVG from '../../../src/Assets/icons/svg/Fill.svg';
-
+import SpotlightLocationSVG from '../../../src/Assets/icons/svg/spotlightlocation.svg';
+import SpotlightHomeSVG from '../../../src/Assets/icons/svg/spotlighthome.svg';
+import SpotlightPriceSVG from '../../../src/Assets/icons/svg/spotlightprice.svg';
 
 
 const getSVG = (path, style = {}) => (
@@ -216,3 +218,15 @@ export const PeopleIcon = (props) => {
 export const FillIcon = (props) => {
   return <Icon component={() => getSVG(FillSVG, props.iconstyle)} {...props} />;
 };
+
+export const SpotlightLocationIcon = (props) => {
+  return <Icon component={() => getSVG(SpotlightLocationSVG, props.iconstyle)} {...props} />;
+}
+
+export const SpotlightHomeIcon = (props) => {
+  return <Icon component={() => getSVG(SpotlightHomeSVG, props.iconstyle)} {...props} />;
+}
+
+export const SpotlightPriceIcon = (props) => {
+  return <Icon component={() => getSVG(SpotlightPriceSVG, props.iconstyle)} {...props} />;
+}

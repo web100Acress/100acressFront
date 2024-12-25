@@ -4,6 +4,7 @@ export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: Infinity });
   const [trendingProject, setTrendingProject] = useState([]);
+  const [spotlightProject, setSpotlightProject] = useState([]);
   const [featuredProject, setFeaturedProject] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [affordable, setAffordable] = useState([]);
@@ -124,6 +125,10 @@ export const DataProvider = ({ children }) => {
           project.projectReraNo === "upcoming" || project.projectName === 'Trump Towers 2' 
       );
 
+      const spotlightProject = projectsData.filter(
+        (project) =>  project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"
+      );
+
       const featuredProjects = projectsData.filter(
         (project) => project.projectOverview === "featured"
       );
@@ -214,6 +219,7 @@ export const DataProvider = ({ children }) => {
       const goaCityProject = projectsData.filter(
         (project) => project.city === "Goa"
       );
+      console.log(spotlightProject)
 
       const mumbaiProject = projectsData.filter(
         (project) => project.city === "Mumbai"
@@ -319,7 +325,7 @@ export const DataProvider = ({ children }) => {
         (project) => project.builderName === 'DLF Homes' &&  project.type ==='SCO Plots'
       )
       
-
+      setSpotlightProject(spotlightProject);
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
       setFeaturedProject(featuredProjects);
@@ -477,6 +483,7 @@ export const DataProvider = ({ children }) => {
         possessionDate,
         setPossessionDate,
         trendingProject,
+        spotlightProject,
         featuredProject,
         affordable,
         upcoming,

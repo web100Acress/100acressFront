@@ -182,7 +182,8 @@ export default function Navbar() {
       <Box>
         <Box
           bg={"white"}
-          className="top-0 z-50 w-full "
+          className="top-0 z-50 w-full"
+          style={{ position: "fixed" }}
           px={{ base: 0, md: 4, lg: 7 }}
         >
           <Flex h={12} alignItems="center" justifyContent="space-between">
