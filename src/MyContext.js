@@ -126,7 +126,7 @@ export const DataProvider = ({ children }) => {
       );
 
       const spotlightProject = projectsData.filter(
-        (project) =>  project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"
+        (project) =>  project.projectName === "Emaar Urban Ascent" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ" 
       );
 
       const featuredProjects = projectsData.filter(
