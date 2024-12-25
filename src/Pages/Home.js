@@ -107,12 +107,12 @@ function Home() {
 
       <div className="relative w-full">
         <img
-          src="../../Images/mainbg.webp"
+          src="../../Images/mainbg.jpg"
           alt="Banner"
           className="hidden md:block w-full h-[25rem] md:h-[28rem] sm:h-[35rem] lg:h-[25rem] xl:h-[25rem]"
         />
         <img
-          src="../../Images/mainbg.webp"
+          src="../../Images/mainbg.jpg"
           alt="Mobile Banner"
           className="block md:hidden w-full h-[23rem]"
         />
@@ -127,7 +127,7 @@ function Home() {
 
       {/*<!-- End Carousel with indicators inside --> */}
       <div className="relative">
-        <div className="absolute inset-0 bg-[#EE1C25]"></div>
+        <div className="absolute inset-0 bg-[#EE1C25] opacity-80"></div>
         <div className="relative">
           <SpotlightBanner />
         </div>

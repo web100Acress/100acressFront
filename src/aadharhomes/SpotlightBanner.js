@@ -56,7 +56,7 @@ const SpotlightBanner = () => {
               <img
                 src={currentProject?.frontImage?.url}
                 alt={currentProject?.projectName}
-                className="relative w-full h-80 object-cover rounded-lg"
+                className="relative w-full h-80 object-cover rounded-lg animate-fadeInLeft"
               />
             </Link>
           </div>
@@ -97,7 +97,7 @@ const SpotlightBanner = () => {
                   ? currentProject?.BhK_Details[0]?.bhk_type
                   : `${currentProject?.BhK_Details[0]?.bhk_type} - ${currentProject?.BhK_Details[currentProject?.BhK_Details.length - 1]?.bhk_type}`}
               </p>
-              <p className="text-gray-500 text-xs">Size</p>
+              <p className="text-gray-500 text-xs">Unit type</p>
             </div>
 
             {/* Price Section */}

@@ -42,11 +42,11 @@ function SearchBar() {
     }
   };
 
-  // const handlePrev = () => {
-  //   if (currentIndex > 0) {
-  //     setCurrentIndex((prev) => prev - nextpage);
-  //   }
-  // };
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - nextpage);
+    }
+  };
 
   useEffect(() => {
     const updateImageSrc = () => {
@@ -127,25 +127,22 @@ function SearchBar() {
           </span>
 
           <div className=" flex flex-nowrap align-center ml-2 w-[230px] md:w-[600px] lg:w-[630px]">
-            {/* <button onClick={handlePrev} disabled={currentIndex === 0} className={`cursor-pointer ${currentIndex === 0 ? 'opacity-50 pointer-events-none' : ''}`}>
+            <button onClick={handlePrev} disabled={currentIndex === 0} className={`cursor-pointer ${currentIndex === 0 ? 'opacity-50 pointer-events-none' : ''}`}>
               <LeftArrowIcon />
-            </button> */}
-            <marquee scrollamount="3" className="text-[10px] px-1 py-1  rounded-xl whitespace-nowrap snap-center  transition flex flex-nowrap">
-            <div className="flex space-x-2 flex-nowrap w-128 md-w-96 overflow-x-auto no-scrollbar">
+            </button>
+            <div className="flex space-x-2 flex-nowrap w-full md-w-96 overflow-x-auto no-scrollbar">
               {visibleLocalities.map((locality, index) => (
                 <Link to={locality.link} target="_blank" key={index} className="cvBMLN">
                  
-                  <button className="SDFEDVx text-white text-[10px] px-2 py-1 border border-[#FFF5EE] rounded-xl whitespace-nowrap snap-center hover:bg-white hover:text-black transition flex flex-nowrap shine-button">
+                  <button className="SDFEDVx text-white text-[10px] px-2 py-1 border border-[#9F9F9F] shadow-sm rounded-xl whitespace-nowrap snap-center hover:bg-white hover:text-black transition flex flex-nowrap overflow-x-auto">
                     {locality.name}
                   </button>
                 </Link>
               ))}
             </div>
-              </marquee>
-
-            {/* <button onClick={handleNext} disabled={currentIndex + itemsPerPage >= localities.length} className={`cursor-pointer ${currentIndex + itemsPerPage >= localities.length ? 'opacity-50 pointer-events-none' : ''}`}>
+            <button onClick={handleNext} disabled={currentIndex + itemsPerPage >= localities.length} className={`cursor-pointer ${currentIndex + itemsPerPage >= localities.length ? 'opacity-50 pointer-events-none' : ''}`}>
               <RightArrowIcon />
-            </button> */}
+            </button>
           </div>
         </div>
 
@@ -235,13 +232,13 @@ const Wrapper = styled.section`
     box-shadow: 0 25px 60px rgba(113, 106, 147, 0.2);
     width: auto;
     border-radius: 20px 20px 0px 0px;
-    background: rgba(255, 255, 255, 0.21);
+    background: rgba(111, 110, 110, 0.31);
     margin-left: 30px;
     margin-right: 30px;
   }
 
   .SDFEDVx {
-    background: rgba(255, 255, 255, 0.36);
+    background: rgba(111, 110, 110, 0.31);
   }
 
   .options {
