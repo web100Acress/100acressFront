@@ -131,7 +131,7 @@ const SpotlightBanner = () => {
                 key={index}
                 src={thumb.url}
                 alt={`Thumbnail ${index + 1}`}
-                className="w-16 h-16 rounded-lg object-cover"
+                className="w-16 h-16 rounded-lg object-cover animate-fadeInRight"
               />
             ))}
           </div>

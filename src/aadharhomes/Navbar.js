@@ -21,6 +21,7 @@ import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
 import { DataContext } from "../MyContext";
 import { FillIcon, PeopleIcon } from "../Assets/icons";
+import ScrollSearch from "./ScollSearch";
 const SpacerComponent = () => <Box width="60px" />;
 
 const MenuListContainer = ({ isOpen }) => {
@@ -124,6 +125,15 @@ const MenuListContainer = ({ isOpen }) => {
 export default function Navbar() {
   // Filter Data budget wise
   const {  setPriceRange } = useContext(DataContext);
+  const [colorChange, setColorchange] = useState(false);
+	const changeNavbarColor = () => {
+		if (window.scrollY >= 150) {
+			setColorchange(true);
+		} else {
+			setColorchange(false);
+		}
+	};
+	window.addEventListener("scroll", changeNavbarColor);
 
   const handlePriceClick = (min, max) => {
     setPriceRange({ min, max });
@@ -181,10 +191,10 @@ export default function Navbar() {
     <Wrapper className="section">
       <Box>
         <Box
-          bg={"white"}
-          className="top-0 z-50 w-full"
-          style={{ position: "fixed" }}
-          px={{ base: 0, md: 4, lg: 7 }}
+          bg={colorChange ? "#EE1C25" : "white"}
+          className={`top-0 z-50  ${colorChange ? 'w-100 rounded-b-3xl' : 'w-full' } `}
+          style={{ position: "fixed" ,scrollBehavior: "smooth"}}
+          px={{ base: 0, md: 4, lg: 7 }} 
         >
           <Flex h={12} alignItems="center" justifyContent="space-between">
             <IconButton
@@ -210,7 +220,16 @@ export default function Navbar() {
               <Box marginLeft={"-18px"}>
                 {" "}
                 {/* Adjust values as needed */}
-                <Link to={"/"}>
+                {colorChange? (<><Link to={"/"}>
+                  <Image
+                    maxW={["160px", "200px"]}
+                    minW={["50px", "70px"]}
+                    width={["xs", "sm", "md", "lg"]}
+                    src="../../Images/lg.png"
+                    alt="100acress"
+                    marginBottom={2}
+                  />
+                </Link></>):(<><Link to={"/"}>
                   <Image
                     maxW={["160px", "200px"]}
                     minW={["50px", "70px"]}
@@ -219,13 +238,14 @@ export default function Navbar() {
                     alt="100acress"
                     marginBottom={2}
                   />
-                </Link>
+                </Link></>)}
+                
               </Box>
 
               {!isSmallerThan768 && (
                 <HStack spacing={10} justify="center" flex="1">
-                
-                  <div
+
+                  {colorChange ? (<ScrollSearch data1={"testing"}/>) :(<><div
                     className="relative group"
                     onMouseEnter={handleHover1}
                     onMouseLeave={handleLeave1}
@@ -779,7 +799,8 @@ export default function Navbar() {
                       </div>
                       
                     </div>
-                  </div>
+                  </div></>)}
+                  
                 </HStack>
               )}
             </HStack>
