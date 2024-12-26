@@ -109,7 +109,7 @@ function Home() {
         <img
           src="../../Images/mainbg.jpg"
           alt="Banner"
-          className="hidden md:block w-full h-[25rem] md:h-[28rem] sm:h-[35rem] lg:h-[25rem] xl:h-[25rem]"
+          className="hidden md:block w-full h-[25rem] md:h-[28rem] sm:h-[35rem] lg:h-[28rem] xl:h-[28rem]"
         />
         <img
           src="../../Images/mainbg.jpg"

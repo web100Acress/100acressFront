@@ -27,7 +27,7 @@ module.exports = {
       },
       animation: {
         fadeInLeft: 'fadeInLeft 2s ease-in-out', 
-        fadeInRight: 'fadeInRight 1s ease-in-out', 
+        fadeInRight: 'fadeInRight 2s ease-in-out', 
         rotate: 'rotate 10s linear infinite',
       },
     },

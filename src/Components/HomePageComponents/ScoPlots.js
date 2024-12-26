@@ -21,7 +21,7 @@ const ScoPlots = () => {
       </Helmet>
 
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
-        <h1 className="mb-2 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+        <h1 className="mb-2 mt-10 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           SCO Plots in Gurugram
         </h1>
 
