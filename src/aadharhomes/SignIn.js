@@ -112,7 +112,7 @@ export default function SignIn() {
         />
         <link rel="canonical" href="https://www.100acress.com/signin/" />
       </Helmet>
-      <Box position={"relative"}>
+      <Box position={"relative"} className="mt-8">
         {password !== "" && email !== "" && <ToastContainer />}
         <Container
           as={SimpleGrid}

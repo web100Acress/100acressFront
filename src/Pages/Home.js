@@ -858,6 +858,7 @@ function Home() {
         }
       </div> */}
       {colorChange && isSmallerThan768 && <div>
+        <Link to="/signin/" target="_top">
         <div className="sticky-quote-cta">
           <a
             className="text-white"
@@ -866,7 +867,7 @@ function Home() {
             LIST{" "}PROPERTY
           </a>
         </div>
-
+        </Link>
       </div>}
 
       <TopSeoPlots />
