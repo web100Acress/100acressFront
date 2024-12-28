@@ -74,47 +74,36 @@ const ScrollSearch = ({ data1 }) => {
 
   return (
     <div
-      className={`w-2rem shadow-xl rounded-full bg-white h-10 lg:w-[30rem] flex items-center justify-center`}
-      style={{
-        marginTop:
-          window.innerWidth < 640
-            ? "-0px"
-            : window.innerWidth >= 640 && window.innerWidth <= 768
-            ? "-12px"
-            : "0",
-        marginBottom: window.innerWidth === 768 ? "0px" : "0",
-        borderRadius: window.innerWidth < 640 ? "30px" : "30px",
+  className={`shadow-xl rounded-full bg-white h-10 flex items-center justify-center w-[20rem] md:w-[42rem] lg:max-w-[30rem] sm:max-w-[45rem] mx-auto`}
+>
+  <div
+    className="flex items-center gap-2 w-full p-1" 
+  >
+    <input
+      className="outline-none flex-grow p-0 rounded-full ml-2"
+      type="text"
+      name="query"
+      placeholder={currentPlaceholder}
+      value={formData.query}
+      onChange={handleInputChange}
+      onKeyPress={handleKeyPress}
+    />
+    <Link
+      to={{
+        pathname: `/searchdata/${encodeURIComponent(
+          JSON.stringify(formData)
+        )}`,
+        state: formData,
       }}
+      id="searchButton"
     >
-      <div
-        className="flex items-center ml-2 mr-2 gap-2 w-full ml-6"
-      >
-        <input
-          className="outline-none flex-grow p-0 rounded-full"
-          type="text"
-          name="query"
-          placeholder={currentPlaceholder}
-          value={formData.query}
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
-        />
-        <Link
-          to={{
-            pathname: `/searchdata/${encodeURIComponent(
-              JSON.stringify(formData)
-            )}`,
-            state: formData,
-          }}
-          id="searchButton"
-        >
-          <div className="px-1.25 md:px-5 py-1.5 bg-[#C13B44] text-white rounded-full flex items-center justify-center ">
-            <SearchIcon /> {" "}<span className="hidden sm:block">
-              
-              </span>
-          </div>
-        </Link>
+      <div className="px-2 md:px-5 py-1.5 bg-[#C13B44] text-white rounded-full flex items-center justify-center">
+        <SearchIcon /> 
       </div>
-    </div>
+    </Link>
+  </div>
+</div>
+
   );
 };
 

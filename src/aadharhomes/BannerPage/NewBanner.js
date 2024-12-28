@@ -444,6 +444,8 @@ const NewBanner = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 zIndex: 1000,
+                paddingTop: "10px",
+                paddingBottom:'10px'
               }}
             >
               <img

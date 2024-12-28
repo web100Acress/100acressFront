@@ -20,6 +20,7 @@ import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
 import { PropertyIcon, RupeeIcon, LocationRedIcon, ShareFrameIcon, ArrowIcon, LcoationBiggerIcon } from '../Assets/icons/index';
 import { ArrowBackIcon } from "@chakra-ui/icons";
+import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon } from "lucide-react";
 import NewSearchBar from "../Components/HomePageComponents/NewSearchBar";
 import SpotlightBanner from "../aadharhomes/SpotlightBanner";
@@ -38,6 +39,18 @@ function Home() {
     resalePropertydata,
   } = useContext(DataContext);
 
+  const [colorChange, setColorchange] = useState(false);
+  const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
+
+  const changeNavbarColor = () => {
+    if (window.scrollY >= 250) {
+      setColorchange(true);
+    } else {
+      setColorchange(false);
+    }
+  };
+  window.addEventListener("scroll", changeNavbarColor);
+
   let reorderedTrendingProjects = [];
   if (trendingProject.length > 0) {
     reorderedTrendingProjects = [...trendingProject];
@@ -50,8 +63,6 @@ function Home() {
     reorderedTrendingProjects[6] = trendingProject[4];
     reorderedTrendingProjects[7] = trendingProject[3];
   }
-
-  console.log("trendingProject", spotlightProject);
 
   const [activeFilter, setActiveFilter] = useState("Trending");
 
@@ -846,6 +857,17 @@ function Home() {
           </section>
         }
       </div> */}
+      {colorChange && isSmallerThan768 && <div>
+        <div className="sticky-quote-cta">
+          <a
+            className="text-white"
+            style={{ backgroundColor: "#C13B44", padding:'15px' }}
+          >
+            LIST{" "}PROPERTY
+          </a>
+        </div>
+
+      </div>}
 
       <TopSeoPlots />
       <div className="py-3">
@@ -951,20 +973,20 @@ function Home() {
         }
       </div>
 
-      <div className="py-3" style={{ backgroundColor: "#00314f" }}>
+      <div className="py-3">
         {" "}
-        <div className="" style={{ backgroundColor: "#00314f" }}>
+        <div className="">
           <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6  py-2">
             <div className="flex items-center">
-              <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl text-white text-center sm:text-left">
+              <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
                 Projects in Delhi
               </h1>
             </div>
             <div className="ml-2 hidden sm:block">
               <Link to={"/project-in-delhi/"} target="_top">
                 <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-                  <ScaleLoader color="#FFFFFF" height={20} width={3} />
-                  <span className="ml-2">View All</span>
+                  <EyeIcon />
+                    <span className="ml-2">View All</span>
                 </span>
               </Link>
             </div>
@@ -1241,6 +1263,40 @@ const Wrapper = styled.section`
 
   .dd-m-whatsapp i {
     font-size: 24px; /* Adjust icon size as needed */
+  }
+    .sticky-quote-cta {
+    height: auto;
+    position: fixed;
+    border-radius: 15px 0 15px 0;
+    right: 0;
+    top: 400px;
+    top: 40vh;
+    z-index: 10000;
+  }
+
+  .sticky-quote-cta a {
+    color: white;
+    text-decoration: none;
+    background: #333;
+    padding: 15px 20px 35px;
+    display: block;
+    font-weight: bold;
+    font-size: 15px;
+    border-radius: 5px;
+    -ms-transform: rotate(-90deg) translate(0, -20px);
+    -webkit-transform: rotate(-90deg) translate(0, -20px);
+    transform: rotate(-90deg) translate(0, -20px);
+    position: relative;
+    right: -85px;
+    transition: position 0.2s, right 0.2s;
+    background: rgb(251, 183, 39);
+    background: red;
+  }
+
+  .sticky-quote-cta a:hover {
+    right: -70px;
+    transition: position 0.2s, right 0.2s;
+    cursor: pointer;
   }
 
   @media screen and (max-width: 600px) {

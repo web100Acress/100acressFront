@@ -2,56 +2,31 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 function SpacesAvailable() {
+
+  const projects = [
+    { title: "Residential Projects", link: "/property/residential/", image: "../../OtherImages/residencial.webp" },
+    { title: "Commercial Projects", link: "/projects/commerial/", image: "../../OtherImages/commercialproperty.webp" },
+    { title: "SCO Plots ", link: "/sco/plots/", image: "../../OtherImages/sco.webp" },
+    { title: "Builder & Independent Floor", link: "/projects/independentfloors/", image: "../../OtherImages/builderandindepedent.webp" },
+    { title: "Plots In Gurugram", link: "/plots-in-gurugram/", image: "../../OtherImages/deendayal.webp" },
+    { title: "Luxury Villas", link: "/projects/villas/", image: "../../OtherImages/villas.webp" },
+  ];
+
   return (
     <Wrapper className="section">
-      <div style={{ boxShadow: "0px 0px 30px 0px #0000001a" }}>
-        <div className="flex items-center mx-6 lg:mx-6 xl:mx-14 md:mx-6">
-          <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
+      <div className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
+        <div className="flex items-center mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
+          <h1 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
             Dream Property In The Heart of Gurugram
           </h1>
         </div>
-        <div className="_6sknMP pb-0">
-          <Link to={`/property/residential/`} target="_top">
-            <div className="_ksjMM _1fe2" title="Residential Projects">
-              <p className="_9gncbH">Residential</p>
-              <p className="_4rgjvNN">Projects</p>
-            </div>
-          </Link>
-
-          <Link to={`/projects/commerial/`} target="_top">
-            <div className="_ksjMM _1fe4" title="Commercial Projects">
-              <p className="_9gncbH">Commercial</p>
-              <p className="_4rgjvNN">Projects</p>
-            </div>
-          </Link>
-
-          <Link to={`/sco/plots/`} target="_top">
-            <div className="_ksjMM _1fe6" title="Plots Sco">
-              <p className="_9gncbH">Plots</p>
-              <p className="_4rgjvNN">SCO</p>
-            </div>
-          </Link>
-
-          <Link to={`/projects/independentfloors/`} target="_top">
-            <div className="_ksjMM _1fe7" title="Builder & Independent Floor">
-              <p className="_9gncbH">Builder & Independent</p>
-              <p className="_4rgjvNN">Floor</p>
-            </div>
-          </Link>
-
-          <Link to={`/plots-in-gurugram/`} target="_top">
-            <div className="_ksjMM _1fe8" title="Deen Dayal Plots">
-              <p className="_9gncbH">Plots In</p>
-              <p className="_4rgjvNN">Gurugram</p>
-            </div>
-          </Link>
-
-          <Link to={"/projects/villas/"} target="_top">
-            <div className="_ksjMM _1fe9" title="Villa's">
-              <p className="_9gncbH">Luxury</p>
-              <p className="_4rgjvNN">Villas</p>
-            </div>
-          </Link>
+        <div className="grid-container">
+          {projects.map((project, index) => (
+            <Link to={project.link} key={index} className="card">
+              <img src={project.image} alt={project.title} className="card-image" />
+              <button className="card-button bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">{project.title}</button>
+            </Link>
+          ))}
         </div>
       </div>
     </Wrapper>
@@ -60,182 +35,94 @@ function SpacesAvailable() {
 
 export default SpacesAvailable;
 const Wrapper = styled.section`
-  ._6sknMP {
+  .container {
+    max-width: 1250px;
+    margin: auto;
+    padding: 10px;
+  }
+
+  .header {
     display: flex;
-    flex-wrap: wrap;
-    padding: 0px 25px;
-    justify-content: space-around;
-    border-radius: 15px;
-    margin-bottom: 10px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
   }
 
-  ._1fe1,
-  ._1fe2,
-  ._1fe3,
-  ._1fe4,
-  ._1fe5,
-  ._1fe6,
-  ._1fe7,
-  ._1fe8,
-  ._1fe9 {
-    background-position: center;
-    margin: 20px;
-    cursor: pointer;
-  }
-  ._1fe1:hover,
-  ._1fe2:hover,
-  ._1fe3:hover,
-  ._1fe4:hover,
-  ._1fe5:hover,
-  ._1fe6:hover,
-  ._1fe7:hover,
-  ._1fe8:hover,
-  ._1fe9:hover {
-    background-size: 500px 250px;
-  }
-  ._1fe1 {
-    background-image: linear-gradient(
-        to right,
-        rgb(255, 255, 255, 0.1),
-        rgb(255, 255, 255, 0.1),
-        rgba(0, 0, 0, 0.5),
-        rgba(0, 0, 0, 0.7)
-      ),
-      url("../../OtherImages/residencial.webp");
-    background-size: 400px 180px;
-  }
-  ._1fe2 {
-    background-image: linear-gradient(
-        to right,
-        rgb(255, 255, 255, 0.1),
-        rgb(255, 255, 255, 0.1),
-        rgba(0, 0, 0, 0.5),
-        rgba(0, 0, 0, 0.7)
-      ),
-      url("../../OtherImages/residencialprojects.webp");
-    background-size: 400px 180px;
-  }
-  ._1fe3 {
-    background-image: linear-gradient(
-        to right,
-        rgb(255, 255, 255, 0.1),
-        rgb(255, 255, 255, 0.1),
-        rgba(0, 0, 0, 0.5),
-        rgba(0, 0, 0, 0.7)
-      ),
-      url("../../OtherImages/coliving.webp");
-    background-size: 400px 180px;
-  }
-  ._1fe4 {
-    background-image: linear-gradient(
-        to right,
-        rgb(255, 255, 255, 0.1),
-        rgb(255, 255, 255, 0.1),
-        rgba(0, 0, 0, 0.5),
-        rgba(0, 0, 0, 0.7)
-      ),
-      url("../../OtherImages/commercialproperty.webp");
-    background-size: 400px 200px;
-  }
-  ._1fe5 {
-    background-image: linear-gradient(
-        to right,
-        rgb(255, 255, 255, 0.1),
-        rgb(255, 255, 255, 0.1),
-        rgba(0, 0, 0, 0.5),
-        rgba(0, 0, 0, 0.7)
-      ),
-      url("../../OtherImages/commecialproject.webp");
-    background-size: 400px 180px;
-  }
-  ._1fe6 {
-    background-image: linear-gradient(
-        to right,
-        rgb(255, 255, 255, 0.1),
-        rgb(255, 255, 255, 0.1),
-        rgba(0, 0, 0, 0.5),
-        rgba(0, 0, 0, 0.7)
-      ),
-      url("../../OtherImages/sco.webp");
-    background-size: 400px 180px;
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
   }
 
-  ._1fe7 {
-    background-image: linear-gradient(
-        to right,
-        rgb(255, 255, 255, 0.1),
-        rgb(255, 255, 255, 0.1),
-        rgba(0, 0, 0, 0.5),
-        rgba(0, 0, 0, 0.7)
-      ),
-      url("../../OtherImages/builderandindepedent.webp");
-    background-size: 400px 180px;
-  }
-
-  ._1fe8 {
-    background-image: linear-gradient(
-        to right,
-        rgb(255, 255, 255, 0.1),
-        rgb(255, 255, 255, 0.1),
-        rgba(0, 0, 0, 0.5),
-        rgba(0, 0, 0, 0.7)
-      ),
-      url("../../OtherImages/deendayal.webp");
-    background-size: 400px 180px;
-  }
-
-  ._1fe9 {
-    background-image: linear-gradient(
-        to right,
-        rgb(255, 255, 255, 0.1),
-        rgb(255, 255, 255, 0.1),
-        rgba(0, 0, 0, 0.5),
-        rgba(0, 0, 0, 0.7)
-      ),
-      url("../../OtherImages/villas.webp");
-    background-size: 400px 180px;
-  }
-  ._ksjMM {
-    width: 380px;
-    min-height: 150px;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: end;
-    box-sizing: border-box;
-    // height: 150px;
-  }
-  p,
-  span {
-    padding-right: 10%;
-    font-size: x-large;
-    line-height: normal;
-    color: white;
-  }
-  ._4rgjvNN {
-    margin-top: 0px;
+  .view-all {
+    text-decoration: none;
+    font-size: 1rem;
+    color: #ff0000;
     font-weight: 600;
   }
-  ._9gncbH {
-    font-weight: 100;
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
   }
-  ._ksjMM:hover {
-    transform: scale(1.05);
-    transition: all 0.5s;
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    background: #fff;
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
   }
-  ._ksjMM:not(:hover) {
-    transform: scale(1);
-    transition: all 0.5s;
+
+  .card:hover {
+    transform: translateY(-5px);
   }
-  @media screen and (max-width: 850px) {
-    ._ksjMM {
-      width: 320px;
+
+  .card-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .card-button {
+    width: 100%;
+    margin-top: 10px;
+    border-radius:10px;
+    padding: 10px 0px;
+    background-color: #C13B44;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    text-transform: capitalize;
+    transition: background-color 0.3s ease;
+  }
+
+  .card-button:hover {
+    background-color: #7C1920;
+  }
+
+  @media (max-width: 768px) {
+    .title {
+      font-size: 1.25rem;
     }
-  }
-  @media screen and (max-width: 1300px) and (min-width: 850px) {
-    ._ksjMM {
-      width: 360px;
+
+    .card-image {
+      height: 150px;
+    }
+
+    .card-button {
+      font-size: 0.9rem;
     }
   }
 `;
