@@ -116,11 +116,30 @@ const SpotlightBanner = () => {
             {/* Explore Now Section */}
             <div className="text-center flex flex-col justify-center">
               <Link to={`/${pUrl}/`} target="blank">
-                <button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5">
+                <button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect">
                   Explore Now
                 </button>
               </Link>
             </div>
+            {/* <div class="loader">
+              <div class="loader-bg">
+              <Link to={`/${pUrl}/`} target="blank">
+                <button>Explore Now</button>
+              </Link>
+              </div>
+              <div class="drops">
+                <div class="drop1"></div>
+                <div class="drop2"></div>
+              </div>
+            </div> */}
+            {/* <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+              <defs>
+                <filter id="liquid">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                  <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="liquid" />
+                </filter>
+              </defs>
+            </svg> */}
           </div>
 
 

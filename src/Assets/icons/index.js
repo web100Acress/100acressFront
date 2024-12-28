@@ -43,10 +43,12 @@ import ScrollSVG from '../../../src/Assets/icons/svg/scroll.svg';
 import WhiteLineSVG from '../../../src/Assets/icons/svg/whiteline.svg';
 import PeopleSVG from '../../../src/Assets/icons/svg/people.svg';
 import FillSVG from '../../../src/Assets/icons/svg/Fill.svg';
+import WhiteFillSVG from '../../../src/Assets/icons/svg/whiteFill.svg';
 import SpotlightLocationSVG from '../../../src/Assets/icons/svg/spotlightlocation.svg';
 import SpotlightHomeSVG from '../../../src/Assets/icons/svg/spotlighthome.svg';
 import SpotlightPriceSVG from '../../../src/Assets/icons/svg/spotlightprice.svg';
-
+import WhiteHambergerSVG from '../../../src/Assets/icons/svg/whitehamberger.svg';
+import WhiteCloseSVG from '../../../src/Assets/icons/svg/whiteclose.svg';
 
 const getSVG = (path, style = {}) => (
   <img src={path} alt="Icon" style={{ ...style }} />
@@ -229,4 +231,16 @@ export const SpotlightHomeIcon = (props) => {
 
 export const SpotlightPriceIcon = (props) => {
   return <Icon component={() => getSVG(SpotlightPriceSVG, props.iconstyle)} {...props} />;
+}
+
+export const WhiteHambergerIcon = (props) => {
+  return <Icon component={() => getSVG(WhiteHambergerSVG, props.iconstyle)} {...props} />;
+}
+
+export const WhiteCloseIcon = (props) => {
+  return <Icon component={() => getSVG(WhiteCloseSVG, props.iconstyle)} {...props} />;
+}
+
+export const WhiteFillIcon = (props) => {
+  return <Icon component={() => getSVG(WhiteFillSVG, props.iconstyle)} {...props} />;
 }

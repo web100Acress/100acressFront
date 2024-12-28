@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import ScaleLoader from "react-spinners/ScaleLoader";
+import { EyeIcon } from "lucide-react";
 
 const TopSeoPlots = () => {
   return (
-    <div className="   bg-[#FFEDD5]  mb-4">
+    <div className="mb-4">
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6">
         <h1 className="text-xl pt-6 xl:text-4xl lg:text-3xl md:text-2xl sm:text-left">
           Top SCO Plots in Gurugram
@@ -12,14 +12,14 @@ const TopSeoPlots = () => {
         <div className="hidden sm:block">
           <Link to="/sco/plots/" target="_top">
           <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-            <ScaleLoader color="#FFFFFF" height={20} width={3} />
-            <span className="ml-2">View All</span>
+            <EyeIcon /> 
+           <span className="ml-2">View All</span>
           </span>
           </Link>
         </div>
       </div>
 
-      <div className="grid   lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 grid-cols-1 mx-14 gap-3 pb-16 pt-3 ">
+      <div className="grid   lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 grid-cols-1 mx-14 gap-3 pt-3 ">
         <Link to={`/emaar-india-sco-plots-gurugram/`} target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
