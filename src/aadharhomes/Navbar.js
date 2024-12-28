@@ -816,7 +816,7 @@ export default function Navbar() {
                           border: "none",
                         }}
                       >
-                        <PeopleIcon/>{colorChange?<FillIcon/>:<PeopleIcon/>}
+                        <PeopleIcon/>{colorChange?<WhiteFillIcon/>:<FillIcon/>}
                       </button>
                     ) : (
                       <button
