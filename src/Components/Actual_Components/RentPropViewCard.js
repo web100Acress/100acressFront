@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Footer from "./Footer";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const RentPropViewCard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -212,7 +213,18 @@ const RentPropViewCard = () => {
   return (
     <>
       {" "}
-      <Wrapper className="Section">
+      <Wrapper className="Section mt-12">
+      <Helmet>
+            <title>Top-Rated Rental Properties in Gurugram: 100acress</title>
+            <meta
+              name="description"
+              content="Explore top-rated rental properties in Gurugram. Choose from a variety of options that fit your budget and style. Connect with 100acress now!"
+            />
+            <link
+              rel="canonical"
+              href="https://www.100acress.com/buy-properties/best-resale-property-in-gurugram/"
+            />
+      </Helmet>
         <nav className="navbar d-lg-none d-xl-none d-xxl-none">
           <div className="container-fluid">
             {/* on tablet screen */}

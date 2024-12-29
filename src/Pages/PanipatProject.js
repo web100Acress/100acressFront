@@ -9,15 +9,15 @@ const PanipatProject = () => {
     <div>
       <Helmet>
         <title>
-          Property in Panipat - Flats, Villas, House for Sale in Panipat
+        Find Your Dream Property in Panipat | Best Property Deals
         </title>
         <meta
           name="description"
-          content="Real Estate Properties in New Panipat- Get Details for Residential &amp; Commercial Properties"
+          content="Check out 100acress's upcoming real estate projects in Panipat. A great opportunity to invest in the future of Panipat’s development."
         />
       </Helmet>
 
-      <section className="flex pt-2 flex-col items-center">
+      <section className="flex pt-2 flex-col items-center mt-12">
         <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Projects in Panipat
         </h1>

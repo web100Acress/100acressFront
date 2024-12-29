@@ -11,11 +11,10 @@ const PossessionAfter2028 = () => {
       <Helmet>
         <meta
           name="description"
-          content="Discover the latest new projects in Gurgaon at 100acress.com. Explore upcoming residential Projects and Commercial Properties. Explore Top Real Estate Projects."
+          content="Ready for your dream home? Check out top properties with property possession after 2025 in Gurugram for a future-perfect lifestyle."
         />
         <title>
-          Possession after 2025 Projects in Gurgaon | Best Real Estate at
-          100acress.com
+        Property Possession After 2025 in Gurugram: 100acress
         </title>
         <link
           rel="canonical"
@@ -23,7 +22,7 @@ const PossessionAfter2028 = () => {
         />
       </Helmet>
 
-      <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">
+      <div className="max-w-screen pt-4 sm:pt-2 md:pt-2 mt-12">
         <h1 className="mb-2 uppercase text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Possession after 2025
         </h1>

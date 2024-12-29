@@ -8,7 +8,6 @@ const ResidentialProjects = () => {
   return (
     <div>
       <Helmet>
-        <title>Residential Project in Gurgaon, Apartments in Gurgaon</title>
         <meta
           name="description"
           content="Discover top residential properties for sale or rent in the best locations. Find your dream home today at 100acress."

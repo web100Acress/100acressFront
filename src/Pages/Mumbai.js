@@ -19,7 +19,7 @@ const Mumbai = () => {
         />
       </Helmet>
 
-      <section className="flex pt-2 flex-col items-center">
+      <section className="flex pt-2 flex-col items-center mt-12">
         <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Projects in Mumbai
         </h1>

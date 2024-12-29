@@ -13,10 +13,10 @@ const ReadyToMoveProject = () => {
       <Helmet>
         <meta
           name="description"
-          content="Discover the latest new projects in Gurgaon at 100acress.com. Explore upcoming residential Projects and Commercial Properties. Explore Top Real Estate Projects."
+          content="Find the best ready-to-move properties in Gurugram. Discover homes ready for immediate possession."
         />
         <title>
-          Ready To Move Projects in Gurgaon | Best Real Estate at 100acress.com
+        Discover Ready-to-Move Homes in Gurugram | 100acress
         </title>
         <link
           rel="canonical"
@@ -27,7 +27,7 @@ const ReadyToMoveProject = () => {
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">
       
         <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          Ready-to-move properties Perfect for buyers seeking immediate
+          test Ready-to-move properties Perfect for buyers seeking immediate
           possession without delays in construction or finishing. These
           properties allow future homeowners to inspect and move in fast at
           purchase. Ready-to-move properties guarantee quality construction,
