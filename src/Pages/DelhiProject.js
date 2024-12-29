@@ -12,15 +12,15 @@ const DelhiProject = () => {
 
       <Helmet>
         <title>
-          Property in New Delhi - Flats, Villas, House for Sale in Delhi
+        Discover Best Property Projects in Delhi | 100acress
         </title>
         <meta
           name="description"
-          content="Real Estate Properties in New Delhi- Get Details for Residential &amp; Commercial Properties"
+          content="Find exceptional real estate projects in Delhi at 100acress. Invest in the best locations and properties."
         />
       </Helmet>
 
-      <section className="flex pt-2 flex-col items-center">
+      <section className="flex pt-2 flex-col items-center mt-12">
         <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Projects in Delhi
         </h1>

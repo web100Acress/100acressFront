@@ -10,10 +10,10 @@ const VillasProjects = () => {
   return (
     <div>
       <Helmet>
-        <title>Top Villas for Sale in India</title>
+        <title>Secure Your Dream Villa in a Prime Location | 100acress</title>
         <meta
           name="description"
-          content="Buy Deen Dayal Residential Plots/Lands for Sale in Gurgaon"
+          content="Step into a world of luxury with our exceptional villa designs. Discover your ideal home now. Contact us now!"
         />
         <link rel="canonical" href="https://www.100acress.com/villas/" />
       </Helmet>

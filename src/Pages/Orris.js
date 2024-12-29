@@ -9,11 +9,11 @@ const Orris = () => {
     <div>
       <Helmet>
         <title>
-        Buy Plots in Gurugram | Best Investment Opportunities
+        Discover Orris Plots in Gurugram | Book Your Property 
         </title>
         <meta
           name="description"
-          content="Find affordable plots in Gurugram. Invest in land with strong potential for growth and future returns. Connect with 100acress now!"
+          content="Secure your future with Orris plots in Gurugram. Affordable plots in prime locations available. Call now!"
         />
          <link
           rel="canonical"
@@ -21,7 +21,7 @@ const Orris = () => {
         />
       </Helmet>
 
-      <section className="flex pt-2 flex-col items-center">
+      <section className="flex pt-2 flex-col items-center mt-12">
         <h1 className="mb-3 p-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Orris Plots in Gurugram
         </h1>

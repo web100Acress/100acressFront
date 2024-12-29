@@ -40,7 +40,7 @@ const ProjectSearching = () => {
 
   return (
     <>
-      <div className="hidden lg:flex items-center px-14 bg-gray-200 pt-3 justify-center">
+      <div className="hidden lg:flex items-center px-14 bg-gray-200 pt-3 justify-center mt-12">
         <div className="w-full">
           <div className="grid grid-cols-1 lg:grid-cols-5 md:grid-cols-1 sm:grid-cols-1 gap-4 pt-6 mb-4">
 

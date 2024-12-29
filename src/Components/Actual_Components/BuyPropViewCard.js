@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Footer from "./Footer";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 const BuyPropViewCard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [toOpen, setToOpen] = useState(false);
@@ -209,7 +210,18 @@ const BuyPropViewCard = () => {
 
   return (
     <>
-      <Wrapper className="Section">
+      <Wrapper className="Section mt-12">
+      <Helmet>
+            <title>Best Resale Properties in Gurugram at Great Prices: 100acress</title>
+            <meta
+              name="description"
+              content="Explore premium resale properties in Gurugram at affordable prices. 100acress offers the best deals for homes and investments. Call now!"
+            />
+            <link
+              rel="canonical"
+              href="https://www.100acress.com/buy-properties/best-resale-property-in-gurugram/"
+            />
+          </Helmet>
         <nav className="navbar d-lg-none d-xl-none d-xxl-none">
           <div className="container-fluid">
             {/* on tablet screen */}

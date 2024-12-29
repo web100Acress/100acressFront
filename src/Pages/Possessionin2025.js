@@ -23,7 +23,7 @@ const Possessionin2025 = () => {
         />
       </Helmet>
 
-      <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">
+      <div className="max-w-screen pt-4 sm:pt-2 md:pt-2 mt-12">
         <h1 className="mb-2 uppercase text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Possession In 2025 PROPERTIES
         </h1>
