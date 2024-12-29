@@ -49,6 +49,17 @@ import SpotlightHomeSVG from '../../../src/Assets/icons/svg/spotlighthome.svg';
 import SpotlightPriceSVG from '../../../src/Assets/icons/svg/spotlightprice.svg';
 import WhiteHambergerSVG from '../../../src/Assets/icons/svg/whitehamberger.svg';
 import WhiteCloseSVG from '../../../src/Assets/icons/svg/whiteclose.svg';
+import ConsultSVG from '../../../src/Assets/icons/svg/consult.svg';
+import RealestateSVG from '../../../src/Assets/icons/svg/realestateconsulting.svg';
+import LegalSVG from '../../../src/Assets/icons/svg/leagaladvice.svg';
+import InteriorSVG from '../../../src/Assets/icons/svg/interiordesign.svg';
+import HomeloanSVG from '../../../src/Assets/icons/svg/homeloan.svg';
+import AwardsSVG from '../../../src/Assets/icons/svg/awards.svg';
+import ResidentialProjectSVG from '../../../src/Assets/icons/svg/residentialprojects.svg';
+import CommercialProjectSVG from '../../../src/Assets/icons/svg/commercialprojects.svg';
+import ScoPlotsSVG from '../../../src/Assets/icons/svg/scoplots.svg';
+import PlotnFloorSVG from '../../../src/Assets/icons/svg/plotsnfloor.svg';
+import MonthlyVisitSVG from '../../../src/Assets/icons/svg/monthlyvisit.svg';
 
 const getSVG = (path, style = {}) => (
   <img src={path} alt="Icon" style={{ ...style }} />
@@ -56,6 +67,30 @@ const getSVG = (path, style = {}) => (
 
 export const PhoneIcon = (props) => {
   return <Icon component={() => getSVG(PHONEICONSVG, props.iconstyle)} {...props} />;
+};
+
+export const AwardsIcon = (props) => {
+  return <Icon component={() => getSVG(AwardsSVG, props.iconstyle)} {...props} />;
+};
+
+export const ResidentialProjectIcon = (props) => {
+  return <Icon component={() => getSVG(ResidentialProjectSVG, props.iconstyle)} {...props} />;
+};
+
+export const CommercialProjectIcon = (props) => {
+  return <Icon component={() => getSVG(CommercialProjectSVG, props.iconstyle)} {...props} />;
+};
+
+export const ScoPlotsIcon = (props) => {
+  return <Icon component={() => getSVG(ScoPlotsSVG, props.iconstyle)} {...props} />;
+};
+
+export const PlotnFloorIcon = (props) => {
+  return <Icon component={() => getSVG(PlotnFloorSVG, props.iconstyle)} {...props} />;
+};
+
+export const MonthlyVisitIcon = (props) => {
+  return <Icon component={() => getSVG(MonthlyVisitSVG, props.iconstyle)} {...props} />;
 };
 
 export const WhiteLinestreakIcon = (props) => {
@@ -243,4 +278,24 @@ export const WhiteCloseIcon = (props) => {
 
 export const WhiteFillIcon = (props) => {
   return <Icon component={() => getSVG(WhiteFillSVG, props.iconstyle)} {...props} />;
+}
+
+export const ConsultIcon = (props) => {
+  return <Icon component={() => getSVG(ConsultSVG, props.iconstyle)} {...props} />;
+}
+
+export const RealestateIcon = (props) => {
+  return <Icon component={() => getSVG(RealestateSVG, props.iconstyle)} {...props} />;
+}
+
+export const LegalIcon = (props) => {
+  return <Icon component={() => getSVG(LegalSVG, props.iconstyle)} {...props} />;
+}
+
+export const InteriorIcon = (props) => {
+  return <Icon component={() => getSVG(InteriorSVG, props.iconstyle)} {...props} />;
+}
+
+export const HomeloanIcon = (props) => {
+  return <Icon component={() => getSVG(HomeloanSVG, props.iconstyle)} {...props} />;
 }

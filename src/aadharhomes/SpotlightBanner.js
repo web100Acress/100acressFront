@@ -73,10 +73,10 @@ const SpotlightBanner = () => {
           </p>
 
           {/* Info Section */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3 mb-3">
+          <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mt-3 mb-3">
             {/* Location Section */}
             <div className="text-center">
-              <div className="w-10 h-10 mx-auto flex items-center justify-center bg-gray-200 rounded-full">
+              <div className="w-10 h-8 mx-auto flex items-center justify-center bg-gray-200 rounded-full">
                 <span className="text-red-500 text-lg">
                   <SpotlightLocationIcon />
                 </span>
@@ -87,7 +87,7 @@ const SpotlightBanner = () => {
 
             {/* Size Section */}
             <div className="text-center">
-              <div className="w-10 h-10 mx-auto flex items-center justify-center bg-gray-200 rounded-full">
+              <div className="w-10 h-8 mx-auto flex items-center justify-center bg-gray-200 rounded-full">
                 <span className="text-red-500 text-lg">
                   <SpotlightHomeIcon />
                 </span>
@@ -95,14 +95,14 @@ const SpotlightBanner = () => {
               <p className="font-semibold mt-2 mb-0 text-gray-800">
                 {currentProject?.BhK_Details.length === 1
                   ? currentProject?.BhK_Details[0]?.bhk_type
-                  : `${currentProject?.BhK_Details[0]?.bhk_type} - ${currentProject?.BhK_Details[currentProject?.BhK_Details.length - 1]?.bhk_type}`}
+                  : `${currentProject?.BhK_Details[currentProject?.BhK_Details.length - 1]?.bhk_type}`}
               </p>
               <p className="text-gray-500 text-xs">Unit type</p>
             </div>
 
             {/* Price Section */}
             <div className="text-center">
-              <div className="w-10 h-10 mx-auto flex items-center justify-center bg-gray-200 rounded-full">
+              <div className="w-10 h-8 mx-auto flex items-center justify-center bg-gray-200 rounded-full">
                 <span className="text-red-500 text-lg">
                   <SpotlightPriceIcon />
                 </span>
@@ -114,32 +114,13 @@ const SpotlightBanner = () => {
             </div>
 
             {/* Explore Now Section */}
-            <div className="text-center flex flex-col justify-center">
+            <div className="text-center flex flex-col justify-center col-span-3 md:col-span-1">
               <Link to={`/${pUrl}/`} target="blank">
-                <button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect">
+                <button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect w-full md:w-auto ">
                   Explore Now
                 </button>
               </Link>
             </div>
-            {/* <div class="loader">
-              <div class="loader-bg">
-              <Link to={`/${pUrl}/`} target="blank">
-                <button>Explore Now</button>
-              </Link>
-              </div>
-              <div class="drops">
-                <div class="drop1"></div>
-                <div class="drop2"></div>
-              </div>
-            </div> */}
-            {/* <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-              <defs>
-                <filter id="liquid">
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-                  <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="liquid" />
-                </filter>
-              </defs>
-            </svg> */}
           </div>
 
 

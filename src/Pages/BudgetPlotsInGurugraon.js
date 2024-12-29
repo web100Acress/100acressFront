@@ -8,7 +8,7 @@ const BudgetPlotsInGurugraon = () => {
 
   const budgetPlots = [
     {
-      title:"Signature Sidhrawali Plots",link:"/signatureglobal-plots-gurugram/",image:"../../Images/signatureimge.webp"
+      title:"Signature Sidhrawali",link:"/signatureglobal-plots-gurugram/",image:"../../Images/signatureimge.webp"
     },
     {
       title:"BPTP Limited",link:"/bptp-plots-gurugram/",image:"../../Images/bptp.webp"
@@ -37,7 +37,7 @@ const BudgetPlotsInGurugraon = () => {
         </Link>
       </div>
       </div>
-      <div className="grid-container">
+      <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-11 gap-3 pb-5 pt-3">
         {budgetPlots.map((project, index) => (
           <Link to={project.link} key={index} className="card">
             <img src={project.image} alt={project.title} className="card-image" />

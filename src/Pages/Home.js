@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Cities from "../Components/HomePageComponents/Cities";
 import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
@@ -25,6 +25,9 @@ import { EyeIcon } from "lucide-react";
 import NewSearchBar from "../Components/HomePageComponents/NewSearchBar";
 import SpotlightBanner from "../aadharhomes/SpotlightBanner";
 function Home() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const {
     trendingProject,
     featuredProject,
@@ -262,14 +265,14 @@ function Home() {
                         </span>
                       </li>
                       <Link to={`/${pUrl}/`} target="_top">
-                      <li className="text-left">
-                        <button
-                          type="button"
-                          className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
-                        >
-                          View Details
-                        </button>
-                      </li>
+                        <li className="text-left">
+                          <button
+                            type="button"
+                            className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
+                          >
+                            View Details
+                          </button>
+                        </li>
                       </Link>
                     </ul>
                   </div>
@@ -292,8 +295,8 @@ function Home() {
           <div className="ml-2 hidden sm:block">
             <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
               <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-              <EyeIcon />
-              <span className="ml-2">View All</span>
+                <EyeIcon />
+                <span className="ml-2">View All</span>
               </span>
             </Link>
           </div>
@@ -364,14 +367,14 @@ function Home() {
                             </span>
                           </li>
                           <Link to={`/${pUrl}/`} target="_top">
-                          <li className="text-left">
-                            <button
-                              type="button"
-                              className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
-                            >
-                              View Details
-                            </button>
-                          </li>
+                            <li className="text-left">
+                              <button
+                                type="button"
+                                className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
+                              >
+                                View Details
+                              </button>
+                            </li>
                           </Link>
                         </ul>
                       </div>
@@ -591,7 +594,7 @@ function Home() {
             <Link to="/sco/plots/" target="_top">
               <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
                 <EyeIcon />
-              <span className="ml-2">View All</span>
+                <span className="ml-2">View All</span>
               </span>
             </Link>
           </div>
@@ -666,14 +669,14 @@ function Home() {
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
             <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
-            Commercial Projects in Delhi NCR
+              Commercial Projects in Delhi NCR
             </h1>
           </div>
           <div className="ml-2 hidden sm:block">
             <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
               <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-              <EyeIcon />
-              <span className="ml-2">View All</span>
+                <EyeIcon />
+                <span className="ml-2">View All</span>
               </span>
             </Link>
           </div>
@@ -681,7 +684,7 @@ function Home() {
         {
           <section className="flex flex-col items-center bg-white">
             <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-            {commercialProject.slice(0, 4).map((item, index) => {
+              {commercialProject.slice(0, 4).map((item, index) => {
                 const pUrl = item.project_url;
                 return (
                   <span >
@@ -744,14 +747,14 @@ function Home() {
                             </span>
                           </li>
                           <Link to={`/${pUrl}/`} target="_top">
-                          <li className="text-left">
-                            <button
-                              type="button"
-                              className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
-                            >
-                              View Details
-                            </button>
-                          </li>
+                            <li className="text-left">
+                              <button
+                                type="button"
+                                className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
+                              >
+                                View Details
+                              </button>
+                            </li>
                           </Link>
                         </ul>
                       </div>
@@ -859,14 +862,14 @@ function Home() {
       </div> */}
       {colorChange && isSmallerThan768 && <div>
         <Link to="/signin/" target="_top">
-        <div className="sticky-quote-cta">
-          <a
-            className="text-white"
-            style={{ backgroundColor: "#C13B44", padding:'15px' }}
-          >
-            LIST{" "}PROPERTY
-          </a>
-        </div>
+          <div className="sticky-quote-cta">
+            <a
+              className="text-white"
+              style={{ backgroundColor: "#C13B44", padding: '12px' }}
+            >
+              LIST{" "}PROPERTY
+            </a>
+          </div>
         </Link>
       </div>}
 
@@ -876,14 +879,14 @@ function Home() {
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
             <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
-            Featured Projects
+              Featured Projects
             </h1>
           </div>
           <div className="ml-2 hidden sm:block">
             <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
               <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-              <EyeIcon />
-              <span className="ml-2">View All</span>
+                <EyeIcon />
+                <span className="ml-2">View All</span>
               </span>
             </Link>
           </div>
@@ -891,7 +894,7 @@ function Home() {
         {
           <section className="flex flex-col items-center bg-white">
             <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-            {featuredProject.map((item, index) => {
+              {featuredProject.map((item, index) => {
                 const pUrl = item.project_url;
                 return (
                   <span >
@@ -954,14 +957,14 @@ function Home() {
                             </span>
                           </li>
                           <Link to={`/${pUrl}/`} target="_top">
-                          <li className="text-left">
-                            <button
-                              type="button"
-                              className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
-                            >
-                              View Details
-                            </button>
-                          </li>
+                            <li className="text-left">
+                              <button
+                                type="button"
+                                className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
+                              >
+                                View Details
+                              </button>
+                            </li>
                           </Link>
                         </ul>
                       </div>
@@ -987,61 +990,138 @@ function Home() {
               <Link to={"/project-in-delhi/"} target="_top">
                 <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
                   <EyeIcon />
-                    <span className="ml-2">View All</span>
+                  <span className="ml-2">View All</span>
                 </span>
               </Link>
             </div>
           </div>
         </div>
         {
-          <section
-            className="flex flex-col pt-2 
-           items-center"
-          >
-            <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full ">
+          // <section
+          //   className="flex flex-col pt-2 
+          //  items-center"
+          // >
+          //   <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full ">
+          //     {city.map((item, index) => {
+          //       const pUrl = item.project_url;
+          //       return (
+          //         <Link to={`/${pUrl}/`} target="_top">
+          //           <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
+          //             {" "}
+          //             <img
+          //               src={item.frontImage.url}
+          //               alt="property In Gurugram"
+          //               className="w-[100%] h-[100%] object-cover"
+          //             />
+          //             <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 px-2 mb-2 h-[40%] rounded-md">
+          //              <div className="pb-0">
+          //                 <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+          //                   {item.projectName}
+          //                 </span>
+          //                 <br />
+          //                 <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
+          //                   {item.city}, {item.state}
+          //                 </span>
+          //               </div>
+
+          //               <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
+          //                 <li className="mr-4 flex items-center text-left">
+          //                   <li className="text-left">
+          //                     <p className="m-0 text-sm font-medium ">
+          //                       <PropertyIcon />{" "}{item.type}
+          //                     </p>
+          //                     <span className="text-[10px] text-gray-600 block truncate text-sm text-gray-400 block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
+          //                       <LocationRedIcon />{" "}{item.projectAddress}
+          //                     </span>
+
+          //                   </li>
+          //                 </li>
+          //               </ul>
+
+          //               <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
+          //                 <li className="text-left">
+          //                   <span className="text-sm font-extrabold text-red-600">
+          //                     <span className="text-xl"><RupeeIcon /></span>
+          //                     {item.minPrice < 1 ? (
+          //                       <>{item.minPrice * 100} L</>
+          //                     ) : (
+          //                       <>{item.minPrice}</>
+          //                     )}
+          //                     {" - "}
+          //                     {item.maxPrice} Cr
+          //                   </span>
+          //                 </li>
+          //                 <Link to={`/${pUrl}/`} target="_top">
+          //                 <li className="text-left">
+          //                   <button
+          //                     type="button"
+          //                     className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
+          //                   >
+          //                     View Details
+          //                   </button>
+          //                 </li>
+          //                 </Link>
+          //               </ul>
+          //             </div>
+          //           </article>
+          //         </Link>
+          //       );
+          //     })}
+          //   </div>
+          // </section>
+          <section className="flex flex-col items-center bg-transparent">
+            <div className="grid max-w-md bg-transparent grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {city.map((item, index) => {
                 const pUrl = item.project_url;
                 return (
-                  <Link to={`/${pUrl}/`} target="_top">
-                    <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
-                      {" "}
-                      <img
-                        src={item.frontImage.url}
-                        alt="property In Gurugram"
-                        className="w-[100%] h-[100%] object-cover"
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 mb-2 h-[37%] rounded-md">
-                        <div className="flex flex-col items-center text-justify hover:bg-orange-100 p-2">
-                          <span className="text-[13px] font-semibold duration-500 ease-in-out">
+                  <span>
+                    <Link to={`/${pUrl}/`} target="_top">
+                      <article
+                        key={index}
+                        className="mb-2 transition overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                      >
+                        <div className="p-3 relative overflow-hidden ">
+                          <img
+                            src={item.frontImage.url}
+                            alt="property In Gurugram"
+                            className="w-full h-64 object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
+                          />
+                        </div>
+                        <div className="pt-0 p-3 space-y-2">
+                          <span className="text-[15px] font-semibold text-black-600 hover:text-red-600 duration-500 ease-in-out">
                             {item.projectName}
                           </span>
-                          <span className="text-sm duration-500 ease-in-out ">
-                            {item.city}, {item.state}
-                          </span>
-                          <span className="text-[12px] text-gray-700">
-                            {item.projectAddress}
-                          </span>
-                          <p className="m-0 text-sm font-medium">{item.type}</p>
-                          <span className="text-sm font-extrabold text-red-600">
-                            <span className="text-xl">₹</span>
-                            {item.minPrice < 1 ? (
-                              <>{item.minPrice * 100} L</>
-                            ) : (
-                              <>{item.minPrice}</>
-                            )}
-                            {" - "}
-                            {item.maxPrice} Cr
-                          </span>
-                          <button
-                            type="button"
-                            className="text-red-600 rounded-lg text-sm px-2 text-center mt-2"
-                          >
-                            <i className="fa-solid fa-arrow-right text-xl"></i>
-                          </button>
+                          <ul className="m-0 p-0 flex text-white-600 justify-between px-0 pb-0">
+                            <li className="text-left flex items-end gap-2">
+                              {/* Icon */}
+                              <span className="text-red-600 flex-shrink-0">
+                                <LcoationBiggerIcon />
+                              </span>
+                              {/* Text */}
+                              <div className="text-sm font-thin truncate w-64 md:w-64 lg:w-32 xl:w-48">
+                                <span className="text-sm text-white-600 hover:text-red-600 duration-500 ease-in-out block truncate">
+                                  {item.city}, {item.state}
+                                </span>
+                                <span className="text-xs text-[#656565] block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
+                                  {item.projectAddress}
+                                </span>
+                              </div>
+                            </li>
+
+                            <li className=" text-left flex item-center">
+                              <button
+                                type="button"
+                                className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-1 py-1 text-center me-2"
+                              >
+                                <ArrowIcon />
+                              </button>
+                            </li>
+                          </ul>
                         </div>
-                      </div>
-                    </article>
-                  </Link>
+                      </article>
+                    </Link>
+
+                  </span>
                 );
               })}
             </div>
@@ -1052,104 +1132,112 @@ function Home() {
       <Cities />
 
       {/* <StarCarousel /> */}
-      <FormHome />
-
-      <div className="">
-        <div style={{ backgroundColor: "#00314f" }}>
-          {" "}
-          <div className="" style={{ backgroundColor: "#00314f" }}>
-            <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-4">
-              <div className="flex items-center">
-                <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl text-white text-center sm:text-left">
-                  Affordable Homes
-                </h1>
-              </div>
-              <div className="ml-2 hidden sm:block">
-                <Link to={"/projects-in-gurugram/"} target="_top">
-                  <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-                    <ScaleLoader color="#FFFFFF" height={20} width={3} />
-                    <span className="ml-2">View All</span>
-                  </span>
-                </Link>
-              </div>
-            </div>
+      <div className="py-3">
+        {" "}
+        <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
+          <div className="flex items-center">
+            <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
+              Affordable Homes
+            </h1>
           </div>
-          {
-            <section
-              className="flex flex-col pt-3
-           items-center"
-            >
-              <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-                {affordable.map((item, index) => {
-                  const pUrl = item.project_url;
-                  return (
-                    <Link to={`/${pUrl}/`} target="_top">
-                      <article
-                        key={index}
-                        className="mb-4 transition hover:scale-105  bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                      >
-                        <div>
+          <div className="ml-2 hidden sm:block">
+            <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
+              <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
+                <EyeIcon />
+                <span className="ml-2">View All</span>
+              </span>
+            </Link>
+          </div>
+        </div>
+        {
+          <section className="flex flex-col items-center bg-white">
+            <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+              {affordable.map((item, index) => {
+                const pUrl = item.project_url;
+                return (
+                  <span >
+
+                    <article
+                      key={index}
+                      className="mb-2 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                    >
+                      <div className="relative flex p-3">
+                        <Link to={`/${pUrl}/`} target="_top">
+
                           <img
                             src={item.frontImage.url}
                             alt="property In Gurugram"
-                            className="w-full h-48 object-fit"
+                            className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                           />
+                        </Link>
+                        <div className="absolute top-5 right-5"
+                          onClick={() => handleShare(item)}
+                        >
+                          <ShareFrameIcon />
+                        </div>
+                      </div>
+                      <div className="pt-0 p-3">
+                        <div className="pb-2">
+                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                            {item.projectName}
+                          </span>
+                          <br />
+                          <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
+                            {item.city}, {item.state}
+                          </span>
                         </div>
 
-                        <div className="p-4">
-                          <div className="pb-2">
-                            <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                              {item.projectName}
-                            </span>
-                            <br />
-                            <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                              {item.city}, {item.state}
-                            </span>
-                          </div>
-                          <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
-                            <li className="mr-4 flex items-center text-left">
-                              <li className="text-left">
-                                <span className="text-[13px] text-gray-400">
-                                  {item.projectAddress}
-                                </span>
-                                <p className="m-0 text-sm font-medium">
-                                  {item.type}
-                                </p>
-                              </li>
-                            </li>
-                          </ul>
-                          <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
+                        <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
+                          <li className="mr-4 flex items-center text-left">
                             <li className="text-left">
-                              <span className="text-sm font-extrabold text-red-600">
-                                <span className="text-xl">₹</span>
-                                {item.minPrice < 1 ? (
-                                  <>{item.minPrice * 100} L</>
-                                ) : (
-                                  <>{item.minPrice}</>
-                                )}
-                                {" - "}
-                                {item.maxPrice} Cr
+                              <p className="m-0 text-sm font-medium ">
+                                <PropertyIcon />{" "}{item.type}
+                              </p>
+                              <span className="text-[10px] text-gray-600 block truncate text-sm text-gray-400 block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
+                                <LocationRedIcon />{" "}{item.projectAddress}
                               </span>
-                            </li>
 
+                            </li>
+                          </li>
+                        </ul>
+
+                        <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
+                          <li className="text-left">
+                            <span className="text-sm font-extrabold text-red-600">
+                              <span className="text-xl"><RupeeIcon /></span>
+                              {item.minPrice < 1 ? (
+                                <>{item.minPrice * 100} L</>
+                              ) : (
+                                <>{item.minPrice}</>
+                              )}
+                              {" - "}
+                              {item.maxPrice} Cr
+                            </span>
+                          </li>
+                          <Link to={`/${pUrl}/`} target="_top">
                             <li className="text-left">
                               <button
                                 type="button"
-                                className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
+                                className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
                               >
                                 View Details
                               </button>
                             </li>
-                          </ul>
-                        </div>
-                      </article>
-                    </Link>
-                  );
-                })}
-              </div>
-            </section>
-          }
-        </div>
+                          </Link>
+                        </ul>
+                      </div>
+                    </article>
+                    {/* <div className="absolute top-5 right-5"
+                      onClick={() => handleShare(item)}
+                    >
+                      <ShareFrameIcon />
+                    </div> */}
+                  </span>
+                );
+              })}
+            </div>
+          </section>
+        }
       </div>
 
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-4">
@@ -1178,7 +1266,9 @@ function Home() {
       <OurServices />
       <WhyChoose />
 
-      <Snapshot />
+      {/* <Snapshot /> */}
+      <FormHome />
+
       {/* <HomeBuilderCarousel /> */}
       <Free />
       <div>
@@ -1265,7 +1355,7 @@ const Wrapper = styled.section`
   .dd-m-whatsapp i {
     font-size: 24px; /* Adjust icon size as needed */
   }
-    .sticky-quote-cta {
+  .sticky-quote-cta {
     height: auto;
     position: fixed;
     border-radius: 15px 0 15px 0;
@@ -1284,11 +1374,11 @@ const Wrapper = styled.section`
     font-weight: bold;
     font-size: 15px;
     border-radius: 5px;
-    -ms-transform: rotate(-90deg) translate(0, -20px);
-    -webkit-transform: rotate(-90deg) translate(0, -20px);
-    transform: rotate(-90deg) translate(0, -20px);
+    -ms-transform: rotate(-270deg) translate(0, -20px);
+    -webkit-transform: rotate(-270deg) translate(0, -20px);
+    transform: rotate(-270deg) translate(0, -20px);
     position: relative;
-    right: -85px;
+    right: -40px;
     transition: position 0.2s, right 0.2s;
     background: rgb(251, 183, 39);
     background: red;
@@ -1366,40 +1456,6 @@ const Wrapper = styled.section`
     }
   }
 
-  .sticky-quote-cta {
-    height: auto;
-    position: fixed;
-    border-radius: 15px 0 15px 0;
-    right: 0;
-    top: 400px;
-    top: 40vh;
-    z-index: 10000;
-  }
-
-  .sticky-quote-cta a {
-    color: white;
-    text-decoration: none;
-    background: #333;
-    padding: 15px 20px 35px;
-    display: block;
-    font-weight: bold;
-    font-size: 15px;
-    border-radius: 5px;
-    -ms-transform: rotate(-90deg) translate(0, -20px);
-    -webkit-transform: rotate(-90deg) translate(0, -20px);
-    transform: rotate(-90deg) translate(0, -20px);
-    position: relative;
-    right: -85px;
-    transition: position 0.2s, right 0.2s;
-    background: rgb(251, 183, 39);
-    background: red;
-  }
-
-  .sticky-quote-cta a:hover {
-    right: -70px;
-    transition: position 0.2s, right 0.2s;
-    cursor: pointer;
-  }
 
   .banner {
     position: relative;

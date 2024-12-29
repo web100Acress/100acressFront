@@ -22,7 +22,7 @@ const BuilderIndependentFloor = () => {
           href="https://www.100acress.com/projects/independentfloors/"
         />
       </Helmet>
-      <div className="max-w-screen pt-2 sm:pt-2 md:pt-2" target="_top">
+      <div className="max-w-screen pt-2 sm:pt-2 md:pt-2 mt-13" target="_top">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Independent & Builder Floors in Gurugram
         </h1>
