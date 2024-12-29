@@ -167,7 +167,7 @@ export default function SignUp() {
   const { name, mobile, password, cpassword } = userSignUp;
   return (
     <>
-      <Box position={"relative"}>
+      <Box position={"relative"} className="mt-10">
         {name !== "" &&
           mobile !== "" &&
           password !== "" &&

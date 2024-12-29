@@ -9,14 +9,29 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 // import { EnquiryProvider } from "./Context/enquiryContext";
 import { ChakraProvider } from "@chakra-ui/react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, useLocation } from "react-router-dom";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
+// ScrollToTop component using the useLocation hook for react-router v6
+const ScrollToTop = ({ children }) => {
+  const location = useLocation(); // useLocation hook provides current location
+
+  React.useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to top when location changes
+  }, [location]); // Effect depends on location
+
+  return children; // Render the children components
+};
+
 root.render(
-    <>
-      <ChakraProvider>
-        <BrowserRouter>
+  <>
+    <ChakraProvider>
+      <BrowserRouter>
+        <ScrollToTop>
           <App />
-          </BrowserRouter>
-      </ChakraProvider>
-    </>
+        </ScrollToTop>
+      </BrowserRouter>
+    </ChakraProvider>
+  </>
 );

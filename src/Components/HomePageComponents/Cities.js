@@ -156,7 +156,6 @@ export default Cities;
 
 const Wrapper = styled.section`
   .dffasPL {
-    background-color: #f1f1fe;
     padding-top: 10px;
     padding-bottom: 20px;
   }
@@ -192,7 +191,7 @@ const Wrapper = styled.section`
   .cvBMLN {
     width: calc(20% - 20px); /* Adjusted width and margin */
     margin: 10px;
-    height: 250px;
+    height: 200px;
     border: 3px solid #eee;
     overflow: hidden;
     position: relative;

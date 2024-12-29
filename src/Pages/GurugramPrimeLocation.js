@@ -32,7 +32,7 @@ const GurugramPrimeLocation = () => {
 
   return (
     <div>
-      <section className="flex flex-col items-center pt-2">
+      <section className="flex flex-col items-center pt-2 mt-12">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Projects in {result}
         </h1>

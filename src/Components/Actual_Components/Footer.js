@@ -44,7 +44,7 @@ const Footer = () => {
   };
   return (
     <>
-      <div className="w-full divide-y divide-gray-200 bg-red-600">
+      <div className="w-full divide-y divide-gray-200 bg-[#C13B44]">
         <div className="flex flex-wrap py-3">
           <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-6 py-2 text-center text-sm">
             <Link to="/" target="_top">
@@ -376,7 +376,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="w-full px-2 py-3 bg-red-600">
+        <div className="w-full px-2 py-3 bg-[#C13B44]">
           <p className="text-center text-sm text-white mb-0">
             Copyright © 2024,{" "}
             <Link className="text-reset" to="https://100acress.com/">
