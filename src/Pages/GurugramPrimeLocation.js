@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Link, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const GurugramPrimeLocation = () => {
   const { allProjectData } = useContext(DataContext);
@@ -32,9 +33,20 @@ const GurugramPrimeLocation = () => {
 
   return (
     <div>
+      <Helmet>
+            <title>{`Projects in ${result} | Luxury Property in Gurgaon`}</title>
+            <meta
+              name="description"
+              content={`Explore the best projects in ${result}, Gurugram. Find your dream property in ${result} today!`}
+            />
+            <link
+              rel="canonical"
+              href={`https://www.100acress.com/property-in-gurugram/${location}/`}
+            />
+          </Helmet>
       <section className="flex flex-col items-center pt-2 mt-12">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          Projects in {result}
+          Projects in {result}, Gurugram
         </h1>
 
         <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
