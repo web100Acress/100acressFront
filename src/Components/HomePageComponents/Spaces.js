@@ -20,7 +20,7 @@ function SpacesAvailable() {
             Dream Property In The Heart of Gurugram
           </h1>
         </div>
-        <div className="grid-container">
+        <div className="grid-container mt-3">
           {projects.map((project, index) => (
             <Link to={project.link} key={index} className="card">
               <img src={project.image} alt={project.title} className="card-image" />

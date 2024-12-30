@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
+import { RealestateIcon,ConsultIcon,LegalIcon,HomeloanIcon, InteriorIcon } from "../../Assets/icons";
 
 function OurServices() {
   const sliderSettings = {
@@ -13,30 +13,26 @@ function OurServices() {
   slidesToShow: 1,
   slidesToScroll: 1,
   arrows: true,
-  autoplay: true, 
+  autoplay: false, 
   autoplaySpeed: 3000, 
   };
   
   return (
-    <div className="section bg-gray-100 font-poppins font-light">
+    <div className="section font-poppins font-light">
       <div className="max-w-screen-xl mx-auto px-6 py-6">
-      <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left  bg-gray-100">
-        Services We Offer
+      <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left">
+        Explore Our Services
       </h1>
-        <div className="md:hidden h-96">
+        <div className="md:hidden h-64">
           <Slider {...sliderSettings} >
             <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
               <Link to={`/contact-us/`} target="_top" className="text-center">
-                <div className="mb-4">
-                  <img
-                    src="../../Images/consulting.webp"
-                    className="h-52 w-60 object-fit"
-                    alt="consulting"
-                  />
+              <div className="mb-4">
+                  <RealestateIcon/>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold mb-2">Real Estate Consulting</h3>
-                  <p className="text-gray-600 text-justify">
+                  <h3 className="text-xl mb-2">Real Estate Consulting</h3>
+                  <p className="text-gray-600 text-xs text-center">
                     We Provide the best services to help you get your dream home as per your expectations.
                   </p>
                 </div>
@@ -44,16 +40,12 @@ function OurServices() {
             </div>
             <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
               <Link to={`/contact-us/`} target="_top" className="text-center">
-                <div className="mb-4">
-                  <img
-                    src="../../Images/lawyer.webp"
-                    className="h-52 w-60 object-fit"
-                    alt="lawyer"
-                  />
+              <div className="mb-4">
+                  <LegalIcon/>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold mb-2">Legal Advice</h3>
-                  <p className="text-gray-600 text-justify">
+                  <h3 className="text-xl mb-2">Legal Advice</h3>
+                  <p className="text-gray-600 text-xs text-center">
                   The major issue is trust worthy legal assistance. We will help you through all the aspects.
                   </p>
                 </div>
@@ -61,16 +53,12 @@ function OurServices() {
             </div>
             <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
               <Link to={`/contact-us/`} target="_top" className="text-center">
-                <div className="mb-4">
-                  <img
-                    src="../../../Images/interiordesign.webp"
-                    className="h-52 w-60 object-fit"
-                    alt="legal"
-                  />
+              <div className="mb-4">
+                  <InteriorIcon/>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold mb-2">Interior Design</h3>
-                  <p className="text-gray-600 text-justify">
+                  <h3 className="text-xl mb-2">Interior Design</h3>
+                  <p className="text-gray-600 text-xs text-center">
                     We Provide the best services to help you get your dream home as per your expectations.
                   </p>
                 </div>
@@ -78,22 +66,18 @@ function OurServices() {
             </div>
             <div className="flex flex-col items-center bg-white p-4 rounded-lg">
               <Link to={`/contact-us/`} target="_top" className="text-center">
-                <div className="mb-4">
-                  <img
-                    src="../../Images/homeloan.webp"
-                    className="h-52 w-60 object-fit"
-                    alt="homeloan"
-                  />
+              <div className="mb-4">
+                  <HomeloanIcon/>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold mb-2">Home Loan</h3>
-                  <p className="text-gray-600 text-justify">
+                  <h3 className="text-xl mb-2">Home Loan</h3>
+                  <p className="text-gray-600 text-xs text-center">
                   We will help you to provide the best home loan to complete your dream and guide.
                   </p>
                 </div>
               </Link>
             </div>
-            <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
+            {/* <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
               <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <img
@@ -109,7 +93,7 @@ function OurServices() {
                   </p>
                 </div>
               </Link>
-            </div>
+            </div> */}
           </Slider>
           <style jsx>{`
         .slick-prev {
@@ -136,15 +120,11 @@ function OurServices() {
           <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
-                  <img
-                    src="../../Images/consulting.webp"
-                    className="h-52 w-60 object-fit"
-                    alt="consulting"
-                  />
+                  <RealestateIcon/>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold mb-2">Real Estate Consulting</h3>
-                  <p className="text-gray-600 text-justify">
+                  <h3 className="text-xl mb-2">Real Estate Consulting</h3>
+                  <p className="text-gray-600 text-xs text-center">
                     We Provide the best services to help you get your dream home as per your expectations.
                   </p>
                 </div>
@@ -153,15 +133,11 @@ function OurServices() {
           <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
-                  <img
-                    src="../../Images/lawyer.webp"
-                    className="h-52 w-60 object-fit"
-                    alt="lawyer"
-                  />
+                  <LegalIcon/>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold mb-2">Legal Advice</h3>
-                  <p className="text-gray-600 text-justify">
+                  <h3 className="text-xl mb-2">Legal Advice</h3>
+                  <p className="text-gray-600 text-xs text-center">
                   The major issue is trust worthy legal assistance. We will help you through all the aspects.
                   </p>
                 </div>
@@ -170,15 +146,11 @@ function OurServices() {
           <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
-                  <img
-                    src="../../../Images/interiordesign.webp"
-                    className="h-52 w-60 object-fit"
-                    alt="legal"
-                  />
+                  <InteriorIcon/>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold mb-2">Interior Design</h3>
-                  <p className="text-gray-600 text-justify">
+                  <h3 className="text-xl mb-2">Interior Design</h3>
+                  <p className="text-gray-600 text-xs text-center">
                     We Provide the best services to help you get your dream home as per your expectations.
                   </p>
                 </div>
@@ -187,15 +159,11 @@ function OurServices() {
           <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
-                  <img
-                    src="../../Images/homeloan.webp"
-                    className="h-52 w-60 object-fit"
-                    alt="homeloan"
-                  />
+                  <HomeloanIcon/>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold mb-2">Home Loan</h3>
-                  <p className="text-gray-600 text-justify">
+                  <h3 className="text-xl mb-2">Home Loan</h3>
+                  <p className="text-gray-600 text-xs text-center">
                   We will help you to provide the best home loan to complete your dream and guide.
                   </p>
                 </div>

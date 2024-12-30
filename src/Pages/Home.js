@@ -302,7 +302,7 @@ function Home() {
           </div>
         </div>
         {
-          <section className="flex flex-col items-center bg-white">
+          <section className="flex flex-col items-center bg-white mt-3">
             <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {upcoming.map((item, index) => {
                 const pUrl = item.project_url;
@@ -600,7 +600,7 @@ function Home() {
           </div>
         </div>
         {
-          <section className="flex flex-col items-center bg-transparent">
+          <section className="flex flex-col items-center bg-transparent mt-3 ">
             <div className="grid max-w-md bg-transparent grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {typeScoPlots.map((item, index) => {
                 const pUrl = item.project_url;
@@ -682,7 +682,7 @@ function Home() {
           </div>
         </div>
         {
-          <section className="flex flex-col items-center bg-white">
+          <section className="flex flex-col items-center bg-white mt-3">
             <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {commercialProject.slice(0, 4).map((item, index) => {
                 const pUrl = item.project_url;
@@ -892,7 +892,7 @@ function Home() {
           </div>
         </div>
         {
-          <section className="flex flex-col items-center bg-white">
+          <section className="flex flex-col items-center bg-white mt-3">
             <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {featuredProject.map((item, index) => {
                 const pUrl = item.project_url;
@@ -997,79 +997,7 @@ function Home() {
           </div>
         </div>
         {
-          // <section
-          //   className="flex flex-col pt-2 
-          //  items-center"
-          // >
-          //   <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full ">
-          //     {city.map((item, index) => {
-          //       const pUrl = item.project_url;
-          //       return (
-          //         <Link to={`/${pUrl}/`} target="_top">
-          //           <article className="relative mb-4 transition transform hover:scale-105 bg-white overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out h-[400px]">
-          //             {" "}
-          //             <img
-          //               src={item.frontImage.url}
-          //               alt="property In Gurugram"
-          //               className="w-[100%] h-[100%] object-cover"
-          //             />
-          //             <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 mx-2 px-2 mb-2 h-[40%] rounded-md">
-          //              <div className="pb-0">
-          //                 <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-          //                   {item.projectName}
-          //                 </span>
-          //                 <br />
-          //                 <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
-          //                   {item.city}, {item.state}
-          //                 </span>
-          //               </div>
-
-          //               <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
-          //                 <li className="mr-4 flex items-center text-left">
-          //                   <li className="text-left">
-          //                     <p className="m-0 text-sm font-medium ">
-          //                       <PropertyIcon />{" "}{item.type}
-          //                     </p>
-          //                     <span className="text-[10px] text-gray-600 block truncate text-sm text-gray-400 block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
-          //                       <LocationRedIcon />{" "}{item.projectAddress}
-          //                     </span>
-
-          //                   </li>
-          //                 </li>
-          //               </ul>
-
-          //               <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
-          //                 <li className="text-left">
-          //                   <span className="text-sm font-extrabold text-red-600">
-          //                     <span className="text-xl"><RupeeIcon /></span>
-          //                     {item.minPrice < 1 ? (
-          //                       <>{item.minPrice * 100} L</>
-          //                     ) : (
-          //                       <>{item.minPrice}</>
-          //                     )}
-          //                     {" - "}
-          //                     {item.maxPrice} Cr
-          //                   </span>
-          //                 </li>
-          //                 <Link to={`/${pUrl}/`} target="_top">
-          //                 <li className="text-left">
-          //                   <button
-          //                     type="button"
-          //                     className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
-          //                   >
-          //                     View Details
-          //                   </button>
-          //                 </li>
-          //                 </Link>
-          //               </ul>
-          //             </div>
-          //           </article>
-          //         </Link>
-          //       );
-          //     })}
-          //   </div>
-          // </section>
-          <section className="flex flex-col items-center bg-transparent">
+          <section className="flex flex-col items-center bg-transparent mt-3">
             <div className="grid max-w-md bg-transparent grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {city.map((item, index) => {
                 const pUrl = item.project_url;
@@ -1252,8 +1180,8 @@ function Home() {
             target="_top"
           >
             <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-              <ScaleLoader color="#FFFFFF" height={20} width={3} />
-              <span className="ml-2" style={{ marginLeft: "8px" }}>
+              <EyeIcon />            
+                <span className="ml-2" style={{ marginLeft: "8px" }}>
                 View All
               </span>
             </span>
