@@ -60,6 +60,12 @@ import CommercialProjectSVG from '../../../src/Assets/icons/svg/commercialprojec
 import ScoPlotsSVG from '../../../src/Assets/icons/svg/scoplots.svg';
 import PlotnFloorSVG from '../../../src/Assets/icons/svg/plotsnfloor.svg';
 import MonthlyVisitSVG from '../../../src/Assets/icons/svg/monthlyvisit.svg';
+import FacebookSVG from '../../../src/Assets/icons/svg/facebook.svg';
+import YouTubeSVG from '../../../src/Assets/icons/svg/youtube.svg';
+import InstagramSVG from '../../../src/Assets/icons/svg/Instagram.svg';
+import TwitterSVG from '../../../src/Assets/icons/svg/twitter.svg';
+import LinkedInSVG from '../../../src/Assets/icons/svg/linkedin.svg';
+import SendSVG from '../../../src/Assets/icons/svg/send.svg';
 
 const getSVG = (path, style = {}) => (
   <img src={path} alt="Icon" style={{ ...style }} />
@@ -67,6 +73,30 @@ const getSVG = (path, style = {}) => (
 
 export const PhoneIcon = (props) => {
   return <Icon component={() => getSVG(PHONEICONSVG, props.iconstyle)} {...props} />;
+};
+
+export const SendIcon = (props) => {
+  return <Icon component={() => getSVG(SendSVG, props.iconstyle)} {...props} />;
+};
+
+export const TwitterIcon = (props) => {
+  return <Icon component={() => getSVG(TwitterSVG, props.iconstyle)} {...props} />;
+};
+
+export const InstagramIcon = (props) => {
+  return <Icon component={() => getSVG(InstagramSVG, props.iconstyle)} {...props} />;
+};
+
+export const FacebookIcon = (props) => {
+  return <Icon component={() => getSVG(FacebookSVG, props.iconstyle)} {...props} />;
+};
+
+export const YouTubeIcon = (props) => {
+  return <Icon component={() => getSVG(YouTubeSVG, props.iconstyle)} {...props} />;
+};
+
+  export const LinkedinIcon = (props) => {
+  return <Icon component={() => getSVG(LinkedInSVG, props.iconstyle)} {...props} />;
 };
 
 export const AwardsIcon = (props) => {

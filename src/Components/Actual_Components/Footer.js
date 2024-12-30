@@ -5,6 +5,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
 import logoImage from "../../Images/100acress.png";
 import axios from "axios";
+import { YouTubeIcon ,FacebookIcon , LinkedinIcon , InstagramIcon ,TwitterIcon, SendIcon } from "../../Assets/icons";
 const Footer = () => {
   const [data, setData] = useState({
     name: "",
@@ -289,11 +290,11 @@ const Footer = () => {
             Instant Callback
             <div className="flex flex-col mx-4 my-2 items-center">
               <div className="relative w-full my-2">
-                <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm"></i>
                 <input
                   type="name"
                   name="name"
-                  className="w-full pl-10 pr-5 py-2 text-sm placeholder-black text-black transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  className="w-full pl-10 pr-5 py-2 text-sm border border-white placeholder-white text-white transition-all ease-in duration-75 bg-transparent dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-white"
                   placeholder="Full Name"
                   value={data.name}
                   onChange={handleSubmitData}
@@ -302,11 +303,11 @@ const Footer = () => {
               </div>
 
               <div className="relative w-full my-2">
-                <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black text-sm"></i>
+                <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 textwhitek text-sm"></i>
                 <input
                   type="number"
                   name="mobile"
-                  className="w-full pl-10 pr-5 py-2 text-sm placeholder-black text-black transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  className="w-full pl-10 pr-5 py-2 text-sm border border-white placeholder-white text-white transition-all ease-in duration-75 bg-transparent dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-white"
                   placeholder="Mobile Number"
                   value={data.mobile}
                   onChange={handleSubmitData}
@@ -314,10 +315,10 @@ const Footer = () => {
                 />
               </div>
               <button
-                className="w-full text-white bg-black font-normal py-1 mt-1 rounded-lg"
+                className="w-full text-white bg-white font-normal py-1 mt-1 rounded-lg"
                 onClick={handleSubmit}
               >
-                Submit
+                <SendIcon/>
               </button>
             </div>
             <nav
@@ -329,7 +330,7 @@ const Footer = () => {
                 target="_blank"
                 className="flex items-center justify-center text-white bg-blue-400 w-7 h-7 rounded-full"
               >
-                <FaFacebook size={20} />
+                <FacebookIcon size={20} />
               </Link>
               <Link
                 to="https://twitter.com/100acressdotcom"
@@ -343,14 +344,14 @@ const Footer = () => {
                 target="_blank"
                 className="flex items-center justify-center text-white w-7 h-7 rounded-full bg-[#c32aa3]"
               >
-                <FaInstagram size={20} />
+                <InstagramIcon size={20} />
               </Link>
               <Link
                 to="https://www.linkedin.com/company/100acress/"
                 target="_blank"
                 className="flex items-center justify-center text-white bg-blue-700 w-7 h-7 rounded-full"
               >
-                <FaLinkedin size={20} />
+                <LinkedinIcon size={20} />
               </Link>
               <Link
                 to="https://www.youtube.com/@100acress"

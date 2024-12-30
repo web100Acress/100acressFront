@@ -37,7 +37,7 @@ const BudgetPlotsInGurugraon = () => {
         </Link>
       </div>
       </div>
-      <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 pb-5 pt-3">
+      <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 pb-2 pt-3">
         {budgetPlots.map((project, index) => (
           <Link to={project.link} key={index} className="card">
             <img src={project.image} alt={project.title} className="card-image" />
