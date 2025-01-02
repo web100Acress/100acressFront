@@ -2,14 +2,21 @@ import axios from "axios";
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "./MyContext";
+import { useJwt } from "react-jwt";
 export const AuthContext = createContext();
+const localStorageToken = localStorage.getItem("myToken");
+
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const {admin} =useContext(DataContext)
   const [loading, setLoading] = useState(false);
+  const [decodedTokenState,setDecodedTokenState] = useState(null);
   const history = useNavigate();
   const [token, setToken] = useState("");
+  const { decodedToken } = useJwt(localStorageToken);
+
+  
   const [agentData, setAgentData] = useState({
     name: "",
     email: "",
@@ -18,11 +25,13 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkAuthStatus = () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("myToken");
+      //console.log(token,"token")
+      setDecodedTokenState(decodedToken);
       setIsAuthenticated(!!token);
     };
     checkAuthStatus();
-  }, []);
+  }, [decodedToken]);
 
   useEffect(() => {
     const agentDataFromLocalStorage = localStorage.getItem("agentData");
@@ -130,6 +139,7 @@ export const AuthProvider = ({ children }) => {
         login,
         agentData,
         handleDeleteUser,
+        decodedTokenState,
       }}
     >
       {children}
