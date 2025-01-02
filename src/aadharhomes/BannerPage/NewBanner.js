@@ -1671,9 +1671,9 @@ const Wrapper = styled.section`
     border-radius: 5px;
     -ms-transform: rotate(-90deg) translate(0, -20px);
     -webkit-transform: rotate(-90deg) translate(0, -20px);
-    transform: rotate(-90deg) translate(0, -20px);
+    transform: rotate(-270deg) translate(0, -20px);
     position: relative;
-    right: -85px;
+    right: -42px;
     transition: position 0.2s, right 0.2s;
     background: rgb(251, 183, 39);
     background: red;
@@ -1708,40 +1708,6 @@ const Wrapper = styled.section`
     transition: all 1s ease-in-out;
   }
 
-  .sticky-quote-cta {
-    height: auto;
-    position: fixed;
-    border-radius: 15px 0 15px 0;
-    right: 0;
-    top: 400px;
-    top: 40vh;
-    z-index: 10000;
-  }
-
-  .sticky-quote-cta a {
-    color: white;
-    text-decoration: none;
-    background: #333;
-    padding: 15px 20px 35px;
-    display: block;
-    font-weight: bold;
-    font-size: 15px;
-    border-radius: 5px;
-    -ms-transform: rotate(-90deg) translate(0, -20px);
-    -webkit-transform: rotate(-90deg) translate(0, -20px);
-    transform: rotate(-90deg) translate(0, -20px);
-    position: relative;
-    right: -85px;
-    transition: position 0.2s, right 0.2s;
-    background: rgb(251, 183, 39);
-    background: red;
-  }
-
-  .sticky-quote-cta a:hover {
-    right: -70px;
-    transition: position 0.2s, right 0.2s;
-    cursor: pointer;
-  }
 
   //Whtsapp Icon CSS
 
