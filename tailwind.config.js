@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors:{
+        primaryRed: "#C13B44",
+      },
       backgroundImage: {
         'radial-custom': 'radial-gradient(circle, #1E526B 10%, #496573 100%)',
       },
