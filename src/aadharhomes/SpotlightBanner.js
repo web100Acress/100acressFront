@@ -6,10 +6,12 @@ import {
   SpotlightPriceIcon,
 } from "../Assets/icons";
 import { Link } from "react-router-dom";
+import { Skeleton } from 'antd';
 
 const SpotlightBanner = () => {
   const { spotlightProject } = useContext(DataContext);
   const [currentIndex, setCurrentIndex] = useState(0);
+  
 
   const truncateText = (text, wordLimit) => {
     const words = text.split(' ');
@@ -20,7 +22,7 @@ const SpotlightBanner = () => {
   };
 
   const currentProject = spotlightProject[currentIndex];
-  const otherProjects = spotlightProject.filter((_, index) => index !== currentIndex);
+  // const otherProjects = spotlightProject.filter((_, index) => index !== currentIndex);
   const pUrl = currentProject?.project_url;
 
 
@@ -34,7 +36,7 @@ const SpotlightBanner = () => {
   }, [spotlightProject]);
 
   if (!spotlightProject || spotlightProject.length === 0) {
-    return <p className="text-gray-500">No spotlight projects available</p>;
+    return <skeleton />;
   }
 
 

@@ -13,15 +13,12 @@ import {
   PriceIcon,
   TowerIcon,
   LocationSmallIcon,
-  SHAREIcon,
-  FavouriteIcon,
   LineIcon,
   WhiteLineIcon,
   ShareFrameIcon,
   ForwardIcon,
   BackwardIcon,
   ScrollIcon,
-  WhiteLinestreakIcon
 } from '../../Assets/icons';
 import { DataContext } from '../../MyContext';
 import Slider from "react-slick";
@@ -438,7 +435,7 @@ const NewBanner = () => {
           <>
 
             {/* Navbar */}
-            <div
+            {/* <div
               className="px-4"
               style={{
                 position: "fixed",
@@ -482,7 +479,7 @@ const NewBanner = () => {
                   to={`tel:${projectViewDetails.mobileNumber ? projectViewDetails.mobileNumber : "9811750130"}`}
                 ></Link>
               </span>
-            </div>
+            </div> */}
 
             {/* sideform */}
             <div>
@@ -1680,8 +1677,7 @@ const Wrapper = styled.section`
   }
 
   .sticky-quote-cta a:hover {
-    right: -70px;
-    transition: position 0.2s, right 0.2s;
+    right: -32px;
     cursor: pointer;
   }
 

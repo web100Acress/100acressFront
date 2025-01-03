@@ -11,18 +11,14 @@ import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { DataContext } from "../MyContext";
-import { ScaleLoader } from "react-spinners";
-import Snapshot from "./Snapshot";
 import Resale from "./Resale";
 import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
 import { PropertyIcon, RupeeIcon, LocationRedIcon, ShareFrameIcon, ArrowIcon, LcoationBiggerIcon } from '../Assets/icons/index';
-import { ArrowBackIcon } from "@chakra-ui/icons";
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon } from "lucide-react";
-import NewSearchBar from "../Components/HomePageComponents/NewSearchBar";
 import SpotlightBanner from "../aadharhomes/SpotlightBanner";
 function Home() {
   useEffect(() => {
@@ -157,7 +153,7 @@ function Home() {
         <div className="flex items-center justify-start gap-3 mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2 overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveFilter("Trending")}
-            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"
+            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:shadow-lg"
               }`}
           >
             Trending
