@@ -66,10 +66,15 @@ import InstagramSVG from '../../../src/Assets/icons/svg/Instagram.svg';
 import TwitterSVG from '../../../src/Assets/icons/svg/twitter.svg';
 import LinkedInSVG from '../../../src/Assets/icons/svg/linkedin.svg';
 import SendSVG from '../../../src/Assets/icons/svg/send.svg';
+import CarrierSVG from '../icons/svg/Job offers-pana 1.svg';
 
 const getSVG = (path, style = {}) => (
   <img src={path} alt="Icon" style={{ ...style }} />
 );
+
+export const CarrierIcon = (props) => {
+  return <Icon component={() => getSVG(CarrierSVG, props.iconstyle)} {...props} />;
+}
 
 export const PhoneIcon = (props) => {
   return <Icon component={() => getSVG(PHONEICONSVG, props.iconstyle)} {...props} />;
