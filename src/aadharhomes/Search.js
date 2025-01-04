@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { SearchIcon } from "../Assets/icons";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const Search = ({ data1 }) => {
   const [formData, setFormData] = useState({
@@ -16,6 +18,10 @@ const Search = ({ data1 }) => {
       collectionName: data1,
     }));
   }, [data1]);
+
+    useEffect(() => {
+      AOS.init();
+    }, []);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -56,6 +62,9 @@ const Search = ({ data1 }) => {
 
   return (
     <div
+      data-aos="fade-UP"
+      data-aos-easing="linear"
+      data-aos-duration="1500"
       className={`w-2rem shadow-xl rounded-full bg-white h-16 lg:w-[48rem] flex items-center justify-center`}
       style={{
         marginTop:

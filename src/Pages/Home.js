@@ -20,6 +20,9 @@ import { PropertyIcon, RupeeIcon, LocationRedIcon, ShareFrameIcon, ArrowIcon, Lc
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon } from "lucide-react";
 import SpotlightBanner from "../aadharhomes/SpotlightBanner";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
 function Home() {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -31,10 +34,7 @@ function Home() {
     upcoming,
     city,
     commercialProject,
-    typeScoPlots,
-    goaData,
-    dlfProject,
-    spotlightProject,
+    typeScoPlots,    
     resalePropertydata,
   } = useContext(DataContext);
 
@@ -85,8 +85,6 @@ function Home() {
   }
 
   const handleShare = (project) => {
-
-    console.log("test the data", project)
     if (navigator.share) {
       navigator
         .share({
@@ -101,6 +99,10 @@ function Home() {
       alert("Share functionality is not supported on this device/browser.");
     }
   };
+  
+  useEffect(() => {
+    AOS.init();
+  }, []);
 
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
@@ -136,13 +138,14 @@ function Home() {
 
 
       {/*<!-- End Carousel with indicators inside --> */}
-      <div className="relative">
+      <div  className="relative">
         <div className="absolute inset-0 bg-[#EE1C25] opacity-80"></div>
         <div className="relative">
           <SpotlightBanner />
         </div>
       </div>
-      <div className="py-0">
+      <div data-aos="fade-up"
+     data-aos-duration="1000" className="py-0">
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl">
             {`${activeFilter}`} Properties in Gurugram
@@ -153,42 +156,42 @@ function Home() {
         <div className="flex items-center justify-start gap-3 mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2 overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveFilter("Trending")}
-            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:shadow-lg"
+            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:shadow-lg hover:scale-125 duration-500 ease-in-out "
               }`}
           >
             Trending
           </button>
           <button
             onClick={() => setActiveFilter("Featured")}
-            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Featured" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"
+            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Featured" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
               }`}
           >
             Featured
           </button>
           <button
             onClick={() => setActiveFilter("Upcoming")}
-            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Upcoming" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"
+            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Upcoming" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
               }`}
           >
             Upcoming
           </button>
           <button
             onClick={() => setActiveFilter("Commercial")}
-            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Commercial" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"
+            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Commercial" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
               }`}
           >
             Commercial
           </button>
           <button
             onClick={() => setActiveFilter("Affordable")}
-            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Affordable" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"
+            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Affordable" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
               }`}
           >
             Affordable
           </button>
           <button
             onClick={() => setActiveFilter("SCO")}
-            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "ScoPlots" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm"
+            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "ScoPlots" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
               }`}
           >
             SCO
@@ -280,7 +283,7 @@ function Home() {
       </div>
 
       {/* Upcoming Project */}
-      <div className="py-3">
+      <div data-aos="zoom-in-down" className="py-3">
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
@@ -578,7 +581,8 @@ function Home() {
         }
       </div> */}
 
-      <div className=" py-3 ">
+      <div data-aos="fade-up"
+     data-aos-duration="1000" className=" py-3 ">
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center ">
@@ -660,7 +664,8 @@ function Home() {
       <SpacesAvailable />
       <BudgetPlotsInGurugraon />
 
-      <div className="py-3">
+      <div data-aos="fade-down"
+     data-aos-anchor-placement="top-bottom" className="py-3">
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
@@ -896,6 +901,9 @@ function Home() {
                   <span >
 
                     <article
+                    data-aos="flip-left"
+                    data-aos-easing="ease-out-cubic"
+                    data-aos-duration="2000"
                       key={index}
                       className="mb-2 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                     >
@@ -973,7 +981,7 @@ function Home() {
         }
       </div>
 
-      <div className="py-3">
+      <div data-aos="zoom-out-left" className="py-3">
         {" "}
         <div className="">
           <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6  py-2">

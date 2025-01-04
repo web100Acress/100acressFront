@@ -36,12 +36,14 @@ const SpotlightBanner = () => {
   }, [spotlightProject]);
 
   if (!spotlightProject || spotlightProject.length === 0) {
-    return <skeleton />;
+    return <Skeleton />;
   }
 
 
   return (
-    <div className="rounded-tl-3xl rounded-tr-3xl bg-white">
+    <div data-aos="fade-up"
+    data-aos-anchor-placement="top-bottom"
+    className="rounded-tl-3xl rounded-tr-3xl bg-white">
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-3" >
         <h1 className="text-3xl xl:text-4xl lg:text-3xl md:text-3xl">
           Spotlight Banner
@@ -67,7 +69,9 @@ const SpotlightBanner = () => {
 
         {/* Right Section: Project Details */}
         <div className="lg:w-2/3 lg:pl-2 lg:flex lg:flex-col p-4 sm:p-4  lg:justify-center">
-          <h2 className="text-2xl md:text-2xl text-gray-800 mb-2 md:mb-0">
+          <h2 data-aos="flip-right"
+              data-aos-easing="ease-in-cubic"
+              data-aos-duration="1000" className="text-2xl md:text-2xl text-gray-800 mb-2 md:mb-0">
             {currentProject?.projectName || "Default Project Name"}
           </h2>
           <p className="text-gray-600 text-sm md:text-sm leading-relaxed mb-2">
@@ -75,7 +79,8 @@ const SpotlightBanner = () => {
           </p>
 
           {/* Info Section */}
-          <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mt-3 mb-3">
+          <div
+              className="grid grid-cols-3 md:grid-cols-4 gap-2 mt-3 mb-3">
             {/* Location Section */}
             <div className="text-center">
               <div className="w-10 h-8 mx-auto flex items-center justify-center bg-gray-200 rounded-full">

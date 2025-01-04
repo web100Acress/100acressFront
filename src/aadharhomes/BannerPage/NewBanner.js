@@ -435,7 +435,7 @@ const NewBanner = () => {
           <>
 
             {/* Navbar */}
-            {/* <div
+            <div
               className="px-4"
               style={{
                 position: "fixed",
@@ -479,7 +479,7 @@ const NewBanner = () => {
                   to={`tel:${projectViewDetails.mobileNumber ? projectViewDetails.mobileNumber : "9811750130"}`}
                 ></Link>
               </span>
-            </div> */}
+            </div>
 
             {/* sideform */}
             <div>
