@@ -18,7 +18,7 @@ const NewsandArtical = () => {
         <link rel="canonical" href="https://www.100acress.com/newsandarticals/" />
       </Helmet>
 
-      <div className="max-w-screen-xl mx-auto p-5 sm:p-10 md:p-16">
+      <div className="max-w-screen-xl mx-auto p-5 sm:p-10 md:p-16 mt-4">
         <h1 className="sm:text-4xl text-5xl mb-4 underline text-red-600  font-bold title-font ">
           100acress.com Latest News.
         </h1>

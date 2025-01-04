@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
 function SpacesAvailable() {
+  useEffect(() => { AOS.init(); }, []);
 
   const projects = [
     { title: "Residential Projects", link: "/property/residential/", image: "../../OtherImages/residencial.webp" },
@@ -13,8 +17,9 @@ function SpacesAvailable() {
   ];
 
   return (
+
     <Wrapper className="section">
-      <div className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
+      <div data-aos="flip-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
         <div className="flex items-center mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
           <h1 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
             Dream Property In The Heart of Gurugram
@@ -22,7 +27,7 @@ function SpacesAvailable() {
         </div>
         <div className="grid-container mt-3">
           {projects.map((project, index) => (
-            <Link to={project.link} key={index} className="card">
+            <Link data-aos="flip-right" to={project.link} key={index} className="card">
               <img src={project.image} alt={project.title} className="card-image" />
               <button className="card-button bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">{project.title}</button>
             </Link>

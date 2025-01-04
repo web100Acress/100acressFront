@@ -4,6 +4,7 @@ import Search from "../../aadharhomes/Search";
 import { Link } from "react-router-dom";
 import { TopLocalitesIcon, LeftArrowIcon, RightArrowIcon } from "../../Assets/icons";
 import Slider from "react-slick";
+import Typewriter from "typewriter-effect";
 
 function SearchBar() {
   const [activeLink, setActiveLink] = useState("Buy");
@@ -95,20 +96,32 @@ function SearchBar() {
   };
 
   return (
-
     <Wrapper className="section">
       <div className="qsbWrapper pt-0 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto lg:pb-14 md:pb-14 md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-14 sm:h-8 md:-mt-32 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-2 " style={{ maxWidth: '860px' }}>
-        <div className="text-center break-words mb-4 text-[#FFFFFF] text-3xl sm:text-2xl">
-          <span className="animate__animated animate__rubberBand block sm:inline"style={{ fontFamily: 'gluten' }}>Find Your Perfect</span>
-          <span className="block sm:inline"style={{ fontFamily: 'gluten' }}> Place to Call Home.</span>
-        </div>
+      <div
+      className="sjdmkls text-center text-white text-3xl mb-4 bg-gradient-to-r from-purple-900 via-pink-500 to-yellow-400 bg-clip-text text-transparent animate-gradient bg-[length:200%] bg-[0%_center]"
+    >
+      <Typewriter
+        options={{
+          strings: ['<span style="font-family: Gluten, sans-serif;">Find Your Perfect Place to Call Home</span>',
+                '<span style="font-family: Gluten, sans-serif;">Discover the Ideal Spot to Make Your Own</span>',
+                '<span style="font-family: Gluten, sans-serif;">The Perfect Address Awaits—Claim It Now</span>'],
+          autoStart: true,
+          loop: true,
+          deleteSpeed: 50,
+          pauseFor: 2000,
+          cursor: ".",
+        }}
+      />
+      
+    </div>
         <div className="SJDMls xl:h-12 lg:h-12 md:h-10 sm:h-8 lg:p-0 sm:p-0 md:p-0">
           {["Buy", "Rent", "New Launch", "Commercial", "Plots", "SCO"].map((linkName) => (
             <Link
               key={linkName}
-              className={`options hidden sm:block hover:underline hover:underline-offset-8 cursor-pointer whitespace-nowrap ${activeLink === linkName
+              className={`options hidden sm:block   hover:rounded-t-lg  cursor-pointer whitespace-nowrap ease-in-out ${activeLink === linkName
                 ? "active bg-[#FFFFFF] rounded-t-lg"
-                : "text-[#FFFFFF]"
+                : "text-[#FFFFFF] hover:underline hover:bg-[#FAF9F6] hover:underline-offset-8"
                 }`}
               onClick={() => handleLinkClick(linkName)}
             >
@@ -236,6 +249,10 @@ const Wrapper = styled.section`
     margin-left: 30px;
     margin-right: 30px;
   }
+  
+  .sjdmkls{
+   font-family: 'Gluten';
+  }
 
   .SDFEDVx {
     background: rgba(111, 110, 110, 0.31);
@@ -248,7 +265,7 @@ const Wrapper = styled.section`
   }
 
   .options:hover {
-    color: white;
+    color: red;
   }
 
   .options.active {

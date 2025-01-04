@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { SearchIcon } from "../Assets/icons";
 import AOS from 'aos';
+import styled from "styled-components";
 import 'aos/dist/aos.css';
+import { Wrap } from "@chakra-ui/react";
 
 const Search = ({ data1 }) => {
   const [formData, setFormData] = useState({
@@ -61,6 +63,7 @@ const Search = ({ data1 }) => {
   }, []);
 
   return (
+    <Wrapper className="section">
     <div
       data-aos="fade-UP"
       data-aos-easing="linear"
@@ -106,7 +109,12 @@ const Search = ({ data1 }) => {
         </Link>
       </div>
     </div>
+    </Wrapper>
   );
 };
 
 export default Search;
+
+const Wrapper = styled.section`
+  
+`;

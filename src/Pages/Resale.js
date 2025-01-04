@@ -110,7 +110,7 @@ const Resale = () => {
                           to={`/buy-properties/${property.propertyName ? property.propertyName.replace(/\s+/g, '-') : 'unknown'}/${property._id}`}
                           target="_top"
                         >
-                          <article className="mb-2 transition overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl">
+                          <article data-aos="zoom-in" data-aos-delay="200" className="mb-2 transition overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl">
                             <div className="p-3 relative overflow-hidden">
                               {property.frontImage && (
                                 <img

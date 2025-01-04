@@ -15,7 +15,7 @@ const TermsAndConditions = () => {
         <link rel="canonical" href="https://www.100acress.com/terms-and-conditions/" />
       </Helmet>
 
-    <div className='overflow-x-hidden'>
+    <div className='overflow-x-hidden mt-14'>
     <div class="w-full">
           <img
             src="../../Images/term.webp"
