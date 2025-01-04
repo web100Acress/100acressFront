@@ -49,7 +49,7 @@ const SpotlightBanner = () => {
           Spotlight Banner
         </h1>
       </div>
-      <div className="max-w-7xl mx-auto bg-white rounded-lg p-0 md:p-8 lg:flex lg:items-center lg:gap-2 lg:h-96">
+      <div className="max-w-7xl mx-auto bg-white rounded-lg p-0 md:p-8 lg:flex lg:items-center lg:gap-2 lg:h-80">
 
         {/* Left Section: Image */}
         <div className="lg:w-1/3 p-8 xl:pl-5 lg:pl-5 lg:mb-0 sm:p-4 md:p-2 lg:p-0 xl:p-0">

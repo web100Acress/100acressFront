@@ -191,7 +191,7 @@ function Home() {
           </button>
           <button
             onClick={() => setActiveFilter("SCO")}
-            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "ScoPlots" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
+            className={`px-4 py-2 rounded-full text-xs ${activeFilter === "SCO" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
               }`}
           >
             SCO
@@ -1083,7 +1083,8 @@ function Home() {
         </div>
         {
           <section className="flex flex-col items-center bg-white">
-            <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+            <div data-aos="fade-up"
+     data-aos-anchor-placement="top-bottom" className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
               {affordable.map((item, index) => {
                 const pUrl = item.project_url;
                 return (
