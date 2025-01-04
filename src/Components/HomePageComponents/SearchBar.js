@@ -99,7 +99,7 @@ function SearchBar() {
     <Wrapper className="section">
       <div className="qsbWrapper pt-0 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto lg:pb-14 md:pb-14 md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-14 sm:h-8 md:-mt-32 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-2 " style={{ maxWidth: '860px' }}>
         <div className="text-center break-words mb-4 text-[#FFFFFF] text-3xl sm:text-2xl">
-          <span className="block sm:inline"style={{ fontFamily: 'gluten' }}>Find Your Perfect</span>
+          <span className="animate__animated animate__rubberBand block sm:inline"style={{ fontFamily: 'gluten' }}>Find Your Perfect</span>
           <span className="block sm:inline"style={{ fontFamily: 'gluten' }}> Place to Call Home.</span>
         </div>
         <div className="SJDMls xl:h-12 lg:h-12 md:h-10 sm:h-8 lg:p-0 sm:p-0 md:p-0">
@@ -117,7 +117,7 @@ function SearchBar() {
           ))}
         </div>
 
-        <div className="mb-0">
+        <div className="mb-0 ">
           <Search data1={data} />
         </div>
 

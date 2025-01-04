@@ -219,8 +219,6 @@ export const DataProvider = ({ children }) => {
       const goaCityProject = projectsData.filter(
         (project) => project.city === "Goa"
       );
-      console.log(spotlightProject)
-
       const mumbaiProject = projectsData.filter(
         (project) => project.city === "Mumbai"
       );

@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { RealestateIcon,ConsultIcon,LegalIcon,HomeloanIcon, InteriorIcon } from "../../Assets/icons";
+import { RealestateIcon,LegalIcon,HomeloanIcon, InteriorIcon } from "../../Assets/icons";
+import "aos/dist/aos.css";
+import AOS from "aos";
 
 function OurServices() {
   const sliderSettings = {
@@ -16,6 +18,11 @@ function OurServices() {
   autoplay: false, 
   autoplaySpeed: 3000, 
   };
+
+
+  useEffect(() => {
+      AOS.init();
+    }, []);
   
   return (
     <div className="section font-poppins font-light">
@@ -116,8 +123,8 @@ function OurServices() {
         </div>
 
  
-        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
+        <div data-aos="fade-left" className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div  data-aos="fade-left" className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <RealestateIcon/>
@@ -130,7 +137,7 @@ function OurServices() {
                 </div>
               </Link>
           </div>
-          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
+          <div  className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <LegalIcon/>
@@ -143,7 +150,7 @@ function OurServices() {
                 </div>
               </Link>
           </div>
-          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
+          <div  data-aos="fade-left" className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <InteriorIcon/>
@@ -156,7 +163,7 @@ function OurServices() {
                 </div>
               </Link>
           </div>
-          <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
+          <div  className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <HomeloanIcon/>

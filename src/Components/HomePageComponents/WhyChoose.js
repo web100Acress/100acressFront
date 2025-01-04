@@ -11,7 +11,7 @@ import {
   PlotnFloorIcon,
 } from "../../Assets/icons";
 
-AOS.init();
+
 
 function WhyChoose() {
   const [expanded, setExpanded] = useState(false);
@@ -20,6 +20,9 @@ function WhyChoose() {
   const toggleParagraph = () => {
     setExpanded(!expanded);
   };
+  useEffect(() => {
+    AOS.init();
+  }, []);
 
   const monthlydata = [
     { title: "Residential Projects", count: "1245+", icon: <ResidentialProjectIcon /> },
@@ -47,8 +50,7 @@ function WhyChoose() {
     <section className="font-sans px-4 sm:px-6 lg:px-12 py-8">
       <div className="flex flex-col md:flex-row items-center bg-white">
         {/* Left Section */}
-        <div data-aos="zoom-in"
-          data-aos-delay="200" className="w-full md:w-1/2 p-4">
+        <div className="w-full md:w-1/2 p-4">
           <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-4">
             Why 100acress.com?
           </p>
@@ -69,10 +71,11 @@ function WhyChoose() {
         </div>
 
         {/* Right Section */}
-        <div data-aos="zoom-in" data-aos-delay="200" className="w-full md:w-1/2 p-4">
+        <div className="w-full md:w-1/2 p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {monthlydata.map((data, index) => (
               <div
+                data-aos="zoom-in" data-aos-delay="200"
                 key={index}
                 className="relative bg-white shadow rounded-lg pl-4 flex flex-col justify-center items-start"
               >

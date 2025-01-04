@@ -115,6 +115,7 @@ import Ayodhya from "./Pages/Ayodhya";
 import SignatureGlobal from "./Pages/SignatureGlobal";
 import DlfSco from "./Pages/DlfSco";
 import NewBanner from "./aadharhomes/BannerPage/NewBanner";
+import 'animate.css';
 
 function App() {
 
