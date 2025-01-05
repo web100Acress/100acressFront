@@ -53,6 +53,7 @@ export const DataProvider = ({ children }) => {
   const [dlfAllProjects, setDlfAllProjects] = useState([]);
   const [possessionin2024, setPossessionin2024] = useState([]);
   const [possessionin2025, setPossessionin2025] = useState([]);
+  const [possessionin2026, setPossessionin2026] = useState([]);
   const [mumbaiProject, setMumbaiProject] = useState([]);
   const [nh48, setNh48] = useState([]);
   const [mgRoad, setMgRoad] = useState([]);
@@ -224,7 +225,7 @@ export const DataProvider = ({ children }) => {
       );
 
       const readyToMoveData = projectsData.filter(
-        (project) => project.project_Status === "readytomove"
+        (project) => project.project_Status === "readytomove" || new Date(project.possessionDate).getFullYear() === 2024
       );
       const possessionin2024 = projectsData.filter(
         (project) => new Date(project.possessionDate).getFullYear() === 2024
@@ -232,9 +233,12 @@ export const DataProvider = ({ children }) => {
       const possessionin2025 = projectsData.filter(
         (project) => new Date(project.possessionDate).getFullYear() === 2025
       );
+      const possessionin2026 = projectsData.filter(
+        (project) => new Date(project.possessionDate).getFullYear() === 2026
+      );
 
       const possessionIn2026AndBeyond = projectsData.filter(
-        (project) => new Date(project.possessionDate).getFullYear() >= 2026
+        (project) => new Date(project.possessionDate).getFullYear() >= 2027
       );
 
       setFilteredProjects(
@@ -243,10 +247,6 @@ export const DataProvider = ({ children }) => {
             project.minPrice >= minPrice && project.maxPrice <= maxPrice
         )
       );
-
-   
-
-
 
       const dlfProject = projectsData.filter(
         (project) =>
@@ -362,6 +362,7 @@ export const DataProvider = ({ children }) => {
       setMicrotek(microtek);
       setPossessionin2024(possessionin2024);
       setPossessionin2025(possessionin2025);
+      setPossessionin2026(possessionin2026);
       setMumbaiProject(mumbaiProject);
       setNh48(nh48);
       setMgRoad(mgRoad);
@@ -514,6 +515,7 @@ export const DataProvider = ({ children }) => {
         readyToMoveData,
         possessionin2024,
         possessionin2025,
+        possessionin2026,
         dlfProject,
         goaCityProject,
         dlfAllProjects,
