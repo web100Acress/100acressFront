@@ -13,6 +13,7 @@ module.exports = {
       },
       fontFamily: {
         abril: ['"Abril Fatface"', 'serif'],
+        inter: ['"Inter"', 'sans-serif'],
       },
       keyframes: {
         fadeInLeft: {
