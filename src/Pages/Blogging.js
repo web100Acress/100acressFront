@@ -166,7 +166,7 @@ const Blogging = () => {
         <link rel="canonical" href="https://www.100acress.com/blog/" />
       </Helmet>
 
-      <div class="">
+      <div className="mt-16">
         <p class="my-8 lg:mt-10 text-3xl text-center text-red-600 font-medium sm:text-4xl xl:text-5xl">
           100acress Blog
         </p>

@@ -9,25 +9,6 @@ const ScrollSearch = ({ data1 }) => {
     collectionName: data1,
   });
 
-  const primeLocations = [
-    { name: "Golf Course Road", to: "/property-in-gurugram/golf-course/" },
-    { name: "NPR", to: "/property-in-gurugram/northern-peripheral-road/" },
-    {
-      name: "Dwarka Expressway",
-      to: "/property-in-gurugram/dwarka-expressway/",
-    },
-    { name: "SPR", to: "/property-in-gurugram/southern-peripheral-road/" },
-    { name: "NH-48", to: "/property-in-gurugram/nh-48/" },
-    {
-      name: "Golf Course Extn Road",
-      to: "/property-in-gurugram/golf-course-extn-road/",
-    },
-    {
-      name: "New Gurgaon",
-      to: "/property-in-gurugram/new-gurgaon/",
-    },
-  ];
-
   useEffect(() => {
     setFormData((prevState) => ({
       ...prevState,

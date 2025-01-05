@@ -76,7 +76,7 @@ const ContactUs = () => {
         />
       </Helmet>
 
-      <div className="overflow-x-hidden">
+      <div className="overflow-x-hidden mt-14">
         <div class="w-full">
           <img
             src="../../Images/contact.webp"

@@ -22,7 +22,7 @@ const BuilderIndependentFloor = () => {
           href="https://www.100acress.com/projects/independentfloors/"
         />
       </Helmet>
-      <div className="max-w-screen pt-2 sm:pt-2 md:pt-2 mt-13" target="_top">
+      <div className="max-w-screen pt-2 sm:pt-2 md:pt-2 mt-14" target="_top">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Independent & Builder Floors in Gurugram
         </h1>
@@ -30,7 +30,7 @@ const BuilderIndependentFloor = () => {
 
       <div className="mx-10 mb-3  text-sm" style={{ textAlign: "center" }}>
         <p style={{ maxWidth: "100%", margin: "0 auto" }}>
-          Property is an important part of our lives; if we need a home, we look
+          Property is an important part of our lives, if we need a home, we look
           for Residential Property in Gurgaon. Owning a home comes with a slew
           of additional responsibilities, such as finding the assets in the best
           location, proximity to amenities, accessibility, pricing, and other

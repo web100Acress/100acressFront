@@ -44,7 +44,7 @@ const GurugramPrimeLocation = () => {
               href={`https://www.100acress.com/property-in-gurugram/${location}/`}
             />
           </Helmet>
-      <section className="flex flex-col items-center pt-2 mt-12">
+      <section className="flex flex-col items-center pt-2 mt-14">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Projects in {result}, Gurugram
         </h1>

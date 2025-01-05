@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import ScaleLoader from "react-spinners/ScaleLoader";
 import { EyeIcon } from "lucide-react";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const BudgetPlotsInGurugraon = () => {
+
+  useEffect(() => { AOS.init(); }, []);
 
   const budgetPlots = [
     {
@@ -23,7 +26,7 @@ const BudgetPlotsInGurugraon = () => {
 
   return (
     <Wrapper className="section">
-    <div className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
+    <div data-aos="zoom-in-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
       <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
         <h1 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
         Budget Plots in Gurugram

@@ -193,7 +193,7 @@ export default function Navbar() {
       <Box>
         <Box
           bg={colorChange ? "#EE1C25" : "white"}
-          className={`top-0 z-50 pt-1 pb-1  ${colorChange ? 'w-100 rounded-b-3xl' : 'w-full' } `}
+          className={`top-0 z-50 pt-1 pb-1 shadow-md  ${colorChange ? 'w-100 rounded-b-3xl' : 'w-full' } `}
           style={{ position: "fixed" ,scrollBehavior: "smooth"}}
           px={{ base: 0, md: 4, lg: 7 }} 
         >

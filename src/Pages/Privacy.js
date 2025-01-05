@@ -15,7 +15,7 @@ const Privacy = () => {
         <link rel="canonical" href="https://www.100acress.com/privacypolicy/" />
       </Helmet>
 
-      <div className="overflow-x-hidden">
+      <div className="overflow-x-hidden mt-14">
       <div class="w-full">
           <img
             src="../../Images/privacy.webp"

@@ -13,15 +13,12 @@ import {
   PriceIcon,
   TowerIcon,
   LocationSmallIcon,
-  SHAREIcon,
-  FavouriteIcon,
   LineIcon,
   WhiteLineIcon,
   ShareFrameIcon,
   ForwardIcon,
   BackwardIcon,
   ScrollIcon,
-  WhiteLinestreakIcon
 } from '../../Assets/icons';
 import { DataContext } from '../../MyContext';
 import Slider from "react-slick";
@@ -1680,8 +1677,7 @@ const Wrapper = styled.section`
   }
 
   .sticky-quote-cta a:hover {
-    right: -70px;
-    transition: position 0.2s, right 0.2s;
+    right: -32px;
     cursor: pointer;
   }
 

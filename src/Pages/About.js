@@ -13,7 +13,7 @@ const About = () => {
         <title>About Us | Real Estate Company in Gurgaon - 100acress.com</title>
       </Helmet>
 
-      <div className="overflow-x-hidden">
+      <div className="overflow-x-hidden mt-14">
         <div class="w-full">
           <img
             src="../../Images/aboutus.webp"

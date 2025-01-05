@@ -15,6 +15,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@trendyol-js/react-carousel": "^3.0.2",
+    "animate.css": "^4.1.1",
     "antd": "^5.22.2",
     "aos": "^2.3.4",
     "axios": "^1.5.1",
@@ -56,6 +57,7 @@
     "sweetalert2": "^11.10.3",
     "swiper": "^11.0.6",
     "tw-elements": "^1.1.0",
+    "typewriter-effect": "^2.21.0",
     "uninstall": "^0.0.0",
     "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"
