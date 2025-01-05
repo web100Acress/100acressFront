@@ -35,8 +35,15 @@ const Projects = () => {
 
   const handleDeleteUser = async (id) => {
     try {
+      const myToken = localStorage.getItem("myToken");
       const response = await axios.delete(
-        `https://api.100acress.com/project/Delete/${id}`
+        `https://api.100acress.com/project/Delete/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${myToken}`,
+          },
+        }
       );
       if (response.status >= 200 && response.status < 300) {
         window.location.reload();

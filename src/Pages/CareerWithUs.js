@@ -16,7 +16,7 @@ const availableJobs = [
   },
   {
     id: 2,
-    jobTitle: "Sales Executive",
+    jobTitle: "Sales Manager",
     jobType: "Full Time",
     experience: "2+ years",
     location: "Gurgaon, Haryana",
@@ -24,7 +24,7 @@ const availableJobs = [
   },
   {
     id: 3,
-    jobTitle: "Sale executive",
+    jobTitle: "Sales Executive",
     jobType: "Full Time",
     experience: "0 to 1 year",
     location: "Gurgaon, Haryana",
@@ -46,7 +46,7 @@ const CareerWithUs = () => {
           <div className="lg:basis-1/2">
             <h1 className="text-primaryRed my-4" style={{fontFamily:"'Gluten', serif"}}>Shape your future with us</h1>
             <p className="text-primaryRed my-4">Join a team that values growth and innovation. Discover opportunities to make an impact and build a fulfilling career with us.</p>
-            <a className="hover:text-white my-4" href="#openings"><button className="px-4 py-2 bg-primaryRed hover:bg-red-700 text-white rounded">View Openings</button></a>
+            <a className="hover:text-white my-4" href="#openings"><button className="px-4 py-1 bg-primaryRed hover:bg-red-700 text-white rounded">View Openings</button></a>
           </div>
           <div className="lg:basis-1/2 flex justify-end align-center">
             <CarrierIcon className="w-full lg:w-3/4"/>
@@ -54,15 +54,15 @@ const CareerWithUs = () => {
           </div>
         </div>  
         <section className="mt-16">
-          <h2>We are commited</h2>
-          <p>We aim to provide exceptional service, and user-friendly tools to get the desired results for our customers. We always look for ambitious, hard-working, and smart talented people for our company. If you have the zeal to achieve great milestones in your career, come join us!</p>
-          <h2 id="openings">Open Positions</h2>
+          <h2 className="">We are commited</h2>
+          <p className="text-md">We aim to provide exceptional service, and user-friendly tools to get the desired results for our customers. We always look for ambitious, hard-working, and smart talented people for our company. If you have the zeal to achieve great milestones in your career, come join us!</p>
+          <h2 id="openings" className="">Open Positions</h2>
           <div className="hidden">
             <input className="py-3 px-9 w-96 border-2 border-r-0 rounded-s-full" name="" id="" placeholder="Role eg: Graphic Designer"/>
             <input className="py-3 px-9 w-96 border-2 rounded-e-full" name="" id="" placeholder="Location"/>
           </div>
         </section>
-        <section className="my-5 grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <section className="my-2 grid grid-cols-1 lg:grid-cols-4 gap-4">
             {availableJobs.map((job,index)=>(
                        <div key={index+job.id+job.jobTitle} className="bg-white p-4 shadow-lg rounded-3xl">
                        {/* <p className="font-light">Marketing</p> */}
@@ -71,7 +71,7 @@ const CareerWithUs = () => {
                        <h6>Job Type: <span className="font-bold">{job.jobType}</span></h6>
                        <h6>Experience : <span className="font-bold">{job.experience}</span></h6>
                        <p className="font-extralight text-gray-500">{job.postedOn}</p>
-                       <button className="hidden  ml-auto mt-2 px-4 py-2 bg-primaryRed hover:bg-red-700 text-white rounded">Apply Now</button>
+                       <a href="mailto:hr@100acress.com"><button className="ml-auto mt-2 px-4 py-2 bg-primaryRed hover:bg-red-700 text-white rounded">Apply Now</button></a>
                    </div>
             ))}
         </section>
