@@ -114,11 +114,16 @@ export const AuthProvider = ({ children }) => {
           `https://api.100acress.com/postPerson/propertyDelete/${id}`
         );
         if (res.status >= 200 && res.status < 300) {
+
           setAgentData(prevData => ({
             ...prevData,
             postProperty: prevData.postProperty.filter(item => item._id !== id)
           }));
-          localStorage.removeItem("user");
+          const updatedAgentData = {
+          ...agentData,
+          postProperty: agentData.postProperty.filter(item => item._id !== id)
+          };
+          localStorage.setItem("agentData", JSON.stringify(updatedAgentData));
         } else {
           console.error("Failed to delete user. Server returned an error.");
         }
