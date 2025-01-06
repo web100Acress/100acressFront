@@ -12,6 +12,7 @@ const availableJobs = [
     jobType: "Full Time",
     experience: "1+ years",
     location: "Gurgaon, Haryana",
+    openings: 6,
     postedOn: "2025-01-04",
   },
   {
@@ -20,6 +21,7 @@ const availableJobs = [
     jobType: "Full Time",
     experience: "2+ years",
     location: "Gurgaon, Haryana",
+    openings: 5,
     postedOn: "2025-01-04",
   },
   {
@@ -28,6 +30,7 @@ const availableJobs = [
     jobType: "Full Time",
     experience: "0 to 1 year",
     location: "Gurgaon, Haryana",
+    openings: 10,
     postedOn: "2025-01-04",
   },
   {
@@ -36,6 +39,7 @@ const availableJobs = [
     jobType: "Full Time",
     experience: "1+ year",
     location: "Gurgaon, Haryana",
+    openings: 2,
     postedOn: "2025-01-06",
   },
   {
@@ -44,6 +48,7 @@ const availableJobs = [
     jobType: "Full Time",
     experience: "0 to 1 year",
     location: "Gurgaon, Haryana",
+    openings: 1,
     postedOn: "2025-01-06",
   },
   {
@@ -52,6 +57,7 @@ const availableJobs = [
     jobType: "Full Time",
     experience: "0 to 1 year",
     location: "Gurgaon, Haryana",
+    openings: 1,
     postedOn: "2025-01-06",
   },
   {
@@ -60,6 +66,7 @@ const availableJobs = [
     jobType: "Full Time",
     experience: "2+ years",
     location: "Gurgaon, Haryana",
+    openings: 1,
     postedOn: "2025-01-06",
   },
   {
@@ -68,6 +75,7 @@ const availableJobs = [
     jobType: "Full Time",
     experience: "1+ years",
     location: "Gurgaon, Haryana",
+    openings: 1,
     postedOn: "2025-01-06",
   }
 ]
@@ -118,6 +126,7 @@ const CareerWithUs = () => {
                        <p className="flex"><MapPin color="#C13B44" size={20} strokeWidth={1.5} className="mr-2"/>{job.location}</p>
                        <h6>Job Type: <span className="font-bold">{job.jobType}</span></h6>
                        <h6>Experience : <span className="font-bold">{job.experience}</span></h6>
+                        <h6>Openings : <span className="font-semibold">{job.openings}</span></h6>
                        <p className="font-extralight text-gray-500">{calculateDaysAgo(job.postedOn)}</p>
                        <a href="mailto:hr@100acress.com"><button className="ml-auto mt-2 px-4 py-2 bg-primaryRed hover:bg-red-700 text-white rounded">Apply Now</button></a>
                    </div>
