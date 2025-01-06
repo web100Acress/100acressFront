@@ -4,50 +4,43 @@ import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
-import { Skeleton } from 'antd';
-
-
-const PossessionAfter2028 = () => {
-  const { possessionIn2026AndBeyond } = useContext(DataContext);
-    if (!possessionIn2026AndBeyond || possessionIn2026AndBeyond.length === 0) {
-      return <Skeleton />;
-    }
+const Possessionin2026 = () => {
+  const { possessionin2026 } = useContext(DataContext);
   return (
     <div style={{ overflowX: "hidden" }}>
       <Helmet>
         <meta
           name="description"
-          content="Ready for your dream home? Check out top properties with property possession after 2025 in Gurugram for a future-perfect lifestyle."
+          content=" Get detailed information on property possession in Gurugram. Check out 2024 projects and move into your dream home without delay."
         />
         <title>
-        Property Possession After 2026 in Gurugram: 100acress
+        Top Property Possession in Gurugram for 2026
         </title>
         <link
           rel="canonical"
-          href="https://www.100acress.com/projects-in-gurugram/possession-after-2028/property/"
+          href="https://www.100acress.com/projects-in-gurugram/property-possession-in-2024/"
         />
       </Helmet>
 
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2 mt-12">
         <h1 className="mb-2 uppercase text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          Possession after 2026
+          Possession In 2026 PROPERTIES
         </h1>
-        <h2 className="text-sm text-justify sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          Gurgaon Premium Projects promises to redefine urban living by blending
-          modern architecture, luxury amenities, and strategic locations. Each
-          project aims to build vibrant communities with state-of-the-art
-          facilities that refine the modern lifestyle. Gurgaon projects
-          Possession in coming years is the perfect option for homebuyers and
-          investors. With close proximity to business hubs, educational
-          institutions, and retail centers, these project not only elevates
-          living standards but also offer excellent investment options in one of
-          India's fastest-growing areas.
+        <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+          In 2026, Gurgaon appear as an exclusive goal for real estate projects,
+          Showing a vibrant blend of modernity and convenience. New residential
+          and commercial projects redefine luxury living and business
+          environments alike. These developments brag about cutting-edge
+          architecture, sustainable design, and state-of-the-art amenities.
+          Gurgaon's projects in 2026 cater to the wise selections of homeowners
+          and investors seeking unmatched quality and connectivity in a thriving
+          urban landscape.
         </h2>
       </div>
 
       <section className="flex flex-col items-center bg-white">
         <div className="mt-6 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
-          {possessionIn2026AndBeyond.map((item, index) => {
+          {possessionin2026.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
@@ -117,4 +110,4 @@ const PossessionAfter2028 = () => {
   );
 };
 
-export default PossessionAfter2028;
+export default Possessionin2026;

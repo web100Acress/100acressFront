@@ -166,7 +166,7 @@ const PossessionProperty = () => {
               to: "/projects-in-gurugram/property-ready-to-move/",
               imgSrc: "../../Images/p1.webp",
               title: "Ready to move",
-              propertiesCount: "320+ Properties",
+              propertiesCount: "620+ Properties",
             },
             {
               to: "/projects-in-gurugram/property-possession-in-2024/",
@@ -230,21 +230,21 @@ const PossessionProperty = () => {
                 propertiesCount: "320+ Properties",
               },
               {
-                to: "/projects-in-gurugram/property-possession-in-2024/",
-                imgSrc: "../../Images/p2.webp",
-                title: "Possession in 2024",
-                propertiesCount: "600+ Properties",
-              },
-              {
                 to: "/projects-in-gurugram/property-possession-in-2025/",
                 imgSrc: "../../Images/p5.webp",
                 title: "Possession in 2025",
                 propertiesCount: "500+ Properties",
               },
               {
-                to: "/projects-in-gurugram/property-possession-after-2025/",
+                to: "/projects-in-gurugram/property-possession-in-2026/",
+                imgSrc: "../../Images/p2.webp",
+                title: "Possession in 2026",
+                propertiesCount: "600+ Properties",
+              },
+              {
+                to: "/projects-in-gurugram/property-possession-after-2026/",
                 imgSrc: "../../Images/p3.webp",
-                title: "Possession after 2025",
+                title: "Possession after 2026",
                 propertiesCount: "800+ Properties",
               },
             ].map((item, index) => (

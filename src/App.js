@@ -116,6 +116,7 @@ import SignatureGlobal from "./Pages/SignatureGlobal";
 import DlfSco from "./Pages/DlfSco";
 import NewBanner from "./aadharhomes/BannerPage/NewBanner";
 import 'animate.css';
+import Possessionin2026 from "./Pages/Possessionin2026";
 
 function App() {
 
@@ -157,7 +158,7 @@ function App() {
                 element={<ReadyToMoveProject />}
               />
               <Route
-                path="/projects-in-gurugram/property-possession-after-2025/"
+                path="/projects-in-gurugram/property-possession-after-2026/"
                 element={<PossessionAfter2028 />}
               />
               <Route
@@ -168,6 +169,10 @@ function App() {
                 path="/projects-in-gurugram/property-possession-in-2025/"
                 element={<Possessionin2025 />}
               />
+              <Route
+               path="/projects-in-gurugram/property-possession-in-2026/"
+                element={<Possessionin2026 />}
+                />
               <Route
                 path="/rental-properties/best-rental-property-in-gurugram/"
                 element={<RentPropViewCard />}
