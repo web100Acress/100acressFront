@@ -17,7 +17,9 @@ function Cities() {
             </h1>
           </div>
         <div className="gdmJO d-flex justify-content-between px-4 text-center align-items-center">
-          <div className="cvBMLN text-justify">
+          <div data-aos="flip-right"
+                    data-aos-easing="ease-out-cubic"
+                    data-aos-duration="2000"className="cvBMLN text-justify">
             <Link to={`/property-in-gurugram/sohna-road/`} target="_top">
               <div
                 className={`asdDRsfVN bg-one ${
@@ -30,7 +32,9 @@ function Cities() {
             </Link>
           </div>
 
-          <div className="cvBMLN">
+          <div data-aos="flip-left"
+                    data-aos-easing="ease-out-cubic"
+                    data-aos-duration="2000" className="cvBMLN">
             <Link to={`/property-in-gurugram/golf-course/`} target="_top">
               <div
                 className={`asdDRsfVN bg-two ${
@@ -43,7 +47,9 @@ function Cities() {
             </Link>
           </div>
 
-          <div className="cvBMLN">
+          <div data-aos="flip-right"
+                    data-aos-easing="ease-out-cubic"
+                    data-aos-duration="2000"className="cvBMLN">
             <Link to={`/property-in-gurugram/mg-road/`} target="_top">
               <div
                 className={`asdDRsfVN bg-three  ${
@@ -56,7 +62,9 @@ function Cities() {
             </Link>
           </div>
 
-          <div className="cvBMLN">
+          <div data-aos="flip-left"
+                    data-aos-easing="ease-out-cubic"
+                    data-aos-duration="2000" className="cvBMLN">
             <Link to={`/property-in-gurugram/northern-peripheral-road/`} target="_top">
               <div
                 className={`asdDRsfVN bg-four ${
@@ -69,7 +77,9 @@ function Cities() {
             </Link>
           </div>
 
-          <div className="cvBMLN text-justify">
+          <div data-aos="flip-right"
+                    data-aos-easing="ease-out-cubic"
+                    data-aos-duration="2000"className="cvBMLN text-justify">
             <Link to={`/property-in-gurugram/dwarka-expressway/`} target="_top">
               <div
                 className={`asdDRsfVN bg-five ${
@@ -82,7 +92,9 @@ function Cities() {
             </Link>
           </div>
 
-          <div className="cvBMLN">
+          <div data-aos="flip-left"
+                    data-aos-easing="ease-out-cubic"
+                    data-aos-duration="2000" className="cvBMLN">
             <Link to={`/property-in-gurugram/new-gurgaon/`} target="_top">
               <div
                 className={`asdDRsfVN bg-six  ${
@@ -95,7 +107,9 @@ function Cities() {
             </Link>
           </div>
 
-          <div className="cvBMLN">
+          <div data-aos="flip-right"
+                    data-aos-easing="ease-out-cubic"
+                    data-aos-duration="2000"className="cvBMLN">
             <Link to={`/property-in-gurugram/sohna/`} target="_top">
               <div
                 className={`asdDRsfVN bg-seven  ${
@@ -108,7 +122,9 @@ function Cities() {
             </Link>
           </div>
 
-          <div className="cvBMLN">
+          <div data-aos="flip-left"
+                    data-aos-easing="ease-out-cubic"
+                    data-aos-duration="2000" className="cvBMLN">
             <Link to={`/property-in-gurugram/southern-peripheral-road/`} target="_top">
               <div
                 className={`asdDRsfVN bg-eight ${
@@ -121,7 +137,9 @@ function Cities() {
             </Link>
           </div>
 
-          <div className="cvBMLN text-justify">
+          <div data-aos="flip-right"
+                    data-aos-easing="ease-out-cubic"
+                    data-aos-duration="2000" className="cvBMLN text-justify">
             <Link to={`/property-in-gurugram/nh-48/`} target="_top">
               <div
                 className={`asdDRsfVN bg-nine ${
@@ -134,7 +152,9 @@ function Cities() {
             </Link>
           </div>
 
-          <div className="cvBMLN">
+          <div data-aos="flip-left"
+                    data-aos-easing="ease-out-cubic"
+                    data-aos-duration="2000"className="cvBMLN">
             <Link to={`/property-in-gurugram/golf-course-extn-road/`} target="_top">
               <div
                 className={`asdDRsfVN bg-ten ${

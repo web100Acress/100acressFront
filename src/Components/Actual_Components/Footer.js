@@ -379,7 +379,7 @@ const Footer = () => {
 
         <div className="w-full px-2 py-3 bg-[#C13B44]">
           <p className="text-center text-sm text-white mb-0">
-            Copyright © 2024,{" "}
+            Copyright © 2025,{" "}
             <Link className="text-reset" to="https://100acress.com/">
               100acress.com.
             </Link>{" "}
