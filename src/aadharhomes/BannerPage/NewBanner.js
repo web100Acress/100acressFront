@@ -726,7 +726,7 @@ const NewBanner = () => {
                 <div className="flex justify-center">
                   {frontImage?.url && (
                     <img
-                      className="img-fluid max-w-full h-auto"
+                      className="img-fluid max-w-full h-auto mt-14"
                       src={frontImage.url}
                       alt={projectViewDetails.projectName}
                     />
