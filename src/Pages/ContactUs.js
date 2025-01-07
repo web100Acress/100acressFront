@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import { Helmet } from "react-helmet";
+import { HandShakeIcon, HeadPhoneIcon, PlayButtonIcon } from "../Assets/icons";
 const ContactUs = () => {
   const [formDataInquiry, setFormDataInquiry] = useState({
     name: "",
@@ -12,7 +13,73 @@ const ContactUs = () => {
   });
 
   const [responseFillData, setResponsefillData] = useState("");
+  const [formValidationErrors, setFormValidationErrors] = useState({
+    name: "",
+    mobile: "",
+    email: "",
+    message: ""
+  });
+  const [isFormValid, setIsFormValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+
+  const validateField = (name, value) => {
+    let errorMessage = "";
+    
+    switch (name) {
+      case "name":
+        if (!value) {
+          errorMessage = "Name is required";
+        } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+          errorMessage = "Please enter a valid full name";
+        }
+        break;
+      case "email":
+        if (!value) {
+          errorMessage = "Email is required";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          errorMessage = "Please enter a valid email address";
+        }
+        break;
+      case "mobile":
+        if (!value) {
+          errorMessage = "Mobile number is required";
+        } else if (!/^\d{10}$/.test(value)) {
+          errorMessage = "Please enter a valid 10-digit mobile number";
+        }
+        break;
+      default:
+        break;
+    }
+    return errorMessage;
+  };
+
+  useEffect(() => {
+    const { name, mobile, email } = formDataInquiry;
+    const noErrors = Object.values(formValidationErrors).every(error => error === "");
+    if ((!name || !mobile || !email ) || !noErrors) {
+      setIsFormValid(false);
+    } else {
+      setIsFormValid(true);
+    }
+  }, [formDataInquiry, formValidationErrors]);
+
+  const handleInquiryDataChange = (e) => {
+    const { name, value } = e.target;
+    
+    // Update form data
+    setFormDataInquiry(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Validate and set error
+    const errorMessage = validateField(name, value);
+    setFormValidationErrors(prev => ({
+      ...prev,
+      [name]: errorMessage
+    }));
+  };
 
   const resetData = () => {
     setFormDataInquiry({
@@ -29,12 +96,11 @@ const ContactUs = () => {
   const handleInquirySubmitData = async (e) => {
     e.preventDefault();
     const { name, email, mobile, message } = formDataInquiry;
-
-    if (!name || !email || !mobile || !message) {
+    
+    if (!name || !email || !mobile) {
       setResponsefillData("Please fill out all fields.");
       return;
     }
-
     setIsSubmitting(true);
     try {
       await axios.post(
@@ -58,12 +124,9 @@ const ContactUs = () => {
     }
   };
 
-  const handleInquiryDataChange = (e) => {
-    const { name, value } = e.target;
-    setFormDataInquiry({ ...formDataInquiry, [name]: value });
-  };
+
   return (
-    <div style={{ overflowX: "hidden" }}>
+    <div className="overflow-x-hidden">
       <Helmet>
         <title>Contact Us | Reach Out to 100acress.com Experts Guidance</title>
         <meta
@@ -75,185 +138,123 @@ const ContactUs = () => {
           href="https://www.100acress.com/deendayal/plots/"
         />
       </Helmet>
-
-      <div className="overflow-x-hidden mt-14">
-        <div class="w-full">
-          <img
-            src="../../Images/contact.webp"
-            alt="Contact Us"
-            class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
-          />
-          <img
-            src="../../Images/contactmobile.webp"
-            alt="Contact Us"
-            class="w-full h-[9rem] sm:h-30 object-fit small-screen-image block sm:hidden"
-          />
-        </div>
-      
-        <div className="">
-          <h1 className="text-center text-bold text-3xl pt-5">
-            Buy, Sell, and Rent with 100acress
-          </h1>
-          <div className="flex items-center justify-center pb-5">
-            <h2 className="text-center text-xl">
-              Not sure who you want to speak with?
-              <br />
-              Just let us know what help you want and we will find the right
-              person for you
-            </h2>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap">
-          <div className="w-full md:w-1/3 bg-white flex items-center justify-center h-80 md:h-96 hidden md:block">
-            <img
-              src="../../Images/tele.webp"
-              alt="tele"
-              className="w-full h-full object-fit"
-            />
-          </div>
-          <div className="w-full md:w-2/3 p-4 bg-red-600">
-            <div className="text-center">
-              <p className="font-bold text-xl lg:text-2xl md:text-2xl sm:text-xl xs:text-xl text-white mb-4 mt-2">
-                Connect to Property Expert Now
-              </p>
+      <main className="block w-11/12 mx-auto mt-20 mb-8">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="lg:basis-1/2">
+            <div className="">
+              <h1 className="text-primaryRed text-5xl mb-4" style={{fontFamily:"'Gluten', serif"}}>Buy, Sell, and Rent with 100acress</h1>
+              <p style={{fontFamily:"Inter"}} className="text-primaryRed text-xl mt-2">Not sure who you want to speak with?</p>
+              <p style={{fontFamily:"Inter"}} className="text-primaryRed text-xl -mt-1">Just let us know what help you want and we will find the right person for you.</p>
             </div>
-            <form className="space-y-4" onSubmit={handleInquirySubmitData}>
-              {responseFillData && (
-                <div className="bg-red-100 text-red-600 p-4 rounded-md">
-                  {responseFillData}
-                </div>
-              )}
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="relative flex-1">
-                  <i className="fa-solid fa-user text-gray-400 text-md absolute left-3 top-1/2 transform -translate-y-1/2"></i>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="Name"
-                    onChange={handleInquiryDataChange}
-                    value={formDataInquiry.name}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  />
-                </div>
-                <div className="relative flex-1">
-                  <i className="fa-solid fa-envelope text-gray-400 text-md absolute left-3 top-1/2 transform -translate-y-1/2"></i>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Email"
-                    onChange={handleInquiryDataChange}
-                    value={formDataInquiry.email}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  />
-                </div>
+            <div className="mt-20 flex flex-col lg:flex-row justify-around gap-4">
+              <div className="p-2 text-center flex flex-col lg:w-full items-center justify-center border-[0.5px] border-gray-100 shadow-md rounded-2xl">
+                <HandShakeIcon />
+                <h3 className="text-lg">Sales</h3>
+                <p className="text-sm">We would love to talk about how we can work together</p>
+                <button className="bg-primaryRed hover:bg-red-700 text-white text-sm px-4 py-1 rounded-3xl">Contact Sales</button>
               </div>
-
-              <div className="relative">
-                <i className="fa-solid fa-phone text-gray-400 text-md absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+              <div className="p-2  text-center flex flex-col  lg:w-full items-center justify-center border-[0.5px] border-gray-100 shadow-md rounded-2xl">
+                <HeadPhoneIcon />
+                <h3 className="text-lg">Help & Support</h3>
+                <p className="text-sm">We are here to help with any questions or code</p>
+                <button className="bg-primaryRed hover:bg-red-700 text-white text-sm px-4 py-1 rounded-3xl">Get Support</button>
+              </div>
+              <div className="p-2  text-center flex flex-col lg:w-full items-center justify-center border-[0.5px] border-gray-100 shadow-md rounded-2xl">
+                <PlayButtonIcon />
+                <h3 className="text-lg">Media & Press</h3>
+                <p className="text-sm">Get Stripe news, company info, and media resources</p>
+                <button className="bg-primaryRed hover:bg-red-700 text-white text-sm px-4 py-1 rounded-3xl">Visit Newsroom</button>
+              </div>
+            </div>
+          </div>
+          <div className="lg:basis-1/2 lg:flex w-full lg:justify-end align-center">
+          <div className="border-2 border-gray-200 px-6 py-2 rounded-lg shadow-lg">
+            <form action="" className="space-y-2">
+              <h3 style={{fontFamily:"Inter"}} className="font-semibold mt-2 mb-4">Consult a Property Expert Now</h3>
+              <div>
+                <label className="text-sm" htmlFor="name">Full Name</label>
                 <input
-                  type="number"
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder="Enter your full name"
+                  onChange={handleInquiryDataChange}
+                  className="w-full border border-gray-200  rounded-md p-1 placeholder:text-xs placeholder:text-gray-300"
+                  value={formDataInquiry.name}
+                />
+                {formValidationErrors.name && (
+                    <p className="text-red-500 text-xs">{formValidationErrors.name}</p>
+                  )}
+              </div>
+              <div>
+                <label className="text-sm" htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  placeholder="Enter your email"
+                  onChange={handleInquiryDataChange}
+                  className="w-full border border-gray-200 rounded-md p-1 placeholder:text-xs placeholder:text-gray-300"
+                  value={formDataInquiry.email}
+                />
+                {formValidationErrors.email && (
+                    <p className="text-red-500 text-xs">{formValidationErrors.email}</p>
+                  )}
+              </div>
+              <div>
+                <label className="text-sm" htmlFor="mobile">Mobile Number</label>
+                <input
+                  type="tel"
                   name="mobile"
-                  placeholder="Contact"
+                  id="mobile"
+                  placeholder="Enter your mobile number"
                   onChange={handleInquiryDataChange}
+                  className="w-full border border-gray-200 rounded-md p-1 placeholder:text-xs placeholder:text-gray-300"
                   value={formDataInquiry.mobile}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  required
                 />
+                {formValidationErrors.mobile && (
+                    <p className="text-red-500 text-xs">{formValidationErrors.mobile}</p>
+                  )}
               </div>
-
-              <div className="relative">
-                <i className="fa-solid fa-comment text-gray-400 text-md absolute left-3 top-[24%] transform -translate-y-1/2"></i>
+              <div>
+                <label className="text-sm" htmlFor="message">Message</label>
                 <textarea
-                  id="message"
                   name="message"
-                  rows="3"
-                  placeholder="Message"
+                  id="message"
+                  placeholder="Enter your message"
+                  rows={4}
                   onChange={handleInquiryDataChange}
+                  className="w-full border border-gray-200 rounded-md p-1 placeholder:text-xs placeholder:text-gray-300"
                   value={formDataInquiry.message}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  required
-                />
+                ></textarea>
+                {formValidationErrors.message && (
+                    <p className="text-red-500 text-xs">{formValidationErrors.message}</p>
+                  )}
               </div>
 
-              <div className="flex justify-center mt-4">
-                <button
+              <button
                   type="submit"
-                  className={`py-2 px-8 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ${
-                    isSubmitting
-                      ? "bg-green-600 text-white"
-                      : "bg-white text-red-600 hover:bg-red-700"
-                  }`}
-                  disabled={isSubmitting}
+                  onClick={handleInquirySubmitData}
+                  disabled={!isFormValid || isSubmitting}
+                  className={`block w-full p-2 rounded-md mt-4 ${
+                    !isFormValid || isSubmitting
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-primaryRed hover:bg-red-700'
+                  } text-white`}
                 >
-                  {isSubmitting ? "Submitting..." : "Submit"}
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </button>
-              </div>
+
+                {responseFillData && (
+                  <p className="text-sm text-center text-primaryRed mt-2">
+                    {responseFillData}
+                  </p>
+                )}
             </form>
           </div>
-        </div>
-        <div className="flex justify-center  pb-20 px-5 py-[4.5rem]">
-          <div className="flex flex-col justify-center w-full lg:w-[100%] space-y-4 lg:space-y-0 lg:space-x-10 max-w-7xl lg:p-1">
-            <div className="flex flex-col justify-center items-center lg:flex-row space-y-10 lg:space-y-0 lg:space-x-10">
-              <div className=" flex bg-blue-200 hover:bg-blue-300 flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
-                <div className="font-semibold text-black text-xl lg:text-2xl mb-4 md:mb-6">
-                  Sales
-                </div>
-                <div>
-                  <p className="text-center text-black text-lg p-2">
-                    We would love to talk about how we can work together.
-                  </p>
-                </div>
-                <p className="text-center text-sm px-6 bg-red-600 py-2 rounded-3xl p-5 text-[#012e29] font-medium">
-                  <a
-                    href="tel:+8500-900-100"
-                    className="mx-2 text-white text-lg font-bold"
-                  >
-                    {" "}
-                    Contact Sales
-                  </a>
-                </p>
-              </div>
-              <div className="  bg-blue-200 hover:bg-blue-300 flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
-                <div className="font-semibold text-black text-xl lg:text-2xl mb-4 md:mb-6">
-                  Help &amp; Support
-                </div>
-                <p className="text-center text-black text-lg p-2">
-                  We are here to help with any questions or code
-                </p>
-                <p className="text-center text-sm px-6 bg-red-600 py-2 rounded-3xl p-5 text-[#012e29] font-medium">
-                  <a
-                    href="mailto:support@100acress.com"
-                    className="mx-2 text-white text-lg font-bold"
-                  >
-                    Get Support
-                  </a>
-                </p>
-              </div>
-              <div className="  bg-blue-200 hover:bg-blue-300 flex flex-col justify-center rounded-lg items-center py-4 w-[90%] lg:w-[80%] xl:w-[30rem]">
-                <div className="font-semibold text-black text-xl lg:text-2xl mb-4 md:mb-6">
-                  Media &amp; Press
-                </div>
-                <p className="text-center text-black text-lg p-2">
-                  Get Stripe news, company info, and media resources.
-                </p>
-                <p className="text-center text-sm px-6 bg-red-600 py-2 rounded-3xl p-[18px] text-[#012e29] font-medium">
-                  <a
-                    href="mailto:support@100acress.com"
-                    className="mx-2 text-white text-lg font-bold"
-                  >
-                    Visit Newsroom
-                  </a>
-                </p>
-              </div>
-            </div>
           </div>
         </div>
-      </div>
+      </main>
       <Footer />
     </div>
   );

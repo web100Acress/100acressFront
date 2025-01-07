@@ -67,10 +67,37 @@ import TwitterSVG from '../../../src/Assets/icons/svg/twitter.svg';
 import LinkedInSVG from '../../../src/Assets/icons/svg/linkedin.svg';
 import SendSVG from '../../../src/Assets/icons/svg/send.svg';
 import CarrierSVG from '../icons/svg/Job offers-pana 1.svg';
+import HandShakeSVG from '../icons/svg/HandShake.svg';
+import HeadPhoneSVG from '../icons/svg/Headphone.svg';
+import PlayButtonSVG from '../icons/svg/PlayButton.svg';
+import ForSaleSVG from "../icons/svg/For_sale.svg";
+import Girl_Searching from "../icons/svg/Girl_Search.svg";
+
 
 const getSVG = (path, style = {}) => (
   <img src={path} alt="Icon" style={{ ...style }} />
 );
+
+export const ForSaleIcon = (props) => {
+  return <Icon component={() => getSVG(ForSaleSVG, props.iconstyle)} {...props} />;
+};
+
+export const GirlSearchingIcon = (props) => {
+  return <Icon component={() => getSVG(Girl_Searching, props.iconstyle)} {...props} />;
+}
+
+
+export const HandShakeIcon = (props) => {
+  return <Icon component={() => getSVG(HandShakeSVG, props.iconstyle)} {...props} />;
+}
+
+export const HeadPhoneIcon = (props) => {
+  return <Icon component={() => getSVG(HeadPhoneSVG, props.iconstyle)} {...props} />;
+}
+
+export const PlayButtonIcon = (props) => {
+  return <Icon component={() => getSVG(PlayButtonSVG, props.iconstyle)} {...props} />;
+}
 
 export const CarrierIcon = (props) => {
   return <Icon component={() => getSVG(CarrierSVG, props.iconstyle)} {...props} />;
