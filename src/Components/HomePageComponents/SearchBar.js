@@ -54,9 +54,9 @@ function SearchBar() {
       if (window.innerWidth <= 600) {
         setImageSrc(['../../Imgaes/mobile.png']);
       } else if (window.innerWidth <= 1024) {
-        setImageSrc(['../../Images/Laptop.png']);
+        setImageSrc(['../../Images/t1.jpeg']);
       } else {
-        setImageSrc(['../../Images/Laptop.png']);
+        setImageSrc(['../../Images/t1.jpeg']);
       }
     };
 

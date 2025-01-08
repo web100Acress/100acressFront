@@ -59,6 +59,7 @@ const SpotlightBanner = () => {
             <Link to={`/${pUrl}/`} target="_top">
               <img
                 src={currentProject?.frontImage?.url}
+                loading="lazy"
                 alt={currentProject?.projectName}
                 className="relative w-full h-80 object-cover rounded-lg animate-fadeInLeft"
               />
