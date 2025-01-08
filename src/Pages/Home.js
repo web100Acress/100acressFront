@@ -214,6 +214,7 @@ function Home() {
 
                       <img
                         src={item.frontImage.url}
+                        loading="lazy"
                         alt="property In Gurugram"
                         className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                       />

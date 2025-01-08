@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
 function Cities() {
   const [selectedRoad, setSelectedRoad] = useState(null); 
 
@@ -8,15 +11,51 @@ function Cities() {
     setSelectedRoad(roadName);
   };
   
+  useEffect(() => { AOS.init(); }, []);
+  
+
+  const cities =[
+    {
+      title:"Sohna Road",link:"/property-in-gurugram/sohna-road/",image:"../../OtherImages/sohnaroad.webp"
+    },
+    {
+      title:"Golf Course Road",link:"/property-in-gurugram/golf-course/",image:"../../OtherImages/golfcourse.webp"
+    },
+    {
+      title:"MG Road",link:"/property-in-gurugram/mg-road/",image:"../../OtherImages/mgroad.webp"
+    },
+    {
+      title:"NPR Road",link:"/property-in-gurugram/northern-peripheral-road/",image:"../../OtherImages/sikanderpur.webp"
+    },
+    {
+      title:"Dwarka Expressway",link:"/property-in-gurugram/dwarka-expressway/",image:"../../OtherImages/capture1.webp"
+    },
+    {
+      title:"New Gurgaon",link:"/property-in-gurugram/new-gurgaon/",image:"../../OtherImages/capture2.webp"
+    },
+    {
+      title:"Sohna",link:"/property-in-gurugram/sohna/",image:"../../OtherImages/capture3.webp"
+    },
+    {
+      title:"SPR Road",link:"/property-in-gurugram/southern-peripheral-road/",image:"../../OtherImages/bgseven.webp"
+    },
+    {
+      title:"NH-48",link:"/property-in-gurugram/nh-48/",image:"../../OtherImages/capture5.webp"
+    },
+    {
+      title:"Golf Course Extn Road",link:"/property-in-gurugram/golf-course-extn-road/",image:"../../OtherImages/capture6.webp"
+    },
+  ]
+  
   return (
     <Wrapper className="section ">
-      <div className="dffasPL">
-      <div className="flex items-center pt-2">
-            <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  text-center ml-12 sm:text-left ">
-            Gurugram Prime Locations
-            </h1>
-          </div>
-        <div className="gdmJO d-flex justify-content-between px-4 text-center align-items-center">
+      <div className="container">
+      <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
+      <h1 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
+        Gurugram Prime Locations
+        </h1>
+      </div>
+        {/* <div className="gdmJO d-flex justify-content-between px-4 text-center align-items-center">
           <div data-aos="flip-right"
                     data-aos-easing="ease-out-cubic"
                     data-aos-duration="2000"className="cvBMLN text-justify">
@@ -166,7 +205,15 @@ function Cities() {
               </div>
             </Link>
           </div>
-        </div>
+        </div> */}
+        <div className="grid lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 pb-2 pt-3">
+                {cities.map((project, index) => (
+                  <Link data-aos="flip-up" to={project.link} key={index} className="card">
+                    <img src={project.image} alt={project.title} className="card-image" />
+                    <button className="card-button bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">{project.title}</button>
+                  </Link>
+                ))}
+              </div>
       </div>
     </Wrapper>
   );
@@ -178,6 +225,101 @@ const Wrapper = styled.section`
   .dffasPL {
     padding-top: 10px;
     padding-bottom: 20px;
+  }
+      .container {
+    max-width: 1250px;
+    margin: auto;
+    padding: 10px;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .view-all {
+    text-decoration: none;
+    font-size: 1rem;
+    color: #ff0000;
+    font-weight: 600;
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    background: #fff;
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .card-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .card-image:hover{
+    transform: scale(1.06);
+  }
+
+  .card-button {
+    width: 100%;
+    margin-top: 10px;
+    border-radius:10px;
+    padding: 10px 0px;
+    background-color: #C13B44;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    text-transform: capitalize;
+    transition: background-color 0.3s ease;
+  }
+
+  .card-button:hover {
+    background-color: #7C1920;
+    transform: scale(1.06);
+  }
+
+  @media (max-width: 768px) {
+    .title {
+      font-size: 1.25rem;
+    }
+
+    .card-image {
+      height: 150px;
+    }
+
+    .card-button {
+      font-size: 0.9rem;
+    }
   }
 
   .bc-rd-23 {
