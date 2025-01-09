@@ -41,17 +41,34 @@ const Projects = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${myToken}`,
+            "Authorization": `Bearer ${myToken}`,
           },
         }
       );
+      console.log(response, "response");
       if (response.status >= 200 && response.status < 300) {
+        alert("Property deleted successfully.");
         window.location.reload();
       } else {
-        console.error("Failed to delete user. Server returned an error.");
+        alert("Failed to delete user. Server returned an error.");
       }
     } catch (error) {
-      console.error("An error occurred while deleting user:", error.message);
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        if (error.response.status === 401) {
+          console.log("Unauthorized: You don't have permission to delete this user.");
+          alert("You are not authorized to delete this user.");
+        } else {
+          console.error("An error occurred while deleting user:", error.response.status);
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received from the server.");
+      } else {
+        // Something happened in setting up the request that triggered an error
+        console.error("Error in request setup:", error.message);
+      }
     }
   };
 

@@ -193,7 +193,7 @@ const InsertProject = () => {
 
   const handleSubmitProject = async (e) => {
     e.preventDefault();
-    const apiEndpoint = "https://api.100acress.com/projectInsert";
+    const apiEndpoint = "https://api.100acress.com/project/Insert";
 
     const formDataAPI = new FormData();
 
@@ -219,14 +219,39 @@ const InsertProject = () => {
     formDataAPI.append("highlightImage", fileData.highlightImage);
     formDataAPI.append("projectMaster_plan", fileData.projectMaster_plan);
 
-    console.log(formDataAPI, formDataAPI);
     try {
-      const response = await axios.post(apiEndpoint, formDataAPI);
-      alert("Data Posted");
-      resetData();
-      resetImageData();
+      const myToken = localStorage.getItem("myToken");
+      const response = await axios.post(apiEndpoint,formDataAPI,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${myToken}`,
+          },
+      });
+      const responseData = response.data;
+      if(response.status === 200){
+        console.log(responseData);
+        alert("Data Posted");
+        resetData();
+        resetImageData();
+      }
     } catch (error) {
-      console.error("Error submitting form:", error);
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        if (error.response.status === 401) {
+          console.log("Unauthorized: You don't have permission to delete this user.");
+          alert("You are not authorized to delete this user.");
+        } else {
+          console.error("An error occurred while deleting user:", error.response.status);
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received from the server.");
+      } else {
+        // Something happened in setting up the request that triggered an error
+        console.error("Error in request setup:", error.message);
+      }
     }
   };
 
@@ -579,7 +604,7 @@ const InsertProject = () => {
               Project Logo
             </p>
             <div className="flex mt-3 ring-black">
-              <div class="relative h-10 w-40 min-w-[160px] ring-black">
+              <div className="relative h-10 w-40 min-w-[160px] ring-black">
                 <input
                   type="file"
                   name="logo"
@@ -595,7 +620,7 @@ const InsertProject = () => {
             </p>
 
             <div className="flex mt-3 ring-black">
-              <div class="relative h-10 w-40 min-w-[160px] ring-black">
+              <div className="relative h-10 w-40 min-w-[160px] ring-black">
                 <input
                   type="file"
                   name="frontImage"
@@ -610,7 +635,7 @@ const InsertProject = () => {
               Project Location Image
             </p>
             <div className="flex mt-3 ring-black">
-              <div class="relative h-10 w-40 min-w-[160px] ring-black">
+              <div className="relative h-10 w-40 min-w-[160px] ring-black">
                 <input
                   type="file"
                   name="project_locationImage"
@@ -625,7 +650,7 @@ const InsertProject = () => {
               Project Master Plan
             </p>
             <div className="flex mt-3 ring-black">
-              <div class="relative h-10 w-40 min-w-[160px] ring-black">
+              <div className="relative h-10 w-40 min-w-[160px] ring-black">
                 <input
                   type="file"
                   name="projectMaster_plan"
@@ -640,7 +665,7 @@ const InsertProject = () => {
               Project Brochure
             </p>
             <div className="flex mt-3 ring-black">
-              <div class="relative h-10 w-40 min-w-[160px] ring-black">
+              <div className="relative h-10 w-40 min-w-[160px] ring-black">
                 <input
                   type="file"
                   name="project_Brochure"
@@ -655,7 +680,7 @@ const InsertProject = () => {
               Highlight Image
             </p>
             <div className="flex mt-3 ring-black">
-              <div class="relative h-10 w-40 min-w-[160px] ring-black">
+              <div className="relative h-10 w-40 min-w-[160px] ring-black">
                 <input
                   type="file"
                   name="highlightImage"
@@ -670,7 +695,7 @@ const InsertProject = () => {
               Project Floor plan Image
             </p>
             <div className="flex mt-3 ring-black">
-              <div class="relative h-10 w-40 min-w-[160px] ring-black">
+              <div className="relative h-10 w-40 min-w-[160px] ring-black">
                 <input
                   type="file"
                   name="project_floorplan_Image"
@@ -685,7 +710,7 @@ const InsertProject = () => {
               Project Gallery
             </p>
             <div className="flex mt-3 ring-black">
-              <div class="relative h-10 w-40 min-w-[160px] ring-black">
+              <div className="relative h-10 w-40 min-w-[160px] ring-black">
                 <input
                   type="file"
                   name="projectGallery"
