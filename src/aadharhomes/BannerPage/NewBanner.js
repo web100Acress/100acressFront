@@ -101,7 +101,7 @@ const NewBanner = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://api.100acress.com/projectView/${pUrl}`
+        `https://api.100acress.com/project/View/${pUrl}`
       );
       setProjectViewDetails(response?.data?.dataview[0]);
       setBuilderName(response.data?.dataview[0]?.builderName);
