@@ -58,7 +58,16 @@ const ProjectEdit = () => {
         const res = await axios.get(
           `https://api.100acress.com/project/Edit/${id}`
         );
-        setValues(res.data.dataedit);
+        if (res.status === 200){
+          console.log(res.data.dataedit);
+          setValues(res.data.dataedit);
+        }
+        else if(res.status >= 400 && res.status < 500){
+          alert("You are not authorized to view this page.")
+        }
+        else if(res.status >= 500){
+          alert("Server error. Please try again later.")
+        }
       } catch (error) {
         console.log(error);
       }
@@ -184,20 +193,42 @@ const ProjectEdit = () => {
         fromData.append('projectMaster_plan', values.projectMaster_plan.file);
         console.log(`Appending master plan image: projectMaster_plan`, values.projectMaster_plan.file);
       }
-
+      const myToken = localStorage.getItem("myToken");
       const response = await axios.post(
         `https://api.100acress.com/project/Update/${id}`,
-        fromData
+        fromData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Authorization": `Bearer ${myToken}`,
+          },
+        }
       );
 
       if (response.status === 200) {
         alert("Data updated successfully");
+
       } else {
         console.error("Failed to update user");
       }
     } catch (error) {
-      console.error("Error updating user:", error);
-    }
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        if (error.response.status === 401) {
+          console.log("Unauthorized: You don't have permission to delete this user.");
+          alert("You are not authorized to delete this user.");
+        } else {
+          console.error("An error occurred while deleting user:", error.response.status);
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received from the server.");
+      } else {
+        // Something happened in setting up the request that triggered an error
+        console.error("Error in request setup:", error.message);
+      }
+     }
   };
 
 
@@ -205,8 +236,14 @@ const ProjectEdit = () => {
   const handleDeleteUser = async (index) => {
     const IndexNumber = index;
     try {
+      const myToken=localStorage.getItem("myToken");
       const response = await axios.delete(
-        `https://api.100acress.com/floorImage/${id}/${IndexNumber}`
+        `https://api.100acress.com/floorImage/${id}/${IndexNumber}`,
+        {
+          headers:{
+            Authorization: `Bearer ${myToken}`,
+          }
+        }
       );
       if (response.status >= 200 && response.status < 300) {
         window.location.reload();
@@ -214,7 +251,22 @@ const ProjectEdit = () => {
         console.error("Failed to delete user. Server returned an error.");
       }
     } catch (error) {
-      console.error("An error occurred while deleting user:", error.message);
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        if (error.response.status === 401) {
+          console.log("Unauthorized: You don't have permission to delete this user.");
+          alert("You are not authorized to delete this user.");
+        } else {
+          console.error("An error occurred while deleting user:", error.response.status);
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received from the server.");
+      } else {
+        // Something happened in setting up the request that triggered an error
+        console.error("Error in request setup:", error.message);
+      }
     }
   };
 
