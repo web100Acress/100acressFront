@@ -103,7 +103,7 @@ const BannerPage = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        `https://api.100acress.com/projectView/${pUrl}`
+        `https://api.100acress.com/project/View/${pUrl}`
       );
       setProjectViewDetails(res.data.dataview[0]);
       setBuilderName(res.data.dataview[0].builderName);
