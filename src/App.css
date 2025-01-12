@@ -65,3 +65,33 @@ html {
   background-size: 300% 100%;
   animation: shine 1s infinite linear;
 }
+
+@keyframes flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.flicker {
+  animation: flicker 1s infinite; 
+}
+
+
+@keyframes moveText {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px); /* Move text to the right */
+  }
+  100% {
+    transform: translateY(0); /* Return to original position */
+  }
+}
+
+.moving-text {
+  animation: moveText 2s infinite; /* Adjust duration as needed */
+}

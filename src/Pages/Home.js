@@ -119,12 +119,12 @@ function Home() {
 
       <div className="relative w-full">
         <img
-          src="../../Images/mainbg.jpg"
+          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/mainbgg.webp"
           alt="Banner"
-          className="hidden md:block w-full h-[25rem] md:h-[28rem] sm:h-[35rem] lg:h-[28rem] xl:h-[28rem]"
+          className="hidden md:block w-full h-[25rem] md:h-[28rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
         />
         <img
-          src="../../Images/mainbg.jpg"
+          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/mainbgg.webp"
           alt="Mobile Banner"
           className="block md:hidden w-full h-[23rem]"
         />

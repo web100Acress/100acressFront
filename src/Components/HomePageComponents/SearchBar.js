@@ -32,7 +32,7 @@ function SearchBar() {
     { name: "Golf Course Extn Road", link: "/property-in-gurugram/golf-course-extn-road/" },
   ];
 
-  const itemsPerPage = 6;
+  const itemsPerPage = 7;
   const nextpage = 1;
 
   const visibleLocalities = localities.slice(currentIndex, currentIndex + itemsPerPage);
@@ -54,9 +54,9 @@ function SearchBar() {
       if (window.innerWidth <= 600) {
         setImageSrc(['../../Imgaes/mobile.png']);
       } else if (window.innerWidth <= 1024) {
-        setImageSrc(['../../Images/t1.jpeg']);
+        setImageSrc(['https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp']);
       } else {
-        setImageSrc(['../../Images/t1.jpeg']);
+        setImageSrc(['https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp']);
       }
     };
 
@@ -95,9 +95,19 @@ function SearchBar() {
     afterChange: (index) => setCurrentImageIndex(index),
   };
 
+  const [flickerIndex, setFlickerIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFlickerIndex((prevIndex) => (prevIndex + 1) % visibleLocalities.length);
+    }, 2000); 
+
+    return () => clearInterval(interval); 
+  }, [visibleLocalities.length]);
+
   return (
     <Wrapper className="section">
-      <div className="qsbWrapper pt-0 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto lg:pb-14 md:pb-14 md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-14 sm:h-8 md:-mt-32 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-2 " style={{ maxWidth: '860px' }}>
+      <div className="qsbWrapper pt-0 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto lg:pb-14 md:pb-14 md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-14 sm:h-8 md:-mt-32 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-0 " style={{ maxWidth: '860px' }}>
       <div
       className="sjdmkls w-80 md:w-auto lg:w-auto h-20 lg:h-8 md:h-8 text-center text-white text-3xl mb-4 bg-gradient-to-r from-purple-900 via-pink-500 to-yellow-400 bg-clip-text text-transparent animate-gradient bg-[length:200%] bg-[0%_center]"
     >
@@ -134,32 +144,34 @@ function SearchBar() {
           <Search data1={data} />
         </div>
 
-        <div className=" flex justify-start mt-2 flex-nowrap w-160 md:w-112">
-          <span className="text-[#FFFFFF] text-xs md:text-xs whitespace-nowrap">
+        <div className=" flex justify-start mt-3 flex-nowrap w-160 md:w-112 lg:w-200 ">
+          <span className="text-[#FFFFFF] text-xs md:text-xs whitespace-nowrap mt-2">
             <TopLocalitesIcon /> Top Localities:
           </span>
 
-          <div className=" flex flex-nowrap align-center ml-2 w-[230px] md:w-[600px] lg:w-[630px]">
-            <button onClick={handlePrev} disabled={currentIndex === 0} className={`cursor-pointer ${currentIndex === 0 ? 'opacity-50 pointer-events-none' : ''}`}>
+          <div className=" flex flex-nowrap align-center ml-2 w-[230px] md:w-[600px] lg:w-[660px] scroll-smooth">
+            <button onClick={handlePrev} disabled={currentIndex === 0} className={`cursor-pointer mt-2 ${currentIndex === 0 ? 'opacity-50 pointer-events-none' : ''}`}>
               <LeftArrowIcon />
             </button>
-            <div className="flex space-x-2 flex-nowrap w-full md-w-96 overflow-x-auto no-scrollbar">
+            <div className="flex space-x-2 flex-nowrap w-full md-w-96 overflow-x-auto no-scrollbar pt-2">
               {visibleLocalities.map((locality, index) => (
                 <Link to={locality.link} target="_blank" key={index} className="cvBMLN">
-                 
-                  <button className="SDFEDVx text-white text-[10px] px-2 py-1 border border-[#9F9F9F] shadow-sm rounded-xl whitespace-nowrap snap-center hover:bg-white hover:text-black transition flex flex-nowrap overflow-x-auto">
+                  <button
+                    className={`SDFEDVx text-white text-[10px] px-2 py-1 border border-[#9F9F9F] shadow-sm rounded-xl whitespace-nowrap snap-center hover:bg-white hover:text-black transition flex flex-nowrap overflow-x-auto hover:shadow-lg hover:scale-105 duration-500 ease-in-out ${flickerIndex === index ? 'moving-text' : ''
+                      }`}
+                  >
                     {locality.name}
                   </button>
                 </Link>
               ))}
             </div>
-            <button onClick={handleNext} disabled={currentIndex + itemsPerPage >= localities.length} className={`cursor-pointer ${currentIndex + itemsPerPage >= localities.length ? 'opacity-50 pointer-events-none' : ''}`}>
+            <button onClick={handleNext} disabled={currentIndex + itemsPerPage >= localities.length} className={`cursor-pointer mt-2 ${currentIndex + itemsPerPage >= localities.length ? 'opacity-50 pointer-events-none' : ''}`}>
               <RightArrowIcon />
             </button>
           </div>
         </div>
 
-        <div className="hidden md:block mt-2 lg:w-[700px] lg:h-[150px] md:h-[100px] md:w-[650px] mx-auto mt-3">
+        <div className="hidden md:block mt-2 lg:w-[700px] lg:h-[132px] md:h-[132px] md:w-[650px] mx-auto mt-3">
           <Wrapper className="section">
             <Slider {...settings}>
               {imageSrc.map((src, index) => (
