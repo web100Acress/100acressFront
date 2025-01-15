@@ -304,7 +304,7 @@ const BuyViewDetails = () => {
                         <img
                           src={frontImage.url}
                           alt="FrontView"
-                          className="w-full h-80 object-fit"
+                          className="w-full h-80 object-contain"
                         />
                       </div>
                     )}

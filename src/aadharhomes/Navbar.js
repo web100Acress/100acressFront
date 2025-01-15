@@ -22,6 +22,8 @@ import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
 import { DataContext } from "../MyContext";
 import { FillIcon, PeopleIcon } from "../Assets/icons";
+import RedLogoImage from "../Images/logo.png";
+import WhiteLogoImage from "../Images/lg.png";
 import ScrollSearch from "./ScollSearch";
 const SpacerComponent = () => <Box width="60px" />;
 
@@ -226,7 +228,7 @@ export default function Navbar() {
                     maxW={["160px", "200px"]}
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
-                    src="../../Images/lg.png"
+                    src={WhiteLogoImage}
                     alt="100acress"
                     marginBottom={2}
                   />
@@ -235,7 +237,7 @@ export default function Navbar() {
                     maxW={["160px", "200px"]}
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
-                    src="../../Images/logo.png"
+                    src={RedLogoImage}
                     alt="100acress"
                     marginBottom={2}
                   />
@@ -250,7 +252,7 @@ export default function Navbar() {
                     maxW={["160px", "200px"]}
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
-                    src="../../Images/lg.png"
+                    src={WhiteLogoImage}
                     alt="100acress"
                     marginBottom={2}
                   />
@@ -259,7 +261,7 @@ export default function Navbar() {
                     maxW={["160px", "200px"]}
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
-                    src="../../Images/logo.png"
+                    src={RedLogoImage}
                     alt="100acress"
                     marginBottom={2}
                   />

@@ -13,7 +13,7 @@ import LINESVG from '../../../src/Assets/icons/svg/Line.svg';
 import WHITELINESVG from '../../../src/Assets/icons/svg/whiteline.svg';
 import ArrowSVG from '../../../src/Assets/icons/svg/arrow.svg';
 import SwimmingPoolSVG from '../../../src/Assets/icons/svg/swimming.svg';
-import CarParkingSVG from '../../../src/Assets/icons/svg/carparking.svg';
+import CarParkingSVG from '../../../src/Assets/icons/svg/CarParking.svg';
 import VolleyBallSVG from '../../../src/Assets/icons/svg/volleyball.svg';
 import AtmSVG from '../../../src/Assets/icons/svg/atm.svg';
 import RestaurantSVG from '../../../src/Assets/icons/svg/restaurant.svg';
@@ -72,11 +72,28 @@ import HeadPhoneSVG from '../icons/svg/Headphone.svg';
 import PlayButtonSVG from '../icons/svg/PlayButton.svg';
 import ForSaleSVG from "../icons/svg/For_sale.svg";
 import Girl_Searching from "../icons/svg/Girl_Search.svg";
-
+import LocationIconSVG from "../icons/svg/LocationIcon.svg";
+import ShareIconSVG from "../icons/svg/ShareIcon.svg";
+import HeartIconSVG from "../icons/svg/HeartIcon.svg";
+import ForwardIconSVG from "../icons/svg/ForwardIcon.svg";
+import BackwardIconSVG from "../icons/svg/BackwardIcon.svg"
 
 const getSVG = (path, style = {}) => (
   <img src={path} alt="Icon" style={{ ...style }} />
 );
+
+
+export const LocationIcon = (props) => {
+  return <Icon component={()=>getSVG(LocationIconSVG,props.iconstyle)} {...props}  />;
+};
+
+export const ShareIcon = (props) => {
+  return <Icon component={()=>getSVG(ShareIconSVG,props.iconstyle)} {...props}  />;
+}
+
+export const HeartIcon = (props) => {
+  return <Icon component={()=>getSVG(HeartIconSVG,props.iconstyle)} {...props}  />;
+}
 
 export const ForSaleIcon = (props) => {
   return <Icon component={() => getSVG(ForSaleSVG, props.iconstyle)} {...props} />;
@@ -267,11 +284,11 @@ export const GymIcon = (props) => {
 };
 
 export const ForwardIcon = (props) => {
-  return <Icon component={() => getSVG(ForwardSVG, props.iconstyle)} {...props} />;
+  return <Icon component={() => getSVG(ForwardIconSVG, props.iconstyle)} {...props} />;
 };
 
 export const BackwardIcon = (props) => {
-  return <Icon component={() => getSVG(BackwardSVG, props.iconstyle)} {...props} />;
+  return <Icon component={() => getSVG(BackwardIconSVG, props.iconstyle)} {...props} />;
 };
 
 export const PropertyIcon = (props) => {
