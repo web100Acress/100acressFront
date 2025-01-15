@@ -77,10 +77,10 @@ export const DataProvider = ({ children }) => {
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
-    // fetchCareerData();
-    // fetchJobPostingData();
+    fetchCareerData();
+    fetchJobPostingData();
     buyFetchData();
-    // fetchProject();
+    fetchProject();
   }, []);
 
   useEffect(() => {
@@ -99,14 +99,14 @@ export const DataProvider = ({ children }) => {
     setPossessionAllData(PossFilter);
   };
 
-  // const fetchProject = async () => {
-  //   try {
-  //     const response = await axios.get('https://api.100acress.com/project/viewAll/data');
-  //     setProject(response.data.data); 
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const fetchProject = async () => {
+    try {
+      const response = await axios.get('https://api.100acress.com/project/viewAll/data');
+      setProject(response.data.data); 
+    } catch (error) {
+      console.log(error);
+    }
+  };
   
 
   const fetchAllProject = async () => {
@@ -431,25 +431,25 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-    // const fetchCareerData = async () => {
-    //   try {
-    //     const res = await axios.get("https://api.100acress.com/career/page/view");
-    //     setCareerData(res.data.data);
-    //   } catch (error) {
-    //     console.log(error || error.message);
-    //   }
-    // };
+    const fetchCareerData = async () => {
+      try {
+        const res = await axios.get("https://api.100acress.com/career/page/view");
+        setCareerData(res.data.data);
+      } catch (error) {
+        console.log(error || error.message);
+      }
+    };
 
-  // const fetchJobPostingData = async () => {
-  //   try {
-  //     const res = await axios.get(
-  //       "https://api.100acress.com/career/opening/ViewAll"
-  //     );
-  //     setJobPostingData(res.data.data);
-  //   } catch (error) {
-  //     console.log(error || error.message);
-  //   }
-  // };
+  const fetchJobPostingData = async () => {
+    try {
+      const res = await axios.get(
+        "https://api.100acress.com/career/opening/ViewAll"
+      );
+      setJobPostingData(res.data.data);
+    } catch (error) {
+      console.log(error || error.message);
+    }
+  };
 
   const buyFetchData = async () => {
     try {

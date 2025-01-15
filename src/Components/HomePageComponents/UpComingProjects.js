@@ -26,7 +26,7 @@ const UpComingProjects = () => {
      
 
         <h2 className="text-sm text-justify mb-4  sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          Upcoming Projects in Gurugram include commercial and residential
+          Upcoming Properties in Gurgaon include commercial and residential
           projects that will meet various requirements. These developments are
           equipped with modern amenities, great places close to business areas,
           as well as extensive green spaces. They're designed to meet the

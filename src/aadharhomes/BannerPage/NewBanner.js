@@ -90,7 +90,6 @@ const NewBanner = () => {
     projectGallery,
   } = projectViewDetails || {};
 
-
   const sliderImages = project_floorplan_Image || [];
 
   const today = new Date();
@@ -142,7 +141,7 @@ const NewBanner = () => {
     if (!isValid(date)) {
       return "Invalid date";
     }
-    return format(date, "MMMM dd, yyyy");
+    return format(date, "MMMM, yyyy");
   };
 
 
@@ -256,31 +255,6 @@ const NewBanner = () => {
     }
   };
   
-  useEffect(() => {
-    const timeOutId = setTimeout(() => {
-      setShowPopup(true);
-    }, 3000);
-    return () => clearTimeout(timeOutId);
-  }, []);
-
-
-  const handleShare = (project) => {
-
-    if (navigator.share) {
-      navigator
-        .share({
-          title: project?.projectName,
-          text: `Check out this project: ${project.projectName}`,
-          url: `${window.location.origin}/${project.project_url}`,
-        })
-        .then(() => console.log("Shared successfully"))
-        .catch((error) => console.log("Error sharing:", error));
-    } else {
-      // Fallback for browsers that don't support the Web Share API
-      alert("Share functionality is not supported on this device/browser.");
-    }
-  };
-
   const resetData = () => {
     setUserDetails({
       name: "",
@@ -288,7 +262,7 @@ const NewBanner = () => {
       mobile: "",
     });
   };
-
+  
   const resetData2 = () => {
     setSideDetails({
       name: "",
@@ -296,7 +270,7 @@ const NewBanner = () => {
       mobile: "",
     });
   };
-
+  
   const resetData1 = () => {
     setSideDetails({
       name: "",
@@ -304,21 +278,36 @@ const NewBanner = () => {
       mobile: "",
     });
   };
+  
+  const handleShare = (project) => {
 
+    if (navigator.share) {
+      navigator
+      .share({
+        title: project?.projectName,
+        text: `Check out this project: ${project.projectName}`,
+        url: `${window.location.origin}/${project.project_url}`,
+        })
+        .then(() => console.log("Shared successfully"))
+        .catch((error) => console.log("Error sharing:", error));
+      } else {
+      alert("Share functionality is not supported on this device/browser.");
+    }
+  };
   const userSubmitDetails = (e) => {
     e.preventDefault();
-
+    
     if (isLoading2) {
       return;
     }
-
+    
     const { mobile } = userDetails;
-
+    
     if (mobile) {
       setIsLoading2(true);
       setUserButtonText("Submitting...");
       axios
-        .post("https://api.100acress.com/userInsert", {
+      .post("https://api.100acress.com/userInsert", {
           ...userDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
@@ -332,21 +321,20 @@ const NewBanner = () => {
           alert(error.message);
         })
         .finally(() => {
-          // Set loading state to false and reset the button text when the API call is complete (success or error)
           setUserButtonText("Submit");
         });
     } else {
       message.error("Please fill in the details");
     }
   };
-
+  
   const SideSubmitDetails = async (e) => {
     e.preventDefault();
     if (isLoading2) {
       return;
     }
     const { mobile } = sideDetails;
-
+    
     if (mobile) {
       setIsLoading2(true);
       setSideButtonText("Submitting...");
@@ -371,27 +359,30 @@ const NewBanner = () => {
       message.error("Please fill in the data");
     }
   };
-
   
-
-
   const filterProjectsByBuilder = () => {
     const normalizedBuilderName =
       typeof builderName === "string" ? builderName.trim().toLowerCase() : "";
-
+      
     return project.filter(
       (p) => p.builderName.trim().toLowerCase() === normalizedBuilderName
     );
   };
-
-  const filteredProjects = filterProjectsByBuilder();
-
+  
+  const filteredProjects = filterProjectsByBuilder();  
   const projectsToShow = showAllProjects
-    ? filteredProjects
+  ? filteredProjects
     : filteredProjects.slice(0, 4);
 
-  return (
-    <>
+    useEffect(() => {
+      const timeOutId = setTimeout(() => {
+        setShowPopup(true);
+      }, 7000);
+      return () => clearTimeout(timeOutId);
+    }, []);
+
+    return (
+      <>
 
       <div>
         <Wrapper className="section" style={{ overflow: "hidden", overflowX: "hidden" }}>
@@ -460,16 +451,16 @@ const NewBanner = () => {
                 loading="lazy"
               />
               <div className="flex items-center justify-end space-x-4 w-full">
-                <Button
+                <button
                   onClick={handleShowInstantcallBack}
-                  className="mr-0 mt-0 hidden sm:block"
+                  className="mr-0 mt-0 hidden sm:block border border-gray-600 px-3 py-1 rounded-lg"
                 >
                   Get a Callback
-                </Button>
+                </button>
                 <a className="animate-fadeInRight " href={`tel:${projectViewDetails?.mobileNumber || "9811750130"}`}>
-                  <button className="bg-[#263238] py-1 px-3 rounded-lg text-white text-base flex items-center">
-                    <PhoneIcon />{" "}
-                    {projectViewDetails?.mobileNumber || " 9811750130"}
+                  <button className="bg-[#263238] py-0 px-3 rounded-lg text-white text-2xl flex items-center">
+                    <PhoneIcon className="mr-2"  />
+                    {projectViewDetails?.mobileNumber || '\u00A0' + "9811750130"  }
                   </button>
                 </a>
               </div>
@@ -493,7 +484,7 @@ const NewBanner = () => {
                 </a>
                 {instantcallbackmodal && (
                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-                    <div className="relative sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-t-2xl bg-[#263238] shadow-lg max-w-lg">
+                    <div className="relative w-[19rem] sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-t-2xl bg-[#263238] shadow-lg max-w-lg">
                       <div className="bg-radial-custom px-5 py-2 text-center text-white relative">
                         <p className="font-serif text-xl mb-0 text-center font-semibold tracking-wider">
                           Instant Callback
@@ -610,7 +601,7 @@ const NewBanner = () => {
             <div className="relative">
               {showPopup && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-                  <div className="relative sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-t-2xl bg-[#263238] shadow-lg max-w-lg">
+                  <div className="relative w-[19rem] sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-[#263238] shadow-lg max-w-lg">
                     <div className="bg-radial-custom px-5 py-2 text-center text-white relative">
                       <p className="font-serif text-xl mb-0 text-center font-semibold tracking-wider">
                         Instant Callback
@@ -721,178 +712,258 @@ const NewBanner = () => {
 
 
             {/* mainImage */}
-            <div className="w-full mt-0 lg:mt-16 md:mt-10 sm:mt-24 bg-cover bg-no-repeat text-center">
-              <div className="w-full relative overflow-hidden object-cover">
-                <div className="flex justify-center">
-                  {frontImage?.url && (
-                    <img
-                      className="img-fluid max-w-full h-auto mt-14"
-                      src={frontImage.url}
-                      alt={projectViewDetails.projectName}
-                    />
-                  )}
-                </div>
-                {/* Text Overlay */}
-                <div
-                  className="absolute bottom-0 left-0 right-0 flex justify-center items-center bg-[#000000] bg-opacity-20 text-white py-2 z-[10] text-center rounded-b-lg p-4"
-                >
-                  <h1 className="text-xs sm:text-xl font-bold">
-                    {projectViewDetails.projectName}{" "}
-                    <LocationSmallIcon />
-                    {projectViewDetails?.projectAddress}{" "}
-                    {projectViewDetails?.city}
-                  </h1>
+              <div className="w-full mt-0 lg:mt-16 md:mt-10 sm:mt-24 bg-cover bg-no-repeat text-center">
+                <div className="w-full relative overflow-hidden object-cover">
+                  <div className="flex justify-center">
+                    {frontImage?.url && (
+                      <img
+                        className="max-w-full h-[80vh] sm:h-auto object-cover mt-14"
+                        src={frontImage.url}
+                        alt={projectViewDetails.projectName}
+                      />
+                    )}
+                  </div>
+                  
+                  {/* New Div Positioned Below the Image on Mobile */}
+                  <div
+                    className="absolute top-2/4 right-[70px] transform -translate-y-1/2 bg-black bg-opacity-75 text-white p-6 rounded-lg shadow-lg z-[20] hidden lg:block md:block "
+                  >
+                    <h1 style={{fontFamily:"Abril Fatface"}} className="text-2xl mb-2">
+                      {projectViewDetails.projectName}
+                    </h1>
+                    <p className="text-sm font-medium flex mb-4 text-center justify-center">
+                      <LocationSmallIcon className="mr-2" />
+                      {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
+                    </p>
+                    <ul className="list-disc text-left " style={{ listStyleType: "none" }}>
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.totalLandArea} Acres</li>
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.towerNumber} Tower -{" "}
+                      {projectViewDetails.totalUnit} Unit</li>
+                      {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_Area} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_Area}{" "}Unit Size</li> */}
+                      {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_type} to {projectViewDetails.BhK_Details[projectViewDetails?.BhK_Details.length-1]?.bhk_type}{" "}Unit type</li> */}
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{formatDate(projectViewDetails.possessionDate)}</li>
+
+                    </ul> 
+                    <button onClick={handleShowInstantcallBack} className="bg-white text-black text-xl py-2 px-4 rounded shadow hover:bg-gray-100 transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300">
+                      Schedule Site Visit
+                    </button>
+                  </div>
+                  {/* <div
+                    className="absolute top-2/4 right-[70px] transform -translate-y-1/2 bg-black bg-opacity-75 text-white p-6 rounded-lg shadow-lg z-[20] hidden lg:block"
+                  >
+                    <h1
+                      style={{ fontFamily: "Abril Fatface" }}
+                      className="text-xl mb-2 text-center"
+                    >
+                      {projectViewDetails.projectName}
+                    </h1>
+                    <p className="text-sm font-medium flex justify-center items-center mb-4 text-center">
+                      <LocationSmallIcon className="mr-2" />
+                      {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
+                    </p>
+                    <ul className="space-y-2 text-left">
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:left-0 before:text-green-500">
+                        {projectViewDetails.totalLandArea} Acres
+                      </li>
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:left-0 before:text-green-500">
+                        {projectViewDetails.towerNumber} Tower - {projectViewDetails.totalUnit} Unit
+                      </li>
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:left-0 before:text-green-500">
+                        {projectViewDetails.BhK_Details[0].bhk_Area} to{" "}
+                        {
+                          projectViewDetails.BhK_Details[
+                            projectViewDetails.BhK_Details.length - 1
+                          ].bhk_Area
+                        }{" "}
+                        Unit Size
+                      </li>
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:left-0 before:text-green-500">
+                        {projectViewDetails.BhK_Details[0].bhk_type} to{" "}
+                        {
+                          projectViewDetails.BhK_Details[
+                            projectViewDetails.BhK_Details.length - 1
+                          ].bhk_type
+                        }{" "}
+                        Unit type
+                      </li>
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:left-0 before:text-green-500">
+                        {formatDate(projectViewDetails.possessionDate)}
+                      </li>
+                    </ul>
+                    <button
+                      onClick={handleShowInstantcallBack}
+                      className="bg-white text-black font-medium py-2 px-4 rounded shadow hover:bg-gray-100"
+                    >
+                      Schedule Site Visit
+                    </button>
+                  </div> */}
+
+                  {/* New Div Below the Image on Mobile */}
+                  <div className="lg:hidden md:hidden mt-0 bg-black bg-opacity-80 text-white p-4 shadow-lg">
+                  <h1 style={{fontFamily:"Abril Fatface"}} className="text-2xl mb-2">
+                      {projectViewDetails.projectName}
+                    </h1>
+                    <p className="text-sm font-medium flex mb-4 text-center justify-center">
+                      <LocationSmallIcon className="mr-2" />
+                      {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
+                    </p>
+                    <ul className="list-disc text-left" style={{ listStyleType: "none" }}>
+                      {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.BhK_Details[0].bhk_Area} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_Area}{" "}Unit Size</li>
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.BhK_Details[0].bhk_type} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_type}{" "}Unit type</li> */}
+                      {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{formatDate(projectViewDetails.possessionDate)}</li> */}
+
+                    </ul> 
+                    <button onClick={handleShowInstantcallBack} className="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 bg-white text-black font-medium py-2 px-4 rounded shadow hover:bg-gray-100">
+                      Schedule Site Visit
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-
 
             {/* Details */}
-            <div className="bg-[#263238]">
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-1">
-                <section
-                  className="text-white p-4 rounded-md flex justify-center items-center"
-                >
-                  <AcresIcon className="mr-2" />
-                  <div className='mt-2'>
-                    <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>{projectViewDetails.totalLandArea} Acres</span>
-                    <h6 className='text-sm'>Land Area</h6>
-                  </div>
-                </section>
-                <section
-                  className="text-white p-4 rounded-md flex justify-center items-center"
-                >
-                  <CalenderIcon className="mr-2" />
-                  <div className='mt-2'>
-                    <span style={{ fontFamily: "Abril Fatface" }} className="text-2xl">{projectViewDetails.towerNumber} Tower -{" "}
-                      {projectViewDetails.totalUnit} Unit</span>
-                    <h6 className='text-xs'>About Project</h6>
-                  </div>
-                </section>
-                <section
-                  className="text-white p-4 rounded-md flex justify-center items-center"
-                >
-                  <PriceIcon className="mr-2" />
-                  <div className='mt-2'>
-                    <span className="text-2xl " style={{ fontFamily: "Abril Fatface" }}>{projectViewDetails.minPrice < 1 ? (
-                      <span>{projectViewDetails.minPrice * 100} L{" "}</span>
-                    ) : (
-                      <span style={{ fontFamily: "Abril Fatface" }}>{projectViewDetails.minPrice} Cr {" "}</span>
-                    )}
-                      - {projectViewDetails.maxPrice} Cr</span>
-                    <h6 className='text-sm'>Price</h6>
-                  </div>
-                </section>
-                <section
-                  className="text-white p-4 rounded-md flex justify-center items-center"
-                >
-                  <TowerIcon className="mr-2" />
-                  <div className='mt-2'>
-                    <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
-                      {formatDate(projectViewDetails.possessionDate)}
-                    </span>
-                    <h6 className='text-sm'>Possession</h6>
-                  </div>
-                </section>
+              <div className="bg-[#263238]">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 p-2">
+                  {/* Acres Section */}
+                  <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
+                    <AcresIcon className="mr-2" />
+                    <div className='mt-2 text-center'>
+                      <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
+                        {projectViewDetails.totalLandArea} Acres
+                      </span>
+                      <h6 className='text-sm'>Land Area</h6>
+                    </div>
+                  </section>
+
+                  {/* Possession Section */}
+                  <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
+                    <TowerIcon className="mr-2" />
+                    <div className='mt-2 text-center'>
+                      <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
+                        {formatDate(projectViewDetails.possessionDate)}
+                      </span>
+                      <h6 className='text-sm'>Possession</h6>
+                    </div>
+                  </section>
+
+                  {/* About Project Section */}
+                  <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
+                    <CalenderIcon className="mr-2" />
+                    <div className='mt-2 text-center'>
+                      <span style={{ fontFamily: "Abril Fatface" }} className="text-2xl">
+                        {projectViewDetails.towerNumber} Tower -{" "}
+                        {projectViewDetails.totalUnit} Unit
+                      </span>
+                      <h6 className='text-xs'>About Project</h6>
+                    </div>
+                  </section>
+
+                  {/* Price Section */}
+                  <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
+                    <PriceIcon className="mr-2" />
+                    <div className='mt-2 text-center'>
+                      <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
+                        {projectViewDetails.minPrice < 1 ? (
+                          <span>{projectViewDetails.minPrice * 100} L{" "}</span>
+                        ) : (
+                          <span style={{ fontFamily: "Abril Fatface" }}>{projectViewDetails.minPrice} Cr {" "}</span>
+                        )}
+                        - {projectViewDetails.maxPrice} Cr
+                      </span>
+                      <h6 className='text-sm'>Price</h6>
+                    </div>
+                  </section>
+
+                  
+                </div>
               </div>
-            </div>
+
 
             {/* about project */}
-            <div className="pt-0 h-auto md:h-screen">
-              <div className="flex flex-col md:flex-row justify-center items-stretch rounded h-full">
-                {/* Image Section */}
-                <div className="w-full md:w-1/2 overflow-hidden flex items-center">
-                  {projectViewDetails?.highlightImage?.url && (
-                    <img
-                      src={projectViewDetails?.projectGallery[0]?.url}
-                      alt={`${projectViewDetails.projectName}`}
-                      className="w-full h-64 sm:h-80 md:h-screen object-cover animate-fadeInLeft"
-                    />
-                  )}
-                </div>
+              <div className="pt-0 h-auto md:h-screen">
+                <div className="flex flex-col md:flex-row justify-center items-stretch h-auto">
+                  {/* Image Section */}
+                  <div className="w-full md:w-1/2 overflow-hidden flex items-center">
+                    {projectViewDetails?.highlightImage?.url && (
+                      <img
+                        src={projectViewDetails?.projectGallery[0]?.url}
+                        alt={`${projectViewDetails.projectName}`}
+                        className="w-full h-[50vh] sm:h-[60vh] md:h-full object-cover rounded-tr-[70px] rounded-bl-[50px]"
+                      />
+                    )}
+                  </div>
 
-                {/* Text Section */}
-                <div
-                  className="w-full md:w-1/2 p-4 text-black flex flex-col justify-center items-start"
-                >
-                  <span className="lg:text-3xl md:text-2xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
-                    <span className="flex items-center justify-center p-1">
-                      <LineIcon />
+                  {/* Text Section */}
+                  <div className="w-full md:w-1/2 p-4 text-black flex flex-col justify-center items-start">
+                    <span className="lg:text-lg md:text-xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
+                      <span className="flex items-center justify-center p-1">
+                        <LineIcon />
+                      </span>
+                      About Project
                     </span>
-                    About Project
-                  </span>
 
-                  <h4
-                    className="mt-2 text-4xl sm:text-5xl md:text-6xl font-abril"
-                    style={{ fontFamily: "Abril Fatface" }}
-                  >
-                    {projectViewDetails.projectName}
-                  </h4>
+                    <h2
+                      className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                      style={{ fontFamily: "Abril Fatface" }}
+                    >
+                      {projectViewDetails.projectName}
+                    </h2>
 
-                  <div
-                    className="text-justify text-gray-700 mt-5 md:mt-8 lg:mt-12 xl:mt-16 text-sm sm:text-sm md:text-base lg:text-lg xl:text-lg overflow-y-auto"
-                  >
-                    <div className="leading-relaxed ">
-                      <div dangerouslySetInnerHTML={{ __html: description }} />
+                    <div className="text-justify text-gray-700 mt-3 md:mt-5 lg:mt-8 xl:mt-10 text-xs sm:text-sm md:text-base lg:text-base xl:text-base overflow-y-auto max-h-[300px] md:max-h-[400px] lg:max-h-[500px]">
+                      <div className="leading-relaxed">
+                        <div dangerouslySetInnerHTML={{ __html: description }} />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-
 
             {/* higthlight? */}
-            <div className="pt-0 h-auto md:h-screen">
-              <div className="flex flex-col md:flex-row justify-center items-stretch rounded h-full">
-
-
-                {/* Text Section */}
-                <div
-                  className="w-full md:w-1/2 p-4 text-black flex flex-col justify-center items-start"
-                >
-                  <span className="lg:text-3xl md:text-2xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
-                    <span className="flex items-center justify-center p-1">
-                      <LineIcon />
+              <div className="pt-1 h-auto md:h-screen">
+                <div className="flex flex-col md:flex-row justify-center items-stretch h-auto">
+                  {/* Text Section */}
+                  <div className="w-full md:w-1/2 p-4 text-black flex flex-col justify-center items-start">
+                    <span className="lg:text-lg md:text-xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
+                      <span className="flex items-center justify-center p-1">
+                        <LineIcon />
+                      </span>
+                      Highlights
                     </span>
-                    Highlights
-                  </span>
 
-                  <h4
-                    style={{ fontFamily: "Abril Fatface" }}
-                    className=" font-abril mt-2 text-4xl sm:text-5xl md:text-6xl "
-                  >
-                    {projectViewDetails.projectName}
-                  </h4>
+                    <h2
+                      className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                      style={{ fontFamily: "Abril Fatface" }}
+                    >
+                      {projectViewDetails.projectName}
+                    </h2>
 
-                  <div className="mt-5 md:mt-20 w-full overflow-y-auto">
-                    {highlight &&
-                      Array.isArray(highlight) &&
-                      highlight.length > 0 &&
-                      highlight.map((item, index) => (
-                        <ul
-                          className="list-disc"
-                          style={{ listStyleType: "circle" }}
-                          key={index}
-                        >
-                          <li className="mb-2 text-black text-sm sm:text-base">
-                            {item.highlight_Point}
-                          </li>
-                        </ul>
-                      ))}
+                    <div className="text-justify text-gray-700 mt-3 md:mt-5 lg:mt-8 xl:mt-10 text-sm sm:text-sm md:text-base lg:text-sm xl:text-sm overflow-y-auto max-h-[300px] md:max-h-[400px] lg:max-h-[500px]">
+                      {/* Highlights List */}
+                      {highlight &&
+                        Array.isArray(highlight) &&
+                        highlight.length > 0 &&
+                        highlight.map((item, index) => (
+                          <ul className="list-disc" style={{ listStyleType: "circle" }} key={index}>
+                            <li className="text-black text-sm sm:text-base">
+                              {item.highlight_Point}
+                            </li>
+                          </ul>
+                        ))}
+                    </div>
+                  </div>
+
+                  {/* Image Section */}
+                  <div className="w-full md:w-1/2 flex items-center overflow-hidden">
+                    {projectViewDetails?.highlightImage?.url && (
+                      <img
+                        src={projectViewDetails?.highlightImage?.url}
+                        alt={`${projectViewDetails.projectName}`}
+                        className="w-full h-[50vh] sm:h-[60vh] md:h-[60vh] object-cover rounded-tr-[40px] md:rounded-tr-[70px] rounded-bl-[30px] md:rounded-bl-[50px]"
+                      />
+                    )}
                   </div>
                 </div>
-                {/* Image Section */}
-                <div className="w-full md:w-1/2 overflow-hidden flex items-center">
-                  {projectViewDetails?.highlightImage?.url && (
-                    <img
-                      src={projectViewDetails.highlightImage.url}
-                      alt={`${projectViewDetails.projectName}`}
-                      className="w-full h-64 sm:h-64 md:h-screen object-cover"
-                    />
-                  )}
-                </div>
               </div>
-            </div>
+
 
 
             {/* How much */}
@@ -908,12 +979,14 @@ const NewBanner = () => {
                         </span>
                         {" "}How Much
                       </span>
-                      <h4
-                    style={{ fontFamily: "Abril Fatface" }}
-                    className=" font-abril mt-2 text-4xl sm:text-5xl md:text-6xl "
-                  >
-                    {projectViewDetails.projectName} Size & Price
-                  </h4>
+                        <h4
+                          style={{ fontFamily: "Abril Fatface" }}
+                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        >
+                          {projectViewDetails.projectName}
+                          <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Size & Price</span>
+                        </h4>
+
 
                     </div>
                   </div>
@@ -948,7 +1021,7 @@ const NewBanner = () => {
                                 </div>
 
                                 <div className="flex items-center justify-center flex-grow w-0 lg:h-10 sm:h-auto p-6 border border-black">
-                                  <span>{item.price}</span>
+                                  <Button onClick={handleShowInstantcallBack}>Get Details</Button>
                                 </div>
                               </div>
                             </>
@@ -975,12 +1048,13 @@ const NewBanner = () => {
                         Floor Plan
                       </span>
                       <div>
-                      <h4
-                    style={{ fontFamily: "Abril Fatface" }}
-                    className=" font-abril mt-2 text-4xl sm:text-5xl md:text-6xl "
-                  >
-                    {projectViewDetails.projectName} Floor Plan
-                  </h4>
+                  <h4
+                          style={{ fontFamily: "Abril Fatface" }}
+                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        >
+                          {projectViewDetails.projectName}
+                          <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Floor Plan</span>
+                        </h4>
                       </div>
                     </div>
                   </div>
@@ -1000,13 +1074,13 @@ const NewBanner = () => {
                           onClick={() => slideRefs.current.slickPrev()}
                           className="absolute top-1/2 lg:top-1/2 sm:top-1/2 left-5 transform -translate-y-1/2 bg-white text-gray-500 p-2 rounded-full z-10"
                         >
-                          <ForwardIcon />
+                          <BackwardIcon />
                         </button>
                         <button
                           onClick={() => slideRefs.current.slickNext()}
                           className="absolute top-1/2 lg:top-1/2 sm:top-1/2 right-5 transform -translate-y-1/2 text-gray-700 bg-white p-2 rounded-full z-10"
                         >
-                          <BackwardIcon />
+                          <ForwardIcon />
                         </button>
                       </>
                     )}
@@ -1111,11 +1185,13 @@ const NewBanner = () => {
                         {" "}Gallery
                       </span>
                       <h4
-                    style={{ fontFamily: "Abril Fatface" }}
-                    className=" font-abril mt-2 text-4xl sm:text-5xl md:text-6xl "
-                  >
-                    {projectViewDetails.projectName} Images
-                  </h4>
+                          style={{ fontFamily: "Abril Fatface" }}
+                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        >
+                          {projectViewDetails.projectName}
+                          <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Images</span>
+                        </h4>
+                  
                       <div className="pt-4 p-2 max-w-screen-xl mx-auto">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                           {/* Display Images */}
@@ -1172,15 +1248,16 @@ const NewBanner = () => {
                         </span>
                         {" "}Project Facilities
                       </span>
-                      <h4
-                    style={{ fontFamily: "Abril Fatface" }}
-                    className=" font-abril mt-2 text-4xl sm:text-5xl md:text-6xl "
-                  >
-                    {projectViewDetails.projectName} Amenities
-                  </h4>
+                  <h4
+                          style={{ fontFamily: "Abril Fatface" }}
+                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        >
+                          {projectViewDetails.projectName}
+                          <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Amenities</span>
+                        </h4>
                       <section className="w-full mb-2">
                         <div className="pt-4 p-2 rounded-lg relative">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             {/* Preprocess Amenities */}
                             {(Amenities &&
                               Amenities.flatMap((item, idx) =>
@@ -1222,7 +1299,7 @@ const NewBanner = () => {
                                     <Dynamicsvg text={project} />
                                   </div>
                                   <span
-                                    className="text-3xl h-20 flex items-end"
+                                    className="text-2xl sm:text-2xl md:text-2xl h-20 flex items-end"
                                     style={{
                                       fontFamily: "Abril Fatface",
                                     }}
@@ -1278,12 +1355,18 @@ const NewBanner = () => {
                         Location Map
                       </span>
                       <div className="mt-0">
-                    <h4
+                    {/* <h4
                       style={{ fontFamily: "Abril Fatface" }}
                       className="mt-2 text-4xl sm:text-5xl md:text-5xl"
                     >
                       {projectViewDetails.projectName}
-                    </h4>
+                    </h4> */}
+                    <h4
+                          style={{ fontFamily: "Abril Fatface" }}
+                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        >
+                          {projectViewDetails.projectName}
+                        </h4>
                     <div className="mt-3 md:mt-3 h-48 overflow-y-auto">
                     {/* Lists */}
                     {projectRedefine_Connectivity?.length > 0 && (
@@ -1345,8 +1428,11 @@ const NewBanner = () => {
                         {" "}Site Plan
                       </span>
                       <div>
-                        <h4 style={{ fontFamily: "Abril Fatface" }} class=" font-abril mt-2 text-4xl sm:text-5xl md:text-6xl ">
-                        Master Plan of {" "}{projectViewDetails?.projectName}
+                        <h4
+                          style={{ fontFamily: "Abril Fatface" }}
+                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        >
+                          Master Plan of {projectViewDetails.projectName}
                         </h4>
                         <div className="text-justify text-gray-700 m-0 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-sm md:text-base lg:text-lg xl:text-lg pt-0">
                         {projectViewDetails?.projectMaster_plan?.url && (
@@ -1400,9 +1486,13 @@ const NewBanner = () => {
                         </span>
                         {" "}Builder
                       </span>
-                      <h4 style={{ fontFamily: "Abril Fatface" }} class=" font-abril mt-2 text-4xl sm:text-5xl md:text-6xl ">
-                      About {projectViewDetails?.builderName}
-                      </h4>
+                      <h4
+                          style={{ fontFamily: "Abril Fatface" }}
+                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        >
+                          About {projectViewDetails.builderName}
+                        </h4>
+                      
                       <div className="text-justify text-gray-700 m-0 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-sm md:text-base lg:text-lg xl:text-lg pt-0">
                           <p className="leading-relaxed mt-4">
                             <div dangerouslySetInnerHTML={{ __html: builderdescription }} />
@@ -1431,9 +1521,13 @@ const NewBanner = () => {
                         </span>
                         {" "}Others
                       </span>
-                      <h4 style={{ fontFamily: "Abril Fatface" }} class=" font-abril mt-2 text-4xl sm:text-5xl md:text-6xl ">
-                        Properties by {projectViewDetails?.builderName}
-                      </h4>
+                      <h4
+                          style={{ fontFamily: "Abril Fatface" }}
+                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        >
+                          Properties by {projectViewDetails.builderName}
+                        </h4>
+                      
                       
                       <section className="w-full  mb-2">
                         <div className="pt-4 rounded-lg relative">
@@ -1461,13 +1555,13 @@ const NewBanner = () => {
                                   <div className="mt-2 flex items-start justify-between">
                                     {/* Left section for project name and price */}
                                     <div className="flex flex-col items-start">
-                                      <h5 className="tracking-tight text-center text-sm sm:text-base md:text-lg lg:text-lg xl:text-lg text-gray-700 mb-0">
+                                      <h5 className="tracking-tight font-bold text-center text-sm sm:text-base md:text-sm lg:text-sm xl:text-sm text-gray-700 mb-0">
                                         {project.projectName}
                                       </h5>
                                       <h5 className="tracking-tight text-center text-sm sm:text-base md:text-lg lg:text-xs xl:text-xs text-gray-700 mb-0">
                                         {project.city}, {project.state}
                                       </h5>
-                                      <span className="text-xl font-bold text-gray-900 text-center">
+                                      <span className="text-lg font-bold text-gray-900 text-center">
                                         <span className="mr-1">₹</span>
                                         {project.minPrice < 1 ? (
                                           <span>{project.minPrice * 100} L</span>
@@ -1538,7 +1632,7 @@ const NewBanner = () => {
                       className="flex items-center justify-center text-white text-3xl"
                     >
                       <span className="text-2xl"><PhoneIcon /></span>
-                      <span className="text-2xl">+91 8527-134-491</span>
+                      <span className="text-2xl"> &nbsp; +91 8527-134-491</span>
                     </a>
                   </p>
                 </div>
