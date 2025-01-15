@@ -59,9 +59,9 @@ const UpcomingSearch = () => {
   return (
     <>
       {" "}
-      <h1 className=" p-1 text-center text-2xl mt-2 sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold ">
-        UpComing Projects
-      </h1>
+      <h1 className=" p-1 text-center text-2xl mt-16 sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold ">
+        UpComing Projects in Gurgaon
+      </h1> 
       <div className="hidden lg:flex items-center px-14 bg-gray-200 pt-4 justify-center">
         <div className="w-full">
           <div className="grid grid-cols-1 lg:grid-cols-5 md:grid-cols-1 sm:grid-cols-1 gap-4  mb-4">
