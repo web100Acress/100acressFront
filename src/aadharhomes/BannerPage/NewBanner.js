@@ -49,11 +49,33 @@ const NewBanner = () => {
   const [isModalOpenGallery, setIsModalOpenGallery] = useState(false);
   const [modalImageGallery, setModalImageGallery] = useState(null);
 
+
+
+  const {
+    frontImage,
+    BhK_Details,
+    project_floorplan_Image,
+    Amenities,
+    projectRedefine_Business,
+    projectRedefine_Connectivity,
+    projectRedefine_Education,
+    projectRedefine_Entertainment,
+    highlight,
+    projectGallery,
+  } = projectViewDetails || {};
+
+  const sliderImages = project_floorplan_Image || [];
+
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 365);
+  const expirationDate = tomorrow.toISOString().split("T")[0];
+
   const set = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: Math.min(3,sliderImages.length),
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2000,
@@ -77,25 +99,6 @@ const NewBanner = () => {
     afterChange: (index) => setCurrentIndex(index),
   };
 
-  const {
-    frontImage,
-    BhK_Details,
-    project_floorplan_Image,
-    Amenities,
-    projectRedefine_Business,
-    projectRedefine_Connectivity,
-    projectRedefine_Education,
-    projectRedefine_Entertainment,
-    highlight,
-    projectGallery,
-  } = projectViewDetails || {};
-
-  const sliderImages = project_floorplan_Image || [];
-
-  const today = new Date();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 365);
-  const expirationDate = tomorrow.toISOString().split("T")[0];
 
   const fetchData = async () => {
     try {
@@ -127,7 +130,7 @@ const NewBanner = () => {
   const linkRegex =
     /<a\s+href="([^"]+)"\s+style="color:black"\s*target="_blank"\s*><\/a>/;
 
-  const linkText = projectViewDetails.projectName;
+  const linkText = projectViewDetails?.projectName;
 
   description = description.replace(linkRegex, (match, p1) => {
     return `<a href="${p1}" style="color:black" target="_blank">${linkText}</a>`;
@@ -141,7 +144,7 @@ const NewBanner = () => {
     if (!isValid(date)) {
       return "Invalid date";
     }
-    return format(date, "MMMM, yyyy");
+    return format(date, "MMM, yyyy");
   };
 
 
@@ -387,11 +390,22 @@ const NewBanner = () => {
       <div>
         <Wrapper className="section" style={{ overflow: "hidden", overflowX: "hidden" }}>
           <Helmet>
-            <title>{projectViewDetails.meta_title}</title>
+            <title>{projectViewDetails?.meta_title}</title>
             <meta
               name="description"
               content={projectViewDetails.meta_description}
             />
+              <meta property="og:title" content={projectViewDetails?.meta_title} />
+              <meta property="og:site_name" content="100acress.com" />
+              <meta property="og:type" content="website" />
+              <meta property="og:image" content={projectViewDetails?.frontImage}/>
+              <meta property="og:url" content="https://www.100acress.com/" />
+              <meta property="og:description" content={projectViewDetails.meta_description} />
+              <meta name="twitter:title" content={projectViewDetails?.meta_title} />
+              <meta name="twitter:description" content={projectViewDetails.meta_description} />
+              <meta property="twitter:url" content="https://www.100acress.com/" />
+              <meta property="twitter:image" content={projectViewDetails?.frontImage} />
+              <meta name="twitter:card" content="summary"></meta>
             <link
               rel="canonical"
               href={`https://www.100acress.com/${projectViewDetails.project_url}/`}
@@ -736,12 +750,12 @@ const NewBanner = () => {
                       {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
                     </p>
                     <ul className="list-disc text-left " style={{ listStyleType: "none" }}>
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.totalLandArea} Acres</li>
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.towerNumber} Tower -{" "}
-                      {projectViewDetails.totalUnit} Unit</li>
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.towerNumber} Towers</li>
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalUnit} Units</li>
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalLandArea} Acres of Land</li>
                       {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_Area} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_Area}{" "}Unit Size</li> */}
                       {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_type} to {projectViewDetails.BhK_Details[projectViewDetails?.BhK_Details.length-1]?.bhk_type}{" "}Unit type</li> */}
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{formatDate(projectViewDetails.possessionDate)}</li>
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Expected Possession {formatDate(projectViewDetails.possessionDate)}</li>
 
                     </ul> 
                     <button onClick={handleShowInstantcallBack} className="bg-white text-black text-xl py-2 px-4 rounded shadow hover:bg-gray-100 transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300">
@@ -1021,7 +1035,7 @@ const NewBanner = () => {
                                 </div>
 
                                 <div className="flex items-center justify-center flex-grow w-0 lg:h-10 sm:h-auto p-6 border border-black">
-                                  <Button onClick={handleShowInstantcallBack}>Get Details</Button>
+                                  <Button className="w-20 sm:w-32" onClick={handleShowInstantcallBack}>Get Details</Button>
                                 </div>
                               </div>
                             </>
