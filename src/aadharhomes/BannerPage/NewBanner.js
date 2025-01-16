@@ -380,7 +380,7 @@ const NewBanner = () => {
     useEffect(() => {
       const timeOutId = setTimeout(() => {
         setShowPopup(true);
-      }, 7000);
+      }, 10000);
       return () => clearTimeout(timeOutId);
     }, []);
 
