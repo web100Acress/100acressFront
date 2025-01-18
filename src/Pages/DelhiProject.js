@@ -21,17 +21,14 @@ const DelhiProject = () => {
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-12">
-        <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+        <h1 className="mb-0 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Projects in Delhi
         </h1>
+        <h2 className="text-sm font-semibold" >NEW RESIDENTIAL & COMMERCIAL PROJECTS IN DELHI</h2>
 
-        <h2 className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          By expanding metro lines, new roads, and advanced city technology,
-          Delhi significantly improves. These projects include eco-friendly
-          green spaces and modern residential and commercial developments,
-          improving the urban landscape and increasing quality of life and
-          connectivity.
-        </h2>
+        <p className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+        Delhi offers a variety of options for those interested in commercial and residential property. These properties fulfill different needs, whether you're looking to establish a business or find a home. The market is diverse, with numerous locations and prices to match various preferences. For anyone looking to invest, the city's dynamic environment makes it an ideal choice. Explore the options available and discover premium properties in Delhi that suit your needs.
+        </p>
         
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
           {delhiData.map((item, index) => {

@@ -45,6 +45,7 @@ export const DataProvider = ({ children }) => {
   const [bptp, setbptp] = useState([]);
   const [orris, setorris] = useState([]);
   const [jms, setJms] = useState([]);
+  const [SignatureBuilder , setSignaturebuilder] = useState([]);
   const [rof, setRof] = useState([]);
   const [signatureglobal, setSignatureGlobal] = useState([]);
   const [emaarIndia, setEmaarIndia] = useState([]);
@@ -273,6 +274,10 @@ export const DataProvider = ({ children }) => {
         (project) => project.projectOverview === "jms"
       );
 
+      const signaturebuilder = projectsData.filter(
+        (project) => project.builderName === "Signature Global"
+      );
+
       const rof = projectsData.filter(
         (project) => project.projectOverview === "rof"
       );
@@ -356,6 +361,7 @@ export const DataProvider = ({ children }) => {
       setorris(orris);
       setbptp(bptp);
       setJms(jms);
+      setSignaturebuilder(signaturebuilder)
       setRof(rof);
       setEmaarIndia(emaarIndia);
       setM3mIndia(m3mIndia);
@@ -526,6 +532,7 @@ export const DataProvider = ({ children }) => {
         bptp,
         orris,
         jms,
+        SignatureBuilder,
         rof,
         emaarIndia,
         m3mIndia,

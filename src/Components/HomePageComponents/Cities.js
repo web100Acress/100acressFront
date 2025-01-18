@@ -16,34 +16,34 @@ function Cities() {
 
   const cities =[
     {
-      title:"Sohna Road",link:"/property-in-gurugram/sohna-road/",image:"../../OtherImages/sohnaroad.webp"
+      title:"Sohna Road",link:"/property-in-gurugram/sohna-road/",image:"../../OtherImages/sohnaroad.jpg"
     },
     {
       title:"Golf Course Road",link:"/property-in-gurugram/golf-course/",image:"../../OtherImages/golfcourse.webp"
     },
     {
-      title:"MG Road",link:"/property-in-gurugram/mg-road/",image:"../../OtherImages/mgroad.webp"
+      title:"MG Road",link:"/property-in-gurugram/mg-road/",image:"../../OtherImages/mgroad.jpg"
     },
     {
       title:"NPR Road",link:"/property-in-gurugram/northern-peripheral-road/",image:"../../OtherImages/sikanderpur.webp"
     },
     {
-      title:"Dwarka Expressway",link:"/property-in-gurugram/dwarka-expressway/",image:"../../OtherImages/capture1.webp"
+      title:"Dwarka Expressway",link:"/property-in-gurugram/dwarka-expressway/",image:"../../OtherImages/capture1.jpg"
     },
     {
       title:"New Gurgaon",link:"/property-in-gurugram/new-gurgaon/",image:"../../OtherImages/capture2.webp"
     },
     {
-      title:"Sohna",link:"/property-in-gurugram/sohna/",image:"../../OtherImages/capture3.webp"
+      title:"Sohna",link:"/property-in-gurugram/sohna/",image:"../../OtherImages/capture3 (2).jpg"
     },
     {
-      title:"SPR Road",link:"/property-in-gurugram/southern-peripheral-road/",image:"../../OtherImages/bgseven.webp"
+      title:"SPR Road",link:"/property-in-gurugram/southern-peripheral-road/",image:"../../OtherImages/bgseven.jpg"
     },
     {
-      title:"NH-48",link:"/property-in-gurugram/nh-48/",image:"../../OtherImages/capture5.webp"
+      title:"NH-48",link:"/property-in-gurugram/nh-48/",image:"../../OtherImages/capture5.jpg"
     },
     {
-      title:"Golf Course Extn Road",link:"/property-in-gurugram/golf-course-extn-road/",image:"../../OtherImages/capture6.webp"
+      title:"Golf Course Extn Road",link:"/property-in-gurugram/golf-course-extn-road/",image:"../../OtherImages/capture6.jpg"
     },
   ]
   
