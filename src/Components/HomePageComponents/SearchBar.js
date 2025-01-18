@@ -11,7 +11,22 @@ function SearchBar() {
   const [data, setData] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentindeximgae, setCurrentImageIndex] = useState(0);
-  const [imageSrc, setImageSrc] = useState([]);
+  // const [imageSrc, setImageSrc] = useState([
+  //   'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp',
+  //   'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.jpeg'
+  // ]);
+
+  const imageSrc = [
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t3.webp", link:"/signature-global-projects/"
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp", link:"/emaar-urban-ascent/"
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t2.webp", link:"/trevoc-56-gurgaon/"
+    },
+  ]
 
 
   const handleLinkClick = (linkName) => {
@@ -49,28 +64,28 @@ function SearchBar() {
     }
   };
 
-  useEffect(() => {
-    const updateImageSrc = () => {
-      if (window.innerWidth <= 600) {
-        setImageSrc(['../../Imgaes/mobile.png']);
-      } else if (window.innerWidth <= 1024) {
-        setImageSrc(['https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp']);
-      } else {
-        setImageSrc(['https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp']);
-      }
-    };
+  // useEffect(() => {
+  //   const updateImageSrc = () => {
+  //     if (window.innerWidth <= 600) {
+  //       setImageSrc(['../../Imgaes/mobile.png']);
+  //     } else if (window.innerWidth <= 1024) {
+  //       setImageSrc(['https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp']);
+  //     } else {
+  //       setImageSrc(['https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp']);
+  //     }
+  //   };
 
-    updateImageSrc();
-    window.addEventListener('resize', updateImageSrc);
+  //   updateImageSrc();
+  //   window.addEventListener('resize', updateImageSrc);
 
-    return () => {
-      window.removeEventListener('resize', updateImageSrc);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('resize', updateImageSrc);
+  //   };
+  // }, []);
 
 
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 600,
     slidesToShow: 1,
@@ -171,17 +186,34 @@ function SearchBar() {
           </div>
         </div>
 
-        <div className="hidden md:block mt-2 lg:w-[700px] lg:h-[132px] md:h-[132px] md:w-[650px] mx-auto mt-3">
+        <div className="hidden md:block mt-2 lg:w-[700px] lg:h-[132px] md:h-[132px] md:w-[650px] mx-auto">
           <Wrapper className="section">
             <Slider {...settings}>
               {imageSrc.map((src, index) => (
                 <div key={index}>
-                  <img src={src} alt={`Slide ${index}`} className="w-full h-auto" />
+                  <img src={src.image} onClick={() => window.open(src.link, "_blank")} alt={`Slide ${index}`} className="w-full h-auto cursor-pointer" />
                 </div>
               ))}
             </Slider>
           </Wrapper>
         </div>
+        {/* <div className="hidden md:block mt-2 lg:w-[700px] lg:h-[132px] md:h-[132px] md:w-[650px] mx-auto">
+  <Wrapper className="section">
+    <Slider {...settings}>
+      {imageSrc.map((src, index) => (
+        <div key={index}>
+          <img
+            src={src.image}
+            onClick={() => window.open(src.link, "_blank")} // Open link in a new tab
+            alt={`Slide ${index}`}
+            className="w-full h-auto cursor-pointer"
+          />
+        </div>
+      ))}
+    </Slider>
+  </Wrapper>
+</div> */}
+
       </div>
     </Wrapper>
   );

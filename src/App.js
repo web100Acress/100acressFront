@@ -117,6 +117,7 @@ import DlfSco from "./Pages/DlfSco";
 import NewBanner from "./aadharhomes/BannerPage/NewBanner";
 import 'animate.css';
 import Possessionin2026 from "./Pages/Possessionin2026";
+import SignatureBuilder from "./Pages/BuilderPages/SignatureBuilder";
 
 function App() {
 
@@ -268,6 +269,7 @@ function App() {
               <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
               <Route path="/orris-plots-gurugram/" element={<Orris />} />
               <Route path="/jms-plots-gurugram/" element={<Jms />} />
+              <Route path="/signature-global-projects/" element={<SignatureBuilder/>}/>
               <Route path="/rof-plots-gurugram/" element={<Rof />} />
               <Route
                 path="/signatureglobal-plots-gurugram/"
@@ -284,10 +286,7 @@ function App() {
               <Route
                 path="/microtek-infra-sco-plots-gurugram/"
                 element={<Microtek />}
-              />
-
-            
-              <Route path="/Admin/blog" element={<Blog />} />
+              />  
             </Route>
 
             {/* Admin Routing */}
@@ -324,6 +323,7 @@ function App() {
               <Route path="/Admin/Projects/property" element={<Projects />} />
               <Route path="/Admin/resale-enquiries" element={<Rent />} />
               <Route path="/Admin/jobposting" element={<JobPosting />} />
+              <Route path="/Admin/blog" element={<Blog />} />
               <Route
                 path="/Admin/jobposting/view/:id"
                 element={<JobPostingView />}

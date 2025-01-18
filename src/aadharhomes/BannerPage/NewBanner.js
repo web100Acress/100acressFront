@@ -1271,7 +1271,7 @@ const NewBanner = () => {
                         </h4>
                       <section className="w-full mb-2">
                         <div className="pt-4 p-2 rounded-lg relative">
-                          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-6 gap-6">
                             {/* Preprocess Amenities */}
                             {(Amenities &&
                               Amenities.flatMap((item, idx) =>
