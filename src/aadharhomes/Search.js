@@ -14,7 +14,8 @@ const Search = ({ data1 }) => {
     query: "",
     collectionName: data1,
   });
-  const [isSmallerThan440] =  useMediaQuery("(max-width: 440px)");
+  const [isSmallerThan425] =  useMediaQuery("(max-width: 640px)");
+
 
   useEffect(() => {
     setFormData((prevState) => ({

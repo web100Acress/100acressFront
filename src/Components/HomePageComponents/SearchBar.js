@@ -26,6 +26,18 @@ function SearchBar() {
     {
       image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t2.webp", link:"/trevoc-56-gurgaon/"
     },
+  ];
+
+  const phoneSrc = [
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone.webp", link:"/signature-global-projects/"
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone2.webp", link:"/trevoc-56-gurgaon/"
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone3.webp", link:"/emaar-urban-ascent/"
+    },
   ]
 
 
@@ -110,6 +122,31 @@ function SearchBar() {
     afterChange: (index) => setCurrentImageIndex(index),
   };
 
+  const phonesettings = {
+    dots: false,
+    infinite: true,
+    speed: 600,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 4000,
+    arrows: false,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+    customPaging: (i) => (
+      <button
+        className={`rounded-full mt-4 mr-2 ${i === currentindeximgae ? 'bg-gray-800 h-2 w-5' : 'bg-gray-400 h-3 w-3'}`}
+      ></button>
+    ),
+    afterChange: (index) => setCurrentImageIndex(index),
+  };
   const [flickerIndex, setFlickerIndex] = useState(0);
 
   useEffect(() => {
@@ -124,7 +161,7 @@ function SearchBar() {
     <Wrapper className="section">
       <div className="qsbWrapper pt-0 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto lg:pb-14 md:pb-14 md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-14 sm:h-8 md:-mt-32 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-0 " style={{ maxWidth: '860px' }}>
       <div
-      className="sjdmkls w-80 md:w-auto lg:w-auto h-20 lg:h-8 md:h-8 text-center text-white text-3xl mb-4 bg-gradient-to-r from-purple-900 via-pink-500 to-yellow-400 bg-clip-text text-transparent animate-gradient bg-[length:200%] bg-[0%_center]"
+      className="sjdmkls w-80 md:w-auto lg:w-auto h-20 lg:h-8 md:h-8 text-center text-white text-3xl mb-4 bg-gradient-to-r from-purple-900 via-pink-500 to-yellow-400 bg-clip-text text-transparent animate-gradient bg-[length:200%] bg-[0%_center] flex items-center justify-center"
     >
       <Typewriter
         options={{
@@ -191,29 +228,30 @@ function SearchBar() {
             <Slider {...settings}>
               {imageSrc.map((src, index) => (
                 <div key={index}>
-                  <img src={src.image} onClick={() => window.open(src.link, "_blank")} alt={`Slide ${index}`} className="w-full h-auto cursor-pointer" />
+                  <img src={src.image} onClick={() => window.open(src.link, "_blank")} alt={`Slide ${index}`} className="w-full h-auto cursor-pointer rounded-lg" />
                 </div>
               ))}
             </Slider>
           </Wrapper>
         </div>
-        {/* <div className="hidden md:block mt-2 lg:w-[700px] lg:h-[132px] md:h-[132px] md:w-[650px] mx-auto">
-  <Wrapper className="section">
-    <Slider {...settings}>
-      {imageSrc.map((src, index) => (
-        <div key={index}>
-          <img
-            src={src.image}
-            onClick={() => window.open(src.link, "_blank")} // Open link in a new tab
-            alt={`Slide ${index}`}
-            className="w-full h-auto cursor-pointer"
-          />
-        </div>
-      ))}
-    </Slider>
-  </Wrapper>
-</div> */}
+        <div className="block sm:hidden w-[360px] h-[198px] mt-8">
+          <Wrapper className="section">
+            <Slider {...phonesettings}>
+              {phoneSrc.map((src, index) => (
+                <div key={index}>
+                  <img
+                    src={src.image}
+                    alt={`Slide ${index}`}
+                    onClick={() => window.open(src.link, "_blank")}
+                    class="w-full h-full object-cover rounded-lg cursor-pointer"
+                  />
+                </div>
+              ))}
+            </Slider>
+          </Wrapper>
 
+
+        </div>
       </div>
     </Wrapper>
   );
@@ -272,6 +310,8 @@ const Wrapper = styled.section`
     .SJDMls {
       display: flex; /* Show SJDMls on small screens */
       flex-wrap: wrap; /* Allow wrapping */
+      justify-content: center; /* Center the options */
+
     }
 
     .options {
