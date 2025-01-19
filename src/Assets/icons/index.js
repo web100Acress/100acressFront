@@ -13,7 +13,7 @@ import LINESVG from '../../../src/Assets/icons/svg/Line.svg';
 import WHITELINESVG from '../../../src/Assets/icons/svg/whiteline.svg';
 import ArrowSVG from '../../../src/Assets/icons/svg/arrow.svg';
 import SwimmingPoolSVG from '../../../src/Assets/icons/svg/swimming.svg';
-import CarParkingSVG from '../../../src/Assets/icons/svg/CarParking.svg';
+import CarParkingSVG from '../../../src/Assets/icons/svg/carparking.svg';
 import VolleyBallSVG from '../../../src/Assets/icons/svg/volleyball.svg';
 import AtmSVG from '../../../src/Assets/icons/svg/atm.svg';
 import RestaurantSVG from '../../../src/Assets/icons/svg/restaurant.svg';

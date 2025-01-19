@@ -1,40 +1,32 @@
-
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import {SyncLoader} from "react-spinners";
+import {CircleLoader,} from "react-spinners";
 import { Link, useParams } from "react-router-dom";
-import { DataContext } from "../MyContext";
 import {LocationIcon, HeartIcon, ShareIcon,PhoneIcon, CarParkingIcon, ForwardIcon, BackwardIcon, LcoationBiggerIcon, ArrowIcon, RupeeIcon} from "../Assets/icons";
 import styled from "styled-components";
+import ImageGallery from "react-image-gallery";
+import "react-image-gallery/styles/css/image-gallery.css";
 
 
+const imagesData = [
+  {
+    original: "https://picsum.photos/id/1018/1000/600/",
+    thumbnail: "https://picsum.photos/id/1018/250/150/",
+  },
+  {
+    original: "https://picsum.photos/id/1015/1000/600/",
+    thumbnail: "https://picsum.photos/id/1015/250/150/",
+  },
+  {
+    original: "https://picsum.photos/id/1019/1000/600/",
+    thumbnail: "https://picsum.photos/id/1019/250/150/",
+  },
+];
 
-const Data = [
-  {
-    id: 1,
-    imgSrc:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/q49dy9od7ygss5onqayf"
-  },
-  {
-    id: 2,
-    imgSrc:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/jw10kpxm1abeqkzpc5sc"
-  },
-  {
-    id: 3,
-    imgSrc:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/kiizf8kfmyccung3t5wd"
-  },
-  {
-    id: 4,
-    imgSrc:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1734154358265-front.jpg"
-  },
-  {
-    id: 5,
-    imgSrc:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/buvpotgrcv5pxuudvoxe"
-  }
-]; // Data for the slider
 
 const RentViewDetails = () => {
 
@@ -49,17 +41,15 @@ const RentViewDetails = () => {
   }
 `;
   const [rentViewDetails, setRentViewDetails] = useState();
-  const [showForm, setShowForm] = useState(false);
-  const [showContact, setShowContact] = useState(false);
-  const [getContact, setGetContact] = useState("");
-  const [buyData, setBuyData] = useState("");
+  const [buyData, setBuyData] = useState([]);
+  const [showNumber, setShowNumber] = useState(false);
+
+
+
   const [loading, setLoading] = useState(false);
 
-
-  // const { frontImage, otherImage, amenities } = rentViewDetails;
-
   const { id } = useParams();
-  console.log(id);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -69,15 +59,13 @@ const RentViewDetails = () => {
         );
         if (res.data.data) {
           setRentViewDetails(res.data.data);
+          console.log(res.data.data, "res.data.data");
+          setLoading(false);
           
         } else {
           setRentViewDetails(res.data.postData.postProperty[0]);
-          
+          setLoading(false);
         }
-        console.log(
-          res.data.postData.postProperty[0],
-          "Property Information"
-        );
       } catch (error) {
         console.error("Error fetching data:", error);
         
@@ -86,62 +74,20 @@ const RentViewDetails = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {}, [rentViewDetails]);
-
-  const [agentFrom1, setAgentForm1] = useState({
-    custName: "",
-    custEmail: "",
-    custNumber: "",
-  });
-
-  const handleChangeAgentForm1 = (e) => {
-    const { name, value } = e.target;
-    setAgentForm1({ ...agentFrom1, [name]: value });
-  };
-
-  const handleSubmitAgentForm1 = (e) => {
-    e.preventDefault();
-    const { custEmail, custNumber } = agentFrom1;
-    if (custEmail && custNumber) {
-      axios
-        .post("https://api.100acress.com/postEnquiry", {
-          ...agentFrom1,
-          propertyAddress: rentViewDetails.city,
-          agentEmail: rentViewDetails.email,
-          agentNumber: rentViewDetails.number,
+  const handleShare = (project) => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: project?.propertyName,
+          text: `Check out this project: ${project.propertyName}`,
+          url: `${window.location.href}`,
         })
-
-        .then((response) => {
-          alert("Data Submitted Successfully");
-          resetData1();
-        })
-        .catch((error) => {
-          console.error("Registration failed:", error);
-          if (error.response) {
-            alert(`Server responded with an error: ${error.response.status}`);
-          } else if (error.request) {
-            alert("No response received from the server");
-          } else {
-            alert(`Error setting up the request: ${error.message}`);
-          }
-        });
+        .then(() => console.log("Shared successfully"))
+        .catch((error) => console.log("Error sharing:", error));
     } else {
-      alert("Please fill the data");
+      // Fallback for browsers that don't support the Web Share API
+      alert("Share functionality is not supported on this device/browser.");
     }
-    setShowContact(true);
-  };
-
-
-
-  const resetData1 = () => {
-    setAgentForm1({
-      agentEmail: "",
-      agentNumber: "",
-      custName: "",
-      custEmail: "",
-      custNumber: "",
-      propertyAddress: "",
-    });
   };
 
   const [userForm, setUserForm] = useState({
@@ -179,72 +125,31 @@ const RentViewDetails = () => {
         );
 
         alert(response.data.message);
+        setShowNumber(true);
         resetUser();
       } catch (error) {
         console.error("Registration failed:", error);
+        setShowNumber(false);
 
         if (error.response) {
           alert(`Server responded with an error: ${error.response.status}`);
+          setShowNumber(false);
+
         } else if (error.request) {
           alert("No response received from the server");
+          setShowNumber(false);
+
         } else {
           alert(`Error setting up the request: ${error.message}`);
+          setShowNumber(false);
+
         }
       }
     } else {
       alert("Please fill the data");
+      setShowNumber(false);
+
     }
-  };
-
-  const [userForm1, setUserForm1] = useState({
-    custName: "",
-    custEmail: "",
-    custNumber: "",
-  });
-
-  const handleUserFormChange1 = (e) => {
-    const { name, value } = e.target;
-    setUserForm1({ ...userForm1, [name]: value });
-  };
-
-  const handleSubmitFormData1 = async (e) => {
-    e.preventDefault();
-    const { custName, custNumber } = userForm1;
-    if (custNumber && custName) {
-      try {
-        const response = await axios.post(
-          "https://api.100acress.com/postEnquiry",
-          {
-            ...userForm1,
-            propertyAddress: rentViewDetails.address,
-          }
-        );
-
-        alert(response.data.message);
-        resetUser1();
-      } catch (error) {
-        console.error("Registration failed:", error);
-
-        if (error.response) {
-          alert(`Server responded with an error: ${error.response.status}`);
-        } else if (error.request) {
-          alert("No response received from the server");
-        } else {
-          alert(`Error setting up the request: ${error.message}`);
-        }
-      }
-    } else {
-      alert("Please fill the data");
-    }
-    setShowContact(true);
-  };
-
-  const resetUser1 = () => {
-    setUserForm1({
-      custName: "",
-      custEmail: "",
-      custNumber: "",
-    });
   };
 
   const fetchData = async () => {
@@ -264,32 +169,45 @@ const RentViewDetails = () => {
     fetchData();
   }, []);
 
-  const { trendingProject } = useContext(DataContext);
 
-  console.log(trendingProject, "trending project");
+
+
  
   return (
     <div style={{ overflowX: "hidden" }}>
       <Wrapper>
-        {rentViewDetails&&(
+        {loading ? 
+        <CircleLoader   
+          color="#C13B44"
+          size={100} 
+          className="mx-auto mt-20 mb-8 h-[50vh] w-full"
+        /> 
+          :
+          rentViewDetails && (
             <div className="block w-11/12 mx-auto mt-20 mb-8">
-            
-            <div className="grid grid-cols-2 gap-4">
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="mt-auto">
                 <div>
                   <h3 className="capitalize">{rentViewDetails.propertyName}</h3>
                   <h6 className="capitalize"><span className="font-medium mr-2">{rentViewDetails.propertyType}</span><span>{rentViewDetails.area}</span></h6>
-                  <p className="flex"><LocationIcon color="#C13B44"/><span className="ml-2 capitalize">{rentViewDetails.address}, {rentViewDetails.city}, {rentViewDetails.state}</span></p>
+                  <p className="flex text-sm md:text-base"><LocationIcon color="#C13B44"/><span className="ml-2 capitalize">{rentViewDetails.address}, {rentViewDetails.city}, {rentViewDetails.state}</span></p>
                 </div>
               </div>
-              <div className="flex justify-end self-end">
-                  <div>
-                    <h5 className="text-end text-primaryRed font-semibold">Rent <RupeeIcon/>{rentViewDetails.price}</h5>
-                    <div className="flex gap-4">
-                      <HeartIcon />
-                      <ShareIcon />
-                      <div className="bg-primaryRed text-white px-3 py-2 rounded"><PhoneIcon/>{rentViewDetails.number}</div>
-                    </div>
+              <div className="flex justify-start self-start md:justify-end md:self-end">
+                  <div className="block w-full">
+                    <h5 className="text-end text-primaryRed font-semibold"><RupeeIcon/>{rentViewDetails.price}</h5>
+                    <div className="flex justify-between md:justify-end gap-4">
+                      {/* <HeartIcon /> */}
+                      <div className="hover:cursor-pointer" onClick={()=>handleShare(rentViewDetails)}>
+                        <ShareIcon />
+                      </div>
+                      {showNumber ? 
+                      <div className="bg-primaryRed  text-white px-3 py-2 rounded"><a className="hover:text-white" href={`tel:${rentViewDetails.number}`}><PhoneIcon/>{rentViewDetails.number}</a></div>
+                      :
+                      <div className="bg-primaryRed  text-white px-3 py-2 rounded"><PhoneIcon/>{rentViewDetails.number.slice(0,5)+"******"+rentViewDetails.number.slice(11)}</div>
+                      }
+                      </div>
                   </div>
               </div>
             </div>
@@ -297,8 +215,20 @@ const RentViewDetails = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-              <div className="col-span-2 h-fit">
-                <img className="rounded-lg my-2 object-cover w-full h-[80vh]" src={rentViewDetails.frontImage.url} alt="Project name"/>
+              <div className="col-span-2">
+                <div class="grid grid-cols-3 grid-rows-3 relative">
+                  <div className="col-span-2 row-span-3 h-full">
+                    <img className="col-span-2 row-span-3 rounded-lg my-2 object-cover w-full h-[80vh] border" src={rentViewDetails.frontImage.url} alt="Project name"/>
+                  </div>
+                  {
+                    rentViewDetails.otherImage.length >= 4 && rentViewDetails.otherImage.slice(1,4).map((image) => (
+                      <img key={image.url} className="col-span-1 row-span-1 rounded-lg my-1 object-cover w-full h-[26vh] border" src={image.url} alt="Project name"/>
+                    ))
+                  }
+                  <div class="absolute text-white text-center flex items-center justify-center h-[26vh] w-1/3 border rounded bg-black/50 bottom-2 right-0 cursor-pointer">
+                    {rentViewDetails.otherImage.length - 3} + Photos
+                  </div>
+                </div>
                 <div className="my-4">
                   <h3>About Property</h3>
                   <p>{rentViewDetails.descripation}</p>
@@ -312,39 +242,38 @@ const RentViewDetails = () => {
                       <li className={`${rentViewDetails.type ? " ":"hidden"}`}>{rentViewDetails.type}</li>
                     </ul>
                 </div>
-                <div className="my-4">
+                {/* <div className="my-4">
                   <h3>Amenities</h3>
                   <div className="flex flex-col justify-center items-center w-1/3 bg-white my-4 p-4 shadow rounded-lg" >
                       <CarParkingIcon/>
                       <span>Car Parking</span>
                   </div>
-                </div>
+                </div> */}
                   <div>
                     <div className="my-4 ">
-                    <h5 className="text-4xl">Other Images</h5>
-                      <ImageGallery images={rentViewDetails.otherImage}/>
+                    <h5 className={`text-4xl ${rentViewDetails.otherImage.length === 0 ? "hidden" : ""}`}>Other Images</h5>
+                      <ImageGalleryView images={rentViewDetails.otherImage}/>
                     </div>
                     <div className="my-4 relative">
                       <h5 className="text-4xl">Similar Properties</h5>
-                      <Carousel trendingProject={trendingProject}/>
+                      <Carousel AllProjects={buyData}/>
                     </div>
                 </div>
               </div>
               <div className="col-span-1 my-2">
                   <div className="shadow-md p-4 rounded-lg mb-4 border-[0.2px]">
                     <h3>Know more about property</h3>
-                    <input type="text" name="fullName" placeholder="Full Name" className="w-full border p-2 my-2"/>
-                    <input type="number" name="mobileNumber" placeholder="Mobile Number" className="w-full border p-2 my-2"/>
-                    <input type="email" name="email" placeholder="Email address" className="w-full border p-2 my-2"/>
+                    <input type="text" name="custName" placeholder="Full Name" className="w-full border p-2 my-2" onChange={handleUserFormChange}/>
+                    <input type="number" name="custNumber" placeholder="Mobile Number" className="w-full border p-2 my-2" onChange={handleUserFormChange}/>
+                    <input type="email" name="custEmail" placeholder="Email address" className="w-full border p-2 my-2" onChange={handleUserFormChange}/>
                     <p className="text-primaryRed">Fill out form only one - time. After get the contact number</p>
-                    <button className="block w-full px-5 py-2 bg-primaryRed text-white rounded-md">Get Details</button>
+                    <button className="block w-full px-5 py-2 bg-primaryRed text-white rounded-md" onClick={handleSubmitFormData} >Get Details</button>
                   </div>
                   <div className="shadow-md p-4 rounded-lg my-4 border-[0.2px]">
                       <h5>Post your Property for <span className="text-primaryRed">FREE!</span></h5>
-                      <button className="block w-full px-5 py-2 bg-primaryRed text-white rounded-md">List Properties <span className="bg-white text-primaryRed p-1 mx-1 rounded">FREE</span></button>
+                      <Link to={"http://localhost:3000/postproperty/"} ><button className="block w-full px-5 py-2 bg-primaryRed text-white rounded-md">List Properties <span className="bg-white text-primaryRed p-1 mx-1 rounded">FREE</span></button></Link>
                   </div>
               </div>
-
             </div>
             </div>
             )}
@@ -357,7 +286,7 @@ const RentViewDetails = () => {
 
 
 // Other Images image gellery
-const ImageGallery  = ({images})=>{
+const ImageGalleryView  = ({images})=>{
   const [showAll,setShowAll] = useState(false);
   const scrollContainerRef = useRef(null);
   const [isDragging,setIsDragging] = useState(false);
@@ -458,9 +387,20 @@ const ImageGallery  = ({images})=>{
 }
 
 // Carousel
-const Carousel = ({trendingProject})=>{
-
+const Carousel = ({AllProjects})=>{
+  
+  const [randomIndex, setRandomIndex] = useState(0);
   const sliderRef = useRef();
+
+  const getRandomIndex = () => {
+    const randomIndex = Math.floor(Math.random() * AllProjects.length);
+    setRandomIndex(randomIndex);
+  };
+
+  useEffect(() => {
+    getRandomIndex();
+  }, []);
+
 
   const setting = {
     dots: false,
@@ -468,7 +408,7 @@ const Carousel = ({trendingProject})=>{
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
-    adaptiveHeight: true, // Enables height adjustment
+    adaptiveHeight: false, // Enables height adjustment
     responsive: [
       {
         breakpoint: 768,
@@ -496,26 +436,41 @@ const Carousel = ({trendingProject})=>{
       </button>
       <div className="">
         <Slider {...setting} ref={sliderRef} >
-          {trendingProject.map((project) => (
-          <section className="" >
+        { AllProjects.length > 0 && AllProjects.filter((item)=>item.postProperty && item.postProperty.length > 0).map((project) => (
+          <>
+          {
+          project.postProperty
+          .slice(0,1)
+          .map((nestedItem) => (
+            <section className="" >
             <div className="w-full">
                 {/* const pUrl = item.project_url; */}
-                    <Link  target="_top">
+                    <Link 
+                        to={
+                          nestedItem.propertyName &&
+                          nestedItem._id
+                            ? `/rental-properties/${nestedItem.propertyName.replace(
+                                /\s+/g,
+                                "-"
+                              )}/${nestedItem._id}/`
+                            : "#"
+                        }
+                        target="_top">
                       <article
-                        key={project._id}
+                        key={nestedItem._id}
                         className="mx-2 transition overflow-hidden rounded-md  text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                         onDrag={(e)=>{e.preventDefault()}}
                       >
                         <div className="p-3 relative overflow-hidden">
                           <img
-                            src={project.frontImage.url}
+                            src={nestedItem.frontImage.url}
                             alt="property In Gurugram"
                             className="w-full h-[200px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                           />
                         </div>
                         <div className="p-2 pt-0">
-                          <span className="text-[15px] font-semibold text-black-600 hover:text-red-600 duration-500 ease-in-out">
-                            {project.projectName}
+                          <span className="text-[15px] font-semibold text-black-600  hover:text-red-600 duration-500 ease-in-out">
+                            {nestedItem.propertyName.length > 15 ? `${nestedItem.propertyName.slice(0, 15)}...` : nestedItem.propertyName}
                           </span>
 
                           <ul className="m-0 p-0 flex text-white-600 justify-between px-0 pb-0">
@@ -527,10 +482,10 @@ const Carousel = ({trendingProject})=>{
                               {/* Text */}
                               <div className="text-sm font-thin truncate w-64 md:w-64 lg:w-32 xl:w-48">
                                 <span className="text-sm text-white-600 hover:text-red-600 duration-500 ease-in-out block truncate">
-                                  {project.projectAddress}
+                                  {nestedItem.address}
                                 </span>
                                 <span className="text-xs text-[#656565] block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
-                                  {project.city},{project.state}
+                                  {nestedItem.city},{nestedItem.state}
                                 </span>
                               </div>
                             </li>
@@ -549,13 +504,15 @@ const Carousel = ({trendingProject})=>{
                     </Link>
             </div>
           </section>
-          ))}
+          ))
+          }
+          </>
+        ))}
         </Slider>
       </div>
     </>
   )
 }
-
 
 
 export default RentViewDetails;
