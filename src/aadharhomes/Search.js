@@ -16,6 +16,7 @@ const Search = ({ data1 }) => {
   });
   const [isSmallerThan425] =  useMediaQuery("(max-width: 640px)");
 
+
   useEffect(() => {
     setFormData((prevState) => ({
       ...prevState,
@@ -103,7 +104,7 @@ const Search = ({ data1 }) => {
           }}
           id="searchButton"
         >
-          { !isSmallerThan425 &&
+          { !isSmallerThan440 &&
 
             <div className="px-2.5 md:px-5 py-2.5 text-white rounded-full flex items-center justify-center gap-1 ">
           <StyledLink href='#'>
@@ -117,7 +118,7 @@ const Search = ({ data1 }) => {
               </StyledLink>
           </div>
           }
-          { isSmallerThan425 &&
+          { isSmallerThan440 &&
 
           <div className="px-2.5 mr-2 md:px-5 py-2.5 text-white rounded-full flex items-center justify-center gap-1 ">
           <StyledLink href='#'>
@@ -162,7 +163,7 @@ const StyledLink = styled.a`
   transform: scale(1.5);
 
   &:hover {
-    box-shadow: 0 0 5px #C13B44, inset 0 0 5px #C13B44;
+    box-shadow: 0 0 5px #EE1C25, inset 0 0 5px #C13B44;
     transition-delay: 0.2s;
   }
 
