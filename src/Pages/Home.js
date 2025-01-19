@@ -126,11 +126,11 @@ function Home() {
         <img
           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/mainbgg.webp"
           alt="Mobile Banner"
-          className="block md:hidden w-full h-[23rem]"
+          className="block md:hidden w-full h-[38rem]"
         />
 
         {/* Center the SearchBar */}
-        <div className="absolute inset-0 flex items-center justify-center lg:mt-24">
+        <div className="absolute inset-0 flex items-center justify-center mt-16 md:mt-0 lg:mt-24">
           <SearchBar />
         </div>
 

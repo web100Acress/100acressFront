@@ -31,7 +31,7 @@ function Cities() {
       title:"Dwarka Expressway",link:"/property-in-gurugram/dwarka-expressway/",image:"../../OtherImages/capture1.jpg"
     },
     {
-      title:"New Gurgaon",link:"/property-in-gurugram/new-gurgaon/",image:"../../OtherImages/capture2.webp"
+      title:"New Gurgaon",link:"/property-in-gurugram/new-gurgaon/",image:"../../OtherImages/capture2.jpg"
     },
     {
       title:"Sohna",link:"/property-in-gurugram/sohna/",image:"../../OtherImages/capture3 (2).jpg"
