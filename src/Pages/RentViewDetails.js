@@ -8,24 +8,7 @@ import {CircleLoader,} from "react-spinners";
 import { Link, useParams } from "react-router-dom";
 import {LocationIcon, HeartIcon, ShareIcon,PhoneIcon, CarParkingIcon, ForwardIcon, BackwardIcon, LcoationBiggerIcon, ArrowIcon, RupeeIcon} from "../Assets/icons";
 import styled from "styled-components";
-import ImageGallery from "react-image-gallery";
-import "react-image-gallery/styles/css/image-gallery.css";
-
-
-const imagesData = [
-  {
-    original: "https://picsum.photos/id/1018/1000/600/",
-    thumbnail: "https://picsum.photos/id/1018/250/150/",
-  },
-  {
-    original: "https://picsum.photos/id/1015/1000/600/",
-    thumbnail: "https://picsum.photos/id/1015/250/150/",
-  },
-  {
-    original: "https://picsum.photos/id/1019/1000/600/",
-    thumbnail: "https://picsum.photos/id/1019/250/150/",
-  },
-];
+import Gallery from "../Components/Gallery";
 
 
 const RentViewDetails = () => {
@@ -43,9 +26,8 @@ const RentViewDetails = () => {
   const [rentViewDetails, setRentViewDetails] = useState();
   const [buyData, setBuyData] = useState([]);
   const [showNumber, setShowNumber] = useState(false);
-
-
-
+  const [GalleryImageData,setGalleryImageData] = useState([]);
+  const [OpenGallery, setOpenGallery] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { id } = useParams();
@@ -65,6 +47,18 @@ const RentViewDetails = () => {
         } else {
           setRentViewDetails(res.data.postData.postProperty[0]);
           setLoading(false);
+          let ImagesData = res.data.postData.postProperty[0].otherImage.map((image)=>{
+            return {
+              url: image.url,
+              thumbnail: image.url
+            }
+          }); 
+          ImagesData.push({
+            url: res.data.postData.postProperty[0].frontImage.url,
+            thumbnail: res.data.postData.postProperty[0].frontImage.url
+          });
+          setGalleryImageData(ImagesData);
+          // console.log(ImagesData);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -185,7 +179,7 @@ const RentViewDetails = () => {
           :
           rentViewDetails && (
             <div className="block w-11/12 mx-auto mt-20 mb-8">
-
+            {OpenGallery && <Gallery images={GalleryImageData} OpenGallery={OpenGallery} setOpenGallery={setOpenGallery} />}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="mt-auto">
                 <div>
@@ -217,21 +211,23 @@ const RentViewDetails = () => {
 
               <div className="col-span-2">
                 <div class="grid grid-cols-3 grid-rows-3 relative">
-                  <div className="col-span-2 row-span-3 h-full">
-                    <img className="col-span-2 row-span-3 rounded-lg my-2 object-cover w-full h-[80vh] border" src={rentViewDetails.frontImage.url} alt="Project name"/>
+                  <div className={`col-span-2 row-span-3 h-full ${rentViewDetails.otherImage.length >=4 ? "col-span-2" : "col-span-3"}`}>
+                    <img className="col-span-2 row-span-3 rounded-lg object-cover w-full h-[81vh] border" src={rentViewDetails.frontImage.url} alt="Project name"/>
                   </div>
                   {
                     rentViewDetails.otherImage.length >= 4 && rentViewDetails.otherImage.slice(1,4).map((image) => (
-                      <img key={image.url} className="col-span-1 row-span-1 rounded-lg my-1 object-cover w-full h-[26vh] border" src={image.url} alt="Project name"/>
+                      <img key={image.url} onClick={()=>{setOpenGallery(true)}} className="col-span-1 row-span-1 rounded-lg cursor-pointer object-cover w-full h-[27vh] border" src={image.url} alt="Project name"/>
                     ))
                   }
-                  <div class="absolute text-white text-center flex items-center justify-center h-[26vh] w-1/3 border rounded bg-black/50 bottom-2 right-0 cursor-pointer">
+                  {
+                  rentViewDetails.otherImage.length >= 4 && <div onClick={()=>{setOpenGallery(true)}} class="absolute text-white text-center flex items-center justify-center h-[27vh] w-1/3 border rounded bg-black/50 bottom-0 right-0 cursor-pointer">   
                     {rentViewDetails.otherImage.length - 3} + Photos
                   </div>
+                  }
                 </div>
                 <div className="my-4">
                   <h3>About Property</h3>
-                  <p>{rentViewDetails.descripation}</p>
+                  <p>{rentViewDetails.descripation ? rentViewDetails.descripation :  "Please call us for further information"}</p>
                 </div>
                 <div className="my-4">
                   <h3>Property Highlights</h3>
@@ -250,10 +246,13 @@ const RentViewDetails = () => {
                   </div>
                 </div> */}
                   <div>
+                  {
+                    rentViewDetails.otherImage.length <=3 &&
                     <div className="my-4 ">
                     <h5 className={`text-4xl ${rentViewDetails.otherImage.length === 0 ? "hidden" : ""}`}>Other Images</h5>
                       <ImageGalleryView images={rentViewDetails.otherImage}/>
                     </div>
+                  }
                     <div className="my-4 relative">
                       <h5 className="text-4xl">Similar Properties</h5>
                       <Carousel AllProjects={buyData}/>
@@ -347,7 +346,7 @@ const ImageGalleryView  = ({images})=>{
           onDragStart={(e) => e.preventDefault()}
           />
         ))}
-              {images.length > 4 && !showAll && (
+              {images.length > 3 && !showAll && (
                 <div className="relative">
                   <img
                     src={images[3].url}
