@@ -58,7 +58,7 @@ const styles = {
   button: {
     position: "fixed",
     bottom: "20px",  // Adjust to your preference
-    right: "20px",   // Adjust to your preference
+    left: "20px",   // Adjust to your preference
     fontSize: "18px",
     color: "#fff",
     border: "none",

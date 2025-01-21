@@ -1145,7 +1145,7 @@ const Wrapper = styled.section`
     position: fixed;
     z-index: 999;
     bottom: 10px;
-    left: 10px; /* Changed from right to left */
+    right: 10px; /* Changed from right to left */
     width: 45px;
     height: 45px;
     display: flex;
@@ -1161,7 +1161,7 @@ const Wrapper = styled.section`
   }
 
   .dd-m-phone:hover {
-    transform: translateY(-5px);
+    transform: rotate(0.3turn);
     box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
   }
 
@@ -1173,7 +1173,7 @@ const Wrapper = styled.section`
     position: fixed;
     z-index: 999;
     bottom: 70px;
-    left: 10px; /* Changed from right to left */
+    right: 10px; /* Changed from right to left */
     width: 45px;
     height: 45px;
     display: flex;
@@ -1189,7 +1189,7 @@ const Wrapper = styled.section`
   }
 
   .dd-m-whatsapp:hover {
-    transform: translateY(-5px);
+    transform:rotate(1turn);
     box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
   }
 

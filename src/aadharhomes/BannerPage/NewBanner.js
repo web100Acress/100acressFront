@@ -384,6 +384,9 @@ const NewBanner = () => {
       return () => clearTimeout(timeOutId);
     }, []);
 
+    console.log("projectViewDetails", projectViewDetails);
+    
+
     return (
       <>
 
@@ -398,13 +401,13 @@ const NewBanner = () => {
               <meta property="og:title" content={projectViewDetails?.meta_title} />
               <meta property="og:site_name" content="100acress.com" />
               <meta property="og:type" content="website" />
-              <meta property="og:image" content={projectViewDetails?.frontImage}/>
+              <meta property="og:image" content={projectViewDetails?.frontImage?.url}/>
               <meta property="og:url" content="https://www.100acress.com/" />
               <meta property="og:description" content={projectViewDetails.meta_description} />
               <meta name="twitter:title" content={projectViewDetails?.meta_title} />
               <meta name="twitter:description" content={projectViewDetails.meta_description} />
               <meta property="twitter:url" content="https://www.100acress.com/" />
-              <meta property="twitter:image" content={projectViewDetails?.frontImage} />
+              <meta property="twitter:image" content={projectViewDetails?.frontImage?.url} />
               <meta name="twitter:card" content="summary"></meta>
             <link
               rel="canonical"
@@ -1743,6 +1746,13 @@ const NewBanner = () => {
             <i class="fa-brands fa-whatsapp"></i>
           </a>
         </div>
+        <div>
+        <div>
+          <a href="tel:9811750130" class="dd-m-phone">
+            <i class="fa-solid fa-phone"></i>
+          </a>
+        </div>
+      </div>
 
           </>
         </Wrapper>
@@ -1788,6 +1798,33 @@ const Wrapper = styled.section`
     right: -32px;
     cursor: pointer;
   }
+      .dd-m-phone {
+    position: fixed;
+    z-index: 999;
+    bottom: 10px;
+    right: 8px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #007bff; /* Blue color for the icon background */
+    transition: 0.3s all ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff; /* Icon color */
+    font-size: 24px; /* Adjust icon size as needed */
+  }
+
+  .dd-m-phone:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
+  }
+
+  .dd-m-phone i {
+    font-size: 24px; /* Adjust icon size as needed */
+  }
 
   .Carousel {
     max-height: 600px; /* Set your desired maximum height */
@@ -1818,10 +1855,10 @@ const Wrapper = styled.section`
   .dd-m-whatsapp {
     position: fixed;
     z-index: 999;
-    bottom: 20px;
+    bottom: 70px;
     right: 8px;
-    width: 55px;
-    height: 55px;
+    width: 45px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
