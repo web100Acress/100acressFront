@@ -205,7 +205,7 @@ export default function Navbar() {
               marginRight={colorChange? '0' : '2'}
               icon={isOpen ? (colorChange ? <WhiteCloseIcon/> : <CloseIcon /> ): (colorChange ? <WhiteHambergerIcon/>:<HamburgerIcon />)}
               aria-label={"Open Menu"}
-              display={{ lg: "none" }}
+              display={{ md: "none" }}
               onClick={isOpen ? onClose : onOpen}
               variant="unstyled"
               _hover={{ bg: "none" }}

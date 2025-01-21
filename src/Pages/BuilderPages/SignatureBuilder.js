@@ -1,12 +1,14 @@
+
+
 import React, { useContext } from "react";
-import Footer from "../Components/Actual_Components/Footer";
-import { DataContext } from "../MyContext";
+import Footer from "../../Components/Actual_Components/Footer";
+import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../Assets/icons";
+import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../../Assets/icons";
 
 const Jms = () => {
-  const { jms } = useContext(DataContext);
+  const { SignatureBuilder } = useContext(DataContext);
 
   const handleShare = (project) => {
     if (navigator.share) {
@@ -19,6 +21,7 @@ const Jms = () => {
         .then(() => console.log("Shared successfully"))
         .catch((error) => console.log("Error sharing:", error));
     } else {
+      // Fallback for browsers that don't support the Web Share API
       alert("Share functionality is not supported on this device/browser.");
     }
   };
@@ -26,31 +29,32 @@ const Jms = () => {
   return (
     <div>
 
-    
+
       <Helmet>
         <title>
-        Explore JMS Plots in Gurugram – A Smart Investment Choice
+          Signature Projects in Gurugram – Signature luxury homes
         </title>
         <meta
           name="description"
-          content="Invest in JMS plots in Gurugram. High potential for growth and development. Make a smart move for your future investments!"
+          content="Signature Global Projects are renowned for ideal locations, impeccable quality of construction, desirable amenities and reasonable prices"
         />
-         <link
+        <link
           rel="canonical"
-          href="https://www.100acress.com/jms-plots-gurugram/"
+          href="https://www.100acress.com/signature-global-projects/"
         />
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-12">
         <h1 className="mb-3 p-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          JMS Plots in Gurugram
+          Signature Projects in Gurugram
         </h1>
 
-        <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-3 sm:gap-4 lg:gap-4 w-full">
-          {jms.map((item, index) => {
+        <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+          {SignatureBuilder.map((item, index) => {
             const pUrl = item.project_url;
             return (
-              <span>
+              <span >
+
                 <article
                   key={index}
                   className="mb-2 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
@@ -125,7 +129,7 @@ const Jms = () => {
             );
           })}
         </div>
-        
+
       </section>
       <Footer />
     </div>

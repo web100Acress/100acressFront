@@ -45,6 +45,7 @@ export const DataProvider = ({ children }) => {
   const [bptp, setbptp] = useState([]);
   const [orris, setorris] = useState([]);
   const [jms, setJms] = useState([]);
+  const [SignatureBuilder , setSignaturebuilder] = useState([]);
   const [rof, setRof] = useState([]);
   const [signatureglobal, setSignatureGlobal] = useState([]);
   const [emaarIndia, setEmaarIndia] = useState([]);
@@ -77,10 +78,10 @@ export const DataProvider = ({ children }) => {
   useEffect(() => {
     fetchAllProject();
     fetchBlogData();
-    // fetchCareerData();
-    // fetchJobPostingData();
+    fetchCareerData();
+    fetchJobPostingData();
     buyFetchData();
-    // fetchProject();
+    fetchProject();
   }, []);
 
   useEffect(() => {
@@ -99,14 +100,14 @@ export const DataProvider = ({ children }) => {
     setPossessionAllData(PossFilter);
   };
 
-  // const fetchProject = async () => {
-  //   try {
-  //     const response = await axios.get('https://api.100acress.com/project/viewAll/data');
-  //     setProject(response.data.data); 
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const fetchProject = async () => {
+    try {
+      const response = await axios.get('https://api.100acress.com/project/viewAll/data');
+      setProject(response.data.data); 
+    } catch (error) {
+      console.log(error);
+    }
+  };
   
 
   const fetchAllProject = async () => {
@@ -273,6 +274,10 @@ export const DataProvider = ({ children }) => {
         (project) => project.projectOverview === "jms"
       );
 
+      const signaturebuilder = projectsData.filter(
+        (project) => project.builderName === "Signature Global"
+      );
+
       const rof = projectsData.filter(
         (project) => project.projectOverview === "rof"
       );
@@ -356,6 +361,7 @@ export const DataProvider = ({ children }) => {
       setorris(orris);
       setbptp(bptp);
       setJms(jms);
+      setSignaturebuilder(signaturebuilder)
       setRof(rof);
       setEmaarIndia(emaarIndia);
       setM3mIndia(m3mIndia);
@@ -431,25 +437,25 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-    // const fetchCareerData = async () => {
-    //   try {
-    //     const res = await axios.get("https://api.100acress.com/career/page/view");
-    //     setCareerData(res.data.data);
-    //   } catch (error) {
-    //     console.log(error || error.message);
-    //   }
-    // };
+    const fetchCareerData = async () => {
+      try {
+        const res = await axios.get("https://api.100acress.com/career/page/view");
+        setCareerData(res.data.data);
+      } catch (error) {
+        console.log(error || error.message);
+      }
+    };
 
-  // const fetchJobPostingData = async () => {
-  //   try {
-  //     const res = await axios.get(
-  //       "https://api.100acress.com/career/opening/ViewAll"
-  //     );
-  //     setJobPostingData(res.data.data);
-  //   } catch (error) {
-  //     console.log(error || error.message);
-  //   }
-  // };
+  const fetchJobPostingData = async () => {
+    try {
+      const res = await axios.get(
+        "https://api.100acress.com/career/opening/ViewAll"
+      );
+      setJobPostingData(res.data.data);
+    } catch (error) {
+      console.log(error || error.message);
+    }
+  };
 
   const buyFetchData = async () => {
     try {
@@ -526,6 +532,7 @@ export const DataProvider = ({ children }) => {
         bptp,
         orris,
         jms,
+        SignatureBuilder,
         rof,
         emaarIndia,
         m3mIndia,

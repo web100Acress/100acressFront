@@ -126,11 +126,11 @@ function Home() {
         <img
           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/mainbgg.webp"
           alt="Mobile Banner"
-          className="block md:hidden w-full h-[23rem]"
+          className="block md:hidden w-full h-[38rem]"
         />
 
         {/* Center the SearchBar */}
-        <div className="absolute inset-0 flex items-center justify-center lg:mt-24">
+        <div className="absolute inset-0 flex items-center justify-center mt-16 md:mt-0 lg:mt-24">
           <SearchBar />
         </div>
 
@@ -1145,7 +1145,7 @@ const Wrapper = styled.section`
     position: fixed;
     z-index: 999;
     bottom: 10px;
-    left: 10px; /* Changed from right to left */
+    right: 10px; /* Changed from right to left */
     width: 45px;
     height: 45px;
     display: flex;
@@ -1161,7 +1161,7 @@ const Wrapper = styled.section`
   }
 
   .dd-m-phone:hover {
-    transform: translateY(-5px);
+    transform: rotate(0.3turn);
     box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
   }
 
@@ -1173,7 +1173,7 @@ const Wrapper = styled.section`
     position: fixed;
     z-index: 999;
     bottom: 70px;
-    left: 10px; /* Changed from right to left */
+    right: 10px; /* Changed from right to left */
     width: 45px;
     height: 45px;
     display: flex;
@@ -1189,7 +1189,7 @@ const Wrapper = styled.section`
   }
 
   .dd-m-whatsapp:hover {
-    transform: translateY(-5px);
+    transform:rotate(1turn);
     box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
   }
 

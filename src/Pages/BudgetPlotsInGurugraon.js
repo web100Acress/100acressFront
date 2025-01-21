@@ -20,7 +20,7 @@ const BudgetPlotsInGurugraon = () => {
       title:"ORRIS Group",link:"/orris-plots-gurugram/",image:"../../Images/Orris.webp"
     },
     {
-      title:"JMS Group",link:"/jms-plots-gurugram/",image:"../../Images/jms.webp"
+      title:"JMS Group",link:"/jms-plots-gurugram/",image:"../../Images/jms.jpg"
     }
   ];
 

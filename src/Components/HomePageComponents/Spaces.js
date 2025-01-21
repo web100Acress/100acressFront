@@ -10,10 +10,10 @@ function SpacesAvailable() {
   const projects = [
     { title: "Residential Projects", link: "/property/residential/", image: "../../OtherImages/residencial.webp" },
     { title: "Commercial Projects", link: "/projects/commerial/", image: "../../OtherImages/commercialproperty.webp" },
-    { title: "SCO Plots ", link: "/sco/plots/", image: "../../OtherImages/sco.webp" },
-    { title: "Builder & Independent Floor", link: "/projects/independentfloors/", image: "../../OtherImages/builderandindepedent.webp" },
+    { title: "SCO Plots ", link: "/sco/plots/", image: "../../OtherImages/sco.jpg" },
+    { title: "Builder & Independent Floor", link: "/projects/independentfloors/", image: "../../OtherImages/builderandindepedent.jpg" },
     { title: "Plots In Gurugram", link: "/plots-in-gurugram/", image: "../../OtherImages/deendayal.webp" },
-    { title: "Luxury Villas", link: "/projects/villas/", image: "../../OtherImages/villas.webp" },
+    { title: "Luxury Villas", link: "/projects/villas/", image: "../../OtherImages/villas.jpg" },
   ];
 
   return (
