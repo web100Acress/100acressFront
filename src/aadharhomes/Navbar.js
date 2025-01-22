@@ -226,7 +226,7 @@ export default function Navbar() {
                     maxW={["160px", "200px"]}
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
-                    src="../../Images/lg.png"
+                    src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/lg.webp"
                     alt="100acress"
                     marginBottom={2}
                   />
@@ -235,7 +235,7 @@ export default function Navbar() {
                     maxW={["160px", "200px"]}
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
-                    src="../../Images/logo.png"
+                    src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
                     alt="100acress"
                     marginBottom={2}
                   />
@@ -250,7 +250,7 @@ export default function Navbar() {
                     maxW={["160px", "200px"]}
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
-                    src="../../Images/lg.png"
+                    src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/lg.webp"
                     alt="100acress"
                     marginBottom={2}
                   />
@@ -259,7 +259,7 @@ export default function Navbar() {
                     maxW={["160px", "200px"]}
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
-                    src="../../Images/logo.png"
+                    src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
                     alt="100acress"
                     marginBottom={2}
                   />
