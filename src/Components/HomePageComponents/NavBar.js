@@ -20,11 +20,10 @@ function FinalNavBar() {
       <div className='Mflx'>
       
         <div className='1euNB' style={{cursor:"pointer"}}>
-        <Link to={ROOT}>
-          <img src="../../Images/mainLogo.png" alt='' width='200' />
-        </Link>
+          <Link to={ROOT}>
+            <img src="../../Images/mainLogo.png" alt='' width='200' />
+          </Link>
         </div>
-        
         <div
           className='barDotMenu'
           style={{ width: "fit-content", marginBottom: "5px",marginTop: "5px" }}>

@@ -108,6 +108,7 @@ export const DataProvider = ({ children }) => {
       console.log(error);
     }
   };
+
   
 
   const fetchAllProject = async () => {
@@ -456,6 +457,7 @@ export const DataProvider = ({ children }) => {
       console.log(error || error.message);
     }
   };
+
 
   const buyFetchData = async () => {
     try {

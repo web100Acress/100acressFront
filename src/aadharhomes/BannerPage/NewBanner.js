@@ -310,7 +310,7 @@ const NewBanner = () => {
       setIsLoading2(true);
       setUserButtonText("Submitting...");
       axios
-      .post("https://api.100acress.com/userInsert", {
+        .post("https://api.100acress.com/userInsert", {
           ...userDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,

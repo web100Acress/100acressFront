@@ -78,7 +78,7 @@ import HeartIconSVG from "../icons/svg/HeartIcon.svg";
 import ForwardIconSVG from "../icons/svg/ForwardIcon.svg";
 import BackwardIconSVG from "../icons/svg/BackwardIcon.svg"
 
-const getSVG = (path, style = {}) => (
+const getSVG = (path, style) => (
   <img src={path} alt="Icon" style={{ ...style }} />
 );
 
