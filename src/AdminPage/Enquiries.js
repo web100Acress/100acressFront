@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import BackToTopButton from "../Pages/BackToTopButton";
+import {ClipLoader} from "react-spinners";
+import throttle from "lodash.throttle";
 
 const customStyle = {
   marginLeft: "290px",
@@ -13,12 +15,13 @@ const Enquiries = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const pageSize = 100; 
+  const [downloadProgess, setDownloadProgress] = useState(0);
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://api.100acress.com/userViewAll?limit=1000` 
+        `https://api.100acress.com/userViewAll?limit=2000` 
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -131,6 +134,67 @@ const Enquiries = () => {
     URL.revokeObjectURL(url);
   };
 
+  const downloadExelFile = async()=>{
+    try {
+      const response = await fetch("https://api.100acress.com/userViewAll/dowloadData");
+      if (!response.ok) {
+        throw new Error(`Failed to download file: ${response.statusText}`);
+      }
+      const contentLength = response.headers.get('Content-Length');
+      const contentDisposition = response.headers.get('Content-Disposition');
+      console.log("ContentLength",contentLength);
+      console.log("ContentDisposition",contentDisposition);
+
+      if (!contentLength) {
+          console.error('Content-Length header is missing. Progress cannot be tracked.');
+          return;
+      }
+      const total = parseInt(contentLength, 10);
+
+      const reader = response.body.getReader();
+      const chunks = [];
+
+      let receivedLength = 0;
+
+      while(true){
+        const {done,value} = await reader.read();
+
+        if(done) break;
+
+        chunks.push(value);
+        receivedLength += value.length;
+
+        const progress = Math.round((receivedLength / total) * 100);
+        console.log(`Download progress: ${progress}%`);
+        setDownloadProgress(progress); // Update progress every 1 
+      }
+
+      const blob = new Blob(chunks, { type: response.headers.get('Content-Type') });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const fileName = contentDisposition
+          ? contentDisposition.split('filename=')[1]?.replace(/"/g, '')
+          : 'download.xlsx';
+      link.download = fileName;
+        
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+        
+      // Revoke the Blob URL
+      window.URL.revokeObjectURL(url);
+      setDownloadProgress(0);
+      console.log('File downloaded successfully.');
+
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+      setDownloadProgress(0); // Reset progress
+    }
+  }
+
+  console.log(downloadProgess);
+
   return (
     <>
       <Sidebar /> 
@@ -148,12 +212,21 @@ const Enquiries = () => {
               Search
             </button>
           </div>
+          {downloadProgess > 0 ? 
+            <button
+              className="bg-red-400 p-2 rounded-lg text-white ml-4"
+            >
+             <ClipLoader color="#C13B44"/>
+            {downloadProgess}
+          </button>
+          :
           <button
             className="bg-blue-700 p-2 rounded-lg text-white ml-4"
-            onClick={downloadSVG}
+            onClick={downloadExelFile}
           >
             Download Data
           </button>
+}
         </div>
         <div className="overflow-x-auto shadow-md rounded-lg">
           <table className="min-w-full bg-white divide-y divide-gray-200">
