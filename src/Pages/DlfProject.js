@@ -10,13 +10,26 @@ const DlfProject = () => {
     <div>
       <Helmet>
         <title>
-        Explore Premium DLF Homes Projects with 100acress
+          Explore Premium DLF Homes Projects with 100acress
         </title>
         <meta
           name="description"
           content="Discover best DLF homes with 100acress. Luxury residences customized to your lifestyle. Start your journey to premium living today."
         />
-         <link
+        <meta property="og:title" content="Explore Premium DLF Homes Projects with 100acress" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/dlf-homes-projects/" />
+        <meta property="og:description" content="Discover best DLF homes with 100acress. Luxury residences customized to your lifestyle. Start your journey to premium living today.
+"/>
+        <meta property="og:keywords" content="DLF Homes Projects with" />
+        <meta name="twitter:title" content="Explore Premium DLF Homes Projects with 100acress" />
+        <meta name="twitter:description" content="Discover best DLF homes with 100acress. Luxury residences customized to your lifestyle. Start your journey to premium living today." />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
+        <link
           rel="canonical"
           href="https://www.100acress.com/dlf-homes-projects/"
         />

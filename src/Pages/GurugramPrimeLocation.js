@@ -30,20 +30,32 @@ const GurugramPrimeLocation = () => {
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
-
+   
   return (
     <div>
       <Helmet>
-            <title>{`Projects in ${result} | Luxury Property in Gurgaon`}</title>
-            <meta
-              name="description"
-              content={`Explore the best projects in ${result}, Gurugram. Find your dream property in ${result} today!`}
-            />
-            <link
-              rel="canonical"
-              href={`https://www.100acress.com/property-in-gurugram/${location}/`}
-            />
-          </Helmet>
+        <title>{`Find Top Properties in ${result} - 100acress`}</title>
+        <meta
+          name="description"
+          content={`Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`}
+        />
+        <meta property="og:title" content={`Find Top Properties in ${result} - 100acress`} />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content={`https://www.100acress.com/property-in-gurugram/${location}/`} />
+        <meta property="og:description" content={`Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
+        <meta property="og:keywords" content={`Properties in ${result}`} />
+        <meta name="twitter:title" content={`Find Top Properties in ${result} - 100acress`} />
+        <meta name="twitter:description" content={`Looking for property in ${result}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
+        <link
+          rel="canonical"
+          href={`https://www.100acress.com/property-in-gurugram/${location}/`}
+        />
+      </Helmet>
       <section className="flex flex-col items-center pt-2 mt-14">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Projects in {result}, Gurugram

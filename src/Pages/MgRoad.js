@@ -1,21 +1,57 @@
 import React, { useContext } from 'react'
 import Footer from '../Components/Actual_Components/Footer';
 import { DataContext } from '../MyContext';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 const MgRoad = () => {
-  const {mgRoad} = useContext(DataContext)
+  const {mgRoad} = useContext(DataContext);
+
+  const location = useLocation(); 
+
+  const pathSegments = location.pathname.split('/').filter(Boolean);
+  const extractedLocation = pathSegments[pathSegments.length - 1]; 
+
+
+  const formattedLocation = extractedLocation
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
   return (
     <div>
-      <section className="flex flex-col items-center pt-2">
+      <Helmet>
+        <title>{`Find Top Properties in ${formattedLocation} - 100acress`}</title>
+        <meta
+          name="description"
+          content={`Looking for property in ${formattedLocation}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`}
+        />
+        <meta property="og:title" content={`Find Top Properties in ${formattedLocation} - 100acress`} />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content={`https://www.100acress.com/property-in-gurugram/${location.pathname}/`} />
+        <meta property="og:description" content={`Looking for property in ${formattedLocation}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
+        <meta property="og:keywords" content={`Properties in ${formattedLocation}`} />
+        <meta name="twitter:title" content={`Find Top Properties in ${formattedLocation} - 100acress`} />
+        <meta name="twitter:description" content={`Looking for property in ${formattedLocation}, Gurugram. Browse 100 acres for prime real estate options, offering unmatched amenities and perfect locations`} />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
+        <link
+          rel="canonical"
+          href={`https://www.100acress.com/property-in-gurugram/${location.pathname}/`}
+        />
+      </Helmet>
+      <section className="flex flex-col items-center pt-2 mt-14">
         <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-          Projects in MG Road
+          Projects in {formattedLocation}, Gurugram 
         </h1>
 
         <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
           Looking for prime Real Estate in Gurgaon? Explore our exquisite
           collection of Residential Apartments, Commercial Space, and SCO in{" "}
-          MG Road Gurugram, offering unparalleled luxury and comfort. Find your
+          {formattedLocation} Gurugram, offering unparalleled luxury and comfort. Find your
           dream property in Gurgaon today!
         </h2>
         <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">

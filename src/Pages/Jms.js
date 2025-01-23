@@ -29,13 +29,28 @@ const Jms = () => {
     
       <Helmet>
         <title>
-        Explore JMS Plots in Gurugram – A Smart Investment Choice
+          Explore JMS Plots in Gurugram – A Smart Investment Choice
         </title>
         <meta
           name="description"
           content="Invest in JMS plots in Gurugram. High potential for growth and development. Make a smart move for your future investments!"
         />
-         <link
+        <meta property="og:title" content="Explore JMS Plots in Gurugram – A Smart Investment Choice" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/jms-plots-gurugram/" />
+        <meta property="og:description" content="Invest in JMS plots in Gurugram. High potential for growth and development. Make a smart move for your future investments!" />
+        <meta property="og:keywords" content="JMS Plots in Gurugram" />
+
+        Twitter Tags:
+        <meta name="twitter:title" content="Explore JMS Plots in Gurugram – A Smart Investment Choice" />
+        <meta name="twitter:description" content="Invest in JMS plots in Gurugram. High potential for growth and development. Make a smart move for your future investments!" />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
+
+        <link
           rel="canonical"
           href="https://www.100acress.com/jms-plots-gurugram/"
         />

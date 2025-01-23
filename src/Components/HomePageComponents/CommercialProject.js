@@ -16,6 +16,20 @@ const CommercialProject = () => {
           name="description"
           content="Unlock growth with 100acress's commercial projects. Modern spaces, strategic locations, and excellent connectivity await. Call now!"
         />
+        <meta property="og:title" content="Explore Commercial Properties in India - 100acress" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/projects/commerial/" />
+        <meta property="og:description" content="Unlock growth with 100acress's commercial projects. Modern spaces, strategic locations, and excellent connectivity await. Call now!" />
+        <meta property="og:keywords" content="Commercial Projects in Gurgaon" />
+
+        Twitter Tags:
+        <meta name="twitter:title" content="Explore Commercial Properties in India - 100acress" />
+        <meta name="twitter:description" content="Unlock growth with 100acress's commercial projects. Modern spaces, strategic locations, and excellent connectivity await. Call now!" />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
           <link rel="canonical" href="https://www.100acress.com/projects/commerial/" />
       </Helmet>
 

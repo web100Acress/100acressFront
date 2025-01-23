@@ -19,6 +19,18 @@ const PossessionAfter2028 = () => {
           name="description"
           content="Ready for your dream home? Check out top properties with property possession after 2025 in Gurugram for a future-perfect lifestyle."
         />
+        <meta property="og:title" content="Property Possession After 2026 in Gurugram: 100acress" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/projects-in-gurugram/property-possession-after-2026/" />
+        <meta property="og:description" content="Ready for your dream home? Check out top properties with property possession after 2026 in Gurugram for a future-perfect lifestyle."/>
+        <meta property="og:keywords" content="Property Possession After 2026 in Gurugram" />
+        <meta name="twitter:title" content="Property Possession After 2026 in Gurugram: 100acress"/>
+        <meta name="twitter:description" content="Ready for your dream home? Check out top properties with property possession after 2026 in Gurugram for a future-perfect lifestyle."/>
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
         <title>
         Property Possession After 2026 in Gurugram: 100acress
         </title>
