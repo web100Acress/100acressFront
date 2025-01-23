@@ -384,9 +384,6 @@ const NewBanner = () => {
       return () => clearTimeout(timeOutId);
     }, []);
 
-    console.log("projectViewDetails", projectViewDetails);
-    
-
     return (
       <>
 
@@ -756,6 +753,12 @@ const NewBanner = () => {
                       <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.towerNumber} Towers</li>
                       <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalUnit} Units</li>
                       <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalLandArea} Acres of Land</li>
+                      {projectViewDetails.projectName === "Signature Global Twin Tower DXP" &&(
+                        <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Payment Plan 25:75</li>
+                      )}
+                      {projectViewDetails.projectName === "Signature Titanium SPR" &&(
+                        <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Payment Plan 25:25:50</li>
+                      )}
                       {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_Area} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_Area}{" "}Unit Size</li> */}
                       {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_type} to {projectViewDetails.BhK_Details[projectViewDetails?.BhK_Details.length-1]?.bhk_type}{" "}Unit type</li> */}
                       <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Expected Possession {formatDate(projectViewDetails.possessionDate)}</li>

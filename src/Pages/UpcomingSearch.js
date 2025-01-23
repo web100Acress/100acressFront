@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 const UpcomingSearch = () => {
   const { allProjectData } = useContext(DataContext);
   const [project, setProject] = useState("");
@@ -59,6 +60,31 @@ const UpcomingSearch = () => {
   return (
     <>
       {" "}
+      <Helmet>
+        <meta
+          name="description"
+          content="Explore best upcoming projects in Gurgaon with modern amenities. Find residential & commercial spaces customized to your lifestyle. Visit 100acress today!"
+        />
+        <meta property="og:title" content="Discover Upcoming Projects in Gurgaon - 100acress" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/projects/upcoming-projects-in-gurgaon " />
+        <meta property="og:description" content="Explore best upcoming projects in Gurgaon with modern amenities. Find residential & commercial spaces customized to your lifestyle. Visit 100acress today!" />
+        <meta property="og:keywords" content="Upcoming Projects in Gurgaon" />
+        <meta name="twitter:title" content="Discover Upcoming Projects in Gurgaon - 100acress" />
+        <meta name="twitter:description" content="Explore best upcoming projects in Gurgaon with modern amenities. Find residential & commercial spaces customized to your lifestyle. Visit 100acress today!" />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
+        <title>
+          Discover Upcoming Projects in Gurgaon - 100acress
+        </title>
+        <link
+          rel="canonical"
+          href="https://www.100acress.com/projects/upcoming-projects-in-gurgaon/"
+        />
+      </Helmet>
       <h1 className=" p-1 text-center text-2xl mt-16 sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold ">
         UpComing Projects in Gurgaon
       </h1> 
@@ -92,7 +118,7 @@ const UpcomingSearch = () => {
                 onChange={(e) => setLocation(e.target.value)}
               >
                 <option value="" disabled hidden>
-                  Prime Locations
+                  Gurgaon
                 </option>
                 <>
                   {city === "Gurugram" ? (

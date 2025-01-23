@@ -26,6 +26,9 @@ function SearchBar() {
     {
       image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t2.webp", link:"/trevoc-56-gurgaon/"
     },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t4.webp", link:"/puri-diplomatic-residences/"
+    },
   ];
 
   const phoneSrc = [
@@ -37,6 +40,9 @@ function SearchBar() {
     },
     {
       image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone3.webp", link:"/emaar-urban-ascent/"
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone4.webp", link:"/puri-diplomatic-residences/"
     },
   ]
 

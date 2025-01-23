@@ -220,6 +220,19 @@ const RentPropViewCard = () => {
               name="description"
               content="Explore top-rated rental properties in Gurugram. Choose from a variety of options that fit your budget and style. Connect with 100acress now!"
             />
+          <meta property="og:title" content="Top-Rated Rental Properties in Gurugram: 100acress" />
+          <meta property="og:site_name" content="100acress" />
+          <meta property="og:type" content="website" />
+          <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+          <meta property="og:url" content="https://www.100acress.com/rental-properties/best-rental-property-in-gurugram/" />
+          <meta property="og:description" content="Explore top-rated rental properties in Gurugram. Choose from a variety of options that fit your budget and style. Connect with 100acress now!
+"/>
+          <meta property="og:keywords" content="Rental Properties in Gurugram" />
+          <meta name="twitter:title" content="Top-Rated Rental Properties in Gurugram: 100acress" />
+          <meta name="twitter:description" content="Explore top-rated rental properties in Gurugram. Choose from a variety of options that fit your budget and style. Connect with 100acress now!" />
+          <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+          <meta name="twitter:card" content="summary" />
+
             <link
               rel="canonical"
               href="https://www.100acress.com/buy-properties/best-resale-property-in-gurugram/"

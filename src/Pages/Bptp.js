@@ -10,14 +10,26 @@ const Bptp = () => {
     <div>
       <Helmet>
         <title>
-        BPTP Plots in Gurugram – Prime Land Investment Opportunities
+          BPTP Plots in Gurugram – Prime Land Investment Opportunities
         </title>
         <meta
           name="description"
           content="Explore premium BPTP plots in Gurugram with 100acress. Secure your investment in prime real estate today and benefit from high returns. Contact us now!
 "
         />
-         <link
+        <meta property="og:title" content="BPTP Plots in Gurugram – Prime Land Investment Opportunities" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/bptp-plots-gurugram/" />
+        <meta property="og:description" content="Explore premium BPTP plots in Gurugram with 100acress. Secure your investment in prime real estate today and benefit from high returns. Contact us now!" />
+        <meta property="og:keywords" content="BPTP Plots in Gurugram" />
+        <meta name="twitter:title" content="BPTP Plots in Gurugram – Prime Land Investment Opportunities" />
+        <meta name="twitter:description" content="Explore premium BPTP plots in Gurugram with 100acress. Secure your investment in prime real estate today and benefit from high returns. Contact us now!" />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
+        <link
           rel="canonical"
           href="https://www.100acress.com/bptp-plots-gurugram/"
         />

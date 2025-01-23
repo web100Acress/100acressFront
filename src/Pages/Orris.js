@@ -9,13 +9,25 @@ const Orris = () => {
     <div>
       <Helmet>
         <title>
-        Discover Orris Plots in Gurugram | Book Your Property 
+          Discover Orris Plots in Gurugram | Book Your Property
         </title>
         <meta
           name="description"
           content="Secure your future with Orris plots in Gurugram. Affordable plots in prime locations available. Call now!"
         />
-         <link
+        <meta property="og:title" content="Discover Orris Plots in Gurugram | Book Your Property" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/orris-plots-gurugram/" />
+        <meta property="og:description" content="Secure your future with Orris plots in Gurugram. Affordable plots in prime locations available. Call now!" />
+        <meta property="og:keywords" content="Orris Plots in Gurugram"/>
+        <meta name="twitter:title" content="Discover Orris Plots in Gurugram | Book Your Property" />
+        <meta name="twitter:description" content="Secure your future with Orris plots in Gurugram. Affordable plots in prime locations available. Call now!" />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
+        <link
           rel="canonical"
           href="https://www.100acress.com/bptp-plots-gurugram/"
         />

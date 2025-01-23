@@ -15,8 +15,20 @@ const ReadyToMoveProject = () => {
           name="description"
           content="Find the best ready-to-move properties in Gurugram. Discover homes ready for immediate possession."
         />
+        <meta property="og:title" content="Discover Ready-to-Move Homes in Gurugram | 100acress" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/projects-in-gurugram/property-ready-to-move//" />
+        <meta property="og:description" content="Find the best ready-to-move properties in Gurugram. Discover homes ready for immediate possession." />
+        <meta property="og:keywords" content="Ready to Move PROPERTIES" />
+        <meta name="twitter:title" content="Discover Ready-to-Move Homes in Gurugram | 100acress" />
+        <meta name="twitter:description" content="Find the best ready-to-move properties in Gurugram. Discover homes ready for immediate possession." />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
         <title>
-        Discover Ready-to-Move Homes in Gurugram | 100acress
+          Discover Ready-to-Move Homes in Gurugram | 100acress
         </title>
         <link
           rel="canonical"
@@ -27,7 +39,7 @@ const ReadyToMoveProject = () => {
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2">
       
         <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-          test Ready-to-move properties Perfect for buyers seeking immediate
+          Ready-to-move properties Perfect for buyers seeking immediate
           possession without delays in construction or finishing. These
           properties allow future homeowners to inspect and move in fast at
           purchase. Ready-to-move properties guarantee quality construction,

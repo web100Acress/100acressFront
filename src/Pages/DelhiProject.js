@@ -12,12 +12,24 @@ const DelhiProject = () => {
 
       <Helmet>
         <title>
-        Discover Best Property Projects in Delhi | 100acress
+          Discover Best Property Projects in Delhi | 100acress
         </title>
         <meta
           name="description"
           content="Find exceptional real estate projects in Delhi at 100acress. Invest in the best locations and properties."
         />
+        <meta property="og:title" content="Discover Best Property Projects in Delhi | 100acress" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/project-in-delhi/" />
+        <meta property="og:description" content="Find exceptional real estate projects in Delhi at 100acress. Invest in the best locations and properties." />
+        <meta property="og:keywords" content="Projects in Delhi" />
+        <meta name="twitter:title" content="Discover Best Property Projects in Delhi | 100acress" />
+        <meta name="twitter:description" content="Find exceptional real estate projects in Delhi at 100acress. Invest in the best locations and properties." />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-12">

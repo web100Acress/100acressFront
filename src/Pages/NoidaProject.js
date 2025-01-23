@@ -7,15 +7,27 @@ const NoidaProject = () => {
   const { noidaData } = useContext(DataContext);
   return (
     <div>
-     
+
       <Helmet>
         <title>
-        Find Your Ideal  real estate projects  in Noida – 100acress
+          Find Your Ideal  real estate projects  in Noida – 100acress
         </title>
         <meta
           name="description"
           content="Invest in exclusive real estate projects in Noida with world-class features and amenities. Visit 100acress for more."
         />
+        <meta property="og:title" content="Find Your Ideal  real estate projects  in Noida – 100acress" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/project-in-noida/" />
+        <meta property="og:description" content="Invest in exclusive real estate projects in Noida with world-class features and amenities. Visit 100acress for more." />
+        <meta property="og:keywords" content="projects  in Noida" />
+        <meta name="twitter:title" content="Find Your Ideal  real estate projects  in Noida – 100acress" />
+        <meta name="twitter:description" content="Invest in exclusive real estate projects in Noida with world-class features and amenities. Visit 100acress for more." />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
         <link
           rel="canonical"
           href="https://www.100acress.com/project-in-noida/"
@@ -29,7 +41,7 @@ const NoidaProject = () => {
         <h2 className="text-sm font-semibold" >NEW RESIDENTIAL & COMMERCIAL PROJECTS IN NOIDA</h2>
 
         <p className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-        Noida offers a wide range of options, including luxury, commercial, and residential properties for premium living, businesses, and families. With modern infrastructure, excellent connectivity, and growing opportunities, the city has become a prime destination for investment. Whether you’re seeking business growth or a comfortable home, investing in property in Noida ensures long-term value and convenience.
+          Noida offers a wide range of options, including luxury, commercial, and residential properties for premium living, businesses, and families. With modern infrastructure, excellent connectivity, and growing opportunities, the city has become a prime destination for investment. Whether you’re seeking business growth or a comfortable home, investing in property in Noida ensures long-term value and convenience.
         </p>
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
           {noidaData.map((item, index) => {

@@ -9,12 +9,26 @@ const PanipatProject = () => {
     <div>
       <Helmet>
         <title>
-        Find Your Dream Property in Panipat | Best Property Deals
+          Find Your Dream Property in Panipat | Best Property Deals
         </title>
         <meta
           name="description"
           content="Check out 100acress's upcoming real estate projects in Panipat. A great opportunity to invest in the future of Panipat’s development."
         />
+        <meta property="og:title" content="Find Your Dream Property in Panipat | Best Property Deals" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/project-in-panipat/" />
+        <meta property="og:description" content="Check out 100acress's upcoming real estate projects in Panipat. A great opportunity to invest in the future of Panipat’s development.
+"/>
+        <meta property="og:keywords" content="Property in Panipat" />
+        <meta name="twitter:title" content="Find Your Dream Property in Panipat | Best Property Deals" />
+        <meta name="twitter:description" content="Check out 100acress's upcoming real estate projects in Panipat. A great opportunity to invest in the future of Panipat’s development.
+"/>
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-12">

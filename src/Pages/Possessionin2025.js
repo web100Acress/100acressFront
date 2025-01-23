@@ -14,8 +14,20 @@ const Possessionin2025 = () => {
           name="description"
           content="Explore best real estate projects in Gurugram with property possession in 2025. Secure your future home today and be part of this exciting real estate journey!"
         />
+        <meta property="og:title" content="Upcoming Property Possession in 2025 | Gurugram Projects" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/projects-in-gurugram/property-possession-in-2025/" />
+        <meta property="og:description" content="Explore best real estate projects in Gurugram with property possession in 2025. Secure your future home today and be part of this exciting real estate journey!" />
+        <meta property="og:keywords" content="Upcoming Property Possession in 2025" />
+        <meta name="twitter:title" content="Upcoming Property Possession in 2025 | Gurugram Projects" />
+        <meta name="twitter:description" content="Explore best real estate projects in Gurugram with property possession in 2025. Secure your future home today and be part of this exciting real estate journey!" />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
         <title>
-        Upcoming Property Possession in 2025 | Gurugram Projects
+          Upcoming Property Possession in 2025 | Gurugram Projects
         </title>
         <link
           rel="canonical"
