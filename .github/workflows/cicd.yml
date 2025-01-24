@@ -14,10 +14,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }} 
       - name: Login to docker hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}     
-      - name: Install Dependencies
-        run: npm install
-      - name: Build Project
-        run: npm run build
       - name: Build Docker Image
         run: docker build -t hunderedacress/100acressfront  .
 
