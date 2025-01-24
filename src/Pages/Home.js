@@ -111,6 +111,19 @@ function Home() {
           name="description"
           content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential &amp; Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon"
         />
+                <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.100acress.com/" />
+        <meta property="og:title" content="Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India" />
+        <meta property="og:description" content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential & Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon" />
+        <meta property="og:image" content="https://www.100acress.com/Images/mainog.png" />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://www.100acress.com/" />
+        <meta property="twitter:title" content="Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India" />
+        <meta property="twitter:description" content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential & Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@100acressdotcom" />
+        <meta name="twitter:image" content="https://www.100acress.com/Images/mainog.png"></meta>
         <title>
           Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India
         </title>
@@ -288,9 +301,9 @@ function Home() {
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
-            <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
+            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
               Upcoming Projects in Gurugram
-            </h1>
+            </h2>
           </div>
           <div className="ml-2 hidden sm:block">
             <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
@@ -392,204 +405,15 @@ function Home() {
         }
       </div>
 
-      {/* <div className="bg-orange-100 py-3 ">
-        {" "}
-        <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
-          <div className="flex items-center">
-            <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
-              Upcoming Projects in Gurugram
-            </h1>
-          </div>
-          <div className="ml-2 hidden sm:block">
-            <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
-              <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-                <ScaleLoader color="#FFFFFF" height={20} width={3} />
-                <span className="ml-2">View All</span>
-              </span>
-            </Link>
-          </div>
-        </div>
-        {
-          <section className="flex flex-col items-center bg-orange-100">
-            <div className="grid max-w-md bg-orange-100 grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-              {upcoming.map((item, index) => {
-                const pUrl = item.project_url;
-                return (
-                  <Link to={`/${pUrl}/`} target="_top">
-                    <article
-                      key={index}
-                      className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                    >
-                      <div>
-                        <img
-                          src={item.frontImage.url}
-                          alt="property In Gurugram"
-                          className="w-full h-48 object-fit "
-                        />
-                      </div>
-                      <div className="p-4">
-                        <div className="pb-2">
-                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectName}
-                          </span>
-
-                          <br />
-                          <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.city}, {item.state}
-                          </span>
-                        </div>
-
-                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
-                          <li className="mr-4 flex items-center text-left">
-                            <li className="text-left">
-                              <span className="text-[13px] text-gray-400">
-                                {item.projectAddress}
-                              </span>
-                              <p className="m-0 text-sm font-medium">
-                                {item.type}
-                              </p>
-                            </li>
-                          </li>
-                        </ul>
-
-                        <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
-                          <li className="text-left">
-                            <span className="text-sm font-extrabold text-red-600">
-                              <span className="text-xl">₹</span>
-                              {item.minPrice < 1 ? (
-                                <>{item.minPrice * 100} L</>
-                              ) : (
-                                <>{item.minPrice}</>
-                              )}
-                              {" - "}
-                              {item.maxPrice} Cr
-                            </span>
-                          </li>
-
-                          <li className="text-left">
-                            <button
-                              type="button"
-                              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
-                            >
-                              View Details
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                    </article>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-        }
-      </div> */}
-
-      {/* Goa */}
-
-      {/* <div className="py-3 " style={{ backgroundColor: "#00314f" }}>
-        {" "}
-        <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6  py-2">
-          <div className="flex items-center">
-            <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl text-white sm:text-left">
-              Projects in Goa
-            </h1>
-          </div>
-          <div className="ml-2 hidden sm:block">
-            <Link to={"/project-in-goa/"} target="_top">
-              <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-                <ScaleLoader color="#FFFFFF" height={20} width={3} />
-                <span className="ml-2">View All</span>
-              </span>
-            </Link>
-          </div>
-        </div>
-        {
-          <section
-            className="flex flex-col pt-2
-           items-center"
-          >
-            <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-              {goaData.slice(0, 4).map((item, index) => {
-                const pUrl = item.project_url;
-                return (
-                  <Link to={`/${pUrl}/`} target="_top">
-                    <article
-                      key={index}
-                      className="mb-4 transition hover:scale-105  bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                    >
-                      <div>
-                        <img
-                          src={item.frontImage.url}
-                          alt="property In Gurugram"
-                          className="w-full h-48 object-fit"
-                        />
-                      </div>
-                      <div className="p-4">
-                        <div className="pb-2">
-                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectName}
-                          </span>
-
-                          <br />
-                          <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
-                            {item.city}, {item.state}
-                          </span>
-                        </div>
-
-                        <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
-                          <li className="mr-4 flex items-center text-left">
-                            <li className="text-left">
-                              <span className="text-[13px] text-gray-400">
-                                {item.projectAddress}
-                              </span>
-                              <p className="m-0 text-sm font-medium">
-                                {item.type}
-                              </p>
-                            </li>
-                          </li>
-                        </ul>
-                        <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
-                          <li className="text-left">
-                            <span className="text-sm font-extrabold text-red-600">
-                              <span className="text-xl">₹</span>
-                              {item.minPrice < 1 ? (
-                                <>{item.minPrice * 100} L</>
-                              ) : (
-                                <>{item.minPrice}</>
-                              )}
-                              {" - "}
-                              {item.maxPrice} Cr
-                            </span>
-                          </li>
-
-                          <li className="text-left">
-                            <button
-                              type="button"
-                              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
-                            >
-                              View Details
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                    </article>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-        }
-      </div> */}
 
       <div data-aos="fade-up"
      data-aos-duration="1000" className=" py-3 ">
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center ">
-            <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
+            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
               SCO Plots in Gurugram
-            </h1>
+            </h2>
           </div>
           <div className="ml-2 hidden sm:block">
             <Link to="/sco/plots/" target="_top">
@@ -670,9 +494,9 @@ function Home() {
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
-            <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
+            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
               Commercial Projects in Delhi NCR
-            </h1>
+            </h2>
           </div>
           <div className="ml-2 hidden sm:block">
             <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
@@ -787,9 +611,9 @@ function Home() {
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
-            <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
+            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
               Featured Projects
-            </h1>
+            </h2>
           </div>
           <div className="ml-2 hidden sm:block">
             <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
@@ -894,9 +718,9 @@ function Home() {
         <div className="">
           <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6  py-2">
             <div className="flex items-center">
-              <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
+              <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
                 Projects in Delhi
-              </h1>
+              </h2>
             </div>
             <div className="ml-2 hidden sm:block">
               <Link to={"/project-in-delhi/"} target="_top">
@@ -976,9 +800,9 @@ function Home() {
         {" "}
         <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
           <div className="flex items-center">
-            <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
+            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
               Affordable Homes
-            </h1>
+            </h2>
           </div>
           <div className="ml-2 hidden sm:block">
             <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
@@ -1083,9 +907,9 @@ function Home() {
 
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-4">
         <div className="flex items-center">
-          <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  sm:text-left">
+          <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  sm:text-left">
             Best Resale Property <span> For You</span>
-          </h1>
+          </h2>
         </div>
         <div className="ml-2 hidden sm:block">
           <Link
