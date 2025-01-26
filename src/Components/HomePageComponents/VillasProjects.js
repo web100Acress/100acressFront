@@ -10,7 +10,7 @@ const VillasProjects = () => {
   return (
     <div>
       <Helmet>
-        <title>Secure Your Dream Villa in a Prime Location | 100acress</title>
+        <title>Secure Your Dream Villas in a Prime Location | 100acress</title>
         <meta
           name="description"
           content="Step into a world of luxury with our exceptional villa designs. Discover your ideal home now. Contact us now!"
@@ -28,12 +28,12 @@ const VillasProjects = () => {
         <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
         <meta name="twitter:card" content="summary" />
 
-        <link rel="canonical" href="https://www.100acress.com/villas/" />
+        <link rel="canonical" href="https://www.100acress.com/projects/villas/" />
       </Helmet>
 
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
         <h1 className="mb-2 mt-10 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-         India's Luxury Villas
+         India's Luxury Villas for Sale
         </h1>
         <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
           Luxury villas in Gurgaon come with top-notch facilities and amenities.
