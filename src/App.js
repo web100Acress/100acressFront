@@ -118,6 +118,7 @@ import NewBanner from "./aadharhomes/BannerPage/NewBanner";
 import 'animate.css';
 import Possessionin2026 from "./Pages/Possessionin2026";
 import SignatureBuilder from "./Pages/BuilderPages/SignatureBuilder";
+import BuilderPage from "./Pages/BuilderPages/BuilderPage";
 
 function App() {
 
@@ -165,6 +166,10 @@ function App() {
               <Route
                 path="/projects-in-gurugram/property-possession-in-2024/"
                 element={<Possessionin2024 />}
+              />
+              <Route 
+                path="/builder/:builderName" 
+                element={<BuilderPage />} 
               />
               <Route
                 path="/projects-in-gurugram/property-possession-in-2025/"

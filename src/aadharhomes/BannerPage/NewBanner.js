@@ -389,8 +389,6 @@ const NewBanner = () => {
     return () => clearTimeout(timeOutId);
   }, []);
 
-
-  console.log("projectViewDetails", projectViewDetails.mobileNumber);  
   return (
     <>
 
@@ -1466,7 +1464,6 @@ const NewBanner = () => {
                             <img
                               src={projectViewDetails.projectMaster_plan.url}
                               alt={`${projectViewDetails.projectName}`}
-                              onClick={() => openModalMasterPlan(projectViewDetails.projectMaster_plan.url)}
                             />
                           )}
                         </div>

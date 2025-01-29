@@ -139,21 +139,29 @@
 
 // export default Blogging;
 
-import React, { useContext, useState } from "react";
+import React, {useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../Components/Actual_Components/Footer";
-
-import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
 import Free from "./Free";
+import axios from "axios";
 
 const Blogging = () => {
-  const { blogData } = useContext(DataContext);
+  // const { blogData } = useContext(DataContext);
+  const [blogData, setBlogData] = useState([]);
 
-  const [showFullDescription, setShowFullDescription] = useState(false);
-  const toggleDescription = () => {
-    setShowFullDescription(!showFullDescription);
-  };
+  useEffect(() => { 
+  const fetchBlogData = async () => {
+    try {
+      const res = await axios.get("https://api.100acress.com/blog/view");
+      setBlogData(res.data.data);
+    } catch (error) {
+      console.log(error || error.message);
+    }
+  }
+  fetchBlogData();
+}, []);
+  
 
   return (
     <>
@@ -265,7 +273,7 @@ const Blogging = () => {
                         .toLowerCase()}/${item._id}`}
                     >
                       <button className="bg-red-600 text-white mr-2 px-3 py-1 rounded-md mt-1">
-                        Read More
+                        Read Moredf
                       </button>
                     </Link>
                   </div>
