@@ -22,6 +22,7 @@ import { EyeIcon } from "lucide-react";
 import SpotlightBanner from "../aadharhomes/SpotlightBanner";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import Builder from "./BuilderPages/Builder";
 
 function Home() {
   useEffect(() => {
@@ -605,7 +606,7 @@ function Home() {
           </div>
         </Link>
       </div>}
-
+      
       <TopSeoPlots />
       <div className="py-3">
         {" "}
@@ -905,6 +906,8 @@ function Home() {
         }
       </div>
 
+      <Builder/>
+
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-4">
         <div className="flex items-center">
           <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  sm:text-left">
@@ -927,6 +930,7 @@ function Home() {
       </div>
 
       <Resale />
+      
 
       <OurServices />
       <WhyChoose />
