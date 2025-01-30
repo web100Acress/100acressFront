@@ -12,6 +12,7 @@ const InsertProject = () => {
   const [editFromData, setEditFromData] = useState({
     projectName: "",
     state: "",
+    country:"India",
     projectAddress: "",
     project_discripation: "",
     AboutDeveloper: "",
@@ -21,6 +22,7 @@ const InsertProject = () => {
     projectRedefine_Business: [],
     projectRedefine_Entertainment: [],
     Amenities: [],
+    luxury: "False",
     meta_title: "",
     meta_description: "",
     projectBgContent: "",
@@ -44,6 +46,7 @@ const InsertProject = () => {
     setEditFromData({
       projectName: "",
       state: "",
+      country:"India",
       projectAddress: "",
       project_discripation: "",
       AboutDeveloper: "",
@@ -53,6 +56,7 @@ const InsertProject = () => {
       projectRedefine_Business: [],
       projectRedefine_Entertainment: [],
       Amenities: [],
+      luxury: "False",
       meta_title: "",
       meta_description: "",
       projectBgContent: "",
@@ -97,9 +101,14 @@ const InsertProject = () => {
     setEditFromData({ ...editFromData, project_Status: event.target.value });
   };
 
+  const handleLuxuryStatus = (event) => {
+    setEditFromData({ ...editFromData, luxury: event.target.value });
+  };
+
   const [fileData, setFileData] = useState({
     frontImage: null,
     logo: null,
+    thumbnailImage: null,
     project_locationImage: null,
     project_floorplan_Image: [null],
     highlightImage: null,
@@ -213,6 +222,7 @@ const InsertProject = () => {
     }
 
     formDataAPI.append("logo", fileData.logo);
+    formDataAPI.append("thumbnailImage", fileData.thumbnailImage);
     formDataAPI.append("project_locationImage", fileData.project_locationImage);
     formDataAPI.append("frontImage", fileData.frontImage);
     formDataAPI.append("project_Brochure", fileData.project_Brochure);
@@ -290,7 +300,7 @@ const InsertProject = () => {
                 value={editFromData.projectOverview}
                 onChange={handleProjectOverviewChange}
               >
-                <option value="">Select Project Overview</option>
+                <option selected disabled hidden  value="">Select Project Overview</option>
                 <option value="trending">Trending</option>
                 <option value="featured">Featured</option>
                 <option value="none">None</option>
@@ -301,7 +311,7 @@ const InsertProject = () => {
                 value={editFromData.type}
                 onChange={handleProjectType}
               >
-                <option value="" className="text-gray-600">
+                <option value=""       selected disabled hidden  className="text-gray-600">
                   Project Type
                 </option>
                 <option value="Commercial Property">Commercial Property</option>
@@ -320,8 +330,9 @@ const InsertProject = () => {
                 className="text-gray-600 border  px-2 mx-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
                 value={editFromData.project_Status}
                 onChange={handleProjectStatus}
+          
               >
-                <option value="" className="text-gray-600">
+                <option value=""       selected disabled hidden  className="text-gray-600">
                   Project Status
                 </option>
                 <option value="underconstruction">Under Construction</option>
@@ -364,6 +375,29 @@ const InsertProject = () => {
                   onChange={handleChangeProjectData}
                 />
               </label>
+            </div>
+            <div className="flex w-full">
+              <label className="basis-1/2" for="country">
+                  <input
+                    className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                    type="text"
+                    placeholder="Country"
+                    name="country"
+                    value={editFromData.country}
+                    onChange={handleChangeProjectData}
+                  />
+              </label>
+              <select
+                  className="basis-1/2 text-gray-600 border  px-2 mx-2 py-1 outline-none rounded-md ring-black focus:ring-1"
+                  value={editFromData.luxury}
+                  onChange={handleLuxuryStatus}
+                >
+                  <option value="" selected disabled hidden className="text-gray-600">
+                    luxury
+                  </option>
+                  <option value="True">True</option>
+                  <option value="False">False</option>
+                </select>
             </div>
 
             {/* New projet Data add */}
@@ -611,6 +645,20 @@ const InsertProject = () => {
                   accept="image/*"
                   // value={editFromData.logo}
                   onChange={(e) => handleFileChange(e, "logo")}
+                />
+              </div>
+            </div>
+            <p className="mt-2 font-medium mb-1 grid grid-cols-4 text-gray-500">
+              Thumbnail Image
+            </p>
+            <div className="flex mt-3 ring-black">
+              <div className="relative h-10 w-40 min-w-[160px] ring-black">
+                <input
+                  type="file"
+                  name="thumbnailImage"
+                  accept="image/*"
+                  // value={editFromData.logo}
+                  onChange={(e) => handleFileChange(e, "thumbnailImage")}
                 />
               </div>
             </div>
