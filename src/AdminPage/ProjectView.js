@@ -72,6 +72,21 @@ const ProjectView = () => {
                     />
                   </td>
                 </tr>
+                <tr>
+                  <th>Thumbnail Image</th>
+                </tr>
+                <tr>
+                  <td>
+                    <img
+                      src={
+                        viewDetails?.thumbnailImage ? viewDetails.thumbnailImage.url : ""
+                      }
+                      alt=""
+                      style={{ maxWidth: "20%" }}
+                      id="previewImage"
+                    />
+                  </td>
+                </tr>
 
               
 
@@ -207,6 +222,26 @@ const ProjectView = () => {
                       Property Name :{" "}
                       <span style={{ color: "black", fontWeight: "normal" }}>
                         {viewDetails.projectName}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Country :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails?.country}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Luxury :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails?.luxury}
                       </span>
                     </span>
                   </th>
