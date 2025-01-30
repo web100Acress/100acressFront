@@ -29,6 +29,18 @@
 
     gtag('config', 'G-1XY9M6DY08');
   </script>
+  <script> 
+    document.addEventListener('contextmenu', function(e) { 
+        e.preventDefault(); 
+    }); 
+    </script> 
+    <script> 
+      document.onkeydown = function(e) { 
+          if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.shiftKey && e.key === 'C') || (e.ctrlKey && e.shiftKey && e.key === 'J') ||(e.ctrlKey && e.shiftKey && e.key === 'i') || (e.ctrlKey && e.shiftKey && e.key === 'j') || (e.ctrlKey && e.shiftKey && e.key === 'c')) { 
+              e.preventDefault(); 
+          } 
+      }; 
+      </script> 
  
 </head>
 
@@ -37,7 +49,7 @@
   <div id="root"></div>
 
   
-  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>

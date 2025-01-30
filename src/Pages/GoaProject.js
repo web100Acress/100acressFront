@@ -15,6 +15,19 @@ const GoaProject = () => {
           name="description"
           content="Explore the finest project in Goa with 100acress. Invest in stunning properties located in Goa’s most desirable locations."
         />
+        <meta property="og:title" content="Discover Your Ideal Property in Goa with 100acress" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/project-in-goa/" />
+        <meta property="og:description" content="Explore the finest project in Goa with 100acress. Invest in stunning properties located in Goa’s most desirable locations." />
+        <meta property="og:keywords" content="project in goa" />
+
+        <meta name="twitter:title" content="Discover Your Ideal Property in Goa with 100acress" />
+        <meta name="twitter:description" content="Explore the finest project in Goa with 100acress. Invest in stunning properties located in Goa’s most desirable locations." />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
         <link
           rel="canonical"
           href="https://www.100acress.com/project-in-goa/"

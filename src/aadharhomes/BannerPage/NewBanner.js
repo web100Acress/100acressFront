@@ -33,7 +33,6 @@ const NewBanner = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [userButtonText, setUserButtonText] = useState("Submit");
-  const [userResponseMessage, setUserResponseMessage] = useState("");
   const [instantcallbackmodal, setInstantCallbackmodal] = useState(false);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -41,7 +40,6 @@ const NewBanner = () => {
   const [sideButtonText, setSideButtonText] = useState("Submit");
   const [sideResponseMessage, setSideResponseMessage] = useState("");
   const [isModalOpenFloor, setIsModalOpenFloor] = useState(false);
-  const [isModalOpenMasterPlan, setIsModalOpenMasterPlan] = useState(false);
   const [selectedImagefloor, setSelectedImagefloor] = useState(null);
   const [isLoading1, setIsLoading1] = useState(false);
   const [PopUpbuttonText, setPopUpButtonText] = useState("Submit");
@@ -75,7 +73,7 @@ const NewBanner = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: Math.min(3,sliderImages.length),
+    slidesToShow: Math.min(3, sliderImages.length),
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2000,
@@ -100,27 +98,40 @@ const NewBanner = () => {
   };
 
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        `https://api.100acress.com/project/View/${pUrl}`
-      );
-      setProjectViewDetails(response?.data?.dataview[0]);
-      setBuilderName(response.data?.dataview[0]?.builderName);
-      const message = encodeURIComponent(
-        `Hello, I am interested in ${response.data.dataview[0].projectName} ${response.data.dataview[0].city} ${response.data.dataview[0].state}.`
-      );      
-      const whatsappLink = `https://wa.me/918500900100?text=${message}`;
-      // Update the href attribute of the anchor tag
-      document.querySelector(".dd-m-whatsapp").href = whatsappLink;
-    } catch (error) {
-      console.error('Error fetching Project Data');
-    }
-  };
+
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!pUrl) {
+          console.error('Url is undefined or empty.');
+          return;
+        }
+
+        const response = await axios.get(
+          `https://api.100acress.com/project/View/${pUrl}`
+        );
+        const projectData = response?.data?.dataview?.[0];
+        if (projectData) {
+          setProjectViewDetails(projectData);
+          setBuilderName(projectData.builderName);
+
+          const message = encodeURIComponent(
+            `Hello, I am interested in ${projectData.projectName} ${projectData.city} ${projectData.state}.`
+          );
+
+          const whatsappLink = `https://wa.me/918500900100?text=${message}`;
+          document.querySelector(".dd-m-whatsapp").href = whatsappLink;
+        } else {
+          console.error('No project data found.');
+        }
+      } catch (error) {
+        console.error('Error fetching Project Data:', error);
+      }
+    };
     fetchData();
-  }, []);
+  }, [pUrl]);
+
 
 
   let description = projectViewDetails?.project_discripation || "";
@@ -197,12 +208,6 @@ const NewBanner = () => {
     document.body.style.overflow = "hidden";
   };
 
-  const closeModalMasterPlan = () => {
-    setIsModalOpenFloor(false);
-    setSelectedImagefloor(null);
-    document.body.style.overflow = "auto";
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserDetails({ ...userDetails, [name]: value });
@@ -257,7 +262,7 @@ const NewBanner = () => {
       setPopUpResponseMessage("Please fill in the data");
     }
   };
-  
+
   const resetData = () => {
     setUserDetails({
       name: "",
@@ -265,7 +270,7 @@ const NewBanner = () => {
       mobile: "",
     });
   };
-  
+
   const resetData2 = () => {
     setSideDetails({
       name: "",
@@ -273,7 +278,7 @@ const NewBanner = () => {
       mobile: "",
     });
   };
-  
+
   const resetData1 = () => {
     setSideDetails({
       name: "",
@@ -281,31 +286,31 @@ const NewBanner = () => {
       mobile: "",
     });
   };
-  
+
   const handleShare = (project) => {
 
     if (navigator.share) {
       navigator
-      .share({
-        title: project?.projectName,
-        text: `Check out this project: ${project.projectName}`,
-        url: `${window.location.origin}/${project.project_url}`,
+        .share({
+          title: project?.projectName,
+          text: `Check out this project: ${project.projectName}`,
+          url: `${window.location.origin}/${project.project_url}`,
         })
         .then(() => console.log("Shared successfully"))
         .catch((error) => console.log("Error sharing:", error));
-      } else {
+    } else {
       alert("Share functionality is not supported on this device/browser.");
     }
   };
   const userSubmitDetails = (e) => {
     e.preventDefault();
-    
+
     if (isLoading2) {
       return;
     }
-    
+
     const { mobile } = userDetails;
-    
+
     if (mobile) {
       setIsLoading2(true);
       setUserButtonText("Submitting...");
@@ -330,14 +335,14 @@ const NewBanner = () => {
       message.error("Please fill in the details");
     }
   };
-  
+
   const SideSubmitDetails = async (e) => {
     e.preventDefault();
     if (isLoading2) {
       return;
     }
     const { mobile } = sideDetails;
-    
+
     if (mobile) {
       setIsLoading2(true);
       setSideButtonText("Submitting...");
@@ -362,33 +367,30 @@ const NewBanner = () => {
       message.error("Please fill in the data");
     }
   };
-  
+
   const filterProjectsByBuilder = () => {
     const normalizedBuilderName =
       typeof builderName === "string" ? builderName.trim().toLowerCase() : "";
-      
+
     return project.filter(
       (p) => p.builderName.trim().toLowerCase() === normalizedBuilderName
     );
   };
-  
-  const filteredProjects = filterProjectsByBuilder();  
+
+  const filteredProjects = filterProjectsByBuilder();
   const projectsToShow = showAllProjects
-  ? filteredProjects
+    ? filteredProjects
     : filteredProjects.slice(0, 4);
 
-    useEffect(() => {
-      const timeOutId = setTimeout(() => {
-        setShowPopup(true);
-      }, 10000);
-      return () => clearTimeout(timeOutId);
-    }, []);
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      setShowPopup(true);
+    }, 10000);
+    return () => clearTimeout(timeOutId);
+  }, []);
 
-    console.log("projectViewDetails", projectViewDetails);
-    
-
-    return (
-      <>
+  return (
+    <>
 
       <div>
         <Wrapper className="section" style={{ overflow: "hidden", overflowX: "hidden" }}>
@@ -398,17 +400,17 @@ const NewBanner = () => {
               name="description"
               content={projectViewDetails.meta_description}
             />
-              <meta property="og:title" content={projectViewDetails?.meta_title} />
-              <meta property="og:site_name" content="100acress.com" />
-              <meta property="og:type" content="website" />
-              <meta property="og:image" content={projectViewDetails?.frontImage?.url}/>
-              <meta property="og:url" content="https://www.100acress.com/" />
-              <meta property="og:description" content={projectViewDetails.meta_description} />
-              <meta name="twitter:title" content={projectViewDetails?.meta_title} />
-              <meta name="twitter:description" content={projectViewDetails.meta_description} />
-              <meta property="twitter:url" content="https://www.100acress.com/" />
-              <meta property="twitter:image" content={projectViewDetails?.frontImage?.url} />
-              <meta name="twitter:card" content="summary"></meta>
+            <meta property="og:title" content={projectViewDetails?.meta_title} />
+            <meta property="og:site_name" content="100acress.com" />
+            <meta property="og:type" content="website" />
+            <meta property="og:image" content={projectViewDetails?.frontImage?.url} />
+            <meta property="og:url" content="https://www.100acress.com/" />
+            <meta property="og:description" content={projectViewDetails.meta_description} />
+            <meta name="twitter:title" content={projectViewDetails?.meta_title} />
+            <meta name="twitter:description" content={projectViewDetails.meta_description} />
+            <meta property="twitter:url" content="https://www.100acress.com/" />
+            <meta property="twitter:image" content={projectViewDetails?.frontImage?.url} />
+            <meta name="twitter:card" content="summary"></meta>
             <link
               rel="canonical"
               href={`https://www.100acress.com/${projectViewDetails.project_url}/`}
@@ -458,7 +460,7 @@ const NewBanner = () => {
                 alignItems: "center",
                 zIndex: 1000,
                 paddingTop: "10px",
-                paddingBottom:'10px'
+                paddingBottom: '10px'
               }}
             >
               <img
@@ -476,8 +478,8 @@ const NewBanner = () => {
                 </button>
                 <a className="animate-fadeInRight " href={`tel:${projectViewDetails?.mobileNumber || "9811750130"}`}>
                   <button className="bg-[#263238] py-0 px-3 rounded-lg text-white text-2xl flex items-center">
-                    <PhoneIcon className="mr-2"  />
-                    {projectViewDetails?.mobileNumber || '\u00A0' + "9811750130"  }
+                    <PhoneIcon className="mr-2" />
+                    {projectViewDetails?.mobileNumber || '\u00A0' + "9811750130"}
                   </button>
                 </a>
               </div>
@@ -729,43 +731,49 @@ const NewBanner = () => {
 
 
             {/* mainImage */}
-              <div className="w-full mt-0 lg:mt-16 md:mt-10 sm:mt-24 bg-cover bg-no-repeat text-center">
-                <div className="w-full relative overflow-hidden object-cover">
-                  <div className="flex justify-center">
-                    {frontImage?.url && (
-                      <img
-                        className="max-w-full h-[80vh] sm:h-auto object-cover mt-14"
-                        src={frontImage.url}
-                        alt={projectViewDetails.projectName}
-                      />
-                    )}
-                  </div>
-                  
-                  {/* New Div Positioned Below the Image on Mobile */}
-                  <div
-                    className="absolute top-2/4 right-[70px] transform -translate-y-1/2 bg-black bg-opacity-75 text-white p-6 rounded-lg shadow-lg z-[20] hidden lg:block md:block "
-                  >
-                    <h1 style={{fontFamily:"Abril Fatface"}} className="text-2xl mb-2">
-                      {projectViewDetails.projectName}
-                    </h1>
-                    <p className="text-sm font-medium flex mb-4 text-center justify-center">
-                      <LocationSmallIcon className="mr-2" />
-                      {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
-                    </p>
-                    <ul className="list-disc text-left " style={{ listStyleType: "none" }}>
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.towerNumber} Towers</li>
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalUnit} Units</li>
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalLandArea} Acres of Land</li>
-                      {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_Area} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_Area}{" "}Unit Size</li> */}
-                      {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_type} to {projectViewDetails.BhK_Details[projectViewDetails?.BhK_Details.length-1]?.bhk_type}{" "}Unit type</li> */}
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Expected Possession {formatDate(projectViewDetails.possessionDate)}</li>
+            <div className="w-full mt-0 lg:mt-16 md:mt-10 sm:mt-24 bg-cover bg-no-repeat text-center">
+              <div className="w-full relative overflow-hidden object-cover">
+                <div className="flex justify-center">
+                  {frontImage?.url && (
+                    <img
+                      className="max-w-full h-[80vh] sm:h-auto object-cover mt-14"
+                      src={frontImage.url}
+                      alt={projectViewDetails.projectName}
+                    />
+                  )}
+                </div>
 
-                    </ul> 
-                    <button onClick={handleShowInstantcallBack} className="bg-white text-black text-xl py-2 px-4 rounded shadow hover:bg-gray-100 transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300">
-                      Schedule Site Visit
-                    </button>
-                  </div>
-                  {/* <div
+                {/* New Div Positioned Below the Image on Mobile */}
+                <div
+                  className="absolute top-2/4 right-[70px] transform -translate-y-1/2 bg-black bg-opacity-75 text-white p-6 rounded-lg shadow-lg z-[20] hidden lg:block md:block "
+                >
+                  <h1 style={{ fontFamily: "Abril Fatface" }} className="text-2xl mb-2">
+                    {projectViewDetails.projectName}
+                  </h1>
+                  <p className="text-sm font-medium flex mb-4 text-center justify-center">
+                    <LocationSmallIcon className="mr-2" />
+                    {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
+                  </p>
+                  <ul className="list-disc text-left " style={{ listStyleType: "none" }}>
+                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.towerNumber} Towers</li>
+                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalUnit} Units</li>
+                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalLandArea} Acres of Land</li>
+                    {projectViewDetails.projectName === "Signature Global Twin Tower DXP" && (
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Payment Plan 25:75</li>
+                    )}
+                    {projectViewDetails.projectName === "Signature Titanium SPR" && (
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Payment Plan 25:25:50</li>
+                    )}
+                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_Area} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_Area}{" "}Unit Size</li> */}
+                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_type} to {projectViewDetails.BhK_Details[projectViewDetails?.BhK_Details.length-1]?.bhk_type}{" "}Unit type</li> */}
+                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Expected Possession {formatDate(projectViewDetails.possessionDate)}</li> */}
+
+                  </ul>
+                  <button onClick={handleShowInstantcallBack} className="bg-white text-black text-xl py-2 px-4 rounded shadow hover:bg-gray-100 transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300">
+                    Schedule Site Visit
+                  </button>
+                </div>
+                {/* <div
                     className="absolute top-2/4 right-[70px] transform -translate-y-1/2 bg-black bg-opacity-75 text-white p-6 rounded-lg shadow-lg z-[20] hidden lg:block"
                   >
                     <h1
@@ -815,171 +823,171 @@ const NewBanner = () => {
                     </button>
                   </div> */}
 
-                  {/* New Div Below the Image on Mobile */}
-                  <div className="lg:hidden md:hidden mt-0 bg-black bg-opacity-80 text-white p-4 shadow-lg">
-                  <h1 style={{fontFamily:"Abril Fatface"}} className="text-2xl mb-2">
-                      {projectViewDetails.projectName}
-                    </h1>
-                    <p className="text-sm font-medium flex mb-4 text-center justify-center">
-                      <LocationSmallIcon className="mr-2" />
-                      {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
-                    </p>
-                    <ul className="list-disc text-left" style={{ listStyleType: "none" }}>
-                      {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.BhK_Details[0].bhk_Area} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_Area}{" "}Unit Size</li>
+                {/* New Div Below the Image on Mobile */}
+                <div className="lg:hidden md:hidden mt-0 bg-black bg-opacity-80 text-white p-4 shadow-lg">
+                  <h1 style={{ fontFamily: "Abril Fatface" }} className="text-2xl mb-2">
+                    {projectViewDetails.projectName}
+                  </h1>
+                  <p className="text-sm font-medium flex mb-4 text-center justify-center">
+                    <LocationSmallIcon className="mr-2" />
+                    {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
+                  </p>
+                  <ul className="list-disc text-left" style={{ listStyleType: "none" }}>
+                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.BhK_Details[0].bhk_Area} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_Area}{" "}Unit Size</li>
                       <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.BhK_Details[0].bhk_type} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_type}{" "}Unit type</li> */}
-                      {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{formatDate(projectViewDetails.possessionDate)}</li> */}
+                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{formatDate(projectViewDetails.possessionDate)}</li> */}
 
-                    </ul> 
-                    <button onClick={handleShowInstantcallBack} className="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 bg-white text-black font-medium py-2 px-4 rounded shadow hover:bg-gray-100">
-                      Schedule Site Visit
-                    </button>
-                  </div>
+                  </ul>
+                  <button onClick={handleShowInstantcallBack} className="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 bg-white text-black font-medium py-2 px-4 rounded shadow hover:bg-gray-100">
+                    Schedule Site Visit
+                  </button>
                 </div>
               </div>
+            </div>
 
             {/* Details */}
-              <div className="bg-[#263238]">
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 p-2">
-                  {/* Acres Section */}
-                  <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
-                    <AcresIcon className="mr-2" />
-                    <div className='mt-2 text-center'>
-                      <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
-                        {projectViewDetails.totalLandArea} Acres
-                      </span>
-                      <h6 className='text-sm'>Land Area</h6>
-                    </div>
-                  </section>
+            <div className="bg-[#263238]">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 p-2">
+                {/* Acres Section */}
+                <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
+                  <AcresIcon className="mr-2" />
+                  <div className='mt-2 text-center'>
+                    <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
+                      {projectViewDetails.totalLandArea} Acres
+                    </span>
+                    <h6 className='text-sm'>Land Area</h6>
+                  </div>
+                </section>
 
-                  {/* Possession Section */}
-                  <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
-                    <TowerIcon className="mr-2" />
-                    <div className='mt-2 text-center'>
-                      <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
-                        {formatDate(projectViewDetails.possessionDate)}
-                      </span>
-                      <h6 className='text-sm'>Possession</h6>
-                    </div>
-                  </section>
+                {/* Possession Section */}
+                <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
+                  <TowerIcon className="mr-2" />
+                  <div className='mt-2 text-center'>
+                    <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
+                      {formatDate(projectViewDetails.possessionDate)}
+                    </span>
+                    <h6 className='text-sm'>Possession</h6>
+                  </div>
+                </section>
 
-                  {/* About Project Section */}
-                  <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
-                    <CalenderIcon className="mr-2" />
-                    <div className='mt-2 text-center'>
-                      <span style={{ fontFamily: "Abril Fatface" }} className="text-2xl">
-                        {projectViewDetails.towerNumber} Tower -{" "}
-                        {projectViewDetails.totalUnit} Unit
-                      </span>
-                      <h6 className='text-xs'>About Project</h6>
-                    </div>
-                  </section>
+                {/* About Project Section */}
+                <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
+                  <CalenderIcon className="mr-2" />
+                  <div className='mt-2 text-center'>
+                    <span style={{ fontFamily: "Abril Fatface" }} className="text-2xl">
+                      {projectViewDetails.towerNumber} Tower -{" "}
+                      {projectViewDetails.totalUnit} Unit
+                    </span>
+                    <h6 className='text-xs'>About Project</h6>
+                  </div>
+                </section>
 
-                  {/* Price Section */}
-                  <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
-                    <PriceIcon className="mr-2" />
-                    <div className='mt-2 text-center'>
-                      <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
-                        {projectViewDetails.minPrice < 1 ? (
-                          <span>{projectViewDetails.minPrice * 100} L{" "}</span>
-                        ) : (
-                          <span style={{ fontFamily: "Abril Fatface" }}>{projectViewDetails.minPrice} Cr {" "}</span>
-                        )}
-                        - {projectViewDetails.maxPrice} Cr
-                      </span>
-                      <h6 className='text-sm'>Price</h6>
-                    </div>
-                  </section>
+                {/* Price Section */}
+                <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
+                  <PriceIcon className="mr-2" />
+                  <div className='mt-2 text-center'>
+                    <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
+                      {projectViewDetails.minPrice < 1 ? (
+                        <span>{projectViewDetails.minPrice * 100} L{" "}</span>
+                      ) : (
+                        <span style={{ fontFamily: "Abril Fatface" }}>{projectViewDetails.minPrice} Cr {" "}</span>
+                      )}
+                      - {projectViewDetails.maxPrice} Cr
+                    </span>
+                    <h6 className='text-sm'>Price</h6>
+                  </div>
+                </section>
 
-                  
-                </div>
+
               </div>
+            </div>
 
 
             {/* about project */}
-              <div className="pt-0 h-auto md:h-screen">
-                <div className="flex flex-col md:flex-row justify-center items-stretch h-auto">
-                  {/* Image Section */}
-                  <div className="w-full md:w-1/2 overflow-hidden flex items-center">
-                    {projectViewDetails?.highlightImage?.url && (
-                      <img
-                        src={projectViewDetails?.projectGallery[0]?.url}
-                        alt={`${projectViewDetails.projectName}`}
-                        className="w-full h-[50vh] sm:h-[60vh] md:h-full object-cover rounded-tr-[70px] rounded-bl-[50px]"
-                      />
-                    )}
-                  </div>
+            <div className="pt-0 h-auto md:h-screen">
+              <div className="flex flex-col md:flex-row justify-center items-stretch h-auto">
+                {/* Image Section */}
+                <div className="w-full md:w-1/2 overflow-hidden flex items-center">
+                  {projectViewDetails?.highlightImage?.url && (
+                    <img
+                      src={projectViewDetails?.projectGallery[0]?.url}
+                      alt={`${projectViewDetails.projectName}`}
+                      className="w-full h-[50vh] sm:h-[60vh] md:h-full object-cover rounded-tr-[70px] rounded-bl-[50px]"
+                    />
+                  )}
+                </div>
 
-                  {/* Text Section */}
-                  <div className="w-full md:w-1/2 p-4 text-black flex flex-col justify-center items-start">
-                    <span className="lg:text-lg md:text-xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
-                      <span className="flex items-center justify-center p-1">
-                        <LineIcon />
-                      </span>
-                      About Project
+                {/* Text Section */}
+                <div className="w-full md:w-1/2 p-4 text-black flex flex-col justify-center items-start">
+                  <span className="lg:text-lg md:text-xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
+                    <span className="flex items-center justify-center p-1">
+                      <LineIcon />
                     </span>
+                    About Project
+                  </span>
 
-                    <h2
-                      className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
-                      style={{ fontFamily: "Abril Fatface" }}
-                    >
-                      {projectViewDetails.projectName}
-                    </h2>
+                  <h2
+                    className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                    style={{ fontFamily: "Abril Fatface" }}
+                  >
+                    {projectViewDetails.projectName}
+                  </h2>
 
-                    <div className="text-justify text-gray-700 mt-3 md:mt-5 lg:mt-8 xl:mt-10 text-xs sm:text-sm md:text-base lg:text-base xl:text-base overflow-y-auto max-h-[300px] md:max-h-[400px] lg:max-h-[500px]">
-                      <div className="leading-relaxed">
-                        <div dangerouslySetInnerHTML={{ __html: description }} />
-                      </div>
+                  <div className="text-justify text-gray-700 mt-3 md:mt-5 lg:mt-8 xl:mt-10 text-xs sm:text-sm md:text-base lg:text-base xl:text-base overflow-y-auto max-h-[300px] md:max-h-[400px] lg:max-h-[500px]">
+                    <div className="leading-relaxed">
+                      <div dangerouslySetInnerHTML={{ __html: description }} />
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
 
             {/* higthlight? */}
-              <div className="pt-1 h-auto md:h-screen">
-                <div className="flex flex-col md:flex-row justify-center items-stretch h-auto">
-                  {/* Text Section */}
-                  <div className="w-full md:w-1/2 p-4 text-black flex flex-col justify-center items-start">
-                    <span className="lg:text-lg md:text-xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
-                      <span className="flex items-center justify-center p-1">
-                        <LineIcon />
-                      </span>
-                      Highlights
+            <div className="pt-1 h-auto md:h-screen">
+              <div className="flex flex-col md:flex-row justify-center items-stretch h-auto">
+                {/* Text Section */}
+                <div className="w-full md:w-1/2 p-4 text-black flex flex-col justify-center items-start">
+                  <span className="lg:text-lg md:text-xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
+                    <span className="flex items-center justify-center p-1">
+                      <LineIcon />
                     </span>
+                    Highlights
+                  </span>
 
-                    <h2
-                      className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
-                      style={{ fontFamily: "Abril Fatface" }}
-                    >
-                      {projectViewDetails.projectName}
-                    </h2>
+                  <h2
+                    className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                    style={{ fontFamily: "Abril Fatface" }}
+                  >
+                    {projectViewDetails.projectName}
+                  </h2>
 
-                    <div className="text-justify text-gray-700 mt-3 md:mt-5 lg:mt-8 xl:mt-10 text-sm sm:text-sm md:text-base lg:text-sm xl:text-sm overflow-y-auto max-h-[300px] md:max-h-[400px] lg:max-h-[500px]">
-                      {/* Highlights List */}
-                      {highlight &&
-                        Array.isArray(highlight) &&
-                        highlight.length > 0 &&
-                        highlight.map((item, index) => (
-                          <ul className="list-disc" style={{ listStyleType: "circle" }} key={index}>
-                            <li className="text-black text-sm sm:text-base">
-                              {item.highlight_Point}
-                            </li>
-                          </ul>
-                        ))}
-                    </div>
-                  </div>
-
-                  {/* Image Section */}
-                  <div className="w-full md:w-1/2 flex items-center overflow-hidden">
-                    {projectViewDetails?.highlightImage?.url && (
-                      <img
-                        src={projectViewDetails?.highlightImage?.url}
-                        alt={`${projectViewDetails.projectName}`}
-                        className="w-full h-[50vh] sm:h-[60vh] md:h-[60vh] object-cover rounded-tr-[40px] md:rounded-tr-[70px] rounded-bl-[30px] md:rounded-bl-[50px]"
-                      />
-                    )}
+                  <div className="text-justify text-gray-700 mt-3 md:mt-5 lg:mt-8 xl:mt-10 text-sm sm:text-sm md:text-base lg:text-sm xl:text-sm overflow-y-auto max-h-[300px] md:max-h-[400px] lg:max-h-[500px]">
+                    {/* Highlights List */}
+                    {highlight &&
+                      Array.isArray(highlight) &&
+                      highlight.length > 0 &&
+                      highlight.map((item, index) => (
+                        <ul className="list-disc" style={{ listStyleType: "circle" }} key={index}>
+                          <li className="text-black text-sm sm:text-base">
+                            {item.highlight_Point}
+                          </li>
+                        </ul>
+                      ))}
                   </div>
                 </div>
+
+                {/* Image Section */}
+                <div className="w-full md:w-1/2 flex items-center overflow-hidden">
+                  {projectViewDetails?.highlightImage?.url && (
+                    <img
+                      src={projectViewDetails?.highlightImage?.url}
+                      alt={`${projectViewDetails.projectName}`}
+                      className="w-full h-[50vh] sm:h-[60vh] md:h-[60vh] object-cover rounded-tr-[40px] md:rounded-tr-[70px] rounded-bl-[30px] md:rounded-bl-[50px]"
+                    />
+                  )}
+                </div>
               </div>
+            </div>
 
 
 
@@ -996,13 +1004,13 @@ const NewBanner = () => {
                         </span>
                         {" "}How Much
                       </span>
-                        <h4
-                          style={{ fontFamily: "Abril Fatface" }}
-                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
-                        >
-                          {projectViewDetails.projectName}
-                          <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Size & Price</span>
-                        </h4>
+                      <h4
+                        style={{ fontFamily: "Abril Fatface" }}
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                      >
+                        {projectViewDetails.projectName}
+                        <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Size & Price</span>
+                      </h4>
 
 
                     </div>
@@ -1065,7 +1073,7 @@ const NewBanner = () => {
                         Floor Plan
                       </span>
                       <div>
-                  <h4
+                        <h4
                           style={{ fontFamily: "Abril Fatface" }}
                           className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
                         >
@@ -1118,7 +1126,7 @@ const NewBanner = () => {
                               {BhK_Details[index]?.bhk_type || BhK_Details[0]?.bhk_type}
                             </h4>
                             <p className="text-sm">{BhK_Details[index]?.bhk_Area || BhK_Details[0]?.bhk_Area}</p>
-                          </div>  
+                          </div>
                         </div>
                       ))}
                   </Slider>
@@ -1202,13 +1210,13 @@ const NewBanner = () => {
                         {" "}Gallery
                       </span>
                       <h4
-                          style={{ fontFamily: "Abril Fatface" }}
-                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
-                        >
-                          {projectViewDetails.projectName}
-                          <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Images</span>
-                        </h4>
-                  
+                        style={{ fontFamily: "Abril Fatface" }}
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                      >
+                        {projectViewDetails.projectName}
+                        <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Images</span>
+                      </h4>
+
                       <div className="pt-4 p-2 max-w-screen-xl mx-auto">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                           {/* Display Images */}
@@ -1265,13 +1273,13 @@ const NewBanner = () => {
                         </span>
                         {" "}Project Facilities
                       </span>
-                  <h4
-                          style={{ fontFamily: "Abril Fatface" }}
-                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
-                        >
-                          {projectViewDetails.projectName}
-                          <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Amenities</span>
-                        </h4>
+                      <h4
+                        style={{ fontFamily: "Abril Fatface" }}
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                      >
+                        {projectViewDetails.projectName}
+                        <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Amenities</span>
+                      </h4>
                       <section className="w-full mb-2">
                         <div className="pt-4 p-2 rounded-lg relative">
                           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-6 gap-6">
@@ -1283,7 +1291,7 @@ const NewBanner = () => {
                                   : item
                               )
                             )?.map((project, idx) => {
-                              const groupIndex = Math.floor(idx / 4);
+                              const groupIndex = Math.floor(idx / 6);
                               const isEvenGroup = groupIndex % 2 === 0;
                               const backgroundColor =
                                 isEvenGroup
@@ -1350,18 +1358,18 @@ const NewBanner = () => {
 
 
             {/* we build the best */}
-            
+
             <div className="p-0 h-fit" >
               <div className="flex flex-justify-center items-stretch rounded h-auto">
                 <div className="text-black w-full flex flex-col">
                   <div className="flex flex-col md:flex-row h-full">
-                  <div className="text-justify text-gray-700 pl-6 m-0 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-sm md:text-base lg:text-lg xl:text-lg pt-0">
-                  {projectViewDetails?.project_locationImage?.url && (
-                    <img
-                      src={projectViewDetails.project_locationImage.url}
-                      alt={`${projectViewDetails.projectName}`}
-                      onClick={() => openModalMasterPlan(projectViewDetails.project_locationImage.url)}
-                      />
+                    <div className="text-justify text-gray-700 pl-6 m-0 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-sm md:text-base lg:text-lg xl:text-lg pt-0">
+                      {projectViewDetails?.project_locationImage?.url && (
+                        <img
+                          src={projectViewDetails.project_locationImage.url}
+                          alt={`${projectViewDetails.projectName}`}
+                          onClick={() => openModalMasterPlan(projectViewDetails.project_locationImage.url)}
+                        />
                       )}
                     </div>
                     <div className="w-full md:w-1/2 pl-4  text-black flex flex-col justify-center items-start">
@@ -1372,59 +1380,59 @@ const NewBanner = () => {
                         Location Map
                       </span>
                       <div className="mt-0">
-                    {/* <h4
+                        {/* <h4
                       style={{ fontFamily: "Abril Fatface" }}
                       className="mt-2 text-4xl sm:text-5xl md:text-5xl"
                     >
                       {projectViewDetails.projectName}
                     </h4> */}
-                    <h4
+                        <h4
                           style={{ fontFamily: "Abril Fatface" }}
                           className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
                         >
                           {projectViewDetails.projectName}
                         </h4>
-                    <div className="mt-3 md:mt-3 h-48 overflow-y-auto">
-                    {/* Lists */}
-                    {projectRedefine_Connectivity?.length > 0 && (
-                      <ul className="list-disc list-inside text-sm sm:text-base md:text-lg">
-                        {projectRedefine_Connectivity.map((item, index) => (
-                          <li key={index}>{item}</li>
-                        ))}
-                      </ul>
-                    )}
+                        <div className="mt-3 md:mt-3 h-48 overflow-y-auto">
+                          {/* Lists */}
+                          {projectRedefine_Connectivity?.length > 0 && (
+                            <ul className="list-disc list-inside text-sm sm:text-base md:text-lg">
+                              {projectRedefine_Connectivity.map((item, index) => (
+                                <li key={index}>{item}</li>
+                              ))}
+                            </ul>
+                          )}
 
-                    {projectRedefine_Entertainment
-                      ?.length > 0 && (
-                        <ul className="list-disc list-inside space-y-2 text-sm sm:text-base md:text-lg">
                           {projectRedefine_Entertainment
-                            .map((item, index) => (
-                              <li key={index}>{item}</li>
-                            ))}
-                        </ul>
-                      )}
-                    {projectRedefine_Business
-                      ?.length > 0 && (
-                        <ul className="list-disc list-inside space-y-2 text-sm sm:text-base md:text-lg">
+                            ?.length > 0 && (
+                              <ul className="list-disc list-inside space-y-2 text-sm sm:text-base md:text-lg">
+                                {projectRedefine_Entertainment
+                                  .map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                              </ul>
+                            )}
                           {projectRedefine_Business
-                            .map((item, index) => (
-                              <li key={index}>{item}</li>
-                            ))}
-                        </ul>
-                      )}
-                    {projectRedefine_Education?.length > 0 && (
-                      <ul className="list-disc list-inside space-y-2 text-sm sm:text-base md:text-lg">
-                        {projectRedefine_Education.map((item, index) => (
-                          <li key={index}>{item}</li>
-                        ))}
-                      </ul>
-                    )}
+                            ?.length > 0 && (
+                              <ul className="list-disc list-inside space-y-2 text-sm sm:text-base md:text-lg">
+                                {projectRedefine_Business
+                                  .map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                              </ul>
+                            )}
+                          {projectRedefine_Education?.length > 0 && (
+                            <ul className="list-disc list-inside space-y-2 text-sm sm:text-base md:text-lg">
+                              {projectRedefine_Education.map((item, index) => (
+                                <li key={index}>{item}</li>
+                              ))}
+                            </ul>
+                          )}
 
-                  </div>
+                        </div>
                       </div>
                     </div>
 
-                    
+
 
                   </div>
                 </div>
@@ -1452,13 +1460,12 @@ const NewBanner = () => {
                           Master Plan of {projectViewDetails.projectName}
                         </h4>
                         <div className="text-justify text-gray-700 m-0 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-sm md:text-base lg:text-lg xl:text-lg pt-0">
-                        {projectViewDetails?.projectMaster_plan?.url && (
-                        <img
-                          src={projectViewDetails.projectMaster_plan.url}
-                          alt={`${projectViewDetails.projectName}`}
-                          onClick={() => openModalMasterPlan(projectViewDetails.projectMaster_plan.url)}
-                        />
-                      )}
+                          {projectViewDetails?.projectMaster_plan?.url && (
+                            <img
+                              src={projectViewDetails.projectMaster_plan.url}
+                              alt={`${projectViewDetails.projectName}`}
+                            />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1470,27 +1477,8 @@ const NewBanner = () => {
               </div>
             </div>
 
-
-            {isModalOpenMasterPlan && (
-              <div className="fixed inset-0 pt-20 bg-black bg-opacity-75 flex justify-center items-center z-50">
-                <div className="relative">
-                  <button
-                    onClick={closeModalMasterPlan}
-                    className="absolute top-2 right-2 text-white text-xl bg-gray-800 p-2 rounded-full z-10"
-                  >
-                    &times;
-                  </button>
-                  <img
-                    src={selectedImagefloor}
-                    alt={projectViewDetails.projectName}
-                    className="max-w-[80vw] max-h-[80vh] object-contain"
-                  />
-                </div>
-              </div>
-            )}
-
             {/* Builder */}
-            
+
             <div className="h-fit" >
               <div className="flex flex-justify-center items-stretch rounded h-auto">
                 <div className="text-black w-full flex flex-col">
@@ -1504,17 +1492,17 @@ const NewBanner = () => {
                         {" "}Builder
                       </span>
                       <h4
-                          style={{ fontFamily: "Abril Fatface" }}
-                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
-                        >
-                          About {projectViewDetails.builderName}
-                        </h4>
-                      
+                        style={{ fontFamily: "Abril Fatface" }}
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                      >
+                        About {projectViewDetails.builderName}
+                      </h4>
+
                       <div className="text-justify text-gray-700 m-0 md:m-8 lg:m-12 xl:m-20 text-sm sm:text-sm md:text-base lg:text-lg xl:text-lg pt-0">
-                          <p className="leading-relaxed mt-4">
-                            <div dangerouslySetInnerHTML={{ __html: builderdescription }} />
-                          </p>
-                        </div>
+                        <p className="leading-relaxed mt-4">
+                          <div dangerouslySetInnerHTML={{ __html: builderdescription }} />
+                        </p>
+                      </div>
                     </div>
 
 
@@ -1539,13 +1527,13 @@ const NewBanner = () => {
                         {" "}Others
                       </span>
                       <h4
-                          style={{ fontFamily: "Abril Fatface" }}
-                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
-                        >
-                          Properties by {projectViewDetails.builderName}
-                        </h4>
-                      
-                      
+                        style={{ fontFamily: "Abril Fatface" }}
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                      >
+                        Properties by {projectViewDetails.builderName}
+                      </h4>
+
+
                       <section className="w-full  mb-2">
                         <div className="pt-4 rounded-lg relative">
                           {/* Background color and padding */}
@@ -1645,11 +1633,11 @@ const NewBanner = () => {
                   <h3 className="text-4xl sm:text-5xl" style={{ fontFamily: "Abril Fatface" }}>Make an Enquiry</h3>
                   <p className="text-lg flex items-center space-x-2">
                     <a
-                      href="tel:+918527134491"
+                      href={`tel:${projectViewDetails?.mobileNumber  === 9811750130 ? "8527134491" : "9315375335" }`}
                       className="flex items-center justify-center text-white text-3xl"
                     >
-                      <span className="text-2xl"><PhoneIcon /></span>
-                      <span className="text-2xl"> &nbsp; +91 8527-134-491</span>
+                     <span className="text-2xl"><PhoneIcon /></span>
+                      <span className="text-2xl"> &nbsp; {`${projectViewDetails?.mobileNumber  === 9811750130 ? "+91 8527-134-491" : "+91 9315-375-335" }`}</span>
                     </a>
                   </p>
                 </div>
@@ -1721,11 +1709,6 @@ const NewBanner = () => {
 
                     </div>
                     <p className='text-xs text-gray-300'> * Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
-
-
-                    {userResponseMessage && (
-                      <p className="text-white text-[12px] ">{userResponseMessage}</p>
-                    )}
                     <button
                       onClick={userSubmitDetails}
                       className="w-full bg-white hover:bg-blue-600 text-[#263238] font-semibold py-3 rounded-lg transition duration-200"
@@ -1737,22 +1720,24 @@ const NewBanner = () => {
               </div>
             </section>
             <div>
-          <a
-            href="#"
-            class="dd-m-whatsapp"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <i class="fa-brands fa-whatsapp"></i>
-          </a>
-        </div>
-        <div>
-        <div>
-          <a href="tel:9811750130" class="dd-m-phone">
-            <i class="fa-solid fa-phone"></i>
-          </a>
-        </div>
-      </div>
+              <a
+                href="#"
+                class="dd-m-whatsapp"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fa-brands fa-whatsapp"></i>
+              </a>
+            </div>
+            <div>
+              <div>
+
+                <a href={`tel:${projectViewDetails?.mobileNumber || '9811750130'}`} class="dd-m-phone">
+                  <i class="fa-solid fa-phone"></i>
+                </a>
+
+              </div>
+            </div>
 
           </>
         </Wrapper>

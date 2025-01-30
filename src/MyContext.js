@@ -16,7 +16,7 @@ export const DataProvider = ({ children }) => {
   const [scoPlots, setAllScoPlots] = useState([]);
   const [BuilderIndependentFloor, setBuilderIndependentFLoor] = useState([]);
   const [deenDayalPlots, setDeenDayalPlots] = useState([]);
-  const [blogData, setBlogData] = useState([]);
+  // const [blogData, setBlogData] = useState([]);
   const [sohnaRoad, setSohnaRoad] = useState([]);
   const [golfCourse, setGolfCourse] = useState([]);
   const [searching, setSearching] = useState("Ownering");
@@ -46,7 +46,15 @@ export const DataProvider = ({ children }) => {
   const [orris, setorris] = useState([]);
   const [jms, setJms] = useState([]);
   const [SignatureBuilder , setSignaturebuilder] = useState([]);
+  const [M3M, setM3M] = useState([]);
+  const [Elan , setElan] = useState([]);
+  const [BPTP, setBPTP] = useState([]);
+  const [Adani, setAdani] = useState([]);
+  const [Experion, setExperion] = useState([]);
+  const [SmartWorld, setSmartWorld] = useState([]);
   const [rof, setRof] = useState([]);
+  const [Trevoc , setTrevoc] = useState([]);
+  const [IndiaBulls , setIndiaBulls] = useState([]);
   const [signatureglobal, setSignatureGlobal] = useState([]);
   const [emaarIndia, setEmaarIndia] = useState([]);
   const [m3mIndia, setM3mIndia] = useState([]);
@@ -75,14 +83,14 @@ export const DataProvider = ({ children }) => {
     }
   });
  
-  useEffect(() => {
-    fetchAllProject();
-    fetchBlogData();
-    fetchCareerData();
-    fetchJobPostingData();
-    buyFetchData();
-    fetchProject();
-  }, []);
+  // useEffect(() => {
+  //   // fetchAllProject();
+  //   // fetchBlogData();
+  //   // fetchCareerData();
+  //   // fetchJobPostingData();
+  //   // buyFetchData();
+  //   // fetchProject();
+  // }, []);
 
   useEffect(() => {
     if (possessionDate !== null) {
@@ -100,22 +108,27 @@ export const DataProvider = ({ children }) => {
     setPossessionAllData(PossFilter);
   };
 
-  const fetchProject = async () => {
-    try {
-      const response = await axios.get('https://api.100acress.com/project/viewAll/data');
-      setProject(response.data.data); 
-    } catch (error) {
-      console.log(error);
-    }
-  };
+//   useEffect(() => {
+//   const fetchProject = async () => {
+//     try {
+//       const response = await axios.get('https://api.100acress.com/project/viewAll/data');
+//       // setProject(response.data.data); 
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   }
+//   fetchProject();
+//  },[project]);
 
   
-
+  useEffect(() => {
   const fetchAllProject = async () => {
     try {
       const res = await axios.get(
         "https://api.100acress.com/project/viewAll/data"
       );
+      setProject(res.data.data); 
+
       const projectsData = res.data.data;
     
       const trendingProjects = projectsData.filter(
@@ -125,11 +138,11 @@ export const DataProvider = ({ children }) => {
       const upcomingProjects = projectsData.filter(
         (project) =>
           project.projectOverview === "upcoming" ||
-          project.projectReraNo === "upcoming" || project.projectName === 'Trump Towers 2' 
+          project.projectReraNo === "upcoming" 
       );
 
       const spotlightProject = projectsData.filter(
-        (project) =>  project.projectName === "Emaar Urban Ascent" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ" 
+        (project) =>  project.projectName === "Experion Nova" || project.projectName === "Emaar Urban Ascent" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"  
       );
 
       const featuredProjects = projectsData.filter(
@@ -279,6 +292,38 @@ export const DataProvider = ({ children }) => {
         (project) => project.builderName === "Signature Global"
       );
 
+      const M3Mbuilder = projectsData.filter(
+        (project) => project.builderName === "M3M India"
+      );
+
+      const ExperionBuilder = projectsData.filter(
+        (project) => project.builderName === "Experion Developers"
+      );
+      
+      const ElanBuilder = projectsData.filter(
+        (project) => project.builderName ==="Elan Group"
+      );
+
+      const BPTPBuilder = projectsData.filter(
+        (project) => project.builderName ==="BPTP LTD"
+      );
+
+      const AdaniBuilder = projectsData.filter(
+        (project) => project.builderName ==="Adani Realty"
+      );
+
+      const smartWorldBuilder = projectsData.filter(
+        (project) => project.builderName ==="Smartworld"
+      );
+
+      const trevocBuilder = projectsData.filter(
+        (project) => project.builderName === "Trevoc Group"
+      );
+
+      const indiaBullsBuilder = projectsData.filter(
+        (project) => project.builderName ==="Indiabulls"
+      );
+      
       const rof = projectsData.filter(
         (project) => project.projectOverview === "rof"
       );
@@ -362,7 +407,15 @@ export const DataProvider = ({ children }) => {
       setorris(orris);
       setbptp(bptp);
       setJms(jms);
-      setSignaturebuilder(signaturebuilder)
+      setSignaturebuilder(signaturebuilder);
+      setM3M(M3Mbuilder);
+      setExperion(ExperionBuilder);
+      setElan(ElanBuilder);
+      setBPTP(BPTPBuilder);
+      setAdani(AdaniBuilder);
+      setSmartWorld(smartWorldBuilder);
+      setTrevoc(trevocBuilder);
+      setIndiaBulls(indiaBullsBuilder);
       setRof(rof);
       setEmaarIndia(emaarIndia);
       setM3mIndia(m3mIndia);
@@ -382,16 +435,11 @@ export const DataProvider = ({ children }) => {
     } catch (error) {
       console.log(error || error.message);
     }
-  };
+  }
+fetchAllProject();
+}, []);
 
-  const fetchBlogData = async () => {
-    try {
-      const res = await axios.get("https://api.100acress.com/blog/view");
-      setBlogData(res.data.data);
-    } catch (error) {
-      console.log(error || error.message);
-    }
-  };
+
 
   const handleUserLogin = async (userLogin) => {
     const { email, password } = userLogin;
@@ -438,27 +486,31 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-    const fetchCareerData = async () => {
-      try {
-        const res = await axios.get("https://api.100acress.com/career/page/view");
-        setCareerData(res.data.data);
-      } catch (error) {
-        console.log(error || error.message);
-      }
-    };
+    // const fetchCareerData = async () => {
+    //   try {
+    //     const res = await axios.get("https://api.100acress.com/career/page/view");
+    //     console.log(res,'carrer');
+        
+    //     setCareerData(res.data.data);
+    //   } catch (error) {
+    //     console.log(error || error.message);
+    //   }
+    // };
 
-  const fetchJobPostingData = async () => {
-    try {
-      const res = await axios.get(
-        "https://api.100acress.com/career/opening/ViewAll"
-      );
-      setJobPostingData(res.data.data);
-    } catch (error) {
-      console.log(error || error.message);
-    }
-  };
+  // const fetchJobPostingData = async () => {
+  //   try {
+  //     const res = await axios.get(
+  //       "https://api.100acress.com/career/opening/ViewAll"
+  //     );
+  //     console.log(res,'carrer');
+      
+  //     setJobPostingData(res.data.data);
+  //   } catch (error) {
+  //     console.log(error || error.message);
+  //   }
+  // };
 
-
+useEffect(() => {
   const buyFetchData = async () => {
     try {
       const res = await axios.get(
@@ -469,6 +521,8 @@ export const DataProvider = ({ children }) => {
       console.error("Error fetching resale property data:", error);
     }
   };
+  buyFetchData();
+},[]);
 
   const handleFilter = () => {
     const minPriceNumber = parseFloat(priceRange.min);
@@ -505,7 +559,7 @@ export const DataProvider = ({ children }) => {
         BuilderIndependentFloor,
         deenDayalPlots,
         handleUserLogin,
-        blogData,
+        // blogData,
         sohnaRoad,
         golfCourse,
         careerData,
@@ -535,6 +589,14 @@ export const DataProvider = ({ children }) => {
         orris,
         jms,
         SignatureBuilder,
+        M3M,
+        Experion,
+        Elan,
+        BPTP,
+        Adani,
+        SmartWorld,
+        Trevoc,
+        IndiaBulls,
         rof,
         emaarIndia,
         m3mIndia,

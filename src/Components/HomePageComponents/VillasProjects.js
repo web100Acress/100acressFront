@@ -10,17 +10,30 @@ const VillasProjects = () => {
   return (
     <div>
       <Helmet>
-        <title>Secure Your Dream Villa in a Prime Location | 100acress</title>
+        <title>Secure Your Dream Villas in a Prime Location | 100acress</title>
         <meta
           name="description"
           content="Step into a world of luxury with our exceptional villa designs. Discover your ideal home now. Contact us now!"
         />
-        <link rel="canonical" href="https://www.100acress.com/villas/" />
+        <meta property="og:title" content="Secure Your Dream Villa in a Prime Location | 100acress
+"/>
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/projects/villas/" />
+        <meta property="og:description" content="Step into a world of luxury with our exceptional villa designs. Discover your ideal home now. Contact us now!" />
+        <meta property="og:keywords" content="Villa" />
+        <meta name="twitter:title" content="Secure Your Dream Villa in a Prime Location | 100acress" />
+        <meta name="twitter:description" content="Step into a world of luxury with our exceptional villa designs. Discover your ideal home now. Contact us now!" />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
+        <link rel="canonical" href="https://www.100acress.com/projects/villas/" />
       </Helmet>
 
       <div className="max-w-screen pt-4 sm:pt-2 md:pt-2" target="_top">
         <h1 className="mb-2 mt-10 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-         India's Luxury Villas
+         India's Luxury Villas for Sale
         </h1>
         <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
           Luxury villas in Gurgaon come with top-notch facilities and amenities.

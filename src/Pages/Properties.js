@@ -15,8 +15,21 @@ function Properties() {
           name="description"
           content="Upgrade your lifestyle with best real estate Projects in Gurugram. Browse modern apartments, villas, and investment properties at 100acress. Contact us now!"
         />
+        <meta property="og:title" content="Best Real Estate Projects in Gurugram - 100acress" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/projects-in-gurugram/ " />
+        <meta property="og:description" content="Find exclusive SCO plots in Gurgaon for retail, offices, and more. Premium locations designed to grow your business or investment portfolio
+"/>
+        <meta property="og:keywords" content="Projects in Gurugram" />
+        <meta name="twitter:title" content="Best Real Estate Projects in Gurugram - 100acress" />
+        <meta name="twitter:description" content="Upgrade your lifestyle with best real estate Projects in Gurugram. Browse modern apartments, villas, and investment properties at 100acress. Contact us now!" />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
         <title>
-         Best Real Estate Projects in Gurugram - 100acress
+          Best Real Estate Projects in Gurugram - 100acress
         </title>
         <link
           rel="canonical"
@@ -75,7 +88,7 @@ function Properties() {
                             <>{item.minPrice}</>
                           )}
                           {" - "}
-                          {item.maxPrice} Cr 
+                          {item.maxPrice} Cr
                         </span>
                       </li>
 

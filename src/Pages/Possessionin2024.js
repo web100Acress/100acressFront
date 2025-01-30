@@ -13,8 +13,20 @@ const Possessionin2024 = () => {
           name="description"
           content=" Get detailed information on property possession in Gurugram. Check out 2024 projects and move into your dream home without delay."
         />
+        <meta property="og:title" content="Top Property Possession in Gurugram for 2024" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/projects-in-gurugram/property-possession-in-2024/" />
+        <meta property="og:description" content="Get detailed information on property possession in Gurugram. Check out 2024 projects and move into your dream home without delay." />
+        <meta property="og:keywords" content="Property Possession in Gurugram" />
+        <meta name="twitter:title" content="Top Property Possession in Gurugram for 2024" />
+        <meta name="twitter:description" content="Get detailed information on property possession in Gurugram. Check out 2024 projects and move into your dream home without delay." />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
+
         <title>
-        Top Property Possession in Gurugram for 2024
+          Top Property Possession in Gurugram for 2024
         </title>
         <link
           rel="canonical"

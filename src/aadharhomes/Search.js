@@ -4,7 +4,6 @@ import { SearchIcon } from "../Assets/icons";
 import AOS from 'aos';
 import styled, { keyframes } from "styled-components";
 import 'aos/dist/aos.css';
-import { Wrap } from "@chakra-ui/react";
 import { useMediaQuery } from "@chakra-ui/react";
 
 

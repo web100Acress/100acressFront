@@ -17,13 +17,24 @@ const Rof = () => {
           name="description"
           content="Find the perfect ROF plot in Gurugram to build your dream home. Great investment for future prosperity. Connect with us today!"
         />
+        <meta property="og:title" content="Affordable ROF Plots in Gurugram | Buy Now" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:url" content="https://www.100acress.com/jms-plots-gurugram/" />
+        <meta property="og:description" content="Find the perfect ROF plot in Gurugram to build your dream home. Great investment for future prosperity. Connect with us today!" />
+        <meta property="og:keywords" content="ROF Plots in Gurugram" />
+        <meta name="twitter:title" content="Affordable ROF Plots in Gurugram | Buy Now" />
+        <meta name="twitter:description" content="Find the perfect ROF plot in Gurugram to build your dream home. Great investment for future prosperity. Connect with us today!" />
+        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
+        <meta name="twitter:card" content="summary" />
          <link
           rel="canonical"
           href="https://www.100acress.com/rof-plots-gurugram/"
         />
       </Helmet>
 
-      <section className="flex pt-2 flex-col items-center">
+      <section className="flex pt-2 flex-col items-center mt-12">
         <h1 className="mb-3 p-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           ROF Plots in Gurugram
         </h1>
