@@ -14,6 +14,7 @@ const customStyle = {
 const ProjectEdit = () => {
   const [values, setValues] = useState({
     frontImage: "",
+    thumbnailImage: "",
     otherImage: [],
     project_floorplan_Image: [],
     projectGallery: [],
@@ -25,6 +26,8 @@ const ProjectEdit = () => {
     projectAddress: "",
     city: "",
     state: "",
+    country: "",
+    luxury: false,
     projectOverview: "",
     projectRedefine_Business: "",
     projectRedefine_Connectivity: "",
@@ -91,6 +94,24 @@ const ProjectEdit = () => {
       reader.readAsDataURL(input.files[0]);
     }
   }
+  function handleThumbnailImageChange(event) {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        setValues((prevValues) => ({
+          ...prevValues,
+          thumbnailImage: {
+            file: input.files[0],
+            url: e.target.result,
+          },
+        }));
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+
 
 
 
@@ -186,6 +207,12 @@ const ProjectEdit = () => {
       if (values.frontImage && values.frontImage.file) {
         fromData.append('frontImage', values.frontImage.file);
         console.log(`Appending front image: frontImage`, values.frontImage.file);
+      }
+
+      // Append thumbnail image if it exists
+      if (values.thumbnailImage && values.thumbnailImage.file) {
+        fromData.append('thumbnailImage', values.thumbnailImage.file);
+        console.log(`Appending front image: thumbnailImage`, values.thumbnailImage.file);
       }
 
       // Append project master plan image if it exists
@@ -303,6 +330,23 @@ const ProjectEdit = () => {
                     />
                     <br />
                     <input type="file" onChange={(e) => handleFileChange(e)} />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Project Thumbnail Image</th>
+                </tr>
+
+                <tr>
+                  {/* Front Image code here */}
+                  <td>
+                    <img
+                      src={values?.thumbnailImage ? values.thumbnailImage.url : ""}
+                      alt="thumbnailImage"
+                      style={{ maxWidth: "20%" }}
+                      id="previewImage"
+                    />
+                    <br />
+                    <input type="file" onChange={(e) => handleThumbnailImageChange(e)} />
                   </td>
                 </tr>
 
@@ -935,6 +979,53 @@ const ProjectEdit = () => {
                             })
                           }
                         />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+                {/* Country Update */}
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Country :
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          name="country"
+                          value={values.country}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              country: e.target.value,
+                            })
+                          }
+                          className="outline-none"
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+{/* Luxury Update */}
+            <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Luxury :
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <select 
+                            name="luxury" 
+                            id="luxury" 
+                            value={values.luxury} 
+                            onChange={(e) =>
+                              setValues({
+                                ...values,
+                                luxury: e.target.value,
+                              })
+                            }
+                        >
+                          <option value="Select Luxury Type" selected hidden disabled ></option>
+                          <option value="True">True</option>
+                          <option value="False">False</option>
+                        </select>
                       </span>
                     </span>
                   </th>
