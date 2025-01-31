@@ -1368,7 +1368,6 @@ const NewBanner = () => {
                         <img
                           src={projectViewDetails.project_locationImage.url}
                           alt={`${projectViewDetails.projectName}`}
-                          onClick={() => openModalMasterPlan(projectViewDetails.project_locationImage.url)}
                         />
                       )}
                     </div>
@@ -1392,7 +1391,7 @@ const NewBanner = () => {
                         >
                           {projectViewDetails.projectName}
                         </h4>
-                        <div className="mt-3 md:mt-3 h-48 overflow-y-auto">
+                        <div className="mt-3 md:mt-3 h-auto overflow-y-auto">
                           {/* Lists */}
                           {projectRedefine_Connectivity?.length > 0 && (
                             <ul className="list-disc list-inside text-sm sm:text-base md:text-lg">
@@ -1803,7 +1802,7 @@ const Wrapper = styled.section`
   }
 
   .dd-m-phone:hover {
-    transform: translateY(-5px);
+    transform: rotate(0.3turn);
     box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
   }
 
@@ -1857,7 +1856,7 @@ const Wrapper = styled.section`
   }
 
   .dd-m-whatsapp:hover {
-    transform: translateY(-5px);
+   transform: rotate(0.9turn);
     box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
   }
 

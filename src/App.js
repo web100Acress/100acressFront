@@ -168,7 +168,7 @@ function App() {
                 element={<Possessionin2024 />}
               />
               <Route 
-                path="/builder/:builderName" 
+                path="/developers/:builderName" 
                 element={<BuilderPage />} 
               />
               <Route

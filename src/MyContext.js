@@ -5,6 +5,7 @@ export const DataProvider = ({ children }) => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: Infinity });
   const [trendingProject, setTrendingProject] = useState([]);
   const [spotlightProject, setSpotlightProject] = useState([]);
+  const [LuxuryProjects, setLuxuryProjects] = useState([]);
   const [featuredProject, setFeaturedProject] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [affordable, setAffordable] = useState([]);
@@ -83,14 +84,12 @@ export const DataProvider = ({ children }) => {
     }
   });
  
-  // useEffect(() => {
-  //   // fetchAllProject();
-  //   // fetchBlogData();
-  //   // fetchCareerData();
-  //   // fetchJobPostingData();
-  //   // buyFetchData();
-  //   // fetchProject();
-  // }, []);
+  const DESIRED_ORDER = [
+    "Elan The Emperor",
+    "Experion The Trillion",
+    "Birla Arika",
+    "DLF Privana North",
+  ];
 
   useEffect(() => {
     if (possessionDate !== null) {
@@ -140,6 +139,23 @@ export const DataProvider = ({ children }) => {
           project.projectOverview === "upcoming" ||
           project.projectReraNo === "upcoming" 
       );
+
+      const LuxuryProjects = projectsData
+        .filter((project) => project.luxury === true || project.luxury === "True")
+        .sort((a, b) => {
+          const indexA = DESIRED_ORDER.indexOf(a.projectName);
+          const indexB = DESIRED_ORDER.indexOf(b.projectName);
+
+          if (indexA !== -1 && indexB !== -1) {
+            return indexA - indexB;
+          } else if (indexA !== -1) {
+            return -1;
+          } else if (indexB !== -1) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });  
 
       const spotlightProject = projectsData.filter(
         (project) =>  project.projectName === "Experion Nova" || project.projectName === "Emaar Urban Ascent" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"  
@@ -375,6 +391,7 @@ export const DataProvider = ({ children }) => {
       )
       
       setSpotlightProject(spotlightProject);
+      setLuxuryProjects(LuxuryProjects);
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
       setFeaturedProject(featuredProjects);
@@ -545,6 +562,7 @@ useEffect(() => {
         setPossessionDate,
         trendingProject,
         spotlightProject,
+        LuxuryProjects,
         featuredProject,
         affordable,
         upcoming,
