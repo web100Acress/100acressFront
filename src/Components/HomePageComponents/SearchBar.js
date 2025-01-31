@@ -11,14 +11,9 @@ function SearchBar() {
   const [data, setData] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentindeximgae, setCurrentImageIndex] = useState(0);
-  // const [imageSrc, setImageSrc] = useState([
-  //   'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp',
-  //   'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.jpeg'
-  // ]);
-
-  const imageSrc = [
+   const imageSrc = [
     {
-      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t3.webp", link:"/signature-global-projects/"
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t3.webp", link:"builder/Signature"
     },
     {
       image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp", link:"/indiabulls-estate-club/"

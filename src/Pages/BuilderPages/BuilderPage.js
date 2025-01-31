@@ -7,20 +7,30 @@ import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../../
 
 const BuilderPage = () => {
   const { builderName } = useParams(); 
-  const { SignatureBuilder, M3M  , dlfAllProjects ,Experion ,Elan ,BPTP ,Adani ,SmartWorld ,Trevoc ,IndiaBulls} = useContext(DataContext); 
+  const { 
+     SignatureBuilder,
+     M3M,
+     dlfAllProjects,
+     Experion,
+     Elan,
+     BPTP,
+     Adani,
+     SmartWorld,
+     Trevoc,
+     IndiaBulls
+    } = useContext(DataContext); 
 
-  // Dynamically select the builder's data
   const buildersData = {
-    Signature: SignatureBuilder,
-    M3M: M3M,
-    DLF: dlfAllProjects,
-    Experion: Experion,
-    Elan: Elan,
-    BPTP:BPTP,
-    Adani:Adani,
-    SmartWorld:SmartWorld, 
-    Trevoc:Trevoc,
-    IndiaBulls:IndiaBulls 
+    'signature-global': SignatureBuilder,
+    'm3m-india': M3M,
+    'dlf-homes': dlfAllProjects,
+    'experion-developers': Experion,
+    'elan-group': Elan,
+    'bptp-limited':BPTP,
+    'adani-realty':Adani,
+    'smartWorld-developers':SmartWorld, 
+    'trevoc-group':Trevoc,
+    'indiabulls-real-estate':IndiaBulls 
 
   };
 
@@ -41,11 +51,20 @@ const BuilderPage = () => {
     }
   };
 
+  const formatBuilderName = (name) => {
+    return name
+      .split('-') // Split the name into an array using hyphens
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+      .join(' '); // Join the words with spaces
+  };
+  
+
+  const formattedBuilderName = formatBuilderName(builderName);
   return (
     <div>
       <Helmet>
         <title>
-          {builderName} Projects in Gurugram – {builderName} Luxury Homes
+          {formattedBuilderName} Projects in Gurugram – {builderName} Luxury Homes
         </title>
         <meta
           name="description"
@@ -140,7 +159,7 @@ const BuilderPage = () => {
       </section> */}
       <section className="flex pt-2 flex-col items-center mt-12">
               <h1 className="mb-3 p-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-              {builderName} Projects in Gurugram
+              {formattedBuilderName} Projects in Gurugram
               </h1>
               
       
