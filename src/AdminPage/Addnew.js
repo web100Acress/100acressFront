@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import axios from "axios";
 const AddNew = () => {
   const [editFromData, setEditFromData] = useState({
@@ -196,7 +196,7 @@ const AddNew = () => {
     formDataAPI.append("projectMaster_plan", fileData.projectMaster_plan);
 
     try {
-      const response = await axios.post(apiEndpoint, formDataAPI);
+      const response = await axios.post(apiEndpoint, formDataAPI);      
       alert("Data Posted");
       resetData();
       resetImageData();

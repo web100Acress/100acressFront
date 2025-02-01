@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { lazy, Suspense, useContext, useEffect, useState } from "react";
 import Cities from "../Components/HomePageComponents/Cities";
 import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
@@ -23,6 +23,7 @@ import SpotlightBanner from "../aadharhomes/SpotlightBanner";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Builder from "./BuilderPages/Builder";
+import { Skeleton } from "antd";
 
 function Home() {
   useEffect(() => {
@@ -39,6 +40,7 @@ function Home() {
     resalePropertydata,
     LuxuryProjects,
   } = useContext(DataContext);
+  const Luxury = lazy(() => import('./HomePages/Luxury'));
 
   const [colorChange, setColorchange] = useState(false);
   const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
@@ -66,7 +68,6 @@ function Home() {
   }
 
   const [activeFilter, setActiveFilter] = useState("Trending");
-
   // Determine which data to display based on the active filter
   let displayedProjects = [];
   if (activeFilter === "Trending") {
@@ -389,25 +390,30 @@ function Home() {
                             </li>
                           </li>
                         </ul>
-
-                        <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
+                        <ul className="m-0 flex list-none items-center justify-between px-0 pb-0">
                           <li className="text-left">
                             <span className="text-sm font-extrabold text-red-600">
                               <span className="text-xl"><RupeeIcon /></span>
-                              {item.minPrice < 1 ? (
-                                <>{item.minPrice * 100} L</>
+                              {!item.minPrice || !item.maxPrice ? ( 
+                                "Reveal Soon"                 
                               ) : (
-                                <>{item.minPrice}</>
+                                <>
+                                  {item.minPrice < 1 ? (
+                                    <>{item.minPrice * 100} L</>
+                                  ) : (
+                                    <>{item.minPrice}</>
+                                  )}
+                                  {" - "}
+                                  {item.maxPrice} Cr
+                                </>
                               )}
-                              {" - "}
-                              {item.maxPrice} Cr
                             </span>
                           </li>
                           <Link to={`/${pUrl}/`} target="_top">
                             <li className="text-left">
                               <button
                                 type="button"
-                                className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
+                                className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 text-center me-2"
                               >
                                 View Details
                               </button>
@@ -430,114 +436,9 @@ function Home() {
       </div>
 
       {/* Luxyry Projects */}
-
-      <div data-aos="zoom-in-down" className="py-3">
-        {" "}
-        <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
-          <div className="flex items-center">
-            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
-              Luxury for You
-            </h2>
-          </div>
-          {/* <div className="ml-2 hidden sm:block">
-            <Link to="projects/upcoming-projects-in-gurgaon/" target="_top">
-              <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-                <EyeIcon />
-                <span className="ml-2">View All</span>
-              </span>
-            </Link>
-          </div> */}
-        </div>
-        {
-          <section className="flex flex-col items-center bg-white mt-3">
-            <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-              {LuxuryProjects.slice(0,4).map((item, index) => {
-                const pUrl = item.project_url;
-                return (
-                  <span >
-
-                    <article
-                      key={index}
-                      className="mb-2 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                    >
-                      <div className="relative flex p-3">
-                        <Link to={`/${pUrl}/`} target="_top">
-
-                          <img
-                            src={item.frontImage.url}
-                            alt="property In Gurugram"
-                            className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
-                          />
-                        </Link>
-                        <div className="absolute top-5 right-5"
-                          onClick={() => handleShare(item)}
-                        >
-                          <ShareFrameIcon />
-                        </div>
-                      </div>
-                      <div className="pt-0 p-3">
-                        <div className="pb-2">
-                          <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                            {item.projectName}
-                          </span>
-                          <br />
-                          <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
-                            {item.city}, {item.state}
-                          </span>
-                        </div>
-
-                        <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
-                          <li className="mr-4 flex items-center text-left">
-                            <li className="text-left">
-                              <p className="m-0 text-sm font-medium ">
-                                <PropertyIcon />{" "}{item.type}
-                              </p>
-                              <span className="text-[10px] text-gray-600 block truncate text-sm text-gray-400 block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
-                                <LocationRedIcon />{" "}{item.projectAddress}
-                              </span>
-
-                            </li>
-                          </li>
-                        </ul>
-
-                        <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
-                          <li className="text-left">
-                            <span className="text-sm font-extrabold text-red-600">
-                              <span className="text-xl"><RupeeIcon /></span>
-                              {item.minPrice < 1 ? (
-                                <>{item.minPrice * 100} L</>
-                              ) : (
-                                <>{item.minPrice}</>
-                              )}
-                              {" - "}
-                              {item.maxPrice} Cr
-                            </span>
-                          </li>
-                          <Link to={`/${pUrl}/`} target="_top">
-                            <li className="text-left">
-                              <button
-                                type="button"
-                                className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
-                              >
-                                View Details
-                              </button>
-                            </li>
-                          </Link>
-                        </ul>
-                      </div>
-                    </article>
-                    {/* <div className="absolute top-5 right-5"
-                      onClick={() => handleShare(item)}
-                    >
-                      <ShareFrameIcon />
-                    </div> */}
-                  </span>
-                );
-              })}
-            </div>
-          </section>
-        }
-      </div>
+        <Suspense fallback={<div><Skeleton/></div>}>
+        <Luxury/>
+        </Suspense>
 
 
       <div data-aos="fade-up"

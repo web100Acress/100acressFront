@@ -64,7 +64,7 @@ const BuilderPage = () => {
     <div>
       <Helmet>
         <title>
-          {formattedBuilderName} Projects in Gurugram – {builderName} Luxury Homes
+          {formattedBuilderName} Projects in Gurugram – {formattedBuilderName} Luxury Homes
         </title>
         <meta
           name="description"
@@ -72,7 +72,7 @@ const BuilderPage = () => {
         />
         <link
           rel="canonical"
-          href={`https://www.100acress.com/${builderName.toLowerCase()}-projects/`}
+          href={`https://www.100acress.com/developers/${builderName.toLowerCase()}/`}
         />
       </Helmet>
 

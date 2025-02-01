@@ -57,7 +57,7 @@ const Builder = () => {
         },
         {
             title: "SmartWorld Developers",
-            link: "/developers/smartWorld-developers/",
+            link: "/developers/smartworld-developers/",
             image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/smartworld.webp",
         },
     ]
@@ -68,11 +68,11 @@ const Builder = () => {
                <div className="flex items-center justify-between mx-4 lg:mx-6 xl:mx-14 md:mx-6 py-2">
                          <div className="flex items-center ">
                            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
-                             Top Builder in Gurugram
+                             Top Developers in Gurugram
                            </h2>
                          </div>
                          {/* <div className="ml-2 hidden sm:block">
-                           <Link to="/sco/plots/" target="_top">
+                           <Link to="/top-luxury-projects/" target="_top">
                              <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
                                <EyeIcon />
                                <span className="ml-2">View All</span>
@@ -127,7 +127,7 @@ const Wrapper = styled.section`
     padding-top: 10px;
     padding-bottom: 20px;
   }
-      .container {
+  .container {
     max-width: 1250px;
     margin: auto;
     padding: 10px;
@@ -223,156 +223,5 @@ const Wrapper = styled.section`
     }
   }
 
-  .bc-rd-23 {
-    border-radius: 23px;
-  }
-
-  .bc-rd-15 {
-    border-radius: 15px;
-  }
-
-  .ft-sz-15 {
-    font-size: 15px;
-  }
-
-  .ft-sz-30 {
-    font-size: 30px;
-  }
-
-  .ft-sz-25 {
-    font-size: 25px;
-  }
-
-  .gdmJO {
-    flex-wrap: wrap;
-    max-width: 1500px;
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: space-between;
-  }
-
-  .cvBMLN {
-    width: calc(20% - 20px); /* Adjusted width and margin */
-    margin: 10px;
-    height: 200px;
-    border: 3px solid #eee;
-    overflow: hidden;
-    position: relative;
-    float: left;
-    display: inline-block;
-    cursor: pointer;
-    border-radius: 13px;
-    text-align: center;
-  }
-
-  .asdDRsfVN {
-    height: 100%;
-    width: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    -webkit-transition: all 0.5s;
-    -moz-transition: all 0.5s;
-    -o-transition: all 0.5s;
-    transition: all 0.5s;
-  }
-
-  .bg-one {
-    background-image: url(../../OtherImages/sohnaroad.webp);
-    background-position: center;
-  }
-
-  .bg-two {
-    background-image: url(../../OtherImages/golfcourse.webp);
-    background-position: center;
-  }
-
-  .bg-three {
-    background-image: url(../../OtherImages/mgroad.webp);
-    background-position: center;
-  }
-
-  .bg-four {
-    background-image: url(../../OtherImages/sikanderpur.webp);
-    background-position: center;
-  }
-
-  .bg-five {
-    background-image: url(../../OtherImages/capture1.webp);
-    background-position: center;
-  }
-
-  .bg-six {
-    background-image: url(../../OtherImages/capture2.webp);
-    background-position: center;
-  }
-
-  .bg-seven {
-    background-image: url(../../OtherImages/capture3.webp);
-    background-position: center;
-  }
-
-  .bg-eight {
-    background-image: url(../../OtherImages/bgseven.webp);
-    background-position: center;
-  }
-
-  .bg-nine {
-    background-image: url(../../OtherImages/capture5.webp);
-    background-position: center;
-  }
-
-  .bg-ten {
-    background-image: url(../../OtherImages/capture6.webp);
-    background-position: center;
-  }
-  .bg-one:hover,
-  .bg-two:hover,
-  .bg-three:hover,
-  .bg-four:hover,
-  .bg-five:hover,
-  .bg-six:hover,
-  .bg-seven:hover,
-  .bg-eight:hover,
-  .bg-nine:hover,
-  .bg-ten:hover {
-    // filter: grayscale(0.80);
-    opacity: 1;
-    // filter: brightness(90%);
-    filter: gray saturate(0%) brightness(70%) contrast(1000%);
-  }
-
-  .cvBMLN:hover .asdDRsfVN,
-  .cvBMLN:focus .asdDRsfVN {
-    -ms-transform: scale(1.2);
-    -moz-transform: scale(1.2);
-    -webkit-transform: scale(1.2);
-    -o-transform: scale(1.2);
-    transform: scale(1.2);
-  }
-
-  .cvBMLN p {
-    position: absolute;
-    bottom: 0px;
-    left: 10%;
-    right: 10%;
-    font-weight: bold;
-    color: white;
-    transition: 0.5s;
-  }
-
-  .cvBMLN:hover p {
-    bottom: 35%;
-  }
-
-  @media screen and (max-width: 900px) {
-    .cvBMLN {
-      width: calc(45% - 10px); /* Adjusted width for tablet screens */
-    }
-  }
-
-  @media screen and (max-width: 425px) {
-    .cvBMLN {
-      width: 100%;
-    }
   }
 `;
