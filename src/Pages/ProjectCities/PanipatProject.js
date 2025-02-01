@@ -1,10 +1,27 @@
 import React, { useContext } from "react";
-import Footer from "../Components/Actual_Components/Footer";
-import { DataContext } from "../MyContext";
+import Footer from "../../Components/Actual_Components/Footer";
+import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { LocationRedIcon,PropertyIcon,RupeeIcon,ShareFrameIcon } from "../../Assets/icons";
+
 const PanipatProject = () => {
   const { panipat } = useContext(DataContext);
+  const handleShare = (project) => {
+    if (navigator.share) {
+        navigator
+            .share({
+                title: project?.projectName,
+                text: `Check out this project: ${project.projectName}`,
+                url: `${window.location.origin}/${project.project_url}`,
+            })
+            .then(() => console.log("Shared successfully"))
+            .catch((error) => console.log("Error sharing:", error));
+    } else {
+        alert("Share functionality is not supported on this device/browser.");
+    }
+};
+
   return (
     <div>
       <Helmet>
@@ -31,7 +48,7 @@ const PanipatProject = () => {
 
       </Helmet>
 
-      <section className="flex pt-2 flex-col items-center mt-12">
+      <section className="flex pt-2 flex-col items-center mt-16">
         <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
           Projects in Panipat
         </h1>
@@ -51,58 +68,76 @@ const PanipatProject = () => {
               <Link to={`/${pUrl}/`} target="_top">
                 <article
                   key={index}
-                  className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                  className="mb-2 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                 >
-                  <div>
-                    <img
-                      src={item.frontImage.url}
-                      alt="property In Gurugram"
-                      className="w-full h-48 object-fit"
-                    />
+                  <div className="relative flex p-3">
+                    <Link to={`/${pUrl}/`} target="_top">
+
+                      <img
+                        src={item.frontImage.url}
+                        alt="property In Gurugram"
+                        className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
+                      />
+                    </Link>
+                    <div className="absolute top-5 right-5"
+                      onClick={() => handleShare(item)}
+                    >
+                      <ShareFrameIcon />
+                    </div>
                   </div>
-                  <div className="p-4">
+                  <div className="pt-0 p-3">
                     <div className="pb-2">
                       <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
                         {item.projectName}
                       </span>
                       <br />
-                      <span className="text-sm hover:text-red-600  duration-500 ease-in-out">
+                      <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
                         {item.city}, {item.state}
                       </span>
                     </div>
 
-                    <ul className="box-border flex list-none items-center border-t border-b border-solid border-gray-200 px-0 py-2">
+                    <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
                       <li className="mr-4 flex items-center text-left">
                         <li className="text-left">
-                          <span className="text-[13px] text-gray-400">
-                            {item.projectAddress}
+                          <p className="m-0 text-sm font-medium ">
+                            <PropertyIcon />{" "}{item.type}
+                          </p>
+                          <span className="text-[10px] text-gray-600 block truncate text-sm text-gray-400 block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
+                            <LocationRedIcon />{" "}{item.projectAddress}
                           </span>
-                          <p className="m-0 text-sm font-medium">{item.type}</p>
+
                         </li>
                       </li>
                     </ul>
-                    <ul className="m-0 flex list-none items-center justify-between px-0  pb-0">
+                    <ul className="m-0 flex list-none items-center justify-between px-0 pb-0">
                       <li className="text-left">
                         <span className="text-sm font-extrabold text-red-600">
-                          <span className="text-xl">₹</span>
-                          {item.minPrice < 1 ? (
-                            <>{item.minPrice * 100} L</>
+                          <span className="text-xl"><RupeeIcon /></span>
+                          {!item.minPrice || !item.maxPrice ? (
+                            "Reveal Soon"
                           ) : (
-                            <>{item.minPrice}</>
+                            <>
+                              {item.minPrice < 1 ? (
+                                <>{item.minPrice * 100} L</>
+                              ) : (
+                                <>{item.minPrice}</>
+                              )}
+                              {" - "}
+                              {item.maxPrice} Cr
+                            </>
                           )}
-                          {" - "}
-                          {item.maxPrice} Cr
                         </span>
                       </li>
-
-                      <li className="text-left">
-                        <button
-                          type="button"
-                          className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-2 py-2  text-center me-2"
-                        >
-                          View Details
-                        </button>
-                      </li>
+                      <Link to={`/${pUrl}/`} target="_top">
+                        <li className="text-left">
+                          <button
+                            type="button"
+                            className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 text-center me-2"
+                          >
+                            View Details
+                          </button>
+                        </li>
+                      </Link>
                     </ul>
                   </div>
                 </article>
