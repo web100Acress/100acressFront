@@ -283,6 +283,16 @@ const Footer = () => {
                   Home Loan
                 </Link>
               </li>
+              <li className="list-none text-white text-sm my-1 truncate">
+                <Link
+                  to="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/masterplan/gurgaon+master+plan.pdf"
+                  className=""
+                  target="_blank"
+                  style={{ color: "white" }}
+                >
+                  Gurgaon Master Plan
+                </Link>
+              </li>
             </div>
           </div>
 
