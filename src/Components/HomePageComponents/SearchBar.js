@@ -24,11 +24,14 @@ function SearchBar() {
     {
       image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t4.webp", link:"/puri-diplomatic-residences/"
     },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t5.webp", link:"/developers/m3m-india/"
+    }
   ];
 
   const phoneSrc = [
     {
-      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone.webp", link:"/signature-global-projects/"
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone.webp", link:"/developers/signature-global/"
     },
     {
       image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone2.webp", link:"/trevoc-56-gurgaon/"
@@ -39,6 +42,9 @@ function SearchBar() {
     {
       image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone4.webp", link:"/puri-diplomatic-residences/"
     },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone5.webp", link:"/developers/m3m-india/"
+    }
   ]
 
 

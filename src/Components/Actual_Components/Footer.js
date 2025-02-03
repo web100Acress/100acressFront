@@ -45,7 +45,7 @@ const Footer = () => {
   };
   return (
     <>
-      <div className="w-full divide-y divide-gray-200 bg-[#C13B44]">
+      <div className="w-full divide-y divide-gray-200 bg-[#C13B44] mt-14">
         <div className="flex flex-wrap py-3">
           <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-6 py-2 text-center text-sm">
             <Link to="/" target="_top">
