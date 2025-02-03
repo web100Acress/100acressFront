@@ -119,6 +119,9 @@ import 'animate.css';
 import Possessionin2026 from "./Pages/Possessionin2026";
 import SignatureBuilder from "./Pages/BuilderPages/SignatureBuilder";
 import BuilderPage from "./Pages/BuilderPages/BuilderPage";
+import OTPVerification from "./Components/OTPVerification";
+import SignupForm from "./Components/SignupForm";
+import EmailVerification from "./Components/EmailVerification";
 
 function App() {
 
@@ -143,7 +146,11 @@ function App() {
                   )
                 }
               />
-              <Route path="/signup/" element={<SignUp />} />
+              <Route path="/signup/" element={<SignUp />} >
+                  <Route index element={<SignupForm />} />
+                  <Route path="email-verification/" element={<EmailVerification />} />
+                  <Route path="otp-verification/" element={<OTPVerification />} />
+              </Route>
               <Route path="/signin/" element={<SignIn />} />
               <Route path="/privacy-policy/" element={<Privacy />} />
               <Route

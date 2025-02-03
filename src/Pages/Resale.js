@@ -122,7 +122,7 @@ const Resale = () => {
                               )}
                             </div>
                             <div className="pt-0 p-3">
-                          <span className="text-[15px] font-semibold block truncate truncate hover:overflow-visible text-black-600 hover:text-red-600 duration-500 ease-in-out">
+                          <span className="text-[15px] font-semibold block truncate hover:overflow-visible text-black-600 hover:text-red-600 duration-500 ease-in-out">
                           {property.propertyName &&
                                     property.propertyName
                                       .split(" ")
