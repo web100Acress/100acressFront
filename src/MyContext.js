@@ -33,6 +33,8 @@ export const DataProvider = ({ children }) => {
   const [panipat, setPanipat] = useState([]);
   const [panchkula, setpanchkula] = useState([]);
   const [kasauli, setKasauli] = useState([]);
+  const [karnal, setKarnal] = useState([]);
+  const [jalandhar, setJalandhar] = useState([]);
   const [minPrice, setMinPrice] = useState(priceRange.min);
   const [maxPrice, setMaxPrice] = useState(priceRange.max);
   const [filteredProjects, setFilteredProjects] = useState([]);
@@ -74,6 +76,7 @@ export const DataProvider = ({ children }) => {
   const [ayodhya, setAyodhya] = useState([]);
   const [dlfSco, setDlfSco] = useState([]);
   const [project, setProject] = useState([])
+  const [budgetHome, setBudgetHome] = useState([]);
   const [possessionDate, setPossessionDate] = useState(() => {
     try {
       const storedDate = localStorage.getItem("possessionDate");
@@ -158,7 +161,7 @@ export const DataProvider = ({ children }) => {
         });  
 
       const spotlightProject = projectsData.filter(
-        (project) =>  project.projectName === "Experion Nova" || project.projectName === "Emaar Urban Ascent" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"  
+        (project) =>  project.projectName === "Experion Nova" || project.projectName === "Experion The Trillion" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"  
       );
 
       const featuredProjects = projectsData.filter(
@@ -183,6 +186,13 @@ export const DataProvider = ({ children }) => {
 
       const commercialProject = projectsData.filter(
         (project) => project.projectOverview === "commercial"
+      );
+
+      const BudgetHomesGurugram = projectsData.filter(
+        (project) => project.projectName === "M3M Soulitude" 
+        || project.projectName === "M3M Antalya Hills" 
+        || project.projectName === "Signature Global City 93" 
+        || project.projectName === "Signature Global City 81"
       );
 
       const scoPlots = projectsData.filter(
@@ -246,6 +256,14 @@ export const DataProvider = ({ children }) => {
 
       const ayodhya = projectsData.filter(
         (project) => project.city === "Ayodhya"
+      )
+
+      const karnal = projectsData.filter(
+        (project) => project.city === "Karnal"
+      )
+
+      const jalandhar = projectsData.filter(
+        (project) => project.city === "Jalandhar"
       )
 
       const goaCityProject = projectsData.filter(
@@ -345,8 +363,8 @@ export const DataProvider = ({ children }) => {
       );
 
       const signatureglobal = projectsData.filter(
-        (project) => project.projectName === "Signature Global Plots"
-      )
+        (project) => (project.type === "Deen Dayal Plots" || project.type === "Residential Plots") && project.builderName === "Signature Global"
+      );
 
       const emaarIndia = projectsData.filter(
         (project) => project.project_Status === "emaar"
@@ -400,6 +418,7 @@ export const DataProvider = ({ children }) => {
       setAllProjectData(res.data.data);
       setResidencialProjects(residencialProjects);
       setAllUpComingProject(allupcomingProject);
+      setBudgetHome(BudgetHomesGurugram);
       setAllCommercialProject(commercialProject);
       setAllScoPlots(scoPlots);
       setBuilderIndependentFLoor(BuilderIndependentFloor);
@@ -420,6 +439,8 @@ export const DataProvider = ({ children }) => {
       setVillasProject(villasProject);
       setpanchkula(panchkula);
       setKasauli(kasauli);
+      setKarnal(karnal);
+      setJalandhar(jalandhar);
       setpossessionIn2026AndBeyond(possessionIn2026AndBeyond);
       setorris(orris);
       setbptp(bptp);
@@ -591,6 +612,7 @@ useEffect(() => {
         panipat,
         handleFilter,
         filteredProjects,
+        budgetHome,
         possessionAllData,
         readyToMoveData,
         possessionin2024,
@@ -602,6 +624,8 @@ useEffect(() => {
         villasProject,
         panchkula,
         kasauli,
+        karnal,
+        jalandhar,
         possessionIn2026AndBeyond,
         bptp,
         orris,

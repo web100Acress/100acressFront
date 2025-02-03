@@ -720,9 +720,21 @@ export default function Navbar() {
                       
                           <Link
                             to={`/project-in-kasauli/`}
-                            className="block text-sm px-4    hover:text-red-600"
+                            className="block text-sm px-4 py-1   hover:text-red-600"
                           >
                             Projects in Kasauli
+                          </Link>
+                          <Link
+                            to={`/projects-in-karnal/`}
+                            className="block text-sm px-4 py-1   hover:text-red-600"
+                          >
+                            Projects in Karnal
+                          </Link>
+                          <Link
+                            to={`/projects-in-jalandhar/`}
+                            className="block text-sm px-4    hover:text-red-600"
+                          >
+                            Projects in Jalandhar 
                           </Link>
                       
                           <Link

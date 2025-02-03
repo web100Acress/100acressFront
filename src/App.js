@@ -3,16 +3,11 @@ import "./App.css";
 import { styled } from "styled-components";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./Pages/Home";
-import Properties from "./Pages/Properties";
+import Properties from "./Pages/ProjectCities/Properties";
 import PropertyKnow from "./Components/KnowAbouts/PropertyKnow";
 import PageNotFound from "./Pages/PageNotFound";
 import SignUp from "./aadharhomes/SignUp";
 import SignIn from "./aadharhomes/SignIn";
-
-import BannerPage from "./aadharhomes/BannerPage/BannerPage";
-
-//Simran Routing
-
 import Addnew from "./AdminPage/Addnew";
 import Adminproperty from "./AdminPage/Adminproperty";
 import Dashboard from "./AdminPage/Dashboard";
@@ -30,7 +25,6 @@ import About from "./Pages/About";
 import AdminContact from "./AdminPage/AdminContact";
 import ViewAllProperty from "./Pages/ViewAllProperty";
 import ForgetPassword from "./Pages/ForgetPassword";
-
 import ResetEmailPassword from "./Pages/ResetEmailPassword";
 import NewSellProperty from "./aadharhomes/NewSellProperty";
 import UserAdmin from "./AdminPage/UserAdmin";
@@ -81,20 +75,19 @@ import CareerView from "./AdminPage/CareerView";
 import CareerEdit from "./AdminPage/CareerEdit";
 import JobPostingView from "./AdminPage/JobPostingView";
 import JobPostingEdit from "./AdminPage/JobPostingEdit";
-import DelhiProject from "./Pages/DelhiProject";
+import DelhiProject from "./Pages/ProjectCities/DelhiProject";
 import InsertProject from "./AdminPage/InsertProject";
 import UserDetails from "./AdminPage/UserDetails";
-import NoidaProject from "./Pages/NoidaProject";
-import GoaProject from "./Pages/GoaProject";
-import PanipatProject from "./Pages/PanipatProject";
+import NoidaProject from "./Pages/ProjectCities/NoidaProject";
+import GoaProject from "./Pages/ProjectCities/GoaProject";
+import PanipatProject from "./Pages/ProjectCities/PanipatProject";
 import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
 import BudgetPrice from "./Pages/BudgetPrice";
 import BlogViewAdmin from "./AdminPage/BlogViewAdmin";
 import ReadyToMoveProject from "./Pages/ReadyToMoveProject";
-import DlfProject from "./Pages/DlfProject";
 import VillasProjects from "./Components/HomePageComponents/VillasProjects";
-import Panchkula from "./Pages/Panchkula";
+import Panchkula from "./Pages/ProjectCities/Panchkula";
 import PossessionAfter2028 from "./Pages/PossessionAfter2028";
 import Bptp from "./Pages/Bptp";
 import Orris from "./Pages/Orris";
@@ -105,23 +98,25 @@ import M3mIndia from "./Pages/M3mIndia";
 import Microtek from "./Pages/Microtek";
 import Possessionin2024 from "./Pages/Possessionin2024";
 import Possessionin2025 from "./Pages/Possessionin2025";
-import Mumbai from "./Pages/Mumbai";
-import KasauliProject from "./Pages/KasauliProject";
+import Mumbai from "./Pages/ProjectCities/Mumbai";
+import KasauliProject from "./Pages/ProjectCities/KasauliProject";
 import Nh48 from "./Pages/Nh48";
 import MgRoad from "./Pages/MgRoad";
 import UnderConstruction from "./Pages/UnderConstruction";
 import NewLaunch from "./Pages/NewLaunch";
-import Ayodhya from "./Pages/Ayodhya";
+import Ayodhya from "./Pages/ProjectCities/Ayodhya";
 import SignatureGlobal from "./Pages/SignatureGlobal";
 import DlfSco from "./Pages/DlfSco";
 import NewBanner from "./aadharhomes/BannerPage/NewBanner";
 import 'animate.css';
 import Possessionin2026 from "./Pages/Possessionin2026";
-import SignatureBuilder from "./Pages/BuilderPages/SignatureBuilder";
 import BuilderPage from "./Pages/BuilderPages/BuilderPage";
 import OTPVerification from "./Components/OTPVerification";
 import SignupForm from "./Components/SignupForm";
 import EmailVerification from "./Components/EmailVerification";
+import Karnal from "./Pages/ProjectCities/Karnal";
+import Jalandhar from "./Pages/ProjectCities/Jalandhar";
+import LuxuryProject from "./Pages/BuilderPages/LuxuryProjects";
 
 function App() {
 
@@ -227,6 +222,8 @@ function App() {
               <Route path="/project-in-panipat/" element={<PanipatProject />} />
               <Route path="/project-in-panchkula/" element={<Panchkula />} />
               <Route path="/project-in-kasauli/" element={<KasauliProject />} />
+              <Route path="/projects-in-karnal/" element={<Karnal />} />
+              <Route path="/projects-in-jalandhar/" element={<Jalandhar />} />
               <Route path="/project-in-ayodhya/" element={<Ayodhya />} />
               <Route path="/project-in-mumbai/" element={<Mumbai />} />
               <Route
@@ -234,7 +231,6 @@ function App() {
                 element={<UnderConstruction />}
               />
               <Route path="/projects-in-newlaunch/" element={<NewLaunch />} />
-              <Route path="/dlf-homes-projects/" element={<DlfProject />} />
               <Route path="/project-in-goa/" element={<GoaProject />} />
               <Route path="/plots-in-gurugram/" element={<DeenDayalPlots />} />
               <Route path="/projects/villas/" element={<VillasProjects />} />
@@ -281,7 +277,7 @@ function App() {
               <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
               <Route path="/orris-plots-gurugram/" element={<Orris />} />
               <Route path="/jms-plots-gurugram/" element={<Jms />} />
-              <Route path="/signature-global-projects/" element={<SignatureBuilder/>}/>
+              <Route path="/top-luxury-projects/" element={<LuxuryProject/>}/>
               <Route path="/rof-plots-gurugram/" element={<Rof />} />
               <Route
                 path="/signatureglobal-plots-gurugram/"

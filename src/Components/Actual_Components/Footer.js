@@ -45,7 +45,7 @@ const Footer = () => {
   };
   return (
     <>
-      <div className="w-full divide-y divide-gray-200 bg-[#C13B44]">
+      <div className="w-full divide-y divide-gray-200 bg-[#C13B44] mt-14">
         <div className="flex flex-wrap py-3">
           <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-6 py-2 text-center text-sm">
             <Link to="/" target="_top">
@@ -281,6 +281,16 @@ const Footer = () => {
                   style={{ color: "white" }}
                 >
                   Home Loan
+                </Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 truncate">
+                <Link
+                  to="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/masterplan/gurgaon+master+plan.pdf"
+                  className=""
+                  target="_blank"
+                  style={{ color: "white" }}
+                >
+                  Gurgaon Master Plan
                 </Link>
               </li>
             </div>

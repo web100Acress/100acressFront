@@ -40,14 +40,13 @@ const ProjectSearching = () => {
 
   return (
     <>
-      <div className="hidden lg:flex items-center px-14 bg-gray-200 pt-3 justify-center mt-12">
+      <div className="hidden lg:flex items-center px-10 bg-gray-200  justify-center rounded-full mt-4">
         <div className="w-full">
           <div className="grid grid-cols-1 lg:grid-cols-5 md:grid-cols-1 sm:grid-cols-1 gap-4 pt-6 mb-4">
-
             <div className="relative">
               <input
                 type="text"
-                className="border-[1px] border-red-500 outline-none p-2 pr-6 w-full"
+                className="border-[1px] border-[#C13B44] rounded-3xl outline-none p-2 pr-6 w-full"
                 placeholder="Project"
                 value={project}
                 onChange={(e) => setProject(e.target.value)}
@@ -57,7 +56,7 @@ const ProjectSearching = () => {
 
             <div className="relative hidden lg:block">
               <select
-                className="border-[1px] border-red-500 outline-none p-2 pr-8 w-full"
+                className="border-[1px] border-[#C13B44] rounded-3xl outline-none p-2 pr-8 w-full"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               >
@@ -85,7 +84,7 @@ const ProjectSearching = () => {
 
             <div className="relative sm:col-span-1 hidden lg:block">
               <select
-                className="border-[1px] border-red-500 outline-none p-2 pr-8 w-full"
+                className="border-[1px] border-[#C13B44] rounded-3xl outline-none p-2 pr-8 w-full"
                 value={projectType}
                 onChange={(e) => setProjectType(e.target.value)}
               >
@@ -107,7 +106,7 @@ const ProjectSearching = () => {
 
             <div className="relative sm:col-span-1 hidden lg:block">
               <select
-                className="border-[1px] border-red-500 outline-none p-2 pr-8 w-full"
+                className="border-[1px] border-[#C13B44] rounded-3xl outline-none p-2 pr-8 w-full"
                 onChange={handlePriceChange}
                 value={
                   minPrice === "" && maxPrice === ""
@@ -127,18 +126,20 @@ const ProjectSearching = () => {
               </select>
             </div>
 
+            <div className="relative sm:col-span-1 hidden lg:block">
             <button
-              className="p-2 lg:col-span-1 bg-black text-white text-xl"
+              className="p-1 lg:col-span-1 bg-black rounded-3xl text-white text-xl w-full"
               onClick={handleSearch}
-            >
+              >
               Search
             </button>
+              </div>
             
           </div>
         </div>
       </div>
 
-      <section className="flex flex-col items-center bg-white mt-4">
+      <section className="flex flex-col items-center bg-white">
         <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
           {filteredProjects.map((item, index) => {
             const pUrl = item.project_url;

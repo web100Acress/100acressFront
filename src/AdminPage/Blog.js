@@ -63,10 +63,6 @@ const Blog = () => {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
-  };
 
   return (
     <>
