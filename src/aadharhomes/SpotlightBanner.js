@@ -46,7 +46,7 @@ const SpotlightBanner = () => {
     className="rounded-tl-3xl rounded-tr-3xl bg-white">
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-3" >
         <h1 className="text-3xl xl:text-4xl lg:text-3xl md:text-3xl">
-          Hot Projects of the Month
+        100acress - Recommended 
         </h1>
       </div>
       <div className="max-w-7xl mx-auto bg-white rounded-lg mt-2 p-0 md:p-8 lg:flex lg:items-center lg:gap-2 lg:h-80">

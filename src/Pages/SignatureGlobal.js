@@ -7,17 +7,18 @@ import { Helmet } from "react-helmet";
 
 const SignatureGlobal = () => {
     const { signatureglobal } = useContext(DataContext);
+ 
   return (
     <div>
   
 
       <Helmet>
         <title>
-        Signature global Plots for Sale in Gurugram
+        Signature Global Plots for Sale in Gurugram
         </title>
         <meta
           name="description"
-          content="Real Estate Properties in Goa - Get Details for Residential &amp; Commercial Properties"
+          content=""
         />
          <link
           rel="canonical"
