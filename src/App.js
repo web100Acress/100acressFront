@@ -111,6 +111,9 @@ import NewBanner from "./aadharhomes/BannerPage/NewBanner";
 import 'animate.css';
 import Possessionin2026 from "./Pages/Possessionin2026";
 import BuilderPage from "./Pages/BuilderPages/BuilderPage";
+import OTPVerification from "./Components/OTPVerification";
+import SignupForm from "./Components/SignupForm";
+import EmailVerification from "./Components/EmailVerification";
 import Karnal from "./Pages/ProjectCities/Karnal";
 import Jalandhar from "./Pages/ProjectCities/Jalandhar";
 import LuxuryProject from "./Pages/BuilderPages/LuxuryProjects";
@@ -138,7 +141,11 @@ function App() {
                   )
                 }
               />
-              <Route path="/signup/" element={<SignUp />} />
+              <Route path="/signup/" element={<SignUp />} >
+                  <Route index element={<SignupForm />} />
+                  <Route path="email-verification/" element={<EmailVerification />} />
+                  <Route path="otp-verification/" element={<OTPVerification />} />
+              </Route>
               <Route path="/signin/" element={<SignIn />} />
               <Route path="/privacy-policy/" element={<Privacy />} />
               <Route

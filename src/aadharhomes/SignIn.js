@@ -34,6 +34,7 @@ import Footer from "../Components/Actual_Components/Footer";
 import Free from "../../src/Pages/Free";
 import { AuthContext } from "../AuthContext";
 import { Helmet } from "react-helmet";
+import {message} from "antd"
 
 const avatars = [
   {
@@ -65,6 +66,7 @@ export default function SignIn() {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
   const { login } = useContext(AuthContext);
+  const [messageApi, contextHolder] = message.useMessage();
   
   const [userLogin, setuserLogin] = useState({
     password: "",
@@ -78,7 +80,7 @@ export default function SignIn() {
 
   const handleUserLogin = async () => {
     try {
-      await login(userLogin);
+      await login(userLogin,messageApi);
     } catch (error) {
       console.log(error);
     }
@@ -113,6 +115,7 @@ export default function SignIn() {
         <link rel="canonical" href="https://www.100acress.com/signin/" />
       </Helmet>
       <Box position={"relative"} className="mt-8">
+        {contextHolder}
         {password !== "" && email !== "" && <ToastContainer />}
         <Container
           as={SimpleGrid}
