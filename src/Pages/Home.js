@@ -69,8 +69,8 @@ function Home() {
   }
 
   const [activeFilter, setActiveFilter] = useState("Trending");
-  // Determine which data to display based on the active filter
   let displayedProjects = [];
+  let path = false;
   switch (activeFilter) {
     case "Trending":
       displayedProjects = trendingProject;
@@ -80,24 +80,29 @@ function Home() {
       break;
     case "Upcoming":
       displayedProjects = upcoming;
+      path = "/projects/upcoming-projects-in-gurgaon/";
       break;
     case "Commercial":
       displayedProjects = commercialProject;
+      path = "/projects/commerial/";
       break;
     case "SCO":
       displayedProjects = typeScoPlots;
+      path = "/sco/plots/";
       break;
     case "Affordable":
       displayedProjects = affordable;
       break;
     case "Resale":
       displayedProjects = resalePropertydata;
+      path = "/buy-properties/best-resale-property-in-gurugram/";
       break;
     case "Budget":
       displayedProjects = budgetHome;
       break;
     case "Luxury":
       displayedProjects = LuxuryProjects;
+      path = "/top-luxury-projects/";
       break;
     default:
       displayedProjects = [];
@@ -179,7 +184,7 @@ function Home() {
             </div>
 
             {/* Filter Buttons */}
-            <div className="flex items-center justify-start gap-3 mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-2 overflow-x-auto no-scrollbar">
+            <div className="flex items-center justify-start gap-3 mx-6 lg:mx-6 xl:ml-14 md:mx-6 pt-2 overflow-x-auto no-scrollbar">
               <button
                 onClick={() => setActiveFilter("Trending")}
                 className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:shadow-lg hover:scale-125 duration-500 ease-in-out "}`}
@@ -231,6 +236,16 @@ function Home() {
                 Luxury 
               </button>
 
+              {path && (
+                <div className="ml-auto hidden sm:block">
+                  <Link to={path} target="_top">
+                    <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-red-600">
+                      <EyeIcon />
+                      <span className="ml-2">View All</span>
+                    </span>
+                  </Link>
+                </div>
+              )}
             </div>
 
             {/* Display Filtered Projects */}
