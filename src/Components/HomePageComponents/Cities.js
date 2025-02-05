@@ -11,34 +11,34 @@ const Cities =() => {
 
   const cities =[
     {
-      title:"Sohna Road",link:"/property-in-gurugram/sohna-road/",image:"../../OtherImages/sohnaroad.jpg"
+      title:"Sohna Road",link:"/property-in-gurugram/sohna-road/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/sohnaroad.jpg"
     },
     {
-      title:"Golf Course Road",link:"/property-in-gurugram/golf-course/",image:"../../OtherImages/golfcourse.webp"
+      title:"Golf Course Road",link:"/property-in-gurugram/golf-course/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/golfcourse.webp"
     },
     {
-      title:"MG Road",link:"/property-in-gurugram/mg-road/",image:"../../OtherImages/mgroad.jpg"
+      title:"MG Road",link:"/property-in-gurugram/mg-road/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/mgroad.jpg"
     },
     {
-      title:"NPR Road",link:"/property-in-gurugram/northern-peripheral-road/",image:"../../OtherImages/sikanderpur.webp"
+      title:"NPR Road",link:"/property-in-gurugram/northern-peripheral-road/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/sikanderpur.webp"
     },
     {
-      title:"Dwarka Expressway",link:"/property-in-gurugram/dwarka-expressway/",image:"../../OtherImages/capture1.jpg"
+      title:"Dwarka Expressway",link:"/property-in-gurugram/dwarka-expressway/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/capture1.jpg"
     },
     {
-      title:"New Gurgaon",link:"/property-in-gurugram/new-gurgaon/",image:"../../OtherImages/capture2.jpg"
+      title:"New Gurgaon",link:"/property-in-gurugram/new-gurgaon/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/capture2.jpg"
     },
     {
-      title:"Sohna",link:"/property-in-gurugram/sohna/",image:"../../OtherImages/capture3 (2).jpg"
+      title:"Sohna",link:"/property-in-gurugram/sohna/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/capture3 (2).jpg"
     },
     {
-      title:"SPR Road",link:"/property-in-gurugram/southern-peripheral-road/",image:"../../OtherImages/bgseven.jpg"
+      title:"SPR Road",link:"/property-in-gurugram/southern-peripheral-road/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/bgseven.jpg"
     },
     {
-      title:"NH-48",link:"/property-in-gurugram/nh-48/",image:"../../OtherImages/capture5.jpg"
+      title:"NH-48",link:"/property-in-gurugram/nh-48/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/capture5.jpg"
     },
     {
-      title:"Golf Course Extn Road",link:"/property-in-gurugram/golf-course-extn-road/",image:"../../OtherImages/capture6.jpg"
+      title:"Golf Course Extn Road",link:"/property-in-gurugram/golf-course-extn-road/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/capture6.jpg"
     },
   ]
   

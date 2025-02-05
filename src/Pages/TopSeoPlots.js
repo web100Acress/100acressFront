@@ -24,7 +24,7 @@ const TopSeoPlots = () => {
         <Link to={`/emaar-india-sco-plots-gurugram/`} target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
-              src="../../Images/emaarsco.webp"
+              src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/sco+plots/emaarsco.jpg"
               alt="emaar"
               className="w-full  h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
@@ -38,8 +38,8 @@ const TopSeoPlots = () => {
         <Link to={`https://www.100acress.com/reach-sco-114/`} target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
-              src="../../Images/reach.webp"
-              alt="m3m"
+              src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/sco+plots/reach.jpg"
+              alt="reach"
               className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black opacity-30"></div>
@@ -52,7 +52,7 @@ const TopSeoPlots = () => {
         <Link to={`/dlf-homes-sco-plots/`} target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
-              src="../../Images/dlfsco.webp"
+              src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/sco+plots/dlfsco.jpg"
               alt="dlf"
               className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
