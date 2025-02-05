@@ -11,17 +11,20 @@ const BudgetPlotsInGurugraon = () => {
 
   const budgetPlots = [
     {
-      title:"Signature Sidhrawali",link:"/signatureglobal-plots-gurugram/",image:"../../Images/signatureimge.webp"
+      title:"Signature FarukhNagar",link:"/signature-farukhnagar-plots/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/budgetplots/faruknagar.webp"
     },
     {
-      title:"BPTP Limited",link:"/bptp-plots-gurugram/",image:"../../Images/bptp.webp"
+      title:"Signature Sidhrawali / NH-8",link:"/signature-global-plots/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/budgetplots/colors.jpg"
     },
     {
-      title:"ORRIS Group",link:"/orris-plots-gurugram/",image:"../../Images/Orris.webp"
+      title:"BPTP Limited",link:"/bptp-plots-gurugram/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/budgetplots/bptp.webp"
     },
     {
-      title:"JMS Group",link:"/jms-plots-gurugram/",image:"../../Images/jms.jpg"
-    }
+      title:"ORRIS Group",link:"/orris-plots-gurugram/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/budgetplots/Orris.jpg"
+    },
+    // {
+    //   title:"JMS Group",link:"/jms-plots-gurugram/",image:"../../Images/jms.jpg"
+    // }
   ];
 
   return (

@@ -8,12 +8,13 @@ function SpacesAvailable() {
   useEffect(() => { AOS.init(); }, []);
 
   const projects = [
-    { title: "Residential Projects", link: "/property/residential/", image: "../../OtherImages/residencial.webp" },
-    { title: "Commercial Projects", link: "/projects/commerial/", image: "../../OtherImages/commercialproperty.webp" },
-    { title: "SCO Plots ", link: "/sco/plots/", image: "../../OtherImages/sco.jpg" },
-    { title: "Builder & Independent Floor", link: "/projects/independentfloors/", image: "../../OtherImages/builderandindepedent.jpg" },
-    { title: "Plots In Gurugram", link: "/plots-in-gurugram/", image: "../../OtherImages/deendayal.webp" },
-    { title: "Luxury Villas", link: "/projects/villas/", image: "../../OtherImages/villas.jpg" },
+    { title: "Residential Projects", link: "/property/residential/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/residencialprojects.webp" },
+    { title: "Commercial Projects", link: "/projects/commerial/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/commercialproperty+(1).jpg" },
+    { title: "SCO Plots ", link: "/sco/plots/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/sco.jpg" },
+    { title: "Builder & Independent Floor", link: "/projects/independentfloors/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/builderandindepedent.jpg" },
+    { title: "Plots In Gurugram", link: "/plots-in-gurugram/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/deendayal.webp" },
+    { title: "Luxury Villas", link: "/projects/villas/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/villas.jpg" },
+    { title: "Industrial Plots", link: "/signature-global-plots/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/residential.jpg" },
   ];
 
   return (
@@ -24,15 +25,30 @@ function SpacesAvailable() {
           <h1 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
             Dream Property In The Heart of Gurugram
           </h1>
-        </div>
-        <div className="grid-container mt-3">
-          {projects.map((project, index) => (
+        </div> 
+        <div className="grid gap-4 mt-3 grid-cols-3">
+          {projects.slice(0, 3).map((project, index) => (
             <Link data-aos="flip-right" to={project.link} key={index} className="card">
               <img src={project.image} alt={project.title} className="card-image" />
-              <button className="card-button bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">{project.title}</button>
+              <button className="card-button bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">
+                {project.title}
+              </button>
             </Link>
           ))}
         </div>
+
+        <div className="grid gap-4 mt-3 grid-cols-4">
+          {projects.slice(3).map((project, index) => (
+            <Link data-aos="flip-right" to={project.link} key={index + 3} className="card">
+              <img src={project.image} alt={project.title} className="card-image" />
+              <button className="card-button bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">
+                {project.title}
+              </button>
+            </Link>
+          ))}
+        </div>
+
+
       </div>
     </Wrapper>
   );
