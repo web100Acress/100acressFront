@@ -22,7 +22,6 @@ export const DataProvider = ({ children }) => {
   const [golfCourse, setGolfCourse] = useState([]);
   const [searching, setSearching] = useState("Ownering");
   const [token, setToken] = useState(null);
-  const [careerData, setCareerData] = useState([]);
   const [jobPostingData, setJobPostingData] = useState([]);
   const [resalePropertydata, setResalePropertydata] = useState([]);
   const [commercialProjectAll, setAllCommercialProjectAll] = useState([]);
@@ -42,7 +41,6 @@ export const DataProvider = ({ children }) => {
   const [readyToMoveData, setReadyTOMoveData] = useState([]);
   const [dlfProject, setDlfProject] = useState([]);
   const [goaCityProject, setGoaCityProject] = useState([]);
-  const [dlfProjects, setDlfProjects] = useState([]);
   const [villasProject, setVillasProject] = useState([]);
   const [possessionIn2026AndBeyond, setpossessionIn2026AndBeyond] = useState([]);
   const [bptp, setbptp] = useState([]);
@@ -161,7 +159,7 @@ export const DataProvider = ({ children }) => {
         });  
 
       const spotlightProject = projectsData.filter(
-        (project) =>  project.projectName === "Experion Nova" || project.projectName === "Experion The Trillion" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"  
+        (project) =>  project.projectName === "Experion Nova" || project.projectName === "Experion The Trillion" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"  || project.projectName === 'Trump Towers 2'
       );
 
       const featuredProjects = projectsData.filter(
@@ -601,7 +599,6 @@ useEffect(() => {
         // blogData,
         sohnaRoad,
         golfCourse,
-        careerData,
         jobPostingData,
         resalePropertydata,
         commercialProjectAll,
