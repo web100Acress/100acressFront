@@ -36,5 +36,15 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+       ".mask-hole": {
+          "mask-image": "radial-gradient(circle, transparent 25%, black 26%)",
+          "-webkit-mask-image": "radial-gradient(circle, transparent 25%, black 26%)",
+          "background-color": "transparent",
+        },
+      });
+    },
+  ],
 };

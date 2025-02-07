@@ -26,7 +26,7 @@ function SpacesAvailable() {
             Dream Property In The Heart of Gurugram
           </h1>
         </div> 
-        <div className="grid gap-4 mt-3 grid-cols-3">
+        <div className="grid  lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 pb-2 pt-3">
           {projects.slice(0, 3).map((project, index) => (
             <Link data-aos="flip-right" to={project.link} key={index} className="card">
               <img src={project.image} alt={project.title} className="card-image" />
@@ -37,7 +37,7 @@ function SpacesAvailable() {
           ))}
         </div>
 
-        <div className="grid gap-4 mt-3 grid-cols-4">
+        <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 pb-2 pt-3">
           {projects.slice(3).map((project, index) => (
             <Link data-aos="flip-right" to={project.link} key={index + 3} className="card">
               <img src={project.image} alt={project.title} className="card-image" />

@@ -24,8 +24,8 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Builder from "./BuilderPages/Builder";
 import CustomSkeleton from "../Utils/CustomSkeleton";
-import CommonProject from "./HomePages/CommonProject";
-
+import CommonProject from "../Utils/CommonProject";
+import Builderaction from "./HomePages/Builderaction";
 
 function Home() {
   useEffect(() => {
@@ -68,6 +68,8 @@ function Home() {
     reorderedTrendingProjects[7] = trendingProject[3];
   }
 
+
+  
   const [activeFilter, setActiveFilter] = useState("Trending");
   let displayedProjects = [];
   let path = false;
@@ -275,6 +277,8 @@ function Home() {
         title="Luxury For You"
         path="/top-luxury-projects/"
       />
+
+      <Builderaction/>
 
       {/* Budget Projects */}
 

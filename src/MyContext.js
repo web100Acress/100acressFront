@@ -1,5 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { sortByDesiredOrder } from "./Utils/ProjectSorting";
+import { Luxury_Desired_Order, Trending_Desired_Order } from "./Pages/datafeed/Desiredorder";
 export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: Infinity });
@@ -22,7 +24,6 @@ export const DataProvider = ({ children }) => {
   const [golfCourse, setGolfCourse] = useState([]);
   const [searching, setSearching] = useState("Ownering");
   const [token, setToken] = useState(null);
-  const [careerData, setCareerData] = useState([]);
   const [jobPostingData, setJobPostingData] = useState([]);
   const [resalePropertydata, setResalePropertydata] = useState([]);
   const [commercialProjectAll, setAllCommercialProjectAll] = useState([]);
@@ -42,10 +43,10 @@ export const DataProvider = ({ children }) => {
   const [readyToMoveData, setReadyTOMoveData] = useState([]);
   const [dlfProject, setDlfProject] = useState([]);
   const [goaCityProject, setGoaCityProject] = useState([]);
-  const [dlfProjects, setDlfProjects] = useState([]);
   const [villasProject, setVillasProject] = useState([]);
   const [possessionIn2026AndBeyond, setpossessionIn2026AndBeyond] = useState([]);
   const [bptp, setbptp] = useState([]);
+  const [centralpark , setCentralPark] = useState([]);
   const [orris, setorris] = useState([]);
   const [jms, setJms] = useState([]);
   const [SignatureBuilder , setSignaturebuilder] = useState([]);
@@ -86,13 +87,6 @@ export const DataProvider = ({ children }) => {
       return null;
     }
   });
- 
-  const DESIRED_ORDER = [
-    "Elan The Emperor",
-    "Experion The Trillion",
-    "Birla Arika",
-    "DLF Privana North",
-  ];
 
   useEffect(() => {
     if (possessionDate !== null) {
@@ -109,19 +103,6 @@ export const DataProvider = ({ children }) => {
     });
     setPossessionAllData(PossFilter);
   };
-
-//   useEffect(() => {
-//   const fetchProject = async () => {
-//     try {
-//       const response = await axios.get('https://api.100acress.com/project/viewAll/data');
-//       // setProject(response.data.data); 
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   }
-//   fetchProject();
-//  },[project]);
-
   
   useEffect(() => {
   const fetchAllProject = async () => {
@@ -133,8 +114,10 @@ export const DataProvider = ({ children }) => {
 
       const projectsData = res.data.data;
     
-      const trendingProjects = projectsData.filter(
-        (project) => project.projectOverview === "trending" 
+      const trendingProjects = sortByDesiredOrder(
+        projectsData.filter((project) => project.projectOverview === "trending"),
+        Trending_Desired_Order,
+        "projectName"
       );
 
       const upcomingProjects = projectsData.filter(
@@ -143,25 +126,13 @@ export const DataProvider = ({ children }) => {
           project.projectReraNo === "upcoming" 
       );
 
-      const LuxuryProjects = projectsData
-        .filter((project) => project.luxury === true || project.luxury === "True")
-        .sort((a, b) => {
-          const indexA = DESIRED_ORDER.indexOf(a.projectName);
-          const indexB = DESIRED_ORDER.indexOf(b.projectName);
-
-          if (indexA !== -1 && indexB !== -1) {
-            return indexA - indexB;
-          } else if (indexA !== -1) {
-            return -1;
-          } else if (indexB !== -1) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });  
-
+      const LuxuryProjects = sortByDesiredOrder(
+        projectsData.filter((project) => project.luxury === "True"),
+        Luxury_Desired_Order,
+        "projectName"
+      );
       const spotlightProject = projectsData.filter(
-        (project) =>  project.projectName === "Experion Nova" || project.projectName === "Experion The Trillion" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"  
+        (project) =>  project.projectName === "Experion Nova" || project.projectName === "Experion The Trillion" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"  || project.projectName === 'Trump Towers 2' || project.projectName === "Puri Diplomatic Residences"
       );
 
       const featuredProjects = projectsData.filter(
@@ -195,6 +166,9 @@ export const DataProvider = ({ children }) => {
         || project.projectName === "Signature Global City 81"
       );
 
+      const CentralParkProjects = projectsData.filter(
+        (project) => project?.builderName === "Central Park"
+      )
       const scoPlots = projectsData.filter(
         (project) => project.type === "SCO Plots"
       );
@@ -429,6 +403,7 @@ export const DataProvider = ({ children }) => {
       setTypeScoPlots(typeScoPlots);
       setDelhiData(delhiData);
       setNoidaData(noidaData);
+      setCentralPark(CentralParkProjects)
       setGoaData(goaData);
       setPanipat(panipat);
       setFilteredProjects(filteredProjects);
@@ -589,6 +564,7 @@ useEffect(() => {
         upcoming,
         city,
         admin,
+        centralpark,
         allProjectData,
         residencialProjects,
         allupcomingProject,
@@ -601,7 +577,6 @@ useEffect(() => {
         // blogData,
         sohnaRoad,
         golfCourse,
-        careerData,
         jobPostingData,
         resalePropertydata,
         commercialProjectAll,
