@@ -9,6 +9,25 @@
 html {
   scroll-behavior: smooth;
 }
+.custom-ok-button {
+  background-color: #C13B44; 
+  color: white;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-ok-button:hover {
+  background-color: #c0555c !important; 
+  color: white;
+}
+.custom-cancel-button {
+  display: none;
+  border:1px solid grey;
+}
+
+.custom-cancel-button:hover {
+  border: 1px solid #C13B44 !important;
+  color: #C13B44 !important;
+}
 ::-webkit-scrollbar {
     width: 10px;
   }
