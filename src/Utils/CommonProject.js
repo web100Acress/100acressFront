@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
-import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from '../../Assets/icons';
+import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from '../Assets/icons';
 import Aos from 'aos';
 import { Link } from 'react-router-dom';
 import { EyeIcon } from 'lucide-react';
-import CustomSkeleton from '../../Utils/CustomSkeleton';
+import CustomSkeleton from './CustomSkeleton';
 
 const CommonProject = ({ data, title, path ,animation }) => {
 

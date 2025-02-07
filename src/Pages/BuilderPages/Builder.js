@@ -60,6 +60,11 @@ const Builder = () => {
             link: "/developers/smartworld-developers/",
             image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/smartworld.webp",
         },
+        {
+            title: "Central Park",
+            link: "/developers/central-park/",
+            image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/centralpark.jpg"
+        }
     ]
 
     return (
@@ -81,7 +86,7 @@ const Builder = () => {
                          </div> */}
                        </div>
                 <div className="grid lg:grid-cols-10 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 mx-0 gap-3 pb-4 pt-4">
-                    {Builder.map((project, index) => (
+                    {Builder.slice(0,10).map((project, index) => (
                         <Link
                             data-aos="flip-up"
                             to={project.link}
@@ -97,20 +102,7 @@ const Builder = () => {
                                     className="w-24 h-24 object-contain rounded-xl hover:scale-125" // Reduced image size
                                     loading="lazy"
                                 />
-
-                                {/* Content Section */}
-                                {/* <div className="flex flex-col items-start">
-                                    <h3 className="text-lg font-semibold text-[#3a3535] group-hover:text-red-500 transition duration-300">
-                                        {project.title}
-                                    </h3>
-                                    <button className="mt-2 px-2 py-2 text-sm font-medium text-white rounded-lg bg-gradient-to-r from-red-500 via-red-600 to-red-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 transition-all duration-300">
-                                        View Details
-                                    </button>
-                                </div> */}
                             </div>
-
-                            {/* Subtle Overlay on Hover */}
-                            <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
                         </Link>
                     ))}
                 </div>

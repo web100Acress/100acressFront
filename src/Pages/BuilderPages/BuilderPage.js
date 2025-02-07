@@ -17,7 +17,8 @@ const BuilderPage = () => {
      Adani,
      SmartWorld,
      Trevoc,
-     IndiaBulls
+     IndiaBulls ,
+     centralpark
     } = useContext(DataContext); 
 
   const buildersData = {
@@ -30,8 +31,8 @@ const BuilderPage = () => {
     'adani-realty':Adani,
     'smartworld-developers':SmartWorld, 
     'trevoc-group':Trevoc,
-    'indiabulls-real-estate':IndiaBulls 
-
+    'indiabulls-real-estate':IndiaBulls ,
+    'central-park':centralpark,
   };
 
   const builderProjects = buildersData[builderName] || []; 
@@ -83,7 +84,7 @@ const BuilderPage = () => {
               
       
               <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-                {builderProjects.map((item, index) => {
+                {builderProjects.slice(0,10)?.map((item, index) => {
                   const pUrl = item.project_url;
                   return (
                     <span >
