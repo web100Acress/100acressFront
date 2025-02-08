@@ -132,7 +132,7 @@ export const DataProvider = ({ children }) => {
         "projectName"
       );
       const spotlightProject = projectsData.filter(
-        (project) =>  project.projectName === "Experion Nova" || project.projectName === "Experion The Trillion" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"  || project.projectName === 'Trump Towers 2' || project.projectName === "Puri Diplomatic Residences"
+        (project) =>  project.projectName === "Experion Nova" || project.projectName === "Experion The Trillion" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"  || project.projectName === 'Trump Towers 2' || project.projectName === "Puri Diplomatic Residences" || project.projectName === "Oxirich Chintamani"
       );
 
       const featuredProjects = projectsData.filter(
@@ -297,9 +297,9 @@ export const DataProvider = ({ children }) => {
       );
 
       const signaturebuilder = projectsData.filter(
-        (project) => project.builderName === "Signature Global"
+        (project) => project.builderName?.toLowerCase() === "signature global"
       );
-
+      
       const M3Mbuilder = projectsData.filter(
         (project) => project.builderName === "M3M India"
       );

@@ -85,7 +85,7 @@ const Builder = () => {
                            </Link>
                          </div> */}
                        </div>
-                <div className="grid lg:grid-cols-10 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 mx-0 gap-3 pb-4 pt-4">
+                <div className="grid lg:grid-cols-10 md:grid-cols-3 sm:grid-cols-2 grid-cols-3 mx-0 gap-3 pb-4 pt-4">
                     {Builder.slice(0,10).map((project, index) => (
                         <Link
                             data-aos="flip-up"
