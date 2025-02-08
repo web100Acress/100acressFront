@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { DataContext } from "../MyContext";
-import { Link } from "react-router-dom";
-import CommonProject from "./HomePages/CommonProject";
+import CommonProject from "../Utils/CommonProject";
 const ProjectSearching = ({setFilteredProjectsParent}) => {
   const { allProjectData } = useContext(DataContext);
 
