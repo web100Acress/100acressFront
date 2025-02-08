@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
 import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
-import CommonProject from "./HomePages/CommonProject";
+import CommonProject from "../Utils/CommonProject";
 import NoPropertiesMessage from "../Components/NoPropertiesMessage ";
 const BudgetPrice = () => {
   const { filteredProjects } = useContext(DataContext);

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import Footer from "../Actual_Components/Footer";
 import { DataContext } from "../../MyContext";
-import CommonProject from "../../Pages/HomePages/CommonProject";
+import CommonProject from "../../Utils/CommonProject";
 import { Helmet } from "react-helmet";
 import ProjectSearching from "../../Pages/ProjectSearching";
 const UpComingProjects = () => {

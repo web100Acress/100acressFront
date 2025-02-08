@@ -1,12 +1,10 @@
 import React, { useContext, useState } from "react";
 import "react-multi-carousel/lib/styles.css";
 import { DataContext } from "../MyContext";
-import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
-// import ReadyToMoveSearch from "./ReadyToMoveSearch";
-import CommonProject from "./HomePages/CommonProject";
 import ProjectSearching from "./ProjectSearching";
+import CommonProject from "../Utils/CommonProject";
 
 const ReadyToMoveProject = () => {
   const { readyToMoveData } = useContext(DataContext);

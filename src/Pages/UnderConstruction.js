@@ -110,10 +110,9 @@
 import React, { useContext, useState } from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
-import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import CommonProject from "../Pages/HomePages/CommonProject";
 import ProjectSearching from "./ProjectSearching.js";
+import CommonProject from "../Utils/CommonProject.js";
 
 
 
