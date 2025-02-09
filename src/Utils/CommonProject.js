@@ -111,7 +111,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                   ) : (
                                     <>
                                       {item.minPrice < 1 ? (
-                                        <>{item.minPrice * 100} L</>
+                                        <>{(item.minPrice * 100).toFixed()} L</>
                                       ) : (
                                         <>{item.minPrice}</>
                                       )}
