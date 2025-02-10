@@ -26,7 +26,14 @@ function SearchBar() {
     },
     {
       image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t5.webp", link:"/developers/m3m-india/"
-    }
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t6.webp", link:"/oxirich-chintamani/"
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t7.webp", link:"/elan-the-emperor/"
+    },
+
   ];
 
   const phoneSrc = [
@@ -44,7 +51,13 @@ function SearchBar() {
     },
     {
       image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone5.webp", link:"/developers/m3m-india/"
-    }
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone6.webp", link:"/oxirich-chintamani/"
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone7.webp", link:"/elan-the-emperor/"
+    },
   ]
 
 
