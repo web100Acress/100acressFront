@@ -79,7 +79,6 @@ export const AuthProvider = ({ children }) => {
               const sellerId = roleResponse.data.User._id;
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
               if (roleResponse.data.User.role === "Admin" || roleResponse.data.User.role === admin) {
-                console.log(roleResponse.data.User.role,"roleResponse.data.User.role")
                 history("/Admin/dashboard");
               } else {
                 history("/userdashboard/");

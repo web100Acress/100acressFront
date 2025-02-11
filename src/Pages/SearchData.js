@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 import Footer from "../Components/Actual_Components/Footer";
-import { Link } from "react-router-dom";
+import CommonInside from "../Utils/CommonInside";
 
 
 const SearchData = () => {
@@ -60,7 +60,7 @@ const SearchData = () => {
       {/* Rendering searchData if available */}
       {searchData.length > 0 ? (
         <section className="flex flex-col items-center bg-white mt-4">
-          <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
+          {/* <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
             {searchData.map((item, index) => {
               const pUrl = item.project_url;
               return (
@@ -127,14 +127,17 @@ const SearchData = () => {
                 </Link>
               );
             })}
-          </div>
+          </div> */}
+          <CommonInside
+          Actualdata={searchData}
+          />
         </section>
       ) : null}
 
       {/* Rendering buySearchData if available */}
       {buySearchData.length > 0 ? (
         <section className="flex flex-col items-center bg-white mt-4">
-          <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
+          {/* <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
             {buySearchData.map((item, index) => (
               <article
                 key={index}
@@ -212,14 +215,17 @@ const SearchData = () => {
                 </div>
               </article>
             ))}
-          </div>
+          </div> */}
+          <CommonInside
+          Actualdata={buySearchData}
+          />
         </section>
       ) : null}
 
       {/* Rendering rentSearchData if available */}
       {rentSearchData && rentSearchData.length > 0 ? (
         <section className="flex flex-col items-center bg-white mt-4">
-          <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
+          {/* <div className="mt-10 grid max-w-md grid-cols-1 gap-6 px-2 sm:max-w-lg sm:px-20 md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 lg:gap-8">
             {rentSearchData.map((item, index) => (
               <React.Fragment key={index}>
                 {item.postProperty ? (
@@ -302,7 +308,10 @@ const SearchData = () => {
                 ) : null}
               </React.Fragment>
             ))}
-          </div>
+          </div> */}
+          <CommonInside
+          Actualdata={rentSearchData}
+          />
         </section>
       ) : null}
 

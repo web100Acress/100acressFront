@@ -26,7 +26,14 @@ function SearchBar() {
     },
     {
       image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t5.webp", link:"/developers/m3m-india/"
-    }
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t6.webp", link:"/oxirich-chintamani/"
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t7.webp", link:"/elan-the-emperor/"
+    },
+
   ];
 
   const phoneSrc = [
@@ -44,11 +51,40 @@ function SearchBar() {
     },
     {
       image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone5.webp", link:"/developers/m3m-india/"
-    }
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone6.webp", link:"/oxirich-chintamani/"
+    },
+    {
+      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone7.webp", link:"/elan-the-emperor/"
+    },
   ]
 
 
   const handleLinkClick = (linkName) => {
+  
+    switch (linkName) {
+      case "Rent":
+        window.open(window.location.origin + "/buy-properties/best-resale-property-in-gurugram/", '_blank',);
+        break;
+
+      case "New Launch":
+        window.open(window.location.origin + "/projects-in-newlaunch/", '_blank',);
+        break;
+
+      case "Commercial":
+        window.open(window.location.origin + "/projects/commerial/", '_blank',);
+        break;
+
+      case "Plots":
+        window.open(window.location.origin + "/plots-in-gurugram/", '_blank',);
+        break;
+
+      case "SCO":
+        window.open(window.location.origin + "/sco/plots/", '_blank',);
+        break;
+
+    }
     setActiveLink(linkName);
     setData(`${linkName}`);
   };
