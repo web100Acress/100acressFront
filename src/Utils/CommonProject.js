@@ -51,7 +51,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                 </Link>
               </div>}
             </div>
-            {
+            { response && 
               <section className="flex flex-col items-center bg-white mt-3">
                 <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
                   {response?.map((item, index) => {

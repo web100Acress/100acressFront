@@ -62,6 +62,29 @@ function SearchBar() {
 
 
   const handleLinkClick = (linkName) => {
+  
+    switch (linkName) {
+      case "Rent":
+        window.open(window.location.origin + "/buy-properties/best-resale-property-in-gurugram/", '_blank',);
+        break;
+
+      case "New Launch":
+        window.open(window.location.origin + "/projects-in-newlaunch/", '_blank',);
+        break;
+
+      case "Commercial":
+        window.open(window.location.origin + "/projects/commerial/", '_blank',);
+        break;
+
+      case "Plots":
+        window.open(window.location.origin + "/plots-in-gurugram/", '_blank',);
+        break;
+
+      case "SCO":
+        window.open(window.location.origin + "/sco/plots/", '_blank',);
+        break;
+
+    }
     setActiveLink(linkName);
     setData(`${linkName}`);
   };

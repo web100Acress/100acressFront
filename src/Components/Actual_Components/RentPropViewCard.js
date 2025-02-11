@@ -4,6 +4,8 @@ import Footer from "./Footer";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import CustomSkeleton from "../../Utils/CustomSkeleton";
+import { PropertyIcon, RupeeIcon } from "../../Assets/icons";
 
 const RentPropViewCard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +39,8 @@ const RentPropViewCard = () => {
   const [selectedCities, setSelectedCities] = useState([]);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+
+  console.log(buyData, "buydata");
 
   const minPriceOptions = [
     "1Cr",
@@ -111,7 +115,7 @@ const RentPropViewCard = () => {
     setSelectedPropertyTypes(
       selectedPropertyTypes.filter((item) => item !== propertyType)
     );
-  };
+  };  
 
   const removeArea = (area) => {
     setSelectedAreas(selectedAreas.filter((item) => item !== area));
@@ -214,12 +218,12 @@ const RentPropViewCard = () => {
     <>
       {" "}
       <Wrapper className="Section mt-12">
-      <Helmet>
-            <title>Top-Rated Rental Properties in Gurugram: 100acress</title>
-            <meta
-              name="description"
-              content="Explore top-rated rental properties in Gurugram. Choose from a variety of options that fit your budget and style. Connect with 100acress now!"
-            />
+        <Helmet>
+          <title>Top-Rated Rental Properties in Gurugram: 100acress</title>
+          <meta
+            name="description"
+            content="Explore top-rated rental properties in Gurugram. Choose from a variety of options that fit your budget and style. Connect with 100acress now!"
+          />
           <meta property="og:title" content="Top-Rated Rental Properties in Gurugram: 100acress" />
           <meta property="og:site_name" content="100acress" />
           <meta property="og:type" content="website" />
@@ -233,11 +237,11 @@ const RentPropViewCard = () => {
           <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
           <meta name="twitter:card" content="summary" />
 
-            <link
-              rel="canonical"
-              href="https://www.100acress.com/buy-properties/best-resale-property-in-gurugram/"
-            />
-      </Helmet>
+          <link
+            rel="canonical"
+            href="https://www.100acress.com/buy-properties/best-resale-property-in-gurugram/"
+          />
+        </Helmet>
         <nav className="navbar d-lg-none d-xl-none d-xxl-none">
           <div className="container-fluid">
             {/* on tablet screen */}
@@ -349,9 +353,8 @@ const RentPropViewCard = () => {
                   Clear Filters
                 </button>
                 <div
-                  className={`fixed top-0 left-0 w-64 h-full bg-white text-black z-10  p-4 transform ${
-                    isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-                  } transition-transform duration-300 ease-in-out`}
+                  className={`fixed top-0 left-0 w-64 h-full bg-white text-black z-10  p-4 transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+                    } transition-transform duration-300 ease-in-out`}
                 >
                   <div className="mt-4">
                     <button
@@ -885,75 +888,92 @@ const RentPropViewCard = () => {
                 </div>
 
                 <section className="flex flex-col items-center bg-white mb-4">
-                  <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1 sm:gap-12 lg:grid-cols-1 xl:grid-cols-2 xl:gap-16">
-                    {buyData.length > 0 ? (
-                      buyData.map((item, index) => (
+                    {buyData.length === 0 ? (
+                      <p><CustomSkeleton /></p>
+                    ) :  
+                        (
+                    <div className="grid max-w-md  grid-cols-1 px-2 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-3 lg:grid-cols-3 sm:gap-4 lg:gap-4 w-full mb-4">
+                      {buyData.map((item, index) => (
                         <React.Fragment key={index}>
                           {item.postProperty && item.postProperty.length > 0
-                            ? item.postProperty.map(
-                                (nestedItem, nestedIndex) => (
-                                  <div key={nestedIndex} className="shadow-lg">
-                                    <Link
-                                      to={
-                                        nestedItem.propertyName &&
-                                        nestedItem._id
-                                          ? `/rental-properties/${nestedItem.propertyName.replace(
-                                              /\s+/g,
-                                              "-"
-                                            )}/${nestedItem._id}/`
-                                          : "#"
-                                      }
-                                      target="_top"
-                                    >
-                                      <div className="row rounded-lg">
-                                        <div className="col-lg-4 col-md-4 col-sm-12 col-12">
-                                          {nestedItem.frontImage &&
-                                          nestedItem.frontImage.url ? (
-                                            <img
-                                              src={nestedItem.frontImage.url}
-                                              alt="frontImage"
-                                              className="object-fit h-48 w-full rounded-l-lg"
-                                            />
-                                          ) : (
-                                            <span>Image not available</span>
-                                          )}
-                                        </div>
-                                        <div className="col-lg-8 col-md-8 col-sm-12 col-12">
-                                          <div className="p-4 h-full flex flex-col justify-between">
-                                            <div>
-                                              <p className="text-md mb-1 ">
-                                                {nestedItem.propertyName}
-                                              </p>
-                                              <p className="text-md mb-2 text-gray-600">
-                                                Location: {nestedItem.city},
-                                                {nestedItem.state}
-                                              </p>
-                                              <p className="text-md mb-0">
-                                                ₹ {nestedItem.price}
-                                              </p>
-                                            </div>
-                                            <div className="flex justify-end mt-auto">
-                                              <button
-                                                type="button"
-                                                className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 rounded-lg text-sm px-4 py-2 text-center m-0"
-                                              >
-                                                View Details
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </div>
+                            ? item.postProperty.map((nestedItem, nestedIndex) => (
+                              <div key={nestedIndex} className="shadow-lg rounded-lg">
+                                <Link
+                                  to={
+                                    nestedItem.propertyName &&
+                                      nestedItem._id
+                                      ? `/rental-properties/${nestedItem.propertyName.replace(
+                                        /\s+/g,
+                                        "-"
+                                      )}/${nestedItem._id}/`
+                                      : "#"
+                                  }
+                                  target="_top"
+                                >
+                                  <div className="relative p-3">
+                                    <div >
+                                      {nestedItem.frontImage &&
+                                        nestedItem.frontImage.url ? (
+                                        <img
+                                          src={nestedItem.frontImage.url}
+                                          alt="frontImage"
+                                          className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
+                                        />
+                                      ) : (
+                                        <span>Image not available</span>
+                                      )}
+                                    </div>
+                                    <div className="pt-2 p-1" >
+                                      <div className="pb-2">
+                                        <span className="text-sm font-semibold truncate overflow-hidden text-ellipsis whitespace-nowrap hover:text-red-600 duration-500 ease-in-out">
+                                          {nestedItem.propertyName}
+                                        </span>
+
+                                        <br />
+                                        <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
+                                          {nestedItem.city}, {nestedItem.state}
+                                        </span>
                                       </div>
-                                    </Link>
+                                      <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
+                                        <li className="mr-4 flex items-center text-left">
+                                          <li className="text-left">
+                                            <p className="m-0 text-sm font-medium ">
+                                              <PropertyIcon />{" "}{nestedItem.propertyType}
+                                            </p>
+                                            <span className="text-[10px] text-gray-600 block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
+                                              {/* <LocationRedIcon />{" "}{item.projectAddress} */}
+                                            </span>
+
+                                          </li>
+                                        </li>
+                                      </ul>
+                                      <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
+                                        <li className="text-left">
+                                          <span className="text-sm font-extrabold text-red-600">
+                                            <span className="text-xl"><RupeeIcon /></span>
+                                            {nestedItem?.price}
+                                          </span>
+                                        </li>
+                                        <li className="text-left">
+                                          <button
+                                            type="button"
+                                            className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
+                                          >
+                                            View Details
+                                          </button>
+                                        </li>
+                                      </ul>
+                                    </div>
                                   </div>
-                                )
-                              )
+                                </Link>
+                              </div>
+                            )
+                            )
                             : null}
                         </React.Fragment>
-                      ))
-                    ) : (
-                      <p>Loading...</p>
-                    )}
+                      ))}
                   </div>
+                    ) }
                 </section>
               </div>
             </div>

@@ -39,6 +39,7 @@ function Home() {
     city,
     commercialProject,
     typeScoPlots,    
+    typeAffordable,
     resalePropertydata,
     LuxuryProjects,
     budgetHome,
@@ -93,7 +94,7 @@ function Home() {
       path = "/sco/plots/";
       break;
     case "Affordable":
-      displayedProjects = affordable;
+      displayedProjects = typeAffordable;
       break;
     case "Resale":
       displayedProjects = resalePropertydata;
@@ -130,19 +131,6 @@ function Home() {
           name="description"
           content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential &amp; Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon"
         />
-                <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.100acress.com/" />
-        <meta property="og:title" content="Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India" />
-        <meta property="og:description" content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential & Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon" />
-        <meta property="og:image" content="https://www.100acress.com/Images/mainog.png" />
-
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://www.100acress.com/" />
-        <meta property="twitter:title" content="Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India" />
-        <meta property="twitter:description" content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential & Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon" />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@100acressdotcom" />
-        <meta name="twitter:image" content="https://www.100acress.com/Images/mainog.png"></meta>
         <title>
           Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India
         </title>
@@ -412,7 +400,7 @@ function Home() {
       <Cities />
 
       <CommonProject
-        data={affordable}
+        data={affordable.slice(0, 4)}
         title="Affordable Homes"
         path="/projects-in-gurugram/"
         animation="fade-up"

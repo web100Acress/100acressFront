@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { sortByDesiredOrder } from "./Utils/ProjectSorting";
-import { Luxury_Desired_Order, Trending_Desired_Order } from "./Pages/datafeed/Desiredorder";
+import { Affordable_Desired_Order, Luxury_Desired_Order, Trending_Desired_Order } from "./Pages/datafeed/Desiredorder";
 export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: Infinity });
@@ -28,6 +28,7 @@ export const DataProvider = ({ children }) => {
   const [resalePropertydata, setResalePropertydata] = useState([]);
   const [commercialProjectAll, setAllCommercialProjectAll] = useState([]);
   const [typeScoPlots, setTypeScoPlots] = useState([]);
+  const [typeAffordable, setTypeAffordabele] = useState([]);
   const [delhiData, setDelhiData] = useState([]);
   const [noidaData, setNoidaData] = useState([]);
   const [goaData, setGoaData] = useState([]);
@@ -139,9 +140,12 @@ export const DataProvider = ({ children }) => {
         (project) => project.projectOverview === "featured"
       );
 
-      const affordable = projectsData.filter(
-        (project) => project.type === "Affordable Homes"
-      );
+      const affordable = sortByDesiredOrder(
+        projectsData.filter((project) => project.type === "Affordable Homes"),
+        Affordable_Desired_Order,
+        "projectName"
+
+      ) ;
 
       const residencialProjects = projectsData.filter(
         (project) => project.type === "Residential Flats"
@@ -180,6 +184,13 @@ export const DataProvider = ({ children }) => {
       const typeScoPlots = projectsData.filter(
         (project) => project.projectOverview === "sco"
       );
+      
+      const typeAffordable = sortByDesiredOrder(
+        projectsData.filter((project) => project.projectOverview === "affordable"),
+         Affordable_Desired_Order,
+        "projectName"
+      );
+
 
       const BuilderIndependentFloor = projectsData.filter((project) => {
         return (
@@ -401,6 +412,7 @@ export const DataProvider = ({ children }) => {
       setGolfCourse(golfCourse);
       setAllCommercialProjectAll(commercialProjectAll);
       setTypeScoPlots(typeScoPlots);
+      setTypeAffordabele(typeAffordable)
       setDelhiData(delhiData);
       setNoidaData(noidaData);
       setCentralPark(CentralParkProjects)
@@ -581,6 +593,7 @@ useEffect(() => {
         resalePropertydata,
         commercialProjectAll,
         typeScoPlots,
+        typeAffordable,
         delhiData,
         noidaData,
         goaData,

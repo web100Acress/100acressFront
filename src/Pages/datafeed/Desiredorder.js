@@ -11,3 +11,6 @@ export const Trending_Desired_Order =[
     "Tarc Ishva"
 ];
 
+export const Affordable_Desired_Order = [
+    "TLC The First Acre",
+]
