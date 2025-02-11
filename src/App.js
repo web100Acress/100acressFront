@@ -6,8 +6,8 @@ import Home from "./Pages/Home";
 import Properties from "./Pages/ProjectCities/Properties";
 import PropertyKnow from "./Components/KnowAbouts/PropertyKnow";
 import PageNotFound from "./Pages/PageNotFound";
-import SignUp from "./aadharhomes/SignUp";
-import SignIn from "./aadharhomes/SignIn";
+import SignUp from "./aadharhomes/SignUp.js";
+import SignIn from "./aadharhomes/SignIn.js";
 import Addnew from "./AdminPage/Addnew";
 import Adminproperty from "./AdminPage/Adminproperty";
 import Dashboard from "./AdminPage/Dashboard";
@@ -108,18 +108,17 @@ import Ayodhya from "./Pages/ProjectCities/Ayodhya";
 import SignatureGlobal from "./Pages/SignatureGlobal";
 import DlfSco from "./Pages/DlfSco";
 import NewBanner from "./aadharhomes/BannerPage/NewBanner";
-import 'animate.css';
+import "animate.css";
 import Possessionin2026 from "./Pages/Possessionin2026";
 import BuilderPage from "./Pages/BuilderPages/BuilderPage";
 import OTPVerification from "./Components/OTPVerification";
-import SignupForm from "./Components/SignupForm";
+import SignupForm from "./Components/SignupForm.js";
 import EmailVerification from "./Components/EmailVerification";
 import Karnal from "./Pages/ProjectCities/Karnal";
 import Jalandhar from "./Pages/ProjectCities/Jalandhar";
 import LuxuryProject from "./Pages/BuilderPages/LuxuryProjects";
 
 function App() {
-
   const token = localStorage.getItem("myToken");
 
   return (
@@ -129,7 +128,6 @@ function App() {
           {/* <Router> */}
           <Routes>
             <Route element={<PublicRoute />}>
-           
               <Route index element={<Home />} />
               <Route
                 path="/postproperty"
@@ -137,16 +135,24 @@ function App() {
                   token !== null ? (
                     <NewSellProperty />
                   ) : (
-                    <Navigate to="/signin" />
+                    <Navigate to="/auth/signin" />
                   )
                 }
               />
-              <Route path="/signup/" element={<SignUp />} >
+              <Route path="/auth/" element={<SignUp />}>
+                <Route path="signup/">
                   <Route index element={<SignupForm />} />
-                  <Route path="email-verification/" element={<EmailVerification />} />
-                  <Route path="otp-verification/" element={<OTPVerification />} />
+                  <Route
+                    path="email-verification/"
+                    element={<EmailVerification />}
+                  />
+                  <Route
+                    path="otp-verification/"
+                    element={<OTPVerification />}
+                  />
+                </Route>
+                <Route path="signin/" element={<SignIn />} />
               </Route>
-              <Route path="/signin/" element={<SignIn />} />
               <Route path="/privacy-policy/" element={<Privacy />} />
               <Route
                 path="/terms-and-conditions/"
@@ -169,18 +175,18 @@ function App() {
                 path="/projects-in-gurugram/property-possession-in-2024/"
                 element={<Possessionin2024 />}
               />
-              <Route 
-                path="/developers/:builderName" 
-                element={<BuilderPage />} 
+              <Route
+                path="/developers/:builderName"
+                element={<BuilderPage />}
               />
               <Route
                 path="/projects-in-gurugram/property-possession-in-2025/"
                 element={<Possessionin2025 />}
               />
               <Route
-               path="/projects-in-gurugram/property-possession-in-2026/"
+                path="/projects-in-gurugram/property-possession-in-2026/"
                 element={<Possessionin2026 />}
-                />
+              />
               <Route
                 path="/rental-properties/best-rental-property-in-gurugram/"
                 element={<RentPropViewCard />}
@@ -277,7 +283,7 @@ function App() {
               <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
               <Route path="/orris-plots-gurugram/" element={<Orris />} />
               <Route path="/jms-plots-gurugram/" element={<Jms />} />
-              <Route path="/top-luxury-projects/" element={<LuxuryProject/>}/>
+              <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
               <Route path="/rof-plots-gurugram/" element={<Rof />} />
               <Route
                 path="/signatureglobal-plots-gurugram/"
@@ -294,7 +300,7 @@ function App() {
               <Route
                 path="/microtek-infra-sco-plots-gurugram/"
                 element={<Microtek />}
-              />  
+              />
             </Route>
 
             {/* Admin Routing */}
@@ -383,7 +389,6 @@ function App() {
                 element={<PrivateRoute element={<Dashboard />} />}
               />
             </Route>
-            
           </Routes>
           {/* </Router> */}
         </Wrapper>

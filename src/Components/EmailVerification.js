@@ -36,7 +36,7 @@ function EmailVerification() {
           content: "OTP sent successfully",
           duration: 3,
         });
-        history("/signup/otp-verification/");
+        history("/auth/signup/otp-verification/");
       })
       .catch((err) => {
         messageApi.open({
@@ -67,30 +67,20 @@ function EmailVerification() {
 
   return (
     <>
-      <Box as={"form"}>
         {contextHolder}
-      <form className="">
+      <form className="mt-14 bg-white rounded shadow-lg">
         <div className="flex flex-col justify-center items-center">
-          <div className="text-2xl font-semibold text-center">Verify Your Email address</div>
+          <div className="text-2xl font-semibold text-center mt-10">Verify Your Email address</div>
           <div className="text-2xl my-5" >Please Enter your Email to receive OTP</div>
-          <Input type="email" size="large" placeholder="Enter your Email" onChange={(e) => onChange(e.target.value)} />
-            <Button
-              display={"block"}
-              fontFamily={"heading"}
+          <Input type="email" size="large" placeholder="Enter your Email" onChange={(e) => onChange(e.target.value)} className="w-1/2" />
+            <button
+              className="my-4 px-4 py-2 bg-primaryRed text-white rounded"
               onClick={handleClick}
-              my={6}
-              bgGradient="linear(to-r, red.400,pink.400)"
-              color={"white"}
-              _hover={{
-                bgGradient: "linear(to-r, red.400,pink.400)",
-                boxShadow: "xl",
-              }}
               >
               Get OTP
-            </Button>
+            </button>
               </div>
         </form>
-      </Box>
     </>
   )
 }

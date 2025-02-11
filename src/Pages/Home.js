@@ -308,7 +308,7 @@ function Home() {
       />
       
       {colorChange && isSmallerThan768 && <div>
-        <Link to="/signin/" target="_top">
+        <Link to="/auth/signin/" target="_top">
           <div className="sticky-quote-cta">
             <a
               className="text-white"
@@ -412,7 +412,7 @@ function Home() {
       <Cities />
 
       <CommonProject
-        data={affordable}
+        data={affordable.slice(0,4)}
         title="Affordable Homes"
         path="/projects-in-gurugram/"
         animation="fade-up"

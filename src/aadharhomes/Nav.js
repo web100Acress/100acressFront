@@ -98,8 +98,8 @@ const MenuListContainer = ({ isOpen }) => {
             <ToastContainer />
 
             <MenuItem fontSize="sm" color={"red"}>
-              <NavLink to="/signin/">Login/</NavLink>
-              <NavLink to="/signup/">Register</NavLink>
+              <NavLink to="/auth/signin/">Login/</NavLink>
+              <NavLink to="/auth/signup/">Register</NavLink>
             </MenuItem>
 
             <MenuItem fontSize="sm">
@@ -594,7 +594,7 @@ export default function Nav() {
                     </Link>
                   ) : (
                     <Link
-                      to={"/signin/"}
+                      to={"/auth/signin/"}
                       className="text-red-600 hover:text-red-600 font-bold uppercase pt-1 text-sm"
                     >
                       List Property
@@ -827,7 +827,7 @@ export default function Nav() {
                     </button>
                   </Link>
                 ) : (
-                  <Link to="/signin/">
+                  <Link to="/auth/signin/">
                     <button className=" flex pt-1  sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
@@ -934,7 +934,7 @@ export default function Nav() {
                   </Link>
                 ) : (
                   <Link
-                    to={"/signin/"}
+                    to={"/auth/signin/"}
                     className="text-red-600 font-bold text-sm pt-1 mx-3 uppercase hover:bg-red-600 hover:opacity-80"
                   >
                     List Property

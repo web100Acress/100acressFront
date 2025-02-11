@@ -25,7 +25,7 @@ const BudgetPrice = () => {
 
       </div>
       {filteredProjects.length === 0 ? 
-      <div className="mt-10">
+      <div className="my-10">
         <NoPropertiesMessage/>      
       </div>
       :

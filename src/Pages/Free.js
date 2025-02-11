@@ -39,7 +39,7 @@ const Free = () => {
           data-aos-delay="200"
           className="text-left md:text-left mt-4 md:mt-0 px-2 flex-shrink-0"
         >
-          <Link to="/signin/" target="_top">
+          <Link to="/auth/signin/" target="_top">
             <button className="text-black px-2 md:px-4 sm:px-2 bg-[#FFFFFF] py-2 md:py-3 rounded-full">
               List Property
               <span
