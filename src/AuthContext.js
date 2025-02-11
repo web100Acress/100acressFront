@@ -119,7 +119,7 @@ export const AuthProvider = ({ children }) => {
                   "agentData",
                   JSON.stringify(User)
               );
-              history("/signup/email-verification"); // Redirect to verification page
+              history("/auth/signup/email-verification"); // Redirect to verification page
             } else if (status === 401) {
               // Invalid credentials
               messageApi.destroy("loginLoading");
@@ -215,14 +215,13 @@ export const AuthProvider = ({ children }) => {
           })
           .then(() => {
               messageApi.destroy("loading");
-
               messageApi.success({
                 content: "Account created. Please Confirm your email to login.",
                 duration: 2,
             })
             .then(() => {
                 // Redirect to OTP verification page
-                history("/signup/otp-verification/");
+                history("/auth/signup/otp-verification/");
                 resetData();
             });
           })
@@ -237,10 +236,18 @@ export const AuthProvider = ({ children }) => {
               });
           });
       } else {
-        setResponseMessage("Please fill all fields");
+        messageApi.destroy("loading");
+        messageApi.error({
+          content:"Please fill the details properly",
+          duration:3
+        })
       }
     } catch (error) {
-      
+      messageApi.destroy("loading");
+      messageApi.error({
+        content:"Internal Sever Error, Something went wrong",
+        duration:3
+      })
     }
   }
   

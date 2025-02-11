@@ -1,21 +1,11 @@
-import { useState,useContext } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Stack,
-  RadioGroup,
-  Radio,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Button,
-  FormControl,
-  FormErrorMessage,
-} from "@chakra-ui/react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { message } from "antd";
 import "antd/dist/reset.css";
 import { AuthContext } from "../AuthContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
+
+const roles = ["Agent", "Owner", "Builder"];
 
 function SignupForm() {
   const history = useNavigate();
@@ -23,14 +13,14 @@ function SignupForm() {
   const [mobileError, setMobileError] = useState("");
   const [passwordHide, setpasswordHide] = useState(true);
   const [loading, setLoading] = useState(false);
-    const [userSignUp, setUserSignUp] = useState({
-      name: "",
-      mobile: "",
-      password: "",
-      cpassword: "",
-      email: "",
-      role: "propertyOwner",
-    });
+  const [userSignUp, setUserSignUp] = useState({
+    name: "",
+    mobile: "",
+    password: "",
+    cpassword: "",
+    email: "",
+    role: "propertyOwner",
+  });
   const resetData = () => {
     setUserSignUp({
       name: "",
@@ -40,10 +30,10 @@ function SignupForm() {
       email: "",
     });
   };
-  const {signup} = useContext(AuthContext);
 
-  const [messageApi,contextHolder] = message.useMessage();
+  const { signup } = useContext(AuthContext);
 
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleHideUnHide = () => {
     setpasswordHide(!passwordHide);
@@ -51,7 +41,6 @@ function SignupForm() {
 
   const handleRegisterChange = (e) => {
     const { name, value } = e.target;
-    setUserSignUp({ ...userSignUp, [name]: value });
 
     // Validate email on change
     if (name === "email") {
@@ -62,6 +51,8 @@ function SignupForm() {
     if (name === "mobile") {
       validateMobile(value);
     }
+    setUserSignUp({ ...userSignUp, [name]: value });
+
   };
 
   const validateEmail = (email) => {
@@ -84,8 +75,6 @@ function SignupForm() {
     }
   };
 
-  const [buttonText] = useState("Create your Account");
-
   const [responseMessage, setResponseMessage] = useState("");
 
   const handleUserRegister = async () => {
@@ -93,184 +82,152 @@ function SignupForm() {
   };
 
   const handleUserSignIn = () => {
-    history("/signin/");
+    history("/auth/signin/");
   };
 
-  const handleClick = () => {
-    // showToastMessage();
-    handleUserRegister();
+  const handleClick = async(e) => {
+    e.preventDefault();
+    validateEmail(userSignUp.email);
+    validateMobile(userSignUp.mobile);
+
+    if(emailError){
+      messageApi.error({
+        content:emailError,
+        duration:3,
+      })
+      return;
+    }
+    else if(mobileError){
+      messageApi.error({
+        content:mobileError,
+        duration:3,
+      })
+      return;
+    }
+    await handleUserRegister();
   };
-  
+
+  const handleSelectRole = (role) => {
+    setUserSignUp((prev) => ({
+      ...prev,
+      role: role,
+    }));
+  };
+
   return (
     <>
       {contextHolder}
-      <Box as={"form"}>
-        <form>
-          <Stack spacing={2}>
-            {/* We are working here */}
-
-            <Stack direction="row" isRequired spacing={4}>
-              <RadioGroup
-                onChange={(value) =>
-                  setUserSignUp({ ...userSignUp, role: value })
-                }
-                value={userSignUp.role}
-                isRequired
-                className="m-2"
-                defaultValue="2"
+      <div className="bg-white shadow-xl rounded-2xl mt-14 p-4 my-8">
+        <div className="text-base font-semibold">Register your Account</div>
+        <div className="my-2">
+          <p>Are you a:</p>
+          <div className="flex flex-col md:flex-row gap-2">
+            {roles.map((role) => (
+              <div
+                key={role}
+                className={`px-4 py-2 w-full md:w-fit border rounded-full cursor-pointer hover:bg-primaryRed hover:text-white ${
+                  userSignUp.role === role && "bg-primaryRed text-white"
+                }`}
+                onClick={() => handleSelectRole(role)}
               >
-                <Stack spacing={5} direction="row" color="black">
-                  <Radio colorScheme="red" value="Agent" size="lg" isRequired>
-                    Agent
-                  </Radio>
-                  <Radio colorScheme="red" value="Owner" size="lg" isRequired>
-                    Owner
-                  </Radio>
-                  <Radio
-                    colorScheme="red"
-                    value="Developer"
-                    size="lg"
-                    isRequired
-                  >
-                    Developer
-                  </Radio>
-                </Stack>
-              </RadioGroup>
-            </Stack>
-
-            <FormControl mt={4} isInvalid={!!emailError}>
-              <Input
-                placeholder="Email"
-                name="email"
-                type="email"
-                value={userSignUp.email}
-                onChange={handleRegisterChange}
-                bg={"gray.100"}
-                border={0}
-                color={"gray.500"}
-                _placeholder={{ color: "gray.500" }}
+                {role}
+              </div>
+            ))}
+          </div>
+        </div>
+        <form className="space-y-4" onSubmit={handleClick}>
+          <div className="flex flex-col">
+            <label htmlFor="name">Full Name</label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              placeholder="John Doe"
+              className="border px-1 py-2 rounded"
+              onChange={handleRegisterChange}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="username@email.com"
+              className="border px-1 py-2 rounded"
+              onChange={handleRegisterChange}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="mobile">Mobile Number</label>
+            <input
+              type="number"
+              name="mobile"
+              id="mobile"
+              placeholder="+91 9876543210"
+              className="border px-1 py-2 rounded"
+              onChange={handleRegisterChange}
+            />
+          </div>
+          <div className="flex flex-col relative">
+            <label htmlFor="password">Enter Password</label>
+            <input
+              type={`${passwordHide ? "password" : "text"}`}
+              name="password"
+              id="password"
+              placeholder="**********"
+              className="border px-1 py-2 rounded"
+              onChange={handleRegisterChange}
+            />
+            {passwordHide ? (
+              <FaEyeSlash
+                className="absolute top-1/2 right-2"
+                onClick={handleHideUnHide}
               />
-              <FormErrorMessage>{emailError}</FormErrorMessage>
-            </FormControl>
-
-            <FormControl mt={4}>
-              <Input
-                placeholder="Full Name"
-                name="name"
-                type="text"
-                onChange={handleRegisterChange}
-                value={userSignUp.name}
-                bg={"gray.100"}
-                border={0}
-                color={"gray.500"}
-                _placeholder={{ color: "gray.500" }}
+            ) : (
+              <FaEye
+                className="absolute top-1/2 right-2"
+                onClick={handleHideUnHide}
               />
-            </FormControl>
-
-            {/* <FormControl mt={4}>
-                    <Input
-                      placeholder="+91 ____"
-                      name="mobile"
-                      type="tel"
-                      required
-                      onChange={handleRegisterChange}
-                      value={userSignUp.mobile}
-                      bg={"gray.100"}
-                      border={0}
-                      color={"gray.500"}
-                      _placeholder={{ color: "gray.500" }}
-                      pattern="^[0-9]{10,}$"
-                      title="Please enter a valid numeric mobile number with at least 10 digits"
-                    />
-                  </FormControl> */}
-
-            <FormControl mt={4} isInvalid={!!mobileError}>
-              <Input
-                placeholder="+91 ____"
-                name="mobile"
-                type="tel"
-                required
-                onChange={handleRegisterChange}
-                value={userSignUp.mobile}
-                bg={"gray.100"}
-                border={0}
-                color={"gray.500"}
-                _placeholder={{ color: "gray.500" }}
-                pattern="[0-9]{10}"
-                title="Please enter a valid 10-digit mobile number"
-              />
-              <FormErrorMessage>{mobileError}</FormErrorMessage>
-            </FormControl>
-
-            <FormControl mt={4}>
-              <InputGroup>
-                <Input
-                  placeholder="Enter password"
-                  name="password"
-                  type={passwordHide ? "password" : "text"}
-                  onChange={handleRegisterChange}
-                  value={userSignUp.password}
-                  bg={"gray.100"}
-                  border={0}
-                  color={"gray.500"}
-                  _placeholder={{ color: "gray.500" }}
-                />
-                <InputRightElement>
-                  {passwordHide ? (
-                    <FaEyeSlash onClick={handleHideUnHide} />
-                  ) : (
-                    <FaEye onClick={handleHideUnHide} />
-                  )}
-                </InputRightElement>
-              </InputGroup>
-            </FormControl>
-
-            <FormControl mt={4}>
-              <Input
-                placeholder="Confirm password"
-                name="cpassword"
-                type="password"
-                onChange={handleRegisterChange}
-                value={userSignUp.cpassword}
-                bg={"gray.100"}
-                border={0}
-                color={"gray.500"}
-                _placeholder={{ color: "gray.500" }}
-              />
-            </FormControl>
-
-            {responseMessage && (
-              <p className="mb-0 text-red-600 text-sm ">{responseMessage}</p>
             )}
-          </Stack>
-
-          <Button
-            fontFamily={"heading"}
+          </div>
+          <div className="flex flex-col relative">
+            <label htmlFor="cpassword">Re-Enter Password</label>
+            <input
+              type={`${passwordHide ? "password" : "text"}`}
+              name="cpassword"
+              id="cpassword"
+              placeholder="**********"
+              className="border px-1 py-2 rounded"
+              onChange={handleRegisterChange}
+            />
+            {passwordHide ? (
+              <FaEyeSlash
+                className="absolute top-1/2 right-2"
+                onClick={handleHideUnHide}
+              />
+            ) : (
+              <FaEye
+                className="absolute top-1/2 right-2"
+                onClick={handleHideUnHide}
+              />
+            )}
+          </div>
+          <button
+            type="submit"
+            className="bg-primaryRed text-white text-center w-full rounded px-4 py-2"
             onClick={handleClick}
-            mt={4}
-            w={"full"}
-            bgGradient="linear(to-r, red.400,pink.400)"
-            color={"white"}
-            _hover={{
-              bgGradient: "linear(to-r, red.400,pink.400)",
-              boxShadow: "xl",
-            }}
           >
-            {buttonText}
-          </Button>
-
-          <Button
-            onClick={handleUserSignIn}
-            fontFamily={"heading"}
-            bg={"gray.200"}
-            color={"gray.800"}
-            mt={6}
-            w={"full"}
-          >
-            Sign In
-          </Button>
+            Register
+          </button>
         </form>
-      </Box>
+        <p className="text-center">
+          Already Have a account?{" "}
+          <p onClick={handleUserSignIn} className="text-primaryRed underline inline-block cursor-pointer">
+            Login
+          </p>
+        </p>
+      </div>
     </>
   );
 }

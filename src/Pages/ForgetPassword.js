@@ -9,7 +9,7 @@ const ForgetPassword = () => {
   });
 
   const handleRegisterNow = () => {
-    history("/SignUP");
+    history("/auth/signup");
   };
 
   
@@ -38,7 +38,7 @@ const ForgetPassword = () => {
         });
         console.log(response.data);
         alert('Password updated');
-        history('/SignIn')
+        history('/auth/signin')
       } else {
         console.error('Passwords do not match');
       }
