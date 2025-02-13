@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import React from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import { Outlet } from "react-router-dom";
