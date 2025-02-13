@@ -315,6 +315,8 @@ function App() {
                 path="/Admin/viewproperty/editdetails/:id"
                 element={<EditDetails />}
               />
+
+              {/* hithere */}
               <Route path="/Admin/dashboard" element={<Dashboard />} />
               <Route path="/Admin/addnew" element={<Addnew />} />
               <Route path="/Admin/project-insert" element={<InsertProject />} />
