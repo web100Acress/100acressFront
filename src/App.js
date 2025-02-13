@@ -313,7 +313,6 @@ function App() {
                 path="/Admin/viewproperty/:id"
                 element={<ViewPropertyAdmin />}
               />
-              {/* hi there */}
               <Route
                 path="/Admin/viewproperty/viewdetails/:id"
                 element={<ClientDetails />}
