@@ -177,7 +177,7 @@ export const AuthProvider = ({ children }) => {
     const { name, mobile, password, cpassword, email } = userSignUp;
     try {
       messageApi.open({
-        key: "loading",
+        key: "SignUpLoading",
         type: "loading",
         content: "Creating your account...",
         duration: 0, // No auto-close
@@ -190,7 +190,7 @@ export const AuthProvider = ({ children }) => {
 
             // if error 409 User already Exist
             if (registrationResponse.status === 409) {
-              messageApi.destroy("loading");
+              messageApi.destroy("SignUpLoading");
               messageApi.error({
                 content: "User already exists. Please login.",
                 duration: 3,
@@ -214,20 +214,17 @@ export const AuthProvider = ({ children }) => {
             })
           })
           .then(() => {
-              messageApi.destroy("loading");
+              messageApi.destroy("SignUpLoading");
               messageApi.success({
                 content: "Account created. Please Confirm your email to login.",
                 duration: 2,
-            })
-            .then(() => {
-                // Redirect to OTP verification page
-                history("/auth/signup/otp-verification/");
-                resetData();
             });
+            history("/auth/signup/otp-verification/");
+            resetData();
           })
           .catch((error) => {
               // Close loading immediately on error
-              messageApi.destroy("loading");
+              messageApi.destroy("SignUpLoading");
               console.error("Registration failed:", error);
               messageApi.open({
                 type: "error",
@@ -236,14 +233,14 @@ export const AuthProvider = ({ children }) => {
               });
           });
       } else {
-        messageApi.destroy("loading");
+        messageApi.destroy("SignUpLoading");
         messageApi.error({
           content:"Please fill the details properly",
           duration:3
         })
       }
     } catch (error) {
-      messageApi.destroy("loading");
+      messageApi.destroy("SignUpLoading");
       messageApi.error({
         content:"Internal Sever Error, Something went wrong",
         duration:3
