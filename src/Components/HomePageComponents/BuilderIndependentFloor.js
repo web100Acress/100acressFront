@@ -35,7 +35,6 @@ const BuilderIndependentFloor = () => {
 
       />
 
-      <Footer />
     </div>
   );
 };

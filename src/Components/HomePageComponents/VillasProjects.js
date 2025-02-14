@@ -41,7 +41,6 @@ const VillasProjects = () => {
           experiences."
         Actualdata={villasProject} 
       />
-      <Footer />
     </div>
   );
 };

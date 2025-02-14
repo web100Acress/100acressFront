@@ -42,7 +42,6 @@ const ResidentialProjects = () => {
       Actualdata={residencialProjects}
 
       />
-      <Footer />
     </div>
   );
 };

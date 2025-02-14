@@ -42,7 +42,6 @@ const DeenDayalPlots = () => {
           and investors alike."
         Actualdata={deenDayalPlots}
       />
-      <Footer />
     </div>
   );
 };
