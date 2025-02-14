@@ -50,7 +50,7 @@ const CommonInside = ({ title, Actualdata, HelmetTitle, metaContent, linkhref ,d
                 }
             </Helmet>
             <section className="flex pt-2 flex-col items-center mt-12">
-                {title && <h1 className="mb-3 p-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+                {title && <h1 className="mb-3 pt-4 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
                     {title}
                 </h1>}
                 {details &&<h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
