@@ -45,7 +45,7 @@ const SpotlightBanner = () => {
     data-aos-anchor-placement="top-bottom"
     className="rounded-tl-3xl rounded-tr-3xl bg-white">
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-3" >
-        <h1 className="text-3xl xl:text-4xl lg:text-3xl md:text-3xl">
+        <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-3xl sm:text-xl">
         100acress - Recommended 
         </h1>
       </div>
