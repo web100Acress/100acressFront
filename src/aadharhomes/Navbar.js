@@ -23,15 +23,13 @@ import { toast, ToastContainer } from "react-toastify";
 import { DataContext } from "../MyContext";
 import { FillIcon, PeopleIcon } from "../Assets/icons"; 
 import ScrollSearch from "./ScollSearch";
+import { message } from "antd";
 const SpacerComponent = () => <Box width="60px" />;
 
 const MenuListContainer = ({ isOpen }) => {
   const history = useNavigate();
-  const showToastMessage = () => {
-    toast.success("Logging out!", {
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 1000,
-    });
+  const ShowLogOutMessage = () => {
+    message.success("Logged Out Successfully !")
   };
 
   const HandleUserLogout = async () => {
@@ -80,7 +78,7 @@ const MenuListContainer = ({ isOpen }) => {
             </MenuItem>
 
             <MenuItem fontSize="sm" onClick={() => HandleUserLogout({})}>
-              <NavLink onClick={showToastMessage}>LogOut</NavLink>
+              <NavLink onClick={ShowLogOutMessage}>LogOut</NavLink>
             </MenuItem>
           </Box>{" "}
         </>
