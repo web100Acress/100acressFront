@@ -41,9 +41,6 @@ const ScoPlots = () => {
           with a promising avenue for business growth and expansion."
         Actualdata={scoPlots}
       />
-
-
-      <Footer />
     </div>
   );
 };
