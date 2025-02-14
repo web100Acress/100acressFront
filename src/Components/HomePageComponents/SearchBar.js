@@ -6,6 +6,8 @@ import { TopLocalitesIcon, LeftArrowIcon, RightArrowIcon } from "../../Assets/ic
 import Slider from "react-slick";
 import Typewriter from "typewriter-effect";
 import { imageSrc,phoneSrc} from "../../Pages/datafeed/Desiredorder";
+import { useMediaQuery } from "@chakra-ui/react";
+
 
 function SearchBar() {
   const [activeLink, setActiveLink] = useState("Buy");
@@ -13,6 +15,7 @@ function SearchBar() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentindeximgae, setCurrentImageIndex] = useState(0);
 
+  const [isSmallerThan500] =  useMediaQuery("(max-width: 500px)");
 
 
   const handleLinkClick = (linkName) => {
@@ -195,10 +198,10 @@ function SearchBar() {
 
         <div className=" flex justify-start mt-3 flex-nowrap w-160 md:w-112 lg:w-200 ">
           <span className="text-[#FFFFFF] text-xs md:text-xs whitespace-nowrap mt-2">
-            <TopLocalitesIcon /> Top Localities:
+            <TopLocalitesIcon /> {!isSmallerThan500? `Top Localities:`: ""}
           </span>
 
-          <div className=" flex flex-nowrap align-center ml-2 w-[230px] md:w-[600px] lg:w-[660px] scroll-smooth">
+          <div className=" flex flex-nowrap align-center ml-2 w-[330px] md:w-[600px] lg:w-[660px] scroll-smooth">
             <button onClick={handlePrev} disabled={currentIndex === 0} className={`cursor-pointer mt-2 ${currentIndex === 0 ? 'opacity-50 pointer-events-none' : ''}`}>
               <LeftArrowIcon />
             </button>

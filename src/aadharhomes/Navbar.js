@@ -45,7 +45,6 @@ const MenuListContainer = ({ isOpen }) => {
       console.error("Logout failed:", error);
     }
   };
-
   const token = localStorage.getItem("myToken");
   return (
     <>
@@ -143,6 +142,7 @@ export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
+  const [isSmallerThan368] = useMediaQuery("(max-width: 368px)");
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isMenuOpen1, setMenuOpen1] = useState(false);
@@ -256,7 +256,7 @@ export default function Navbar() {
                   />
                 </Link></>):(<><Link to={"/"}>
                   <Image
-                    maxW={["160px", "200px"]}
+                    maxW={["140px", "200px"]}
                     minW={["50px", "70px"]}
                     width={["xs", "sm", "md", "lg"]}
                     src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
@@ -1094,23 +1094,26 @@ export default function Navbar() {
                         List Property
                       </strong>
                       <Link className="d-inline">
+                      {
+                        !isSmallerThan368?
                         <button
-                          className="bg-[#FFFFFF] text-red-600 rounded-lg text-[10px] flex items-center justify-center"
-                          style={{
-                            position: "relative",
-                            overflow: "hidden",
-                            width: "50px",
-                            height: "20px",
-                          }}
+                        className="bg-[#FFFFFF] text-red-600 rounded-lg text-[10px] flex items-center justify-center"
+                        style={{
+                          position: "relative",
+                          overflow: "hidden",
+                          width: "50px",
+                          height: "20px",
+                        }}
                         >
-                          FREE
-                        </button>
+                           FREE
+                        </button>:" "
+                      }
                       </Link>
                     </button>
                   </Link>
                 ) : (
                   <Link to="/auth/signin/">
-                    <button className="flex p-1 text-xs items-center justify-center sm:text-sm">
+                    <button className="flex p-1 text-xs  items-center justify-center sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
                         className="text-[#FFFFFF] md:mr-2 lg:mr-2"
@@ -1188,7 +1191,7 @@ export default function Navbar() {
               >
                 {token ? (
                   <Link to="/postproperty/">
-                    <button className="flex pt-0 items-center justify-center sm:text-sm">
+                    <button className="flex p-1 text-xs items-center justify-center sm:text-sm">
                       <strong
                         onClick={checkUserAuth}
                         className="text-[#FFFFFF]  md:mr-2 lg:mr-2"
@@ -1196,17 +1199,18 @@ export default function Navbar() {
                         List Property
                       </strong>
                       <Link className="d-inline">
+                      {!isSmallerThan368?
                         <button
                           className="bg-[#FFFFFF] text-red-600 rounded-lg text-[10px] flex items-center justify-center"
                           style={{
                             position: "relative",
                             overflow: "hidden",
                             width: "50px",
-                            height: "20px",
+                            height: "15px",
                           }}
                         >
                           FREE
-                        </button>
+                        </button>:""}
                       </Link>
                     </button>
                   </Link>
@@ -1220,6 +1224,7 @@ export default function Navbar() {
                         List Property
                       </strong>
                       <Link className="d-inline">
+                      {!isSmallerThan368?
                         <button
                           className="bg-[#FFFFFF] text-red-600 rounded-lg text-[10px] flex items-center justify-center "
                           style={{
@@ -1230,7 +1235,7 @@ export default function Navbar() {
                           }}
                         >
                           FREE
-                        </button>
+                        </button>:""}
                       </Link>
                     </button>
                   </Link>
