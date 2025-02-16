@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { Skeleton } from 'antd';
 
 const SpotlightBanner = () => {
-  const { spotlightProject } = useContext(DataContext);
+  const { spotlight } = useContext(DataContext);
   const [currentIndex, setCurrentIndex] = useState(0);
   
 
@@ -21,21 +21,21 @@ const SpotlightBanner = () => {
     return text;
   };
 
-  const currentProject = spotlightProject[currentIndex];
-  // const otherProjects = spotlightProject.filter((_, index) => index !== currentIndex);
+  const currentProject = spotlight[currentIndex];
+  // const otherProjects = spotlight.filter((_, index) => index !== currentIndex);
   const pUrl = currentProject?.project_url;
 
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex === spotlightProject.length - 1 ? 0 : prevIndex + 1
+        prevIndex === spotlight.length - 1 ? 0 : prevIndex + 1
       );
     }, 10000);
     return () => clearInterval(timer);
-  }, [spotlightProject]);
+  }, [spotlight]);
 
-  if (!spotlightProject || spotlightProject.length === 0) {
+  if (!spotlight || spotlight.length === 0) {
     return <Skeleton />;
   }
 

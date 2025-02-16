@@ -6,8 +6,8 @@ export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: Infinity });
   const [trendingProject, setTrendingProject] = useState([]);
-  const [spotlightProject, setSpotlightProject] = useState([]);
   const [LuxuryProjects, setLuxuryProjects] = useState([]);
+  const [spotlight,setSpotlight] = useState([]);
   const [featuredProject, setFeaturedProject] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [affordable, setAffordable] = useState([]);
@@ -132,9 +132,9 @@ export const DataProvider = ({ children }) => {
         Luxury_Desired_Order,
         "projectName"
       );
-      const spotlightProject = projectsData.filter(
-        (project) =>  project.projectName === "Experion Nova" || project.projectName === "Experion The Trillion" || project.projectName === "Elan The Emperor" || project.projectName === "Trevoc Royal Residences" || project.projectName === "Conscient ParQ"  || project.projectName === 'Trump Towers 2' || project.projectName === "Puri Diplomatic Residences" || project.projectName === "Oxirich Chintamani"
-      );
+
+      const SpotlightPorp = projectsData.filter((project)=> project?.spotlight === "True");
+      
 
       const featuredProjects = projectsData.filter(
         (project) => project.projectOverview === "featured"
@@ -393,8 +393,8 @@ export const DataProvider = ({ children }) => {
         (project) => project.builderName === 'DLF Homes' &&  project.type ==='SCO Plots'
       )
       
-      setSpotlightProject(spotlightProject);
       setLuxuryProjects(LuxuryProjects);
+      setSpotlight(SpotlightPorp);
       setTrendingProject(trendingProjects);
       setUpcoming(upcomingProjects);
       setFeaturedProject(featuredProjects);
@@ -569,8 +569,8 @@ useEffect(() => {
         possessionDate,
         setPossessionDate,
         trendingProject,
-        spotlightProject,
         LuxuryProjects,
+        spotlight,
         featuredProject,
         affordable,
         upcoming,
