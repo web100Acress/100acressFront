@@ -23,6 +23,7 @@ const InsertProject = () => {
     projectRedefine_Entertainment: [],
     Amenities: [],
     luxury: "False",
+    spotlight: "False",
     meta_title: "",
     meta_description: "",
     projectBgContent: "",
@@ -57,6 +58,7 @@ const InsertProject = () => {
       projectRedefine_Entertainment: [],
       Amenities: [],
       luxury: "False",
+      spotlight: "False",
       meta_title: "",
       meta_description: "",
       projectBgContent: "",
@@ -104,6 +106,10 @@ const InsertProject = () => {
   const handleLuxuryStatus = (event) => {
     setEditFromData({ ...editFromData, luxury: event.target.value });
   };
+
+  const handleSpotlightStatus = (event) =>{
+    setEditFromData({...editFromData, spotlight: event.target.value});
+  }
 
   const [fileData, setFileData] = useState({
     frontImage: null,
@@ -275,6 +281,12 @@ const InsertProject = () => {
   const handleContent = (value) => {
     setContent(value);
   };
+
+
+
+
+  console.log(editFromData);
+  
   return (
     <div style={{ overflowX: "hidden" }}>
       <Sidebar />
@@ -392,12 +404,21 @@ const InsertProject = () => {
                   value={editFromData.luxury}
                   onChange={handleLuxuryStatus}
                 >
-                  <option value="" selected disabled hidden className="text-gray-600">
+                  <option selected disabled hidden value="">
                     luxury
                   </option>
                   <option value="True">True</option>
                   <option value="False">False</option>
                 </select>
+                <select
+                className="text-gray-600 border px-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
+                value={editFromData.spotlight}
+                onChange={handleSpotlightStatus}
+              >
+                <option selected disabled hidden  value="">Spotlight</option>
+                <option value="True">True</option>
+                <option value="False">False</option>
+              </select>
             </div>
 
             {/* New projet Data add */}
