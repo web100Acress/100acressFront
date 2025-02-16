@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { Switch,message } from "antd";
+import { FaCheck, FaXmark} from "react-icons/fa6";
 
 const customStyle = {
   position: "absolute",
@@ -11,22 +13,14 @@ const customStyle = {
   width: "80%",
 };
 
-function handleFileChange(event) {
-  const input = event.target;
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const previewImage = document.getElementById("previewImage");
-      previewImage.src = e.target.result;
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-}
 
 const EditDetails = () => {
+  
   const [values, setValues] = useState({
     propertyType: "",
     propertyName: "",
+    frontImage: "",
+    otherImage: [],
     address: "",
     city: "",
     state: "",
@@ -41,11 +35,12 @@ const EditDetails = () => {
     availableDate: "",
     propertyLooking: "Select Property Type",
     subType: "",
-    verify: "",
+    verify: "unverified",
   });
 
+  const [messageApi, contextHolder] = message.useMessage();
+
   const { id } = useParams();
-  const { otherImage } = values;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,47 +56,135 @@ const EditDetails = () => {
     fetchData();
   }, []);
 
+
+  function handleFileChange(event) {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const previewImage = document.getElementById("previewImage");
+        previewImage.src = e.target.result;
+        setValues((prevValues) => ({
+          ...prevValues,
+          frontImage: {
+            file: input.files[0],
+            url: e.target.result,
+          },
+
+        }))
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  const handleOtherImageFileChange = (event)=>{
+    const input = event.target;
+    if (input.files && input.files[0]) {
+      const files = Array.from(event.target.files);
+      const updatedImages = files.map((file) => ({
+        url: URL.createObjectURL(file),
+        file,
+      }));
+      setValues({
+        ...values,
+        otherImage: [
+          ...updatedImages,
+        ],
+      });
+
+    }
+  }
+
   const handleUpdateUser = async () => {
     try {
+      messageApi.open({
+        key: "loadingUpdateProperty",
+        type: "loading",
+        content: "Updating Data...",
+      })
+      const formData = new FormData();
+
+      // Append all key-value pairs from values
+      for (const key in values) {
+        if (values[key] !== undefined && values[key] !== null) {
+          formData.append(key, values[key]);
+        }
+      }
+
+      //Append front image If exist
+      if (values.frontImage && values.frontImage.file) {
+        formData.append("frontImage", values.frontImage.file);
+      }
+      
+      //Apend OtherImages If exist
+      if (values.otherImage && Array.isArray(values.otherImage)) {
+        values.otherImage.forEach((item, index) => {
+          if (item && item.file) {
+            formData.append(`otherImage`, item.file);
+          }
+        });
+      }
+
       const response = await axios.post(
         `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
-        values
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
       );
       if (response.status === 200) {
-        alert("Data updated successfully");
-        console.log("User updated successfully");
+          messageApi.destroy("loadingUpdateProperty");
+
+          console.log("Response Data: ",response.data)
+
+          messageApi.open({
+            key: "successUpdateProperty",
+            type: "success",
+            content: "Data Updated Successfully",
+          });
       } else {
-        console.error("Failed to update user");
+        messageApi.destroy("loadingUpdateProperty");
+        messageApi.open({
+          key: "errorUpdateProperty",
+          type: "error",
+          content: "Failed to update user",
+        });
       }
     } catch (error) {
+      messageApi.destroy("loadingUpdateProperty");
+      messageApi.open({
+        key: "errorUpdateProperty",
+        type: "error",
+        content: "Failed to update user",
+      });
       console.error("Error updating user:", error);
     }
   };
 
+  const handleVerifyToggle = (checked) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      verify: checked ? "verified" : "unverified", // Update verify state
+    }));
+  };
+
+
   return (
     <>
       <Sidebar />
+      {contextHolder}
       <div style={customStyle}>
         <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
           <div className="flex items-center mb-4  ">
-            <input
-              id="default-checkbox"
-              type="checkbox"
-              defaultValue=""
-              checked={values.verify !== ""}
-              onChange={(e) =>
-                setValues({ verify: e.target.checked ? "verified" : "" })
-              }
-      
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600  dark:bg-gray-700 dark:border-gray-600"
+            <Switch 
+              checked={values.verify === "verified"} // Sync switch state with verify value
+              onChange={handleVerifyToggle} // Handle toggle
+              checkedChildren={<FaCheck size={20}/>} 
+              unCheckedChildren={<FaXmark size={20}/>} 
+              className="bg-[#808080]"
             />
-            <label
-              htmlFor="default-checkbox"
-              className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-            >
-              Verify
-            </label>
-            {values.verify && <span> ✓</span>}
           </div>
           <div className="card-body">
             <table className="table table-striped table-bordered">
@@ -131,19 +214,26 @@ const EditDetails = () => {
                   <td>
                     <section className="w-full mx-4">
                       <div className="flex flex-wrap max-w-screen-md ">
-                        {otherImage &&
-                          Array.isArray(otherImage) &&
-                          otherImage.length > 0 &&
-                          otherImage.map((image, index) => (
+                        {values.otherImage &&
+                          Array.isArray(values.otherImage) &&
+                          values.otherImage.length > 0 &&
+                          values.otherImage.map((image, index) => (
                             <article
                               key={index}
                               className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
                             >
-                              <img
+                            <img
+                                src={image ? image.url : ""}
+                                alt="OtherImages"
+                                id="previewOtherImage"
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                              <br />
+                              {/* <img
                                 src={image.url}
                                 alt={`Image ${index + 1}`}
                                 className="w-full h-full object-cover rounded-lg"
-                              />
+                              /> */}
                             </article>
                           ))}
                       </div>
@@ -152,10 +242,8 @@ const EditDetails = () => {
                         type="file"
                         name="otherImage"
                         multiple
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          setValues({ ...values, otherImage: file });
-                        }}
+                        accept="image/*"
+                        onChange={(event) => handleOtherImageFileChange(event)}
                       />
                     </section>
                   </td>
