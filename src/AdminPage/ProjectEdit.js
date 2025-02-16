@@ -28,6 +28,7 @@ const ProjectEdit = () => {
     state: "",
     country: "",
     luxury: false,
+    spotlight: false,
     projectOverview: "",
     projectRedefine_Business: "",
     projectRedefine_Connectivity: "",
@@ -1023,6 +1024,33 @@ const ProjectEdit = () => {
                             }
                         >
                           <option value="Select Luxury Type" selected hidden disabled ></option>
+                          <option value="True">True</option>
+                          <option value="False">False</option>
+                        </select>
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+
+
+{/* Spotlight Update */}
+<tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Spotlight :
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <select 
+                            name="spotlight" 
+                            id="spotlight" 
+                            value={values.spotlight} 
+                            onChange={(e) =>
+                              setValues({
+                                ...values,
+                                spotlight: e.target.value,
+                              })
+                            }
+                        >
+                          <option value="Select spotlight Type" selected hidden disabled ></option>
                           <option value="True">True</option>
                           <option value="False">False</option>
                         </select>
