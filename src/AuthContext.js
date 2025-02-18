@@ -15,8 +15,8 @@ export const AuthProvider = ({ children }) => {
   const history = useNavigate();
   const [token, setToken] = useState("");
   const { decodedToken } = useJwt(localStorageToken);
+  const [isAdmin, setIsAdmin] = useState(false);  
 
-  
   const [agentData, setAgentData] = useState({
     name: "",
     email: "",
@@ -292,6 +292,8 @@ export const AuthProvider = ({ children }) => {
         token,
         handleDeleteUser,
         decodedTokenState,
+        isAdmin,
+        setIsAdmin,
       }}
     >
       {children}
