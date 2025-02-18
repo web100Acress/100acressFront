@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../Actual_Components/Footer";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import {message} from "antd";
 
 const UserEdit = () => {
   const [values, setValues] = useState({
@@ -26,6 +27,7 @@ const UserEdit = () => {
   });
   const { otherImage } = values;
   const { id } = useParams();
+  const [messageApi, contextHolder] = message.useMessage();
   
   useEffect(() => {
     const fetchData = async () => {
@@ -43,25 +45,72 @@ const UserEdit = () => {
 
   const handleUpdateUser = async () => {
     try {
+      messageApi.open({
+        key:"loadingUpdatePropertyByUser",
+        type:"loading",
+        content:"Updating Data...",
+        duration:0
+      })
       const formData = new FormData();
 
+      // Append all key-value pairs from values
       for (const key in values) {
-        formData.append(key, values[key]);
+        if (values[key] !== undefined && values[key] !== null) {
+          formData.append(key, values[key]);
+        }
       }
 
-      formData.append("frontImage", values.frontImage.file);
+      //Append front image If exist
+      if (values.frontImage && values.frontImage.file) {
+        console.log("Front image:", values.frontImage.file);
+        formData.append("frontImage", values.frontImage.file);
+      }
+      
+      //Apend OtherImages If exist
+      if (values.otherImage && Array.isArray(values.otherImage)) {
+        values.otherImage.forEach((item, index) => {
+          if (item && item.file) {
+            formData.append(`otherImage`, item.file);
+          }
+        });
+        console.log("Other images Updated");
+      }
 
       const response = await axios.post(
-        `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
+        `https://api.100acress.com/postPerson/propertyoneUserUpdate/${id}`,
         formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
       );
 
       if (response.status === 200) {
-        alert("Data updated successfully");
+        messageApi.destroy("loadingUpdatePropertyByUser");
+        messageApi.open({
+          key:"successUpdatePropertyByUser",
+          type:"success",
+          content:"Property Updated Successfully",
+          duration:2
+        });
       } else {
-        console.error("Failed to update user");
+        messageApi.destroy("loadingUpdatePropertyByUser");
+        messageApi.open({
+          key:"errorUpdatePropertyByUser",
+          type:"error",
+          content:"Failed to Update the property. Please try again.",
+          duration:2
+        });
       }
     } catch (error) {
+      messageApi.destroy("loadingUpdatePropertyByUser");
+      messageApi.open({
+        key:"errorUpdatePropertyByUser",
+        type:"error",
+        content:"Failed to Update the property. Please try again.",
+        duration:2
+      })
       console.error("Error updating user:", error);
     }
   };
@@ -71,6 +120,7 @@ const UserEdit = () => {
     if (input.files && input.files[0]) {
       const reader = new FileReader();
       reader.onload = function (e) {
+
         setValues((prevValues) => ({
           ...prevValues,
           frontImage: {
@@ -83,9 +133,27 @@ const UserEdit = () => {
     }
   }
 
+  const handleOtherImageFileChange = (event) => {
+    const input = event.target;
+    if(input.files && input.files[0]) {
+      const files = Array.from(event.target.files);
+      const updatedImages = files.map((file) => ({
+        url: URL.createObjectURL(file),
+        file,
+      }));
+      setValues({
+        ...values,
+        otherImage: [
+          ...updatedImages,
+        ]
+      })
+    }
+  }
+
   return (
     <>
       <div>
+        {contextHolder}
         <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
           <div className="card-body">
             <table className="table table-striped table-bordered">
@@ -136,14 +204,7 @@ const UserEdit = () => {
                           type="file"
                           multiple
                           name="otherImage"
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-
-                            setValues({
-                              ...values,
-                              otherImage: file,
-                            });
-                          }}
+                          onChange={(e) => handleOtherImageFileChange(e)}
                         />
                       </div>
                     </section>

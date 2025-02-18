@@ -124,13 +124,14 @@ const EditDetails = () => {
           }
         });
       }
-
+      const myToken = localStorage.getItem("myToken");
       const response = await axios.post(
         `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type' : 'multipart/form-data',
+            Authorization: `Bearer ${myToken}`
           }
         }
       );
