@@ -5,6 +5,7 @@ import { MdOutlineCurrencyRupee } from "react-icons/md";
 import { ArrowIcon, RupeeIcon } from "../Assets/icons";
 import "aos/dist/aos.css";
 import AOS from "aos";
+import CustomSkeleton from "../Utils/CustomSkeleton";
 
 const Resale = () => {
   const { resalePropertydata } = useContext(DataContext);
@@ -104,7 +105,7 @@ const Resale = () => {
                 return (
                   <React.Fragment key={index}>
                     {item.postProperty && item.postProperty.length > 0 ? (
-                      item.postProperty.slice(2, 6).map((property) => (
+                      item.postProperty.slice(5,12).map((property) => (
                         <Link
                           key={property._id}
                           to={`/buy-properties/${property.propertyName ? property.propertyName.replace(/\s+/g, '-') : 'unknown'}/${property._id}`}
@@ -168,7 +169,7 @@ const Resale = () => {
               }
             })
           ) : (
-            <>Loading...</>
+            <><CustomSkeleton/></>
           )}
         </div>
       </div>
