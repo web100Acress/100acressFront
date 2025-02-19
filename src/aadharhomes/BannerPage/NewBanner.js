@@ -747,7 +747,7 @@ const NewBanner = () => {
                 <div
                   className="absolute top-2/4 right-[70px] transform -translate-y-1/2 bg-black bg-opacity-75 text-white p-6 rounded-lg shadow-lg z-[20] hidden lg:block md:block "
                 >
-                  <h1 style={{ fontFamily: "Abril Fatface" }} className="text-2xl mb-2">
+                  <h1 className="text-2xl mb-2 font-AbrialFatFace">
                     {projectViewDetails.projectName}
                   </h1>
                   <p className="text-sm font-medium flex mb-4 text-center justify-center">
@@ -777,7 +777,7 @@ const NewBanner = () => {
                     className="absolute top-2/4 right-[70px] transform -translate-y-1/2 bg-black bg-opacity-75 text-white p-6 rounded-lg shadow-lg z-[20] hidden lg:block"
                   >
                     <h1
-                      style={{ fontFamily: "Abril Fatface" }}
+                      
                       className="text-xl mb-2 text-center"
                     >
                       {projectViewDetails.projectName}
@@ -825,7 +825,7 @@ const NewBanner = () => {
 
                 {/* New Div Below the Image on Mobile */}
                 <div className="lg:hidden md:hidden mt-0 bg-black bg-opacity-80 text-white p-4 shadow-lg">
-                  <h1 style={{ fontFamily: "Abril Fatface" }} className="text-2xl mb-2">
+                  <h1 className="text-2xl font-AbrialFatFace mb-2">
                     {projectViewDetails.projectName}
                   </h1>
                   <p className="text-sm font-medium flex mb-4 text-center justify-center">
@@ -852,7 +852,7 @@ const NewBanner = () => {
                 <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
                   <AcresIcon className="mr-2" />
                   <div className='mt-2 text-center'>
-                    <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
+                    <span className="text-2xl font-AbrialFatFace">
                       {projectViewDetails.totalLandArea} Acres
                     </span>
                     <h6 className='text-sm'>Land Area</h6>
@@ -863,7 +863,7 @@ const NewBanner = () => {
                 <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
                   <TowerIcon className="mr-2" />
                   <div className='mt-2 text-center'>
-                    <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
+                    <span className="text-2xl font-AbrialFatFace" >
                       {formatDate(projectViewDetails.possessionDate)}
                     </span>
                     <h6 className='text-sm'>Possession</h6>
@@ -874,7 +874,7 @@ const NewBanner = () => {
                 <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
                   <CalenderIcon className="mr-2" />
                   <div className='mt-2 text-center'>
-                    <span style={{ fontFamily: "Abril Fatface" }} className="text-2xl">
+                    <span className="text-2xl font-AbrialFatFace">
                       {projectViewDetails.towerNumber} Tower -{" "}
                       {projectViewDetails.totalUnit} Unit
                     </span>
@@ -886,11 +886,11 @@ const NewBanner = () => {
                 <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
                   <PriceIcon className="mr-2" />
                   <div className='mt-2 text-center'>
-                    <span className="text-2xl" style={{ fontFamily: "Abril Fatface" }}>
+                    <span className="text-2xl font-AbrialFatFace" >
                       {projectViewDetails.minPrice < 1 ? (
                         <span>{projectViewDetails.minPrice * 100} L{" "}</span>
                       ) : (
-                        <span style={{ fontFamily: "Abril Fatface" }}>{projectViewDetails.minPrice} Cr {" "}</span>
+                        <span className='font-AbrialFatFace' >{projectViewDetails.minPrice} Cr {" "}</span>
                       )}
                       - {projectViewDetails.maxPrice} Cr
                     </span>
@@ -927,8 +927,8 @@ const NewBanner = () => {
                   </span>
 
                   <h2
-                    className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
-                    style={{ fontFamily: "Abril Fatface" }}
+                    className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
+                    
                   >
                     {projectViewDetails.projectName}
                   </h2>
@@ -955,8 +955,8 @@ const NewBanner = () => {
                   </span>
 
                   <h2
-                    className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
-                    style={{ fontFamily: "Abril Fatface" }}
+                    className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
+                    
                   >
                     {projectViewDetails.projectName}
                   </h2>
@@ -1005,11 +1005,11 @@ const NewBanner = () => {
                         {" "}How Much
                       </span>
                       <h4
-                        style={{ fontFamily: "Abril Fatface" }}
-                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
                       >
                         {projectViewDetails.projectName}
-                        <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Size & Price</span>
+                        <span className="block font-AbrialFatFace sm:inline"> Size & Price</span>
                       </h4>
 
 
@@ -1074,11 +1074,11 @@ const NewBanner = () => {
                       </span>
                       <div>
                         <h4
-                          style={{ fontFamily: "Abril Fatface" }}
-                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                          
+                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
                         >
                           {projectViewDetails.projectName}
-                          <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Floor Plan</span>
+                          <span className="block font-AbrialFatFace sm:inline"> Floor Plan</span>
                         </h4>
                       </div>
                     </div>
@@ -1210,11 +1210,11 @@ const NewBanner = () => {
                         {" "}Gallery
                       </span>
                       <h4
-                        style={{ fontFamily: "Abril Fatface" }}
-                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
                       >
                         {projectViewDetails.projectName}
-                        <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Images</span>
+                        <span className="block font-AbrialFatFace sm:inline"> Images</span>
                       </h4>
 
                       <div className="pt-4 p-2 max-w-screen-xl mx-auto">
@@ -1274,11 +1274,11 @@ const NewBanner = () => {
                         {" "}Project Facilities
                       </span>
                       <h4
-                        style={{ fontFamily: "Abril Fatface" }}
-                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
                       >
                         {projectViewDetails.projectName}
-                        <span style={{ fontFamily: "Abril Fatface" }} className="block sm:inline"> Amenities</span>
+                        <span className="block font-AbrialFatFace sm:inline"> Amenities</span>
                       </h4>
                       <section className="w-full mb-2">
                         <div className="pt-4 p-2 rounded-lg relative">
@@ -1324,10 +1324,7 @@ const NewBanner = () => {
                                     <Dynamicsvg text={project} />
                                   </div>
                                   <span
-                                    className="text-2xl sm:text-2xl md:text-2xl h-20 flex items-end"
-                                    style={{
-                                      fontFamily: "Abril Fatface",
-                                    }}
+                                    className="text-2xl sm:text-2xl md:text-2xl h-20 flex items-end font-AbrialFatFace"
                                   >
                                     {project}
                                   </span>
@@ -1380,14 +1377,14 @@ const NewBanner = () => {
                       </span>
                       <div className="mt-0">
                         {/* <h4
-                      style={{ fontFamily: "Abril Fatface" }}
+                      
                       className="mt-2 text-4xl sm:text-5xl md:text-5xl"
                     >
                       {projectViewDetails.projectName}
                     </h4> */}
                         <h4
-                          style={{ fontFamily: "Abril Fatface" }}
-                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                          
+                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
                         >
                           {projectViewDetails.projectName}
                         </h4>
@@ -1453,8 +1450,8 @@ const NewBanner = () => {
                       </span>
                       <div>
                         <h4
-                          style={{ fontFamily: "Abril Fatface" }}
-                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                          
+                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
                         >
                           Master Plan of {projectViewDetails.projectName}
                         </h4>
@@ -1491,8 +1488,8 @@ const NewBanner = () => {
                         {" "}Builder
                       </span>
                       <h4
-                        style={{ fontFamily: "Abril Fatface" }}
-                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
                       >
                         About {projectViewDetails.builderName}
                       </h4>
@@ -1526,8 +1523,8 @@ const NewBanner = () => {
                         {" "}Others
                       </span>
                       <h4
-                        style={{ fontFamily: "Abril Fatface" }}
-                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-abril"
+                        
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
                       >
                         Properties by {projectViewDetails.builderName}
                       </h4>
@@ -1629,7 +1626,7 @@ const NewBanner = () => {
                     </span>
                     {" "}Contact
                   </span>
-                  <h3 className="text-4xl sm:text-5xl" style={{ fontFamily: "Abril Fatface" }}>Make an Enquiry</h3>
+                  <h3 className="text-4xl sm:text-5xl font-AbrialFatFace">Make an Enquiry</h3>
                   <p className="text-lg flex items-center space-x-2">
                     <a
                       href={`tel:${projectViewDetails?.mobileNumber  === 9811750130 ? "8527134491" : "9315375335" }`}
