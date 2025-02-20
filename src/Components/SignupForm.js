@@ -117,15 +117,15 @@ function SignupForm() {
   return (
     <>
       {contextHolder}
-      <div className="bg-white shadow-xl rounded-2xl mt-14 p-4 my-8">
-        <div className="text-base font-semibold">Register your Account</div>
-        <div className="my-2">
-          <p>Are you a:</p>
-          <div className="flex flex-col md:flex-row gap-2">
+      <div className="bg-white space-y-2 shadow-xl rounded-2xl mt-14 p-4 my-8">
+        <div className="text-primaryRed text-3xl font-Gluten text-center font-semibold">Register your Account</div>
+        <div className="my-2 flex items-center">
+          <p className=" mr-4 my-2">Are you a:</p>
+          <div className="flex flex-row gap-2 ">
             {roles.map((role) => (
               <div
                 key={role}
-                className={`px-4 py-2 w-full md:w-fit border rounded-full cursor-pointer hover:bg-primaryRed hover:text-white ${
+                className={`w-full px-4 py-2  border rounded-3xl cursor-pointer hover:bg-primaryRed hover:text-white ${
                   userSignUp.role === role && "bg-primaryRed text-white"
                 }`}
                 onClick={() => handleSelectRole(role)}
@@ -135,17 +135,30 @@ function SignupForm() {
             ))}
           </div>
         </div>
-        <form className="space-y-4" onSubmit={handleClick}>
-          <div className="flex flex-col">
-            <label htmlFor="name">Full Name</label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              placeholder="John Doe"
-              className="border px-1 py-2 rounded"
-              onChange={handleRegisterChange}
-            />
+        <form className="space-y-2" onSubmit={handleClick}>
+          <div className="flex space-x-1">
+            <div className="basis-1/2 flex flex-col">
+              <label htmlFor="name">Full Name</label>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="John Doe"
+                className="border px-1 py-2 rounded"
+                onChange={handleRegisterChange}
+                />
+            </div>
+            <div className="basis-1/2 flex flex-col">
+              <label htmlFor="mobile">Mobile Number</label>
+              <input
+                type="number"
+                name="mobile"
+                id="mobile"
+                placeholder="+91 9876543210"
+                className="border px-1 py-2 rounded"
+                onChange={handleRegisterChange}
+                />
+            </div>
           </div>
           <div className="flex flex-col">
             <label htmlFor="email">Email</label>
@@ -159,15 +172,7 @@ function SignupForm() {
             />
           </div>
           <div className="flex flex-col">
-            <label htmlFor="mobile">Mobile Number</label>
-            <input
-              type="number"
-              name="mobile"
-              id="mobile"
-              placeholder="+91 9876543210"
-              className="border px-1 py-2 rounded"
-              onChange={handleRegisterChange}
-            />
+            
           </div>
           <div className="flex flex-col relative">
             <label htmlFor="password">Enter Password</label>
@@ -215,7 +220,7 @@ function SignupForm() {
           </div>
           <button
             type="submit"
-            className="bg-primaryRed text-white text-center w-full rounded px-4 py-2"
+            className="bg-primaryRed text-white text-center w-full rounded px-4 py-2 hover:bg-red-500"
             onClick={handleClick}
           >
             Register

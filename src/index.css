@@ -14,6 +14,10 @@ html {
   font-family: "Gluten", cursive !important;
 }
 
+.font-AbrialFatFace{
+  font-family: "Abril Fatface" !important;
+}
+
 .custom-ok-button {
   background-color: #C13B44; 
   color: white;

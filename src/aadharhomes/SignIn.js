@@ -61,10 +61,10 @@ export default function SignIn() {
 
         {contextHolder}
         <div className="bg-white shadow-xl rounded-2xl mt-14 p-4 my-8">
-        <div className="text-base font-semibold my-2">Login to your account</div>
+        <div className="text-3xl font-Gluten text-primaryRed font-semibold my-4 text-center">Login to your account</div>
         
                 <form className="space-y-4" onSubmit={handleClick}>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col space-y-1">
                     <label htmlFor="email">Email</label>
                     <input
                       type="email"
@@ -75,7 +75,7 @@ export default function SignIn() {
                       onChange={handleLoginChange}
                     />
                   </div>
-                  <div className="flex flex-col relative">
+                  <div className="flex flex-col relative space-y-1">
                     <label htmlFor="password">Enter Password</label>
                     <input
                       type={`${passwordHide ? "password" : "text"}`}
@@ -100,13 +100,13 @@ export default function SignIn() {
                   <div className="text-primaryRed underline text-end cursor-pointer" onClick={handleForgetUserPassword}>Forgot Password ?</div>
                   <button
                     type="submit"
-                    className="bg-primaryRed text-white text-center w-full rounded px-4 py-2"
+                    className="bg-primaryRed text-white text-center w-full rounded px-4 py-2 hover:bg-red-500"
                     onClick={handleClick}
                   >
                     Login
                   </button>
                 </form>
-                <div className="mt-40 text-center">Don't have an account? <div className="text-primaryRed underline  inline-block cursor-pointer" onClick={handleUserSignUp}>Register</div></div>
+                <div className="mt-10 text-center">Don't have an account? <div className="text-primaryRed underline  inline-block cursor-pointer" onClick={handleUserSignUp}>Register</div></div>
                 </div>
     </>
   );

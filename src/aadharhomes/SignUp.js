@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 export default function SignUp() {
   return (
     <>
-      <div className="bg-[url('https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/mainbgg.webp')] mt-10">
+      <div className="bg-[url('https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/mainbgg.webp')] min-h-[90vh] mt-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mx-5">
           <div className="">
             <div className="w-1/2 my-5">
