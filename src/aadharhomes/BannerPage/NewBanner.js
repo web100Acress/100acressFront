@@ -120,7 +120,7 @@ const NewBanner = () => {
             `Hello, I am interested in ${projectData.projectName} ${projectData.city} ${projectData.state}.`
           );
 
-          const whatsappLink = `https://wa.me/918500900100?text=${message}`;
+          const whatsappLink = `https://wa.me/918527134491?text=${message}`;
           document.querySelector(".dd-m-whatsapp").href = whatsappLink;
         } else {
           console.error('No project data found.');
