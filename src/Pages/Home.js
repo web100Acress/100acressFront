@@ -20,6 +20,7 @@ import {ArrowIcon, LcoationBiggerIcon } from '../Assets/icons/index';
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon } from "lucide-react";
 import SpotlightBanner from "../aadharhomes/SpotlightBanner";
+import HotProject from "./HomePages/hotproject";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Builder from "./BuilderPages/Builder";
@@ -159,7 +160,8 @@ function Home() {
       <div className="relative">
           <div className="absolute inset-0 bg-[#EE1C25] opacity-80"></div>
           <div className="relative">
-            <SpotlightBanner />
+            {/* <SpotlightBanner /> */}
+            <HotProject/>
           </div>
         </div>
       {/*<!-- End Carousel with indicators inside --> */}
