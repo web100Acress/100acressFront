@@ -888,7 +888,7 @@ const NewBanner = () => {
                   <div className='mt-2 text-center'>
                     <span className="text-2xl font-AbrialFatFace" >
                       {projectViewDetails.minPrice < 1 ? (
-                        <span>{projectViewDetails.minPrice * 100} L{" "}</span>
+                        <span style={{ fontFamily: "Abril Fatface" }}>{(projectViewDetails?.minPrice * 100).toFixed()} L{" "}</span>
                       ) : (
                         <span className='font-AbrialFatFace' >{projectViewDetails.minPrice} Cr {" "}</span>
                       )}
