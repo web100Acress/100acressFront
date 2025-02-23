@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { sortByDesiredOrder } from "./Utils/ProjectSorting";
-import { Affordable_Desired_Order, Luxury_Desired_Order, Trending_Desired_Order } from "./Pages/datafeed/Desiredorder";
+import { Affordable_Desired_Order, Luxury_Desired_Order, Trending_Desired_Order ,Recommendedreordered } from "./Pages/datafeed/Desiredorder";
 export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: Infinity });
@@ -133,7 +133,10 @@ export const DataProvider = ({ children }) => {
         "projectName"
       );
 
-      const SpotlightPorp = projectsData.filter((project)=> project?.spotlight === "True");
+      const SpotlightPorp = sortByDesiredOrder(projectsData.filter((project)=> project?.spotlight === "True"),
+      Recommendedreordered,
+      "projectName"
+      );
       
 
       const featuredProjects = projectsData.filter(
