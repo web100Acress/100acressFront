@@ -2,8 +2,8 @@ import React, { useContext , useState} from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
-import CommonProject from "../Utils/CommonProject.js";
-import ProjectSearching from "./ProjectSearching.js";
+import CommonProject from "../Utils/CommonProject";
+import ProjectSearching from "./ProjectSearching";
 
 const NewLaunch = () => {
   const { newLaunch } = useContext(DataContext);
