@@ -65,8 +65,9 @@ export const phoneSrc = [
 ];
 
 export const Recommendedreordered = [
+    "Trinity Sky Palazzos",
     "Birla Arika",
     "BPTP Verti Greens",
-    "Conscient Elaira",
     "Puri Diplomatic Residences",
+    "Conscient Elaira",
 ];
