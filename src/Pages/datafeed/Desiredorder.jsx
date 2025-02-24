@@ -63,3 +63,10 @@ export const phoneSrc = [
     image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone7.webp", link:"/elan-the-emperor/"
   },
 ];
+
+export const Recommendedreordered = [
+    "Birla Arika",
+    "BPTP Verti Greens",
+    "Conscient Elaira",
+    "Puri Diplomatic Residences",
+];
