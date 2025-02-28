@@ -67,6 +67,6 @@ export const phoneSrc = [
 export const Recommendedreordered = [
     "Birla Arika",
     "BPTP Verti Greens",
-    "Conscient Elaira",
-    "Puri Diplomatic Residences",
+    "Experion The Trillion",
+    "Conscient Elaira"
 ];
