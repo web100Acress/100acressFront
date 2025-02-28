@@ -68,6 +68,5 @@ export const Recommendedreordered = [
     "Trinity Sky Palazzos" ,
     "Birla Arika",
     "BPTP Verti Greens",
-    "Puri Diplomatic Residences",
-    "Conscient Elaira",
+    "Experion The Trillion",
 ];
