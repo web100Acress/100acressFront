@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React,{Suspense} from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
@@ -29,7 +29,9 @@ root.render(
     <ChakraProvider>
       <BrowserRouter>
         <ScrollToTop>
+        <Suspense fallback={<div>...Loading</div>}>
           <App />
+        </Suspense>
         </ScrollToTop>
       </BrowserRouter>
     </ChakraProvider>
