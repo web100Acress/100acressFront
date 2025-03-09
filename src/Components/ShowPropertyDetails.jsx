@@ -243,6 +243,7 @@ const ShowPropertyDetails = ({ id }) => {
                         className="col-span-2 row-span-3 rounded-lg object-cover w-full h-[50vh] md:h-[83vh] border"
                         src={rentViewDetails.frontImage.url}
                         alt="Project name"
+                        loading="lazy"
                       />
                     </div>
                     {rentViewDetails.otherImage.length >= 4 &&
@@ -255,6 +256,7 @@ const ShowPropertyDetails = ({ id }) => {
                           className="col-span-1 row-span-1 rounded-lg cursor-pointer object-cover w-full h-[15vh] md:h-[27vh] border "
                           src={image.url}
                           alt="Project name"
+                          loading="lazy"
                         />
                       ))}
                     {rentViewDetails.otherImage.length >= 4 && (
@@ -458,6 +460,7 @@ const ImageGalleryView = ({ images }) => {
             src={image.url}
             alt={`Image ${image.public_id}`}
             className="h-36 w-52 rounded-md object-cover"
+            loading="lazy"
             onClick={() => handleOpenModal(image.url)}
             onDragStart={(e) => e.preventDefault()}
           />
@@ -468,6 +471,7 @@ const ImageGalleryView = ({ images }) => {
               src={images[3].url}
               alt={showAll ? "Show Less" : "Show More"}
               className="flex h-36 w-52 rounded-md basis-1/4 opacity-75 hover:opacity-100 cursor-pointer"
+              loading="lazy"
             />
             <div
               className="absolute top-0 left-0 h-36 w-52 rounded bg-black/70 text-white flex items-center justify-center text-center"
@@ -490,6 +494,7 @@ const ImageGalleryView = ({ images }) => {
                 src={currentImage}
                 alt="Full View"
                 className="max-w-[80vw] max-h-[80vh] object-contain"
+                loading="lazy"
               />
             </div>
           </div>
@@ -579,6 +584,7 @@ const Carousel = ({ AllProjects }) => {
                               src={nestedItem.frontImage.url}
                               alt="property In Gurugram"
                               className="w-full h-[200px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
+                              loading="lazy"
                             />
                           </div>
                           <div className="p-2 pt-0">
