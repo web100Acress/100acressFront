@@ -220,6 +220,7 @@ const ImageGallery = React.memo(() => {
                   src={image.frontImage.url}
                   alt={`image-${index}`}
                   className="relative w-full h-full object-contain rounded-lg animate-fadeInLeft"
+                  loading="lazy"
                 />
                 <Overlay className="overlay" />
                 <InfoContainer>

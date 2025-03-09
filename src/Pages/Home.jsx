@@ -143,11 +143,13 @@ function Home() {
           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/mainbgg.webp"
           alt="Banner"
           className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
+          loading="lazy"
         />
         <img
           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/mainbgg.webp"
           alt="Mobile Banner"
           className="block md:hidden w-full h-[38rem]"
+          loading="lazy"
         />
 
         {/* Center the SearchBar */}
@@ -355,6 +357,7 @@ function Home() {
                             src={item.frontImage.url}
                             alt="property In Gurugram"
                             className="w-full h-64 object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
+                            loading="lazy"
                           />
                         </div>
                         <div className="pt-0 p-3 space-y-2">
