@@ -26,6 +26,7 @@ import 'aos/dist/aos.css';
 import Builder from "./BuilderPages/Builder";
 import CustomSkeleton from "../Utils/CustomSkeleton";
 import CommonProject from "../Utils/CommonProject";
+import LazyLoad from 'react-lazyload';
 import Builderaction from "./HomePages/Builderaction";
 
 function Home() {
@@ -243,61 +244,74 @@ function Home() {
             </div>
 
             {/* Display Filtered Projects */}
-            <CommonProject
-              data={displayedProjects.slice(0, activeFilter === "Luxury" ? 4 : 8)}
-              animation="fade-up"
-            />
+            <LazyLoad height={200} offset={100}>
+              <CommonProject
+                data={displayedProjects.slice(0, activeFilter === "Luxury" ? 4 : 8)}
+                animation="fade-up"
+                />
+              </LazyLoad>
           </div>
         </>)
       }
 
       {/* Upcoming Project */}
+      <LazyLoad height={200} offset={100}>
       <CommonProject
       data={upcoming}
       title="Upcoming Projects in Gurugram"
       path="/projects/upcoming-projects-in-gurgaon/"
       animation="fade-up"
       />
+      </LazyLoad>
 
       {/* Luxyry Projects */}
         {/* <Suspense fallback={<div><CustomSkeleton/></div>}>
         <Luxury/>
         </Suspense> */}
-        
+        <LazyLoad height={200} offset={100}>
+
         <CommonProject
         data={LuxuryProjects.slice(0, 4)}
         title="Luxury For You"
         path="/top-luxury-projects/"
-      />
+        />
+        </LazyLoad>
 
       <Builderaction/>
 
       {/* Budget Projects */}
+          <LazyLoad height={200} offset={100}>
 
       <CommonProject
         data={budgetHome}
         title="Budget Projects in Gurugram"
         animation="flip-left"
-      />
+        />
+        </LazyLoad>
 
 
       {/* SCO */}
+      <LazyLoad height={200} offset={100}>
+
       <CommonProject
         data={typeScoPlots}
         title="SCO Projects in Gurugram"
         path="/sco/plots/"
-      />
+        />
+        </LazyLoad>
 
       <SpacesAvailable />
       <BudgetPlotsInGurugraon />
 
+      <LazyLoad height={200} offset={100}>
 
       <CommonProject
         data={commercialProject.slice(0, 4)}
         title="Commercial Projects in Delhi NCR"
         path="/projects/commerial/"
         animation="fade-down"
-      />
+        />
+        </LazyLoad>
       
       {colorChange && isSmallerThan768 && <div>
         <Link to="/auth/signin/" target="_top">
@@ -311,15 +325,19 @@ function Home() {
           </div>
         </Link>
       </div>}
-      
+      <LazyLoad>
+
       <TopSeoPlots />
+      </LazyLoad>
+        <LazyLoad>
 
       <CommonProject
         data={featuredProject}
         title="Featured Projects"
         path="/projects/upcoming-projects-in-gurgaon/"
         animation="flip-left"
-      />
+        />
+        </LazyLoad>
 
       <div data-aos="zoom-out-left" className="py-3">
         {" "}
@@ -403,13 +421,15 @@ function Home() {
       </div>
 
       <Cities />
+        <LazyLoad>
 
       <CommonProject
         data={affordable.slice(0, 4)}
         title="Affordable Homes"
         path="/projects-in-gurugram/"
         animation="fade-up"
-      />
+        />
+        </LazyLoad>
 
       <Builder/>
 
@@ -433,9 +453,11 @@ function Home() {
           </Link>
         </div>
       </div>
+        <LazyLoad>
 
       <Resale />
       
+        </LazyLoad>
 
       <OurServices />
       <WhyChoose />

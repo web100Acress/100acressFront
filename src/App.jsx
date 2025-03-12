@@ -8,29 +8,29 @@ import PropertyKnow from "./Components/KnowAbouts/PropertyKnow";
 import PageNotFound from "./Pages/PageNotFound";
 import SignUp from "./aadharhomes/SignUp";
 import SignIn from "./aadharhomes/SignIn";
-const Addnew = lazy(()=>import  ("./AdminPage/Addnew"));
-const Adminproperty = lazy(()=>import  ("./AdminPage/Adminproperty"));
-const Dashboard = lazy(()=>import  ("./AdminPage/Dashboard"));
-const Blog = lazy(()=>import  ("./AdminPage/Blog"));
-const EditProject = lazy(()=>import  ("./AdminPage/EditProject"));
-const Enquiries = lazy(()=>import  ("./AdminPage/Enquiries"));
-const Header = lazy(()=>import  ("./AdminPage/Header"));
-const Projects = lazy(()=>import  ("./AdminPage/Projects"));
-const Rent = lazy(()=>import  ("./AdminPage/ResaleEnquiries"));
-const Sidebar = lazy(()=>import  ("./AdminPage/Sidebar"));
-const UserProfile = lazy(()=>import  ("./AdminPage/UserProfile"));
-const Buy = lazy(()=>import  ("./AdminPage/Buy"));
-const ContactPage = lazy(()=>import  ("./AdminPage/ContactPage"));
-const About = lazy(()=>import  ("./Pages/About"));
-const AdminContact = lazy(()=>import  ("./AdminPage/AdminContact"));
+import Addnew from  "./AdminPage/Addnew";
+import Adminproperty from  "./AdminPage/Adminproperty";
+import Dashboard from  "./AdminPage/Dashboard";
+import Blog from  "./AdminPage/Blog";
+import EditProject from  "./AdminPage/EditProject";
+import Enquiries from  "./AdminPage/Enquiries";
+import Header from  "./AdminPage/Header";
+import Projects from  "./AdminPage/Projects";
+import Rent from  "./AdminPage/ResaleEnquiries";
+import Sidebar from  "./AdminPage/Sidebar";
+import UserProfile from  "./AdminPage/UserProfile";
+import Buy from  "./AdminPage/Buy";
+import ContactPage from  "./AdminPage/ContactPage";
+import About from  "./Pages/About";
+import AdminContact from  "./AdminPage/AdminContact";
 import ViewAllProperty from "./Pages/ViewAllProperty";
 import ForgetPassword from "./Pages/ForgetPassword";
 import ResetEmailPassword from "./Pages/ResetEmailPassword";
 import NewSellProperty from "./aadharhomes/NewSellProperty";
-const UserAdmin = lazy(()=>import  ("./AdminPage/UserAdmin"));
-const ViewPropertyAdmin = lazy(()=>import  ("./AdminPage/ViewPropertyAdmin"));
-const ClientDetails = lazy(()=>import  ("./AdminPage/ViewDetails"));
-const EditDetails = lazy(()=>import  ("./AdminPage/EditDetails"));
+import UserAdmin from  "./AdminPage/UserAdmin";
+import ViewPropertyAdmin from  "./AdminPage/ViewPropertyAdmin";
+import ClientDetails from  "./AdminPage/ViewDetails";
+import EditDetails from  "./AdminPage/EditDetails";
 import PropViewCardPro from "./Components/Actual_Components/PropViewCardPro";
 import RentPropViewCard from "./Components/Actual_Components/RentPropViewCard";
 import BuyPropViewCard from "./Components/Actual_Components/BuyPropViewCard";
@@ -38,14 +38,14 @@ import RentViewDetails from "./Pages/RentViewDetails";
 import BuyViewDetails from "./Pages/BuyViewDetails";
 import Privacy from "./Pages/Privacy";
 import TermsAndConditions from "./Pages/TermsAndConditions";
-const RentView = lazy(()=>import("./AdminPage/RentView"));  
-const RentEdit = lazy(()=>import("./AdminPage/RentEdit"));  
-const BuyView = lazy(()=>import("./AdminPage/BuyView"));  
-const BuyEdit = lazy(()=>import("./AdminPage/BuyEdit"));  
-const ProjectView = lazy(()=>import("./AdminPage/ProjectView"));  
-const ProjectEdit = lazy(()=>import("./AdminPage/ProjectEdit"));  
-const ProjectsAddBhk = lazy(()=>import("./AdminPage/ProjectAddBhk"));  
-const ProjectEditBHK = lazy(()=>import("./AdminPage/ProjectEditBHK"));  
+import RentView from "./AdminPage/RentView";  
+import RentEdit from "./AdminPage/RentEdit";  
+import BuyView from "./AdminPage/BuyView";  
+import BuyEdit from "./AdminPage/BuyEdit";  
+import ProjectView from "./AdminPage/ProjectView";  
+import ProjectEdit from "./AdminPage/ProjectEdit";  
+import ProjectsAddBhk from "./AdminPage/ProjectAddBhk";  
+import ProjectEditBHK from "./AdminPage/ProjectEditBHK";  
 import ContactUs from "./Pages/ContactUs";
 import SearchData from "./Pages/SearchData";
 import UserViewProperty from "./Pages/UserViewProperty";
@@ -66,25 +66,25 @@ import { AuthProvider } from "./AuthContext";
 import UserDashBoard from "./Components/HomePageComponents/UserDashBoard";
 import UserEdit from "./Components/HomePageComponents/UserEdit";
 import BlogView from "./Pages/BlogView";
-const BlogEdit = lazy(()=>import ("./AdminPage/BlogEdit"));
-const BlogWrite = lazy(()=>import ("./AdminPage/BlogWrite"));
+import BlogEdit from  "./AdminPage/BlogEdit";
+import BlogWrite from  "./AdminPage/BlogWrite";
 import GurugramPrimeLocation from "./Pages/GurugramPrimeLocation";
-const Career = lazy(()=>import( "./AdminPage/Career"));
-const JobPosting = lazy(()=>import( "./AdminPage/JobPosting"));
-const CareerView = lazy(()=>import( "./AdminPage/CareerView"));
-const CareerEdit = lazy(()=>import( "./AdminPage/CareerEdit"));
-const JobPostingView = lazy(()=>import( "./AdminPage/JobPostingView"));
-const JobPostingEdit = lazy(()=>import( "./AdminPage/JobPostingEdit"));
+import Career from  "./AdminPage/Career";
+import JobPosting from  "./AdminPage/JobPosting";
+import CareerView from  "./AdminPage/CareerView";
+import CareerEdit from  "./AdminPage/CareerEdit";
+import JobPostingView from  "./AdminPage/JobPostingView";
+import JobPostingEdit from  "./AdminPage/JobPostingEdit";
 import DelhiProject from "./Pages/ProjectCities/DelhiProject";
-const InsertProject = lazy(()=>import("./AdminPage/InsertProject"));
-const UserDetails = lazy(()=>import("./AdminPage/UserDetails"));
+import InsertProject from "./AdminPage/InsertProject";
+import UserDetails from "./AdminPage/UserDetails";
 import NoidaProject from "./Pages/ProjectCities/NoidaProject";
 import GoaProject from "./Pages/ProjectCities/GoaProject";
 import PanipatProject from "./Pages/ProjectCities/PanipatProject";
 import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
 import BudgetPrice from "./Pages/BudgetPrice";
-const BlogViewAdmin = lazy(()=>import ("./AdminPage/BlogViewAdmin"));
+import BlogViewAdmin from "./AdminPage/BlogViewAdmin";
 import ReadyToMoveProject from "./Pages/ReadyToMoveProject";
 import VillasProjects from "./Components/HomePageComponents/VillasProjects";
 import Panchkula from "./Pages/ProjectCities/Panchkula";
@@ -117,6 +117,7 @@ import EmailVerification from "./Components/EmailVerification";
 import Karnal from "./Pages/ProjectCities/Karnal";
 import Jalandhar from "./Pages/ProjectCities/Jalandhar";
 import LuxuryProject from "./Pages/BuilderPages/LuxuryProjects";
+import LazyLoad from "react-lazyload";
 
 function App() {
   const token = localStorage.getItem("myToken");
@@ -304,93 +305,94 @@ function App() {
             </Route>
 
             {/* Admin Routing */}
-            
-            <Route  element={<PrivateRoute />}>
-              <Route
-                path="/Admin/acress/dashboard"
-                element={<PrivateRoute />}
-              />
-              <Route
-                path="/Admin/viewproperty/:id"
-                element={<ViewPropertyAdmin />}
-              />
-              {/* hi there */}
-              <Route
-                path="/Admin/viewproperty/viewdetails/:id"
-                element={<ClientDetails />}
-              />
-              <Route
-                path="/Admin/viewproperty/editdetails/:id"
-                element={<EditDetails />}
-              />
-              <Route path="/Admin/dashboard" element={<Dashboard />} />
-              <Route path="/Admin/addnew" element={<Addnew />} />
-              <Route path="/Admin/project-insert" element={<InsertProject />} />
-              <Route path="/Admin/adminproperty" element={<Adminproperty />} />
-              <Route path="/Admin/blog/view/:id" element={<BlogViewAdmin />} />
-              <Route path="/Admin/blog/edit/:id" element={<BlogEdit />} />
-              <Route path="/Admin/career" element={<Career />} />
-              <Route path="/Admin/user" element={<UserAdmin />} />
-              <Route path="/Admin/userdetails" element={<UserDetails />} />
-              <Route path="/Admin/contact" element={<AdminContact />} />
-              <Route path="/Admin/editProject" element={<EditProject />} />
-              <Route path="/Admin/enquiries" element={<Enquiries />} />
-              <Route path="/Admin/header" element={<Header />} />
-              <Route path="/Admin/Projects/property" element={<Projects />} />
-              <Route path="/Admin/resale-enquiries" element={<Rent />} />
-              <Route path="/Admin/jobposting" element={<JobPosting />} />
-              <Route path="/Admin/blog" element={<Blog />} />
-              <Route
-                path="/Admin/jobposting/view/:id"
-                element={<JobPostingView />}
-              />
-              <Route
-                path="/Admin/jobposting/edit/:id"
-                element={<JobPostingEdit />}
-              />
-              <Route path="/Admin/rent/view/:id" element={<RentView />} />
-              <Route path="/Admin/rent/view/edit/:id" element={<RentEdit />} />
-              <Route
-                path="/admin/acress/property/aadhar"
-                element={<Sidebar />}
-              />
-              <Route path="/Admin/buy" element={<Buy />} />
-              <Route path="/Admin/buy/view/:id" element={<BuyView />} />
-              <Route path="/Admin/buy/view/edit/:id" element={<BuyEdit />} />
-              <Route path="/Admin/contactpage" element={<ContactPage />} />
-              <Route
-                path="/Admin/ContactUs/UserProfile"
-                element={<UserProfile />}
-              />
-              <Route
-                path="/Admin/ProjectsView/:pUrl"
-                element={<ProjectView />}
-              />
-              <Route path="/Admin/ProjectsEdit/:id" element={<ProjectEdit />} />
-              <Route path="/Admin/careerview/:id" element={<CareerView />} />
-              <Route path="/Admin/careerEdit/:id" element={<CareerEdit />} />
-              <Route
-                path="/Admin/projecteditbhk/:id"
-                element={<ProjectEditBHK />}
-              />
-              <Route
-                path="/Admin/projectedithighlight/:id"
-                element={<ProjectEditHighlight />}
-              />
-              <Route
-                path="/Admin/ProjectsAddBhk/:id"
-                element={<ProjectsAddBhk />}
-              />
-              <Route path="/Admin/adminProperty" element={<Adminproperty />} />
-              <Route
-                path="/Admin/ProjectAddHighlights/:id"
-                element={<ProjectAddHighligths />}
-              />
-              <Route
-                path="/dashboard"
-                element={<PrivateRoute element={<Dashboard />} />}
-              />
-            </Route>
+              <Route  element={<PrivateRoute />}>
+                       
+                <Route
+                  path="/Admin/acress/dashboard"
+                  element={<PrivateRoute />}
+                />
+              
+                <Route
+                  path="/Admin/viewproperty/:id"
+                  element={<LazyLoad><ViewPropertyAdmin /></LazyLoad>}
+                />
+                {/* hi there */}
+                <Route
+                  path="/Admin/viewproperty/viewdetails/:id"
+                  element={<LazyLoad><ClientDetails /></LazyLoad>}
+                />
+                <Route
+                  path="/Admin/viewproperty/editdetails/:id"
+                  element={<LazyLoad><EditDetails /></LazyLoad>}
+                />
+                <Route path="/Admin/dashboard" element={<LazyLoad><Dashboard /></LazyLoad>} />
+                <Route path="/Admin/addnew" element={<LazyLoad><Addnew /></LazyLoad>} />
+                <Route path="/Admin/project-insert" element={<LazyLoad><InsertProject /></LazyLoad>} />
+                <Route path="/Admin/adminproperty" element={<LazyLoad><Adminproperty /></LazyLoad>} />
+                <Route path="/Admin/blog/view/:id" element={<LazyLoad><BlogViewAdmin /></LazyLoad>} />
+                <Route path="/Admin/blog/edit/:id" element={<LazyLoad><BlogEdit /></LazyLoad>} />
+                <Route path="/Admin/career" element={<LazyLoad><Career /></LazyLoad>} />
+                <Route path="/Admin/user" element={<LazyLoad><UserAdmin /></LazyLoad>} />
+                <Route path="/Admin/userdetails" element={<LazyLoad><UserDetails /></LazyLoad>} />
+                <Route path="/Admin/contact" element={<LazyLoad><AdminContact /></LazyLoad>} />
+                <Route path="/Admin/editProject" element={<LazyLoad><EditProject /></LazyLoad>} />
+                <Route path="/Admin/enquiries" element={<LazyLoad><Enquiries /></LazyLoad>} />
+                <Route path="/Admin/header" element={<LazyLoad><Header /></LazyLoad>} />
+                <Route path="/Admin/Projects/property" element={<LazyLoad><Projects /></LazyLoad>} />
+                <Route path="/Admin/resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />
+                <Route path="/Admin/jobposting" element={<LazyLoad><JobPosting /></LazyLoad>} />
+                <Route path="/Admin/blog" element={<LazyLoad><Blog /></LazyLoad>} />
+                <Route
+                  path="/Admin/jobposting/view/:id"
+                  element={<LazyLoad> <JobPostingView /></LazyLoad>}
+                />
+                <Route
+                  path="/Admin/jobposting/edit/:id"
+                  element={<LazyLoad> <JobPostingEdit /></LazyLoad>}
+                />
+                <Route path="/Admin/rent/view/:id" element={<LazyLoad> <RentView /></LazyLoad>} />
+                <Route path="/Admin/rent/view/edit/:id" element={<LazyLoad> <RentEdit /></LazyLoad>} />
+                <Route
+                  path="/admin/acress/property/aadhar"
+                  element={<LazyLoad> <Sidebar /></LazyLoad>}
+                />
+                <Route path="/Admin/buy" element={<LazyLoad> <Buy /></LazyLoad>} />
+                <Route path="/Admin/buy/view/:id" element={<LazyLoad> <BuyView /></LazyLoad>} />
+                <Route path="/Admin/buy/view/edit/:id" element={<LazyLoad> <BuyEdit /></LazyLoad>} />
+                <Route path="/Admin/contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
+                <Route
+                  path="/Admin/ContactUs/UserProfile"
+                  element={<LazyLoad> <UserProfile /></LazyLoad>}
+                />
+                <Route
+                  path="/Admin/ProjectsView/:pUrl"
+                  element={<LazyLoad> <ProjectView /></LazyLoad>}
+                />
+                <Route path="/Admin/ProjectsEdit/:id" element={<LazyLoad> <ProjectEdit /></LazyLoad>} />
+                <Route path="/Admin/careerview/:id" element={<LazyLoad> <CareerView /></LazyLoad>} />
+                <Route path="/Admin/careerEdit/:id" element={<LazyLoad> <CareerEdit /></LazyLoad>} />
+                <Route
+                  path="/Admin/projecteditbhk/:id"
+                  element={<LazyLoad> <ProjectEditBHK /></LazyLoad>}
+                />
+                <Route
+                  path="/Admin/projectedithighlight/:id"
+                  element={<LazyLoad> <ProjectEditHighlight /></LazyLoad>}
+                />
+                <Route
+                  path="/Admin/ProjectsAddBhk/:id"
+                  element={<LazyLoad> <ProjectsAddBhk /></LazyLoad>}
+                />
+                <Route path="/Admin/adminProperty" element={<LazyLoad> <Adminproperty /></LazyLoad>} />
+                <Route
+                  path="/Admin/ProjectAddHighlights/:id"
+                  element={<LazyLoad> <ProjectAddHighligths /></LazyLoad>}
+                />
+                <Route
+                  path="/dashboard"
+                  element={<PrivateRoute element={<LazyLoad><Dashboard /></LazyLoad>} />}
+                />
+              </Route>
           </Routes>
           {/* </Router> */}
         </Wrapper>
