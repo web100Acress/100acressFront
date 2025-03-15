@@ -29,7 +29,9 @@ root.render(
     <ChakraProvider>
       <BrowserRouter>
         <ScrollToTop>
-          <App />
+          <Suspense fallback={<div>Loading...</div>}>
+            <App />
+          </Suspense>
         </ScrollToTop>
       </BrowserRouter>
     </ChakraProvider>
