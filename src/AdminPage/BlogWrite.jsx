@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import JoditEditor from 'jodit-react';
 import axios from "axios";
+import LazyLoad from 'react-lazyload';
 const BlogWrite = () => {
   const [content,setContent]=useState('')
 
@@ -100,11 +101,13 @@ const BlogWrite = () => {
 
                 <div>
                   <label htmlFor="content">Content:</label>
-                  <JoditEditor
-                    name="blog_Description"
-                    value={content}
-                    onChange={handleContent}
-                  />
+                  <LazyLoad>
+                    <JoditEditor
+                      name="blog_Description"
+                      value={content}
+                      onChange={handleContent}
+                      />
+                    </LazyLoad>
                 </div>
 
                 <select

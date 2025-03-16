@@ -1,10 +1,10 @@
 FROM node:alpine3.18 as build
 # Build App
 WORKDIR /app
-COPY package.json .
-RUN npm install
+COPY package.json package-lock.json* ./
+RUN npm ci
 COPY . .
-ENV GENERATE_SOURCEMAP=false
+
 RUN npm run build
 # Serve with Nginx
 FROM nginx:1.23-alpine
