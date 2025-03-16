@@ -1,32 +1,33 @@
-import React, {useContext, useEffect, useState } from "react";
-import Cities from "../Components/HomePageComponents/Cities";
-import FormHome from "../Components/HomePageComponents/FormHome";
-import WhyChoose from "../Components/HomePageComponents/WhyChoose";
-import SpacesAvailable from "../Components/HomePageComponents/Spaces";
-import SearchBar from "../Components/HomePageComponents/SearchBar";
+import React, { lazy, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import OurServices from "../Components/HomePageComponents/ourServices";
 import Free from "../../src/Pages/Free";
 import { Helmet } from "react-helmet";
-import Footer from "../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { DataContext } from "../MyContext";
-import Resale from "./Resale";
 import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
-import {ArrowIcon, LcoationBiggerIcon } from '../Assets/icons/index';
+import { ArrowIcon, LcoationBiggerIcon } from "../Assets/icons/index";
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon } from "lucide-react";
 import SpotlightBanner from "../aadharhomes/SpotlightBanner";
-import HotProject from "./HomePages/hotproject";
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import AOS from "aos";
+import "aos/dist/aos.css";
 import Builder from "./BuilderPages/Builder";
 import CustomSkeleton from "../Utils/CustomSkeleton";
-import CommonProject from "../Utils/CommonProject";
+import LazyLoad from "react-lazyload";
 import Builderaction from "./HomePages/Builderaction";
+const Cities = lazy(()=> import("../Components/HomePageComponents/Cities")); 
+const FormHome = lazy(()=> import("../Components/HomePageComponents/FormHome")); 
+const WhyChoose = lazy(()=> import("../Components/HomePageComponents/WhyChoose")); 
+const SpacesAvailable = lazy(()=> import("../Components/HomePageComponents/Spaces")); 
+const SearchBar = lazy(()=> import("../Components/HomePageComponents/SearchBar")); 
+const OurServices =  lazy(()=> import( "../Components/HomePageComponents/ourServices"));
+const Footer =  lazy(()=> import( "../Components/Actual_Components/Footer"));
+const Resale = lazy(() => import("./Resale"));
+const HotProject = lazy(() => import("./HomePages/hotproject"));
+const CommonProject = lazy(() => import("../Utils/CommonProject"));
 
 function Home() {
   useEffect(() => {
@@ -39,7 +40,7 @@ function Home() {
     upcoming,
     city,
     commercialProject,
-    typeScoPlots,    
+    typeScoPlots,
     typeAffordable,
     resalePropertydata,
     LuxuryProjects,
@@ -47,7 +48,7 @@ function Home() {
   } = useContext(DataContext);
   const [colorChange, setColorchange] = useState(false);
   const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
-  
+
   const changeNavbarColor = () => {
     if (window.scrollY >= 250) {
       setColorchange(true);
@@ -70,8 +71,6 @@ function Home() {
     reorderedTrendingProjects[7] = trendingProject[3];
   }
 
-
-  
   const [activeFilter, setActiveFilter] = useState("Trending");
   let displayedProjects = [];
   let path = false;
@@ -112,18 +111,16 @@ function Home() {
       displayedProjects = [];
       break;
   }
-  
+
   useEffect(() => {
     AOS.init();
   }, []);
 
   useEffect(() => {
-     setTimeout(() => {
-     AOS.refresh();
-  }, 100);
-    
+    setTimeout(() => {
+      AOS.refresh();
+    }, 100);
   }, [activeFilter]);
-
 
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
@@ -154,23 +151,31 @@ function Home() {
 
         {/* Center the SearchBar */}
         <div className="absolute inset-0 flex items-center justify-center mt-16 md:mt-0 lg:mt-24">
-          <SearchBar />
+          <LazyLoad>
+            <SearchBar />
+          </LazyLoad>
         </div>
-
       </div>
 
       <div className="relative">
-          <div className="absolute inset-0 bg-[#EE1C25] opacity-80"></div>
-          <div className="relative">
-            {/* <SpotlightBanner /> */}
-            <HotProject/>
-          </div>
+        <div className="absolute inset-0 bg-[#EE1C25] opacity-80"></div>
+        <div className="relative">
+          {/* <SpotlightBanner /> */}
+          <LazyLoad>
+            <HotProject />
+          </LazyLoad>
         </div>
+      </div>
       {/*<!-- End Carousel with indicators inside --> */}
-      {trendingProject.length === 0 ? <CustomSkeleton /> : (
+      {trendingProject.length === 0 ? (
+        <CustomSkeleton />
+      ) : (
         <>
-          <div data-aos="fade-up"
-            data-aos-duration="1000" className="py-0 mt-3">
+          <div
+            data-aos="fade-up"
+            data-aos-duration="1000"
+            className="py-0 mt-3"
+          >
             <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
               <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl">
                 {`${activeFilter}`} Properties in Gurugram
@@ -181,53 +186,83 @@ function Home() {
             <div className="flex items-center justify-start gap-3 mx-6 lg:mx-6 xl:ml-14 md:mx-6 pt-2 overflow-x-auto no-scrollbar">
               <button
                 onClick={() => setActiveFilter("Trending")}
-                className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:shadow-lg hover:scale-125 duration-500 ease-in-out "}`}
+                className={`px-4 py-2 rounded-full text-xs ${
+                  activeFilter === "Trending"
+                    ? "bg-[#C13B44] text-white"
+                    : "border border-[#333333] shadow-sm hover:shadow-lg hover:scale-125 duration-500 ease-in-out "
+                }`}
               >
                 Trending
               </button>
               <button
                 onClick={() => setActiveFilter("Featured")}
-                className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Featured" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"}`}
+                className={`px-4 py-2 rounded-full text-xs ${
+                  activeFilter === "Featured"
+                    ? "bg-[#C13B44] text-white"
+                    : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
+                }`}
               >
                 Featured
               </button>
               <button
                 onClick={() => setActiveFilter("Upcoming")}
-                className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Upcoming" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"}`}
+                className={`px-4 py-2 rounded-full text-xs ${
+                  activeFilter === "Upcoming"
+                    ? "bg-[#C13B44] text-white"
+                    : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
+                }`}
               >
                 Upcoming
               </button>
               <button
                 onClick={() => setActiveFilter("Commercial")}
-                className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Commercial" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"}`}
+                className={`px-4 py-2 rounded-full text-xs ${
+                  activeFilter === "Commercial"
+                    ? "bg-[#C13B44] text-white"
+                    : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
+                }`}
               >
                 Commercial
               </button>
               <button
                 onClick={() => setActiveFilter("Affordable")}
-                className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Affordable" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"}`}
+                className={`px-4 py-2 rounded-full text-xs ${
+                  activeFilter === "Affordable"
+                    ? "bg-[#C13B44] text-white"
+                    : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
+                }`}
               >
                 Affordable
               </button>
               <button
                 onClick={() => setActiveFilter("SCO")}
-                className={`px-4 py-2 rounded-full text-xs ${activeFilter === "SCO" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"}`}
+                className={`px-4 py-2 rounded-full text-xs ${
+                  activeFilter === "SCO"
+                    ? "bg-[#C13B44] text-white"
+                    : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
+                }`}
               >
                 SCO
               </button>
               <button
                 onClick={() => setActiveFilter("Budget")}
-                className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Budget" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"}`}
+                className={`px-4 py-2 rounded-full text-xs ${
+                  activeFilter === "Budget"
+                    ? "bg-[#C13B44] text-white"
+                    : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"
+                }`}
               >
                 Budget 🏠
               </button>
               <button
                 onClick={() => setActiveFilter("Luxury")}
-                className={`px-4 py-2 rounded-full text-sm font-semibold ${activeFilter === "Luxury"
+                className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                  activeFilter === "Luxury"
                     ? "bg-gradient-to-r from-[#da737a] to-[#5f050b] text-white shadow-lg transform hover:scale-105 duration-300 ease-in-out"
-                    : "border-2 border-[#D4AF37] text-[#D4AF37] shadow-md hover:scale-105 duration-300 ease-in-out"}`}
+                    : "border-2 border-[#D4AF37] text-[#D4AF37] shadow-md hover:scale-105 duration-300 ease-in-out"
+                }`}
               >
-                Luxury 
+                Luxury
               </button>
 
               {path && (
@@ -243,83 +278,98 @@ function Home() {
             </div>
 
             {/* Display Filtered Projects */}
-            <CommonProject
-              data={displayedProjects.slice(0, activeFilter === "Luxury" ? 4 : 8)}
-              animation="fade-up"
-            />
+            <LazyLoad>
+              <CommonProject
+                data={displayedProjects.slice(
+                  0,
+                  activeFilter === "Luxury" ? 4 : 8
+                )}
+                animation="fade-up"
+              />
+            </LazyLoad>
           </div>
-        </>)
-      }
+        </>
+      )}
 
       {/* Upcoming Project */}
-      <CommonProject
-      data={upcoming}
-      title="Upcoming Projects in Gurugram"
-      path="/projects/upcoming-projects-in-gurgaon/"
-      animation="fade-up"
-      />
+      <LazyLoad>
+        <CommonProject
+          data={upcoming}
+          title="Upcoming Projects in Gurugram"
+          path="/projects/upcoming-projects-in-gurgaon/"
+          animation="fade-up"
+        />
+      </LazyLoad>
 
       {/* Luxyry Projects */}
-        {/* <Suspense fallback={<div><CustomSkeleton/></div>}>
+      {/* <Suspense fallback={<div><CustomSkeleton/></div>}>
         <Luxury/>
         </Suspense> */}
-        
+      <LazyLoad>
         <CommonProject
-        data={LuxuryProjects.slice(0, 4)}
-        title="Luxury For You"
-        path="/top-luxury-projects/"
-      />
+          data={LuxuryProjects.slice(0, 4)}
+          title="Luxury For You"
+          path="/top-luxury-projects/"
+        />
+      </LazyLoad>
 
-      <Builderaction/>
+      <Builderaction />
 
       {/* Budget Projects */}
-
-      <CommonProject
-        data={budgetHome}
-        title="Budget Projects in Gurugram"
-        animation="flip-left"
-      />
-
+      <LazyLoad>
+        <CommonProject
+          data={budgetHome}
+          title="Budget Projects in Gurugram"
+          animation="flip-left"
+        />
+      </LazyLoad>
 
       {/* SCO */}
-      <CommonProject
-        data={typeScoPlots}
-        title="SCO Projects in Gurugram"
-        path="/sco/plots/"
-      />
+      <LazyLoad>
+        <CommonProject
+          data={typeScoPlots}
+          title="SCO Projects in Gurugram"
+          path="/sco/plots/"
+        />
+      </LazyLoad>
 
       <SpacesAvailable />
       <BudgetPlotsInGurugraon />
 
+      <LazyLoad>
+        <CommonProject
+          data={commercialProject.slice(0, 4)}
+          title="Commercial Projects in Delhi NCR"
+          path="/projects/commerial/"
+          animation="fade-down"
+        />
+      </LazyLoad>
 
-      <CommonProject
-        data={commercialProject.slice(0, 4)}
-        title="Commercial Projects in Delhi NCR"
-        path="/projects/commerial/"
-        animation="fade-down"
-      />
-      
-      {colorChange && isSmallerThan768 && <div>
-        <Link to="/auth/signin/" target="_top">
-          <div className="sticky-quote-cta">
-            <a
-              className="text-white"
-              style={{ backgroundColor: "#C13B44", padding: '12px' }}
-            >
-              LIST{" "}PROPERTY
-            </a>
-          </div>
-        </Link>
-      </div>}
-      
-      <TopSeoPlots />
-
-      <CommonProject
-        data={featuredProject}
-        title="Featured Projects"
-        path="/projects/upcoming-projects-in-gurgaon/"
-        animation="flip-left"
-      />
+      {colorChange && isSmallerThan768 && (
+        <div>
+          <Link to="/auth/signin/" target="_top">
+            <div className="sticky-quote-cta">
+              <a
+                className="text-white"
+                style={{ backgroundColor: "#C13B44", padding: "12px" }}
+              >
+                LIST PROPERTY
+              </a>
+            </div>
+          </Link>
+        </div>
+      )}
+      <LazyLoad>
+        <TopSeoPlots />
+      </LazyLoad>
+      <LazyLoad>
+        <CommonProject
+          data={featuredProject}
+          title="Featured Projects"
+          path="/projects/upcoming-projects-in-gurgaon/"
+          animation="flip-left"
+        />
+      </LazyLoad>
 
       <div data-aos="zoom-out-left" className="py-3">
         {" "}
@@ -393,7 +443,6 @@ function Home() {
                         </div>
                       </article>
                     </Link>
-
                   </span>
                 );
               })}
@@ -403,15 +452,16 @@ function Home() {
       </div>
 
       <Cities />
+      <LazyLoad>
+        <CommonProject
+          data={affordable.slice(0, 4)}
+          title="Affordable Homes"
+          path="/projects-in-gurugram/"
+          animation="fade-up"
+        />
+      </LazyLoad>
 
-      <CommonProject
-        data={affordable.slice(0, 4)}
-        title="Affordable Homes"
-        path="/projects-in-gurugram/"
-        animation="fade-up"
-      />
-
-      <Builder/>
+      <Builder />
 
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-4">
         <div className="flex items-center">
@@ -425,23 +475,30 @@ function Home() {
             target="_top"
           >
             <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-              <EyeIcon />            
-                <span className="ml-2" style={{ marginLeft: "8px" }}>
+              <EyeIcon />
+              <span className="ml-2" style={{ marginLeft: "8px" }}>
                 View All
               </span>
             </span>
           </Link>
         </div>
       </div>
+      <LazyLoad>
+        <Resale />
+      </LazyLoad>
 
-      <Resale />
-      
-
-      <OurServices />
-      <WhyChoose />
+      <LazyLoad>
+        <OurServices />
+      </LazyLoad>
+      <LazyLoad>
+        <WhyChoose />
+      </LazyLoad>
+  
 
       {/* <Snapshot /> */}
-      <FormHome />
+      <LazyLoad>
+        <FormHome />
+      </LazyLoad>
 
       {/* <HomeBuilderCarousel /> */}
       <Free />
@@ -463,10 +520,14 @@ function Home() {
           <i class="fa-brands fa-whatsapp"></i>
         </a>
       </div>
-
+      <LazyLoad>
       <PossessionProperty />
-      <BackToTopButton />
-      <Footer />
+
+      </LazyLoad>
+        <BackToTopButton />
+      <LazyLoad>
+        <Footer />
+      </LazyLoad>
     </Wrapper>
   );
 }
@@ -522,7 +583,7 @@ const Wrapper = styled.section`
   }
 
   .dd-m-whatsapp:hover {
-    transform:rotate(1turn);
+    transform: rotate(1turn);
     box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
   }
 
@@ -630,7 +691,6 @@ const Wrapper = styled.section`
     }
   }
 
-
   .banner {
     position: relative;
   }
@@ -658,5 +718,4 @@ const Wrapper = styled.section`
       display: block; /* Show mobile image on mobile */
     }
   }
-
 `;

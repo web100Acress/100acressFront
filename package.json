@@ -23,7 +23,6 @@
     "chart.js": "^4.4.0",
     "country-state-city": "^3.2.1",
     "date-fns": "^3.6.0",
-    "framer-motion": "^10.15.2",
     "jodit-react": "^4.1.2",
     "jquery": "^3.7.1",
     "jwt-decode": "^4.0.0",
@@ -59,8 +58,8 @@
     "swiper": "^11.0.6",
     "tw-elements": "^1.1.0",
     "typewriter-effect": "^2.21.0",
-    "uninstall": "^0.0.0",
     "uuid": "^9.0.1",
+    "vite-plugin-compression": "^0.5.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -68,7 +67,7 @@
     "build": "vite build",
     "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "serve": "vite preview",
-    "host":"vite --host"
+    "host": "vite --host"
   },
   "eslintConfig": {
     "extends": [
@@ -93,7 +92,14 @@
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.3",
+    "react-lazyload": "^3.2.1",
     "tailwindcss": "^3.4.17",
-    "vite": "^6.1.1"
-  }
+    "vite": "^6.1.1",
+    "vite-plugin-imagemin": "^0.6.1"
+  },
+  "sideEffects": [
+    "*.css",
+    "*.scss",
+    "**/*.svg"
+  ]
 }
