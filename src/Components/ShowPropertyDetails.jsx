@@ -43,10 +43,11 @@ const ShowPropertyDetails = ({ id }) => {
           `https://api.100acress.com/property/view/${id}`
         );
         if (res.data.data) {
-          setRentViewDetails(res.data.data);
           console.log(res.data.data, "res.data.data");
+          setRentViewDetails(res.data.data);
           setLoading(false);
         } else {
+          //console.log(res.data.postData, "res.data.PostData");
           setRentViewDetails(res.data.postData.postProperty[0]);
           setLoading(false);
           let ImagesData = res.data.postData.postProperty[0].otherImage.map(
@@ -145,8 +146,8 @@ const ShowPropertyDetails = ({ id }) => {
   const fetchData = async () => {
     try {
       const res = await axios.get("https://api.100acress.com/property/buy/ViewAll");
-      console.log(res.data.collectdata, "All Buyable Property Information");
-      setBuyData(res.data.collectdata);
+      // console.log(res.data.ResaleData, "All Buyable Property Information");
+      setBuyData(res.data.ResaleData);
     } catch (error) {
       console.error("Error fetching Data", error);
     }
@@ -553,11 +554,8 @@ const Carousel = ({ AllProjects }) => {
       <div className="">
         <Slider {...setting} ref={sliderRef}>
           {AllProjects.length > 0 &&
-            AllProjects.filter(
-              (item) => item.postProperty && item.postProperty.length > 0
-            ).map((project) => (
+            AllProjects.map((nestedItem) => (
               <>
-                {project.postProperty.slice(0, 1).map((nestedItem) => (
                   <section className="">
                     <div className="w-full">
                       {/* const pUrl = item.project_url; */}
@@ -625,7 +623,6 @@ const Carousel = ({ AllProjects }) => {
                       </Link>
                     </div>
                   </section>
-                ))}
               </>
             ))}
         </Slider>
