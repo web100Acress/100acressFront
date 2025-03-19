@@ -31,12 +31,6 @@ export const imageSrc = [
     {
       image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t5.webp", link:"/developers/m3m-india/"
     },
-    {
-      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t6.webp", link:"/oxirich-chintamani/"
-    },
-    {
-      image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t7.webp", link:"/elan-the-emperor/"
-    },
 
   ];
 
@@ -56,12 +50,24 @@ export const phoneSrc = [
   {
     image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone5.webp", link:"/developers/m3m-india/"
   },
+];
+
+export const budgetPlots = [
   {
-    image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone6.webp", link:"/oxirich-chintamani/"
+    title:"Signature FarukhNagar",link:"/signature-farukhnagar-plots/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/budgetplots/faruknagar.webp"
   },
   {
-    image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/phone7.webp", link:"/elan-the-emperor/"
+    title:"Signature Sidhrawali / NH-8",link:"/signature-global-plots/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/budgetplots/colors.jpg"
   },
+  {
+    title:"BPTP Limited",link:"/bptp-plots-gurugram/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/budgetplots/bptp.webp"
+  },
+  {
+    title:"ORRIS Group",link:"/orris-plots-gurugram/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/budgetplots/Orris.jpg"
+  },
+  // {
+  //   title:"JMS Group",link:"/jms-plots-gurugram/",image:"../../Images/jms.jpg"
+  // }
 ];
 
 export const Recommendedreordered = [
