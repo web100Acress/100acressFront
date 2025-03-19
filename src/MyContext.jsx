@@ -544,7 +544,7 @@ useEffect(() => {
       const res = await axios.get(
         "https://api.100acress.com/property/buy/ViewAll"
       );
-      setResalePropertydata(res.data.collectdata);
+      setResalePropertydata(res.data.ResaleData);
     } catch (error) {
       console.error("Error fetching resale property data:", error);
     }

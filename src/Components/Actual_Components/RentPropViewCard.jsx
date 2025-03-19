@@ -148,8 +148,9 @@ const RentPropViewCard = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get("https://api.100acress.com/property/viewAll");
-      setBuyData(res.data.collectdata);
+      const res = await axios.get("https://api.100acress.com/property/rent/viewAll");
+      
+      setBuyData(res.data.rentaldata);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -893,29 +894,26 @@ const RentPropViewCard = () => {
                     ) :  
                         (
                     <div className="grid max-w-md  grid-cols-1 px-2 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-3 lg:grid-cols-3 sm:gap-4 lg:gap-4 w-full mb-4">
-                      {buyData.map((item, index) => (
-                        <React.Fragment key={index}>
-                          {item.postProperty && item.postProperty.length > 0
-                            ? item.postProperty.map((nestedItem, nestedIndex) => (
-                              <div key={nestedIndex} className="shadow-lg rounded-lg">
+                      {buyData.map((properties, propertiesIndex) => (
+                              <div key={propertiesIndex} className="shadow-lg rounded-lg">
                                 <Link
                                   to={
-                                    nestedItem.propertyName &&
-                                      nestedItem._id
-                                      ? `/rental-properties/${nestedItem.propertyName.replace(
+                                    properties.propertyName &&
+                                      properties._id
+                                      ? `/rental-properties/${properties.propertyName.replace(
                                         /\s+/g,
                                         "-"
-                                      )}/${nestedItem._id}/`
+                                      )}/${properties._id}/`
                                       : "#"
                                   }
                                   target="_top"
                                 >
                                   <div className="relative p-3">
                                     <div >
-                                      {nestedItem.frontImage &&
-                                        nestedItem.frontImage.url ? (
+                                      {properties.frontImage &&
+                                        properties.frontImage.url ? (
                                         <img
-                                          src={nestedItem.frontImage.url}
+                                          src={properties.frontImage.url}
                                           alt="frontImage"
                                           className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                                         />
@@ -926,19 +924,19 @@ const RentPropViewCard = () => {
                                     <div className="pt-2 p-1" >
                                       <div className="pb-2">
                                         <span className="text-sm font-semibold truncate overflow-hidden text-ellipsis whitespace-nowrap hover:text-red-600 duration-500 ease-in-out">
-                                          {nestedItem.propertyName}
+                                          {properties.propertyName}
                                         </span>
 
                                         <br />
                                         <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
-                                          {nestedItem.city}, {nestedItem.state}
+                                          {properties.city}, {properties.state}
                                         </span>
                                       </div>
                                       <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
                                         <li className="mr-4 flex items-center text-left">
                                           <li className="text-left">
                                             <p className="m-0 text-sm font-medium ">
-                                              <PropertyIcon />{" "}{nestedItem.propertyType}
+                                              <PropertyIcon />{" "}{properties.propertyType}
                                             </p>
                                             <span className="text-[10px] text-gray-600 block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
                                               {/* <LocationRedIcon />{" "}{item.projectAddress} */}
@@ -951,7 +949,7 @@ const RentPropViewCard = () => {
                                         <li className="text-left">
                                           <span className="text-sm font-extrabold text-red-600">
                                             <span className="text-xl"><RupeeIcon /></span>
-                                            {nestedItem?.price}
+                                            {properties?.price}
                                           </span>
                                         </li>
                                         <li className="text-left">
@@ -967,13 +965,11 @@ const RentPropViewCard = () => {
                                   </div>
                                 </Link>
                               </div>
-                            )
-                            )
-                            : null}
-                        </React.Fragment>
-                      ))}
-                  </div>
-                    ) }
+                            
+                          ))}
+                          </div>
+                        )
+                      }
                 </section>
               </div>
             </div>
