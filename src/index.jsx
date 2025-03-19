@@ -10,6 +10,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 // import { EnquiryProvider } from "./Context/enquiryContext";
 import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter, useLocation } from "react-router-dom";
+import CustomSkeleton from "../src/Utils/CustomSkeleton";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -29,7 +30,7 @@ root.render(
     <ChakraProvider>
       <BrowserRouter>
         <ScrollToTop>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<div><CustomSkeleton/></div>}>
             <App />
           </Suspense>
         </ScrollToTop>

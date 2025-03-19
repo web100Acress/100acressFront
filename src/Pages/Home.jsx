@@ -19,13 +19,13 @@ import CustomSkeleton from "../Utils/CustomSkeleton";
 import LazyLoad from "react-lazyload";
 import Builderaction from "./HomePages/Builderaction";
 import SearchBar from "../Components/HomePageComponents/SearchBar";
+import Footer from "../Components/Actual_Components/Footer";
 // const SearchBar = lazy(()=> import("../Components/HomePageComponents/SearchBar")); 
 const Cities = lazy(()=> import("../Components/HomePageComponents/Cities")); 
 const FormHome = lazy(()=> import("../Components/HomePageComponents/FormHome")); 
 const WhyChoose = lazy(()=> import("../Components/HomePageComponents/WhyChoose")); 
 const SpacesAvailable = lazy(()=> import("../Components/HomePageComponents/Spaces")); 
 const OurServices =  lazy(()=> import( "../Components/HomePageComponents/ourServices"));
-const Footer =  lazy(()=> import( "../Components/Actual_Components/Footer"));
 const Resale = lazy(() => import("./Resale"));
 const HotProject = lazy(() => import("./HomePages/hotproject"));
 const CommonProject = lazy(() => import("../Utils/CommonProject"));
@@ -521,14 +521,11 @@ function Home() {
           <i class="fa-brands fa-whatsapp"></i>
         </a>
       </div>
-      <LazyLoad>
       <PossessionProperty />
 
-      </LazyLoad>
         <BackToTopButton />
-      <LazyLoad>
-        <Footer />
-      </LazyLoad>
+
+      <Footer />
     </Wrapper>
   );
 }
