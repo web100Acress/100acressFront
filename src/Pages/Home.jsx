@@ -521,10 +521,8 @@ function Home() {
           <i class="fa-brands fa-whatsapp"></i>
         </a>
       </div>
-      <LazyLoad>
       <PossessionProperty />
 
-      </LazyLoad>
         <BackToTopButton />
 
       <Footer />
