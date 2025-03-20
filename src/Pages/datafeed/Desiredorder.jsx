@@ -71,9 +71,8 @@ export const budgetPlots = [
 ];
 
 export const Recommendedreordered = [
-    "Trinity Sky Palazzos" ,
+    "Trinity Sky Palazzo" ,
     "Birla Arika",
     "BPTP Verti Greens",
-    "Puri Diplomatic Residences",
-    "Conscient Elaira",
+    "Experion The Trillion",
 ];

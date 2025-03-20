@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import BackToTopButton from "../Pages/BackToTopButton";
 import {ClipLoader} from "react-spinners";
-import throttle from "lodash.throttle";
 
 const customStyle = {
   marginLeft: "290px",

@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React,{Suspense} from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
@@ -11,6 +11,7 @@ import AppStore from "./Redux/store/AppStore";
 // import { EnquiryProvider } from "./Context/enquiryContext";
 import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter, useLocation } from "react-router-dom";
+import CustomSkeleton from "../src/Utils/CustomSkeleton";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -31,7 +32,9 @@ root.render(
     <ChakraProvider>
       <BrowserRouter>
         <ScrollToTop>
-          <App />
+          <Suspense fallback={<div><CustomSkeleton/></div>}>
+            <App />
+          </Suspense>
         </ScrollToTop>
       </BrowserRouter>
     </ChakraProvider>

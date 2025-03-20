@@ -7,8 +7,8 @@ import {Link} from "react-router-dom"
 const customStyle = {
   position:"absolute",
   top:"100px",
- marginLeft: "250px",
- right:"auto",
+  marginLeft: "250px",
+  right:"auto",
   width:"80%"
    
  };

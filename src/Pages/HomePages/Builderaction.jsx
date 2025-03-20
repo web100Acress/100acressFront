@@ -52,7 +52,7 @@ const Builderaction = () => {
             <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-2 grid-cols-1 mx-0 gap-3 pb-2 pt-3">
                     {projects.map((project, index) => (
                       <Link data-aos="flip-up" to={project.link} key={index} className="card">
-                        <img src={project.backgroungURL} alt={project.title} className="card-image" />
+                        <img src={project.backgroungURL} alt={project.title} className="card-image" loading="lazy"/>
                         <button className="card-button bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">{project.title}
 
                           <div>

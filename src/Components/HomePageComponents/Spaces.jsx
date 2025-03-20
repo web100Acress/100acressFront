@@ -29,7 +29,7 @@ function SpacesAvailable() {
         <div className="grid  lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 pb-2 pt-3">
           {projects.slice(0, 3).map((project, index) => (
             <Link data-aos="flip-right" to={project.link} key={index} className="card">
-              <img src={project.image} alt={project.title} className="card-image" />
+              <img src={project.image} alt={project.title} className="card-image" loading="lazy" />
               <button className="card-button bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">
                 {project.title}
               </button>
@@ -40,7 +40,7 @@ function SpacesAvailable() {
         <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 pb-2 pt-3">
           {projects.slice(3).map((project, index) => (
             <Link data-aos="flip-right" to={project.link} key={index + 3} className="card">
-              <img src={project.image} alt={project.title} className="card-image" />
+              <img src={project.image} alt={project.title} className="card-image" loading="lazy" />
               <button className="card-button bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">
                 {project.title}
               </button>

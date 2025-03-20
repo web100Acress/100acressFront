@@ -155,6 +155,7 @@ const ViewAllProperty = ({ category, title, imageSrc, tags }) => {
               <img
                 className="h-64 w-90 "
                 src="https://images.unsplash.com/photo-1577915589428-13e8f1d5c552?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGNhbmFkYSUyMGhvdXNlfGVufDB8fDB8fHww"
+                loading="lazy"
               />
             </div>
           </div>
@@ -166,6 +167,7 @@ const ViewAllProperty = ({ category, title, imageSrc, tags }) => {
               <img
                 className="h-64"
                 src="https://images.unsplash.com/photo-1605146768851-eda79da39897?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzB8fGNhbmFkYSUyMGhvdXNlfGVufDB8fDB8fHww"
+                loading="lazy"
               />
             </div>
           </div>
@@ -177,6 +179,7 @@ const ViewAllProperty = ({ category, title, imageSrc, tags }) => {
               <img
                 className="h-64"
                 src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjR8fGNhbmFkYSUyMGhvdXNlfGVufDB8fDB8fHww"
+                loading="lazy"
               />
             </div>
           </div>

@@ -68,6 +68,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                 src={item?.thumbnailImage?.url}
                                 alt="property In Gurugram"
                                 className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
+                                loading="lazy"
                               />
                             </Link>
                             <div className="absolute top-5 right-5"

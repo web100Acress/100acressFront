@@ -21,7 +21,7 @@ function FinalNavBar() {
       
         <div className='1euNB' style={{cursor:"pointer"}}>
           <Link to={ROOT}>
-            <img src="../../Images/mainLogo.png" alt='' width='200' />
+            <img src="../../Images/mainLogo.png" alt='' width='200' loading="lazy"/>
           </Link>
         </div>
         <div
@@ -40,7 +40,7 @@ function FinalNavBar() {
             }}>
             <div className='d-flex align-items-center justify-content-between  pr-3'>
               <div className='1euNB'>
-                <img src="../../Images/mainLogo.png" alt='' width='200' />
+                <img src="../../Images/mainLogo.png" alt='' width='200' loading="lazy"/>
               </div>
               <div
                 className='barDotMenu'

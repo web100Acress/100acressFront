@@ -1,7 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Gluten:wght@100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Gluten:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,7 +11,7 @@ html {
 }
 
 .font-AbrialFatFace{
-  font-family: "Abril Fatface" !important;
+  font-family: "Abril Fatface", sans-serif !important;
 }
 
 .custom-ok-button {
@@ -98,5 +94,4 @@ html {
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
   }
-} 
-  
+}

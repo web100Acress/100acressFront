@@ -286,15 +286,15 @@ const NewSellProperty = () => {
       </Helmet>
 
       <section className=" py-12 text-gray-800 ">
-        <div className="mx-auto flex max-w-md flex-col rounded-lg lg:max-w-screen-xl lg:flex-row">
+        <div className="mx-auto flex max-w-md flex-col rounded-lg lg:max-w-screen-xl lg:flex-row mt-4">
           <div className="max-w-xl px-4 lg:pr-24 lg:pt-20">
-            <h3 className="lg:text-5xl md:text-3xl  font-semibold">
+            <h3 className="lg:text-5xl md:text-3xl  font-gluten">
               Post your property
             </h3>
-            <h3 className=" mb-3 lg:text-5xl md:text-3xl font-semibold text-red-600 ">
+            <h3 className=" mb-3 lg:text-5xl md:text-3xl font-semibold text-red-600 font-gluten">
               get the best prices
             </h3>
-            <p className="mb-3 text-lg text-gray-600 text-justify lg:w-3/4 hidden md:block">
+            <p className="text-lg text-gray-600 text-justify lg:w-3/4 hidden md:block mt-2 font-inter">
               100acress is the best place to sell your property, we are
               dedicated to providing advisory and mediation services for all
               your needs. you can expect us every time. All that is for you!
@@ -302,7 +302,7 @@ const NewSellProperty = () => {
 
             <div className="flex flex-col space-x-2 sm:flex-row space-y-4 sm:space-y-0 ml-[-10px] lg:pt-12">
               <button
-                className="rounded-full text-white text-md sm:text-lg md:text-md font-normal px-3 sm:px-6 py-2 sm:py-4 bg-red-600 "
+                className="w-50 rounded-xl text-white text-md sm:text-lg md:text-md font-normal px-3 sm:px-6 py-2 sm:py-4 bg-red-600"
                 onClick={() => setShowSteps(!showSteps)}
               >
                 How It Works
@@ -310,14 +310,14 @@ const NewSellProperty = () => {
             </div>
 
             {showSteps && (
-              <div className="fixed inset-0 hidden sm:block md:block lg:flex items-center  justify-center bg-gray-800 bg-opacity-75 ">
-                <div className="shadow-2xl rounded-xl px-4 py-4 bg-white relative w-1/2 h-70">
-                  <button
-                    className="text-red-400 text-2xl absolute right-6 top-5 cursor-pointer"
-                    onClick={() => setShowSteps(false)}
-                  >
-                    ✖
-                  </button>
+              <div className="sm:mt-50 mt-20 fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+              <div className="shadow-2xl rounded-xl px-6 py-6 bg-white relative w-11/12 sm:w-1/2 lg:w-1/3 h-auto">
+             <button
+               className="text-red-400 text-2xl absolute right-6 top-5 cursor-pointer"
+               onClick={() => setShowSteps(false)}
+             >
+               ✖
+             </button>
                   <h5 className="text-red-400">
                     Steps given Below to post your property Free
                   </h5>
@@ -377,17 +377,22 @@ const NewSellProperty = () => {
               className="m-2"
               defaultValue="2"
             >
+              <p className="text-2xl  text-black font-bold">
+                List your Property
+              </p>
               <p className="text-2xl  text-black">
-                You're looking to<span>....</span>
+                You're looking to<span>:</span>
               </p>
 
               <Stack spacing={5} direction="row" color="black">
-                <Radio colorScheme="blue" value="Sell" size="lg">
-                  Sell
-                </Radio>
-                <Radio colorScheme="blue" value="rent" size="lg">
-                  Rent/Lease
-                </Radio>
+              <button
+                className="px-4 py-2  border rounded-3xl cursor-pointer hover:bg-red-600 hover:text-white">
+                      Sell
+              </button>
+              <button
+                className="px-4 py-2  border rounded-3xl cursor-pointer hover:bg-red-600 hover:text-white">
+                      Rent/Lease
+              </button>
               </Stack>
             </RadioGroup>
 
@@ -486,16 +491,7 @@ const NewSellProperty = () => {
                 />
               </div>
 
-              <div>
-                <input
-                  type="text"
-                  placeholder="Type"
-                  name="type"
-                  value={sellProperty.type}
-                  onChange={handleChangeValue}
-                  className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
-                />
-              </div>
+            
 
               <div className="grid gap-3 md:grid-cols-2">
                 <div>
@@ -591,7 +587,7 @@ const NewSellProperty = () => {
                 </div>
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2 text-black pt-1">
+              <div className="grid gap-3 md:grid-cols-2 text-black pt-1 mt-3">
                 <div>
                   <label htmlFor="frontImage" className=" text-black mx-3 ">
                     Upload Front Images:
@@ -626,9 +622,9 @@ const NewSellProperty = () => {
                 )}
               </div>
 
-              <div className="flex  justify-center items-center">
+              <div className="flex  justify-end items-center">
                 <button
-                  className="rounded-lg mt-3 text-white px-4 text-md sm:text-lg md:text-md  font-normal  sm:px-6 py-1 sm:py-4 bg-red-600 hover:bg-red-700"
+                  className="w-1/2 rounded-lg mt-3 text-white px-4 text-md sm:text-lg md:text-md  font-normal  sm:px-6 py-1 sm:py-4 bg-red-600 hover:bg-red-700"
                   onClick={submitSellPropertyDetails}
                 >
                    {isLoading ? "Submitting" : "Submit"}

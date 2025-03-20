@@ -142,7 +142,8 @@ const BuyPropViewCard = () => {
       const res = await axios.get(
         "https://api.100acress.com/property/buy/ViewAll"
       );
-      setBuyData(res.data.collectdata);
+
+      setBuyData(res.data.ResaleData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -212,7 +213,7 @@ const BuyPropViewCard = () => {
   };
 
 
-  console.log(buyData,"rental data");
+  console.log(buyData,"Resale data");
   
   return (
     <>
@@ -874,87 +875,15 @@ const BuyPropViewCard = () => {
                   </div>
                 </div>
 
-                {/* <section  className="flex flex-col items-center bg-white mb-4">
-                  <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1 sm:gap-12 lg:grid-cols-1 xl:grid-cols-2 xl:gap-16">
-                    {buyData.length > 0 ? (
-                      buyData.map((item, index) => (
-                        <React.Fragment key={index}>
-                          {item.postProperty && item.postProperty.length > 0
-                            ? item.postProperty.map(
-                                (nestedItem, nestedIndex) => (
-                                  <div key={nestedIndex} className="shadow-lg">
-                                    <Link
-                                      to={
-                                        nestedItem.propertyName &&
-                                        nestedItem._id
-                                          ? `/buy-properties/${nestedItem.propertyName.replace(
-                                              /\s+/g,
-                                              "-"
-                                            )}/${nestedItem._id}/`
-                                          : "#"
-                                      }
-                                      target="_top"
-                                    >
-                                      <div className="row rounded-lg">
-                                        <div className="col-lg-4 col-md-4 col-sm-12 col-12">
-                                          {nestedItem.frontImage &&
-                                          nestedItem.frontImage.url ? (
-                                            <img
-                                              src={nestedItem.frontImage.url}
-                                              alt="frontImage"
-                                              className="object-fit h-48 w-full rounded-l-lg"
-                                            />
-                                          ) : (
-                                            <span>Image not available</span>
-                                          )}
-                                        </div>
-                                        <div className="col-lg-8 col-md-8 col-sm-12 col-12">
-                                          <div className="p-4 h-full flex flex-col justify-between">
-                                            <div>
-                                              <p className="text-md mb-1 ">
-                                                {nestedItem.propertyName}
-                                              </p>
-                                              <p className="text-md mb-2 text-gray-600">
-                                                Location: {nestedItem.city},
-                                                {nestedItem.state}
-                                              </p>
-                                              <p className="text-md mb-0">
-                                                ₹ {nestedItem.price}
-                                              </p>
-                                            </div>
-                                            <div className="flex justify-end mt-auto">
-                                              <button
-                                                type="button"
-                                                className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 rounded-lg text-sm px-4 py-2 text-center m-0"
-                                              >
-                                                View Details
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </Link>
-                                  </div>
-                                )
-                              )
-                            : null}
-                        </React.Fragment>
-                      ))
-                    ) : (
-                      <p>Loading...</p>
-                    )}
-                  </div>
-                </section> */}
+               
                 <section className="flex flex-col items-center bg-white mb-4">
                     {buyData.length === 0 ? (
                       <p><CustomSkeleton /></p>
                     ) :  
                         (
                     <div className="grid max-w-md  grid-cols-1 px-2 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-3 lg:grid-cols-3 sm:gap-4 lg:gap-4 w-full mb-4">
-                      {buyData.map((item, index) => (
-                        <React.Fragment key={index}>
-                          {item.postProperty && item.postProperty.length > 0
-                            ? item.postProperty.map((nestedItem, nestedIndex) => (
+  {     
+                            buyData.map((nestedItem, nestedIndex) => (
                               <div key={nestedIndex} className="shadow-lg rounded-lg">
                                 <Link
                                   to={
@@ -1025,11 +954,9 @@ const BuyPropViewCard = () => {
                               </div>
                             )
                             )
-                            : null}
-                        </React.Fragment>
-                      ))}
+                        }
                   </div>
-                    ) }
+                )}
                 </section>
               </div>
             </div>
