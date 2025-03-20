@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
-import { RadioGroup, Radio, Stack } from "@chakra-ui/react";
 import { State, City } from "country-state-city";
 import { Helmet } from "react-helmet";
 
@@ -89,6 +88,7 @@ const NewSellProperty = () => {
     availableDate: "",
     selectoption: "Select Property Type",
     subType: "",
+    propertyLooking:"Sell",
   });
 
   const [selectedState, setSelectedState] = useState("Kerala");
@@ -154,6 +154,7 @@ const NewSellProperty = () => {
       availableDate: "",
       selectoption: "Select Property Type",
       subType: "",
+      propertyLooking: "Sell",
     });
   };
 
@@ -371,30 +372,24 @@ const NewSellProperty = () => {
           </div>
 
           <div className="mt-8 mb-8 max-w-3/4    lg:mt-0 shadow-lg rounded-lg py-2   px-4">
-            <RadioGroup
-              onChange={(value) => handleOptionClick(value)}
-              value={sellProperty.propertyLooking}
-              className="m-2"
-              defaultValue="2"
-            >
               <p className="text-2xl  text-black font-bold">
                 List your Property
               </p>
               <p className="text-2xl  text-black">
                 You're looking to<span>:</span>
               </p>
-
-              <Stack spacing={5} direction="row" color="black">
               <button
-                className="px-4 py-2  border rounded-3xl cursor-pointer hover:bg-red-600 hover:text-white">
+                className={`mr-1 px-4 py-2  border rounded-3xl cursor-pointer ${sellProperty.propertyLooking === "Sell" ? "bg-primaryRed text-white":" bg-white text-black"}`}
+                onClick={ () => handleOptionClick("Sell")}
+              >
                       Sell
               </button>
               <button
-                className="px-4 py-2  border rounded-3xl cursor-pointer hover:bg-red-600 hover:text-white">
+                className={`ml-1 px-4 py-2  border rounded-3xl cursor-pointer ${sellProperty.propertyLooking === "rent" ? "bg-primaryRed text-white":" bg-white text-black"}`}
+                onClick={ () => handleOptionClick("rent")}  
+              >
                       Rent/Lease
               </button>
-              </Stack>
-            </RadioGroup>
 
             <div className="p-1 sm:p-8">
               <div className="grid gap-3 md:grid-cols-2">
