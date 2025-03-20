@@ -132,7 +132,7 @@ const Api_service = () => {
   const getResaleProperties = async()=>{
     try {
             const res = await axios.get(`${API_ROUTES}property/buy/ViewAll`);
-            const responsedata = res.data.collectdata;
+            const responsedata = res.data.ResaleData;
             dispatch(resale(responsedata));
           } catch (error) {
             console.error("Error fetching resale property data:", error);
