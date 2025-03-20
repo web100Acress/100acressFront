@@ -109,7 +109,7 @@ export const DataProvider = ({ children }) => {
   const fetchAllProject = async () => {
     try {
       const res = await axios.get(
-        "https://api.100acress.com/project/viewAll/data"
+        "/api/project/viewAll/data"
       );
       setProject(res.data.data); 
 
@@ -474,7 +474,7 @@ fetchAllProject();
     if (email && password) {
       try {
         const loginResponse = await axios.post(
-          "https://api.100acress.com/postPerson/verify_Login",
+          "/api/postPerson/verify_Login",
           { email, password }
         );
         const newToken = loginResponse.data.token;
@@ -483,7 +483,7 @@ fetchAllProject();
 
         if (loginResponse.status === 200) {
           const roleResponse = await axios.get(
-            `https://api.100acress.com/postPerson/Role/${email}`
+            `/api/postPerson/Role/${email}`
           );
 
           if (roleResponse.status === 200) {
@@ -516,7 +516,7 @@ fetchAllProject();
 
     // const fetchCareerData = async () => {
     //   try {
-    //     const res = await axios.get("https://api.100acress.com/career/page/view");
+    //     const res = await axios.get("/api/career/page/view");
     //     console.log(res,'carrer');
         
     //     setCareerData(res.data.data);
@@ -528,7 +528,7 @@ fetchAllProject();
   // const fetchJobPostingData = async () => {
   //   try {
   //     const res = await axios.get(
-  //       "https://api.100acress.com/career/opening/ViewAll"
+  //       "/api/career/opening/ViewAll"
   //     );
   //     console.log(res,'carrer');
       
@@ -542,7 +542,7 @@ useEffect(() => {
   const buyFetchData = async () => {
     try {
       const res = await axios.get(
-        "https://api.100acress.com/property/buy/ViewAll"
+        "/api/property/buy/ViewAll"
       );
       setResalePropertydata(res.data.ResaleData);
     } catch (error) {

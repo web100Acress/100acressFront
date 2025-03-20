@@ -169,7 +169,7 @@ const AddNew = () => {
 
   const handleSubmitProject = async (e) => {
     e.preventDefault();
-    const apiEndpoint = "https://api.100acress.com/project/Insert";
+    const apiEndpoint = "/api/project/Insert";
 
     const formDataAPI = new FormData();
 

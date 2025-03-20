@@ -7,7 +7,7 @@ const ResetEmailPassword = () => {
   const [email, setEmail] = useState("");
   const [messageApi,contextHolder] = message.useMessage();
 
-  const apiUrl = "https://api.100acress.com/postPerson/postProperty_forget";
+  const apiUrl = "/api/postPerson/postProperty_forget";
 
 
   const handleForgetPassword = async (e) => {

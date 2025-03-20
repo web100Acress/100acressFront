@@ -60,7 +60,7 @@ const ProjectEdit = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://api.100acress.com/project/Edit/${id}`
+          `/api/project/Edit/${id}`
         );
         if (res.status === 200){
           console.log(res.data.dataedit);
@@ -156,7 +156,7 @@ const ProjectEdit = () => {
   //     }
 
   //     const response = await axios.post(
-  //       `https://api.100acress.com/project/Update/${id}`,
+  //       `/api/project/Update/${id}`,
   //       fromData
   //     );
 
@@ -223,7 +223,7 @@ const ProjectEdit = () => {
       }
       const myToken = localStorage.getItem("myToken");
       const response = await axios.post(
-        `https://api.100acress.com/project/Update/${id}`,
+        `/api/project/Update/${id}`,
         fromData,
         {
           headers: {
@@ -266,7 +266,7 @@ const ProjectEdit = () => {
     try {
       const myToken=localStorage.getItem("myToken");
       const response = await axios.delete(
-        `https://api.100acress.com/floorImage/${id}/${IndexNumber}`,
+        `/api/floorImage/${id}/${IndexNumber}`,
         {
           headers:{
             Authorization: `Bearer ${myToken}`,

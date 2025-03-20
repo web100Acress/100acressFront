@@ -44,7 +44,7 @@ function OTPVerification() {
       });
       //send the otp
       axios
-        .post("https://api.100acress.com/postPerson/otp", { otp: otpString })
+        .post("/api/postPerson/otp", { otp: otpString })
         .then((res) => {
           messageApi.open({
             type: "success",

@@ -201,7 +201,7 @@ const NewSellProperty = () => {
     if (isLoading) {
       return;
     }
-    const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
+    const apiEndpoint = `/api/postPerson/propertyInsert/${sellerId}`;
     const formDataAPI = new FormData();
 
     for (const key in sellProperty) {

@@ -5,7 +5,16 @@ import viteCompression from 'vite-plugin-compression';
 
 export default defineConfig(() => {
   return {
-    server:{port:3000},
+    server:{
+      port:3000,
+      proxy:{
+        '/api':{
+          target:'http://localhost:3500',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        }
+      }
+    },
     preview:{port:4000},
     build: {
       outDir: 'build',
