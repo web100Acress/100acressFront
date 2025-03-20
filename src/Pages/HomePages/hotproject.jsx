@@ -58,14 +58,14 @@ const Image = styled.img`
   
     &:hover {
       opacity: 1;
-      transition: all 2s ease-in-out;
+      transition: all 1.5s ease-in-out;
       }
       `;
 
 const CityText = styled.div`
     position: relative;
     left: 0rem; 
-    top: -13%;
+    top: -10%;
     display:flex;
     justify-content: center;
     transform: rotate(0deg); /* Centers text vertically */
@@ -77,8 +77,8 @@ const CityText = styled.div`
       opacity: 1;
       visibility:visible;
       color: white;
-      top: -35%;
-      transition:1s ease-in-out;
+      top: -26%;
+      transition:0.8s ease-in-out;
     }
   `;
 const Overlay = styled.div`
@@ -225,10 +225,9 @@ const ImageGallery = React.memo(() => {
                   <p className="font-semibold mt-2 mb-0 text-gray-800"></p>
                   <button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect w-full md:w-auto   flex justify-center items-center" >View Details</button>
                 </InfoContainer>
-                <CityText className="pt-3 pb-3 text-xl visible font-Sans">{image.projectName}</CityText>
-
+                <CityText className="py-2 px-auto text-xl visible font-Sans">{image.projectName}</CityText>
                 <CityText className="">{truncateText(image.projectAddress, 4)}</CityText>
-                <CityText className="pb-4 pt-3"><button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-6 py-2 drip-effect w-full md:w-auto   flex justify-center items-center md:auto sm:w-1/2 max-[600px]:w-2/4 " >View Details</button>
+                <CityText className="py-2 px-auto"><button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-6 py-2 drip-effect w-full md:w-auto   flex justify-center items-center md:auto sm:w-1/2 max-[600px]:w-2/4 " >View Details</button>
                 </CityText>
                 {/* <CityText>{image.city}</CityText> */}
               </ImageWrapper>
