@@ -1,12 +1,21 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import Footer from "../../Components/Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../../Assets/icons";
+import { useSelector } from "react-redux";
+import Api_service from "../../Redux/utils/Api_Service";
 
 const KasauliProject = () => {
-  const { kasauli } = useContext(DataContext);
+  let city = "Kasauli";
+  const {getProjectbyState} = Api_service();
+  const kasauli = useSelector(store => store?.stateproject?.kasauli);
+
+  useEffect(() => {
+    if (kasauli.length === 0) {
+      getProjectbyState(city, 0)
+    }
+  }, []);
   const handleShare = (project) => {
     if (navigator.share) {
         navigator
@@ -50,7 +59,7 @@ const KasauliProject = () => {
           {kasauli.map((item, index) => {
             const pUrl = item.project_url;
             return (
-              <Link to={`/${pUrl}/`} target="_top">
+              <Link key={index} to={`/${pUrl}/`} target="_top">
                 <article
                   key={index}
                   className="mb-2 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"

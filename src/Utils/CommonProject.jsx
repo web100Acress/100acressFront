@@ -28,8 +28,6 @@ const CommonProject = ({ data, title, path ,animation }) => {
 
   const response = data;
 
-
-
   return (
     <>
       {data?.length === 0 ? <CustomSkeleton /> : (
@@ -57,7 +55,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                   {response?.map((item, index) => {
                     const pUrl = item.project_url;
                     return (
-                      <span >
+                      <span key={index}>
 
                         <article
                           key={index}
@@ -67,7 +65,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                             <Link to={`/${pUrl}/`} target="_top">
 
                               <img
-                                src={item.frontImage.url}
+                                src={item?.thumbnailImage?.url}
                                 alt="property In Gurugram"
                                 className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                                 loading="lazy"

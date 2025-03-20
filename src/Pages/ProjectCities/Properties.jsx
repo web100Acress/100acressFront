@@ -1,28 +1,21 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
-import Footer from "../../Components/Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import ProjectSearching from "../ProjectSearching";
-import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../../Assets/icons";
 import CommonInside from "../../Utils/CommonInside";
-
+import { useSelector } from "react-redux";
+import Api_service from "../../Redux/utils/Api_Service";
 const Properties = () => {
-  const { gurugramProject } = useContext(DataContext);
-  const handleShare = (project) => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: project?.projectName,
-          text: `Check out this project: ${project.projectName}`,
-          url: `${window.location.origin}/${project.project_url}`,
-        })
-        .then(() => console.log("Shared successfully"))
-        .catch((error) => console.log("Error sharing:", error));
-    } else {
-      alert("Share functionality is not supported on this device/browser.");
+  
+  let city = "Gurugram";
+  const {getProjectbyState} = Api_service();
+  const gurugramProject = useSelector(store => store?.stateproject?.gurugram);
+
+  useEffect(() => {
+    if (gurugramProject.length === 0) {
+      getProjectbyState(city, 0)
     }
-  };
+  }, []);
+
 
   return (
     <div >
@@ -71,8 +64,6 @@ const Properties = () => {
         Actualdata={gurugramProject}
         />
       </section>
-
-      <Footer />
     </div>
   );
 }

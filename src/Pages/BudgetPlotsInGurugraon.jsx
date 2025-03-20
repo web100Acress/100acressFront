@@ -4,28 +4,11 @@ import styled from "styled-components";
 import { EyeIcon } from "lucide-react";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { budgetPlots } from "./datafeed/Desiredorder";
 
 const BudgetPlotsInGurugraon = () => {
 
   useEffect(() => { AOS.init(); }, []);
-
-  const budgetPlots = [
-    {
-      title:"Signature FarukhNagar",link:"/signature-farukhnagar-plots/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/budgetplots/faruknagar.webp"
-    },
-    {
-      title:"Signature Sidhrawali / NH-8",link:"/signature-global-plots/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/budgetplots/colors.jpg"
-    },
-    {
-      title:"BPTP Limited",link:"/bptp-plots-gurugram/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/budgetplots/bptp.webp"
-    },
-    {
-      title:"ORRIS Group",link:"/orris-plots-gurugram/",image:"https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/budgetplots/Orris.jpg"
-    },
-    // {
-    //   title:"JMS Group",link:"/jms-plots-gurugram/",image:"../../Images/jms.jpg"
-    // }
-  ];
 
   return (
     <Wrapper className="section">

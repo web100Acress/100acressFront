@@ -1,14 +1,25 @@
-import React, { useContext, useEffect } from "react";
-import { DataContext } from "../MyContext";
+import React, {  useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MdOutlineCurrencyRupee } from "react-icons/md";
 import { ArrowIcon, RupeeIcon } from "../Assets/icons";
 import "aos/dist/aos.css";
 import AOS from "aos";
 import CustomSkeleton from "../Utils/CustomSkeleton";
+import Api_service from "../Redux/utils/Api_Service";
+import { useSelector } from "react-redux";
 
 const Resale = () => {
-  const { resalePropertydata } = useContext(DataContext);
+  
+  const {getResaleProperties} = Api_service();
+
+  const resalePropertydata = useSelector(store => store?.resaleproperty?.resale);
+
+
+  useEffect(()=>{
+    if(resalePropertydata.length === 0){
+      getResaleProperties();
+    }
+  },[])
 
   useEffect(() => {
     AOS.init();

@@ -1,12 +1,17 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 
-import Footer from "../Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
 import { Helmet } from "react-helmet";
 import CommonInside from "../../Utils/CommonInside";
+import { useSelector } from "react-redux";
+import Api_Service from "../../Redux/utils/Api_Service";
 const VillasProjects = () => {
-  const { villasProject } = useContext(DataContext);
+  let query = "villas";
+  const villasProject = useSelector(store => store?.allsectiondata?.luxuryvillas);
+  const {getAllProjects} = Api_Service();
 
+  useEffect(()=>{
+    getAllProjects(query,0);
+  },[])
   return (
     <div>
       <Helmet>

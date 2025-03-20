@@ -1,11 +1,16 @@
-import React, { useContext } from "react";
-import Footer from "../Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
+import { useSelector } from "react-redux";
+import Api_Service from "../../Redux/utils/Api_Service";
 
 import CommonInside from "../../Utils/CommonInside";
 const ResidentialProjects = () => {
-  const { residencialProjects } = useContext(DataContext);
+  let query = "residentiaProject";
+  const {getAllProjects} = Api_Service();
+  const residencialProjects = useSelector(store => store?.allsectiondata?.residential);
+  useEffect(()=>{
+    getAllProjects(query,0);
+  },[])
   return (
     <div>
       <Helmet>

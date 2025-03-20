@@ -1,10 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { DataContext } from "../../MyContext";
 import { Helmet } from "react-helmet";
 import CommonInside from "../../Utils/CommonInside";
+import { useSelector } from "react-redux";
+import Api_Service from "../../Redux/utils/Api_Service";
 
 const CommercialProject = () => {
-  const { commercialProjectAll } = useContext(DataContext);
+  let query ="commercial";
+  const {getAllProjects} = Api_Service();
+  const commercialProjectAll = useSelector(store => store?.allsectiondata?.commercialProjectAll);
+
+  useEffect(()=>{
+    getAllProjects(query,0);
+  },[])
+  const {  } = useContext(DataContext);
   return (
     <div>
       <Helmet>
@@ -19,7 +28,7 @@ const CommercialProject = () => {
         <meta property="og:site_name" content="100acress" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
-        <meta property="og:url" content="https://www.100acress.com/projects/commerial/" />
+        <meta property="og:url" content="https://www.100acress.com/projects/commercial/" />
         <meta property="og:description" content="Unlock growth with 100acress's commercial projects. Modern spaces, strategic locations, and excellent connectivity await. Call now!" />
         <meta property="og:keywords" content="Commercial Projects in Gurgaon" />
 
@@ -29,7 +38,7 @@ const CommercialProject = () => {
         <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
         <meta name="twitter:card" content="summary" />
 
-          <link rel="canonical" href="https://www.100acress.com/projects/commerial/" />
+          <link rel="canonical" href="https://www.100acress.com/projects/commercial/" />
       </Helmet>
       <CommonInside
        title="Commercial Projects"

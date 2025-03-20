@@ -6,7 +6,8 @@ import "./index.css";
 import App from "./App";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-
+import {Provider} from "react-redux";
+import AppStore from "./Redux/store/AppStore";
 // import { EnquiryProvider } from "./Context/enquiryContext";
 import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter, useLocation } from "react-router-dom";
@@ -27,6 +28,7 @@ const ScrollToTop = ({ children }) => {
 
 root.render(
   <>
+  <Provider store={AppStore}>
     <ChakraProvider>
       <BrowserRouter>
         <ScrollToTop>
@@ -36,5 +38,6 @@ root.render(
         </ScrollToTop>
       </BrowserRouter>
     </ChakraProvider>
+  </Provider>
   </>
 );

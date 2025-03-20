@@ -1,14 +1,21 @@
-import React, { useContext, useState } from "react";
+import React, {useEffect, useState } from "react";
 import "react-multi-carousel/lib/styles.css";
-import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
 import ProjectSearching from "./ProjectSearching";
 import CommonProject from "../Utils/CommonProject";
+import { useSelector } from "react-redux";
+import Api_Service from "../Redux/utils/Api_Service";
 
 const ReadyToMoveProject = () => {
-  const { readyToMoveData } = useContext(DataContext);
   const [filteredProjectsParent, setFilteredProjectsParent] = useState([]);
+  let query = "readytomove";
+  const {getAllProjects} = Api_Service();
+  const readyToMoveData = useSelector(store => store?.allsectiondata?.readytomove);
+
+  useEffect(()=>{
+    getAllProjects(query,0);
+  },[])
   return (
     <div style={{ overflowX: "hidden" }} className="mt-16">
       <ProjectSearching setFilteredProjectsParent={setFilteredProjectsParent}/>

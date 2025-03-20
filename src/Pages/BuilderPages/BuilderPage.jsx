@@ -1,26 +1,27 @@
-import React, { useContext } from "react";
+import React, {useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Footer from "../../Components/Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
 import { Helmet } from "react-helmet";
 import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../../Assets/icons";
+import { useSelector } from "react-redux";
+import Api_Service from "../../Redux/utils/Api_Service";
 
-const BuilderPage = () => {
-  const { builderName } = useParams(); 
-  const { 
-     SignatureBuilder,
-     M3M,
-     dlfAllProjects,
-     Experion,
-     Elan,
-     BPTP,
-     Adani,
-     SmartWorld,
-     Trevoc,
-     IndiaBulls ,
-     centralpark
-    } = useContext(DataContext); 
-    
+const BuilderPage = React.memo(() => {
+    const { builderName } = useParams(); 
+    const [query, setQuery] = useState("");
+    const {getProjectbyBuilder} = Api_Service();
+    const SignatureBuilder = useSelector(store => store?.builder?.signatureglobal);
+    const M3M = useSelector(store => store?.builder?.m3m);
+    const dlfAllProjects= useSelector(store => store?.builder?.dlf);
+    const Experion = useSelector(store => store?.builder?.experion);
+    const Elan = useSelector(store => store?.builder?.elan);
+    const BPTP = useSelector(store => store?.builder?.bptp);
+    const Adani = useSelector(store => store?.builder?.adani);
+    const SmartWorld = useSelector(store => store?.builder?.smartworld);
+    const Trevoc = useSelector(store => store?.builder?.trevoc);
+    const IndiaBulls = useSelector(store => store?.builder?.indiabulls);
+    const centralpark = useSelector(store => store?.builder?.centralpark);
+
 
   const buildersData = {
     'signature-global': SignatureBuilder,
@@ -37,8 +38,6 @@ const BuilderPage = () => {
   };
 
   const builderProjects = buildersData[builderName] || []; 
-
-  console.log(builderProjects,"from builder page")
 
   const handleShare = (project) => {
     if (navigator.share) {
@@ -62,8 +61,37 @@ const BuilderPage = () => {
       .join(' '); 
   };
   
-
   const formattedBuilderName = formatBuilderName(builderName);
+  
+  useEffect(() => {
+    if (builderName) {
+      const builderQueries = {
+        'signature-global': 'Signature Global',
+        'm3m-india': 'M3M India',
+        'dlf-homes': 'DLF Homes',
+        'experion-developers': 'Experion Developers',
+        'elan-group': 'Elan Group',
+        'bptp-limited' : 'BPTP LTD',
+        'adani-realty': 'Adani Realty',
+        'trevoc-group' : 'Trevoc Group',
+        'indiabulls-real-estate' : 'Indiabulls',
+        'smartworld-developers' : 'Smartworld',
+        'central-park' : 'Central Park',
+      };
+
+      const queryValue = builderQueries[builderName.toLowerCase()];
+      if (queryValue) {
+        setQuery(queryValue);
+      }
+    }
+  }, [builderName, query]);
+
+  useEffect(() => {
+    if (query) {
+      getProjectbyBuilder(query,0);
+    }
+  }, [ query,getProjectbyBuilder]);
+
   return (
     <div>
       <Helmet>
@@ -167,10 +195,10 @@ const BuilderPage = () => {
                 })}
               </div>
       
-            </section>
+      </section>
       <Footer />
     </div>
   );
-};
+});
 
 export default BuilderPage;

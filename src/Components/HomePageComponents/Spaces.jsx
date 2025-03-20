@@ -9,7 +9,7 @@ function SpacesAvailable() {
 
   const projects = [
     { title: "Residential Projects", link: "/property/residential/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/residencialprojects.webp" },
-    { title: "Commercial Projects", link: "/projects/commerial/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/commercialproperty+(1).jpg" },
+    { title: "Commercial Projects", link: "/projects/commercial/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/commercialproperty+(1).jpg" },
     { title: "SCO Plots ", link: "/sco/plots/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/sco.jpg" },
     { title: "Builder & Independent Floor", link: "/projects/independentfloors/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/builderandindepedent.jpg" },
     { title: "Plots In Gurugram", link: "/plots-in-gurugram/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/dream+property/deendayal.webp" },

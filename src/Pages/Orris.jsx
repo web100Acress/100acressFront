@@ -1,10 +1,19 @@
-import React, { useContext } from "react";
+import React, {useEffect } from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { useSelector } from "react-redux";
+import Api_Service from "../Redux/utils/Api_Service";
+
 const Orris = () => {
-  const { orris } = useContext(DataContext);
+  const orris = useSelector(store =>store?.ProjectOverview?.orrisplots)
+  let query = "orris";
+  const {getProjectOnOverview} = Api_Service();
+
+  useEffect(()=>{
+    getProjectOnOverview(query)
+  },[])
+
   return (
     <div>
       <Helmet>
