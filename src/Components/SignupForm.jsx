@@ -119,13 +119,13 @@ function SignupForm() {
       {contextHolder}
       <div className="bg-white space-y-2 shadow-xl rounded-2xl mt-14 p-4 my-8">
         <div className="text-primaryRed text-3xl font-Gluten text-center font-semibold">Register your Account</div>
-        <div className="my-2 flex items-center">
+        <div className="my-2 flex items-center max-sm:grid">
           <p className=" mr-4 my-2">Are you a:</p>
           <div className="flex flex-row gap-2 ">
             {roles.map((role) => (
               <div
                 key={role}
-                className={`w-full px-4 py-2  border rounded-3xl cursor-pointer hover:bg-primaryRed hover:text-white ${
+                className={`w-full px-3 py-2  border rounded-3xl cursor-pointer hover:bg-primaryRed hover:text-white ${
                   userSignUp.role === role && "bg-primaryRed text-white"
                 }`}
                 onClick={() => handleSelectRole(role)}
@@ -136,7 +136,7 @@ function SignupForm() {
           </div>
         </div>
         <form className="space-y-2" onSubmit={handleClick}>
-          <div className="flex space-x-1">
+          <div className="flex space-x-1 max-sm:grid">
             <div className="basis-1/2 flex flex-col">
               <label htmlFor="name">Full Name</label>
               <input
@@ -148,7 +148,7 @@ function SignupForm() {
                 onChange={handleRegisterChange}
                 />
             </div>
-            <div className="basis-1/2 flex flex-col">
+            <div className="basis-1/2 flex flex-col max-sm:mt-3">
               <label htmlFor="mobile">Mobile Number</label>
               <input
                 type="number"

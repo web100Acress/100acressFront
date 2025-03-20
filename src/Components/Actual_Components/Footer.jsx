@@ -199,7 +199,7 @@ const Footer = () => {
               </li>
               <li className="list-none text-white text-sm my-1 text-justify">
                 <Link
-                  to="/project-in-goa/"
+                  to={"/project-in-goa/"}
                   className=""
                   target="_top"
                   style={{ color: "white" }}
@@ -209,7 +209,7 @@ const Footer = () => {
               </li>
               <li className="list-none text-white text-sm my-1 text-justify">
                 <Link
-                  to="#"
+                  to={"/project-in-ayodhya/"}
                   className=""
                   target="_top"
                   style={{ color: "white" }}
@@ -219,7 +219,7 @@ const Footer = () => {
               </li>
               <li className="list-none text-white text-sm my-1 text-justify">
                 <Link
-                  to="#"
+                  to={"/project-in-mumbai/"}
                   className=""
                   target="_top"
                   style={{ color: "white" }}
@@ -235,6 +235,56 @@ const Footer = () => {
                   style={{ color: "white" }}
                 >
                   Project in Panipat
+                </Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                <Link
+                  to={"/project-in-panchkula/"}
+                  className=""
+                  target="_top"
+                  style={{ color: "white" }}
+                >
+                  Project in Panchkula
+                </Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                <Link
+                  to={"/project-in-kasauli/"}
+                  className=""
+                  target="_top"
+                  style={{ color: "white" }}
+                >
+                  Project in Kasauli
+                </Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                <Link
+                  to={"/projects-in-karnal/"}
+                  className=""
+                  target="_top"
+                  style={{ color: "white" }}
+                >
+                  Project in Karnal
+                </Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                <Link
+                  to={"/projects-in-jalandhar/"}
+                  className=""
+                  target="_top"
+                  style={{ color: "white" }}
+                >
+                  Project in Jalandher
+                </Link>
+              </li>
+              <li className="list-none text-white text-sm my-1 text-justify">
+                <Link
+                  to={"#"}
+                  className=""
+                  target="_top"
+                  style={{ color: "white" }}
+                >
+                  Project in Dubai
                 </Link>
               </li>
             </div>

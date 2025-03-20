@@ -35,7 +35,7 @@ const GalleryWrapper = styled.div`
 
 const ImageWrapper = styled.div`
 position: relative;
-height: 350px;
+height: 450px;
 overflow: hidden;
 transition: transform 0.5s ease-in-out;
 cursor: pointer;
@@ -43,9 +43,7 @@ cursor: pointer;
 
 &:hover img {
     opacity: 0.7;
-    transform: scale(0.95);
-    transform: perspective(800px) rotateY(25deg);
-    padding:1rem 1rem 1rem 0rem;
+    scale:1.2;
   }
   
   &:hover .overlay {
@@ -58,43 +56,41 @@ const Image = styled.img`
     width: 100%; /* Take the full width of the container */
     height: 100%; /* Take the full height of the container */
     object-fit: cover;
-    transform: perspective(800px) rotateY(0deg);
     transition: all 0.5s ease;
     transform-origin: center;
-    
+  
     &:hover {
       opacity: 1;
-      transform: perspective(800px) rotateY(25deg);
+      transition: all 2s ease-in-out;
       }
       `;
 
 const CityText = styled.div`
     position: relative;
     left: 0rem; 
-    top: -20%;
+    top: -13%;
     display:flex;
     justify-content: center;
     transform: rotate(0deg); /* Centers text vertically */
     color: white;
-    font-size: 1rem;
-    font-weight: semibold;
     text-transform: uppercase;
-    visibility: visible;
+    visibility:hidden;
+    background-color:rgba(0, 0, 0, 0.6);
     ${ImageWrapper}:hover & {
-      // opacity: 1;
-      // visibility:hidden;
-      left:0rem;
-      top:-0%;
+      opacity: 1;
+      visibility:visible;
       color: white;
+      top: -35%;
+      transition:1s ease-in-out;
     }
   `;
 const Overlay = styled.div`
   position: absolute;
   inset: 0;
   // background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.5));
-  background:rgba(0,0,0,0.5);
+ 
   opacity: 0;
-  visibility: hidden;
+  visibility:hidden;
   transition: opacity 0.2s ease, visibility 0.2s ease;
 `;
 
@@ -113,7 +109,7 @@ const InfoContainer = styled.div`
   transition: opacity 0.3s ease, visibility 0.3s ease;
 
   ${ImageWrapper}:hover & {
-    visibility: visible;
+    visibility: hidden;
     opacity: 1;
   }
 `;
@@ -240,8 +236,11 @@ const ImageGallery = React.memo(() => {
                   <p className="font-semibold mt-2 mb-0 text-gray-800"></p>
                   <button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect w-full md:w-auto   flex justify-center items-center" >View Details</button>
                 </InfoContainer>
-                <CityText>{image.projectName}</CityText>
-                <CityText>{truncateText(image.projectAddress, 4)}</CityText>
+                <CityText className="pt-3 pb-3 text-xl visible font-Sans">{image.projectName}</CityText>
+
+                <CityText className="">{truncateText(image.projectAddress, 4)}</CityText>
+                <CityText className="pb-4 pt-3"><button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-6 py-2 drip-effect w-full md:w-auto   flex justify-center items-center md:auto sm:w-1/2 max-[600px]:w-2/4 " >View Details</button>
+                </CityText>
                 {/* <CityText>{image.city}</CityText> */}
               </ImageWrapper>
             </Link>
