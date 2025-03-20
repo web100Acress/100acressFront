@@ -1,11 +1,21 @@
-import React, { useContext } from "react";
+import React, {useEffect} from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { useSelector } from "react-redux";
+import Api_Service from "../Redux/utils/Api_Service";
 
 const DlfSco = () => {
-  const { dlfSco } = useContext(DataContext);
+  
+  let query = "dlfsco";
+  const {getAllProjects} = Api_Service();
+
+  const dlfSco = useSelector(store => store?.allsectiondata?.dlfsco);
+  useEffect(()=>{
+      getAllProjects(query,0);
+  },[])
+
+  
   return (
     <div>
       <Helmet>

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Cities from "../Components/HomePageComponents/Cities";
 import FormHome from "../Components/HomePageComponents/FormHome";
 import WhyChoose from "../Components/HomePageComponents/WhyChoose";
@@ -10,16 +10,12 @@ import Free from "../../src/Pages/Free";
 import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
-import { DataContext } from "../MyContext";
-import Resale from "./Resale";
 import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
-import {ArrowIcon, LcoationBiggerIcon } from '../Assets/icons/index';
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon } from "lucide-react";
-import SpotlightBanner from "../aadharhomes/SpotlightBanner";
 import HotProject from "./HomePages/hotproject";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -27,27 +23,51 @@ import Builder from "./BuilderPages/Builder";
 import CustomSkeleton from "../Utils/CustomSkeleton";
 import CommonProject from "../Utils/CommonProject";
 import Builderaction from "./HomePages/Builderaction";
+import Api_Service from "../Redux/utils/Api_Service";
+import { useSelector } from "react-redux";
+const Home = () => {
 
-function Home() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const {
-    trendingProject,
-    featuredProject,
-    affordable,
-    upcoming,
-    city,
-    commercialProject,
-    typeScoPlots,    
-    typeAffordable,
-    resalePropertydata,
-    LuxuryProjects,
-    budgetHome,
-  } = useContext(DataContext);
-  const [colorChange, setColorchange] = useState(false);
-  const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
   
+  const ResaleComponent = React.lazy(()=> import("./Resale"));
+  const sectionsRef = useRef({});
+  const [colorChange, setColorchange] = useState(false);
+  const [displayedProjects, setDisplayedProjects] = useState([]);
+  const [observedSections, setObservedSections] = useState({});
+  const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
+  const [path,setPath]= useState(null);
+
+  const [resalesectionvisible, SetResaleSectionVisible] = useState(false);
+
+
+  const TrendingProjects = useSelector(store => store?.project?.trending);
+  const FeaturedProjects = useSelector(store => store?.project?.featured);
+  const UpcomingProjects = useSelector(store => store?.project?.upcoming);
+  const CommercialProjects = useSelector(store => store?.project?.commercial);
+  const SCOProjects = useSelector(store => store?.project?.scoplots);
+  const AffordableProjects = useSelector(store => store?.project?.affordable);
+  const LuxuryProjects = useSelector(store => store?.project?.luxury);
+  const BudgetHomesProjects = useSelector(store => store?.project?.budget);
+  const ProjectinDelhi = useSelector(store => store?.project?.projectindelhi);
+  const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi } = Api_Service();
+  const [dataLoaded, setDataLoaded] = useState({
+    trending: false,
+    featured: false,
+    upcoming: false,
+    commercial: false,
+    sco: false,
+    affordable: false,
+    luxury: false,
+    budget: false,
+    delhi: false,
+  });
+  const setRef = (section) => (el) => {
+    if (el && !sectionsRef.current[section]) {
+      sectionsRef.current[section] = el;
+    }
+  };
   const changeNavbarColor = () => {
     if (window.scrollY >= 250) {
       setColorchange(true);
@@ -56,74 +76,173 @@ function Home() {
     }
   };
   window.addEventListener("scroll", changeNavbarColor);
-
-  let reorderedTrendingProjects = [];
-  if (trendingProject.length > 0) {
-    reorderedTrendingProjects = [...trendingProject];
-    reorderedTrendingProjects[0] = trendingProject[5];
-    reorderedTrendingProjects[1] = trendingProject[0];
-    reorderedTrendingProjects[2] = trendingProject[7];
-    reorderedTrendingProjects[3] = trendingProject[1];
-    reorderedTrendingProjects[4] = trendingProject[6];
-    reorderedTrendingProjects[5] = trendingProject[2];
-    reorderedTrendingProjects[6] = trendingProject[4];
-    reorderedTrendingProjects[7] = trendingProject[3];
-  }
-
-
-  
   const [activeFilter, setActiveFilter] = useState("Trending");
-  let displayedProjects = [];
-  let path = false;
-  switch (activeFilter) {
-    case "Trending":
-      displayedProjects = trendingProject;
-      break;
-    case "Featured":
-      displayedProjects = featuredProject;
-      break;
-    case "Upcoming":
-      displayedProjects = upcoming;
-      path = "/projects/upcoming-projects-in-gurgaon/";
-      break;
-    case "Commercial":
-      displayedProjects = commercialProject;
-      path = "/projects/commerial/";
-      break;
-    case "SCO":
-      displayedProjects = typeScoPlots;
-      path = "/sco/plots/";
-      break;
-    case "Affordable":
-      displayedProjects = typeAffordable;
-      break;
-    case "Resale":
-      displayedProjects = resalePropertydata;
-      path = "/buy-properties/best-resale-property-in-gurugram/";
-      break;
-    case "Budget":
-      displayedProjects = budgetHome;
-      break;
-    case "Luxury":
-      displayedProjects = LuxuryProjects;
-      path = "/top-luxury-projects/";
-      break;
-    default:
-      displayedProjects = [];
-      break;
-  }
+
+  const memoizedProjects = useMemo(() => ({
+    trending: TrendingProjects,
+    featured: FeaturedProjects,
+    upcoming: UpcomingProjects,
+    commercial: CommercialProjects,
+    sco: SCOProjects,
+    affordable: AffordableProjects,
+    luxury: LuxuryProjects,
+    budget: BudgetHomesProjects,
+    delhi: ProjectinDelhi,
+  }), [
+    TrendingProjects,
+    FeaturedProjects,
+    UpcomingProjects,
+    CommercialProjects,
+    SCOProjects,
+    AffordableProjects,
+    LuxuryProjects,
+    BudgetHomesProjects,
+    ProjectinDelhi
+  ]);
+
+  const loadData = useCallback((filter) => {
   
+    if (dataLoaded[filter]) return; 
+    switch (filter) {
+      case "Trending":
+        getTrending();
+        break;
+      case "Featured":
+        getFeatured();
+        break;
+      case "Upcoming":
+        getUpcoming();
+        break;
+      case "Commercial":
+        getCommercial();
+        break;
+      case "SCO":
+        getScoplots();
+        break;
+      case "Affordable":
+        getAffordable();
+        break;
+      case "Luxury":
+        getLuxury();
+        break;
+      case "Budget":
+        getBudgetHomes();
+        break;
+      case "Delhi":
+        getProjectIndelhi();
+        break;
+      default:
+        break;
+    }
+    setDataLoaded((prevData) => ({
+      ...prevData,
+      [filter]: true
+    }));
+  }, [dataLoaded, getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi]);
+
+  useEffect(() => {
+    loadData(activeFilter);
+  }, [activeFilter, loadData]);
+
+  // Set the displayed projects based on the active filter
+  useEffect(() => {
+    switch (activeFilter) {
+      case "Trending":
+        setDisplayedProjects(memoizedProjects.trending);
+        break;
+      case "Featured":
+        setDisplayedProjects(memoizedProjects.featured);
+        break;
+      case "Upcoming":
+        setDisplayedProjects(memoizedProjects.upcoming);
+        setPath("/projects/upcoming-projects-in-gurgaon/");
+        break;
+      case "Commercial":
+        setDisplayedProjects(memoizedProjects.commercial.slice(0, 4));
+        setPath("/projects/commercial/");
+        break;
+      case "SCO":
+        setDisplayedProjects(memoizedProjects.sco.slice(0, 4));
+        setPath("/sco/plots/");
+        break;
+      case "Affordable":
+        setDisplayedProjects(memoizedProjects.affordable.slice(0, 4));
+        break;
+      case "Budget":
+        setDisplayedProjects(memoizedProjects.budget);
+        break;
+      case "Luxury":
+        setDisplayedProjects(memoizedProjects.luxury.slice(0, 4));
+        setPath("/top-luxury-projects/");
+        break;
+      default:
+        setDisplayedProjects([]);
+        break;
+    }
+  }, [activeFilter, memoizedProjects,path]);
+
   useEffect(() => {
     AOS.init();
   }, []);
 
   useEffect(() => {
-     setTimeout(() => {
-     AOS.refresh();
-  }, 100);
-    
+    setTimeout(() => {
+      AOS.refresh();
+    }, 100);
+
   }, [activeFilter]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const section = entry.target.getAttribute("data-section");
+            if (!observedSections[section]) {
+              setObservedSections(prev => ({ ...prev, [section]: true }));
+
+              if (section === "upcoming" && UpcomingProjects.length === 0) {
+                getUpcoming();
+              }
+              if (section === "luxury" && LuxuryProjects.length === 0) {
+                getLuxury();
+              }
+              if (section === "budget" && BudgetHomesProjects.length === 0) {
+                getBudgetHomes();
+              }
+              if (section === "SCO" && SCOProjects.length === 0) {
+                getScoplots();
+              }
+              if (section === "commercial" && CommercialProjects.length === 0) {
+                getCommercial();
+              }
+              if (section === "feature" && FeaturedProjects.length === 0) {
+                getFeatured();
+              }
+              if (section === "affordable" && AffordableProjects.length === 0) {
+                getAffordable();
+              }
+              if (section === "delhi" && ProjectinDelhi.length === 0) {
+                getProjectIndelhi();
+              }
+              if(section === "resale"){
+                SetResaleSectionVisible(true);
+              }
+            }
+          }
+        });
+      },
+      { root: null, threshold: 0.1, rootMargin: "700px" }
+    );
+
+    Object.values(sectionsRef.current).forEach((el) => observer.observe(el));
+
+    return () => {
+      Object.values(sectionsRef.current).forEach((el) => observer.unobserve(el));
+    };
+  }, [UpcomingProjects, LuxuryProjects, BudgetHomesProjects, SCOProjects, ProjectinDelhi]);
+
+  // console.log(resalesectionvisible,"section")
 
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
@@ -158,14 +277,14 @@ function Home() {
       </div>
 
       <div className="relative">
-          <div className="absolute inset-0 bg-[#EE1C25] opacity-80"></div>
-          <div className="relative">
-            {/* <SpotlightBanner /> */}
-            <HotProject/>
-          </div>
+        <div className="absolute inset-0 bg-[#EE1C25] opacity-80"></div>
+        <div className="relative">
+          {/* <SpotlightBanner /> */}
+          <HotProject />
         </div>
-      {/*<!-- End Carousel with indicators inside --> */}
-      {trendingProject.length === 0 ? <CustomSkeleton /> : (
+      </div>
+
+      {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
         <>
           <div data-aos="fade-up"
             data-aos-duration="1000" className="py-0 mt-3">
@@ -222,10 +341,10 @@ function Home() {
               <button
                 onClick={() => setActiveFilter("Luxury")}
                 className={`px-4 py-2 rounded-full text-sm font-semibold ${activeFilter === "Luxury"
-                    ? "bg-gradient-to-r from-[#da737a] to-[#5f050b] text-white shadow-lg transform hover:scale-105 duration-300 ease-in-out"
-                    : "border-2 border-[#D4AF37] text-[#D4AF37] shadow-md hover:scale-105 duration-300 ease-in-out"}`}
+                  ? "bg-gradient-to-r from-[#da737a] to-[#5f050b] text-white shadow-lg transform hover:scale-105 duration-300 ease-in-out"
+                  : "border-2 border-[#D4AF37] text-[#D4AF37] shadow-md hover:scale-105 duration-300 ease-in-out"}`}
               >
-                Luxury 
+                Luxury
               </button>
 
               {path && (
@@ -242,61 +361,130 @@ function Home() {
 
             {/* Display Filtered Projects */}
             <CommonProject
-              data={displayedProjects.slice(0, activeFilter === "Luxury" ? 4 : 8)}
+              data={displayedProjects}
               animation="fade-up"
             />
           </div>
         </>)
       }
 
-      {/* Upcoming Project */}
-      <CommonProject
-      data={upcoming}
-      title="Upcoming Projects in Gurugram"
-      path="/projects/upcoming-projects-in-gurgaon/"
-      animation="fade-up"
-      />
 
-      {/* Luxyry Projects */}
-        {/* <Suspense fallback={<div><CustomSkeleton/></div>}>
-        <Luxury/>
-        </Suspense> */}
-        
-        <CommonProject
-        data={LuxuryProjects.slice(0, 4)}
-        title="Luxury For You"
-        path="/top-luxury-projects/"
-      />
+      <div>
+        {/* Upcoming Projects */}
+        <div ref={setRef("upcoming")} data-section="upcoming" style={{ height: "10px" }}></div>
+        <div>
+          {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
+            <CommonProject data={UpcomingProjects} title="Upcoming Projects in Gurugram" animation="fade-down" path={"/projects/upcoming-projects-in-gurgaon/"} />
+          )}
+        </div>
 
-      <Builderaction/>
+        {/* Luxury Projects */}
+        <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
+        <div>
+          {LuxuryProjects.length === 0 ? <CustomSkeleton /> : (
+            <CommonProject data={LuxuryProjects.slice(0, 4)} title="Luxury For You" animation="fade-up" path={"/top-luxury-projects/"} />
+          )}
+        </div>
 
-      {/* Budget Projects */}
+        <Builderaction />
+        {/* Budget Projects */}
+        <div ref={setRef("budget")} data-section="budget" style={{ height: "10px" }}></div>
+        <div>
+          {BudgetHomesProjects.length === 0 ? <CustomSkeleton /> : (
+            <CommonProject data={BudgetHomesProjects} title="Budget Projects in Gurugram" animation="flip-left" />
+          )}
+        </div>
 
-      <CommonProject
-        data={budgetHome}
-        title="Budget Projects in Gurugram"
-        animation="flip-left"
-      />
+        {/* Sco Plots */}
+        <div ref={setRef("SCO")} data-section="SCO" style={{ height: "10px" }}></div>
+        <div>
+          {SCOProjects.length === 0 ? <CustomSkeleton /> : (
+            <CommonProject data={SCOProjects.slice(0, 4)} title="SCO Projects in Gurugram" animation="flip-left" path="/sco/plots/" />
+          )}
+        </div>
+
+        <SpacesAvailable />
+        <BudgetPlotsInGurugraon />
+
+        {/* Commercial Pojects  */}
+        <div ref={setRef("commercial")} data-section="commercial" style={{ height: "10px" }}></div>
+        <div>
+          {CommercialProjects.length === 0 ? <CustomSkeleton /> : (
+            <CommonProject data={CommercialProjects.slice(0, 4)} title="Commercial Projects in Delhi NCR" animation="fade-down" path="/projects/commercial/" />
+          )}
+        </div>
+
+        <TopSeoPlots />
+
+        {/* Feature Projects */}
+        <div ref={setRef("feature")} data-section="feature" style={{ height: "10px" }}></div>
+        <div>
+          {FeaturedProjects.length === 0 ? <CustomSkeleton /> : (
+            <CommonProject data={FeaturedProjects.slice(0, 4)} title="Featured Projects" animation="flip-left" path="/projects/upcoming-projects-in-gurgaon/" />
+          )}
+        </div>
+
+        <div ref={setRef("delhi")} data-section="delhi" style={{ height: "10px" }}></div>
+        <div>
+          {ProjectinDelhi.length === 0 ? <CustomSkeleton /> : (
+            <CommonProject data={ProjectinDelhi} title="Projects in Delhi" animation="zoom-out-left" path="/project-in-delhi/" />
+          )}
+        </div>
 
 
-      {/* SCO */}
-      <CommonProject
-        data={typeScoPlots}
-        title="SCO Projects in Gurugram"
-        path="/sco/plots/"
-      />
 
-      <SpacesAvailable />
-      <BudgetPlotsInGurugraon />
+        <Cities />
+
+        {/* Affordable homes  */}
+        <div ref={setRef("affordable")} data-section="affordable" style={{ height: "10px" }}></div>
+        <div>
+          {AffordableProjects.length === 0 ? <CustomSkeleton /> : (
+            <CommonProject data={AffordableProjects.slice(0, 4)} title="Affordable Homes" animation="fade-up" path="/projects-in-gurugram/" />
+          )}
+        </div>
+
+        <Builder />
 
 
-      <CommonProject
-        data={commercialProject.slice(0, 4)}
-        title="Commercial Projects in Delhi NCR"
-        path="/projects/commerial/"
-        animation="fade-down"
-      />
-      
+        <div ref={setRef("resale")} data-section="resale" className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-4">
+          <div className="flex items-center">
+            <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  sm:text-left">
+              Best Resale Property <span> For You</span>
+            </h2>
+          </div>
+          <div className="ml-2 hidden sm:block">
+            <Link
+              to="/buy-properties/best-resale-property-in-gurugram/"
+              target="_top"
+            >
+              <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
+                <EyeIcon />
+                <span className="ml-2" style={{ marginLeft: "8px" }}>
+                  View All
+                </span>
+              </span>
+            </Link>
+          </div>
+        </div>
+
+        {observedSections["resale"] ? (
+          <Suspense fallback={<CustomSkeleton />}>
+            <ResaleComponent />
+          </Suspense>
+        ) : (
+          <CustomSkeleton />
+        )}
+
+
+
+        <OurServices />
+        <WhyChoose />
+
+        {/* <Snapshot /> */}
+        <FormHome />
+
+      </div>
+
       {colorChange && isSmallerThan768 && <div>
         <Link to="/auth/signin/" target="_top">
           <div className="sticky-quote-cta">
@@ -309,136 +497,6 @@ function Home() {
           </div>
         </Link>
       </div>}
-      
-      <TopSeoPlots />
-
-      <CommonProject
-        data={featuredProject}
-        title="Featured Projects"
-        path="/projects/upcoming-projects-in-gurgaon/"
-        animation="flip-left"
-      />
-
-      <div data-aos="zoom-out-left" className="py-3">
-        {" "}
-        <div className="">
-          <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6  py-2">
-            <div className="flex items-center">
-              <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
-                Projects in Delhi
-              </h2>
-            </div>
-            <div className="ml-2 hidden sm:block">
-              <Link to={"/project-in-delhi/"} target="_top">
-                <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-                  <EyeIcon />
-                  <span className="ml-2">View All</span>
-                </span>
-              </Link>
-            </div>
-          </div>
-        </div>
-        {
-          <section className="flex flex-col items-center bg-transparent mt-3">
-            <div className="grid max-w-md bg-transparent grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-              {city.map((item, index) => {
-                const pUrl = item.project_url;
-                return (
-                  <span>
-                    <Link to={`/${pUrl}/`} target="_top">
-                      <article
-                        key={index}
-                        className="mb-2 transition overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                      >
-                        <div className="p-3 relative overflow-hidden ">
-                          <img
-                            src={item.frontImage.url}
-                            alt="property In Gurugram"
-                            className="w-full h-64 object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
-                          />
-                        </div>
-                        <div className="pt-0 p-3 space-y-2">
-                          <span className="text-[15px] font-semibold text-black-600 hover:text-red-600 duration-500 ease-in-out">
-                            {item.projectName}
-                          </span>
-                          <ul className="m-0 p-0 flex text-white-600 justify-between px-0 pb-0">
-                            <li className="text-left flex items-end gap-2">
-                              {/* Icon */}
-                              <span className="text-red-600 flex-shrink-0">
-                                <LcoationBiggerIcon />
-                              </span>
-                              {/* Text */}
-                              <div className="text-sm font-thin truncate w-64 md:w-64 lg:w-32 xl:w-48">
-                                <span className="text-sm text-white-600 hover:text-red-600 duration-500 ease-in-out block truncate">
-                                  {item.city}, {item.state}
-                                </span>
-                                <span className="text-xs text-[#656565] block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
-                                  {item.projectAddress}
-                                </span>
-                              </div>
-                            </li>
-
-                            <li className=" text-left flex item-center">
-                              <button
-                                type="button"
-                                className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-1 py-1 text-center me-2"
-                              >
-                                <ArrowIcon />
-                              </button>
-                            </li>
-                          </ul>
-                        </div>
-                      </article>
-                    </Link>
-
-                  </span>
-                );
-              })}
-            </div>
-          </section>
-        }
-      </div>
-
-      <Cities />
-
-      <CommonProject
-        data={affordable.slice(0, 4)}
-        title="Affordable Homes"
-        path="/projects-in-gurugram/"
-        animation="fade-up"
-      />
-
-      <Builder/>
-
-      <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-4">
-        <div className="flex items-center">
-          <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  sm:text-left">
-            Best Resale Property <span> For You</span>
-          </h2>
-        </div>
-        <div className="ml-2 hidden sm:block">
-          <Link
-            to="/buy-properties/best-resale-property-in-gurugram/"
-            target="_top"
-          >
-            <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-              <EyeIcon />            
-                <span className="ml-2" style={{ marginLeft: "8px" }}>
-                View All
-              </span>
-            </span>
-          </Link>
-        </div>
-      </div>
-
-      <Resale />
-      
-
-      <OurServices />
-      <WhyChoose />
-
-      {/* <Snapshot /> */}
-      <FormHome />
 
       {/* <HomeBuilderCarousel /> */}
       <Free />

@@ -1,12 +1,21 @@
-import React, { useContext, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import Footer from "../Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
 import CommonProject from "../../Utils/CommonProject";
 import { Helmet } from "react-helmet";
 import ProjectSearching from "../../Pages/ProjectSearching";
+import {  useSelector } from "react-redux";
+import Api_Service from "../../Redux/utils/Api_Service";
 const UpComingProjects = () => {
-  const { allupcomingProject } = useContext(DataContext);
+
+  let query = "allupcomingproject";
   const [filteredProjectsParent,setFilteredProjectsParent] = useState([]);
+  const {getAllProjects} = Api_Service();
+  const allupcomingProject = useSelector(store => store?.allsectiondata?.allupcomingproject);
+
+  useEffect(()=>{
+    getAllProjects(query,0);
+  },[])
+  
   return (
     <div>
       <Helmet>

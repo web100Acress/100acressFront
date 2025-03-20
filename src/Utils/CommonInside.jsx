@@ -4,8 +4,12 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from '../Assets/icons';
 import Footer from '../Components/Actual_Components/Footer';
+import CustomSkeleton from "../Utils/CustomSkeleton";
 
-const CommonInside = ({ title, Actualdata, HelmetTitle, metaContent, linkhref ,details}) => {
+
+const CommonInside = ({ title, Actualdata, HelmetTitle, metaContent, linkhref, details }) => {
+
+
     const handleShare = (project) => {
         if (navigator.share) {
             navigator
@@ -24,21 +28,22 @@ const CommonInside = ({ title, Actualdata, HelmetTitle, metaContent, linkhref ,d
     useEffect(() => {
         Aos.init();
     }, []);
-    const response = Actualdata;
+    const response = Array.isArray(Actualdata) ? Actualdata : [];
+    
     return (
         <div>
             <Helmet>
                 {
                     HelmetTitle &&
                     <title>
-                    {HelmetTitle}
+                        {HelmetTitle}
                     </title>}
 
                 {
                     metaContent &&
                     <meta
-                    name="description"
-                    content={`${metaContent}`}
+                        name="description"
+                        content={`${metaContent}`}
                     />
                 }
                 {
@@ -49,12 +54,15 @@ const CommonInside = ({ title, Actualdata, HelmetTitle, metaContent, linkhref ,d
                     />
                 }
             </Helmet>
+            {
+                response.length === 0 ? <CustomSkeleton/>: 
+            
             <section className="flex pt-2 flex-col items-center mt-12">
                 {title && <h1 className="mb-3 pt-4 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
                     {title}
                 </h1>}
-                {details &&<h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-                     {details}
+                {details && <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+                    {details}
                 </h2>}
 
                 <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full mb-4">
@@ -144,7 +152,7 @@ const CommonInside = ({ title, Actualdata, HelmetTitle, metaContent, linkhref ,d
                     })}
                 </div>
 
-            </section>
+            </section>}
             <Footer />
         </div>
     )

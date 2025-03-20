@@ -1,11 +1,19 @@
-import React, { useContext } from "react";
+import React, { useEffect} from "react";
 import "react-multi-carousel/lib/styles.css";
-import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
+import { useSelector } from "react-redux";
+import Api_service from "../Redux/utils/Api_Service";
 const Possessionin2026 = () => {
-  const { possessionin2026 } = useContext(DataContext);
+  // const {  } = useContext(DataContext);
+  const possessionin2026 = useSelector(store => store?.possession?.Possessionin2026);
+  let query = "2026";
+  const {getPossessionByYear} = Api_service();
+
+  useEffect(()=>{
+    getPossessionByYear(query);
+  },[])
   return (
     <div style={{ overflowX: "hidden" }}>
       <Helmet>

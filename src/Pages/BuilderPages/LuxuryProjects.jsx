@@ -1,9 +1,17 @@
-import React, { useContext } from "react";
-import { DataContext } from "../../MyContext";
+import React, {  useEffect } from "react";
 import CommonInside from "../../Utils/CommonInside";
+import { useSelector } from "react-redux";
+import Api_Service from "../../Redux/utils/Api_Service";
+
 
 const LuxuryProject = () => {
-  const { LuxuryProjects, } = useContext(DataContext);
+  let query = "luxury";
+
+  const LuxuryProjects = useSelector(store => store?.allsectiondata?.luxuryAll);
+  const {getAllProjects} = Api_Service();
+ useEffect(()=>{
+    getAllProjects(query,0);
+  },[])
   return (
     <div>
       <CommonInside

@@ -1,12 +1,19 @@
-import React, { useContext } from "react";
+import React, {useEffect } from "react";
 import Footer from "../../Components/Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { LocationRedIcon,PropertyIcon,RupeeIcon,ShareFrameIcon } from "../../Assets/icons";
-
+import { useSelector } from "react-redux";
+import Api_service from "../../Redux/utils/Api_Service";
 const DelhiProject = () => {
-  const { delhiData } = useContext(DataContext);
+  const {getProjectbyState} = Api_service();
+  const delhiData = useSelector(store => store?.stateproject?.delhi);
+  let city = "Delhi";
+  useEffect(()=>{
+    if(delhiData.length === 0){
+        getProjectbyState(city,0)
+    }
+  },[])
   const handleShare = (project) => {
     if (navigator.share) {
         navigator
@@ -23,8 +30,6 @@ const DelhiProject = () => {
 };
   return (
     <div>
-
-
       <Helmet>
         <title>
           Discover Best Property Projects in Delhi | 100acress

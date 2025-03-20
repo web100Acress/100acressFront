@@ -1,12 +1,21 @@
-import React, { useContext } from "react";
+import React, { useEffect} from "react";
 import Footer from "../../Components/Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { LocationRedIcon,PropertyIcon,RupeeIcon,ShareFrameIcon } from "../../Assets/icons";
+import { useSelector } from "react-redux";
+import Api_service from "../../Redux/utils/Api_Service";
 
 const PanipatProject = () => {
-  const { panipat } = useContext(DataContext);
+  let city = "Panipat";
+  const {getProjectbyState} = Api_service();
+  const panipat = useSelector(store => store?.stateproject?.panipat);
+
+  useEffect(() => {
+    if (panipat.length === 0) {
+      getProjectbyState(city, 0)
+    }
+  }, []);
   const handleShare = (project) => {
     if (navigator.share) {
         navigator

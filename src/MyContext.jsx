@@ -1,17 +1,14 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { sortByDesiredOrder } from "./Utils/ProjectSorting";
-import { Affordable_Desired_Order, Luxury_Desired_Order, Trending_Desired_Order ,Recommendedreordered } from "./Pages/datafeed/Desiredorder";
+import { Affordable_Desired_Order, Luxury_Desired_Order, Trending_Desired_Order } from "./Pages/datafeed/Desiredorder";
 export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: Infinity });
-  const [trendingProject, setTrendingProject] = useState([]);
   const [LuxuryProjects, setLuxuryProjects] = useState([]);
-  const [spotlight,setSpotlight] = useState([]);
   const [featuredProject, setFeaturedProject] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [affordable, setAffordable] = useState([]);
-  const [city, setCity] = useState([]);
   const [allProjectData, setAllProjectData] = useState([]);
   const [residencialProjects, setResidencialProjects] = useState([]);
   const [allupcomingProject, setAllUpComingProject] = useState([]);
@@ -105,370 +102,6 @@ export const DataProvider = ({ children }) => {
     setPossessionAllData(PossFilter);
   };
   
-  useEffect(() => {
-  const fetchAllProject = async () => {
-    try {
-      const res = await axios.get(
-        "https://api.100acress.com/project/viewAll/data"
-      );
-      setProject(res.data.data); 
-
-      const projectsData = res.data.data;
-    
-      const trendingProjects = sortByDesiredOrder(
-        projectsData.filter((project) => project.projectOverview === "trending"),
-        Trending_Desired_Order,
-        "projectName"
-      );
-
-      const upcomingProjects = projectsData.filter(
-        (project) =>
-          project.projectOverview === "upcoming" ||
-          project.projectReraNo === "upcoming" 
-      );
-
-      const LuxuryProjects = sortByDesiredOrder(
-        projectsData.filter((project) => project.luxury === "True"),
-        Luxury_Desired_Order,
-        "projectName"
-      );
-
-      const SpotlightPorp = sortByDesiredOrder(projectsData.filter((project)=> project?.spotlight === "True"),
-      Recommendedreordered,
-      "projectName"
-      );
-      
-
-      const featuredProjects = projectsData.filter(
-        (project) => project.projectOverview === "featured"
-      );
-
-      const affordable = sortByDesiredOrder(
-        projectsData.filter((project) => project.type === "Affordable Homes"),
-        Affordable_Desired_Order,
-        "projectName"
-
-      ) ;
-
-      const residencialProjects = projectsData.filter(
-        (project) => project.type === "Residential Flats"
-      );
-
-      const city = projectsData.filter(
-        (project) => project.projectOverview === "delhi"
-      );
-
-      const allupcomingProject = projectsData.filter(
-        (project) => project.project_Status === "comingsoon"
-      );
-
-      const commercialProject = projectsData.filter(
-        (project) => project.projectOverview === "commercial"
-      );
-
-      const BudgetHomesGurugram = projectsData.filter(
-        (project) => project.projectName === "M3M Soulitude" 
-        || project.projectName === "M3M Antalya Hills" 
-        || project.projectName === "Signature Global City 93" 
-        || project.projectName === "Signature Global City 81"
-      );
-
-      const CentralParkProjects = projectsData.filter(
-        (project) => project?.builderName === "Central Park"
-      )
-      const scoPlots = projectsData.filter(
-        (project) => project.type === "SCO Plots"
-      );
-
-      const commercialProjectAll = projectsData.filter(
-        (project) => project.type === "Commercial Property"
-      );
-
-      const typeScoPlots = projectsData.filter(
-        (project) => project.projectOverview === "sco"
-      );
-      
-      const typeAffordable = sortByDesiredOrder(
-        projectsData.filter((project) => project.projectOverview === "affordable"),
-         Affordable_Desired_Order,
-        "projectName"
-      );
-
-
-      const BuilderIndependentFloor = projectsData.filter((project) => {
-        return (
-          project.type === "Independent Floors" ||
-          project.type === "Builder Floors"
-        );
-      });
-
-      const deenDayalPlots = projectsData.filter((project) => {
-        return (
-          (project.type === "Deen Dayal Plots" ||
-            project.type === "Residential Plots") &&
-          project.city === "Gurugram"
-        );
-      });
-
-      const villasProject = projectsData.filter((project) => {
-        return project.type === "Villas";
-      });
-
-      const sohnaRoad = projectsData.filter((project) =>
-        project.projectAddress.includes("Sohna Road")
-      );
-
-      const golfCourse = projectsData.filter((project) =>
-        project.projectAddress.includes("Golf Course Road")
-      );
-
-      const delhiData = projectsData.filter(
-        (project) => project.city === "Delhi" || project.city === "New Delhi"
-      );
-
-      const noidaData = projectsData.filter(
-        (project) => project.city === "Noida"
-      );
-
-      const panipat = projectsData.filter(
-        (project) => project.city === "Panipat"
-      );
-
-      const panchkula = projectsData.filter(
-        (project) => project.city === "Panchkula"
-      );
-
-      const kasauli = projectsData.filter(
-        (project) => project.city === "Kasauli"
-      );
-
-      const ayodhya = projectsData.filter(
-        (project) => project.city === "Ayodhya"
-      )
-
-      const karnal = projectsData.filter(
-        (project) => project.city === "Karnal"
-      )
-
-      const jalandhar = projectsData.filter(
-        (project) => project.city === "Jalandhar"
-      )
-
-      const goaCityProject = projectsData.filter(
-        (project) => project.city === "Goa"
-      );
-      const mumbaiProject = projectsData.filter(
-        (project) => project.city === "Mumbai"
-      );
-
-      const readyToMoveData = projectsData.filter(
-        (project) => project.project_Status === "readytomove" || new Date(project.possessionDate).getFullYear() === 2024
-      );
-      const possessionin2024 = projectsData.filter(
-        (project) => new Date(project.possessionDate).getFullYear() === 2024
-      );
-      const possessionin2025 = projectsData.filter(
-        (project) => new Date(project.possessionDate).getFullYear() === 2025
-      );
-      const possessionin2026 = projectsData.filter(
-        (project) => new Date(project.possessionDate).getFullYear() === 2026
-      );
-
-      const possessionIn2026AndBeyond = projectsData.filter(
-        (project) => new Date(project.possessionDate).getFullYear() >= 2027
-      );
-
-      setFilteredProjects(
-        projectsData.filter(
-          (project) =>
-            project.minPrice >= minPrice && project.maxPrice <= maxPrice
-        )
-      );
-
-      const dlfProject = projectsData.filter(
-        (project) =>
-          project.projectOverview === "luxuryProject" ||
-          project.projectReraNo === "luxuryProject"
-      );
-
-      const goaData = projectsData.filter(
-        (project) => project.projectOverview === "goaProject"
-      );
-      const dlfAllProjects = projectsData.filter(
-        (project) => project.builderName === "DLF Homes"
-      );
-
-      const bptp = projectsData.filter(
-        (project) => project.projectOverview === "bptp"
-      );
-
-      const orris = projectsData.filter(
-        (project) => project.projectOverview === "orris"
-      );
-
-      const jms = projectsData.filter(
-        (project) => project.projectOverview === "jms"
-      );
-
-      const signaturebuilder = projectsData.filter(
-        (project) => project.builderName?.toLowerCase() === "signature global"
-      );
-      
-      const M3Mbuilder = projectsData.filter(
-        (project) => project.builderName === "M3M India"
-      );
-
-      const ExperionBuilder = projectsData.filter(
-        (project) => project.builderName === "Experion Developers"
-      );
-      
-      const ElanBuilder = projectsData.filter(
-        (project) => project.builderName ==="Elan Group"
-      );
-
-      const BPTPBuilder = projectsData.filter(
-        (project) => project.builderName ==="BPTP LTD"
-      );
-
-      const AdaniBuilder = projectsData.filter(
-        (project) => project.builderName ==="Adani Realty"
-      );
-
-      const smartWorldBuilder = projectsData.filter(
-        (project) => project.builderName ==="Smartworld"
-      );
-
-      const trevocBuilder = projectsData.filter(
-        (project) => project.builderName === "Trevoc Group"
-      );
-
-      const indiaBullsBuilder = projectsData.filter(
-        (project) => project.builderName ==="Indiabulls"
-      );
-      
-      const rof = projectsData.filter(
-        (project) => project.projectOverview === "rof"
-      );
-
-      const signatureglobal = projectsData.filter(
-        (project) => (project.type === "Deen Dayal Plots" || project.type === "Residential Plots") && project.builderName === "Signature Global"
-      );
-
-      const emaarIndia = projectsData.filter(
-        (project) => project.project_Status === "emaar"
-      );
-
-      const m3mIndia = projectsData.filter(
-        (project) => project.project_Status === "m3m"
-      );
-
-      const microtek = projectsData.filter(
-        (project) => project.project_Status === "microtek"
-      );
-
-     
-
-      const nh48 = projectsData.filter(
-        (project) =>
-          project.projectAddress.includes("Sector 15B, NH-48") ||
-          project.projectAddress.includes("Sector 15 (2), NH 48") ||
-          project.projectAddress.includes("NH-48")
-      );
-
-      const mgRoad = projectsData.filter(
-        (project) => project.projectAddress.includes("MG Road")
-      )
-
-      const gurugramProject =  projectsData.filter(
-        (project) => project.city === "Gurugram"
-      )
-
-      const underConstruction = projectsData.filter(
-        (project) => project.project_Status === "underconstruction"
-      )
-
-      const newLaunch = projectsData.filter(
-        (project) => project.project_Status === "newlunch" || project.project_Status === "newlaunch"
-      )
-
-
-      const dlfSco = projectsData.filter(
-        (project) => project.builderName === 'DLF Homes' &&  project.type ==='SCO Plots'
-      )
-      
-      setLuxuryProjects(LuxuryProjects);
-      setSpotlight(SpotlightPorp);
-      setTrendingProject(trendingProjects);
-      setUpcoming(upcomingProjects);
-      setFeaturedProject(featuredProjects);
-      setAffordable(affordable);
-      setCity(city);
-      setAllProjectData(res.data.data);
-      setResidencialProjects(residencialProjects);
-      setAllUpComingProject(allupcomingProject);
-      setBudgetHome(BudgetHomesGurugram);
-      setAllCommercialProject(commercialProject);
-      setAllScoPlots(scoPlots);
-      setBuilderIndependentFLoor(BuilderIndependentFloor);
-      setDeenDayalPlots(deenDayalPlots);
-      setSohnaRoad(sohnaRoad);
-      setGolfCourse(golfCourse);
-      setAllCommercialProjectAll(commercialProjectAll);
-      setTypeScoPlots(typeScoPlots);
-      setTypeAffordabele(typeAffordable)
-      setDelhiData(delhiData);
-      setNoidaData(noidaData);
-      setCentralPark(CentralParkProjects)
-      setGoaData(goaData);
-      setPanipat(panipat);
-      setFilteredProjects(filteredProjects);
-      setReadyTOMoveData(readyToMoveData);
-      setDlfProject(dlfProject);
-      setGoaCityProject(goaCityProject);
-      setDlfAllProjects(dlfAllProjects);
-      setVillasProject(villasProject);
-      setpanchkula(panchkula);
-      setKasauli(kasauli);
-      setKarnal(karnal);
-      setJalandhar(jalandhar);
-      setpossessionIn2026AndBeyond(possessionIn2026AndBeyond);
-      setorris(orris);
-      setbptp(bptp);
-      setJms(jms);
-      setSignaturebuilder(signaturebuilder);
-      setM3M(M3Mbuilder);
-      setExperion(ExperionBuilder);
-      setElan(ElanBuilder);
-      setBPTP(BPTPBuilder);
-      setAdani(AdaniBuilder);
-      setSmartWorld(smartWorldBuilder);
-      setTrevoc(trevocBuilder);
-      setIndiaBulls(indiaBullsBuilder);
-      setRof(rof);
-      setEmaarIndia(emaarIndia);
-      setM3mIndia(m3mIndia);
-      setMicrotek(microtek);
-      setPossessionin2024(possessionin2024);
-      setPossessionin2025(possessionin2025);
-      setPossessionin2026(possessionin2026);
-      setMumbaiProject(mumbaiProject);
-      setNh48(nh48);
-      setMgRoad(mgRoad);
-      setGurugramProject(gurugramProject);
-      setUnderConstruction(underConstruction);
-      setNewLaunch(newLaunch);
-      setAyodhya(ayodhya);
-      setSignatureGlobal(signatureglobal);
-      setDlfSco(dlfSco)
-    } catch (error) {
-      console.log(error || error.message);
-    }
-  }
-fetchAllProject();
-}, []);
-
-
-
   const handleUserLogin = async (userLogin) => {
     const { email, password } = userLogin;
     if (email && password) {
@@ -514,44 +147,6 @@ fetchAllProject();
     }
   };
 
-    // const fetchCareerData = async () => {
-    //   try {
-    //     const res = await axios.get("https://api.100acress.com/career/page/view");
-    //     console.log(res,'carrer');
-        
-    //     setCareerData(res.data.data);
-    //   } catch (error) {
-    //     console.log(error || error.message);
-    //   }
-    // };
-
-  // const fetchJobPostingData = async () => {
-  //   try {
-  //     const res = await axios.get(
-  //       "https://api.100acress.com/career/opening/ViewAll"
-  //     );
-  //     console.log(res,'carrer');
-      
-  //     setJobPostingData(res.data.data);
-  //   } catch (error) {
-  //     console.log(error || error.message);
-  //   }
-  // };
-
-useEffect(() => {
-  const buyFetchData = async () => {
-    try {
-      const res = await axios.get(
-        "https://api.100acress.com/property/buy/ViewAll"
-      );
-      setResalePropertydata(res.data.collectdata);
-    } catch (error) {
-      console.error("Error fetching resale property data:", error);
-    }
-  };
-  buyFetchData();
-},[]);
-
   const handleFilter = () => {
     const minPriceNumber = parseFloat(priceRange.min);
     const maxPriceNumber = parseFloat(priceRange.max);
@@ -571,13 +166,10 @@ useEffect(() => {
         setPriceRange,
         possessionDate,
         setPossessionDate,
-        trendingProject,
         LuxuryProjects,
-        spotlight,
         featuredProject,
         affordable,
         upcoming,
-        city,
         admin,
         centralpark,
         allProjectData,
@@ -589,7 +181,6 @@ useEffect(() => {
         BuilderIndependentFloor,
         deenDayalPlots,
         handleUserLogin,
-        // blogData,
         sohnaRoad,
         golfCourse,
         jobPostingData,

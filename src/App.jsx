@@ -214,7 +214,7 @@ function App() {
                 element={<UpComingProjects />}
               />
               <Route
-                path="/projects/commerial/"
+                path="/projects/commercial/"
                 element={<CommercialProject />}
               />
               <Route path="/sco/plots/" element={<ScoPlots />} />
@@ -270,13 +270,6 @@ function App() {
                 path="/property-in-gurugram/:location"
                 element={<GurugramPrimeLocation />}
               />
-              <Route path="/property-in-gurugram/nh-48" element={<Nh48 />} />
-
-              <Route
-                path="/property-in-gurugram/mg-road"
-                element={<MgRoad />}
-              />
-
               <Route path="*" element={<PageNotFound />} />
               <Route path="/contactmainpage" element={<ContactPage />} />
               <Route path="/searchdata/:key" element={<SearchData />} />

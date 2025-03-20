@@ -1,11 +1,18 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { useSelector } from "react-redux";
+import Api_Service from "../Redux/utils/Api_Service";
 
 const EmaarIndia = () => {
-  const { emaarIndia } = useContext(DataContext);
+  const {getProjectOnStatus} = Api_Service();
+  const emaarIndia = useSelector(store=> store?.projectStatus?.emaar);
+  let query = "emaar";
+  useEffect(()=>{
+    getProjectOnStatus(query,0);
+  })
+
   return (
     <div>
       <Helmet>

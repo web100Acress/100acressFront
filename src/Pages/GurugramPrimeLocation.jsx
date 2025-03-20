@@ -1,13 +1,69 @@
-import React, { useContext } from "react";
+import React, {  useEffect, useState } from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import { DataContext } from "../MyContext";
 import { Link, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { useSelector } from "react-redux";
+import Api_Service from "../Redux/utils/Api_Service";
 
 const GurugramPrimeLocation = () => {
-  const { allProjectData } = useContext(DataContext);
   const { location } = useParams();
- 
+  const [query, setQuery] = useState("");
+  const {getPrimeLocation} = Api_Service();
+
+  const SohnaRoad = useSelector(store => store?.primelocation?.sohnaroad);
+  const GolfCourseRoad = useSelector(store => store?.primelocation?.golfcourseroad);
+  const MgRoad = useSelector(store => store?.primelocation?.mgroad);
+  const NPRRoad = useSelector(store => store?.primelocation?.nprroad);
+  const DwarkaExpressway = useSelector(store => store?.primelocation?.dwarkaexpressway);
+  const NewGurgaon = useSelector(store => store?.primelocation?.newgurgaon);
+  const Sohna = useSelector(store => store?.primelocation?.sohna);
+  const SPRRoad = useSelector(store => store?.primelocation?.sprroad);
+  const NH48 = useSelector(store => store?.primelocation?.nh48);
+  const GolfCourseExtensionRoad = useSelector(store => store?.primelocation?.golfcourseextensionroad);
+
+  const PrimeLocationData = {
+    'sohna-road':SohnaRoad,
+    'golf-course':GolfCourseRoad,
+    'mg-road': MgRoad ,
+    'northern-peripheral-road' : NPRRoad ,
+    'dwarka-expressway' : DwarkaExpressway,
+    'new-gurgaon' : NewGurgaon,
+    'sohna' : Sohna,
+    'southern-peripheral-road' : SPRRoad,
+    'nh-48' : NH48,
+    'golf-course-extn-road' : GolfCourseExtensionRoad
+  }
+
+  const Primelocation = PrimeLocationData[location] || [];
+
+    useEffect(() => {
+      if (location) {
+        const PrimelocationQueries = {
+          'sohna-road': 'sohnaroad',
+          'golf-course': 'golfcourseroad',
+          'mg-road': 'mgroad',
+          'northern-peripheral-road': 'nprroad',
+          'dwarka-expressway': 'dwarkaexpressway',
+          'new-gurgaon' : 'newgurgaon',
+          'sohna': 'sohna',
+          'southern-peripheral-road' : 'sprroad',
+          'nh-48' : 'nh48',
+          'golf-course-extn-road' : 'golfcourseextensionroad',
+        };
+  
+        const queryValue = PrimelocationQueries[location.toLowerCase()];
+        if (queryValue) {
+          setQuery(queryValue);
+        }
+      }
+    }, [location, query]);
+  
+    useEffect(() => {
+      if (query) {
+        getPrimeLocation(query,0);
+      }
+    }, [ query,getPrimeLocation]);
+
   const stringWithSpaces = location.replace(/-/g, " ");
   const words = stringWithSpaces.toLowerCase().split(" ");
   const capitalizedWords = words.map(
@@ -16,21 +72,21 @@ const GurugramPrimeLocation = () => {
   const primel = capitalizedWords.join(" ");
   let filteredProjects;
 
-  if (primel === "sohna") {
-    filteredProjects = allProjectData.filter(
-      (project) => project.projectAddress === "Sohna"
-    );
-  } else {
-    filteredProjects = allProjectData.filter((project) =>
-      project.projectAddress.includes(primel)
-    );
-  }
+  // if (primel === "sohna") {
+  //   filteredProjects = allProjectData.filter(
+  //     (project) => project.projectAddress === "Sohna"
+  //   );
+  // } else {
+  //   filteredProjects = allProjectData.filter((project) =>
+  //     project.projectAddress.includes(primel)
+  //   );
+  // }
 
   let result = location
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
-   
+  
   return (
     <div>
       <Helmet>
@@ -68,7 +124,7 @@ const GurugramPrimeLocation = () => {
           dream property in Gurgaon today!
         </h2>
         <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {filteredProjects.map((item, index) => {
+          {Primelocation.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top" key={index}>

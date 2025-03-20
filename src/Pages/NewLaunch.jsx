@@ -1,13 +1,22 @@
-import React, { useContext , useState} from "react";
+import React, { useEffect, useState} from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
 import CommonProject from "../Utils/CommonProject";
 import ProjectSearching from "./ProjectSearching";
+import {  useSelector } from "react-redux";
+import Api_Service from "../Redux/utils/Api_Service";
 
 const NewLaunch = () => {
-  const { newLaunch } = useContext(DataContext);
+
+  let query = "newlaunch";
   const [filteredProjectsParent, setFilteredProjectsParent] = useState([]);
+  const {getAllProjects} = Api_Service();
+  const newLaunch = useSelector(store => store?.allsectiondata?.newlaunch);
+
+  useEffect(()=>{
+    getAllProjects(query,0);
+  },[])
+
   return (
     <div>
       {/* <NewLaunchSearch /> */}

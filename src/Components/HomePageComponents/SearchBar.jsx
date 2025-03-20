@@ -30,7 +30,7 @@ function SearchBar() {
         break;
 
       case "Commercial":
-        window.open(window.location.origin + "/projects/commerial/", '_blank',);
+        window.open(window.location.origin + "/projects/commercial/", '_blank',);
         break;
 
       case "Plots":

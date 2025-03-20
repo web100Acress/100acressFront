@@ -1,16 +1,24 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import "react-multi-carousel/lib/styles.css";
-import { DataContext } from "../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
-import { Skeleton } from 'antd';
+// import { Skeleton } from 'antd';
+import CustomSkeleton from "../Utils/CustomSkeleton";
+import { useSelector } from "react-redux";
+import Api_service from "../Redux/utils/Api_Service";
 
 
 const PossessionAfter2028 = () => {
-  const { possessionIn2026AndBeyond } = useContext(DataContext);
+  const possessionIn2026AndBeyond = useSelector(store => store?.allsectiondata?.possessionafter2026);
+  let query = "possesionafter2026";
+  const {getAllProjects} = Api_service();
+
+  useEffect(()=>{
+    getAllProjects(query);
+  },[])
     if (!possessionIn2026AndBeyond || possessionIn2026AndBeyond.length === 0) {
-      return <Skeleton />;
+      return <CustomSkeleton />;
     }
   return (
     <div style={{ overflowX: "hidden" }}>
@@ -62,7 +70,7 @@ const PossessionAfter2028 = () => {
           {possessionIn2026AndBeyond.map((item, index) => {
             const pUrl = item.project_url;
             return (
-              <Link to={`/${pUrl}/`} target="_top">
+              <Link key={index} to={`/${pUrl}/`} target="_top">
                 <article
                   key={index}
                   className="mb-4 transition hover:scale-105 bg-white overflow-hidden rounded-xl  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"

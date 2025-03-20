@@ -1,17 +1,14 @@
 import React, { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { DataContext } from '../../MyContext';
 import { Skeleton } from 'antd';
 import AOS from 'aos';
-import { ForwardIcon, BackwardIcon, SpotlightLocationIcon, SpotlightPriceIcon, SpotlightHomeIcon } from "../../Assets/icons";
+import { ForwardIcon, BackwardIcon,SpotlightPriceIcon, SpotlightHomeIcon } from "../../Assets/icons";
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { sortByDesiredOrder } from '../../Utils/ProjectSorting';
+import { Recommendedreordered } from '../datafeed/Desiredorder';
+import Api_service from '../../Redux/utils/Api_Service';
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 70vh;
-`;
 
 const GalleryWrapper = styled.div`
   display: grid;
@@ -118,36 +115,30 @@ const InfoContainer = styled.div`
   }
 `;
 
-const Button = styled.button`
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 20px 0;
-  
-  &:hover {
-    background-color: #0056b3;
-  }
 
-  &:disabled {
-    background-color: #d6d6d6;
-    cursor: not-allowed;
-  }
-`;
 
 const ImageGallery = React.memo(() => {
-  const { spotlight } = useContext(DataContext);
+
+  const {getSpotlight} = Api_service();
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [columnsPerPage, setColumnsPerPage] = useState(4);
+  const hotproject = useSelector(store => store?.project?.spotlight);
 
 
   useEffect(() => {
-    // Initialize AOS for animations
-    AOS.init();
+    getSpotlight();
+  }, []);
 
-    // Set columns per page based on window width
+  const spotlight = sortByDesiredOrder(
+    hotproject.filter((project) => project != null), 
+    Recommendedreordered,
+    "projectName"
+  );
+  
+  
+
+  useEffect(() => {
+    AOS.init();
     const updateColumnsPerPage = () => {
       if (window.innerWidth <= 600) {
         setColumnsPerPage(1); // Phone
@@ -160,8 +151,6 @@ const ImageGallery = React.memo(() => {
 
     updateColumnsPerPage();
     window.addEventListener('resize', updateColumnsPerPage);
-
-    // Cleanup on unmount
     return () => window.removeEventListener('resize', updateColumnsPerPage);
   }, []);
 
@@ -213,11 +202,11 @@ const ImageGallery = React.memo(() => {
         <GalleryWrapper>
           {visibleImages.map((image, index) => (
             // let pUrl = `${image.project_url}`;
-            <Link to={`/${image.project_url}/`} target="blank">
+            <Link key={index} to={`/${image.project_url}/`} target="blank">
 
               <ImageWrapper key={index}>
                 <Image
-                  src={image.frontImage.url}
+                  src={image?.thumbnailImage?.url}
                   alt={`image-${index}`}
                   className="relative w-full h-full object-contain rounded-lg animate-fadeInLeft"
                 />

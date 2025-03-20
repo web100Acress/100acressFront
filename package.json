@@ -11,6 +11,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@glidejs/glide": "^3.6.0",
     "@material-tailwind/react": "^2.1.9",
+    "@reduxjs/toolkit": "^2.6.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -46,12 +47,14 @@
     "react-modal": "^3.16.1",
     "react-multi-carousel": "^2.8.4",
     "react-quill": "^2.0.0",
+    "react-redux": "^9.2.0",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.22.3",
     "react-slick": "^0.29.0",
     "react-spinners": "^0.13.8",
     "react-toastify": "^9.1.3",
     "recharts": "^2.12.7",
+    "redux": "^5.0.1",
     "serve": "^14.2.3",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.0.7",
@@ -68,7 +71,7 @@
     "build": "vite build",
     "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "serve": "vite preview",
-    "host":"vite --host"
+    "host": "vite --host"
   },
   "eslintConfig": {
     "extends": [

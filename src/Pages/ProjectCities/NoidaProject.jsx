@@ -1,13 +1,22 @@
-import React, { useContext } from "react";
+import React, {useEffect } from "react";
 import Footer from "../../Components/Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../../Assets/icons";
+import { useSelector } from "react-redux";
+import Api_service from "../../Redux/utils/Api_Service";
 
 const NoidaProject = () => {
 
-  const { noidaData } = useContext(DataContext);
+  const {getProjectbyState} = Api_service();
+  const noidaData = useSelector(store => store?.stateproject?.noida);
+  let city = "Noida";
+      useEffect(()=>{
+        if(noidaData.length === 0){
+            getProjectbyState(city,0)
+        }
+      },[]);
+
 
   const handleShare = (project) => {
     if (navigator.share) {

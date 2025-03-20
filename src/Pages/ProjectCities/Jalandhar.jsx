@@ -1,11 +1,22 @@
-import React, { useContext } from "react";
+import React, {useEffect } from "react";
 import Footer from "../../Components/Actual_Components/Footer";
-import { DataContext } from "../../MyContext";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { LocationRedIcon,RupeeIcon,PropertyIcon,ShareFrameIcon } from "../../Assets/icons";
+import { useSelector } from "react-redux";
+import Api_service from "../../Redux/utils/Api_Service";
+
 const Jalandhar = () => {
-  const { jalandhar } = useContext(DataContext);
+  let city = "Jalandhar";
+  const {getProjectbyState} = Api_service();
+  const jalandhar = useSelector(store => store?.stateproject?.jalandhar);
+
+  useEffect(() => {
+    if (jalandhar.length === 0) {
+      getProjectbyState(city, 0)
+    }
+  }, []);
+  
   const handleShare = (project) => {
     if (navigator.share) {
         navigator
