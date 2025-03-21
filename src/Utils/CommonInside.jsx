@@ -57,7 +57,7 @@ const CommonInside = ({ title, Actualdata, HelmetTitle, metaContent, linkhref, d
             {
                 response.length === 0 ? <CustomSkeleton/>: 
             
-            <section className="flex pt-2 flex-col items-center mt-12">
+            <section className="flex pt-2 flex-col items-center mt-auto">
                 {title && <h1 className="mb-3 pt-4 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
                     {title}
                 </h1>}
