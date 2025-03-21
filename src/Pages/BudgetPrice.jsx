@@ -1,11 +1,34 @@
-import React, { useContext } from "react";
+import React, {useEffect, useState } from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
-import CommonProject from "../Utils/CommonProject";
 import NoPropertiesMessage from "../Components/NoPropertiesMessage ";
-const BudgetPrice = () => {
-  const { filteredProjects } = useContext(DataContext);
+import { useSelector } from "react-redux";
+import Api_Service from "../Redux/utils/Api_Service";
+import CommonInside from "../Utils/CommonInside";
+
+const BudgetPrice = () => {  const {getProjectBasedOnminPrice,getProjectBasedOnmaxPrice} = Api_Service(); 
+  const [commonProjects, setCommonProjects] = useState([]);
+  const minprice = useSelector(store => store?.PriceBased?.minprice);
+  const maxprice = useSelector(store => store?.PriceBased?.maxprice);
+  const maxpriceproject = useSelector(store => store?.PriceBased?.maxpriceproject);
+  const minpriceproject = useSelector(store => store?.PriceBased?.minpriceproject);
+
+  useEffect(()=>{
+    getProjectBasedOnmaxPrice(maxprice,0);
+    getProjectBasedOnminPrice(minprice,0);
+  },[minprice,maxprice]);
+
+  useEffect(() => {
+    if (maxpriceproject && minpriceproject) {
+      const common = maxpriceproject.filter(maxProject =>
+        minpriceproject.some(minProject => minProject._id === maxProject._id)
+      );
+      setCommonProjects(common);
+    }
+  }, [maxpriceproject, minpriceproject]);
+
+
+
   return (
     <div style={{ overflowX: "hidden" }} className="mt-10">
       <Helmet>
@@ -24,13 +47,14 @@ const BudgetPrice = () => {
       <div>
 
       </div>
-      {filteredProjects.length === 0 ? 
+      {commonProjects.length === 0 ? 
       <div className="my-10">
         <NoPropertiesMessage/>      
       </div>
       :
-      <CommonProject 
-        data={filteredProjects}
+      <CommonInside 
+      Actualdata={commonProjects}
+      title={`Projects From Price-Range  ${minprice ? `Between ${minprice} Cr` : 'Upto'} to ${maxprice} Cr`}
       />
     }
       <Footer />

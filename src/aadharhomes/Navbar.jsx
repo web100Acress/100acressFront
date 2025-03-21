@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect} from "react";
 import {
   Box,
   Flex,
@@ -19,11 +19,12 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 // import logoImage from "../Images/100acress.png";
 import axios from "axios";
 import styled from "styled-components";
-import { toast, ToastContainer } from "react-toastify";
-import { DataContext } from "../MyContext";
+import {  ToastContainer } from "react-toastify";
 import { FillIcon, PeopleIcon } from "../Assets/icons"; 
 import ScrollSearch from "./ScollSearch";
 import { message } from "antd";
+import { useDispatch } from "react-redux";
+import { maxprice, minprice } from "../Redux/slice/PriceBasedSlice";
 const SpacerComponent = () => <Box width="60px" />;
 
 const MenuListContainer = ({ isOpen }) => {
@@ -121,8 +122,8 @@ const MenuListContainer = ({ isOpen }) => {
 };
 
 export default function Navbar() {
-  // Filter Data budget wise
-  const {  setPriceRange } = useContext(DataContext);
+
+  const dispatch = useDispatch();
   const [colorChange, setColorchange] = useState(false);
 	const changeNavbarColor = () => {
 		if (window.scrollY >= 150) {
@@ -134,7 +135,9 @@ export default function Navbar() {
 	window.addEventListener("scroll", changeNavbarColor);
 
   const handlePriceClick = (min, max) => {
-    setPriceRange({ min, max });
+    // setPriceRange({ min, max });
+    dispatch(minprice(min));
+    dispatch(maxprice(max))
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();

@@ -14,6 +14,7 @@ import { sortByDesiredOrder } from "../../Utils/ProjectSorting";
 import { Affordable_Desired_Order, Trending_Desired_Order } from "../../Pages/datafeed/Desiredorder";
 import { emaar } from "../slice/ProjectstatusSlice";
 import { useCallback } from "react";
+import { maxpriceproject,minpriceproject } from "../slice/PriceBasedSlice";
 
 const Api_service = () => {
   const dispatch = useDispatch();
@@ -349,6 +350,29 @@ const Api_service = () => {
     }
   },[dispatch])
 
+  const getProjectBasedOnminPrice = useCallback(async(query:any,limit:any) =>{
+    try{
+      const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?minPrice=${query}&limit=${limit}`);
+      const minpriceprojectresponse = response.data.data;
+      dispatch(minpriceproject(minpriceprojectresponse));
+
+    }catch(error){
+      console.error("Error fetching project data based on price:", error);
+
+    }
+  },[dispatch]);
+
+  const getProjectBasedOnmaxPrice = useCallback(async(query:any,limit:any) =>{
+    try{
+      const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?maxPrice=${query}&limit=${limit}`);
+      const maxpriceprojectresponse = response.data.data;
+      dispatch(maxpriceproject(maxpriceprojectresponse));
+    }catch(error){
+      console.error("Error fetching project data based on price:", error);
+
+    }
+  },[dispatch]);
+
   return {
     getTrending,
     getSpotlight,
@@ -369,6 +393,8 @@ const Api_service = () => {
     getProjectbyBuilder,
     getPrimeLocation,
     getPossessionByYear,
+    getProjectBasedOnminPrice,
+    getProjectBasedOnmaxPrice
   };
 };
 
