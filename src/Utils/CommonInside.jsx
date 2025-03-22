@@ -9,7 +9,7 @@ import CustomSkeleton from "../Utils/CustomSkeleton";
 
 const CommonInside = ({ title, Actualdata, HelmetTitle, metaContent, linkhref, details }) => {
 
-
+console.log(title,"for")
     const handleShare = (project) => {
         if (navigator.share) {
             navigator
