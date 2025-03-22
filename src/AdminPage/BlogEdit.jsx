@@ -31,7 +31,7 @@ const BlogEdit = () => {
       formData.append("blog_Image", viewDetails.frontImage.file);
       
       const response = await axios.put(
-        `https://api.100acress.com/blog/update/${id}`,
+        `/api/blog/update/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -55,7 +55,7 @@ const BlogEdit = () => {
   //     formData.append("frontImage", values.frontImage.file);
 
   //     const response = await axios.post(
-  //       `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
+  //       `/api/postPerson/propertyoneUpdate/${id}`,
   //       formData,
   //       {
   //         headers: {
@@ -107,7 +107,7 @@ const BlogEdit = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://api.100acress.com/blog/edit/${id}`
+          `/api/blog/edit/${id}`
         );
         setViewDetails(res.data.data);
       } catch (error) {

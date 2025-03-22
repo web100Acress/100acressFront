@@ -32,17 +32,17 @@ const SearchData = () => {
       try {
         if (key3 === "Buy") {
           const res = await axios.get(
-            `https://api.100acress.com/buyproperty/search/${key}`
+            `/api/buyproperty/search/${key}`
           );
           setBuySearchData(res.data.data);
         } else if (key3 === "Rent") {
           const res = await axios.get(
-            `https://api.100acress.com/rentproperty/search/${key}`
+            `/api/rentproperty/search/${key}`
           );
           setRentSearchData(res.data.data);
         } else {
           const res = await axios.get(
-            `https://api.100acress.com/property/search/${key}`
+            `/api/property/search/${key}`
           );
           setSearchData(res.data.searchdata);
         }

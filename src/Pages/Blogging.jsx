@@ -153,7 +153,7 @@ const Blogging = () => {
   useEffect(() => { 
   const fetchBlogData = async () => {
     try {
-      const res = await axios.get("https://api.100acress.com/blog/view");
+      const res = await axios.get("/api/blog/view");
       setBlogData(res.data.data);
     } catch (error) {
       console.log(error || error.message);
