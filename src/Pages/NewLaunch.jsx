@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect} from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import { Helmet } from "react-helmet";
 import CommonProject from "../Utils/CommonProject";
@@ -9,7 +9,6 @@ import Api_Service from "../Redux/utils/Api_Service";
 const NewLaunch = () => {
 
   let query = "newlaunch";
-  const [filteredProjectsParent, setFilteredProjectsParent] = useState([]);
   const {getAllProjects} = Api_Service();
   const newLaunch = useSelector(store => store?.allsectiondata?.newlaunch);
 
@@ -35,7 +34,7 @@ const NewLaunch = () => {
           and a vibrant lifestyle.
         </h2>
       </div>
-        <ProjectSearching setFilteredProjectsParent={setFilteredProjectsParent}/>
+        <ProjectSearching allSearchData={newLaunch}/>
       </div>
       <Helmet>
         <title>
@@ -46,11 +45,10 @@ const NewLaunch = () => {
           content="Real Estate Properties in New Panipat- Get Details for Residential &amp; Commercial Properties"
         />
       </Helmet>
-        {filteredProjectsParent.length === 0 &&
         <CommonProject
         data={newLaunch}
         animation="fade-up"
-        />}
+        />
       <Footer />
     </div>
   );

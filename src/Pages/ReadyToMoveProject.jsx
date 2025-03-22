@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import Api_Service from "../Redux/utils/Api_Service";
 
 const ReadyToMoveProject = () => {
-  const [filteredProjectsParent, setFilteredProjectsParent] = useState([]);
   let query = "readytomove";
   const {getAllProjects} = Api_Service();
   const readyToMoveData = useSelector(store => store?.allsectiondata?.readytomove);
@@ -32,7 +31,7 @@ const ReadyToMoveProject = () => {
           or rental income.
         </h2>
       </div>
-      <ProjectSearching setFilteredProjectsParent={setFilteredProjectsParent}/>
+      <ProjectSearching allSearchData={readyToMoveData}/>
       <Helmet>
         <meta
           name="description"
@@ -58,12 +57,10 @@ const ReadyToMoveProject = () => {
           href="https://www.100acress.com/projects-in-gurugram/ready-to-move/property/"
         />
       </Helmet>
-          {filteredProjectsParent.length === 0 &&
           <CommonProject
           data={readyToMoveData}
           animation="fade-up"
-          />}
-
+          />
       <Footer />
     </div>
   );
