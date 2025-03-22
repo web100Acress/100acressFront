@@ -30,7 +30,7 @@ const BudgetPrice = () => {  const {getProjectBasedOnminPrice,getProjectBasedOnm
 
 
   return (
-    <div style={{ overflowX: "hidden" }} className="mt-10">
+    <div style={{ overflowX: "hidden" }}>
       <Helmet>
         <meta
           name="description"

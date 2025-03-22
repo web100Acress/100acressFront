@@ -42,13 +42,12 @@ const UnderConstruction = () => {
         />
       </Helmet>
       <div className="mt-auto">
-        <ProjectSearching setFilteredProjectsParent={setFilteredProjectsParent}/>
+        <ProjectSearching allSearchData={underConstruction}/>
       </div>
-        {filteredProjectsParent.length === 0 &&
         <CommonProject
         data={underConstruction}
         animation="fade-up"
-        />}
+        />
       <Footer />
     </div>
   );

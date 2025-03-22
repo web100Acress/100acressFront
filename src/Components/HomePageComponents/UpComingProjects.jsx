@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react";
+import React, {  useEffect, } from "react";
 import Footer from "../Actual_Components/Footer";
 import CommonProject from "../../Utils/CommonProject";
 import { Helmet } from "react-helmet";
@@ -8,7 +8,6 @@ import Api_Service from "../../Redux/utils/Api_Service";
 const UpComingProjects = () => {
 
   let query = "allupcomingproject";
-  const [filteredProjectsParent,setFilteredProjectsParent] = useState([]);
   const {getAllProjects} = Api_Service();
   const allupcomingProject = useSelector(store => store?.allsectiondata?.allupcomingproject);
 
@@ -45,12 +44,11 @@ const UpComingProjects = () => {
           and a vibrant lifestyle.
         </h2>
       </div>
-        <ProjectSearching setFilteredProjectsParent={setFilteredProjectsParent}/>
-        {filteredProjectsParent.length === 0 &&
+        <ProjectSearching allUpcomingData={allupcomingProject}/>
         <CommonProject
         data={allupcomingProject}
         animation="fade-up"
-        />}
+        />
       <Footer />
     </div>
   );

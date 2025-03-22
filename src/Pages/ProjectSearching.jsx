@@ -1,8 +1,7 @@
-import React, { useContext, useState } from "react";
-import { DataContext } from "../MyContext";
+import React, {useState } from "react";
 import CommonProject from "../Utils/CommonProject";
-const ProjectSearching = ({setFilteredProjectsParent}) => {
-  const { allProjectData } = useContext(DataContext);
+
+const ProjectSearching = ({allSearchData}) => {
 
   const [project, setProject] = useState("");
   const [location, setLocation] = useState("");
@@ -21,7 +20,7 @@ const ProjectSearching = ({setFilteredProjectsParent}) => {
   
 
   const handleSearch = () => {
-    const filtered = allProjectData.filter((item) => {
+    const filtered = allSearchData.filter((item) => {
       return (
         (project === "" ||
           item.projectName.toLowerCase().includes(project.toLowerCase())) &&
@@ -36,7 +35,6 @@ const ProjectSearching = ({setFilteredProjectsParent}) => {
     });
 
     setFilteredProjects(filtered);
-    setFilteredProjectsParent(filtered);
   };
 
   return (
