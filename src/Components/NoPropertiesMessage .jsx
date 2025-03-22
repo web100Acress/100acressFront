@@ -165,7 +165,7 @@ function NoPropertiesMessage () {
         </form>
 
       </Modal>
-        <div className="max-w-lg mx-auto bg-white shadow-lg rounded">
+        <div className="max-w-lg mx-auto bg-white shadow-lg rounded mt-20">
         <div className="p-6">
             <div className="flex flex-col items-center text-center space-y-4">
             <MessageSquare className="w-12 h-12 text-primaryRed" />
