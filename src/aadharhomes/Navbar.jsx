@@ -650,7 +650,7 @@ export default function Navbar() {
                       </button>
                     </Link>
                     <div
-                      className={`absolute  bg-white py-2 text-gray-800 w-90  rounded-md shadow-lg z-10 ${
+                      className={`absolute mt-3 bg-white py-2 text-gray-800 w-90  rounded-md shadow-lg z-10 ${
                         isMenuOpen2 ? "block" : "hidden"
                       }`}
                     >
@@ -722,19 +722,19 @@ export default function Navbar() {
                       
                           <Link
                             to={`/project-in-kasauli/`}
-                            className="block text-sm px-4 py-1   hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Kasauli
                           </Link>
                           <Link
                             to={`/projects-in-karnal/`}
-                            className="block text-sm px-4 py-1   hover:text-red-600"
+                            className="block text-sm px-4 py-1 hover:text-red-600"
                           >
                             Projects in Karnal
                           </Link>
                           <Link
                             to={`/projects-in-jalandhar/`}
-                            className="block text-sm px-4    hover:text-red-600"
+                            className="block text-sm px-4   hover:text-red-600"
                           >
                             Projects in Jalandhar 
                           </Link>
