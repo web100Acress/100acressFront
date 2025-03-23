@@ -16,9 +16,6 @@ const ProjectSearching = ({searchdata,sendDatatoparent}) => {
     setMaxPrice(max);
   };
   
-
-  console.log(searchdata,"data")
-
   const handleSearch = () => {
     const filtered = searchdata.filter((item) => {
       return (

@@ -281,7 +281,7 @@ export default function Navbar() {
                     onMouseLeave={handleLeave1}
                   >
                     <Link to="/buy-properties/best-resale-property-in-gurugram/">
-                      <button className=" text-red-600 pt-1  text-sm  uppercase font-bold text-center">
+                      <button className=" text-red-600 pt-1  text-sm  uppercase font-bold text-center tracking-[0.1em]">
                         Resale
                       </button>
                     </Link>
@@ -467,7 +467,7 @@ export default function Navbar() {
                     onMouseLeave={handleLeave}
                   >
                     <Link to="/rental-properties/best-rental-property-in-gurugram/">
-                      <button className="text-red-600 pt-1 text-sm font-bold uppercase ">
+                      <button className="text-red-600 pt-1 text-sm font-bold uppercase tracking-[0.1em]">
                         Rental
                       </button>
                     </Link>
@@ -648,7 +648,7 @@ export default function Navbar() {
                     <Link
                     // to={"/projects-in-gurugram/"}
                     >
-                      <button className="text-red-600 uppercase font-bold pt-1  text-sm ">
+                      <button className="text-red-600 uppercase font-bold pt-1  text-sm tracking-[0.1em]">
                         Projects
                       </button>
                     </Link>
