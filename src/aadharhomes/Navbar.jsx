@@ -653,7 +653,7 @@ export default function Navbar() {
                       </button>
                     </Link>
                     <div
-                      className={`absolute mt-3 bg-white py-2 text-gray-800 w-90  rounded-md shadow-lg z-10 ${
+                      className={`absolute bg-white py-2 text-gray-800 w-90  rounded-md shadow-lg z-10 ${
                         isMenuOpen2 ? "block" : "hidden"
                       }`}
                     >
