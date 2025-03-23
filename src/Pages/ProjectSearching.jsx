@@ -1,9 +1,6 @@
-import React, { useContext, useState } from "react";
-import { DataContext } from "../MyContext";
-import CommonProject from "../Utils/CommonProject";
-const ProjectSearching = ({setFilteredProjectsParent}) => {
-  const { allProjectData } = useContext(DataContext);
-
+import React, {  useEffect, useState } from "react";
+const ProjectSearching = ({searchdata,sendDatatoparent}) => {
+  
   const [project, setProject] = useState("");
   const [location, setLocation] = useState("");
   const [projectType, setProjectType] = useState("");
@@ -20,8 +17,10 @@ const ProjectSearching = ({setFilteredProjectsParent}) => {
   };
   
 
+  console.log(searchdata,"data")
+
   const handleSearch = () => {
-    const filtered = allProjectData.filter((item) => {
+    const filtered = searchdata.filter((item) => {
       return (
         (project === "" ||
           item.projectName.toLowerCase().includes(project.toLowerCase())) &&
@@ -34,10 +33,13 @@ const ProjectSearching = ({setFilteredProjectsParent}) => {
         item.city.toLowerCase() === "gurugram"
       );
     });
-
+    
     setFilteredProjects(filtered);
-    setFilteredProjectsParent(filtered);
   };
+  
+  useEffect(()=>{
+    sendDatatoparent(filteredProjects)
+  },[filteredProjects])
 
   return (
     <>
@@ -139,13 +141,6 @@ const ProjectSearching = ({setFilteredProjectsParent}) => {
           </div>
         </div>
       </div>
-      {
-      filteredProjects.length !== 0 &&
-      <CommonProject
-      data={filteredProjects}
-      />
-      }
-
     </>
   );
 };

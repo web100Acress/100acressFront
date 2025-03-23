@@ -9,17 +9,34 @@ import Api_Service from "../Redux/utils/Api_Service";
 const NewLaunch = () => {
 
   let query = "newlaunch";
-  const [filteredProjectsParent, setFilteredProjectsParent] = useState([]);
   const {getAllProjects} = Api_Service();
   const newLaunch = useSelector(store => store?.allsectiondata?.newlaunch);
+  const [filtereddata,setFilteredData] = useState([]);
+  const [datafromsearch,setDatafromsearch] = useState({});
+  function handleDatafromSearch(data){
+    setFilteredData(data);
+  };
 
   useEffect(()=>{
     getAllProjects(query,0);
-  },[])
+  },[]);
+
+  useEffect(()=>{
+    setDatafromsearch({ newLaunch });
+  },[newLaunch])
 
   return (
     <div>
       {/* <NewLaunchSearch /> */}
+      <Helmet>
+        <title>
+          Projects in New Launch - Flats, Villas, House in gurugram.
+        </title>
+        <meta
+          name="description"
+          content="Real Estate Properties in New Panipat- Get Details for Residential &amp; Commercial Properties"
+        />
+      </Helmet>
       <div className="mt-auto">
       <div className="max-w-screen pt-2 sm:pt-2 md:pt-2" target="_top">
         <h1 className=" p-1 text-center text-2xl mt-16 sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold ">
@@ -35,22 +52,13 @@ const NewLaunch = () => {
           and a vibrant lifestyle.
         </h2>
       </div>
-        <ProjectSearching setFilteredProjectsParent={setFilteredProjectsParent}/>
-      </div>
-      <Helmet>
-        <title>
-          Projects in New Launch - Flats, Villas, House in gurugram.
-        </title>
-        <meta
-          name="description"
-          content="Real Estate Properties in New Panipat- Get Details for Residential &amp; Commercial Properties"
-        />
-      </Helmet>
-        {filteredProjectsParent.length === 0 &&
+        <ProjectSearching searchdata={newLaunch} sendDatatoparent={handleDatafromSearch}/>
+ 
         <CommonProject
-        data={newLaunch}
+        data={filtereddata.length === 0 ? datafromsearch?.newLaunch : filtereddata}
         animation="fade-up"
-        />}
+        />
+        </div>
       <Footer />
     </div>
   );
