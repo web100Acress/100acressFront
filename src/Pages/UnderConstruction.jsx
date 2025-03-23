@@ -9,12 +9,21 @@ import Api_Service from "../Redux/utils/Api_Service";
 const UnderConstruction = () => {
   let query = "underconstruction";
   const {getAllProjects} = Api_Service();
-  const [filteredProjectsParent, setFilteredProjectsParent] = useState([]);
   const underConstruction = useSelector(store => store?.allsectiondata?.underconstruction);
+    const [filtereddata,setFilteredData] = useState([]);
+    const [datafromsearch,setDatafromsearch] = useState({});
+    function handleDatafromSearch(data){
+      setFilteredData(data);
+    };
 
   useEffect(()=>{
       getAllProjects(query,0);
-    },[])
+    },[]);
+
+
+      useEffect(()=>{
+        setDatafromsearch({ underConstruction });
+      },[underConstruction])
 
   return (
     <div>
@@ -42,13 +51,12 @@ const UnderConstruction = () => {
         />
       </Helmet>
       <div className="mt-auto">
-        <ProjectSearching setFilteredProjectsParent={setFilteredProjectsParent}/>
+        <ProjectSearching searchdata={underConstruction} sendDatatoparent={handleDatafromSearch}/>
       </div>
-        {filteredProjectsParent.length === 0 &&
         <CommonProject
-        data={underConstruction}
+        data={filtereddata.length === 0 ? datafromsearch?.underConstruction : filtereddata}
         animation="fade-up"
-        />}
+        />
       <Footer />
     </div>
   );

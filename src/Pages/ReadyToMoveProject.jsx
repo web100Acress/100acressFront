@@ -8,14 +8,22 @@ import { useSelector } from "react-redux";
 import Api_Service from "../Redux/utils/Api_Service";
 
 const ReadyToMoveProject = () => {
-  const [filteredProjectsParent, setFilteredProjectsParent] = useState([]);
   let query = "readytomove";
   const {getAllProjects} = Api_Service();
   const readyToMoveData = useSelector(store => store?.allsectiondata?.readytomove);
+  const [filtereddata,setFilteredData] = useState([]);
+  const [datafromsearch,setDatafromsearch] = useState({});
+  function handleDatafromSearch(data){
+    setFilteredData(data);
+  };
 
   useEffect(()=>{
     getAllProjects(query,0);
-  },[])
+  },[]);
+
+  useEffect(()=>{
+    setDatafromsearch({ readyToMoveData });
+  },[readyToMoveData])
   return (
     <div style={{ overflowX: "hidden" }} className="mt-auto">
             <div className="max-w-screen pt-2 sm:pt-2 md:pt-2" target="_top">
@@ -32,7 +40,6 @@ const ReadyToMoveProject = () => {
           or rental income.
         </h2>
       </div>
-      <ProjectSearching setFilteredProjectsParent={setFilteredProjectsParent}/>
       <Helmet>
         <meta
           name="description"
@@ -58,12 +65,11 @@ const ReadyToMoveProject = () => {
           href="https://www.100acress.com/projects-in-gurugram/ready-to-move/property/"
         />
       </Helmet>
-          {filteredProjectsParent.length === 0 &&
+      <ProjectSearching searchdata={readyToMoveData} sendDatatoparent={handleDatafromSearch}/>
           <CommonProject
-          data={readyToMoveData}
+          data={filtereddata.length === 0 ? datafromsearch?.readyToMoveData : filtereddata}
           animation="fade-up"
-          />}
-
+          />
       <Footer />
     </div>
   );
