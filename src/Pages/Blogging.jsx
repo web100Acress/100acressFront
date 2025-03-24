@@ -181,29 +181,29 @@ const Blogging = () => {
       </div>
 
       <div className="w-full px-4 sm:px-10">
-        <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6">
+        <div className="w-full grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-6">
           {blogData.slice(0, 6).map((item, index) => {
             const blogTitle = item.blog_Title;
             return (
               <article
                 key={index}
-                className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md flex flex-col border-[1px] items-center gap-2 md:flex-row lg:gap-4 rounded-lg overflow-hidden"
+                className="transition duration-300 ease-in-out transform shadow-lg hover:scale-105 hover:shadow-md border-[1px] items-center gap-2 md:flex-row lg:gap-4 rounded-lg overflow-hidden"
               >
                 {/* Circular Image */}
-                <span className="relative block h-24 w-24 lg:h-32 lg:w-32 overflow-hidden rounded-full flex-shrink-0">
+                <span className="h-24 w-24 lg:h-32 lg:w-32 overflow-hidden flex-shrink-0">
                   {item.blog_Image && (
                     <img
                       src={item.blog_Image.url}
                       loading="lazy"
                       alt="blogImage"
-                      className="h-full w-full p-2 object-cover rounded-full"
+                      className="h-60 w-full p-3 object-cover rounded-3xl"
                     />
                   )}
                 </span>
 
                 {/* Blog Content */}
                 <div className="flex flex-col justify-center lg:p-2 md:p-0 p-0 w-full">
-                  <p className="text-black mb-2">
+                  <p className="text-black mb-2 px-3 font-semibold border-b-1">
                     <span className="transition text-center hover:text-red-600 text-sm sm:text-base md:text-sm lg:text-sm xl:text-lg duration-500 ease-in-out">
                       {blogTitle}
                     </span>
@@ -216,7 +216,7 @@ const Blogging = () => {
                         .replace(/\s+/g, "-")
                         .toLowerCase()}/${item._id}`}
                     >
-                      <button className="bg-red-600 text-white mr-2 px-3 py-1 rounded-md mt-1">
+                      <button className="bg-red-600 text-white mr-2 px-4 py-1 my-2 rounded-md mt-1">
                         Read More
                       </button>
                     </Link>
@@ -236,54 +236,6 @@ const Blogging = () => {
         />
       </div>  */}
       <Free />
-      <div className="w-full px-4 sm:px-10">
-        <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6">
-          {blogData.slice(6).map((item, index) => {
-            const blogTitle = item.blog_Title;
-            return (
-              <article
-                key={index}
-                className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md flex flex-col border-[1px] items-center gap-2 md:flex-row lg:gap-4 rounded-lg overflow-hidden"
-              >
-                {/* Circular Image */}
-                <span className="relative block h-24 w-24 lg:h-32 lg:w-32 overflow-hidden rounded-full flex-shrink-0">
-                  {item.blog_Image && (
-                    <img
-                      src={item.blog_Image.url}
-                      loading="lazy"
-                      alt="blogImage"
-                      className="h-full w-full p-2 object-cover rounded-full"
-                    />
-                  )}
-                </span>
-
-                {/* Blog Content */}
-                <div className="flex flex-col justify-center lg:p-2 md:p-0 p-0 w-full">
-                  <p className="text-black mb-2">
-                    <span className="transition text-center hover:text-red-600 text-sm sm:text-base md:text-sm lg:text-sm xl:text-lg duration-500 ease-in-out">
-                      {blogTitle}
-                    </span>
-                  </p>
-
-                  {/* "Read More" Button after the description */}
-                  <div className="flex justify-end">
-                    <Link
-                      to={`/blog/${blogTitle
-                        .replace(/\s+/g, "-")
-                        .toLowerCase()}/${item._id}`}
-                    >
-                      <button className="bg-red-600 text-white mr-2 px-3 py-1 rounded-md mt-1">
-                        Read Moredf
-                      </button>
-                    </Link>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </div>
-
       <Footer />
     </>
   );
