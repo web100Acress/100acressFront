@@ -291,7 +291,6 @@ const Api_service = () => {
     try {
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?builderName=${query}&limit=${limit}`);
       const BuilderbyQuery = response.data.data;
-
       switch (query) {
         case 'Signature Global':
           dispatch(signatureglobal(BuilderbyQuery));
@@ -329,6 +328,7 @@ const Api_service = () => {
         default:
           console.warn('Unknown builder:', query);
       }
+      return BuilderbyQuery;
     } catch (error) {
       console.error("Error fetching project data:", error);
     }

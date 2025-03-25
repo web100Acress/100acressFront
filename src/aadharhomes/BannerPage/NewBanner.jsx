@@ -2,7 +2,7 @@ import { Button, message } from 'antd';
 import axios from 'axios';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { format, isValid, parseISO } from "date-fns";
+import { constructNow, format, isValid, parseISO } from "date-fns";
 import styled from "styled-components";
 import { Helmet } from 'react-helmet';
 import {
@@ -23,7 +23,7 @@ import {
 import { DataContext } from '../../MyContext';
 import Slider from "react-slick";
 import Dynamicsvg from './Dynamicsvg';
-
+import Api_Service from '../../Redux/utils/Api_Service';
 const NewBanner = () => {
   const { pUrl } = useParams();
   const [projectViewDetails, setProjectViewDetails] = useState([]);
@@ -46,7 +46,25 @@ const NewBanner = () => {
   const [PopUpresponseMessage, setPopUpResponseMessage] = useState("");
   const [isModalOpenGallery, setIsModalOpenGallery] = useState(false);
   const [modalImageGallery, setModalImageGallery] = useState(null);
+  const {getProjectbyBuilder} = Api_Service();
+  const [builderProject, setBuilderProject] = useState([]); 
+  const [error, setError] = useState(null);
+  let query = projectViewDetails?.builderName || [];
 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const fetchedResult = await getProjectbyBuilder(query, 0);
+        setBuilderProject(fetchedResult);
+      } catch (err) {
+        setError(err);
+      }
+    };
+
+    fetchData();
+  }, [query]);
+  console.log(builderProject,"result");
 
 
   const {
@@ -200,12 +218,6 @@ const NewBanner = () => {
     setIsModalOpenFloor(false);
     setSelectedImagefloor(null);
     document.body.style.overflow = "auto";
-  };
-
-  const openModalMasterPlan = (image) => {
-    setSelectedImagefloor(image);
-    setIsModalOpenFloor(true);
-    document.body.style.overflow = "hidden";
   };
 
   const handleChange = (e) => {
@@ -379,8 +391,8 @@ const NewBanner = () => {
 
   const filteredProjects = filterProjectsByBuilder();
   const projectsToShow = showAllProjects
-    ? filteredProjects
-    : filteredProjects.slice(0, 4);
+    ? builderProject
+    : builderProject.slice(0, 4);
 
   useEffect(() => {
     const timeOutId = setTimeout(() => {
@@ -1586,7 +1598,7 @@ const NewBanner = () => {
                             ))}
                           </div>
 
-                          {filteredProjects.length > 4 && (
+                          {builderProject.length > 4 && (
                             <div className="flex justify-end mt-2 animate-bounce">
                               {" "}
                               {/* Center the button */}
