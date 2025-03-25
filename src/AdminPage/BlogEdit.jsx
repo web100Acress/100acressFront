@@ -28,7 +28,9 @@ const BlogEdit = () => {
       for (const key in viewDetails) {
         formData.append(key, viewDetails[key]);
       }
-      formData.append("blog_Image", viewDetails.frontImage.file);
+      if (viewDetails.frontImage) {
+        formData.append("frontImage", viewDetails.frontImage.file);
+      }
       
       const response = await axios.put(
         `/api/blog/update/${id}`,
