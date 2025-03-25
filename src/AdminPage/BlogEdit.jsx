@@ -20,6 +20,7 @@ const BlogEdit = () => {
     author: "",
   });
   const { id } = useParams();
+  const token = localStorage.getItem("myToken");
 
   const handleUpdateUser = async () => {
     try {
@@ -34,7 +35,13 @@ const BlogEdit = () => {
       
       const response = await axios.put(
         `/api/blog/update/${id}`,
-        formData
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
+          }
+        }
       );
       if (response.status === 200) {
         alert("Data updated successfully");

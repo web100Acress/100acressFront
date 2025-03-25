@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function BlogManagement() {
 
+  const token = localStorage.getItem("myToken");
   const history = useNavigate();
   // Sample blog data
   const [blogs, setBlogs] = useState([]);
@@ -102,7 +103,13 @@ export default function BlogManagement() {
 const handleDeleteUser = async (id) => {
     try {
       const response = await axios.delete(
-        `/api/blog/Delete/${id}`
+        `/api/blog/Delete/${id}`,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
+          }
+        }
       );
       if (response.status >= 200 && response.status < 300) {
         return {success:true,error:false};

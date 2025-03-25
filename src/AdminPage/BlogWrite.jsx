@@ -6,6 +6,8 @@ import axios from "axios";
 
 const BlogWrite = () => {
   const [content, setContent] = useState('');
+  const token = JSON.parse(localStorage.getItem("myToken"));
+  
 
   const handleContent = (value) => {
     console.log(value, "value");
@@ -75,7 +77,12 @@ const BlogWrite = () => {
     formDataAPI.append("blog_Description", content);
 
     try {
-      const response = await axios.post(apiEndpoint, formDataAPI);
+      const response = await axios.post(apiEndpoint, formDataAPI,{
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       if (response.status === 200) {
         console.log(response.data, "response");
         alert("Blog post submitted successfully");

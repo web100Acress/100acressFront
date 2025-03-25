@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 export const BlogWriteModal = () => {
 
   const {id} = useParams();
+  const token = localStorage.getItem("myToken");
 
   const [title, setTitle] = useState('');
   const [descripition, setDescription] = useState('');
@@ -87,7 +88,14 @@ export const BlogWriteModal = () => {
     const apiEndpoint = blogToEdit? `/api/blog/Update/${blogId}` : '/api/blog/Insert';
     if (blogToEdit) {
       try {
-        const res = await axios.put(apiEndpoint, formDataAPI);
+        const res = await axios.put(apiEndpoint, formDataAPI,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${token}`,
+            }
+          }
+        );
         if(res.status === 200) {
           console.log("Blog updated successfully");
         }
@@ -101,7 +109,14 @@ export const BlogWriteModal = () => {
     else if(newBlog &&  !blogToEdit) {
       console.log("Api End Point",apiEndpoint);
       try {
-        const res = await axios.post('/api/blog/insert', formDataAPI);
+        const res = await axios.post('/api/blog/insert', formDataAPI,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${token}`,
+            }
+          }
+        );
         if(res.data.data) {
           console.log("Blog inserted successfully");
         } 
