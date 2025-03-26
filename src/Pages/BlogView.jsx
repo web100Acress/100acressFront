@@ -125,14 +125,15 @@ const BlogView = () => {
             </div>
 
             <div className="w-full md:w-[30%] text-center max-sm:mt-10">
-            <div className="relative w-[70%] ml-5">
+            <div className="relative w-[95%] ml-5 text-start max-sm:ml-0">
                   <input
                     type="text"
                     placeholder="Search"
-                    className="w-full p-2 pr-20 border-2 rounded-full focus:outline-none focus:ring-0"
+                    className="w-[90%] mx-2 p-2 pr-20 border-2 rounded-full focus:outline-none focus:ring-0"
                   />
-                  <button className="absolute right-1 top-1/2 transform -translate-y-1/2 px-4 py-2 bg-primaryRed text-white rounded-full hover:bg-red-500">
-                    SUBMIT
+                  <button className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-500">
+                    SEARCH
+
                   </button>
                 </div>
 
@@ -140,12 +141,12 @@ const BlogView = () => {
                 <h4 className="text-x text-start ml-7 text-primaryRed mt-4 mb-3">
                 Recent posts
                 </h4>
-                <ul className="text-start max-sm:ml-auto ">
-                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-primaryRed hover:text-white transition-all duration-500 ease-in-out"><a>Why Investors Are Choosing Signature Global Towers Over Other Gurgaon Areas</a></li>
-                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-primaryRed hover:text-white transition-all duration-500 ease-in-out"><a>Luxury Real Estate Trends: What High-Net-Worth Buyers Want in 2025</a></li>
-                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-primaryRed hover:text-white transition-all duration-500 ease-in-out"><a>Gurgaon’s Top Housing Destinations for a Quality Lifestyle</a></li>
-                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-primaryRed hover:text-white transition-all duration-500 ease-in-out"><a>Green Living Redefined: The Future of Real Estate in India</a></li>
-                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-primaryRed hover:text-white transition-all duration-500 ease-in-out"><a>Over ₹3 Lakh Crore Investment in Recent Years: Gurugram’s Real Estate Boom</a></li>
+                <ul className="text-start max-sm:ml-0 ">
+                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Why Investors Are Choosing Signature Global Towers Over Other Gurgaon Areas</a></li>
+                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Luxury Real Estate Trends: What High-Net-Worth Buyers Want in 2025</a></li>
+                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Gurgaon’s Top Housing Destinations for a Quality Lifestyle</a></li>
+                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Green Living Redefined: The Future of Real Estate in India</a></li>
+                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Over ₹3 Lakh Crore Investment in Recent Years: Gurugram’s Real Estate Boom</a></li>
                 </ul>
               </div>
               <div className="shadow-md p-2 text-center rounded-lg mb-4 ml-7 max-sm:ml-0" style={{backgroundColor:"rgb(0,49,79)",position: "sticky", top: "60px", zIndex: "10"}}>
