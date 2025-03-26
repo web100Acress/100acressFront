@@ -20,7 +20,6 @@ const BlogEdit = () => {
     author: "",
   });
   const { id } = useParams();
-  const token = localStorage.getItem("myToken");
 
   const handleUpdateUser = async () => {
     try {
@@ -29,19 +28,11 @@ const BlogEdit = () => {
       for (const key in viewDetails) {
         formData.append(key, viewDetails[key]);
       }
-      if (viewDetails.frontImage) {
-        formData.append("frontImage", viewDetails.frontImage.file);
-      }
+      formData.append("blog_Image", viewDetails.frontImage.file);
       
       const response = await axios.put(
-        `/api/blog/update/${id}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`,
-          }
-        }
+        `https://api.100acress.com/blog/update/${id}`,
+        formData
       );
       if (response.status === 200) {
         alert("Data updated successfully");
@@ -64,7 +55,7 @@ const BlogEdit = () => {
   //     formData.append("frontImage", values.frontImage.file);
 
   //     const response = await axios.post(
-  //       `/api/postPerson/propertyoneUpdate/${id}`,
+  //       `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
   //       formData,
   //       {
   //         headers: {
@@ -116,7 +107,7 @@ const BlogEdit = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `/api/blog/edit/${id}`
+          `https://api.100acress.com/blog/edit/${id}`
         );
         setViewDetails(res.data.data);
       } catch (error) {

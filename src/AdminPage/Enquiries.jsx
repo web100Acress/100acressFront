@@ -20,7 +20,7 @@ const Enquiries = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `/api/userViewAll?limit=2000` 
+        `https://api.100acress.com/userViewAll?limit=2000` 
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -135,7 +135,7 @@ const Enquiries = () => {
 
   const downloadExelFile = async()=>{
     try {
-      const response = await fetch("/api/userViewAll/dowloadData");
+      const response = await fetch("https://api.100acress.com/userViewAll/dowloadData");
       if (!response.ok) {
         throw new Error(`Failed to download file: ${response.statusText}`);
       }

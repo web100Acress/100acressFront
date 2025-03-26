@@ -31,7 +31,7 @@
 //   useEffect(() => {
 //     const fetchData = async () => {
 //       try {
-//         const res = await axios.get("/api/snapShot");
+//         const res = await axios.get("https://api.100acress.com/snapShot");
 //         // console.log(res,"yugyugygyg")
 //         setRent(res.data.totalRentposted);
 //         setSell(res.data.totalSellposted);
@@ -207,16 +207,11 @@
 
 
 
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react'
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   return (
-    <div className='w-full h-screen flex flex-col justify-center items-center'>
-      <div>This Dashboard is under maintainance...</div>
-      <button className='p-2 my-4 rounded bg-primaryRed text-white font-semibold' onClick={() => navigate('/admin/user')}>Go to User</button>
-    </div>
+    <div>Dashboard</div>
   )
 }
 

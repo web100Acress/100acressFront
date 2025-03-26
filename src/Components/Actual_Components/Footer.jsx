@@ -25,7 +25,7 @@ const Footer = () => {
       return;
     }
     try {
-      await axios.post("/api/contact_Insert", data);
+      await axios.post("https://api.100acress.com/contact_Insert", data);
       alert("Data submit successfully");
       resetData();
     } catch (error) {

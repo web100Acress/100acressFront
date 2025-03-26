@@ -25,14 +25,13 @@ import CommonProject from "../Utils/CommonProject";
 import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
-const ResaleComponent = React.lazy(()=> import("./Resale"));
-
 const Home = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   
+  const ResaleComponent = React.lazy(()=> import("./Resale"));
   const sectionsRef = useRef({});
   const [colorChange, setColorchange] = useState(false);
   const [displayedProjects, setDisplayedProjects] = useState([]);
