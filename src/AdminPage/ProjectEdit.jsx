@@ -49,6 +49,7 @@ const ProjectEdit = () => {
     possessionDate: "",
     minPrice: "",
     maxPrice: "",
+    Amenities:"",    
   });
 
   const { id } = useParams();
@@ -56,6 +57,7 @@ const ProjectEdit = () => {
   const floorPlanLength = values.project_floorplan_Image.length;
   const projectGalleryLength = values.projectGallery.length;
 
+  console.log(values,"admin")
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -807,6 +809,27 @@ const ProjectEdit = () => {
                             setValues({
                               ...values,
                               project_discripation: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold">
+                      Ammenities :
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <textarea
+                          type="text"
+                          className="outline-none w-full"
+                          value={values.Amenities}
+                          name="Amenities"
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              Amenities: e.target.value,
                             })
                           }
                         />

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import ProjectSearching from "../ProjectSearching";
 import CommonInside from "../../Utils/CommonInside";
@@ -10,11 +10,20 @@ const Properties = () => {
   const {getProjectbyState} = Api_service();
   const gurugramProject = useSelector(store => store?.stateproject?.gurugram);
 
+  const [filtereddata,setFilteredData] = useState([]);
+  const [datafromsearch,setDatafromsearch] = useState({});
+  function handleDatafromSearch(data){
+    setFilteredData(data);
+  };
   useEffect(() => {
     if (gurugramProject.length === 0) {
       getProjectbyState(city, 0)
     }
   }, []);
+
+    useEffect(()=>{
+      setDatafromsearch({ gurugramProject });
+    },[gurugramProject])
 
 
   return (
@@ -48,20 +57,20 @@ const Properties = () => {
     
 
       <section className="flex flex-col items-center bg-white mt-16">
-      <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+      <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em]">
           Projects in Gurugram
         </h1>
 
-        <h2 className="text-sm mb-0 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+        <h2 className="text-sm mb-0 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4 tracking-[0.1em]">
           Gurugram is transforming with major enterprises, including new housing
           complexes, commercial space, and infrastructure improvements. These
           developments focus on improving connectivity by developing networks
           and modern amenities, to enhance the standard of urban living and
           encourage investment from businesses in the rapidly growing city.
         </h2>
-        <ProjectSearching />
+        <ProjectSearching searchdata={gurugramProject} sendDatatoparent={handleDatafromSearch}/>
         <CommonInside
-        Actualdata={gurugramProject}
+        Actualdata={filtereddata.length === 0 ? datafromsearch?.gurugramProject : filtereddata}
         />
       </section>
     </div>

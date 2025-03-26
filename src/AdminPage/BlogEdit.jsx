@@ -20,6 +20,7 @@ const BlogEdit = () => {
     author: "",
   });
   const { id } = useParams();
+  const token = localStorage.getItem("myToken");
 
   const handleUpdateUser = async () => {
     try {
@@ -28,11 +29,19 @@ const BlogEdit = () => {
       for (const key in viewDetails) {
         formData.append(key, viewDetails[key]);
       }
-      formData.append("blog_Image", viewDetails.frontImage.file);
+      if (viewDetails.frontImage) {
+        formData.append("frontImage", viewDetails.frontImage.file);
+      }
       
       const response = await axios.put(
         `https://api.100acress.com/blog/update/${id}`,
-        formData
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
+          }
+        }
       );
       if (response.status === 200) {
         alert("Data updated successfully");

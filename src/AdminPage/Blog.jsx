@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
-import "react-quill/dist/quill.snow.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
 const Blog = () => {
@@ -8,6 +7,7 @@ const Blog = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const token = localStorage.getItem("myToken");
   const customStyle = {
     position: "absolute",
     top: "100px",
@@ -31,7 +31,13 @@ const Blog = () => {
   const handleDeleteUser = async (id) => {
     try {
       const response = await axios.delete(
-        `https://api.100acress.com/blog/Delete/${id}`
+        `https://api.100acress.com/blog/Delete/${id}`,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`,
+          }
+        }
       );
       if (response.status >= 200 && response.status < 300) {
         window.location.reload();

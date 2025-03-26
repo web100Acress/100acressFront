@@ -4,6 +4,8 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
+import DOMPurify from 'dompurify'; // Add this for security
+
 
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
@@ -76,6 +78,13 @@ const BlogView = () => {
     fetchData();
   }, []);
 
+  const createSanitizedHTML = (dirtyHTML) => ({
+    __html: DOMPurify.sanitize(dirtyHTML, {
+      ALLOWED_TAGS: ['p', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'a', 'img'],
+      ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style']
+    })
+  });
+
   const {
     blog_Title,
     blog_Description,
@@ -93,7 +102,7 @@ const BlogView = () => {
       </Helmet>
 
       <div className="flex flex-col mt-20">
-      <h1 className=" p-3 py-5 text-center text-3xl sm:text-xl md:text-2xl lg:text-3xl bg-red-600 text-white font-bold tracking-[0.1em]">
+      <h1 className="p-3 py-5 text-center text-3xl sm:text-xl md:text-2xl lg:text-3xl bg-primaryRed text-white font-bold tracking-[0.1em]">
          Blog
         </h1> 
         <div className="bg-white py-8">
@@ -101,17 +110,17 @@ const BlogView = () => {
             <div className="w-full md:w-[70%] px-4 py-4 shadow-lg rounded-lg">
     
               <div className="prose max-w-none">
-                <p className="text-2xl font-semibold">{blog_Title}</p>
+                <p className="text-lg text-primaryRed my-2">{blog_Category}</p>
+                <p className="text-4xl my-4">{blog_Title}</p>
                 <img
-                src={blog_Image && blog_Image.url}
+                src={blog_Image?.url}
                 alt="Blog"
-                className="mb-2 rounded-lg"
+                className="my-4 rounded-lg"
               />
-                <p className="text-lg text-red-700 mb-0">{blog_Category}</p>
-                <p
-                  className="text-justify"
-                  dangerouslySetInnerHTML={{ __html: blog_Description }}
-                ></p>
+                <div
+                  className="react-quill-content"
+                  dangerouslySetInnerHTML={createSanitizedHTML(blog_Description)}
+                ></div>
               </div>
             </div>
 
@@ -124,11 +133,12 @@ const BlogView = () => {
                   />
                   <button className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-500">
                     SEARCH
+
                   </button>
                 </div>
 
               <div className="text-center max-sm:ml-0"> 
-                <h4 className="text-x text-start ml-7 text-red-600 mt-4 mb-3">
+                <h4 className="text-x text-start ml-7 text-primaryRed mt-4 mb-3">
                 Recent posts
                 </h4>
                 <ul className="text-start max-sm:ml-0 ">
@@ -204,14 +214,14 @@ const BlogView = () => {
                     </div>
 
                     {responseMessage && (
-                      <p className="text-xs italic -mb-2 text-red-600">
+                      <p className="text-xs italic -mb-2 text-primaryRed">
                         {responseMessage}
                       </p>
                     )}
 
                     <div>
                       <button
-                        className="w-full py-2 px-4 rounded-md bg-red-500 text-white flex items-center justify-center space-x-2 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                        className="w-full py-2 px-4 rounded-md bg-red-500 text-white flex items-center justify-center space-x-2 hover:bg-primaryRed focus:outline-none focus:ring-2 focus:ring-red-500"
                         onClick={handleBlogSubmitQueryData}
                       >
                         <span>{buttonText}</span>

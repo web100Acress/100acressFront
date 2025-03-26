@@ -24,6 +24,8 @@ const UpComingProjects = () => {
   useEffect(()=>{
     setDatafromsearch({ allupcomingProject });
   },[allupcomingProject])
+
+  
   return (
     <div>
       <Helmet>

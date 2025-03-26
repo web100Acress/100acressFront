@@ -10,6 +10,18 @@ html {
   font-family: "Gluten", cursive !important;
 }
 
+
+.react-quill-content ul {
+  list-style-type: disc !important; 
+  padding-left: 1rem !important; 
+}
+
+/* Optional: For ordered lists */
+.react-quill-content ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+}
+
 .font-AbrialFatFace{
   font-family: "Abril Fatface", sans-serif !important;
 }
