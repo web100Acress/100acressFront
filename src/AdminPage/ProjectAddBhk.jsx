@@ -54,7 +54,7 @@ const ProjectsAddBhk = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`/api/bhk_view/${id}`);
+        const res = await axios.get(`https://api.100acress.com/bhk_view/${id}`);
         setViewAll(res.data.data);
       } catch (error) {
         console.log(error);
@@ -73,7 +73,7 @@ const ProjectsAddBhk = () => {
   const submitBHKFromData = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`/api/bhk_insert/${id}`,editFromData);
+      const response = await axios.post(`https://api.100acress.com/bhk_insert/${id}`,editFromData);
       alert("User data inserted successfully");
       resetData();
     } catch (error) {
@@ -91,7 +91,7 @@ const ProjectsAddBhk = () => {
  
   const handleDeleteUser = async (id) => {
     try {
-      const response = await axios.delete(`/api/bhk_delete/${id}`);
+      const response = await axios.delete(`https://api.100acress.com/bhk_delete/${id}`);
       if (response.status >= 200 && response.status < 300) {
         window.location.reload();
       } else {

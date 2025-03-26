@@ -33,7 +33,7 @@ const UserEdit = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `/api/postPerson/propertyoneEdit/${id}`
+          `https://api.100acress.com/postPerson/propertyoneEdit/${id}`
         );
         setValues(res.data.data.postProperty[0]);
       } catch (error) {
@@ -77,7 +77,7 @@ const UserEdit = () => {
       }
 
       const response = await axios.post(
-        `/api/postPerson/propertyoneUserUpdate/${id}`,
+        `https://api.100acress.com/postPerson/propertyoneUserUpdate/${id}`,
         formData,
         {
           headers: {

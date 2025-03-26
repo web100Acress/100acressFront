@@ -23,7 +23,7 @@ const BlogViewAdmin = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `/api/blog/view/${id}`
+          `https://api.100acress.com/blog/view/${id}`
         );
    
         setViewDetails(res.data.data);

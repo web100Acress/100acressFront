@@ -21,7 +21,7 @@ const UserAdmin = () => {
       try {
         const myToken = localStorage.getItem("myToken");
         const res = await axios.get(
-          "/api/postPerson/view"
+          "https://api.100acress.com/postPerson/view"
         );
         setViewAll(res.data.data);
       } catch (error) {

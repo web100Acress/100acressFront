@@ -46,7 +46,7 @@ const EditDetails = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `/api/postPerson/propertyoneEdit/${id}`
+          `https://api.100acress.com/postPerson/propertyoneEdit/${id}`
         );
         setValues(res.data.data.postProperty[0]);
       } catch (error) {
@@ -126,7 +126,7 @@ const EditDetails = () => {
       }
       const myToken = localStorage.getItem("myToken");
       const response = await axios.post(
-        `/api/postPerson/propertyoneUpdate/${id}`,
+        `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
         formData,
         {
           headers: {

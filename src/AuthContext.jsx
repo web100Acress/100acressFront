@@ -16,7 +16,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState("");
   const { decodedToken } = useJwt(localStorageToken);
   const [isAdmin, setIsAdmin] = useState(false);  
-  const [isContentWriter, setIsContentWriter] = useState(false);  
 
   const [agentData, setAgentData] = useState({
     name: "",
@@ -54,7 +53,7 @@ export const AuthProvider = ({ children }) => {
       if (email && password) {
         try {
           const loginResponse = await axios.post(
-            "/api/postPerson/verify_Login",
+            "https://api.100acress.com/postPerson/verify_Login",
             { email, password }
           );
           const newToken = loginResponse.data.token;
@@ -65,7 +64,7 @@ export const AuthProvider = ({ children }) => {
   
           if (loginResponse.status === 200) {
             const roleResponse = await axios.get(
-              `/api/postPerson/Role/${email}`
+              `https://api.100acress.com/postPerson/Role/${email}`
             );
             setAgentData(roleResponse.data.User);
             localStorage.setItem(
@@ -80,7 +79,7 @@ export const AuthProvider = ({ children }) => {
               const sellerId = roleResponse.data.User._id;
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
               if (roleResponse.data.User.role === "Admin" || roleResponse.data.User.role === admin) {
-                history("/Admin/user");
+                history("/Admin/dashboard");
               } else {
                 history("/userdashboard/");
                 window.location.reload()
@@ -186,7 +185,7 @@ export const AuthProvider = ({ children }) => {
 
       if (name && mobile && email && password && password === cpassword) {
         axios
-          .post("/api/postPerson/register", userSignUp)
+          .post("https://api.100acress.com/postPerson/register", userSignUp)
           .then((registrationResponse) => {
 
             // if error 409 User already Exist
@@ -210,7 +209,7 @@ export const AuthProvider = ({ children }) => {
             );
 
             //generate otp for the user to to verify the email
-            return axios.post("/api/postPerson/verifyEmail", { 
+            return axios.post("https://api.100acress.com/postPerson/verifyEmail", { 
               email: email // Pass relevant data for OTP
             })
           })
@@ -257,7 +256,7 @@ export const AuthProvider = ({ children }) => {
       );
       if (confirmDelete) {
         const res = await axios.delete(
-          `/api/postPerson/propertyDelete/${id}`
+          `https://api.100acress.com/postPerson/propertyDelete/${id}`
         );
         if (res.status >= 200 && res.status < 300) {
 
@@ -295,8 +294,6 @@ export const AuthProvider = ({ children }) => {
         decodedTokenState,
         isAdmin,
         setIsAdmin,
-        isContentWriter,
-        setIsContentWriter,
       }}
     >
       {children}

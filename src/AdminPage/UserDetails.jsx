@@ -12,9 +12,9 @@ const UserDetails = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        "/api/property/buy/ViewAll"
+        "https://api.100acress.com/property/buy/ViewAll"
       );
-      setUserData(res.data.ResaleData);
+      setUserData(res.data.collectdata);
     } catch (error) {
       console.log(error || error.message);
     }
@@ -63,14 +63,15 @@ const UserDetails = () => {
                   </div>
                 </div>
                 <div className="table-row-group divide-y divide-gray-200 bg-white dark:divide-neutral-700 dark:bg-neutral-800">
-                  {userData && userData.map((property, propertyIndex) => (
+                  {userData.map((item, index) =>
+                    item.postProperty.map((property, propertyIndex) => (
                       <div
-                        key={`${property.propertyName}-${propertyIndex}`}
+                        key={`${index}-${propertyIndex}`}
                         className="table-row"
                       >
                         
                         <div className="table-cell px-6 py-2 text-center whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
-                          {/* {item.name} */}
+                          {item.name}
                         </div>
                         <div className="table-cell px-6 py-2 text-center whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
                           {property.number}
@@ -86,7 +87,8 @@ const UserDetails = () => {
                           {", "} {property.state}
                         </div>
                       </div>
-                  ))}  
+                    ))
+                  )}
                 </div>
               </div>
             </div>

@@ -40,7 +40,7 @@ const ShowPropertyDetails = ({ id }) => {
       try {
         setLoading(true);
         const res = await axios.get(
-          `/api/property/view/${id}`
+          `https://api.100acress.com/property/view/${id}`
         );
         if (res.data.data) {
           console.log(res.data.data, "res.data.data");
@@ -114,7 +114,7 @@ const ShowPropertyDetails = ({ id }) => {
 
     if (custNumber && custName) {
       try {
-        const response = await axios.post("/api/postEnquiry", {
+        const response = await axios.post("https://api.100acress.com/postEnquiry", {
           ...userForm,
           propertyAddress: rentViewDetails.address,
         });
@@ -145,7 +145,7 @@ const ShowPropertyDetails = ({ id }) => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get("/api/property/buy/ViewAll");
+      const res = await axios.get("https://api.100acress.com/property/buy/ViewAll");
       // console.log(res.data.ResaleData, "All Buyable Property Information");
       setBuyData(res.data.ResaleData);
     } catch (error) {

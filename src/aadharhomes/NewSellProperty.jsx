@@ -42,11 +42,11 @@ const stateCodeMapping = {
 };
 
 const NewSellProperty = () => {
-  const agentData = localStorage.getItem("agentData");
+  const storedSellerId = localStorage.getItem("mySellerId");
   const [showSteps, setShowSteps] = useState(false);
   const [responseMessage, setResponeMessage] = useState("");
-  const parsedAgentData = JSON.parse(agentData);
-  const sellerId = parsedAgentData._id;
+  const sellerId = JSON.parse(storedSellerId);
+
   const propertyType = ["Select Property Type", "Commercial", "Residential"];
 
   const subTypes = {
@@ -202,7 +202,7 @@ const NewSellProperty = () => {
     if (isLoading) {
       return;
     }
-    const apiEndpoint = `/api/postPerson/propertyInsert/${sellerId}`;
+    const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
     const formDataAPI = new FormData();
 
     for (const key in sellProperty) {

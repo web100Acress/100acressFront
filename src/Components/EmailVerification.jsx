@@ -29,7 +29,7 @@ function EmailVerification() {
         duration: 3,
       });
 
-      axios.post("/api/postPerson/verifyEmail", { email: email })
+      axios.post("https://api.100acress.com/postPerson/verifyEmail", { email: email })
       .then((res) => {
 
         messageApi.destroy("EmailVerificationOTPLoading");

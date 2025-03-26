@@ -127,7 +127,7 @@ const NewBanner = () => {
         }
 
         const response = await axios.get(
-          `/api/project/View/${pUrl}`
+          `https://api.100acress.com/project/View/${pUrl}`
         );
         const projectData = response?.data?.dataview?.[0];
         if (projectData) {
@@ -257,7 +257,7 @@ const NewBanner = () => {
       setPopUpButtonText("Submitting...");
       try {
         setIsLoading1(true);
-        await axios.post("/api/userInsert", {
+        await axios.post("https://api.100acress.com/userInsert", {
           ...popDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
@@ -327,7 +327,7 @@ const NewBanner = () => {
       setIsLoading2(true);
       setUserButtonText("Submitting...");
       axios
-        .post("/api/userInsert", {
+        .post("https://api.100acress.com/userInsert", {
           ...userDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
@@ -359,7 +359,7 @@ const NewBanner = () => {
       setIsLoading2(true);
       setSideButtonText("Submitting...");
       try {
-        await axios.post("/api/userInsert", {
+        await axios.post("https://api.100acress.com/userInsert", {
           ...sideDetails,
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,

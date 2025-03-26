@@ -107,7 +107,7 @@ export const DataProvider = ({ children }) => {
     if (email && password) {
       try {
         const loginResponse = await axios.post(
-          "/api/postPerson/verify_Login",
+          "https://api.100acress.com/postPerson/verify_Login",
           { email, password }
         );
         const newToken = loginResponse.data.token;
@@ -116,7 +116,7 @@ export const DataProvider = ({ children }) => {
 
         if (loginResponse.status === 200) {
           const roleResponse = await axios.get(
-            `/api/postPerson/Role/${email}`
+            `https://api.100acress.com/postPerson/Role/${email}`
           );
 
           if (roleResponse.status === 200) {
