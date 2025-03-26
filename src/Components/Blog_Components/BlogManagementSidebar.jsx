@@ -12,7 +12,7 @@ function BlogManagementSidebar() {
    const HandleUserLogout = async () => {
       console.log("User trying to logout..")
       try {
-        await axios.get("https://api.100acress.com/postPerson/logout");
+        await axios.get("http://localhost:3500/postPerson/logout");
         localStorage.removeItem("myToken");
         localStorage.removeItem("mySellerId");
         localStorage.removeItem("userRole");
@@ -47,7 +47,7 @@ function BlogManagementSidebar() {
             </button>
             <div className='flex mb-4 space-x-4'>
                <Feather className='w-10 h-10 text-center text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true"'/>
-               <span className='text-2xl text-white font-bold '>Blog Management</span>
+               <span className='text-2xl text-gray-400 font-bold '>Blog Management</span>
             </div>
             <ul className="space-y-2 font-medium">
                <li>

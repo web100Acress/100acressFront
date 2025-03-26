@@ -190,8 +190,8 @@ const handleDeleteUser = async (id) => {
                   >
                     <div className="flex items-center gap-1">
                       Title
-                      {sortField === "title" &&
-                        (sortDirection === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />)}
+                      {/* {sortField === "title" &&
+                        (sortDirection === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />)} */}
                     </div>
                   </th>
                   <th
@@ -237,22 +237,18 @@ const handleDeleteUser = async (id) => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{blog.blog_Title}</div>
+                        <div className="text-sm font-medium text-gray-900 hover:text-blue-600 cursor-pointer" 
+                          onClick={() => handleBlogView(blog.blog_Title,blog._id)}
+                        >
+                          {blog.blog_Title}
+                        </div>
                         <div className="text-sm text-gray-500 line-clamp-2">{BlogPreview(blog.blog_Description)}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{blog.author}</td>
                       { blog.createdAt ? <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                           {new Date(blog.createdAt).toLocaleDateString()}
                       </td> : <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>}
-                      {/* <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            blog.status === "published" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-                          }`}
-                        >
-                          {blog.status}
-                        </span>
-                      </td> */}
+    
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end gap-2">
                           <button
@@ -270,13 +266,7 @@ const handleDeleteUser = async (id) => {
                               <Edit size={18} />
                             </button>
                           </Link>
-                          {/* <button
-                            className="text-indigo-600 hover:text-indigo-900"
-                            // onClick={() => showEditModal(blog._id)}
-                            title="Edit"
-                          >
-                            <Edit size={18} />
-                          </button> */}
+
                           <button
                             className="text-red-600 hover:text-red-900"
                             onClick={() => handleDeleteButtonClick(blog._id)}

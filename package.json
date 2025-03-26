@@ -18,6 +18,7 @@
     "chart.js": "^4.4.0",
     "country-state-city": "^3.2.1",
     "date-fns": "^3.6.0",
+    "dompurify": "^3.2.4",
     "jodit-react": "^5.2.15",
     "jquery": "^3.7.1",
     "less": "^4.2.0",
