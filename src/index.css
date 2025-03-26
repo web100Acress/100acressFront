@@ -10,10 +10,16 @@ html {
   font-family: "Gluten", cursive !important;
 }
 
-.ql-editor{
-  height: 100px !important;
-  max-height: 100px !important;
-  overflow: auto !important;
+
+.react-quill-content ul {
+  list-style-type: disc !important; 
+  padding-left: 1rem !important; 
+}
+
+/* Optional: For ordered lists */
+.react-quill-content ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
 }
 
 .font-AbrialFatFace{

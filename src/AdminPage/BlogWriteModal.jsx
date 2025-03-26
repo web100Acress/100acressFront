@@ -200,17 +200,18 @@ export const BlogWriteModal = () => {
                     className=""
                     modules={{
                     toolbar: [
-                        [{ header: [1, 2, false] }],
+                        [{ header: [1, 2,3,4, false] }],
                         ['bold', 'italic', 'underline', 'strike'],
                         [{ list: 'ordered' }, { list: 'bullet' }],
                         ['link'],
+                        [{ 'align': ''},{'align': 'center'}, {'align': 'right'}, {'align': 'justify'}],
                         ['clean']
                     ]
                     }}
                 />
                 </div>
             </div>
-            <div >
+            <div className='' >
                 <select
                         className="text-black border-2 p-2 outline-none w-full border-gray-200 mt-4 rounded-md"
                         value={categories || ''}
