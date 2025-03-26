@@ -9,7 +9,7 @@ export default defineConfig(() => {
       port:3000,
       proxy:{
         '/api': {
-          target: 'https://api.100acress.com',
+          target: 'http://localhost:3500',
           changeOrigin: true,
           secure: false,
           // If you want to remove '/api' when forwarding the request, add:
