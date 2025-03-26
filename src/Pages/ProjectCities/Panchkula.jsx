@@ -46,11 +46,11 @@ const Panchkula = () => {
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-16">
-        <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+        <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em]">
           Projects in Panchkula
         </h1>
 
-        <h2 className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+        <h2 className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4 tracking-[0.1em]">
           Panchkula is transforming with major enterprises, including new
           housing complexes, commercial space, and infrastructure
           improvements. These developments focus on improving connectivity by

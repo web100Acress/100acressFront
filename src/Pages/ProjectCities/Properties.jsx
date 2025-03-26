@@ -57,11 +57,11 @@ const Properties = () => {
     
 
       <section className="flex flex-col items-center bg-white mt-16">
-      <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+      <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em]">
           Projects in Gurugram
         </h1>
 
-        <h2 className="text-sm mb-0 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+        <h2 className="text-sm mb-0 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4 tracking-[0.1em]">
           Gurugram is transforming with major enterprises, including new housing
           complexes, commercial space, and infrastructure improvements. These
           developments focus on improving connectivity by developing networks

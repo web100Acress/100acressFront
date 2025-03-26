@@ -53,12 +53,12 @@ const DelhiProject = () => {
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-14">
-        <h1 className="mb-0 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+        <h1 className="mb-0 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em]">
           Projects in Delhi
         </h1>
-        <h2 className="text-sm font-semibold" >NEW RESIDENTIAL & COMMERCIAL PROJECTS IN DELHI</h2>
+        <h2 className="text-sm font-semibold tracking-[0.1em]" >NEW RESIDENTIAL & COMMERCIAL PROJECTS IN DELHI</h2>
 
-        <p className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+        <p className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4 tracking-[0.1em]">
         Delhi offers a variety of options for those interested in commercial and residential property. These properties fulfill different needs, whether you're looking to establish a business or find a home. The market is diverse, with numerous locations and prices to match various preferences. For anyone looking to invest, the city's dynamic environment makes it an ideal choice. Explore the options available and discover premium properties in Delhi that suit your needs.
         </p>
         
