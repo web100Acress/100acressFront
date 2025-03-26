@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import ProjectSearching from "../ProjectSearching";
 import CommonInside from "../../Utils/CommonInside";
@@ -10,11 +10,20 @@ const Properties = () => {
   const {getProjectbyState} = Api_service();
   const gurugramProject = useSelector(store => store?.stateproject?.gurugram);
 
+  const [filtereddata,setFilteredData] = useState([]);
+  const [datafromsearch,setDatafromsearch] = useState({});
+  function handleDatafromSearch(data){
+    setFilteredData(data);
+  };
   useEffect(() => {
     if (gurugramProject.length === 0) {
       getProjectbyState(city, 0)
     }
   }, []);
+
+    useEffect(()=>{
+      setDatafromsearch({ gurugramProject });
+    },[gurugramProject])
 
 
   return (
@@ -59,9 +68,9 @@ const Properties = () => {
           and modern amenities, to enhance the standard of urban living and
           encourage investment from businesses in the rapidly growing city.
         </h2>
-        {/* <ProjectSearching /> */}
+        <ProjectSearching searchdata={gurugramProject} sendDatatoparent={handleDatafromSearch}/>
         <CommonInside
-        Actualdata={gurugramProject}
+        Actualdata={filtereddata.length === 0 ? datafromsearch?.gurugramProject : filtereddata}
         />
       </section>
     </div>
