@@ -42,11 +42,11 @@ const stateCodeMapping = {
 };
 
 const NewSellProperty = () => {
-  const storedSellerId = localStorage.getItem("mySellerId");
+  const agentData = localStorage.getItem("agentData");
   const [showSteps, setShowSteps] = useState(false);
   const [responseMessage, setResponeMessage] = useState("");
-  const sellerId = JSON.parse(storedSellerId);
-
+  const parsedAgentData = JSON.parse(agentData);
+  const sellerId = parsedAgentData._id;
   const propertyType = ["Select Property Type", "Commercial", "Residential"];
 
   const subTypes = {
