@@ -23,7 +23,7 @@ const Projects = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "https://api.100acress.com/project/viewAll/data"
+          "/api/project/viewAll/data"
         );
         setViewAll(res.data.data);
       } catch (error) {
@@ -37,7 +37,7 @@ const Projects = () => {
     try {
       const myToken = localStorage.getItem("myToken");
       const response = await axios.delete(
-        `https://api.100acress.com/project/Delete/${id}`,
+        `/api/project/Delete/${id}`,
         {
           headers: {
             "Content-Type": "application/json",

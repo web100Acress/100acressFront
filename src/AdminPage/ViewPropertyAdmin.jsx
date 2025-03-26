@@ -59,7 +59,7 @@ const ViewPropertyAdmin = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://api.100acress.com/postPerson/propertyView/${id}`
+          `/api/postPerson/propertyView/${id}`
         );
         setViewAllProperty(res.data.data.postProperty);
       } catch (error) {
@@ -74,7 +74,7 @@ const ViewPropertyAdmin = () => {
   const handleDeleteUser = async (id) => {
     try {
       const res = await axios.delete(
-        `https://api.100acress.com/postPerson/propertyDelete/${id}`
+        `/api/postPerson/propertyDelete/${id}`
       );
       if (res.status >= 200 && res.status < 300) {
         window.location.reload();
