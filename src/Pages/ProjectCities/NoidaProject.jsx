@@ -63,12 +63,12 @@ const NoidaProject = () => {
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-16">
-        <h1 className="mb-0 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+        <h1 className="mb-0 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em]">
           Projects in Noida
         </h1>
-        <h2 className="text-sm font-semibold" >NEW RESIDENTIAL & COMMERCIAL PROJECTS IN NOIDA</h2>
+        <h2 className="text-sm font-semibold tracking-[0.1em]" >NEW RESIDENTIAL & COMMERCIAL PROJECTS IN NOIDA</h2>
 
-        <p className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+        <p className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4 tracking-[0.1em]">
           Noida offers a wide range of options, including luxury, commercial, and residential properties for premium living, businesses, and families. With modern infrastructure, excellent connectivity, and growing opportunities, the city has become a prime destination for investment. Whether you’re seeking business growth or a comfortable home, investing in property in Noida ensures long-term value and convenience.
         </p>
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
