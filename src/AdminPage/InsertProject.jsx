@@ -208,7 +208,7 @@ const InsertProject = () => {
 
   const handleSubmitProject = async (e) => {
     e.preventDefault();
-    const apiEndpoint = "/api/project/Insert";
+    const apiEndpoint = "https://api.100acress.com/project/Insert";
 
     const formDataAPI = new FormData();
 

@@ -49,7 +49,7 @@ function NoPropertiesMessage () {
         }  
         try {
             setConfirmLoading(true);
-            const response = await axios.post("/api/contact_Insert",enquiry)
+            const response = await axios.post("https://api.100acress.com/contact_Insert",enquiry)
             const title = "Success";
             const content = "Your Form has been submitted successfully, Our team will reach out to you as soon as possible!";
             setConfirmLoading(false);

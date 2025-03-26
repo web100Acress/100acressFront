@@ -61,7 +61,7 @@ const Buy = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("/api/property/buy/viewAll");
+        const res = await axios.get("https://api.100acress.com/property/buy/viewAll");
         setViewAll(res.data.data);
       } catch (error) {
         console.log(error);

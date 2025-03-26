@@ -15,7 +15,7 @@ const PrivateRoute = () => {
       if (!token) return navigate("/");
 
       try {
-        const response = await fetch("/api/auth/isAdmin", {
+        const response = await fetch("https://api.100acress.com/auth/isAdmin", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

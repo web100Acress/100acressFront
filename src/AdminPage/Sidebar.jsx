@@ -26,7 +26,7 @@ const Sidebar = () => {
 
   const HandleUserLogout = async () => {
     try {
-      await axios.get("/api/postPerson/logout");
+      await axios.get("https://api.100acress.com/postPerson/logout");
       history("/");
       localStorage.removeItem("myToken");
       localStorage.removeItem("mySellerId");

@@ -9,7 +9,7 @@ function PropViewCardPro() {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "/api/property/rent/viewall"
+          "https://api.100acress.com/property/rent/viewall"
         );
         setRentData(res.data.data);
       } catch (error) {

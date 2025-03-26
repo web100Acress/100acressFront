@@ -121,7 +121,7 @@ const Api_service = () => {
   }
   }
 
-  const getProjectfind = async(query:any,page:any,limit:any)=>{
+  const getProjectfind = async(query,page,limit)=>{
     try{
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?${query}=1&page=${page}&limit=${limit}`);
       const ProjectFind = response.data.data;
@@ -140,7 +140,7 @@ const Api_service = () => {
           }
   }
 
-  const getProjectbyState = async(query: any, limit: any) => {
+  const getProjectbyState = async(query, limit) => {
     try {
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?city=${query}&limit=${limit}`);
       const ProjectbyState = response.data.data;
@@ -172,7 +172,7 @@ const Api_service = () => {
     }
   };
   
-  const getAllProjects= async(query:any,limit:any)=>{
+  const getAllProjects= async(query,limit)=>{
     try{
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?${query}=1&limit=${limit}`);
       const AllProjectbyQuery = response.data.data;
@@ -220,7 +220,7 @@ const Api_service = () => {
     }
   }
 
-  const getPrimeLocation = useCallback(async(query:any,limit:any) => {
+  const getPrimeLocation = useCallback(async(query,limit) => {
     try{
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?${query}=1&limit=${limit}`);
       const PrimeLocation = response.data.data;
@@ -259,7 +259,7 @@ const Api_service = () => {
     }
   },[dispatch]);
 
-  const getProjectOnStatus = async(query:any)=>{
+  const getProjectOnStatus = async(query)=>{
     try{
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?projectStatus=${query}`);
       const ProjectbyStatus = response.data.data;
@@ -271,7 +271,7 @@ const Api_service = () => {
     }
   }
 
-  const getProjectOnOverview = async(query:any)=>{
+  const getProjectOnOverview = async(query)=>{
     try{
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?projectOverview=${query}`);
       const ProjectByOverview =  response.data.data;
@@ -287,7 +287,7 @@ const Api_service = () => {
   }
 
 
-  const getProjectbyBuilder = useCallback(async (query:any,limit:any) => {
+  const getProjectbyBuilder = useCallback(async (query,limit) => {
     try {
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?builderName=${query}&limit=${limit}`);
       const BuilderbyQuery = response.data.data;
@@ -334,7 +334,7 @@ const Api_service = () => {
     }
   }, [dispatch]);
 
-  const getPossessionByYear = useCallback(async(query:any) =>{
+  const getPossessionByYear = useCallback(async(query) =>{
     try{
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?possessiondate=${query}`);
       const Possessionbyyear = response?.data?.data;
@@ -350,7 +350,7 @@ const Api_service = () => {
     }
   },[dispatch])
 
-  const getProjectBasedOnminPrice = useCallback(async(query:any,limit:any) =>{
+  const getProjectBasedOnminPrice = useCallback(async(query,limit) =>{
     try{
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?minPrice=${query}&limit=${limit}`);
       const minpriceprojectresponse = response.data.data;
@@ -362,7 +362,7 @@ const Api_service = () => {
     }
   },[dispatch]);
 
-  const getProjectBasedOnmaxPrice = useCallback(async(query:any,limit:any) =>{
+  const getProjectBasedOnmaxPrice = useCallback(async(query,limit) =>{
     try{
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?maxPrice=${query}&limit=${limit}`);
       const maxpriceprojectresponse = response.data.data;

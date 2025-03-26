@@ -54,7 +54,7 @@ const JobPosting = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "/api/career/opening/Insert",
+        "https://api.100acress.com/career/opening/Insert",
         job
       );
       alert("Data Posted");
@@ -67,7 +67,7 @@ const JobPosting = () => {
   const handleDeleteUser = async (id) => {
     try {
       const res = await axios.delete(
-        `/api/career/opening/delete/${id}`
+        `https://api.100acress.com/career/opening/delete/${id}`
       );
       if (res.status >= 200 && res.status < 300) {
         window.location.reload();

@@ -22,7 +22,7 @@ export const BlogWriteModal = () => {
     const fetchBlog = async () => {    
       if (id) {
         try {
-          const res = await axios.get(`/api/blog/view/${id}`);
+          const res = await axios.get(`https://api.100acress.com/blog/view/${id}`);
           if(res.data?.data){
             setTitle(res.data.data.blog_Title);
             setDescription(res.data.data.blog_Description);
@@ -85,7 +85,7 @@ export const BlogWriteModal = () => {
       formDataAPI.append('author', author);
     }
 
-    const apiEndpoint = blogToEdit? `/api/blog/Update/${blogId}` : '/api/blog/Insert';
+    const apiEndpoint = blogToEdit? `https://api.100acress.com/blog/Update/${blogId}` : 'https://api.100acress.com/blog/Insert';
     if (blogToEdit) {
       try {
         const res = await axios.put(apiEndpoint, formDataAPI,
@@ -109,7 +109,7 @@ export const BlogWriteModal = () => {
     else if(newBlog &&  !blogToEdit) {
       console.log("Api End Point",apiEndpoint);
       try {
-        const res = await axios.post('/api/blog/insert', formDataAPI,
+        const res = await axios.post('https://api.100acress.com/blog/insert', formDataAPI,
           {
             headers: {
               'Content-Type': 'multipart/form-data',

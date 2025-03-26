@@ -22,7 +22,7 @@ const ProjectEditHighlight = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        `/api/highlight/edit/${id}`
+        `https://api.100acress.com/highlight/edit/${id}`
       );
       setGetHighLights(res.data.data.highlight[0]);
     } catch (error) {
@@ -37,7 +37,7 @@ const ProjectEditHighlight = () => {
   const updateEditHighLightsData = async (e) => {
     try {
       const res = await axios.post(
-        `/api/highlight/update/${id}`,
+        `https://api.100acress.com/highlight/update/${id}`,
         getHighLights
       );
       if (res.status === 200) {
