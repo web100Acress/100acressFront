@@ -10,6 +10,12 @@ html {
   font-family: "Gluten", cursive !important;
 }
 
+.ql-editor{
+  height: 100px !important;
+  max-height: 100px !important;
+  overflow: auto !important;
+}
+
 .font-AbrialFatFace{
   font-family: "Abril Fatface", sans-serif !important;
 }

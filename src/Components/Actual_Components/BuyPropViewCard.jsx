@@ -140,7 +140,7 @@ const BuyPropViewCard = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        "https://api.100acress.com/property/buy/ViewAll"
+        "/api/property/buy/ViewAll"
       );
 
       setBuyData(res.data.ResaleData);

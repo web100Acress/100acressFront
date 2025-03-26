@@ -1,21 +1,20 @@
 import { useContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { AuthContext } from "../AuthContext";
+import { AuthContext } from "../../AuthContext";
 import { flushSync } from "react-dom";
 
-const PrivateRoute = () => {
+const SeoPrivateRoute = () => {
   const token = localStorage.getItem("myToken");
-  const { isAdmin, setIsAdmin } = useContext(AuthContext);
+  const { isContentWriter, setIsContentWriter } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Admin Verification on Component Mount
   useEffect(() => {
-    const verifyAdmin = async () => {
+    const verifyContentWriter = async () => {
 
       if (!token) return navigate("/");
 
       try {
-        const response = await fetch("/api/auth/isAdmin", {
+        const response = await fetch("/api/auth/isContentWriter", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -28,13 +27,13 @@ const PrivateRoute = () => {
         if (response.ok) {
           // Update admin state synchronously
           flushSync(() => {
-            setIsAdmin(data.success === true);
+            setIsContentWriter(data.success === true);
           });
 
         } else {
           console.log("Admin verification failed:", data.message);
           flushSync(() => {
-            setIsAdmin(data.success === true);
+            setIsContentWriter(data.success === true);
           });
           navigate("/userdashboard");
         }
@@ -44,11 +43,12 @@ const PrivateRoute = () => {
       }
     };
 
-    verifyAdmin();
+    verifyContentWriter();
   });
 
-  return isAdmin ? <Outlet /> : null; // Show outlet if admin
+  return isContentWriter ?
+   <Outlet /> : null; // Show outlet if admin
 };
 
-export default PrivateRoute;
+export default SeoPrivateRoute;
 
