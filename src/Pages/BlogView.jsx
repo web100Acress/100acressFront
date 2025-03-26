@@ -92,17 +92,21 @@ const BlogView = () => {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col mt-20">
+      <h1 className=" p-3 py-5 text-center text-3xl sm:text-xl md:text-2xl lg:text-3xl bg-red-600 text-white font-bold tracking-[0.1em]">
+         Blog
+        </h1> 
         <div className="bg-white py-8">
-          <div className="px-4 flex flex-col md:flex-row">
-            <div className="w-full md:w-[70%] px-4">
-              <img
+          <div className="px-8 flex flex-col md:flex-row">
+            <div className="w-full md:w-[70%] px-4 py-4 shadow-lg">
+    
+              <div className="prose max-w-none">
+                <p className="text-2xl font-semibold">{blog_Title}</p>
+                <img
                 src={blog_Image && blog_Image.url}
                 alt="Blog"
                 className="mb-2"
               />
-              <div className="prose max-w-none">
-                <p className="text-2xl font-semibold">{blog_Title}</p>
                 <p className="text-lg text-red-700 mb-0">{blog_Category}</p>
                 <p
                   className="text-justify"
@@ -111,11 +115,32 @@ const BlogView = () => {
               </div>
             </div>
 
-            <div className="w-full md:w-[30%] px-2 ">
-             
+            <div className="w-full md:w-[30%] text-center">
+            <div className="relative w-[70%] ml-5 sm:mt-4">
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    className="w-full p-2 pr-20 border-2 rounded-full focus:outline-none focus:ring-0"
+                  />
+                  <button className="absolute right-1 top-1/2 transform -translate-y-1/2 px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-500">
+                    SUBMIT
+                  </button>
+                </div>
 
-              <div className="shadow-xl p-2 rounded-lg mb-4" style={{backgroundColor:"rgb(0,49,79)"}}>
-                <h4 className="text-xl text-white mb-3 text-center ">
+              <div className="text-center"> 
+                <h4 className="text-x text-start ml-7 text-red-600 mt-4 mb-3">
+                Recent posts
+                </h4>
+                <ul className="text-start">
+                  <li className="mb-2 px-3 py-1 shadow-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Why Investors Are Choosing Dwarka Expressway Over Other Gurgaon Areas</a></li>
+                  <li className="mb-2 px-3 py-1 shadow-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Luxury Real Estate Trends: What High-Net-Worth Buyers Want in 2025</a></li>
+                  <li className="mb-2 px-3 py-1 shadow-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Gurgaon’s Top Housing Destinations for a Quality Lifestyle</a></li>
+                  <li className="mb-2 px-3 py-1 shadow-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Green Living Redefined: The Future of Real Estate in India</a></li>
+                  <li className="mb-2 px-3 py-1 shadow-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Over ₹3 Lakh Crore Investment in Recent Years: Gurugram’s Real Estate Boom</a></li>
+                </ul>
+              </div>
+              <div className="shadow-md p-2 text-center rounded-lg mb-4 ml-7" style={{backgroundColor:"rgb(0,49,79)"}}>
+              <h4 className="text-xl text-white mb-3 text-center">
                 Enquire Now
                 </h4>
                 <form id="contact-form">
@@ -197,7 +222,7 @@ const BlogView = () => {
                 </form>
               </div>
               <div>
-                <p className="text-xl xl:text-2xl lg:text-lg md:text-sm sm:text-3xl text-bold text-red-600">Trending Projects in Gurugram</p></div>
+          </div>
               <div className="">
                 {allupcomingProject.slice(0, 5).map((project, index) => {
                   return (
