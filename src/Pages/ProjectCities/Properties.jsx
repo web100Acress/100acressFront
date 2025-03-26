@@ -59,7 +59,7 @@ const Properties = () => {
           and modern amenities, to enhance the standard of urban living and
           encourage investment from businesses in the rapidly growing city.
         </h2>
-        <ProjectSearching />
+        {/* <ProjectSearching /> */}
         <CommonInside
         Actualdata={gurugramProject}
         />
