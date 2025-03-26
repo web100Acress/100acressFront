@@ -98,14 +98,14 @@ const BlogView = () => {
         </h1> 
         <div className="bg-white py-8">
           <div className="px-8 flex flex-col md:flex-row">
-            <div className="w-full md:w-[70%] px-4 py-4 shadow-lg">
+            <div className="w-full md:w-[70%] px-4 py-4 shadow-lg rounded-lg">
     
               <div className="prose max-w-none">
                 <p className="text-2xl font-semibold">{blog_Title}</p>
                 <img
                 src={blog_Image && blog_Image.url}
                 alt="Blog"
-                className="mb-2"
+                className="mb-2 rounded-lg"
               />
                 <p className="text-lg text-red-700 mb-0">{blog_Category}</p>
                 <p
@@ -115,8 +115,8 @@ const BlogView = () => {
               </div>
             </div>
 
-            <div className="w-full md:w-[30%] text-center">
-            <div className="relative w-[70%] ml-5 sm:mt-4">
+            <div className="w-full md:w-[30%] text-center max-sm:mt-10">
+            <div className="relative w-[70%] ml-5">
                   <input
                     type="text"
                     placeholder="Search"
@@ -127,19 +127,19 @@ const BlogView = () => {
                   </button>
                 </div>
 
-              <div className="text-center"> 
+              <div className="text-center max-sm:ml-0"> 
                 <h4 className="text-x text-start ml-7 text-red-600 mt-4 mb-3">
                 Recent posts
                 </h4>
-                <ul className="text-start">
-                  <li className="mb-2 px-3 py-1 shadow-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Why Investors Are Choosing Dwarka Expressway Over Other Gurgaon Areas</a></li>
-                  <li className="mb-2 px-3 py-1 shadow-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Luxury Real Estate Trends: What High-Net-Worth Buyers Want in 2025</a></li>
-                  <li className="mb-2 px-3 py-1 shadow-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Gurgaon’s Top Housing Destinations for a Quality Lifestyle</a></li>
-                  <li className="mb-2 px-3 py-1 shadow-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Green Living Redefined: The Future of Real Estate in India</a></li>
-                  <li className="mb-2 px-3 py-1 shadow-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Over ₹3 Lakh Crore Investment in Recent Years: Gurugram’s Real Estate Boom</a></li>
+                <ul className="text-start max-sm:ml-auto ">
+                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Why Investors Are Choosing Signature Global Towers Over Other Gurgaon Areas</a></li>
+                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Luxury Real Estate Trends: What High-Net-Worth Buyers Want in 2025</a></li>
+                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Gurgaon’s Top Housing Destinations for a Quality Lifestyle</a></li>
+                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Green Living Redefined: The Future of Real Estate in India</a></li>
+                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Over ₹3 Lakh Crore Investment in Recent Years: Gurugram’s Real Estate Boom</a></li>
                 </ul>
               </div>
-              <div className="shadow-md p-2 text-center rounded-lg mb-4 ml-7" style={{backgroundColor:"rgb(0,49,79)"}}>
+              <div className="shadow-md p-2 text-center rounded-lg mb-4 ml-7 max-sm:ml-0" style={{backgroundColor:"rgb(0,49,79)",position: "sticky", top: "60px", zIndex: "10"}}>
               <h4 className="text-xl text-white mb-3 text-center">
                 Enquire Now
                 </h4>
