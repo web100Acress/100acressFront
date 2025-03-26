@@ -72,7 +72,7 @@ export const budgetPlots = [
 
 export const Recommendedreordered = [
     "Trinity Sky Palazzo" ,
-    "Birla Arika",
-    "BPTP Verti Greens",
+    "Trump Towers Residences",
     "Experion The Trillion",
+    "Experion Nova"
 ];
