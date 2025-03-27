@@ -2,12 +2,15 @@ import React, { useEffect, useState, lazy } from 'react';
 import axios from'axios';
 const ReactQuill = lazy(()=> import('react-quill'));
 import 'react-quill/dist/quill.snow.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import {message} from "antd";
 
 export const BlogWriteModal = () => {
 
   const {id} = useParams();
+  const navigate = useNavigate();
   const token = localStorage.getItem("myToken");
+  const [messageApi, contextHolder] = message.useMessage();
 
   const [title, setTitle] = useState('');
   const [descripition, setDescription] = useState('');
@@ -64,30 +67,38 @@ export const BlogWriteModal = () => {
     const formDataAPI = new FormData();
     // Append data to formData only if it's not null
     if (title) {
-      console.log("Title",title);
+      // console.log("Title",title);
       formDataAPI.append('blog_Title', title);
     }
     if (frontImage) {
-      console.log("Image",frontImage);
+      // console.log("Image",frontImage);
       formDataAPI.append('blog_Image', frontImage);
     }
     if (descripition) {
-      console.log("Description",descripition);
+      // console.log("Description",descripition);
       formDataAPI.append('blog_Description', descripition);
     }
     if (categories) {
-      console.log("Category",categories);
+      // console.log("Category",categories);
       formDataAPI.append('blog_Category', categories); 
     }
 
     if(author){
-      console.log("Author",author);
+      // console.log("Author",author);
       formDataAPI.append('author', author);
     }
 
     const apiEndpoint = blogToEdit? `https://api.100acress.com/blog/Update/${blogId}` : 'https://api.100acress.com/blog/Insert';
     if (blogToEdit) {
       try {
+
+        messageApi.open({
+          key: 'updateloading',
+          type: 'loading',
+          content: 'Updating the blog...',
+          duration: 0,
+        });
+
         const res = await axios.put(apiEndpoint, formDataAPI,
           {
             headers: {
@@ -96,19 +107,41 @@ export const BlogWriteModal = () => {
             }
           }
         );
-        if(res.status === 200) {
-          console.log("Blog updated successfully");
+        if(res.statusText === "OK") {
+          messageApi.destroy('updateloading');
+          messageApi.open({
+            key: 'updateSuccess',
+            type: 'success',
+            content: 'Blog updated successfully', 
+          });
+          navigate("/seo/blogs");
         }
         else{
-          console.log("Error updating blog");
+          messageApi.destroy('updateloading');
+          messageApi.open({
+            key: 'updateError',
+            type:'error',
+            content: 'Error updating blog',
+          });
         }
       } catch (error) {
+        messageApi.destroy('updateloading');
+        messageApi.open({
+          key: 'updateError',
+          type:'error',
+          content: 'Error updating blog',
+        });
         console.error(error);
       }
     }
     else if(newBlog &&  !blogToEdit) {
-      console.log("Api End Point",apiEndpoint);
+
       try {
+        messageApi.open({
+          key: 'loadingNewBlog',
+          type: 'loading',
+          content: 'Adding New Blog...', 
+        });
         const res = await axios.post('https://api.100acress.com/blog/insert', formDataAPI,
           {
             headers: {
@@ -117,14 +150,33 @@ export const BlogWriteModal = () => {
             }
           }
         );
-        if(res.data.data) {
-          console.log("Blog inserted successfully");
+        if(res.statusText === "OK") {
+          messageApi.destroy('loadingNewBlog');
+          messageApi.open({
+            key: 'newBlogSuccess',
+            type:'success',
+            content: 'Blog added successfully',
+          });
+          navigate("/seo/blogs");
+          // console.log("Blog inserted successfully");
         } 
         else{
-          console.log("Error inserting blog"); 
+          messageApi.destroy('loadingNewBlog');
+          messageApi.open({
+            key: 'newBlogError',
+            type:'error',
+            content: 'Error adding blog',
+          });
+          // console.log("Error inserting blog"); 
         }
       }
       catch (error) {
+        messageApi.destroy('loadingNewBlog');
+        messageApi.open({
+          key: 'newBlogError',
+          type:'error',
+          content: 'Error adding blog in catch',
+        });
         console.error(error); 
       }
     }
@@ -142,6 +194,7 @@ export const BlogWriteModal = () => {
 
   return (
     <div className="flex items-center justify-center z-50 overflow-y-auto py-4">
+      {contextHolder}
       <div className="bg-white rounded-lg w-full mx-4  flex flex-col p-4">
         <div className="flex justify-between items-center py-2 border-b sticky top-0 bg-white z-10">
           <h2 className="text-2xl font-bold text-gray-900">
