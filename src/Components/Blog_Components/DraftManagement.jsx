@@ -1,19 +1,20 @@
 import { useState,useEffect } from "react"
 import axios from "axios"
 import { ArrowDown, ArrowUp, Edit, Eye, Plus, Trash2 } from "lucide-react";
-import { Modal, Switch } from "antd";
+import { Switch, Modal } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function BlogManagement() {
+export default function DraftBlogManagement() {
 
   const token = localStorage.getItem("myToken");
   const history = useNavigate();
+  const [isPublishedLoading, setIsPublishedLoading] = useState(false);
   // Sample blog data
   const [blogs, setBlogs] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState('Do you Want to delete this Blog?');
-  const [isPublishedLoading, setIsPublishedLoading] = useState(false);
 
   // State for search and sorting
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,6 +25,42 @@ export default function BlogManagement() {
   // Handle delete blog
   const showModal = () => {
     setOpenModal(true);
+  };
+
+  const handleIsPublished = async (checked,id) => {
+
+    setIsPublishedLoading(true);
+
+    try {
+      const res = await axios.patch(`https://api.100acress.com/blog/update/${id}`,
+      {
+        isPublished: checked,
+      },
+      {
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization': `Bearer ${token}`,
+        }
+      }
+    );
+      if(res.status >= 200 && res.status < 300) {
+        console.log("Blog status updated successfully");
+        setBlogs(prevBlogs => prevBlogs.map(blog => blog._id === id ? { ...blog, isPublished: checked } : blog));
+        console.log("Blog status updated successfully");
+        setIsPublishedLoading(false);
+      }
+      else {
+        setIsPublishedLoading(false);
+        console.log("Something went wrong while updating the blog status", res.data) 
+      }
+    }
+    catch (error) {
+      
+      console.log(error); 
+    }
+    finally {
+      setIsPublishedLoading(false);
+    }
   };
 
 
@@ -54,8 +91,8 @@ export default function BlogManagement() {
   // Filter and sort blogs
   const filteredBlogs = blogs?.filter(
       (blog) =>
-        blog?.blog_Title?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
-        blog?.author?.toLowerCase()?.includes(searchTerm?.toLowerCase()),
+        blog.blog_Title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        blog.author.toLowerCase().includes(searchTerm.toLowerCase()),
     )
     .sort((a, b) => {
       if (sortField === "date") {
@@ -66,11 +103,11 @@ export default function BlogManagement() {
         return sortDirection === "asc" ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)
       }
     });
-
+    
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const res = await axios.get("https://api.100acress.com/blog/view");
+            const res = await axios.get("https://api.100acress.com/blog/draft/view");
             setBlogs(res.data.data);
           } catch (error) {
             console.log(error);
@@ -87,43 +124,6 @@ export default function BlogManagement() {
       setSortDirection("desc")
     }
   }
-
- const handleIsPublished = async (checked,id) => {
-
-    setIsPublishedLoading(true);
-
-    try {
-      const res = await axios.patch(`https://api.100acress.com/blog/update/${id}`,
-      {
-        isPublished: checked,
-      },
-      {
-        headers: {
-          'Content-Type':'application/json',
-          'Authorization': `Bearer ${token}`,
-        }
-      }
-    );
-      if(res.status >= 200 && res.status < 300) {
-        setBlogs(prevBlogs => prevBlogs.map(blog=>
-          blog._id === id ? { ...blog, isPublished: checked } : blog
-        ));
-        setIsPublishedLoading(false);
-      }
-      else {
-        setIsPublishedLoading(false);
-        console.log("Something went wrong while updating the blog status", res.data) 
-      }
-    }
-    catch (error) {
-      
-      console.log(error); 
-    }
-    finally {
-      setIsPublishedLoading(false);
-    }
-  };
-
 
   function BlogPreview( description, maxLength = 80 ) {
     const getBlogPreview = (desc, maxLen) => {
@@ -172,7 +172,7 @@ const handleDeleteUser = async (id) => {
   return (
     <>
     
-      <div className="max-w-6xl  mx-auto p-4 md:p-6">
+      <div className="max-w-6xl  mx-auto p-4 md:p-6"> 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <h1 className="text-2xl md:text-3xl font-bold">Blog Management</h1>
           <Link to="/seo/blogs/write">
@@ -291,10 +291,12 @@ const handleDeleteUser = async (id) => {
                       { blog.createdAt ? <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                           {new Date(blog.createdAt).toLocaleDateString()}
                       </td> : <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>}
-    
+
+                          
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <Switch checked={blog?.isPublished} loading={isPublishedLoading}  onChange={(checked)=>handleIsPublished(checked,blog._id)} />
                       </td>
+    
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end gap-2">
                           <button

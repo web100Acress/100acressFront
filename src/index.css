@@ -11,30 +11,6 @@ html {
 }
 
 
-.react-quill-content ul {
-  list-style-type: disc !important; 
-  padding-left: 1rem !important; 
-}
-
-/* Optional: For ordered lists */
-.react-quill-content ol {
-  list-style-type: decimal !important;
-  padding-left: 1.5rem !important;
-}
-
-.ql-align-center {
-  text-align: center !important;
-}
-.ql-align-right {
-  text-align: right !important;
-}
-.ql-align-left {
-  text-align: left !important;
-}
-.ql-align-justify {
-  text-align: justify !important;
-}
-
 .font-AbrialFatFace{
   font-family: "Abril Fatface", sans-serif !important;
 }

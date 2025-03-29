@@ -3,7 +3,7 @@ import axios from'axios';
 const ReactQuill = lazy(()=> import('react-quill'));
 import 'react-quill/dist/quill.snow.css';
 import { useParams, useNavigate } from 'react-router-dom';
-import {message} from "antd";
+import {message, Switch} from "antd";
 
 export const BlogWriteModal = () => {
 
@@ -20,6 +20,7 @@ export const BlogWriteModal = () => {
   const [blogToEdit, setBlogToEdit] = useState(false);
   const [newBlog, setNewBlog] = useState(true);
   const [author, setAuthor] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchBlog = async () => {    
@@ -62,8 +63,10 @@ export const BlogWriteModal = () => {
     setCategories(selectedCategory); 
   }
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async(e,isPublished=false) => {
     e.preventDefault();
+    if(isSubmitting) return;
+    setIsSubmitting(true);
     const formDataAPI = new FormData();
     // Append data to formData only if it's not null
     if (title) {
@@ -88,6 +91,12 @@ export const BlogWriteModal = () => {
       formDataAPI.append('author', author);
     }
 
+    if(isPublished){
+      formDataAPI.append('isPublished', true);
+    }else{
+      formDataAPI.append('isPublished', false);
+    }
+    
     const apiEndpoint = blogToEdit? `https://api.100acress.com/blog/Update/${blogId}` : 'https://api.100acress.com/blog/Insert';
     if (blogToEdit) {
       try {
@@ -179,10 +188,12 @@ export const BlogWriteModal = () => {
         });
         console.error(error); 
       }
+      finally{
+        setIsSubmitting(false);
+      }
     }
     resetForm();
   };
-
 
   const resetForm = () => {
     setTitle('');
@@ -202,7 +213,7 @@ export const BlogWriteModal = () => {
           </h2>
         </div>
         <div className='overflow-y-auto flex-1'>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form className="space-y-6">
             <div>
                 <label
                 htmlFor="title"
@@ -284,11 +295,25 @@ export const BlogWriteModal = () => {
                 </select>
             </div>
             <div className="flex justify-end gap-4 pt-4">
+              {!blogToEdit 
+                &&
                 <button
-                type="submit"
-                className="px-4 py-2 text-white bg-primaryRed rounded-md hover:bg-red-700"
-                onClick={handleSubmit}
+                    type="button"
+                    className="px-4 py-2 text-white bg-gray-500 rounded-md hover:bg-gray-600"
+                    disabled={isSubmitting}
+                    onClick={(e)=>{handleSubmit(e,false)}}
+                  >
+                  {isSubmitting ? 'saving' :'Save to darft'}
+                </button>
+            }
+
+                <button
+                  type="button"
+                  className="px-4 py-2 text-white bg-primaryRed rounded-md hover:bg-red-700"
+                  onClick={(e)=>{handleSubmit(e,true); }}
+                  disabled={isSubmitting}
                 >
+                {isSubmitting?'Saving.... ' : ''}
                 {blogToEdit ? 'Update' : 'Create'}
                 </button>
             </div>
