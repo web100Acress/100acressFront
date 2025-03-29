@@ -24,7 +24,8 @@ const AppStore = configureStore({
         possession : PossessionReducer,
         ProjectOverview : ProjectOverviewReducer,
         PriceBased : PriceBasedReducer,
-    }
+    },
+    devTools: process.env.NODE_ENV !== 'production',
 });
 
 export default AppStore;
