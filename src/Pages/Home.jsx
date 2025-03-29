@@ -260,13 +260,15 @@ const Home = () => {
 
       <div className="relative w-full">
         <img
-          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/mainbgg.webp"
+          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/Navarathri.png"
           alt="Banner"
+          loading="lazy"
           className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
         />
         <img
           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/mainbgg.webp"
           alt="Mobile Banner"
+          loading="lazy"
           className="block md:hidden w-full h-[38rem]"
         />
 
@@ -278,7 +280,12 @@ const Home = () => {
       </div>
 
       <div className="relative">
-        <div className="absolute inset-0 bg-[#EE1C25] opacity-80"></div>
+        {/* <div className="absolute inset-0 bg-[#f17777]"></div> */}
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(to right top, #f17777, #541D13)',
+        }}></div>
+
+        
         <div className="relative">
           {/* <SpotlightBanner /> */}
           <HotProject />
