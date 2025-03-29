@@ -14,6 +14,9 @@ export default function BlogManagement() {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState('Do you Want to delete this Blog?');
   const [isPublishedLoading, setIsPublishedLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // State for search and sorting
   const [searchTerm, setSearchTerm] = useState("");
@@ -60,24 +63,25 @@ export default function BlogManagement() {
     .sort((a, b) => {
       if (sortField === "date") {
         return sortDirection === "asc"
-          ? new Date(a.date).getTime() - new Date(b.date).getTime()
-          : new Date(b.date).getTime() - new Date(a.date).getTime()
+          ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       } else {
-        return sortDirection === "asc" ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)
+        return sortDirection === "asc" ? a.blog_Title.localeCompare(b.blog_Title) : b.blog_Title.localeCompare(a.blog_Title)
       }
     });
 
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const res = await axios.get("https://api.100acress.com/blog/view");
+            const res = await axios.get(`https://api.100acress.com/blog/view?page=${currentPage}&limit=${pageSize}`);
             setBlogs(res.data.data);
+            setTotalPages(res.data.totalPages);
           } catch (error) {
             console.log(error);
           }
         };
         fetchData();
-      }, []);
+      }, [currentPage]);
   // Toggle sort direction
   const toggleSort = (field) => {
     if (sortField === field) {
@@ -227,8 +231,8 @@ const handleDeleteUser = async (id) => {
                   >
                     <div className="flex items-center gap-1">
                       Title
-                      {/* {sortField === "title" &&
-                        (sortDirection === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />)} */}
+                      {sortField === "title" &&
+                        (sortDirection === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />)}
                     </div>
                   </th>
                   <th
@@ -332,6 +336,22 @@ const handleDeleteUser = async (id) => {
                     </td>
                   </tr>
                 )}
+                <tfoot>
+                  <tr>
+                    {totalPages >= 1 && 
+                      <>
+                        <td className="px-6 py-4">
+                            <PaginationControls
+                              currentPage={currentPage}
+                              setCurrentPage={setCurrentPage}
+                              totalPages={totalPages}
+                            />
+                        </td>
+                      </>
+                    }
+
+                  </tr>
+                </tfoot>
               </tbody>
             </table>
           </div>
@@ -340,4 +360,37 @@ const handleDeleteUser = async (id) => {
     </>
   )
 }
+
+
+export const PaginationControls = ({currentPage,setCurrentPage, totalPages, }) => (
+  <div className="flex justify-between items-center mt-4">
+    <div className="flex gap-2">
+      <button
+        className={`px-4 py-2 rounded-md ${
+          currentPage === 1
+            ? 'bg-gray-300 cursor-not-allowed'
+            : 'bg-primaryRed hover:bg-red-700 text-white'
+        }`}
+        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+        disabled={currentPage === 1}
+      >
+        Previous
+      </button>
+            <div className="text-sm text-gray-600">
+              Page {currentPage} of {totalPages}
+            </div>
+      <button
+        className={`px-4 py-2 rounded-md ${
+          currentPage === totalPages
+            ? 'bg-gray-300 cursor-not-allowed'
+            : 'bg-primaryRed hover:bg-red-700 text-white'
+        }`}
+        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+        disabled={currentPage === totalPages}
+      >
+        Next
+      </button>
+    </div>
+  </div>
+);
 

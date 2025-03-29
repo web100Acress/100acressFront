@@ -3,6 +3,7 @@ import axios from "axios"
 import { ArrowDown, ArrowUp, Edit, Eye, Plus, Trash2 } from "lucide-react";
 import { Switch, Modal } from "antd";
 import { Link, useNavigate } from "react-router-dom";
+import { PaginationControls } from "./BlogManagement";
 
 export default function DraftBlogManagement() {
 
@@ -12,7 +13,9 @@ export default function DraftBlogManagement() {
   // Sample blog data
   const [blogs, setBlogs] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const [openEditModal, setOpenEditModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState('Do you Want to delete this Blog?');
 
@@ -97,18 +100,20 @@ export default function DraftBlogManagement() {
     .sort((a, b) => {
       if (sortField === "date") {
         return sortDirection === "asc"
-          ? new Date(a.date).getTime() - new Date(b.date).getTime()
-          : new Date(b.date).getTime() - new Date(a.date).getTime()
+          ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       } else {
-        return sortDirection === "asc" ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)
+        return sortDirection === "asc" ? a.blog_Title.localeCompare(b.blog_Title) : b.blog_Title.localeCompare(a.title)
       }
     });
     
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const res = await axios.get("https://api.100acress.com/blog/draft/view");
+            const res = await axios.get(`https://api.100acress.com/blog/draft/view?page=${currentPage}&limit=${pageSize}`);
+            console.log("Response",res.data);
             setBlogs(res.data.data);
+            setTotalPages(res.data.totalPages);
           } catch (error) {
             console.log(error);
           }
@@ -227,8 +232,8 @@ const handleDeleteUser = async (id) => {
                   >
                     <div className="flex items-center gap-1">
                       Title
-                      {/* {sortField === "title" &&
-                        (sortDirection === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />)} */}
+                      {sortField === "title" &&
+                        (sortDirection === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />)}
                     </div>
                   </th>
                   <th
@@ -335,6 +340,22 @@ const handleDeleteUser = async (id) => {
                   </tr>
                 )}
               </tbody>
+              <tfoot>
+                <tr>
+                  {
+                    totalPages >= 1 && (
+                      <td className="px-6 py-4 text-center">
+                        <PaginationControls
+                          currentPage={currentPage}
+                          setCurrentPage={setCurrentPage}
+                          totalPages={totalPages}
+                        />
+                      </td>
+                    )
+
+                  }
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>
