@@ -61,8 +61,7 @@ import Possessionin2024 from "./Pages/Possessionin2024";
 import Possessionin2025 from "./Pages/Possessionin2025";
 import Mumbai from "./Pages/ProjectCities/Mumbai";
 import KasauliProject from "./Pages/ProjectCities/KasauliProject";
-import Nh48 from "./Pages/Nh48";
-import MgRoad from "./Pages/MgRoad";
+import Sonipat from "./Pages/ProjectCities/Sonipat";
 import UnderConstruction from "./Pages/UnderConstruction";
 import NewLaunch from "./Pages/NewLaunch";
 import Ayodhya from "./Pages/ProjectCities/Ayodhya";
@@ -230,6 +229,7 @@ function App() {
               <Route path="/project-in-panipat/" element={<PanipatProject />} />
               <Route path="/project-in-panchkula/" element={<Panchkula />} />
               <Route path="/project-in-kasauli/" element={<KasauliProject />} />
+              <Route path="/projects-in-sonipat/" element={<Sonipat/>} />
               <Route path="/projects-in-karnal/" element={<Karnal />} />
               <Route path="/projects-in-jalandhar/" element={<Jalandhar />} />
               <Route path="/project-in-ayodhya/" element={<Ayodhya />} />
