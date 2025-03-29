@@ -266,10 +266,10 @@ const Home = () => {
           className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
         />
         <img
-          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/mainbgg.webp"
+          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/navratri+phone.png"
           alt="Mobile Banner"
           loading="lazy"
-          className="block md:hidden w-full h-[38rem]"
+          className="mt-14 block md:hidden w-full h-[38rem]"
         />
 
         {/* Center the SearchBar */}

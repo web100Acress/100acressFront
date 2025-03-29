@@ -161,7 +161,7 @@ function SearchBar() {
     <Wrapper className="section">
       <div className="qsbWrapper pt-0 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto lg:pb-14 md:pb-14 md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-14 sm:h-8 md:-mt-32 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-0 " style={{ maxWidth: '860px' }}>
       <div
-      className="sjdmkls w-80 md:w-auto lg:w-auto h-20 lg:h-8 md:h-8 text-center text-white text-3xl mb-4 bg-gradient-to-r from-purple-900 via-pink-500 to-yellow-400 bg-clip-text text-transparent animate-gradient bg-[length:200%] bg-[0%_center] flex items-center justify-center"
+      className="sjdmkls hidden sm:block w-80 md:w-auto lg:w-auto h-20 lg:h-8 md:h-8 text-center text-white text-3xl mb-4 bg-gradient-to-r from-purple-900 via-pink-500 to-yellow-400 bg-clip-text text-transparent animate-gradient bg-[length:200%] bg-[0%_center] flex items-center justify-center"
     >
       <Typewriter
         options={{
