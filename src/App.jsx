@@ -121,6 +121,7 @@ const UserDetails = lazy(()=>import("./AdminPage/UserDetails"));
 const BlogViewAdmin = lazy(()=>import("./AdminPage/BlogViewAdmin"));
 const SeoPrivateRoute =  lazy(() => import("./Components/Blog_Components/SeoPrivateRoute")) ;
 const BlogManagement = lazy(()=> import("./Components/Blog_Components/BlogManagement"));
+const DraftManagement = lazy(()=> import("./Components/Blog_Components/DraftManagement"));
 const BlogManagementSidebar = lazy(()=>import("./Components/Blog_Components/BlogManagementSidebar"));
 
 
@@ -393,6 +394,7 @@ function App() {
                   <Route path="write" element={<BlogWriteModal />} />
                   <Route path="view/:id" element={<BlogView />} />
                   <Route path="edit/:id" element={<BlogWriteModal />} />
+                  <Route path="drafts" element={<DraftManagement />} />
                 </Route>               
               </Route>
           </Routes>

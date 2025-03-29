@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import { Newspaper, Feather, FilePenLine, FilePlus2, LogOutIcon, MenuIcon, X } from 'lucide-react';
+import { Newspaper, Feather, FilePlus2, LogOutIcon, MenuIcon, X, NotebookText } from 'lucide-react';
 import axios from'axios';
 import { useNavigate } from'react-router-dom';
 
@@ -12,7 +12,7 @@ function BlogManagementSidebar() {
    const HandleUserLogout = async () => {
       console.log("User trying to logout..")
       try {
-        await axios.get("http://localhost:3500/postPerson/logout");
+        await axios.get("https://api.100acress.com/postPerson/logout");
         localStorage.removeItem("myToken");
         localStorage.removeItem("mySellerId");
         localStorage.removeItem("userRole");
@@ -63,9 +63,9 @@ function BlogManagementSidebar() {
                      </Link>
                </li>
                <li>
-               <Link to="/seo/blogs/edit/:id" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white pointer-events-none hover:text-white group " >
-                        <FilePenLine className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" />
-                     <span className="ms-3">Edit Blog</span>
+               <Link to="/seo/blogs/drafts" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group" >
+                        <NotebookText className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" />
+                     <span className="ms-3">All Draft</span>
                   </Link>
                </li>
                <li>

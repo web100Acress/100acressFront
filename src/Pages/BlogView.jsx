@@ -4,7 +4,8 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
-import DOMPurify from 'dompurify'; // Add this for security
+import DOMPurify from 'dompurify';
+import "./BlogView.css";
 
 
 const BlogView = () => {
@@ -118,7 +119,7 @@ const BlogView = () => {
                 className="my-4 rounded-lg"
               />
                 <div
-                  className="react-quill-content"
+                  className="react-quill-content ql-editor"
                   dangerouslySetInnerHTML={createSanitizedHTML(blog_Description)}
                 ></div>
               </div>
