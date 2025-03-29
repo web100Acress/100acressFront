@@ -738,6 +738,12 @@ export default function Navbar() {
                             Projects in Kasauli
                           </Link>
                           <Link
+                            to={`/projects-in-sonipat/`}
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            Projects in Sonipat
+                          </Link>
+                          <Link
                             to={`/projects-in-karnal/`}
                             className="block text-sm px-4 py-1 hover:text-red-600"
                           >

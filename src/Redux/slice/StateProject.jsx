@@ -11,6 +11,7 @@ const StateProjectSlice = createSlice({
     mumbai:[],
     panipat:[],
     panchkula:[],
+    sonipat:[],
     kasauli:[],
     karnal:[],
     jalandhar:[],
@@ -27,6 +28,9 @@ const StateProjectSlice = createSlice({
     },
     goa: (state, action) => {
         state.goa = action.payload;
+    },
+    sonipat: (state, action) => {
+        state.sonipat = action.payload;
     },
     ayodhya: (state, action) => {
         state.ayodhya = action.payload;
@@ -52,6 +56,6 @@ const StateProjectSlice = createSlice({
   },
 });
 
-export const {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar} = StateProjectSlice.actions;
+export const {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar,sonipat} = StateProjectSlice.actions;
 
 export default StateProjectSlice.reducer;
