@@ -65,7 +65,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                             <Link to={`/${pUrl}/`} target="_top">
 
                               <img
-                                src={item?.thumbnailImage?.url}
+                                src={item?.thumbnailImage?.cdn_url}
                                 alt="property In Gurugram"
                                 className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                                 loading="lazy"

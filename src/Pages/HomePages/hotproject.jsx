@@ -202,7 +202,7 @@ const ImageGallery = React.memo(() => {
 
               <ImageWrapper key={index}>
                 <Image
-                  src={image?.thumbnailImage?.url}
+                  src={image?.thumbnailImage?.cdn_url || image?.thumbnailImage?.url}
                   alt={`image-${index}`}
                   className="relative w-full h-full object-contain rounded-lg animate-fadeInLeft"
                   loading="lazy"
