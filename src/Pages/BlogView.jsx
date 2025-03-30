@@ -81,7 +81,7 @@ const BlogView = () => {
 
   const createSanitizedHTML = (dirtyHTML) => ({
     __html: DOMPurify.sanitize(dirtyHTML, {
-      ALLOWED_TAGS: ['p', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'a', 'img'],
+      ALLOWED_TAGS: ['p', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'a', 'img','br'],
       ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style']
     })
   });
