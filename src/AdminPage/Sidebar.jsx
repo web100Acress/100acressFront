@@ -90,7 +90,7 @@ const Sidebar = () => {
               <span className="text-lg font-semibold">Buy</span>
             </Link>
             <Link
-              to="/Admin/userdetails"
+              to="/Admin/all-listed-properties"
               className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0"
             >
               <FaHome className="icon fa-sm m-3.5" />{" "}

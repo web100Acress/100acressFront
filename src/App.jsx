@@ -116,7 +116,7 @@ const CareerEdit = lazy(()=> import("./AdminPage/CareerEdit"));
 const JobPostingView = lazy(()=> import("./AdminPage/JobPostingView"));
 const JobPostingEdit = lazy(()=> import("./AdminPage/JobPostingEdit"));
 const InsertProject = lazy(()=>import("./AdminPage/InsertProject"));
-const UserDetails = lazy(()=>import("./AdminPage/UserDetails"));
+const AllListedProperties = lazy(()=>import("./AdminPage/AllListedProperties"));
 const BlogViewAdmin = lazy(()=>import("./AdminPage/BlogViewAdmin"));
 const SeoPrivateRoute =  lazy(() => import("./Components/Blog_Components/SeoPrivateRoute")) ;
 const BlogManagement = lazy(()=> import("./Components/Blog_Components/BlogManagement"));
@@ -326,7 +326,7 @@ function App() {
                 <Route path="blog/edit/:id" element={<LazyLoad><BlogEdit /></LazyLoad>} />
                 <Route path="career" element={<LazyLoad><Career /></LazyLoad>} />
                 <Route path="user" element={<LazyLoad><UserAdmin /></LazyLoad>} />
-                <Route path="userdetails" element={<LazyLoad><UserDetails /></LazyLoad>} />
+                <Route path="all-listed-properties" element={<LazyLoad><AllListedProperties /></LazyLoad>} />
                 <Route path="contact" element={<LazyLoad><AdminContact /></LazyLoad>} />
                 <Route path="editProject" element={<LazyLoad><EditProject /></LazyLoad>} />
                 <Route path="enquiries" element={<LazyLoad><Enquiries /></LazyLoad>} />
