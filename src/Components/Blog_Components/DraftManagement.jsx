@@ -103,7 +103,7 @@ export default function DraftBlogManagement() {
           ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
           : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       } else {
-        return sortDirection === "asc" ? a.blog_Title.localeCompare(b.blog_Title) : b.blog_Title.localeCompare(a.title)
+        return sortDirection === "asc" ? a.blog_Title.localeCompare(b.blog_Title) : b.blog_Title.localeCompare(a.blog_Title)
       }
     });
     
