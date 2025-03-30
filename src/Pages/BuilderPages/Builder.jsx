@@ -13,57 +13,57 @@ const Builder = () => {
         {
             title: "Signature Global",
             link: "/developers/signature-global/",
-            image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/signature.webp",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
         },
         {
             title: "M3M India",
             link: "/developers/m3m-india/",
-            image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/m3m.webp",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3m.webp",
         },
         {
             title: "DLF Homes",
             link: "/developers/dlf-homes/",
-            image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/dlf.png",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/dlf.png",
         },
         {
             title: "EXPERION Developers",
             link: "/developers/experion-developers/",
-            image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/experion.webp",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/experion.webp",
         },
         {
             title: "ELAN Group",
             link: "/developers/elan-group/",
-            image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/elan-logo.webp",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/elan-logo.webp",
         },
         {
             title: "BPTP Limited",
             link: "/developers/bptp-limited/",
-            image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/bptp.webp",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp",
         },
         {
             title: "Adani Realty",
             link: "/developers/adani-realty/",
-            image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/adanireality.webp",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/adanireality.webp",
         },
         {
             title: "Trevoc Group",
             link: "/developers/trevoc-group/",
-            image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/trevoc.webp",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/trevoc.webp",
         },
         {
             title: "Indiabulls Real Estate",
             link: "/developers/indiabulls-real-estate/",
-            image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/indiabulls.webp",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/indiabulls.webp",
         },
         {
             title: "SmartWorld Developers",
             link: "/developers/smartworld-developers/",
-            image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/smartworld.webp",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/smartworld.webp",
         },
         {
             title: "Central Park",
             link: "/developers/central-park/",
-            image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/centralpark.jpg"
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg"
         }
     ]
 

@@ -11,32 +11,32 @@ const Builderaction = () => {
         {
           title: "Adani Realty",
           link:"developers/adani-realty",
-          image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/adanireality.webp",
-          backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/zcasashag5pnabbtk9ox"
+          image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/adanireality.webp",
+          backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/zcasashag5pnabbtk9ox"
         },
         { 
           title: "M3M India", 
           link: "/developers/m3m-india/", 
-          image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/m3m.webp", 
-          backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/m3mbuilderimage.jpg"
+          image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3m.webp", 
+          backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3mbuilderimage.jpg"
         },
         { 
           title: "Central Park", 
           link: "/developers/central-park/", 
-          image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/centralpark.jpg" ,
-          backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/centralparkprojct.jpg"
+          image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg" ,
+          backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralparkprojct.jpg"
         },
         { 
           title: "Experion", 
           link: "/developers/experion-developers/", 
-          image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/experion.webp" ,
-          backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/r1kwr3owxa7nevtqzl3b"
+          image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/experion.webp" ,
+          backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/r1kwr3owxa7nevtqzl3b"
         },
         { 
           title: "Signature", 
           link: "/developers/signature-global/", 
-          image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/builder/signature.webp" ,
-          backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/dhxv9npqtof8mlrwvanx"
+          image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp" ,
+          backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/dhxv9npqtof8mlrwvanx"
         }
       ];
     
