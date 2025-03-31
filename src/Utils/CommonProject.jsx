@@ -27,6 +27,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
   }, []);
 
   const response = data;
+  console.log(data,"dfd")
 
   return (
     <>
@@ -65,7 +66,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                             <Link to={`/${pUrl}/`} target="_top">
 
                               <img
-                                src={item?.thumbnailImage?.cdn_url}
+                                src={`https://d16gdc5rm7f21b.cloudfront.net/${item?.thumbnailImage?.public_id}`}
                                 alt="property In Gurugram"
                                 className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                                 loading="lazy"
