@@ -9,7 +9,6 @@ const Properties = () => {
   let city = "Gurugram";
   const {getProjectbyState} = Api_service();
   const gurugramProject = useSelector(store => store?.stateproject?.gurugram);
-
   const [filtereddata,setFilteredData] = useState([]);
   const [datafromsearch,setDatafromsearch] = useState({});
   function handleDatafromSearch(data){
@@ -68,7 +67,7 @@ const Properties = () => {
           and modern amenities, to enhance the standard of urban living and
           encourage investment from businesses in the rapidly growing city.
         </h2>
-        <ProjectSearching searchdata={gurugramProject} sendDatatoparent={handleDatafromSearch}/>
+        <ProjectSearching searchdata={gurugramProject} sendDatatoparent={handleDatafromSearch} city={city}/>
         <CommonInside
         Actualdata={filtereddata.length === 0 ? datafromsearch?.gurugramProject : filtereddata}
         />
