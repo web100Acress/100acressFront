@@ -49,8 +49,16 @@ const NewBanner = () => {
   const {getProjectbyBuilder} = Api_Service();
   const [builderProject, setBuilderProject] = useState([]); 
   const [error, setError] = useState(null);
-  let query = projectViewDetails?.builderName || [];
+  const query = projectViewDetails?.builderName ;
+  const pUrlRef = useRef(pUrl);
 
+  useEffect(() => {
+
+    if (pUrlRef.current !== pUrl) {
+      console.log(pUrl,"dfd");
+      pUrlRef.current = pUrl; 
+    }
+  }, [pUrl]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,8 +72,6 @@ const NewBanner = () => {
 
     fetchData();
   }, [query]);
-  console.log(builderProject,"result");
-
 
   const {
     frontImage,
@@ -1577,7 +1583,7 @@ const NewBanner = () => {
                                       <span className="text-lg font-bold text-gray-900 text-center">
                                         <span className="mr-1">₹</span>
                                         {project.minPrice < 1 ? (
-                                          <span>{project.minPrice * 100} L</span>
+                                          <span>{(project.minPrice * 100).toFixed(2)} L</span>
                                         ) : (
                                           <span>{project.minPrice} Cr </span>
                                         )}
