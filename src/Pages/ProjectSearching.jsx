@@ -1,14 +1,14 @@
 import React, {  useEffect, useState } from "react";
-const ProjectSearching = ({searchdata,sendDatatoparent}) => {
-  
+
+const ProjectSearching = ({searchdata,sendDatatoparent,city}) => {
   const [project, setProject] = useState("");
+  const [projectstatus, setProjectstatus] = useState("");
   const [location, setLocation] = useState("");
   const [projectType, setProjectType] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-
   const [filteredProjects, setFilteredProjects] = useState([]);
-
+ 
   const handlePriceChange = (e) => {
     const [min, max] = e.target.value.split(",").map(value => value === "Infinity" ? Infinity : parseFloat(value));
   
@@ -25,6 +25,8 @@ const ProjectSearching = ({searchdata,sendDatatoparent}) => {
           item.projectAddress.toLowerCase().includes(location.toLowerCase())) &&
         (projectType === "" ||
           item.type.toLowerCase().includes(projectType.toLowerCase())) &&
+        (projectstatus === "" ||
+          item.project_Status === projectstatus) &&
         (minPrice === "" || item.minPrice >= minPrice) &&
         (maxPrice === "" || item.maxPrice <= maxPrice) &&
         item.city.toLowerCase() === "gurugram"
@@ -42,7 +44,7 @@ const ProjectSearching = ({searchdata,sendDatatoparent}) => {
     <>
       <div className="hidden lg:flex items-center px-10 bg-gray-200  justify-center rounded-full mt-4">
         <div className="w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-5 md:grid-cols-1 sm:grid-cols-1 gap-4 pt-6 mb-4">
+        <div className={`grid grid-cols-1 ${city === "Gurugram" ? "lg:grid-cols-6" : "lg:grid-cols-5"} md:grid-cols-1 sm:grid-cols-1 gap-4 pt-6 mb-4`}>
             <div className="relative">
               <input
                 type="text"
@@ -81,6 +83,22 @@ const ProjectSearching = ({searchdata,sendDatatoparent}) => {
                 <option value="Dwarka Expressway">Dwarka Expressway</option>
               </select>
             </div>
+            {city === "Gurugram" && (<div className="relative hidden lg:block">
+              <select
+                className="border-[1px] border-[#C13B44] rounded-3xl outline-none p-2 pr-8 w-full"
+                value={projectstatus}
+                onChange={(e) => setProjectstatus(e.target.value)}
+              >
+                <option value="" disabled hidden>
+                  Project Status
+                </option>
+                <option value="comingsoon">Upcoming Projects</option>
+                <option value="newlaunch">New Lauch Projects</option>
+                <option value="underconstruction">Under Constructions</option>
+                <option value="readytomove">Ready To Move</option>
+                
+              </select>
+            </div>)}
 
             <div className="relative sm:col-span-1 hidden lg:block">
               <select
