@@ -1,3 +1,7 @@
+.ql-editor {
+  letter-spacing: 0.75px !important;
+}
+
 .react-quill-content ul {
   list-style-type: disc !important;
   padding-left: 1rem !important;

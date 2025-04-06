@@ -112,7 +112,7 @@ const BlogView = () => {
     
               <div className="prose max-w-none">
                 <p className="text-lg text-primaryRed my-2">{blog_Category}</p>
-                <p className="text-4xl my-4">{blog_Title}</p>
+                <h1 className="text-4xl my-4">{blog_Title}</h1>
                 <img
                 src={blog_Image?.url}
                 alt="Blog"
