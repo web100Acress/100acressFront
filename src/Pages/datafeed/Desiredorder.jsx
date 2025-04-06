@@ -31,6 +31,9 @@ export const imageSrc = [
     {
       image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/t5.webp", link:"/developers/m3m-india/"
     },
+    {
+      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/t6.webp", link:"/paras-floret/"
+    }
 
   ];
 
@@ -50,6 +53,9 @@ export const phoneSrc = [
   {
     image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/phone5.webp", link:"/developers/m3m-india/"
   },
+  {
+    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/phone6.webp", link:"/paras-floret/"
+  }
 ];
 
 export const budgetPlots = [
