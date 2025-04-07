@@ -32,7 +32,7 @@ const AllListedProperties = () => {
     try {
       setIsLoading(true);
       const res = await axios.get(
-        `https://api.100acress.com/postPerson/view/allListedProperty/?page=${currentPage}&limit=${pageLimit}&verify=${isVerified}`,
+        `http://localhost:3500/postPerson/view/allListedProperty/?page=${currentPage}&limit=${pageLimit}&verify=${isVerified}`,
         { 
           headers: {
             "Content-Type": "application/json",
@@ -225,7 +225,6 @@ const AllListedProperties = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {allListedProperty.length > 0 ? (
                     allListedProperty.map((property) => (
-                      <>
                       <tr key={property._id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
@@ -284,7 +283,6 @@ const AllListedProperties = () => {
                           </div>
                         </td>
                       </tr>
-                      </>
                     ))
                   ) : (
                     <tr>
