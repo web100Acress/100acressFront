@@ -182,7 +182,7 @@ const Blogging = () => {
 
       <div className="w-full px-4 sm:px-10">
         <div className="w-full grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-6">
-          {blogData.slice(0, 6).map((item, index) => {
+          {blogData.map((item, index) => {
             const blogTitle = item.blog_Title;
             return (
               <article

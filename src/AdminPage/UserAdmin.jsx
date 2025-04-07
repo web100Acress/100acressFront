@@ -15,13 +15,19 @@ const UserAdmin = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(25);
   const [searchTerm, setSearchTerm] = useState("");
-  const [myToken, setMyToken] = useState("");
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const myToken = localStorage.getItem("myToken");
         const res = await axios.get(
-          "https://api.100acress.com/postPerson/view"
+          "https://api.100acress.com/postPerson/view/allusers",
+          {
+            headers: {
+              Authorization: `Bearer ${myToken}`,
+              "Content-Type": "application/json",
+            }, 
+          }
         );
         setViewAll(res.data.data);
       } catch (error) {
