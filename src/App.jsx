@@ -78,6 +78,7 @@ import Karnal from "./Pages/ProjectCities/Karnal";
 import Jalandhar from "./Pages/ProjectCities/Jalandhar";
 import LuxuryProject from "./Pages/BuilderPages/LuxuryProjects";
 import LazyLoad from "react-lazyload";
+import { BlogWriteModal } from "./AdminPage/BlogWriteModal";
 const Addnew = lazy(()=>import(  "./AdminPage/Addnew"));
 const Adminproperty = lazy(()=>import(  "./AdminPage/Adminproperty"));
 const Dashboard = lazy(()=>import(  "./AdminPage/Dashboard"));
@@ -115,8 +116,12 @@ const CareerEdit = lazy(()=> import("./AdminPage/CareerEdit"));
 const JobPostingView = lazy(()=> import("./AdminPage/JobPostingView"));
 const JobPostingEdit = lazy(()=> import("./AdminPage/JobPostingEdit"));
 const InsertProject = lazy(()=>import("./AdminPage/InsertProject"));
-const UserDetails = lazy(()=>import("./AdminPage/UserDetails"));
+const AllListedProperties = lazy(()=>import("./AdminPage/AllListedProperties"));
 const BlogViewAdmin = lazy(()=>import("./AdminPage/BlogViewAdmin"));
+const SeoPrivateRoute =  lazy(() => import("./Components/Blog_Components/SeoPrivateRoute")) ;
+const BlogManagement = lazy(()=> import("./Components/Blog_Components/BlogManagement"));
+const DraftManagement = lazy(()=> import("./Components/Blog_Components/DraftManagement"));
+const BlogManagementSidebar = lazy(()=>import("./Components/Blog_Components/BlogManagementSidebar"));
 
 
 function App() {
@@ -299,93 +304,98 @@ function App() {
             </Route>
 
             {/* Admin Routing */}
-              <Route  element={<PrivateRoute />}>
-                       
+              <Route path="/admin" element={<PrivateRoute />}>
+                <Route index element={<LazyLoad><Dashboard /></LazyLoad>} />              
                 <Route
-                  path="/Admin/acress/dashboard"
-                  element={<LazyLoad><PrivateRoute /></LazyLoad>}
-                />
-              
-                <Route
-                  path="/Admin/viewproperty/:id"
+                  path="viewproperty/:id"
                   element={<LazyLoad><ViewPropertyAdmin /></LazyLoad>}
                 />
                 {/* hi there */}
                 <Route
-                  path="/Admin/viewproperty/viewdetails/:id"
+                  path="viewproperty/viewdetails/:id"
                   element={<LazyLoad><ClientDetails /></LazyLoad>}
                 />
                 <Route
-                  path="/Admin/viewproperty/editdetails/:id"
+                  path="viewproperty/editdetails/:id"
                   element={<LazyLoad><EditDetails /></LazyLoad>}
                 />
-                <Route path="/Admin/dashboard" element={<LazyLoad><Dashboard /></LazyLoad>} />
-                <Route path="/Admin/addnew" element={<LazyLoad><Addnew /></LazyLoad>} />
-                <Route path="/Admin/project-insert" element={<LazyLoad><InsertProject /></LazyLoad>} />
-                <Route path="/Admin/adminproperty" element={<LazyLoad><Adminproperty /></LazyLoad>} />
-                <Route path="/Admin/blog/view/:id" element={<LazyLoad><BlogViewAdmin /></LazyLoad>} />
-                <Route path="/Admin/blog/edit/:id" element={<LazyLoad><BlogEdit /></LazyLoad>} />
-                <Route path="/Admin/career" element={<LazyLoad><Career /></LazyLoad>} />
-                <Route path="/Admin/user" element={<LazyLoad><UserAdmin /></LazyLoad>} />
-                <Route path="/Admin/userdetails" element={<LazyLoad><UserDetails /></LazyLoad>} />
-                <Route path="/Admin/contact" element={<LazyLoad><AdminContact /></LazyLoad>} />
-                <Route path="/Admin/editProject" element={<LazyLoad><EditProject /></LazyLoad>} />
-                <Route path="/Admin/enquiries" element={<LazyLoad><Enquiries /></LazyLoad>} />
-                <Route path="/Admin/header" element={<LazyLoad><Header /></LazyLoad>} />
-                <Route path="/Admin/Projects/property" element={<LazyLoad><Projects /></LazyLoad>} />
-                <Route path="/Admin/resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />
-                <Route path="/Admin/jobposting" element={<LazyLoad><JobPosting /></LazyLoad>} />
-                <Route path="/Admin/blog" element={<LazyLoad><Blog /></LazyLoad>} />
+                <Route path="addnew" element={<LazyLoad><Addnew /></LazyLoad>} />
+                <Route path="project-insert" element={<LazyLoad><InsertProject /></LazyLoad>} />
+                <Route path="adminproperty" element={<LazyLoad><Adminproperty /></LazyLoad>} />
+                <Route path="blog/view/:id" element={<LazyLoad><BlogViewAdmin /></LazyLoad>} />
+                <Route path="blog/edit/:id" element={<LazyLoad><BlogEdit /></LazyLoad>} />
+                <Route path="career" element={<LazyLoad><Career /></LazyLoad>} />
+                <Route path="user" element={<LazyLoad><UserAdmin /></LazyLoad>} />
+                <Route path="all-listed-properties" element={<LazyLoad><AllListedProperties /></LazyLoad>} />
+                <Route path="contact" element={<LazyLoad><AdminContact /></LazyLoad>} />
+                <Route path="editProject" element={<LazyLoad><EditProject /></LazyLoad>} />
+                <Route path="enquiries" element={<LazyLoad><Enquiries /></LazyLoad>} />
+                <Route path="header" element={<LazyLoad><Header /></LazyLoad>} />
+                <Route path="Projects/property" element={<LazyLoad><Projects /></LazyLoad>} />
+                <Route path="resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />
+                <Route path="jobposting" element={<LazyLoad><JobPosting /></LazyLoad>} />
+                <Route path="blog" element={<LazyLoad><Blog /></LazyLoad>} />
                 <Route
-                  path="/Admin/jobposting/view/:id"
+                  path="jobposting/view/:id"
                   element={<LazyLoad> <JobPostingView /></LazyLoad>}
                 />
                 <Route
-                  path="/Admin/jobposting/edit/:id"
+                  path="jobposting/edit/:id"
                   element={<LazyLoad> <JobPostingEdit /></LazyLoad>}
                 />
-                <Route path="/Admin/rent/view/:id" element={<LazyLoad> <RentView /></LazyLoad>} />
-                <Route path="/Admin/rent/view/edit/:id" element={<LazyLoad> <RentEdit /></LazyLoad>} />
+                <Route path="rent/view/:id" element={<LazyLoad> <RentView /></LazyLoad>} />
+                <Route path="rent/view/edit/:id" element={<LazyLoad> <RentEdit /></LazyLoad>} />
                 <Route
-                  path="/admin/acress/property/aadhar"
+                  path="acress/property/aadhar"
                   element={<LazyLoad> <Sidebar /></LazyLoad>}
                 />
-                <Route path="/Admin/buy" element={<LazyLoad> <Buy /></LazyLoad>} />
-                <Route path="/Admin/buy/view/:id" element={<LazyLoad> <BuyView /></LazyLoad>} />
-                <Route path="/Admin/buy/view/edit/:id" element={<LazyLoad> <BuyEdit /></LazyLoad>} />
-                <Route path="/Admin/contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
+                <Route path="buy" element={<LazyLoad> <Buy /></LazyLoad>} />
+                <Route path="buy/view/:id" element={<LazyLoad> <BuyView /></LazyLoad>} />
+                <Route path="buy/view/edit/:id" element={<LazyLoad> <BuyEdit /></LazyLoad>} />
+                <Route path="contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
                 <Route
-                  path="/Admin/ContactUs/UserProfile"
+                  path="ContactUs/UserProfile"
                   element={<LazyLoad> <UserProfile /></LazyLoad>}
                 />
                 <Route
-                  path="/Admin/ProjectsView/:pUrl"
+                  path="ProjectsView/:pUrl"
                   element={<LazyLoad> <ProjectView /></LazyLoad>}
                 />
-                <Route path="/Admin/ProjectsEdit/:id" element={<LazyLoad> <ProjectEdit /></LazyLoad>} />
-                <Route path="/Admin/careerview/:id" element={<LazyLoad> <CareerView /></LazyLoad>} />
-                <Route path="/Admin/careerEdit/:id" element={<LazyLoad> <CareerEdit /></LazyLoad>} />
+                <Route path="ProjectsEdit/:id" element={<LazyLoad> <ProjectEdit /></LazyLoad>} />
+                <Route path="careerview/:id" element={<LazyLoad> <CareerView /></LazyLoad>} />
+                <Route path="careerEdit/:id" element={<LazyLoad> <CareerEdit /></LazyLoad>} />
                 <Route
-                  path="/Admin/projecteditbhk/:id"
+                  path="projecteditbhk/:id"
                   element={<LazyLoad> <ProjectEditBHK /></LazyLoad>}
                 />
                 <Route
-                  path="/Admin/projectedithighlight/:id"
+                  path="projectedithighlight/:id"
                   element={<LazyLoad> <ProjectEditHighlight /></LazyLoad>}
                 />
                 <Route
-                  path="/Admin/ProjectsAddBhk/:id"
+                  path="ProjectsAddBhk/:id"
                   element={<LazyLoad> <ProjectsAddBhk /></LazyLoad>}
                 />
-                <Route path="/Admin/adminProperty" element={<LazyLoad> <Adminproperty /></LazyLoad>} />
+                <Route path="adminProperty" element={<LazyLoad> <Adminproperty /></LazyLoad>} />
                 <Route
-                  path="/Admin/ProjectAddHighlights/:id"
+                  path="ProjectAddHighlights/:id"
                   element={<LazyLoad> <ProjectAddHighligths /></LazyLoad>}
                 />
                 <Route
-                  path="/dashboard"
-                  element={<PrivateRoute element={<LazyLoad><Dashboard /></LazyLoad>} />}
+                  path="dashboard"
+                  element={<LazyLoad><Dashboard /></LazyLoad>}
                 />
+              </Route>
+
+              {/* Blog route only user with role Blog will be able to login */}
+              <Route path="/seo/" element={<SeoPrivateRoute />}>
+                <Route path="blogs" element={<BlogManagementSidebar />} >
+                  <Route index element={<BlogManagement />} />
+                  <Route path="write" element={<BlogWriteModal />} />
+                  <Route path="view/:id" element={<BlogView />} />
+                  <Route path="edit/:id" element={<BlogWriteModal />} />
+                  <Route path="drafts" element={<DraftManagement />} />
+                </Route>               
               </Route>
           </Routes>
           {/* </Router> */}

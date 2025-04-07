@@ -207,11 +207,16 @@
 
 
 
-import React from 'react'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   return (
-    <div>Dashboard</div>
+    <div className='w-full h-screen flex flex-col justify-center items-center'>
+      <div>This Dashboard is under maintainance...</div>
+      <button className='p-2 my-4 rounded bg-primaryRed text-white font-semibold' onClick={() => navigate('/admin/user')}>Go to User</button>
+    </div>
   )
 }
 

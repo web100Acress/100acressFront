@@ -102,7 +102,7 @@ const UserDashBoard = () => {
       <hr className="mx-10" />
 
       <div>
-        <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl">
+        <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl">
           All Your Listing Property on 100acress Are Up-To-Date
         </h2>
       </div>

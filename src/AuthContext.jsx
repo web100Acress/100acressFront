@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState("");
   const { decodedToken } = useJwt(localStorageToken);
   const [isAdmin, setIsAdmin] = useState(false);  
+  const [isContentWriter, setIsContentWriter] = useState(false);  
 
   const [agentData, setAgentData] = useState({
     name: "",
@@ -79,7 +80,7 @@ export const AuthProvider = ({ children }) => {
               const sellerId = roleResponse.data.User._id;
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
               if (roleResponse.data.User.role === "Admin" || roleResponse.data.User.role === admin) {
-                history("/Admin/dashboard");
+                history("/Admin/user");
               } else {
                 history("/userdashboard/");
                 window.location.reload()
@@ -294,6 +295,8 @@ export const AuthProvider = ({ children }) => {
         decodedTokenState,
         isAdmin,
         setIsAdmin,
+        isContentWriter,
+        setIsContentWriter,
       }}
     >
       {children}

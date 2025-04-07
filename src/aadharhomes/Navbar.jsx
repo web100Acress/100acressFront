@@ -26,11 +26,16 @@ import { message } from "antd";
 import { useDispatch } from "react-redux";
 import { maxprice, minprice } from "../Redux/slice/PriceBasedSlice";
 import {Modal} from "antd";
+import { useJwt } from "react-jwt";
+
 const SpacerComponent = () => <Box width="60px" />;
 
 const MenuListContainer = ({ isOpen }) => {
   console.log(isOpen)
   const history = useNavigate();
+  const token = JSON.parse(localStorage.getItem("myToken"));
+  const {decodedToken} = useJwt(token || "");
+
   const ShowLogOutMessage = () => {
     message.success("Logged Out Successfully !")
   };
@@ -46,7 +51,7 @@ const MenuListContainer = ({ isOpen }) => {
       console.error("Logout failed:", error);
     }
   };
-  const token = localStorage.getItem("myToken");
+
   return (
     <>
       {token ? (
@@ -66,6 +71,10 @@ const MenuListContainer = ({ isOpen }) => {
 
             <MenuItem fontSize="sm">
               <NavLink to={`/userdashboard/`}>View Profile</NavLink>
+            </MenuItem>
+            <MenuItem fontSize="sm">
+              { decodedToken?.role === "Admin" && <NavLink to={`/Admin/user`}>Admin</NavLink>}
+              { decodedToken?.role === "ContentWriter" && <NavLink to={`/seo/blogs`}>Blog Management</NavLink>}
             </MenuItem>
 
             <MenuItem fontSize="sm">
