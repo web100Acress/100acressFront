@@ -27,7 +27,6 @@ const CommonProject = ({ data, title, path ,animation }) => {
   }, []);
 
   const response = data;
-  console.log(data,"dfd")
 
   return (
     <>
@@ -116,7 +115,11 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                         <>{item.minPrice}</>
                                       )}
                                       {" - "}
-                                      {item.maxPrice} Cr
+                                      {item.maxPrice < 1 ? (
+                                        <>{(item.maxPrice * 100).toFixed()} L</>
+                                      ) : (
+                                        <>{item.maxPrice} Cr</>
+                                      )}
                                     </>
                                   )}
                                 </span>

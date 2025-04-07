@@ -262,13 +262,11 @@ const Home = () => {
         <img
           src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/Navarathri.webp"
           alt="Banner"
-          loading="lazy"
           className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
         />
         <img
           src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/navratri+phone.webp"
           alt="Mobile Banner"
-          loading="lazy"
           className="mt-14 block md:hidden w-full h-[38rem]"
         />
 
