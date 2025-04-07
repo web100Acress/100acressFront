@@ -253,7 +253,6 @@ export default function Navbar() {
                     width={["xs", "sm", "md", "lg"]}
                     src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/lg.webp"
                     alt="100acress"
-                    loading="lazy"
                     marginBottom={2}
                   />
                 </Link></>):(<><Link to={"/"}>
@@ -263,7 +262,6 @@ export default function Navbar() {
                     width={["xs", "sm", "md", "lg"]}
                     src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
                     alt="100acress"
-                    loading="lazy"
                     marginBottom={2}
                   />
                 </Link></>)}
@@ -279,7 +277,6 @@ export default function Navbar() {
                     width={["xs", "sm", "md", "lg"]}
                     src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/lg.webp"
                     alt="100acress"
-                    loading="lazy"
                     marginBottom={2}
                   />
                 </Link></>):(<><Link to={"/"}>
@@ -289,7 +286,6 @@ export default function Navbar() {
                     width={["xs", "sm", "md", "lg"]}
                     src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
                     alt="100acress"
-                    loading="lazy"
                     marginBottom={2}
                   />
                 </Link></>)}
