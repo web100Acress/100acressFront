@@ -25,9 +25,11 @@ import ScrollSearch from "./ScollSearch";
 import { message } from "antd";
 import { useDispatch } from "react-redux";
 import { maxprice, minprice } from "../Redux/slice/PriceBasedSlice";
+import {Modal} from "antd";
 const SpacerComponent = () => <Box width="60px" />;
 
 const MenuListContainer = ({ isOpen }) => {
+  console.log(isOpen)
   const history = useNavigate();
   const ShowLogOutMessage = () => {
     message.success("Logged Out Successfully !")
@@ -125,6 +127,19 @@ export default function Navbar() {
 
   const dispatch = useDispatch();
   const [colorChange, setColorchange] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 	const changeNavbarColor = () => {
 		if (window.scrollY >= 150) {
 			setColorchange(true);
@@ -812,6 +827,7 @@ export default function Navbar() {
                         </div>
                         {/* I am Working here */}
                         <div className="w-48">
+                        <div >
                           <Link className="block text-black text-lg px-4 py-1 hover:text-red-600">
                             Project Status
                             <hr className="mt-1" />
@@ -844,6 +860,53 @@ export default function Navbar() {
                           >
                             Ready To Move
                           </Link>
+                        </div>
+
+                        
+                        <div className="mt-2">
+
+                          <Link className="block text-black text-lg px-4 py-0 hover:text-red-600">
+                            Project Type
+                            <hr className="mt-1" />
+                          </Link>
+                          <Link
+                            to={"/sco/plots/"}
+                            className="block text-sm px-4  hover:text-red-600"
+                          >
+                            SCO Plots
+                          </Link>
+                          <Link
+                            to={"/projects/villas/"}
+                            className="block  py-1 text-sm px-4 hover:text-red-600"
+                          >
+                            Luxury Villas
+                          </Link>
+                          <Link
+                            to={"/plots-in-gurugram/"}
+                            className="block  py-1 text-sm px-4 hover:text-red-600"
+                          >
+                            Plots In Gurugram
+                          </Link>
+                          <Link
+                            to={"/property/residential/"}
+                            className="block text-sm px-4  hover:text-red-600"
+                          >
+                            Residential Projects
+                          </Link>
+                          <Link
+                            to={"/projects/independentfloors/"}
+                            className="block  py-1 text-sm px-4 hover:text-red-600"
+                          >
+                            Independent Floors
+                          </Link>
+                      
+                          <Link
+                            to={"/projects/commercial/"}
+                            className="block text-sm px-4 py-1  hover:text-red-600"
+                          >
+                            Commercial Projects
+                          </Link>
+                        </div>
                         </div>
                       </div>
                       
@@ -1190,6 +1253,29 @@ export default function Navbar() {
                     isOpen={isDropdownOpen}
                     onClose={onClose}
                   />
+                  {/* <Modal
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={null}
+        closable={false}
+        bodyStyle={{ padding: 0, margin: 0 }}
+        modalRender={modal => (
+          <div style={{
+            position: 'fixed',
+            top: 45,
+            right: 15,
+            zIndex: 1050,
+            margin: '10px',
+            background: 'white',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+            borderRadius: '4px',
+          }}>
+            {modal}
+          </div>
+        )}
+      >
+        <MenuListContainer isOpen={isDropdownOpen} onClose={handleCancel} />
+      </Modal> */}
                 </Menu>
               </div>
             </Flex>)}

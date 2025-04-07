@@ -55,7 +55,6 @@ const NewBanner = () => {
   useEffect(() => {
 
     if (pUrlRef.current !== pUrl) {
-      console.log(pUrl,"dfd");
       pUrlRef.current = pUrl; 
     }
   }, [pUrl]);
