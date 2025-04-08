@@ -378,7 +378,7 @@ const ShowPropertyDetails = ({ id }) => {
                         Post your Property for{" "}
                         <span className="text-2xl  text-primaryRed">FREE!</span>
                       </h5>
-                      <Link to={"http://localhost:3000/postproperty/"}>
+                      <Link to={"https://100acress.com/postproperty/"}>
                         <button className="block w-full px-5 py-2 text-base  bg-primaryRed text-white rounded-md">
                           List Properties{" "}
                           <span className="bg-white text-xs  text-primaryRed p-1 mx-1 rounded">

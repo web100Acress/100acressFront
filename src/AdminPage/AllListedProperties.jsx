@@ -28,11 +28,12 @@ const AllListedProperties = () => {
   const [propertyToDelete, setPropertyToDelete] = useState(null);
   const [isVerified, setIsVerified] = useState('verified');
 
+
   const fetchData =  useCallback(async () => {
     try {
       setIsLoading(true);
       const res = await axios.get(
-        `http://localhost:3500/postPerson/view/allListedProperty/?page=${currentPage}&limit=${pageLimit}&verify=${isVerified}`,
+        `https://api.100acress.com/postPerson/view/allListedProperty/?page=${currentPage}&limit=${pageLimit}&verify=${isVerified}`,
         { 
           headers: {
             "Content-Type": "application/json",
