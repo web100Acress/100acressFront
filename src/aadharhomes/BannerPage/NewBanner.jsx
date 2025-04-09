@@ -267,7 +267,7 @@ const NewBanner = () => {
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
         });
-        setPopUpResponseMessage("Data submitted successfully");
+        setPopUpResponseMessage("Callback Requested Successfully");
         resetData1();
       } catch (error) {
         alert(error.message);
@@ -338,8 +338,8 @@ const NewBanner = () => {
           address: projectViewDetails.projectAddress,
         })
         .then((res) => {
-          // setSideResponseMessage("Data submitted successfully");
-          message.success("Data submitted successfully");
+          // setSideResponseMessage("Callback Requested Successfully");
+          message.success("Callback Requested Successfully");
           resetData();
         })
         .catch((error) => {
@@ -370,7 +370,7 @@ const NewBanner = () => {
           address: projectViewDetails.projectAddress,
         });
         setInstantCallbackmodal(false)
-        message.success("Data submitted successfully");
+        message.success("Callback Requested Successfully");
         resetData2();
         setSideButtonText("Submit");
       } catch (error) {
