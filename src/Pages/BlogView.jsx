@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
@@ -11,6 +11,7 @@ import "./BlogView.css";
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
   const [data, setData] = useState([]);
+  const [recentBlogs,setRecentBlogs]=useState([]);
   const { id } = useParams();
   const [buttonText, setButtonText] = useState("Submit");
   const [responseMessage, setResponseMessage] = useState("");
@@ -21,6 +22,8 @@ const BlogView = () => {
     message: "",
     status: "",
   });
+
+   const history = useNavigate();
 
   const resetData = () => {
     setBlogQuery({
@@ -75,9 +78,26 @@ const BlogView = () => {
     }
   };
 
+  const fetchRecentsBlog = async () =>{
+    try{
+      const recent = await axios.get('https://api.100acress.com/blog/view?page=1&limit=5');
+      setRecentBlogs(recent.data.data);
+    }
+    catch (error) {
+      console.log(error || error.message);
+    }
+  }
+
+  const handleBlogView = (Title,id) => {
+    console.log("BLog TItle", Title)
+    const blogTitle = Title.replace(/\s+/g, '-');
+    history(`/blog/${blogTitle}/${id}`);
+  };
+
   useEffect(() => {
     fetchData();
-  }, []);
+    fetchRecentsBlog();
+  }, [id]);
 
   const createSanitizedHTML = (dirtyHTML) => ({
     __html: DOMPurify.sanitize(dirtyHTML, {
@@ -85,6 +105,7 @@ const BlogView = () => {
       ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style']
     })
   });
+
 
   const {
     blog_Title,
@@ -94,6 +115,7 @@ const BlogView = () => {
     published_Date,
     blog_Image,
   } = data;
+
 
   return (
     <>
@@ -142,13 +164,20 @@ const BlogView = () => {
                 <h4 className="text-x text-start ml-7 text-primaryRed mt-4 mb-3">
                 Recent posts
                 </h4>
-                <ul className="text-start max-sm:ml-0 ">
-                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Why Investors Are Choosing Signature Global Towers Over Other Gurgaon Areas</a></li>
-                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Luxury Real Estate Trends: What High-Net-Worth Buyers Want in 2025</a></li>
-                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Gurgaon’s Top Housing Destinations for a Quality Lifestyle</a></li>
-                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Green Living Redefined: The Future of Real Estate in India</a></li>
-                  <li className="mb-3 px-3 py-3 shadow-lg rounded-lg hover:bg-red-600 hover:text-white transition-all duration-500 ease-in-out"><a>Over ₹3 Lakh Crore Investment in Recent Years: Gurugram’s Real Estate Boom</a></li>
-                </ul>
+
+                  <ul className="text-start max-sm:ml-0 ">
+                    {recentBlogs.length> 0 && recentBlogs.map((blog)=>(
+                      <li className="font-bold mb-2 px-3 py-2 rounded-lg hover:bg-gray-200 transition-all duration-500 ease-in-out flex items-center gap-2"
+                        onClick={() => handleBlogView(blog.blog_Title,blog._id)}>
+                        <img src={blog.blog_Image.url} className="h-12 w-12 rounded-md" />
+                        {blog.blog_Title.slice(0,50)}...
+                      </li>
+                    )
+                  )
+                    }
+                  </ul>
+              
+            
               </div>
               <div className="shadow-md p-2 text-center rounded-lg mb-4 ml-7 max-sm:ml-0" style={{backgroundColor:"rgb(0,49,79)",position: "sticky", top: "60px", zIndex: "10"}}>
               <h4 className="text-xl text-white mb-3 text-center">
