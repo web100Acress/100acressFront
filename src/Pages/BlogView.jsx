@@ -141,7 +141,7 @@ const BlogView = () => {
                 className="my-4 rounded-lg"
               />
                 <div
-                  className="react-quill-content ql-editor"
+                  className="react-quill-content"
                   dangerouslySetInnerHTML={createSanitizedHTML(blog_Description)}
                 ></div>
               </div>
@@ -167,7 +167,7 @@ const BlogView = () => {
 
                   <ul className="text-start max-sm:ml-0 ">
                     {recentBlogs.length> 0 && recentBlogs.map((blog)=>(
-                      <li className="font-bold mb-2 px-3 py-2 rounded-lg hover:bg-gray-200 transition-all duration-500 ease-in-out flex items-center gap-2"
+                      <li className="font-bold mb-2 px-3 py-2 rounded-lg hover:bg-gray-200 transition-all duration-500 ease-in-out flex items-center gap-2 cursor-pointer"
                         onClick={() => handleBlogView(blog.blog_Title,blog._id)}>
                         <img src={blog.blog_Image.url} className="h-12 w-12 rounded-md" />
                         {blog.blog_Title.slice(0,50)}...
@@ -179,7 +179,7 @@ const BlogView = () => {
               
             
               </div>
-              <div className="shadow-md p-2 text-center rounded-lg mb-4 ml-7 max-sm:ml-0" style={{backgroundColor:"rgb(0,49,79)",position: "sticky", top: "60px", zIndex: "10"}}>
+              <div className="shadow-md p-2 text-center rounded-lg mb-4 ml-7 max-sm:ml-0" style={{backgroundColor:"rgb(0,49,79)",position: "sticky", top: "60px"}}>
               <h4 className="text-xl text-white mb-3 text-center">
                 Enquire Now
                 </h4>
