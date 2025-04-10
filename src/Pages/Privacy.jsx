@@ -15,25 +15,15 @@ const Privacy = () => {
         <link rel="canonical" href="https://www.100acress.com/privacypolicy/" />
       </Helmet>
 
-      <div className="overflow-x-hidden mt-14">
+      <div className="p-10 overflow-x-hidden mt-14">
       <div class="w-full">
-          <img
-            src="../../Images/privacy.webp"
-            alt="About Us"
-            class="w-full h-60 sm:h-30 object-fit large-screen-image hidden sm:block"
-          />
-          <img
-            src="../../Images/privacymobile.webp"
-            alt="About Us"
-            class="w-full h-60 sm:h-30 object-fit small-screen-image block sm:hidden"
-          />
         </div>
 
-        <h3 className="text-center text-red-600 md:text-xl  lg:text-2xl xl:text-4xl pt-4">
+        <h3 className="font-inter text-start px-4 md:text-xl  lg:text-2xl xl:text-4xl pt-4">
           Privacy Policy
         </h3>
 
-        <p className="text-gray-500 text-lg px-4 py-2 text-justify">
+        <p className="text-gray-500 font-inter text-lg px-4 py-2 text-justify">
           100acress.com Gurgaon is an honoured real estate company that strongly
           believes in providing customer delight and value for its hard-earned
           money was founded in the year 2000 and is being skillfully led by our
@@ -56,17 +46,12 @@ const Privacy = () => {
         </p>
 
         <div className="flex items-center pt-2 px-3">
-          <img
-            src="../../Images/housefooter.webp"
-            alt="house footer"
-            className="h-10 w-10  "
-          />
-          <h3 className="pt-1 text-red-600 md:text-xl  lg:text-2xl xl:text-3xl">
+          <h3 className="pt-1 font-inter text-start md:text-xl  lg:text-2xl xl:text-3xl">
             Why 100Acress.com ?
           </h3>
         </div>
 
-        <p className=" pt-3 px-4 text-gray-500 text-lg  text-justify">
+        <p className=" pt-3 px-4 font-inter text-gray-500 text-lg  text-justify">
           Our company works with moral values which are respecting clients’
           investment, determined efforts to make every possibility available,
           and preserved efforts to grant the best services to our clients. We
@@ -82,17 +67,12 @@ const Privacy = () => {
         </p>
 
         <div className="flex items-center pt-6 px-3">
-          <img
-            src="../../Images/houseaward.webp"
-            alt="award"
-            className="h-10 w-10 "
-          />
-          <h3 className="pt-1 text-red-600 md:text-xl  lg:text-2xl xl:text-3xl">
+          <h3 className="font-inter text-start pt-1 md:text-xl  lg:text-2xl xl:text-3xl">
             Our Responsibility
           </h3>
         </div>
         <div>
-          <p className="pt-3 pb-20 px-4 text-gray-500 text-lg  text-justify">
+          <p className="pt-3 pb-20 px-4 font-inter text-gray-500 text-lg  text-justify">
             Our expert team is working on making secure and smooth all legal and
             mandatory transactions of our housing and commercial projects to
             ensure real and value for money products. We provide every piece of
@@ -103,8 +83,8 @@ const Privacy = () => {
             estate domain.
           </p>
         </div>
-        <Footer />
       </div>
+      <Footer />
     </>
   );
 };
