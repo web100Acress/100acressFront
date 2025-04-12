@@ -75,7 +75,7 @@ const SearchData = () => {
           Actualdata={buySearchData}
           />
         </section>
-      ) : <CustomSkeleton/>}
+      ) : ""}
 
       {/* Rendering rentSearchData if available */}
       {rentSearchData && rentSearchData.length > 0 ? (
@@ -85,9 +85,9 @@ const SearchData = () => {
           Actualdata={rentSearchData}
           />
         </section>
-      ) : <CustomSkeleton/>}
+      ) : ""}
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };
