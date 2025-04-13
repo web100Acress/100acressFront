@@ -17,6 +17,7 @@ const ResaleEnquiries = () => {
   const fetchEnquiriesData = async () => {
     try {
       const res = await axios.get("https://api.100acress.com/postEnq_view");
+      console.log("Data: ",res.data.data);
       setEnquiries(res.data.data);
     } catch (error) {
       console.log(error || error.message);
@@ -117,8 +118,8 @@ const ResaleEnquiries = () => {
                     </tr>
                   </thead>
                   <tbody className=" divide-y divide-gray-200 dark:divide-neutral-700 dark:bg-neutral-800">
-                    {enquiries.map((item, index) => (
-                      <tr key={index} className="hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors duration-200">
+                    {enquiries.map((item,index) => (
+                      <tr key={item?._id} className="hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors duration-200">
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-800 dark:text-neutral-200">
                           {startIndex + index + 1}
                         </td>
