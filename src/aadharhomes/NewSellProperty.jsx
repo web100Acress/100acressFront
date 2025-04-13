@@ -157,7 +157,9 @@ const NewSellProperty = () => {
 
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
-
+    if (name === "price" || name === "area" && !/^\d*$/.test(value)) {
+    return;
+  }
     if (name === "selectoption") {
       setSellProperty({
         ...sellProperty,
