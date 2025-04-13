@@ -1,53 +1,29 @@
 import React, { useState } from "react";
+import { Steps, Spin, Button, message, Modal } from "antd";
+import "antd/dist/reset.css";
+const { Step } = Steps;
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
 import { State, City } from "country-state-city";
 import { Helmet } from "react-helmet";
 
-const stateCodeMapping = {
-  "Andhra Pradesh": "AP",
-  "Arunachal Pradesh": "AR",
-  Assam: "AS",
-  Bihar: "BR",
-  Chandigarh: "CH",
-  Chhattisgarh: "CT",
-  Delhi: "DL",
-  Goa: "GA",
-  Gujarat: "GJ",
-  Haryana: "HR",
-  "Himachal Pradesh": "HP",
-  "Jammu and Kashmir": "JK",
-  Jharkhand: "JH",
-  Karnataka: "KA",
-  Kerala: "KL",
-  Ladakh: "LA",
-  Lakshadweep: "LD",
-  "Madhya Pradesh": "MP",
-  Maharashtra: "MH",
-  Manipur: "MN",
-  Meghalaya: "ML",
-  Mizoram: "MZ",
-  Nagaland: "NL",
-  Odisha: "OR",
-  Puducherry: "PY",
-  Punjab: "PB",
-  Rajasthan: "RJ",
-  Sikkim: "SK",
-  "Tamil Nadu": "TN",
-  Telangana: "TG",
-  Tripura: "TR",
-  "Uttar Pradesh": "UP",
-  Uttarakhand: "UT",
-  "West Bengal": "WB",
-};
+
+const steps = [
+  { id: "1", title: "Basic Info" },
+  { id: "2", title: "Location" },
+  { id: "3", title: "Property Details" },
+  { id: "4", title: "Gallery Section" },
+];
 
 const NewSellProperty = () => {
   const agentData = localStorage.getItem("agentData");
+  const [modal, contextHolder] = Modal.useModal();
+  const [current, setCurrent] = useState(0);
   const [showSteps, setShowSteps] = useState(false);
   const [responseMessage, setResponeMessage] = useState("");
   const parsedAgentData = JSON.parse(agentData);
   const sellerId = parsedAgentData._id;
-  const propertyType = ["Select Property Type", "Commercial", "Residential"];
+  const propertyType = ["Commercial", "Residential"];
 
   const subTypes = {
     Commercial: [
@@ -68,7 +44,6 @@ const NewSellProperty = () => {
       "Farmhouse",
       "Other",
     ],
-    // Add more subtypes as needed
   };
 
   const [sellProperty, setSellProperty] = useState({
@@ -78,6 +53,9 @@ const NewSellProperty = () => {
     city: "",
     state: "",
     price: "",
+    priceunits: "",
+    bedrooms: "",
+    bathrooms: "",
     area: "",
     descripation: "",
     landMark: "",
@@ -86,31 +64,22 @@ const NewSellProperty = () => {
     furnishing: "",
     type: "",
     availableDate: "",
-    selectoption: "Select Property Type",
+    selectoption: "",
     subType: "",
-    propertyLooking:"Sell",
+    propertyLooking: "Sell",
   });
 
-  const [selectedState, setSelectedState] = useState("Kerala");
+  const [selectedState, setSelectedState] = useState("Haryana");
   const [selectedCity, setSelectedCity] = useState("City");
 
   const countryCode = "IN";
   const states = State.getStatesOfCountry(countryCode);
-  const getStateCode = (selectedState) => {
-    if (typeof selectedState !== "string") {
-      throw new Error(`Selected state is not a valid string: ${selectedState}`);
-    }
 
-    const formattedStateName = selectedState
-      .toLowerCase()
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-    const stateCode = stateCodeMapping[formattedStateName];
-
-    if (stateCode) {
-      return stateCode;
-    } else {
-      throw new Error(`State code not found for state: ${selectedState}`);
-    }
+  const getStateCode = (selectedStateName) => {
+    const stateObj = State.getStatesOfCountry(countryCode).find(
+      (state) => state.name.toLowerCase() === selectedStateName.toLowerCase()
+    );
+    return stateObj?.isoCode || "";
   };
 
   const stateCode = getStateCode(selectedState);
@@ -134,6 +103,27 @@ const NewSellProperty = () => {
       ...prevState,
       city: cityName,
     }));
+  };
+
+  const countDown = () => {
+    let secondsToGo = 5;
+
+    const instance = modal.success({
+      title: 'This is a notification message',
+      content: `This modal will be destroyed after ${secondsToGo} second.`,
+    });
+
+    const timer = setInterval(() => {
+      secondsToGo -= 1;
+      instance.update({
+        content: `This modal will be destroyed after ${secondsToGo} second.`,
+      });
+    }, 1000);
+
+    setTimeout(() => {
+      clearInterval(timer);
+      instance.destroy();
+    }, secondsToGo * 1000);
   };
 
   const resetData = () => {
@@ -179,7 +169,7 @@ const NewSellProperty = () => {
       setSellProperty({
         ...sellProperty,
         [name]: value,
-        subType: "", // Reset subType when propertyType changes
+        subType: "",
       });
     } else {
       setSellProperty({
@@ -197,11 +187,59 @@ const NewSellProperty = () => {
   const otherImageLength = fileData.otherImage.length;
   const [isLoading, setIsLoading] = useState(false);
 
+  // const submitSellPropertyDetails = async (e) => {
+  //   e.preventDefault();
+  //   if (isLoading) return;
+
+  //   if (!validateStep(current)) {
+  //     message.error("Please fill all required fields before proceeding.");
+  //     return;
+  //   }
+  //   const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
+  //   const formDataAPI = new FormData();
+
+  //   for (const key in sellProperty) {
+  //     formDataAPI.append(key, sellProperty[key]);
+  //   }
+
+  //   for (let i = 0; i < otherImageLength; i++) {
+  //     formDataAPI.append("otherImage", fileData.otherImage[i]);
+  //   }
+
+  //   formDataAPI.append("frontImage", fileData.frontImage);
+
+  //   try {
+  //     setIsLoading(true);
+  //     const response = await axios.post(apiEndpoint, formDataAPI);
+  //     console.log(response, "response");
+
+  //     if (response.status === 200) {
+  //       message.success("Submit Successfully, Under Review");
+  //       countDown();
+  //       resetData();
+  //       resetImageData();
+  //       setIsLoading(false);
+  //       setCurrent(0);
+  //     } else {
+  //       message.error("Unexpected response from server.");
+  //       setIsLoading(false); 
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting form:", error);
+  //     message.error("There was an error submitting the form. Please try again.");
+  //     setIsLoading(false);
+  //   }   
+  // };
+
   const submitSellPropertyDetails = async (e) => {
     e.preventDefault();
-    if (isLoading) {
+    if (isLoading) return;
+
+    if (!validateStep(current)) {
+      message.error("Please fill all required fields before proceeding.");
       return;
     }
+
     const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
     const formDataAPI = new FormData();
 
@@ -215,14 +253,31 @@ const NewSellProperty = () => {
 
     formDataAPI.append("frontImage", fileData.frontImage);
 
+    const modalInstance = Modal.confirm({
+      title: "Submitting Your Property",
+      content: "Hang tight! We’re just sending your details...",
+      closable: false,
+      okButtonProps: { style: { display: 'none' } },
+      cancelButtonProps: { style: { display: 'none' } },
+    });
+
     try {
       setIsLoading(true);
-      await axios.post(apiEndpoint, formDataAPI);
-      setResponeMessage("Submit Successfully, Under Review");
-      resetData();
-      resetImageData();
+      const response = await axios.post(apiEndpoint, formDataAPI);
+      if (response.status === 200) {
+        modalInstance.destroy();
+        message.success("Submitted Successfully, Under Review");
+        resetData();
+        resetImageData();
+        setCurrent(0);
+      } else {
+        modalInstance.destroy();
+        message.error("Unexpected response from server.");
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
+      modalInstance.destroy();
+      message.error("There was an error submitting the form. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -276,6 +331,331 @@ const NewSellProperty = () => {
     setSellProperty({ ...sellProperty, furnishing: event.target.value });
   };
 
+  const validateStep = (step) => {
+    switch (step) {
+      case 0:
+        return (
+          sellProperty.propertyLooking !== "" &&
+          sellProperty.selectoption !== "" &&
+          sellProperty.propertyType !== ""
+        );
+
+      case 1:
+        return (
+          selectedState !== "" &&
+          selectedCity !== "" &&
+          sellProperty.propertyName.trim() !== "" &&
+          sellProperty.address.trim() !== ""
+        );
+
+      case 2:
+        return (
+          sellProperty.bedrooms !== "" &&
+          sellProperty.bathrooms !== "" &&
+          sellProperty.price.trim() !== "" &&
+          sellProperty.priceunits !== "" &&
+          sellProperty.area.trim() !== "" &&
+          sellProperty.areaUnit !== "" &&
+          sellProperty.furnishing !== "" &&
+          sellProperty.builtYear.trim() !== "" &&
+          sellProperty.landMark.trim() !== "" &&
+          sellProperty.descripation.trim() !== ""
+        );
+
+      case 3:
+        return (
+          fileData.frontImage !== null &&
+          fileData.otherImage.length > 0
+        );
+
+      default:
+        return true;
+    }
+  };
+
+  const next = () => {
+    if (validateStep(current)) {
+      setCurrent(current + 1);
+    } else {
+      message.error("Please fill all required fields before proceeding.");
+    }
+  };
+  const prev = () => setCurrent(current - 1);
+
+  const renderStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return (
+          <div>
+            <p className="text-2xl mb-0">Welcome back {parsedAgentData.name}, </p>
+            <p className="text-xl text-gray-400">List your Property</p>
+            <p className="text-xl text-black">I am looking to:</p>
+            <button
+              className={`mr-1 px-4 py-1 border rounded-3xl cursor-pointer ${sellProperty.propertyLooking === "Sell" ? "bg-red-500 text-white" : "bg-white text-black"}`}
+              onClick={() => handleOptionClick("Sell")}
+            >
+              Sell
+            </button>
+            <button
+              className={`ml-1 px-4 py-1 border rounded-3xl cursor-pointer ${sellProperty.propertyLooking === "rent" ? "bg-red-500 text-white" : "bg-white text-black"}`}
+              onClick={() => handleOptionClick("rent")}
+            >
+              Rent/Lease
+            </button>
+            <div className="mt-4">
+
+              <p>What kind of property do you have ?</p>
+              <div className="grid gap-3 md:grid-cols-2">
+                <select
+                  className={`h-10 w-full rounded-md bg-white border px-3 outline-none text-black`}
+                  name="selectoption"
+                  value={sellProperty?.selectoption}
+                  onChange={handleChangeValue}
+                  required
+                >
+                  <option className="hidden" value="" >Select Property Type</option>
+                  {propertyType.map((type, index) => (
+                    <option key={index} value={type}>{type}</option>
+                  ))}
+                </select>
+
+                {sellProperty.selectoption !== "" && (
+                  <select
+                    className={`h-10 w-full rounded-md bg-white border px-3 outline-none text-black`}
+                    name="propertyType"
+                    value={sellProperty.propertyType}
+                    onChange={handleChangeValue}
+                    required
+                  >
+                    <option className="hidden" value="">Property Sub-type</option>
+                    {subTypes[sellProperty?.selectoption]?.map((subType, index) => (
+                      <option key={index} value={subType}>{subType}</option>
+                    ))}
+                  </select>
+                )}
+              </div>
+            </div>
+
+          </div>
+        );
+
+      case 1:
+        return (
+          <div>
+            <p className="text-2xl">Where is you property Located ? </p>
+            <p className="text-gray-400">Right information brings right buyers</p>
+            <div className="grid gap-3 md:grid-cols-2 mt-4">
+              <select
+                value={selectedState}
+                onChange={handleChangeStateValue}
+                name="state"
+                className="h-10 w-full rounded-md text-black bg-white border px-3 outline-none"
+              >
+                <option value="">Select State</option>
+                {states.map((state) => (
+                  <option key={state.name} value={state.name}>{state.name}</option>
+                ))}
+              </select>
+
+              {selectedState && (
+                <select
+                  value={selectedCity}
+                  name="city"
+                  onChange={handleChangeCityValue}
+                  className="h-10 w-full text-black rounded-md bg-white border px-3 outline-none"
+                >
+                  <option value="Select City">Select City</option>
+                  {cities.map((city) => (
+                    <option key={city.name} value={city.name}>{city.name}</option>
+                  ))}
+                </select>
+              )}
+            </div>
+            <input
+              type="text"
+              placeholder="Property Name"
+              name="propertyName"
+              value={sellProperty.propertyName}
+              onChange={handleChangeValue}
+              className="h-10 w-full mt-4 placeholder:text-black rounded-md bg-white border px-3 outline-none"
+            />
+
+            <input
+              type="text"
+              placeholder="Address"
+              name="address"
+              value={sellProperty.address}
+              onChange={handleChangeValue}
+              className="h-20 w-full mt-4  placeholder:top-0 placeholder:text-black rounded-md bg-white border px-3 outline-none"
+            />
+          </div>
+
+        );
+
+      case 2:
+        return (
+          <div>
+            <p className="text-2xl">Tell us about your property </p>
+            <p className="text-gray-400">The More Accurate the Info, the Better the Buyer.</p>
+
+            <div className="grid gap-3 md:grid-cols-2 mt-4">
+
+
+              <select
+                name="bedrooms"
+                value={sellProperty.bedrooms}
+                onChange={handleChangeValue}
+                className=" h-10 rounded-md bg-white border px-2 outline-none"
+              >
+                <option className="hidden" value="">No of Bedrooms</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+              <select
+                name="bathrooms"
+                value={sellProperty.bathrooms}
+                onChange={handleChangeValue}
+                className="h-10 rounded-md bg-white border px-2 outline-none"
+              >
+                <option className="hidden" value="">No of Bathrooms</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+              <div className="flex items-center">
+                <input
+                  type="text"
+                  placeholder="Price"
+                  name="price"
+                  value={sellProperty.price}
+                  onChange={handleChangeValue}
+                  className="h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
+                />
+                <select
+                  name="priceunits"
+                  value={sellProperty.priceunits}
+                  onChange={handleChangeValue}
+                  className="h-10 ml-2 rounded-md bg-white border px-2 outline-none"
+                >
+                  <option className="hidden" value="">Units</option>
+                  <option value="lakhs">Lakhs</option>
+                  <option value="crores">Crores</option>
+                </select>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="text"
+                  placeholder="Area"
+                  name="area"
+                  value={sellProperty.area}
+                  onChange={handleChangeValue}
+                  className="h-10 w-1/2 placeholder:text-black rounded-md bg-white border px-3 outline-none"
+                />
+                <select
+                  name="areaUnit"
+                  value={sellProperty.areaUnit}
+                  onChange={handleChangeValue}
+                  className="ml-2 h-10 w-1/2 rounded-md bg-white border px-2 outline-none"
+                >
+                  <option className="hidden" value="">Units</option>
+                  <option value="sqft">Sqft</option>
+                  <option value="sqrd">Sqyd</option>
+                </select>
+              </div>
+              <select
+                className="h-10 w-full rounded-md text-black border px-2 outline-none"
+                value={sellProperty.furnishing}
+                onChange={handleProjectfurnishing}
+              >
+                <option className="hidden" value="">Furnishing</option>
+                <option value="Fullyfurnishing">Furnished</option>
+                <option value="Semifurnishing">Semi-furnish</option>
+                <option value="UnFurnishing">Un-furnish</option>
+              </select>
+              <input
+                type="text"
+                placeholder="Built year"
+                name="builtYear"
+                value={sellProperty.builtYear}
+                onChange={handleChangeValue}
+                className="h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
+              />
+              <input
+                type="text"
+                placeholder="Landmark"
+                name="landMark"
+                value={sellProperty.landMark}
+                onChange={handleChangeValue}
+                className="h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
+              />
+              <input
+                type="text"
+                placeholder="Amenities"
+                name="amenities"
+                value={sellProperty.amenities.join(",")}
+                onChange={handleChangeValueAmenities}
+                className="h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
+              />
+            </div>
+            <input
+              type="text"
+              placeholder="Property Description"
+              name="descripation"
+              value={sellProperty.descripation}
+              onChange={handleChangeValue}
+              className="h-10 w-full mt-4 placeholder:text-black rounded-md bg-white border px-3 outline-none col-span-2"
+            />
+
+          </div>
+        );
+
+      case 3:
+        return (
+          <div>
+            <p className="text-2xl">Let’s see your property! </p>
+            <p className="text-gray-400">Powerful Images Attract the Right Audience.</p>
+            <div className="grid gap-3 md:grid-cols-2 mt-4">
+
+              <div>
+                <label htmlFor="frontImage" className="text-black mx-3">
+                  Upload Front Images:
+                </label>
+                <input
+                  type="file"
+                  name="frontImage"
+                  onChange={(e) => handleFileChange(e, "frontImage")}
+                  accept="image/*"
+                  className="h-10 w-full rounded-md bg-white border text-black px-3 outline-none pt-1"
+                />
+              </div>
+              <div>
+                <label htmlFor="otherImage" className="text-black mx-3">
+                  Upload Other Images:
+                </label>
+                <input
+                  type="file"
+                  multiple
+                  name="otherImage"
+                  onChange={handleOtherImageChange}
+                  accept="image/*"
+                  id="otherImage"
+                  className="h-10 w-full rounded-md bg-white border text-black px-3 outline-none pt-1"
+                />
+              </div>
+              {responseMessage && (
+                <p className="text-sm text-red-600">{responseMessage}</p>
+              )}
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div style={{ overflowX: "hidden" }}>
       <Helmet>
@@ -312,13 +692,13 @@ const NewSellProperty = () => {
 
             {showSteps && (
               <div className="sm:mt-50 mt-20 fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-              <div className="shadow-2xl rounded-xl px-6 py-6 bg-white relative w-11/12 sm:w-1/2 lg:w-1/3 h-auto">
-             <button
-               className="text-red-400 text-2xl absolute right-6 top-5 cursor-pointer"
-               onClick={() => setShowSteps(false)}
-             >
-               ✖
-             </button>
+                <div className="shadow-2xl rounded-xl px-6 py-6 bg-white relative w-11/12 sm:w-1/2 lg:w-1/3 h-auto">
+                  <button
+                    className="text-red-400 text-2xl absolute right-6 top-5 cursor-pointer"
+                    onClick={() => setShowSteps(!showSteps)}
+                  >
+                    ✖
+                  </button>
                   <h5 className="text-red-400">
                     Steps given Below to post your property Free
                   </h5>
@@ -370,260 +750,80 @@ const NewSellProperty = () => {
               </div>
             )}
           </div>
-
-          <div className="mt-8 mb-8 max-w-3/4    lg:mt-0 shadow-lg rounded-lg py-2   px-4">
-              <p className="text-2xl  text-black font-bold">
-                List your Property
-              </p>
-              <p className="text-2xl  text-black">
-                You're looking to<span>:</span>
-              </p>
-              <button
-                className={`mr-1 px-4 py-2  border rounded-3xl cursor-pointer ${sellProperty.propertyLooking === "Sell" ? "bg-primaryRed text-white":" bg-white text-black"}`}
-                onClick={ () => handleOptionClick("Sell")}
-              >
-                      Sell
-              </button>
-              <button
-                className={`ml-1 px-4 py-2  border rounded-3xl cursor-pointer ${sellProperty.propertyLooking === "rent" ? "bg-primaryRed text-white":" bg-white text-black"}`}
-                onClick={ () => handleOptionClick("rent")}  
-              >
-                      Rent/Lease
-              </button>
-
-            <div className="p-1 sm:p-8">
-              <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <select
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none text-black"
-                    name="selectoption"
-                    value={sellProperty.selectoption}
-                    onChange={handleChangeValue}
-                  >
-                    {propertyType.map((type, index) => (
-                      <option key={index} value={type}>
-                        {type}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {sellProperty.selectoption !== "Select Property Type" && (
-                  <select
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none text-black"
-                    name="propertyType"
-                    value={sellProperty.propertyType}
-                    onChange={handleChangeValue}
-                  >
-                    {subTypes[sellProperty.selectoption].map(
-                      (subType, index) => (
-                        <option key={index} value={subType}>
-                          {subType}
-                        </option>
-                      )
-                    )}
-                  </select>
+          <div className="flex gap-2 min-h-fit">
+            <div className="w-fit border bg-gray-100 border-gray-300 rounded-lg p-4 hidden lg:block">
+              <Steps
+                className="custom-step-red"
+                progressDot={(dot, { status }) => (
+                  <span
+                    className="w-3 h-3 rounded-full bg-red-500 inline-block"
+                    style={{
+                      boxShadow: status === "process" ? "0 0 0 2px #ef4444" : "none",
+                    }}
+                  />
                 )}
-              </div>
-
-              <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <select
-                    value={selectedState}
-                    onChange={handleChangeStateValue}
-                    name="state"
-                    className="mt-2 h-10 w-full rounded-md text-black bg-white border px-3 outline-none"
-                  >
-                    <option value="">Select State</option>
-                    {states.map((state) => (
-                      <option key={state.name} value={state.name}>
-                        {state.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  {selectedState && (
-                    <div>
-                      <select
-                        value={selectedCity}
-                        name="city"
-                        onChange={handleChangeCityValue}
-                        className="mt-2 h-10 w-full text-black rounded-md bg-white border px-3 outline-none"
-                      >
-                        <option value="Select City">Select City</option>
-                        {cities.map((city) => (
-                          <option key={city.name} value={city.name}>
-                            {city.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  placeholder="Property Name"
-                  name="propertyName"
-                  value={sellProperty.propertyName}
-                  onChange={handleChangeValue}
-                  className="mt-3 h-10 w-full placeholder:text-black  rounded-md bg-white  border px-3 outline-none"
-                />
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  placeholder="Address"
-                  name="address"
-                  value={sellProperty.address}
-                  onChange={handleChangeValue}
-                  className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
-                />
-              </div>
-
-            
-
-              <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Price"
-                    name="price"
-                    value={sellProperty.price}
-                    onChange={handleChangeValue}
-                    className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
+                direction="vertical"
+                current={current}
+                size="small"
+              >
+                {steps.map((item, index) => (
+                  <Step
+                    className="mt-10"
+                    key={item.id}
+                    title={item.title}
+                    icon={<>{index + 1}</>}
                   />
-                </div>
+                ))}
+              </Steps>
 
-                <div className="flex items-center">
-                  <input
-                    type="text"
-                    placeholder="Area"
-                    name="area"
-                    value={sellProperty.area}
-                    onChange={handleChangeValue}
-                    className="mt-3 h-10 w-1/2 placeholder:text-black rounded-md bg-white border px-3 outline-none"
-                  />
+            </div>
 
-                  <select
-                    name="areaUnit"
-                    value={sellProperty.areaUnit}
-                    onChange={handleChangeValue}
-                    className="mt-3 ml-2 h-10 w-1/2 rounded-md bg-white border px-2 outline-none"
-                  >
-                    <option value="sqft">Sqft</option>
-                    <option value="sqrd">Sqyd</option>
-                  </select>
-                </div>
-              </div>
+            <div className="flex-1 flex flex-col border-2 border-gray-200 rounded-lg p-4 hidden lg:flex">
+              <div className="flex-1">{renderStepContent(current)}</div>
 
-              <div>
-                <input
-                  type="text"
-                  placeholder="Property description"
-                  name="descripation"
-                  value={sellProperty.descripation}
-                  onChange={handleChangeValue}
-                  className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
-                />
-              </div>
-
-              <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Landmark"
-                    name="landMark"
-                    value={sellProperty.landMark}
-                    onChange={handleChangeValue}
-                    className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Amenities"
-                    multiple
-                    name="amenities"
-                    value={sellProperty.amenities.join(",")}
-                    onChange={handleChangeValueAmenities}
-                    className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Built year"
-                    name="builtYear"
-                    value={sellProperty.builtYear}
-                    onChange={handleChangeValue}
-                    className="mt-3 h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-                <div>
-                  <select
-                    className="mt-3 h-10 w-full placeholder:text-black rounded-md text-black border px-3 outline-none"
-                    value={sellProperty.furnishing}
-                    onChange={handleProjectfurnishing}
-                  >
-                    <option value="">Furnish</option>
-                    <option value="Semifurnishing">Semi furnish</option>
-                    <option value="Fullyfurnishing">Fully furnish</option>
-                    <option value="UnFurnishing">Un furnish</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid gap-3 md:grid-cols-2 text-black pt-1 mt-3">
-                <div>
-                  <label htmlFor="frontImage" className=" text-black mx-3 ">
-                    Upload Front Images:
-                  </label>
-                  <input
-                    type="file"
-                    name="frontImage"
-                    onChange={(e) => handleFileChange(e, "frontImage")}
-                    accept="image/*"
-                    className="mt-1 h-10 w-full rounded-md bg-white border text-black px-3 outline-none pt-1"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="otherImage" className=" text-black mx-3 ">
-                    Upload Other Images:
-                  </label>
-                  <input
-                    type="file"
-                    multiple
-                    name="otherImage"
-                    onChange={handleOtherImageChange}
-                    accept="image/*"
-                    id="otherImage"
-                    className="mt-1  h-10 w-full rounded-md bg-white border text-black px-3 outline-none pt-1 mb-0"
-                  />
-                </div>
-                {responseMessage && (
-                  <p className="text-sm text-red-600 mb-0 pb-0 ">
-                    {responseMessage}
-                  </p>
+              <div className="sticky bottom-0 bg-white py-3 mt-4 flex justify-between border-t border-gray-300 z-50">
+                {current > 0 && <Button style={{
+                  backgroundColor: '#dc2626',
+                  borderColor: '#dc2626',
+                  color: 'white',
+                }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#450a0a';
+                    e.currentTarget.style.borderColor = '#450a0a';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#dc2626';
+                    e.currentTarget.style.borderColor = '#dc2626';
+                  }} onClick={prev}>Previous</Button>}
+                {current < 3 ? (
+                  <Button type="primary" style={{
+                    backgroundColor: '#dc2626',
+                    borderColor: '#dc2626',
+                    color: 'white',
+                  }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#450a0a';
+                      e.currentTarget.style.borderColor = '#450a0a';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#dc2626';
+                      e.currentTarget.style.borderColor = '#dc2626';
+                    }} onClick={next}>Next</Button>
+                ) : (
+                  <Button type="primary" style={{
+                    backgroundColor: '#dc2626',
+                    borderColor: '#dc2626',
+                    color: 'white',
+                  }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#450a0a';
+                      e.currentTarget.style.borderColor = '#450a0a';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#dc2626';
+                      e.currentTarget.style.borderColor = '#dc2626';
+                    }} onClick={submitSellPropertyDetails}>Submit</Button>
                 )}
-              </div>
-
-              <div className="flex  justify-end items-center">
-                <button
-                  className="w-1/2 rounded-lg mt-3 text-white px-4 text-md sm:text-lg md:text-md  font-normal  sm:px-6 py-1 sm:py-4 bg-red-600 hover:bg-red-700"
-                  onClick={submitSellPropertyDetails}
-                >
-                   {isLoading ? "Submitting" : "Submit"}
-                </button>
               </div>
             </div>
           </div>

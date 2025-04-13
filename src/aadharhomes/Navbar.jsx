@@ -31,7 +31,6 @@ import { useJwt } from "react-jwt";
 const SpacerComponent = () => <Box width="60px" />;
 
 const MenuListContainer = ({ isOpen }) => {
-  console.log(isOpen)
   const history = useNavigate();
   const token = JSON.parse(localStorage.getItem("myToken"));
   const {decodedToken} = useJwt(token || "");
