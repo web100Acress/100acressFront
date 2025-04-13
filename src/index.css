@@ -96,3 +96,8 @@ html {
         scrollbar-width: none;  /* Firefox */
   }
 }
+
+
+.custom-step-red .ant-steps-item-tail::after {
+  background-color: #ef4444 !important;
+}
