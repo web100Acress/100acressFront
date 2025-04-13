@@ -69,7 +69,7 @@ const NewSellProperty = () => {
     propertyLooking: "Sell",
   });
 
-  const [selectedState, setSelectedState] = useState("Haryana");
+  const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("City");
 
   const countryCode = "IN";
@@ -158,8 +158,8 @@ const NewSellProperty = () => {
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
     if (name === "price" || name === "area" && !/^\d*$/.test(value)) {
-    return;
-  }
+      return;
+    }
     if (name === "selectoption") {
       setSellProperty({
         ...sellProperty,
@@ -692,65 +692,64 @@ const NewSellProperty = () => {
               </button>
             </div>
 
-            {showSteps && (
-              <div className="sm:mt-50 mt-20 fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-                <div className="shadow-2xl rounded-xl px-6 py-6 bg-white relative w-11/12 sm:w-1/2 lg:w-1/3 h-auto">
-                  <button
-                    className="text-red-400 text-2xl absolute right-6 top-5 cursor-pointer"
-                    onClick={() => setShowSteps(!showSteps)}
-                  >
-                    ✖
-                  </button>
-                  <h5 className="text-red-400">
-                    Steps given Below to post your property Free
-                  </h5>
-                  <span className="mt-2">Step 1:</span>
-                  <span className="ml-4 text-red-400">
-                    Post Your Property for Free
-                  </span>
-                  <p className="text-justify">
-                    Please first check the options if you are a selling or
-                    renting owner, then select the appropriate choice.
-                  </p>
+            <Modal
+              open={showSteps}
+              onCancel={() => setShowSteps(false)}
+              footer={null}
+              centered
+              width={600}
+            >
+              <div className="px-2 py-2">
+                <h5 className="text-red-500 font-semibold text-lg mb-3">
+                  Steps to Post Your Property for Free
+                </h5>
 
-                  <span className="mt-2">Step 2:</span>
-                  <span className="ml-4 text-red-400">
-                    Select Property Type
-                  </span>
-                  <p className="text-justify">
-                    Please choose between Commercial or Residential property.
-                  </p>
+                <div className="space-y-4">
+                  <div>
+                    <span className="text-sm font-medium">Step 1:</span>
+                    <span className="ml-2 text-red-500 font-semibold">
+                      Post Your Property for Free
+                    </span>
+                    <p className="text-justify text-sm text-gray-600">
+                      Please first check the options if you are a selling or renting owner, then select the appropriate choice.
+                    </p>
+                  </div>
 
-                  <span>Step 3:</span>
-                  <span className="ml-4 text-red-400">
-                    Enter Details of Your Property
-                  </span>
-                  <p className="text-justify">
-                    Afterward, input all details such as property name, address,
-                    city, state, price, area, descripation, landmark, amenities,
-                    built year and furnishing. Get access to buyer/tenant
-                    contact details and connect easily.
-                  </p>
+                  <div>
+                    <span className="text-sm font-medium">Step 2:</span>
+                    <span className="ml-2 text-red-500 font-semibold">Select Property Type</span>
+                    <p className="text-justify text-sm text-gray-600">
+                      Please choose between Commercial or Residential property.
+                    </p>
+                  </div>
 
-                  <span>Step 4:</span>
-                  <span className="ml-4 text-red-400">
-                    Upload Images of Your Property
-                  </span>
-                  <p className="text-justify">
-                    Please upload one image for the front view and three to four
-                    additional images.
-                  </p>
+                  <div>
+                    <span className="text-sm font-medium">Step 3:</span>
+                    <span className="ml-2 text-red-500 font-semibold">Enter Details of Your Property</span>
+                    <p className="text-justify text-sm text-gray-600">
+                      Afterward, input all details such as property name, address, city, state, price, area, description, landmark, amenities, built year, and furnishing.
+                    </p>
+                  </div>
 
-                  <span>Step 5:</span>
-                  <span className="ml-4 text-red-400">
-                    Submit Your Property Information
-                  </span>
-                  <p className="text-justify">
-                    Submit the form after filling up the fields.
-                  </p>
+                  <div>
+                    <span className="text-sm font-medium">Step 4:</span>
+                    <span className="ml-2 text-red-500 font-semibold">Upload Images of Your Property</span>
+                    <p className="text-justify text-sm text-gray-600">
+                      Please upload one image for the front view and three to four additional images.
+                    </p>
+                  </div>
+
+                  <div>
+                    <span className="text-sm font-medium">Step 5:</span>
+                    <span className="ml-2 text-red-500 font-semibold">Submit Your Property Information</span>
+                    <p className="text-justify text-sm text-gray-600">
+                      Submit the form after filling up the fields.
+                    </p>
+                  </div>
                 </div>
               </div>
-            )}
+            </Modal>
+
           </div>
           <div className="flex gap-2 min-h-fit">
             <div className="w-fit border bg-gray-100 border-gray-300 rounded-lg p-4 hidden lg:block">
@@ -783,7 +782,7 @@ const NewSellProperty = () => {
             <div className="flex-1 flex flex-col border-2 border-gray-200 rounded-lg p-4 hidden lg:flex">
               <div className="flex-1">{renderStepContent(current)}</div>
 
-              <div className="sticky bottom-0 bg-white py-3 mt-4 flex justify-between border-t border-gray-300 z-50">
+              <div className="sticky bottom-0 bg-white py-3 mt-4 flex justify-between border-t border-gray-300 z-10">
                 {current > 0 && <Button style={{
                   backgroundColor: '#dc2626',
                   borderColor: '#dc2626',
