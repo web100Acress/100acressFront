@@ -18,21 +18,17 @@ import styled from "styled-components";
 import Gallery from "../Components/Gallery";
 
 const ShowPropertyDetails = ({ id }) => {
-  const keyframes = `
-  @keyframes moveHorizontal {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(100%);
-    }
-  }
-`;
+
   const [rentViewDetails, setRentViewDetails] = useState();
   const [buyData, setBuyData] = useState([]);
   const [showNumber, setShowNumber] = useState(false);
   const [GalleryImageData, setGalleryImageData] = useState([]);
   const [OpenGallery, setOpenGallery] = useState(false);
+  const [agentDetails, setAgentDetails] = useState({
+    agentName: "",
+    agentNumber: "",
+    agentEmail: "",
+  });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -43,14 +39,14 @@ const ShowPropertyDetails = ({ id }) => {
           `https://api.100acress.com/property/view/${id}`
         );
         if (res.data.data) {
-          console.log(res.data.data, "res.data.data");
-          setRentViewDetails(res.data.data);
-          setLoading(false);
-        } else {
-          //console.log(res.data.postData, "res.data.PostData");
-          setRentViewDetails(res.data.postData.postProperty[0]);
-          setLoading(false);
-          let ImagesData = res.data.postData.postProperty[0].otherImage.map(
+          console.log(res.data.data);
+          setRentViewDetails(res.data.data.postProperty);
+          setAgentDetails({
+            agentName: res.data?.data?.agentName || "",
+            agentNumber: res.data?.data?.agentNumber || "",
+            agentEmail: res.data?.data?.agentEmail || "", 
+          });
+          let ImagesData = res.data.data?.postProperty?.otherImage.map(
             (image) => {
               return {
                 url: image.url,
@@ -59,11 +55,13 @@ const ShowPropertyDetails = ({ id }) => {
             }
           );
           ImagesData.push({
-            url: res.data.postData.postProperty[0].frontImage.url,
-            thumbnail: res.data.postData.postProperty[0].frontImage.url,
+            url: res.data.data?.postProperty?.frontImage.url,
+            thumbnail: res.data?.data?.postProperty.frontImage.url,
           });
           setGalleryImageData(ImagesData);
-          // console.log(ImagesData);
+          setLoading(false);
+        } else {
+            console.log("No data found");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -92,6 +90,8 @@ const ShowPropertyDetails = ({ id }) => {
     custName: "",
     custEmail: "",
     custNumber: "",
+    agentEmail: "",
+    agentNumber: ""
   });
 
   const resetUser = () => {
@@ -99,6 +99,8 @@ const ShowPropertyDetails = ({ id }) => {
       custName: "",
       custEmail: "",
       custNumber: "",
+      agentEmail: "",
+      agentNumber: ""
     });
   };
 
@@ -116,6 +118,7 @@ const ShowPropertyDetails = ({ id }) => {
       try {
         const response = await axios.post("https://api.100acress.com/postEnquiry", {
           ...userForm,
+          ...agentDetails,
           propertyAddress: rentViewDetails.address,
         });
 
