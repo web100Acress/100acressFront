@@ -20,21 +20,20 @@ export const imageSrc = [
       image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/t3.webp", link:"/developers/signature-global/"
     },
     {
-      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/t1.webp", link:"/indiabulls-estate-club/"
+      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/experion-laptop.jpeg", link:"/experion-the-trillion/"
     },
     {
-      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/t2.webp", link:"/trevoc-56-gurgaon/"
+      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/trevoc-laptop.jpeg", link:"/trevoc-56-gurgaon/"
     },
     {
-      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/t4.webp", link:"/puri-diplomatic-residences/"
+      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/windchant-laptop.jpeg",link:"/experion-nova-at-windchants/"
     },
     {
-      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/t5.webp", link:"/developers/m3m-india/"
+      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bazaria-laptop.jpeg",link:"/reach-the-bazaria/"
     },
     {
-      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/t6.webp", link:"/paras-floret/"
+      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/sky-p-laptop.jpeg",link:"/trinity-sector-88b-gurgaon/"
     }
-
   ];
 
 export const phoneSrc = [
@@ -42,19 +41,19 @@ export const phoneSrc = [
     image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/phone.webp", link:"/developers/signature-global/"
   },
   {
-    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/phone2.webp", link:"/trevoc-56-gurgaon/"
+    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/trevoc-phone.jpeg", link:"/trevoc-56-gurgaon/"
   },
   {
-    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/phone3.webp", link:"/indiabulls-estate-club/"
+    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/experion-phone.jpeg", link:"/experion-the-trillion/"
   },
   {
-    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/phone4.webp", link:"/puri-diplomatic-residences/"
+    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/windchant-phone.jpeg", link:"/experion-nova-at-windchants/"
   },
   {
-    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/phone5.webp", link:"/developers/m3m-india/"
+    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bazaria-phone.jpeg", link:"/reach-the-bazaria/"
   },
   {
-    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/phone6.webp", link:"/paras-floret/"
+    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/sky-p-phone.jpeg", link:"/trinity-sector-88b-gurgaon/"
   }
 ];
 
