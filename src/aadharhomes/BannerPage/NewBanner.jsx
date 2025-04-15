@@ -72,6 +72,8 @@ const NewBanner = () => {
     fetchData();
   }, [query]);
 
+
+  console.log(projectViewDetails,"ashytosh")
   const {
     frontImage,
     BhK_Details,
