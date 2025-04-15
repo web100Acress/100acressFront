@@ -229,6 +229,16 @@ const ProjectView = () => {
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">
+                      Payment Plan :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        {viewDetails.paymentPlan}
+                      </span>
+                    </span>
+                  </th>
+                </tr>
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
                       Country :{" "}
                       <span style={{ color: "black", fontWeight: "normal" }}>
                         {viewDetails?.country}

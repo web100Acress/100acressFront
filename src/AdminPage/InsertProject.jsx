@@ -12,7 +12,7 @@ const InsertProject = () => {
   const [editFromData, setEditFromData] = useState({
     projectName: "",
     state: "",
-    country:"India",
+    country: "India",
     projectAddress: "",
     project_discripation: "",
     AboutDeveloper: "",
@@ -22,8 +22,9 @@ const InsertProject = () => {
     projectRedefine_Business: [],
     projectRedefine_Entertainment: [],
     Amenities: [],
-    luxury: "False",
-    spotlight: "False",
+    luxury: "",
+    spotlight: "",
+    paymentPlan: "",
     meta_title: "",
     meta_description: "",
     projectBgContent: "",
@@ -40,14 +41,14 @@ const InsertProject = () => {
     possessionDate: "",
     minPrice: "",
     maxPrice: "",
-    launchingDate:""
+    launchingDate: ""
   });
 
   const resetData = () => {
     setEditFromData({
       projectName: "",
       state: "",
-      country:"India",
+      country: "India",
       projectAddress: "",
       project_discripation: "",
       AboutDeveloper: "",
@@ -75,7 +76,7 @@ const InsertProject = () => {
       possessionDate: "",
       minPrice: "",
       maxPrice: "",
-      launchingDate:"",
+      launchingDate: "",
     });
   };
 
@@ -107,8 +108,8 @@ const InsertProject = () => {
     setEditFromData({ ...editFromData, luxury: event.target.value });
   };
 
-  const handleSpotlightStatus = (event) =>{
-    setEditFromData({...editFromData, spotlight: event.target.value});
+  const handleSpotlightStatus = (event) => {
+    setEditFromData({ ...editFromData, spotlight: event.target.value });
   }
 
   const [fileData, setFileData] = useState({
@@ -237,15 +238,15 @@ const InsertProject = () => {
 
     try {
       const myToken = localStorage.getItem("myToken");
-      const response = await axios.post(apiEndpoint,formDataAPI,
+      const response = await axios.post(apiEndpoint, formDataAPI,
         {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${myToken}`,
           },
-      });
+        });
       const responseData = response.data;
-      if(response.status === 200){
+      if (response.status === 200) {
         console.log(responseData);
         alert("Data Posted");
         resetData();
@@ -286,7 +287,7 @@ const InsertProject = () => {
 
 
   console.log(editFromData);
-  
+
   return (
     <div style={{ overflowX: "hidden" }}>
       <Sidebar />
@@ -312,7 +313,7 @@ const InsertProject = () => {
                 value={editFromData.projectOverview}
                 onChange={handleProjectOverviewChange}
               >
-                <option selected disabled hidden  value="">Select Project Overview</option>
+                <option selected disabled hidden value="">Select Project Overview</option>
                 <option value="trending">Trending</option>
                 <option value="featured">Featured</option>
                 <option value="none">None</option>
@@ -323,7 +324,7 @@ const InsertProject = () => {
                 value={editFromData.type}
                 onChange={handleProjectType}
               >
-                <option value=""       selected disabled hidden  className="text-gray-600">
+                <option value="" selected disabled hidden className="text-gray-600">
                   Project Type
                 </option>
                 <option value="Commercial Property">Commercial Property</option>
@@ -342,9 +343,9 @@ const InsertProject = () => {
                 className="text-gray-600 border  px-2 mx-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
                 value={editFromData.project_Status}
                 onChange={handleProjectStatus}
-          
+
               >
-                <option value=""       selected disabled hidden  className="text-gray-600">
+                <option value="" selected disabled hidden className="text-gray-600">
                   Project Status
                 </option>
                 <option value="underconstruction">Under Construction</option>
@@ -389,36 +390,46 @@ const InsertProject = () => {
               </label>
             </div>
             <div className="flex w-full">
-              <label className="basis-1/2" for="country">
-                  <input
-                    className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                    type="text"
-                    placeholder="Country"
-                    name="country"
-                    value={editFromData.country}
-                    onChange={handleChangeProjectData}
-                  />
+              <label className="basis-1/4" for="country">
+                <input
+                  className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                  type="text"
+                  placeholder="Country"
+                  name="country"
+                  value={editFromData.country}
+                  onChange={handleChangeProjectData}
+                />
               </label>
               <select
-                  className="basis-1/2 text-gray-600 border  px-2 mx-2 py-1 outline-none rounded-md ring-black focus:ring-1"
-                  value={editFromData.luxury}
-                  onChange={handleLuxuryStatus}
-                >
-                  <option selected disabled hidden value="">
-                    luxury
-                  </option>
-                  <option value="True">True</option>
-                  <option value="False">False</option>
-                </select>
-                <select
-                className="text-gray-600 border px-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
-                value={editFromData.spotlight}
-                onChange={handleSpotlightStatus}
+                className="basis-1/4 text-gray-600 border  px-2 mx-2 py-1 outline-none rounded-md ring-black focus:ring-1"
+                value={editFromData.luxury}
+                onChange={handleLuxuryStatus}
               >
-                <option selected disabled hidden  value="">Spotlight</option>
+                <option className="hidden" value="">
+                  luxury
+                </option>
                 <option value="True">True</option>
                 <option value="False">False</option>
               </select>
+              <select
+                className="basis-1/4 text-gray-600 border  px-2 mx-2 py-1 outline-none rounded-md ring-black focus:ring-1"
+                value={editFromData.spotlight}
+                onChange={handleSpotlightStatus}
+              >
+                <option className="hidden" value="">Spotlight</option>
+                <option value="True">True</option>
+                <option value="False">False</option>
+              </select>
+              <label className="basis-1/4 px-2 " for="paymentplan">
+                <input
+                  className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                  type="text"
+                  placeholder="Payment Plan"
+                  name="paymentPlan"
+                  value={editFromData.paymentPlan}
+                  onChange={handleChangeProjectData}
+                />
+              </label>
             </div>
 
             {/* New projet Data add */}
@@ -446,29 +457,29 @@ const InsertProject = () => {
                 />
               </label>
 
-           <div className="flex">
-           <label className="block" for="city">
-                <input
-                  className="w-[100px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                  type="text"
-                  placeholder="Tower Number"
-                  name="towerNumber"
-                  value={editFromData.towerNumber}
-                  onChange={handleChangeProjectData}
-                />
-              </label>
+              <div className="flex">
+                <label className="block" for="city">
+                  <input
+                    className="w-[100px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                    type="text"
+                    placeholder="Tower Number"
+                    name="towerNumber"
+                    value={editFromData.towerNumber}
+                    onChange={handleChangeProjectData}
+                  />
+                </label>
 
-              <label className="block" for="city">
-                <input
-                  className="w-[100px] mx-2 rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                  type="text"
-                  placeholder="Launching Date"
-                  name="launchingDate"
-                  value={editFromData.launchingDate}
-                  onChange={handleChangeProjectData}
-                />
-              </label>
-           </div>
+                <label className="block" for="city">
+                  <input
+                    className="w-[100px] mx-2 rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
+                    type="text"
+                    placeholder="Launching Date"
+                    name="launchingDate"
+                    value={editFromData.launchingDate}
+                    onChange={handleChangeProjectData}
+                  />
+                </label>
+              </div>
             </div>
 
             <div className="flex space-x-4">
