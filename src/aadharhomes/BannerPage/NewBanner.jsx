@@ -773,7 +773,7 @@ const NewBanner = () => {
                     {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
                   </p>
                   <ul className="list-disc text-left " style={{ listStyleType: "none" }}>
-                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.towerNumber} Towers</li>
+                    {projectViewDetails.type === "Residential Flats" && <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.towerNumber} Towers</li>}
                     <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalUnit} Units</li>
                     <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalLandArea} Acres of Land</li>
                     {projectViewDetails.projectName === "Signature Global Twin Tower DXP" && (
