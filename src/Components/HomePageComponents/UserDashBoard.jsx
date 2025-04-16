@@ -21,7 +21,7 @@ const UserDashBoard = () => {
   }
 
   return (
-    <div style={{ overflowX: "hidden" }}>
+    <div className="mt-12" style={{ overflowX: "hidden" }}>
       <div className="mx-10 my-10">
         <div className="max-w-full mx-auto my-10 flex flex-col md:flex-row items-start rounded-xl border p-4 text-center md:max-w-[83rem]">
           <div className="w-full md:w-1/2 md:mr-6">
