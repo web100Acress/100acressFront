@@ -73,7 +73,6 @@ const NewBanner = () => {
   }, [query]);
 
 
-  console.log(projectViewDetails,"ashytosh")
   const {
     frontImage,
     BhK_Details,
@@ -897,7 +896,7 @@ const NewBanner = () => {
                   <CalenderIcon className="mr-2" />
                   <div className='mt-2 text-center'>
                     <span className="text-2xl font-AbrialFatFace">
-                      {projectViewDetails.towerNumber} Tower -{" "}
+                      {projectViewDetails.type === "Residential Flats" && `${projectViewDetails.towerNumber} Tower -`}{" "}
                       {projectViewDetails.totalUnit} Unit
                     </span>
                     <h6 className='text-xs'>About Project</h6>
