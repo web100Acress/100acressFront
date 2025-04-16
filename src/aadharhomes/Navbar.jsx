@@ -19,7 +19,6 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 // import logoImage from "../Images/100acress.png";
 import axios from "axios";
 import styled from "styled-components";
-import { ToastContainer } from "react-toastify";
 import { FillIcon, PeopleIcon } from "../Assets/icons";
 import ScrollSearch from "./ScollSearch";
 import { message } from "antd";
@@ -30,107 +29,7 @@ import { useJwt } from "react-jwt";
 
 const SpacerComponent = () => <Box width="60px" />;
 
-const MenuListContainer = ({ isOpen }) => {
-  const history = useNavigate();
-  const token = JSON.parse(localStorage.getItem("myToken"));
-  const { decodedToken } = useJwt(token || "");
 
-  const ShowLogOutMessage = () => {
-    message.success("Logged Out Successfully !")
-  };
-
-  const HandleUserLogout = async () => {
-    try {
-      await axios.get("https://api.100acress.com/postPerson/logout");
-      history("/");
-      localStorage.removeItem("myToken");
-      localStorage.removeItem("mySellerId");
-      localStorage.removeItem("userRole");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
-  console.log(token, "token from secondary")
-
-  return (
-    <>
-      {token ? (
-        <>
-          <Box
-            position="absolute"
-            mt={{ base: "43px", md: "43px", sm: "43px" }}
-            right={0}
-            zIndex={1}
-            bg="white"
-            p={2}
-            whiteSpace="nowrap"
-            rounded="md"
-            display={isOpen ? "block" : "none"}
-          >
-            <ToastContainer />
-
-            <MenuItem fontSize="sm">
-              <NavLink to={`/userdashboard/`}>View Profile</NavLink>
-            </MenuItem>
-            <MenuItem fontSize="sm">
-              {decodedToken?.role === "Admin" && <NavLink to={`/Admin/user`}>Admin</NavLink>}
-              {decodedToken?.role === "ContentWriter" && <NavLink to={`/seo/blogs`}>Blog Management</NavLink>}
-            </MenuItem>
-
-            <MenuItem fontSize="sm">
-              <NavLink>Edit Profile</NavLink>
-            </MenuItem>
-
-            <MenuItem fontSize="sm">
-              <NavLink>Change Password</NavLink>
-            </MenuItem>
-
-            <MenuItem fontSize="sm">
-              <NavLink>Delete account</NavLink>
-            </MenuItem>
-
-            <MenuItem fontSize="sm" onClick={() => HandleUserLogout({})}>
-              <NavLink onClick={ShowLogOutMessage}>LogOut</NavLink>
-            </MenuItem>
-          </Box>{" "}
-        </>
-      ) : (
-        <>
-          <Box
-            position="absolute"
-            mt={{ base: "40px", md: "40px", sm: "40px" }}
-            right={0}
-            zIndex={1}
-            bg="white"
-            p={1}
-            whiteSpace="nowrap"
-            rounded="md"
-            display={isOpen ? "block" : "none"}
-          >
-            <ToastContainer />
-
-            <MenuItem fontSize="sm" color={"red"}>
-              <NavLink to="/auth/signin/">Login/</NavLink>
-              <NavLink to="/auth/signup/">Register</NavLink>
-            </MenuItem>
-
-            <MenuItem fontSize="sm">
-              <NavLink>Recently Searched</NavLink>
-            </MenuItem>
-
-            <MenuItem fontSize="sm">
-              <NavLink>Shortlisted</NavLink>
-            </MenuItem>
-
-            <MenuItem fontSize="sm">
-              <NavLink>Contacted</NavLink>
-            </MenuItem>
-          </Box>
-        </>
-      )}
-    </>
-  );
-};
 
 export default function Navbar() {
   const history = useNavigate();
@@ -151,10 +50,6 @@ export default function Navbar() {
   console.log(token, "token")
   const showModal = () => {
     setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
