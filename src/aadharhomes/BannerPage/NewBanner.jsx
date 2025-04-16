@@ -773,21 +773,12 @@ const NewBanner = () => {
                     {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
                   </p>
                   <ul className="list-disc text-left " style={{ listStyleType: "none" }}>
-                    {projectViewDetails.type === "Residential Flats" && <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.towerNumber} Towers</li>}
-                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalUnit} Units</li>
-                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalLandArea} Acres of Land</li>
-                    {projectViewDetails.projectName === "Signature Global Twin Tower DXP" && (
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Payment Plan 25:75</li>
+                    {projectViewDetails.type === "Residential Flats" && <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.towerNumber} Towers</li>}
+                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500"> {projectViewDetails.totalUnit} Units</li>
+                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.totalLandArea} Acres of Land</li>
+                    {projectViewDetails.paymentPlan && (
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Payment Plan {projectViewDetails.paymentPlan}</li>
                     )}
-                    {projectViewDetails.projectName === "Signature Titanium SPR" && (
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Payment Plan 25:25:50</li>
-                    )}
-                    {projectViewDetails.projectName === "Trinity Sky Palazzo"&& (
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Payment Plan 20:80</li>
-                    )}
-                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_Area} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_Area}{" "}Unit Size</li> */}
-                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_type} to {projectViewDetails.BhK_Details[projectViewDetails?.BhK_Details.length-1]?.bhk_type}{" "}Unit type</li> */}
-                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Expected Possession {formatDate(projectViewDetails.possessionDate)}</li> */}
 
                   </ul>
                   <button onClick={handleShowInstantcallBack} className="bg-white text-black text-xl py-2 px-4 rounded shadow hover:bg-gray-100 transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300">
