@@ -3,6 +3,7 @@ import axios from 'axios';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { constructNow, format, isValid, parseISO } from "date-fns";
+import { Collapse } from 'antd';
 import styled from "styled-components";
 import { Helmet } from 'react-helmet';
 import {
@@ -406,6 +407,57 @@ const NewBanner = () => {
     }, 10000);
     return () => clearTimeout(timeOutId);
   }, []);
+
+  const text = [
+    {
+      title: `What is the exact Location of ${projectViewDetails?.projectName}`,
+      content: `:- ${projectViewDetails?.projectName} is strategically locatied in  ${projectViewDetails?.projectAddress}, ${projectViewDetails?.city}. A well-connected and repidly developing ${projectViewDetails?.projectOverview} hub .`,
+    },
+    {
+      title: `What is the expected possession date for  ${projectViewDetails?.projectName} ${projectViewDetails.city} `,
+      content: `${projectViewDetails.projectName} is a ${projectViewDetails?.project_Status} projecct with possession shceduled for ${projectViewDetails?.possessionDate}.`,
+    },
+    {
+      title: `How can I verify the RERA approval status of ${projectViewDetails?.projectName}`,
+      content: `You can verify the RERA registration status of ${projectViewDetails?.projectName} by visiting the official state RERA website. The project is registered under RERA with the number ${projectViewDetails?.projectReraNo}.`,
+    },
+    {
+      title: `Who is the developer of ${projectViewDetails?.projectName} ${projectViewDetails.city}`,
+      content: `${projectViewDetails?.projectName} is developed by ${projectViewDetails?.builderName}, a renowned real estate developer known for delivering premium residential and commercial projects across India.`,
+    },
+    {
+      title: `What types of BHK units are available in  ${projectViewDetails?.projectName} ${projectViewDetails?.projectAddress}`,
+      content: ` ${projectViewDetails?.projectName} offers thoughtfully designed ${projectViewDetails.BhK_Details.map((data)=>(` ${data.bhk_type}`))} ${projectViewDetails?.projectOverview} floors units, catering to moder lifestyle needs.`,  
+    },
+
+  ]
+  
+;
+
+
+// const items = [
+//   {
+//     key: '1',
+//     label: `What is exact Location of ${projectViewDetails?.projectName} ?` ,
+//     children: <p>{text[0].content}</p>,
+//   },
+//   {
+//     key: '2',
+//     label: 'This is panel header 2',
+//     children: <p>{text}</p>,
+//   },
+//   {
+//     key: '3',
+//     label: 'This is panel header 3',
+//     children: <p>{text}</p>,
+//   },
+// ];
+
+const items =text.map((item, index) => ({
+  key: index + 1,
+  label: ` ${item.title} ?`,
+  children: <p>{item.content}</p>,
+}))
 
   return (
     <>
@@ -1511,6 +1563,40 @@ const NewBanner = () => {
                           <div dangerouslySetInnerHTML={{ __html: builderdescription }} />
                         </p>
                       </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            
+            <div className="h-fit" >
+              <div className="flex flex-justify-center items-stretch rounded h-auto">
+                <div className="text-black w-full flex flex-col">
+                  <div className="flex flex-col md:flex-row h-full">
+
+                    <div className="w-full md:w-1/1 sm:w-full p-4 text-black flex flex-col justify-center items-start">
+                      <span className="lg:text-2xl md:text-2xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
+                        <span className="flex items-center justify-center p-1">
+                          <LineIcon />{" "}
+                        </span>
+                        {" "}F.A.Q
+                      </span>
+                      <h4
+                        
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
+                      >
+                        About {projectViewDetails.projectName}
+                      </h4>
+
+
+                      <div className='p-8 h-fit w-full '>
+                        <Collapse items={items} />
+                      </div>
+
                     </div>
 
 
