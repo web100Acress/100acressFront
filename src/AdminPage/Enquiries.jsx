@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Sidebar from "./Sidebar";
 import BackToTopButton from "../Pages/BackToTopButton";
 import {ClipLoader} from "react-spinners";
+import { useNavigate } from "react-router-dom";
+import {message} from "antd"
 
 const customStyle = {
   marginLeft: "290px",
@@ -16,18 +19,35 @@ const Enquiries = () => {
   const pageSize = 100; 
   const [downloadProgess, setDownloadProgress] = useState(0);
 
+  const {messageApi,contextHolder} = message.useMessage();
+  const navigate = useNavigate();
+  const token = localStorage.getItem("myToken");
+
   const fetchData = async () => {
     setLoading(true);
-    try {
-      const response = await fetch(
-        `https://api.100acress.com/userViewAll?limit=2000` 
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
 
-      const result = await response.json();
-      setData(result.data);
+
+    if (!token) return navigate("/");
+    try {
+      const response = await axios.get(`https://api.100acress.com/userViewAll?limit=2000`,
+        {
+          headers:{
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+
+      if( response.status !== 200) {
+        messageApi.open({
+          type: "error",
+          content: "Error While Fetching Data",
+          duration: 2,
+        });
+        console.error("Failed to fetch data");
+      }
+      
+      setData(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -135,7 +155,14 @@ const Enquiries = () => {
 
   const downloadExelFile = async()=>{
     try {
-      const response = await fetch("https://api.100acress.com/userViewAll/dowloadData");
+      const response = await fetch("https://api.100acress.com/userViewAll/dowloadData",
+        {
+          headers:{
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error(`Failed to download file: ${response.statusText}`);
       }
@@ -198,6 +225,7 @@ const Enquiries = () => {
     <>
       <Sidebar /> 
       <div style={customStyle} className="absolute right-auto p-4">
+        {contextHolder}
         <div className="flex justify-between mb-4">
           <div className="flex items-center bg-white shadow-md rounded-md overflow-hidden max-w-md">
             <input
