@@ -27,9 +27,9 @@ function OurServices() {
   return (
     <div className="section font-poppins font-light">
       <div className="max-w-screen-xl mx-auto px-6 py-6">
-      <h1 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left">
+      <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left">
         Explore Our Services
-      </h1>
+      </h2>
         <div className="md:hidden h-64">
           <Slider {...sliderSettings} >
             <div className="flex flex-col items-center bg-white p-4 rounded-lg ">

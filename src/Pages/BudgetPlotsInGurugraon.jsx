@@ -14,9 +14,9 @@ const BudgetPlotsInGurugraon = () => {
     <Wrapper className="section">
     <div data-aos="zoom-in-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
       <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
-        <h1 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
+        <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
         Budget Plots in Gurugram
-        </h1>
+        </h2>
         <div className=" ml-2 hidden sm:block">
         <Link to="/plots-in-gurugram/" target="_top">
         <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">

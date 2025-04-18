@@ -22,9 +22,9 @@ function SpacesAvailable() {
     <Wrapper className="section">
       <div data-aos="flip-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
         <div className="flex items-center mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
-          <h1 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
+          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
             Dream Property In The Heart of Gurugram
-          </h1>
+          </h2>
         </div> 
         <div className="grid  lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 pb-2 pt-3">
           {projects.slice(0, 3).map((project, index) => (
