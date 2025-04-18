@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import AOS from 'aos';
@@ -45,9 +45,9 @@ const Builderaction = () => {
     <Wrapper className="section ">
           <div className="container">
           <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
-          <h1 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
+          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
             Best For You 
-            </h1>
+            </h2>
           </div>
             <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-2 grid-cols-1 mx-0 gap-3 pb-2 pt-3">
                     {projects.map((project, index) => (

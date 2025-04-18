@@ -93,7 +93,7 @@ const ProjectSearching = ({searchdata,sendDatatoparent,city}) => {
                   Project Status
                 </option>
                 <option value="comingsoon">Upcoming Projects</option>
-                <option value="newlaunch">New Lauch Projects</option>
+                <option value="newlaunch">New Launch Projects</option>
                 <option value="underconstruction">Under Constructions</option>
                 <option value="readytomove">Ready To Move</option>
                 
