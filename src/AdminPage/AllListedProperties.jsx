@@ -15,6 +15,7 @@ const customStyle = {
 const AllListedProperties = () => {
   const token = localStorage.getItem("myToken");
   const [allListedProperty, setAllListedProperty] = useState([]);
+  const [filteredProperties, setFilteredProperties] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState("createdAt");
@@ -25,12 +26,14 @@ const AllListedProperties = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState('Do you Want to delete this Property?');
   const [propertyToDelete, setPropertyToDelete] = useState(null);
+  const [isVerified, setIsVerified] = useState('verified');
+
 
   const fetchData =  useCallback(async () => {
     try {
       setIsLoading(true);
       const res = await axios.get(
-        `https://api.100acress.com/postPerson/view/allListedProperty/?page=${currentPage}&limit=${pageLimit}`,
+        `https://api.100acress.com/postPerson/view/allListedProperty/?page=${currentPage}&limit=${pageLimit}&verify=${isVerified}`,
         { 
           headers: {
             "Content-Type": "application/json",
@@ -53,7 +56,7 @@ const AllListedProperties = () => {
     finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageLimit, sortField]);
+  }, [currentPage, pageLimit, sortField, isVerified]);
 
   useEffect(() => {
     fetchData();
@@ -64,13 +67,13 @@ const AllListedProperties = () => {
   };
 
 
-  const handleOk = async(id) => {
+  const handleOk = async() => {
     setModalText('Wait...');
     setConfirmLoading(true);
-    const isDeleted = await handleDeleteProperty(id);
+    const isDeleted = await handleDeleteProperty(propertyToDelete);
     if (isDeleted.success) {
       setModalText('Property deleted successfully.');
-      setAllListedProperty(allListedProperty.filter((property) => property._id !== id));
+      setAllListedProperty(prevProperties => prevProperties.filter(property => property._id !== propertyToDelete));
       setConfirmLoading(false);
       setOpenModal(false);
     }
@@ -118,6 +121,7 @@ const AllListedProperties = () => {
     setModalText('Do you Want to delete this Property?');
   };
 
+
   return (
     <>
       <Sidebar />
@@ -136,7 +140,7 @@ const AllListedProperties = () => {
             <p>{modalText}</p>
           </Modal>
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div>
+          <div className="flex space-x-4">
             <select 
               value={pageLimit} 
               onChange={(e) => setPageLimit(Number(e.target.value))}
@@ -145,6 +149,14 @@ const AllListedProperties = () => {
               <option value={10}>10 per page</option>
               <option value={25}>25 per page</option>
               <option value={50}>50 per page</option>
+            </select>
+            <select 
+              value={isVerified} 
+              onChange={(e) => setIsVerified(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-md"
+            >
+              <option value={'verified'}>verified</option>
+              <option value={'unverified'}>unverified</option>
             </select>
           </div>
           <div className="overflow-x-auto">
@@ -214,7 +226,6 @@ const AllListedProperties = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {allListedProperty.length > 0 ? (
                     allListedProperty.map((property) => (
-                      <>
                       <tr key={property._id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
@@ -273,7 +284,6 @@ const AllListedProperties = () => {
                           </div>
                         </td>
                       </tr>
-                      </>
                     ))
                   ) : (
                     <tr>

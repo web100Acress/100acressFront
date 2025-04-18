@@ -3,7 +3,6 @@ import axios from 'axios';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { constructNow, format, isValid, parseISO } from "date-fns";
-import { Collapse } from 'antd';
 import styled from "styled-components";
 import { Helmet } from 'react-helmet';
 import {
@@ -1563,40 +1562,6 @@ const items =text.map((item, index) => ({
                           <div dangerouslySetInnerHTML={{ __html: builderdescription }} />
                         </p>
                       </div>
-                    </div>
-
-
-
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            
-            <div className="h-fit" >
-              <div className="flex flex-justify-center items-stretch rounded h-auto">
-                <div className="text-black w-full flex flex-col">
-                  <div className="flex flex-col md:flex-row h-full">
-
-                    <div className="w-full md:w-1/1 sm:w-full p-4 text-black flex flex-col justify-center items-start">
-                      <span className="lg:text-2xl md:text-2xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
-                        <span className="flex items-center justify-center p-1">
-                          <LineIcon />{" "}
-                        </span>
-                        {" "}F.A.Q
-                      </span>
-                      <h4
-                        
-                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
-                      >
-                        About {projectViewDetails.projectName}
-                      </h4>
-
-
-                      <div className='p-8 h-fit w-full '>
-                        <Collapse items={items} />
-                      </div>
-
                     </div>
 
 
