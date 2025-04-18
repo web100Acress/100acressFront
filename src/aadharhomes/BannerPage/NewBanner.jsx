@@ -407,6 +407,57 @@ const NewBanner = () => {
     return () => clearTimeout(timeOutId);
   }, []);
 
+  const text = [
+    {
+      title: `What is the exact Location of ${projectViewDetails?.projectName}`,
+      content: `:- ${projectViewDetails?.projectName} is strategically locatied in  ${projectViewDetails?.projectAddress}, ${projectViewDetails?.city}. A well-connected and repidly developing ${projectViewDetails?.projectOverview} hub .`,
+    },
+    {
+      title: `What is the expected possession date for  ${projectViewDetails?.projectName} ${projectViewDetails.city} `,
+      content: `${projectViewDetails.projectName} is a ${projectViewDetails?.project_Status} projecct with possession shceduled for ${projectViewDetails?.possessionDate}.`,
+    },
+    {
+      title: `How can I verify the RERA approval status of ${projectViewDetails?.projectName}`,
+      content: `You can verify the RERA registration status of ${projectViewDetails?.projectName} by visiting the official state RERA website. The project is registered under RERA with the number ${projectViewDetails?.projectReraNo}.`,
+    },
+    {
+      title: `Who is the developer of ${projectViewDetails?.projectName} ${projectViewDetails.city}`,
+      content: `${projectViewDetails?.projectName} is developed by ${projectViewDetails?.builderName}, a renowned real estate developer known for delivering premium residential and commercial projects across India.`,
+    },
+    {
+      title: `What types of BHK units are available in  ${projectViewDetails?.projectName} ${projectViewDetails?.projectAddress}`,
+      content: ` ${projectViewDetails?.projectName} offers thoughtfully designed ${projectViewDetails.BhK_Details?.map((data)=>(` ${data.bhk_type}`))} ${projectViewDetails?.projectOverview} floors units, catering to moder lifestyle needs.`,  
+    },
+
+  ]
+  
+;
+
+
+// const items = [
+//   {
+//     key: '1',
+//     label: `What is exact Location of ${projectViewDetails?.projectName} ?` ,
+//     children: <p>{text[0].content}</p>,
+//   },
+//   {
+//     key: '2',
+//     label: 'This is panel header 2',
+//     children: <p>{text}</p>,
+//   },
+//   {
+//     key: '3',
+//     label: 'This is panel header 3',
+//     children: <p>{text}</p>,
+//   },
+// ];
+
+const items =text.map((item, index) => ({
+  key: index + 1,
+  label: ` ${item.title} ?`,
+  children: <p>{item.content}</p>,
+}))
+
   return (
     <>
 
