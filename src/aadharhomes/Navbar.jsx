@@ -1309,7 +1309,7 @@ export default function Navbar() {
                     borderRadius="l"
                     variant="unstyled"
                     aria-label="Profile"
-                    onClick={handleAvatarClick}
+                    onClick={showModal}
                     style={{ backgroundColor: "transparent", border: "none" }} // Transparent background
                   >
                     {token ? (
@@ -1336,11 +1336,78 @@ export default function Navbar() {
                       </button>
                     )}
                   </MenuButton>
+                  <Modal
+                    open={isModalOpen}
+                    onCancel={handleCancel}
+                    footer={null}
+                    closable={false}
+                    mask={false}
+                    style={{
+                      padding: 0,
+                      margin: 0,
+                      position: 'fixed',
+                      top: 0,
+                      right: 0,
+                    }}
+                    modalRender={modal => (
+                      <div style={{
+                        position: 'fixed',
+                        top: 45,
+                        right: 15,
+                        zIndex: 1050,
+                        margin: '10px',
+                        background: 'white',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                        borderRadius: '4px',
+                        padding: '0px 0px !important',
+                        borderCollapse: 'collapse'
+                      }}>
+                        {modal}
+                      </div>
+                    )}
+                  >
+                    {token ? (<section style={{ margin: "-15px -15px -15px -15px" }}>
+                      <MenuItem>
+                        <NavLink className="" onClick={handleCancel} to={`/userdashboard/`}>View Profile</NavLink>
+                      </MenuItem><MenuItem fontSize="sm">
+                        {decodedToken?.role === "Admin" && <NavLink className="" onClick={handleCancel} to={`/Admin/user`}>Admin</NavLink>}
+                        {decodedToken?.role === "ContentWriter" && <NavLink className="" to={`/seo/blogs`}>Blog Management</NavLink>}
+                      </MenuItem>
 
-                  <MenuListContainer
-                    isOpen={isDropdownOpen}
-                    onClose={onClose}
-                  />
+                      <MenuItem fontSize="sm">
+                        <NavLink className=" " to={`/userdashboard/`} onClick={handleCancel}>Edit Profile</NavLink>
+                      </MenuItem>
+
+                      <MenuItem fontSize="sm">
+                        <NavLink className="" onClick={handleCancel}>Change Password</NavLink>
+                      </MenuItem>
+
+                      <MenuItem fontSize="sm">
+                        <NavLink className="" onClick={handleCancel}>Delete account</NavLink>
+                      </MenuItem>
+
+                      <MenuItem fontSize="sm" onClick={() => HandleUserLogout({})} refresh="true">
+                        <NavLink className=" text-red-500" onClick={ShowLogOutMessage}>LogOut</NavLink>
+                      </MenuItem>
+                    </section>) : (<section style={{ margin: "-15px -15px -15px -15px" }}>
+                      <MenuItem fontSize="sm" color={"red"}>
+                        <NavLink className="" onClick={handleCancel} to="/auth/signin/">Login/</NavLink>
+                        <NavLink className="" onClick={handleCancel} to="/auth/signup/">Register</NavLink>
+                      </MenuItem>
+
+                      <MenuItem fontSize="sm">
+                        <NavLink className="" onClick={handleCancel}>Recently Searched</NavLink>
+                      </MenuItem>
+
+                      <MenuItem fontSize="sm">
+                        <NavLink className="" onClick={handleCancel}>Shortlisted</NavLink>
+                      </MenuItem>
+
+                      <MenuItem fontSize="sm">
+                        <NavLink className="" onClick={handleCancel}>Contacted</NavLink>
+                      </MenuItem>
+                    </section>)}
+                  </Modal>
                 </Menu>
               </div>
             </Flex>)}
