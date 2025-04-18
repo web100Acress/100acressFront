@@ -1,4 +1,4 @@
-import { Button, message } from 'antd';
+import { Button, Collapse, message } from 'antd';
 import axios from 'axios';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -410,7 +410,7 @@ const NewBanner = () => {
   const text = [
     {
       title: `What is the exact Location of ${projectViewDetails?.projectName}`,
-      content: `:- ${projectViewDetails?.projectName} is strategically locatied in  ${projectViewDetails?.projectAddress}, ${projectViewDetails?.city}. A well-connected and repidly developing ${projectViewDetails?.projectOverview} hub .`,
+      content: `${projectViewDetails?.projectName} is strategically locatied in  ${projectViewDetails?.projectAddress}, ${projectViewDetails?.city}. A well-connected and repidly developing ${projectViewDetails?.projectOverview} hub .`,
     },
     {
       title: `What is the expected possession date for  ${projectViewDetails?.projectName} ${projectViewDetails.city} `,
@@ -432,25 +432,6 @@ const NewBanner = () => {
   ]
   
 ;
-
-
-// const items = [
-//   {
-//     key: '1',
-//     label: `What is exact Location of ${projectViewDetails?.projectName} ?` ,
-//     children: <p>{text[0].content}</p>,
-//   },
-//   {
-//     key: '2',
-//     label: 'This is panel header 2',
-//     children: <p>{text}</p>,
-//   },
-//   {
-//     key: '3',
-//     label: 'This is panel header 3',
-//     children: <p>{text}</p>,
-//   },
-// ];
 
 const items =text.map((item, index) => ({
   key: index + 1,
@@ -1570,6 +1551,39 @@ const items =text.map((item, index) => ({
                 </div>
               </div>
             </div>
+
+            <div className="h-fit" >
+               <div className="flex flex-justify-center items-stretch rounded h-auto">
+                 <div className="text-black w-full flex flex-col">
+                   <div className="flex flex-col md:flex-row h-full">
+ 
+                     <div className="w-full md:w-1/1 sm:w-full p-4 text-black flex flex-col justify-center items-start">
+                       <span className="lg:text-2xl md:text-2xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
+                         <span className="flex items-center justify-center p-1">
+                           <LineIcon />{" "}
+                         </span>
+                         {" "}F.A.Q
+                       </span>
+                       <h4
+                         
+                         className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
+                       >
+                         About {projectViewDetails.projectName}
+                       </h4>
+ 
+ 
+                       <div className='p-8 h-fit w-full '>
+                         <Collapse items={items} />
+                       </div>
+ 
+                     </div>
+ 
+ 
+ 
+                   </div>
+                 </div>
+               </div>
+             </div>
 
             {/* Related property */}
 
