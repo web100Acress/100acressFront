@@ -11,7 +11,7 @@ import {resale} from "../slice/ResaleSlice";
 import axios from "axios";
 import { API_ROUTES, API_ROUTES_PROJECTS } from "./Constant_Service";
 import { sortByDesiredOrder } from "../../Utils/ProjectSorting";
-import { Affordable_Desired_Order, Trending_Desired_Order } from "../../Pages/datafeed/Desiredorder";
+import { Affordable_Desired_Order, SCO_DESIRED_ORDER, Trending_Desired_Order } from "../../Pages/datafeed/Desiredorder";
 import { emaar } from "../slice/ProjectstatusSlice";
 import { useCallback } from "react";
 import { maxpriceproject,minpriceproject } from "../slice/PriceBasedSlice";
@@ -85,7 +85,7 @@ const Api_service = () => {
     try{
         const response = await axios.get(`${API_ROUTES_PROJECTS}/scoplots`);
         const Featuredprojects = response.data.data;
-        dispatch(scoplots(Featuredprojects));
+        dispatch(scoplots(sortByDesiredOrder((Featuredprojects),SCO_DESIRED_ORDER,"projectName")));
     }catch(error){
         console.error("Error fetching Sco data:", error);
     }

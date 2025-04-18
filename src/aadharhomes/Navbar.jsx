@@ -574,6 +574,7 @@ export default function Navbar() {
                       className="relative group "
                       onMouseEnter={handleHover2}
                       onMouseLeave={handleLeave2}
+                      style={{padding:"15px"}}
                     >
                       <Link
                       // to={"/projects-in-gurugram/"}
@@ -583,7 +584,7 @@ export default function Navbar() {
                         </button>
                       </Link>
                       <div
-                        className={`absolute bg-white py-2 text-gray-800 w-90  rounded-md shadow-lg z-10 ${isMenuOpen2 ? "block" : "hidden"
+                        className={`absolute bg-white py-2 mt-3 text-gray-800 w-90  rounded-md shadow-lg z-10 ${isMenuOpen2 ? "block" : "hidden"
                           }`}
                       >
                         <div className="flex mb-3">

@@ -15,6 +15,13 @@ export const Affordable_Desired_Order = [
     "TLC The First Acre",
 ];
 
+export const SCO_DESIRED_ORDER = [
+    "Reach The Bazaria",
+    "BPTP The Oval",
+    "Aarize South Drive",
+    "Adani Downtown Avenue"
+];
+
 export const imageSrc = [
     {
       image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/t3.webp", link:"/developers/signature-global/"
