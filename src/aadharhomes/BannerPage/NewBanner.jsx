@@ -410,11 +410,11 @@ const NewBanner = () => {
   const text = [
     {
       title: `What is the exact Location of ${projectViewDetails?.projectName}`,
-      content: `${projectViewDetails?.projectName} is strategically locatied in  ${projectViewDetails?.projectAddress}, ${projectViewDetails?.city}. A well-connected and repidly developing ${projectViewDetails?.projectOverview} hub .`,
+      content: `${projectViewDetails?.projectName} is strategically locatied in  ${projectViewDetails?.projectAddress}, ${projectViewDetails?.city}. A well-connected and rapidly developing ${projectViewDetails?.projectOverview} hub .`,
     },
     {
       title: `What is the expected possession date for  ${projectViewDetails?.projectName} ${projectViewDetails.city} `,
-      content: `${projectViewDetails.projectName} is a ${projectViewDetails?.project_Status} projecct with possession scheduled for ${formatDate(projectViewDetails?.possessionDate)}.`,
+      content: `${projectViewDetails.projectName} is a ${projectViewDetails?.project_Status} project with possession scheduled for ${formatDate(projectViewDetails?.possessionDate)}.`,
     },
     {
       title: `How can I verify the RERA approval status of ${projectViewDetails?.projectName}`,
