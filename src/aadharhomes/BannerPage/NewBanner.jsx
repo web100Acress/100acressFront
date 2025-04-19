@@ -414,7 +414,7 @@ const NewBanner = () => {
     },
     {
       title: `What is the expected possession date for  ${projectViewDetails?.projectName} ${projectViewDetails.city} `,
-      content: `${projectViewDetails.projectName} is a ${projectViewDetails?.project_Status} projecct with possession scheduled for ${formatDate(projectViewDetails?.possessionDate)}.`,
+      content: `${projectViewDetails.projectName} is a ${projectViewDetails?.project_Status} project with possession scheduled for ${formatDate(projectViewDetails?.possessionDate)}.`,
     },
     {
       title: `How can I verify the RERA approval status of ${projectViewDetails?.projectName}`,
