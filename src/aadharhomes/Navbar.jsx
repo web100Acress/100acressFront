@@ -47,7 +47,7 @@ export default function Navbar() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isMenuOpen1, setMenuOpen1] = useState(false);
   const [isMenuOpen2, setMenuOpen2] = useState(false);
-  console.log(token, "token")
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -123,7 +123,6 @@ export default function Navbar() {
   useEffect(() => {
     checkUserAuth();
   }, []);
-  console.log(token, "token from main")
 
   return (
     <Wrapper className="section">

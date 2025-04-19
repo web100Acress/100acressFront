@@ -426,7 +426,7 @@ const NewBanner = () => {
     },
     {
       title: `What types of BHK units are available in  ${projectViewDetails?.projectName} ${projectViewDetails?.projectAddress}`,
-      content: ` ${projectViewDetails?.projectName} offers thoughtfully designed ${projectViewDetails.BhK_Details?.map((data)=>(` ${data.bhk_type}`))} ${projectViewDetails?.projectOverview} floors units, catering to moder lifestyle needs.`,  
+      content: ` ${projectViewDetails?.projectName} offers thoughtfully designed ${projectViewDetails.BhK_Details?.map((data)=>(` ${data.bhk_type}`))} ${projectViewDetails?.projectOverview !== "none" ? ` ${projectViewDetails.projectOverview} floors` : ""} units, catering to moder lifestyle needs.`,  
     },
 
   ]
@@ -440,8 +440,6 @@ const items =text.map((item, index) => ({
 }))
 
   return (
-    <>
-
       <div>
         <Wrapper className="section" style={{ overflow: "hidden", overflowX: "hidden" }}>
           <Helmet>
@@ -877,9 +875,6 @@ const items =text.map((item, index) => ({
                     {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
                   </p>
                   <ul className="list-disc text-left" style={{ listStyleType: "none" }}>
-                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.BhK_Details[0].bhk_Area} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_Area}{" "}Unit Size</li>
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.BhK_Details[0].bhk_type} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_type}{" "}Unit type</li> */}
-                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{formatDate(projectViewDetails.possessionDate)}</li> */}
 
                   </ul>
                   <button onClick={handleShowInstantcallBack} className="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 bg-white text-black font-medium py-2 px-4 rounded shadow hover:bg-gray-100">
@@ -927,20 +922,27 @@ const items =text.map((item, index) => ({
                 </section>
 
                 {/* Price Section */}
-                <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
+                <section className=" text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
                   <PriceIcon className="mr-2" />
                   <div className='mt-2 text-center'>
-                    <span className="text-2xl font-AbrialFatFace" >
-                      {projectViewDetails.minPrice < 1 ? (
-                        <span style={{ fontFamily: "Abril Fatface" }}>{(projectViewDetails?.minPrice * 100).toFixed()} L{" "}</span>
-                      ) : (
-                        <span className='font-AbrialFatFace' >{projectViewDetails.minPrice} Cr {" "}</span>
-                      )}
-                      - {projectViewDetails.maxPrice} Cr
-                    </span>
-                    <h6 className='text-sm'>Price</h6>
-                  </div>
-                </section>
+                  {
+                    !projectViewDetails?.minPrice || !projectViewDetails?.maxPrice ? <span className='font-AbrialFatFace text-2xl'>
+                      Call For Price
+                    </span> : (
+                      <span className="text-2xl font-AbrialFatFace" >
+                        {projectViewDetails.minPrice < 1 ? (
+                          <span style={{ fontFamily: "Abril Fatface" }}>{(projectViewDetails?.minPrice * 100).toFixed()} L{" "}</span>
+                        ) : (
+                          <span className='font-AbrialFatFace' >{projectViewDetails.minPrice} Cr {" "}</span>
+                        )}
+                        - {projectViewDetails.maxPrice} Cr
+                      </span>
+                    )
+                  }
+
+                  <h6 className='text-sm'>Price</h6>
+                </div>
+              </section>
 
 
               </div>
@@ -1105,7 +1107,8 @@ const items =text.map((item, index) => ({
 
             {/* Floor Plan */}
 
-            <div className="p-2 pt-2 mt-4 pb-0 h-fit">
+           { projectViewDetails.project_floorplan_Image?.length !== 0 && ( <>
+           <div className="p-2 pt-2 mt-4 pb-0 h-fit">
               <div className="flex flex-justify-center items-stretch rounded h-auto">
                 <div className="text-black w-full flex flex-col">
                   <div className="flex flex-col md:flex-row h-full">
@@ -1131,7 +1134,7 @@ const items =text.map((item, index) => ({
               </div>
             </div>
 
-            {/* //floor plan image? */}
+          
             <div className='pl-6 h-fit'>
               <article className="article">
                 <div className="relative">
@@ -1238,6 +1241,8 @@ const items =text.map((item, index) => ({
     }
              `}</style>
             </div>
+            
+            </>)}
 
 
 
@@ -1639,15 +1644,21 @@ const items =text.map((item, index) => ({
                                       <h5 className="tracking-tight text-center text-sm sm:text-base md:text-lg lg:text-xs xl:text-xs text-gray-700 mb-0">
                                         {project.city}, {project.state}
                                       </h5>
-                                      <span className="text-lg font-bold text-gray-900 text-center">
-                                        <span className="mr-1">₹</span>
-                                        {project.minPrice < 1 ? (
-                                          <span>{(project.minPrice * 100).toFixed(2)} L</span>
-                                        ) : (
-                                          <span>{project.minPrice} Cr </span>
-                                        )}
-                                        - {project.maxPrice} Cr
-                                      </span>
+                                      {
+                                        !project?.minPrice && !project?.maxPrice ? <span className="text-lg font-bold text-gray-900 text-center">₹ Reveal Soon</span> :(
+                                          <span className="text-lg font-bold text-gray-900 text-center">
+                                          <span className="mr-1">₹</span>
+                                          {project.minPrice < 1 ? (
+                                            <span>{(project.minPrice * 100).toFixed(2)} L</span>
+                                          ) : (
+                                            <span>{project.minPrice} Cr </span>
+                                          )}
+                                          - {project.maxPrice} Cr
+                                        </span>
+
+                                        )
+                                      }
+                                     
                                     </div>
 
                                     {/* Right section for the arrow icon */}
@@ -1816,7 +1827,7 @@ const items =text.map((item, index) => ({
         </Wrapper>
 
       </div>
-    </>
+    
   );
 };
 

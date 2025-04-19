@@ -291,7 +291,7 @@ const Home = () => {
       </div>
 
       {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
-        <>
+        
           <div data-aos="fade-up"
             data-aos-duration="1000" className="py-0 mt-3">
             <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
@@ -371,7 +371,7 @@ const Home = () => {
               animation="fade-up"
             />
           </div>
-        </>)
+        )
       }
 
 
