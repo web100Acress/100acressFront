@@ -1,4 +1,4 @@
-import { Button, message } from 'antd';
+import { Button, Collapse, message } from 'antd';
 import axios from 'axios';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -71,6 +71,7 @@ const NewBanner = () => {
 
     fetchData();
   }, [query]);
+
 
   const {
     frontImage,
@@ -267,7 +268,7 @@ const NewBanner = () => {
           projectName: projectViewDetails.projectName,
           address: projectViewDetails.projectAddress,
         });
-        setPopUpResponseMessage("Data submitted successfully");
+        setPopUpResponseMessage("Callback Requested Successfully");
         resetData1();
       } catch (error) {
         alert(error.message);
@@ -338,8 +339,8 @@ const NewBanner = () => {
           address: projectViewDetails.projectAddress,
         })
         .then((res) => {
-          // setSideResponseMessage("Data submitted successfully");
-          message.success("Data submitted successfully");
+          // setSideResponseMessage("Callback Requested Successfully");
+          message.success("Callback Requested Successfully");
           resetData();
         })
         .catch((error) => {
@@ -370,7 +371,7 @@ const NewBanner = () => {
           address: projectViewDetails.projectAddress,
         });
         setInstantCallbackmodal(false)
-        message.success("Data submitted successfully");
+        message.success("Callback Requested Successfully");
         resetData2();
         setSideButtonText("Submit");
       } catch (error) {
@@ -406,9 +407,39 @@ const NewBanner = () => {
     return () => clearTimeout(timeOutId);
   }, []);
 
-  return (
-    <>
+  const text = [
+    {
+      title: `What is the exact Location of ${projectViewDetails?.projectName}`,
+      content: `${projectViewDetails?.projectName} is strategically locatied in  ${projectViewDetails?.projectAddress}, ${projectViewDetails?.city}. A well-connected and rapidly developing ${projectViewDetails?.projectOverview} hub .`,
+    },
+    {
+      title: `What is the expected possession date for  ${projectViewDetails?.projectName} ${projectViewDetails.city} `,
+      content: `${projectViewDetails.projectName} is a ${projectViewDetails?.project_Status} project with possession scheduled for ${formatDate(projectViewDetails?.possessionDate)}.`,
+    },
+    {
+      title: `How can I verify the RERA approval status of ${projectViewDetails?.projectName}`,
+      content: `You can verify the RERA registration status of ${projectViewDetails?.projectName} by visiting the official state RERA website. The project is registered under RERA with the number ${projectViewDetails?.projectReraNo}.`,
+    },
+    {
+      title: `Who is the developer of ${projectViewDetails?.projectName} ${projectViewDetails.city}`,
+      content: `${projectViewDetails?.projectName} is developed by ${projectViewDetails?.builderName}, a renowned real estate developer known for delivering premium residential and commercial projects across India.`,
+    },
+    {
+      title: `What types of BHK units are available in  ${projectViewDetails?.projectName} ${projectViewDetails?.projectAddress}`,
+      content: ` ${projectViewDetails?.projectName} offers thoughtfully designed ${projectViewDetails.BhK_Details?.map((data)=>(` ${data.bhk_type}`))} ${projectViewDetails?.projectOverview !== "none" ? ` ${projectViewDetails.projectOverview} floors` : ""} units, catering to moder lifestyle needs.`,  
+    },
 
+  ]
+  
+;
+
+const items =text.map((item, index) => ({
+  key: index + 1,
+  label: ` ${item.title} ?`,
+  children: <p>{item.content}</p>,
+}))
+
+  return (
       <div>
         <Wrapper className="section" style={{ overflow: "hidden", overflowX: "hidden" }}>
           <Helmet>
@@ -772,18 +803,12 @@ const NewBanner = () => {
                     {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
                   </p>
                   <ul className="list-disc text-left " style={{ listStyleType: "none" }}>
-                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.towerNumber} Towers</li>
-                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalUnit} Units</li>
-                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Total {projectViewDetails.totalLandArea} Acres of Land</li>
-                    {projectViewDetails.projectName === "Signature Global Twin Tower DXP" && (
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Payment Plan 25:75</li>
+                    {projectViewDetails.type === "Residential Flats" && <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.towerNumber} Towers</li>}
+                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500"> {projectViewDetails.totalUnit} Units</li>
+                    <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.totalLandArea} Acres of Land</li>
+                    {projectViewDetails.paymentPlan && (
+                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Payment Plan {projectViewDetails.paymentPlan}</li>
                     )}
-                    {projectViewDetails.projectName === "Signature Titanium SPR" && (
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Payment Plan 25:25:50</li>
-                    )}
-                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_Area} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_Area}{" "}Unit Size</li> */}
-                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails?.BhK_Details[0]?.bhk_type} to {projectViewDetails.BhK_Details[projectViewDetails?.BhK_Details.length-1]?.bhk_type}{" "}Unit type</li> */}
-                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">Expected Possession {formatDate(projectViewDetails.possessionDate)}</li> */}
 
                   </ul>
                   <button onClick={handleShowInstantcallBack} className="bg-white text-black text-xl py-2 px-4 rounded shadow hover:bg-gray-100 transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300">
@@ -850,9 +875,6 @@ const NewBanner = () => {
                     {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
                   </p>
                   <ul className="list-disc text-left" style={{ listStyleType: "none" }}>
-                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.BhK_Details[0].bhk_Area} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_Area}{" "}Unit Size</li>
-                      <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{projectViewDetails.BhK_Details[0].bhk_type} to {projectViewDetails.BhK_Details[projectViewDetails.BhK_Details.length-1].bhk_type}{" "}Unit type</li> */}
-                    {/* <li className="relative pl-6 before:absolute before:content-['✔'] before:-left-4 before:text-green-500">{formatDate(projectViewDetails.possessionDate)}</li> */}
 
                   </ul>
                   <button onClick={handleShowInstantcallBack} className="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 bg-white text-black font-medium py-2 px-4 rounded shadow hover:bg-gray-100">
@@ -892,7 +914,7 @@ const NewBanner = () => {
                   <CalenderIcon className="mr-2" />
                   <div className='mt-2 text-center'>
                     <span className="text-2xl font-AbrialFatFace">
-                      {projectViewDetails.towerNumber} Tower -{" "}
+                      {projectViewDetails.type === "Residential Flats" && `${projectViewDetails.towerNumber} Tower -`}{" "}
                       {projectViewDetails.totalUnit} Unit
                     </span>
                     <h6 className='text-xs'>About Project</h6>
@@ -900,20 +922,27 @@ const NewBanner = () => {
                 </section>
 
                 {/* Price Section */}
-                <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
+                <section className=" text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
                   <PriceIcon className="mr-2" />
                   <div className='mt-2 text-center'>
-                    <span className="text-2xl font-AbrialFatFace" >
-                      {projectViewDetails.minPrice < 1 ? (
-                        <span style={{ fontFamily: "Abril Fatface" }}>{(projectViewDetails?.minPrice * 100).toFixed()} L{" "}</span>
-                      ) : (
-                        <span className='font-AbrialFatFace' >{projectViewDetails.minPrice} Cr {" "}</span>
-                      )}
-                      - {projectViewDetails.maxPrice} Cr
-                    </span>
-                    <h6 className='text-sm'>Price</h6>
-                  </div>
-                </section>
+                  {
+                    !projectViewDetails?.minPrice || !projectViewDetails?.maxPrice ? <span className='font-AbrialFatFace text-2xl'>
+                      Call For Price
+                    </span> : (
+                      <span className="text-2xl font-AbrialFatFace" >
+                        {projectViewDetails.minPrice < 1 ? (
+                          <span style={{ fontFamily: "Abril Fatface" }}>{(projectViewDetails?.minPrice * 100).toFixed()} L{" "}</span>
+                        ) : (
+                          <span className='font-AbrialFatFace' >{projectViewDetails.minPrice} Cr {" "}</span>
+                        )}
+                        - {projectViewDetails.maxPrice} Cr
+                      </span>
+                    )
+                  }
+
+                  <h6 className='text-sm'>Price</h6>
+                </div>
+              </section>
 
 
               </div>
@@ -1078,7 +1107,8 @@ const NewBanner = () => {
 
             {/* Floor Plan */}
 
-            <div className="p-2 pt-2 mt-4 pb-0 h-fit">
+           { projectViewDetails.project_floorplan_Image?.length !== 0 && ( <>
+           <div className="p-2 pt-2 mt-4 pb-0 h-fit">
               <div className="flex flex-justify-center items-stretch rounded h-auto">
                 <div className="text-black w-full flex flex-col">
                   <div className="flex flex-col md:flex-row h-full">
@@ -1104,7 +1134,7 @@ const NewBanner = () => {
               </div>
             </div>
 
-            {/* //floor plan image? */}
+          
             <div className='pl-6 h-fit'>
               <article className="article">
                 <div className="relative">
@@ -1211,6 +1241,8 @@ const NewBanner = () => {
     }
              `}</style>
             </div>
+            
+            </>)}
 
 
 
@@ -1525,6 +1557,39 @@ const NewBanner = () => {
               </div>
             </div>
 
+            <div className="h-fit" >
+               <div className="flex flex-justify-center items-stretch rounded h-auto">
+                 <div className="text-black w-full flex flex-col">
+                   <div className="flex flex-col md:flex-row h-full">
+ 
+                     <div className="w-full md:w-1/1 sm:w-full p-4 text-black flex flex-col justify-center items-start">
+                       <span className="lg:text-2xl md:text-2xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
+                         <span className="flex items-center justify-center p-1">
+                           <LineIcon />{" "}
+                         </span>
+                         {" "}F.A.Q
+                       </span>
+                       <h4
+                         
+                         className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
+                       >
+                         About {projectViewDetails.projectName}
+                       </h4>
+ 
+ 
+                       <div className='p-8 h-fit w-full '>
+                         <Collapse items={items} />
+                       </div>
+ 
+                     </div>
+ 
+ 
+ 
+                   </div>
+                 </div>
+               </div>
+             </div>
+
             {/* Related property */}
 
             <div className="h-fit" >
@@ -1579,15 +1644,21 @@ const NewBanner = () => {
                                       <h5 className="tracking-tight text-center text-sm sm:text-base md:text-lg lg:text-xs xl:text-xs text-gray-700 mb-0">
                                         {project.city}, {project.state}
                                       </h5>
-                                      <span className="text-lg font-bold text-gray-900 text-center">
-                                        <span className="mr-1">₹</span>
-                                        {project.minPrice < 1 ? (
-                                          <span>{(project.minPrice * 100).toFixed(2)} L</span>
-                                        ) : (
-                                          <span>{project.minPrice} Cr </span>
-                                        )}
-                                        - {project.maxPrice} Cr
-                                      </span>
+                                      {
+                                        !project?.minPrice && !project?.maxPrice ? <span className="text-lg font-bold text-gray-900 text-center">₹ Reveal Soon</span> :(
+                                          <span className="text-lg font-bold text-gray-900 text-center">
+                                          <span className="mr-1">₹</span>
+                                          {project.minPrice < 1 ? (
+                                            <span>{(project.minPrice * 100).toFixed(2)} L</span>
+                                          ) : (
+                                            <span>{project.minPrice} Cr </span>
+                                          )}
+                                          - {project.maxPrice} Cr
+                                        </span>
+
+                                        )
+                                      }
+                                     
                                     </div>
 
                                     {/* Right section for the arrow icon */}
@@ -1756,7 +1827,7 @@ const NewBanner = () => {
         </Wrapper>
 
       </div>
-    </>
+    
   );
 };
 

@@ -123,6 +123,7 @@ export const BlogWriteModal = () => {
             type: 'success',
             content: 'Blog updated successfully', 
           });
+          resetForm();
           navigate("/seo/blogs");
         }
         else{
@@ -166,6 +167,7 @@ export const BlogWriteModal = () => {
             type:'success',
             content: 'Blog added successfully',
           });
+          resetForm();
           navigate("/seo/blogs");
           // console.log("Blog inserted successfully");
         } 
@@ -184,7 +186,7 @@ export const BlogWriteModal = () => {
         messageApi.open({
           key: 'newBlogError',
           type:'error',
-          content: 'Error adding blog in catch',
+          content: 'Error adding blog',
         });
         console.error(error); 
       }
@@ -192,7 +194,7 @@ export const BlogWriteModal = () => {
         setIsSubmitting(false);
       }
     }
-    resetForm();
+    
   };
 
   const resetForm = () => {

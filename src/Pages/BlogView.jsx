@@ -80,8 +80,8 @@ const BlogView = () => {
 
   const fetchRecentsBlog = async () =>{
     try{
-      const recent = await axios.get('https://api.100acress.com/blog/view?page=1&limit=5');
-      setRecentBlogs(recent.data.data);
+      const recent = await axios.get('https://api.100acress.com/blog/view?page=1&limit=6');
+      setRecentBlogs(recent.data.data.filter((blog)=>blog._id !== id));
     }
     catch (error) {
       console.log(error || error.message);

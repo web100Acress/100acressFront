@@ -25,6 +25,7 @@ const ProjectEdit = () => {
     builderName: "",
     projectAddress: "",
     city: "",
+    paymentPlan:"",
     state: "",
     country: "",
     luxury: false,
@@ -837,7 +838,27 @@ const ProjectEdit = () => {
                     </span>
                   </th>
                 </tr>
-
+                <tr>
+                  <th>
+                    <span className="text-red-600 font-semibold ">
+                      Payment Plan :{" "}
+                      <span style={{ color: "black", fontWeight: "normal" }}>
+                        <input
+                          type="text"
+                          className="outline-none"
+                          name="paymentPlan"
+                          value={values.paymentPlan}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              paymentPlan: e.target.value,
+                            })
+                          }
+                        />
+                      </span>
+                    </span>
+                  </th>
+                </tr>
                 <tr>
                   <th>
                     <span className="text-red-600 font-semibold ">

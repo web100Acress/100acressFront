@@ -1,5 +1,20 @@
 .react-quill-content{
-  letter-spacing: 0.75px !important;
+  letter-spacing: 0.6px !important;
+}
+.react-quill-content a:link{
+  color: #3030ff !important;
+}
+.react-quill-content a:visited{
+  color: #800080 !important;
+}
+.react-quill-content a:hover{
+  color: #FF0000 !important;
+}
+.react-quill-content h3{
+  font-size: 1.17em !important;
+}
+.react-quill-content h4{
+  font-size: 1em !important; 
 }
 
 .react-quill-content ul {
