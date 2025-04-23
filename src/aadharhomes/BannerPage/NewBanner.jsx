@@ -410,7 +410,7 @@ const NewBanner = () => {
   const text = [
     {
       title: `What is the exact Location of ${projectViewDetails?.projectName}`,
-      content: `${projectViewDetails?.projectName} is strategically locatied in  ${projectViewDetails?.projectAddress}, ${projectViewDetails?.city}. A well-connected and rapidly developing ${projectViewDetails?.projectOverview} hub .`,
+      content: `${projectViewDetails?.projectName} is strategically located in  ${projectViewDetails?.projectAddress}, ${projectViewDetails?.city}. A well-connected and rapidly developing ${projectViewDetails?.projectOverview} hub .`,
     },
     {
       title: `What is the expected possession date for  ${projectViewDetails?.projectName} ${projectViewDetails.city} `,
