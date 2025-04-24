@@ -182,9 +182,9 @@ const ImageGallery = React.memo(() => {
   return (
     <div className="rounded-tl-3xl rounded-tr-3xl bg-white">
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-3">
-        <h1 className="text-lg  xl:text-4xl lg:text-3xl md:text-3xl sm:text-xl">
+        <h2 className="text-lg  xl:text-4xl lg:text-3xl md:text-3xl sm:text-xl">
           100acress - Recommended
-        </h1>
+        </h2>
         <div>
           <span className="mr-4" onClick={handlePrev} disabled={visibleIndex === 0}>
             <BackwardIcon />

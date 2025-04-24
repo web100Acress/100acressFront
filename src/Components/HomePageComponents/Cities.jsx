@@ -46,9 +46,9 @@ const Cities =() => {
     <Wrapper className="section ">
       <div className="container">
       <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
-      <h1 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
+      <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
         Gurugram Prime Locations
-        </h1>
+        </h2>
       </div>
         <div className="grid lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 pb-2 pt-3">
                 {cities.map((project, index) => (
