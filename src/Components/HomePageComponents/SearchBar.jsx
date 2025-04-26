@@ -228,7 +228,7 @@ function SearchBar() {
             <Slider {...settings}>
               {imageSrc.map((src, index) => (
                 <div key={index}>
-                  <img src={src.image} onClick={() => window.open(src.link, "_blank")} alt={`Slide ${index}`} className="w-full h-auto cursor-pointer rounded-lg" loading="lazy"/>
+                  <img src={src.image} onClick={() => window.open(src.link, "_self")} alt={`Slide ${index}`} className="w-full h-auto cursor-pointer rounded-lg" loading="lazy"/>
                 </div>
               ))}
             </Slider>
@@ -242,7 +242,7 @@ function SearchBar() {
                   <img
                     src={src.image}
                     alt={`Slide ${index}`}
-                    onClick={() => window.open(src.link, "_blank")}
+                    onClick={() => window.open(src.link, "_self")}
                     class="w-full h-full object-cover rounded-lg cursor-pointer"
                     loading="lazy"
                   />
