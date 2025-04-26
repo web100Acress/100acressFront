@@ -198,7 +198,7 @@ const ImageGallery = React.memo(() => {
         <GalleryWrapper>
           {visibleImages.map((image, index) => (
             // let pUrl = `${image.project_url}`;
-            <Link key={index} to={`/${image.project_url}/`} target="blank">
+            <Link key={index} to={`/${image.project_url}/`}>
 
               <ImageWrapper key={index}>
                 <Image
