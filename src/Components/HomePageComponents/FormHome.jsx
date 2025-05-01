@@ -67,7 +67,7 @@ const FormHome = () => {
   };
 
   return (
-    <div className="" >
+    <div className="max-w-[1250px] mx-auto" >
     <div className="text-start ml-10">
           <p className=" text-xl lg:text-2xl md:text-2xl sm:text-xl xs:text-xl text-gray-700 mb-4 mt-2">
           Consult a Property Expert Now

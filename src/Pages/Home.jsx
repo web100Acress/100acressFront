@@ -293,15 +293,15 @@ const Home = () => {
       {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
         
           <div data-aos="fade-up"
-            data-aos-duration="1000" className="py-0 mt-3">
-            <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
+            data-aos-duration="1000" className="py-0 mt-3 max-w-[1250px] mx-auto">
+            <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 py-2">
               <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl">
                 {`${activeFilter}`} Properties in Gurugram
               </h1>
             </div>
 
             {/* Filter Buttons */}
-            <div className="flex items-center justify-start gap-3 mx-6 lg:mx-6 xl:ml-14 md:mx-6 pt-2 overflow-x-auto no-scrollbar">
+            <div className="flex items-center justify-start gap-3 mx-3 lg:mx-6 xl:ml-14 md:mx-6 pt-2 overflow-x-auto no-scrollbar">
               <button
                 onClick={() => setActiveFilter("Trending")}
                 className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:shadow-lg hover:scale-125 duration-500 ease-in-out "}`}
@@ -452,7 +452,7 @@ const Home = () => {
         <Builder />
 
 
-        <div ref={setRef("resale")} data-section="resale" className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-4">
+        <div ref={setRef("resale")} data-section="resale" className="flex items-center justify-between max-w-[1250px] mx-auto lg:mx-6 xl:mx-14 md:mx-6 pt-4">
           <div className="flex items-center">
             <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  sm:text-left">
               Best Resale Property <span> For You</span>

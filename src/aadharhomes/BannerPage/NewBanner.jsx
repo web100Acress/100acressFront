@@ -1266,7 +1266,7 @@ const items =text.map((item, index) => ({
                         <span className="block font-AbrialFatFace sm:inline"> Images</span>
                       </h4>
 
-                      <div className="pt-4 p-2 max-w-screen-xl mx-auto">
+                      <div className="pt-4 p-2 max-w-screen-xxl mx-auto">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                           {/* Display Images */}
                           {projectGallery?.map((image, index) => (

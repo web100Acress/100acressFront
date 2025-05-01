@@ -47,7 +47,7 @@ function WhyChoose() {
   };
 
   return (
-    <section className="font-sans px-4 sm:px-6 lg:px-12 py-8">
+    <section className="font-sans px-0 sm:px-6 lg:px-12 py-8 max-w-[1250px] mx-auto">
       <div className="flex flex-col md:flex-row items-center bg-white">
         {/* Left Section */}
         <div className="w-full md:w-1/2 p-4">
