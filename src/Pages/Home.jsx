@@ -293,11 +293,12 @@ const Home = () => {
       {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
         
           <div data-aos="fade-up"
+
             data-aos-duration="1000" className="py-0 mt-3 max-w-[1250px] mx-auto">
             <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 py-2">
-              <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl">
+              <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl">
                 {`${activeFilter}`} Properties in Gurugram
-              </h1>
+              </h2>
             </div>
 
             {/* Filter Buttons */}

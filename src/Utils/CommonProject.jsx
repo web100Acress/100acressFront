@@ -91,11 +91,11 @@ const CommonProject = ({ data, title, path ,animation }) => {
                             <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
                               <li className="mr-4 flex items-center text-left">
                                 <li className="text-left">
-                                  <p className="m-0 text-sm font-medium ">
+                                  <p className="m-0 text-sm font-medium flex items-center gap-1">
                                     <PropertyIcon />{" "}{item.type}
                                   </p>
-                                  <span className="text-[10px] text-gray-600 block truncate text-sm text-gray-400 block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
-                                    <LocationRedIcon />{" "}{item.projectAddress}
+                                  <span className="text-[10px] text-sm text-gray-400 flex items-center truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
+                                    <LocationRedIcon />{" "}{item.projectAddress.slice(0, 32)}...
                                   </span>
 
                                 </li>
