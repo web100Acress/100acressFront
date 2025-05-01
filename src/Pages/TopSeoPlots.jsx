@@ -5,9 +5,11 @@ import { EyeIcon } from "lucide-react";
 const TopSeoPlots = () => {
   return (
     <div data-aos="fade-up"
-    data-aos-duration="1000" className="mb-4">
-      <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6">
+
+    data-aos-duration="1000" className="mb-4 max-w-[1250px] mx-auto">
+      <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6">
         <h2 className="text-xl pt-6 xl:text-4xl lg:text-3xl md:text-2xl sm:text-left">
+
           Top SCO Plots in Gurugram
         </h2>
         <div className="hidden sm:block">
@@ -20,7 +22,7 @@ const TopSeoPlots = () => {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 grid-cols-1 mx-7 gap-3 mt-3 ">
+      <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 grid-cols-1 mx-3 gap-3 mt-3 ">
         <Link to={`/emaar-india-sco-plots-gurugram/`} target="_top">
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
