@@ -22,6 +22,13 @@ export const SCO_DESIRED_ORDER = [
     "Adani Downtown Avenue"
 ];
 
+export const COMMERCIAL_DESIRED_ORDER = [
+  "Elan Imperial",
+  "MVN Mall",
+  "Aarize The Tessoro",
+  "Omaxe State Dwarka"
+];
+
 export const imageSrc = [
     {
       image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/t3.webp", link:"/developers/signature-global/"
