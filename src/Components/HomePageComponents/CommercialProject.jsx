@@ -6,12 +6,12 @@ import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 
 const CommercialProject = () => {
-  let query ="commercial";
-  const {getAllProjects} = Api_Service();
-  const commercialProjectAll = useSelector(store => store?.allsectiondata?.commercialProjectAll);
+  // let query ="commercial";
+  const {getCommercial} = Api_Service();
+  const commercialProjectAll = useSelector(store => store?.project?.commercial);
 
   useEffect(()=>{
-    getAllProjects(query,0);
+    getCommercial();
   },[])
   const {  } = useContext(DataContext);
   return (
