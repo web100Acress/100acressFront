@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { PaginationControls } from "../Components/Blog_Components/BlogManagement";
 const Blog = () => {
   const [viewAll, setViewAll] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(10);
+  const [postsPerPage] = useState(12); 
+  const [totalPages, setTotalPages] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const token = localStorage.getItem("myToken");
   const customStyle = {
@@ -18,15 +20,17 @@ const Blog = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("https://api.100acress.com/blog/view");
-       
+        const res = await axios.get(`https://api.100acress.com/blog/view?page=${currentPage}&limit=${postsPerPage}`);
         setViewAll(res.data.data);
+        setTotalPages(res.data.totalPages);
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-  }, []);
+  }, [currentPage, postsPerPage]);
+
+
 
   const handleDeleteUser = async (id) => {
     try {
@@ -58,17 +62,6 @@ const Blog = () => {
     }
   };
 
-  const filteredProjects = viewAll.filter((item) =>
-    item.blog_Title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const indexOfLastRow = currentPage * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = filteredProjects.slice(indexOfFirstRow, indexOfLastRow);
-
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
 
   return (
     <>
@@ -121,8 +114,8 @@ const Blog = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentRows.map((item, index) => {
-                  const serialNumber = indexOfFirstRow + index + 1;
+                {viewAll.map((item, index) => {
+                  const serialNumber = (postsPerPage * (currentPage - 1)) + index + 1;
                   const id = item._id;
                   return (
                     <tr
@@ -166,24 +159,13 @@ const Blog = () => {
                 })}
               </tbody>
             </table>
-            <div className="flex justify-center mt-2 mb-2">
-              {Array.from(
-                { length: Math.ceil(viewAll.length / rowsPerPage) },
-                (_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => paginate(index + 1)}
-                    className={`mx-2 px-3 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 ${
-                      currentPage === index + 1
-                        ? "bg-red-600 text-white"
-                        : "bg-gray-300 text-gray-700"
-                    }`}
-                  >
-                    {index + 1}
-                  </button>
-                )
-              )}
-            </div>
+            <div className="flex justify-center items-center">
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  setCurrentPage={setCurrentPage}
+                />
+              </div>
           </div>
         </div>
       </div>

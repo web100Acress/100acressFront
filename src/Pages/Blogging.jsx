@@ -24,7 +24,7 @@ const Blogging = () => {
     }
   }
   fetchBlogData();
-}, []);
+}, [currentPage, postsPerPage]);
   
 
   return (
