@@ -260,7 +260,7 @@ const Home = () => {
 
       <div className="relative w-full">
         <img
-          src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/Navarathri.webp"
+          src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/summer+banner.png"
           alt="Banner"
           className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
         />
@@ -427,7 +427,7 @@ const Home = () => {
         <div ref={setRef("feature")} data-section="feature" style={{ height: "10px" }}></div>
         <div>
           {FeaturedProjects.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={FeaturedProjects.slice(0, 4)} title="Featured Projects" animation="flip-left" path="/projects/upcoming-projects-in-gurgaon/" />
+            <CommonProject data={FeaturedProjects.slice(0, 8)} title="Featured Projects" animation="flip-left" path="/projects-in-gurugram/" />
           )}
         </div>
 
