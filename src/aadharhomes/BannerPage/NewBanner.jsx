@@ -259,7 +259,7 @@ const NewBanner = () => {
 
     const { mobile } = popDetails;
 
-    if (mobile.match(/^([+]\d{2})?\d{10}$/)) {
+    if (mobile.match(/^([+]\d{2})?\d{10}$/) && mobile.length === 10) {
       setPopUpButtonText("Submitting...");
       try {
         setIsLoading1(true);
@@ -333,7 +333,7 @@ const NewBanner = () => {
     if (mobile) {
       setIsLoading2(true);
       setUserButtonText("Submitting...");
-      if(mobile.match(/^([+]\d{2})?\d{10}$/)){
+      if(mobile.match(/^([+]\d{2})?\d{10}$/) && mobile.length === 10){
         axios
         .post("https://api.100acress.com/userInsert", {
           ...userDetails,
