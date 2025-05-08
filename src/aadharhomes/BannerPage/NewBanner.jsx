@@ -259,7 +259,7 @@ const NewBanner = () => {
 
     const { mobile } = popDetails;
 
-    if (mobile) {
+    if (mobile.match(/^([+]\d{2})?\d{10}$/)) {
       setPopUpButtonText("Submitting...");
       try {
         setIsLoading1(true);
@@ -277,6 +277,7 @@ const NewBanner = () => {
         setPopUpButtonText("Submit");
       }
     } else {
+      message.error("Please enter a valid mobile number");
       setPopUpResponseMessage("Please fill in the data");
     }
   };
@@ -332,7 +333,8 @@ const NewBanner = () => {
     if (mobile) {
       setIsLoading2(true);
       setUserButtonText("Submitting...");
-      axios
+      if(mobile.match(/^([+]\d{2})?\d{10}$/)){
+        axios
         .post("https://api.100acress.com/userInsert", {
           ...userDetails,
           projectName: projectViewDetails.projectName,
@@ -349,6 +351,10 @@ const NewBanner = () => {
         .finally(() => {
           setUserButtonText("Submit");
         });
+      }
+      message.error("Please enter a valid mobile number");
+      setIsLoading2(false);
+      setUserButtonText("Submit");
     } else {
       message.error("Please fill in the details");
     }
@@ -720,9 +726,7 @@ const items =text.map((item, index) => ({
                           onChange={(e) => {
                             const value = e.target.value;
                             // Allow only numbers and ensure length is between 9 and 10 digits
-                            if (/^\d*$/.test(value) && value.length <= 10) {
-                              handlePopChange(e);
-                            }
+                            handlePopChange(e);
                           }}
                         />
                         <span
