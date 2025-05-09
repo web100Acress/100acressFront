@@ -622,7 +622,7 @@ const items =text.map((item, index) => ({
                           <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-base"></i>
                           <input
                             className="peer w-full pl-10 py-2 rounded-lg bg-[#263238] text-white focus:ring-1 focus:ring-blue-500 border border-[#707070] outline-none placeholder-transparent focus:bg-[#263238]"
-                            type="number"
+                            type="tel"
                             name="mobile"
                             placeholder="Enter your Mobile No"
                             required
@@ -735,7 +735,7 @@ const items =text.map((item, index) => ({
                         <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-base"></i>
                         <input
                           className="peer w-full pl-10 py-2 rounded-lg bg-[#263238] text-white focus:ring-1 focus:ring-blue-500 border border-[#707070] outline-none placeholder-transparent focus:bg-[#263238]"
-                          type="number"
+                          type="tel"
                           name="mobile"
                           placeholder="Enter your Mobile No"
                           required
@@ -1765,7 +1765,7 @@ const items =text.map((item, index) => ({
                     <div>
                       <label htmlFor="mobile" className="sr-only">Mobile Number</label>
                       <input
-                        type="text"
+                        type="tel"
                         name="mobile"
                         value={userDetails.mobile}
                         onChange={(e) => {
