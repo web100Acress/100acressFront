@@ -272,6 +272,7 @@ const NewBanner = () => {
 
     if (/^([+]\d{2})?\d{10}$/.test(mobile)) {
       setPopUpButtonText("Submitting...");
+      message.success("Callback Requested Successfully");
       try {
         setIsLoading1(true);
         await axios.post("https://api.100acress.com/userInsert", {
@@ -345,6 +346,10 @@ const NewBanner = () => {
       setIsLoading2(true);
       setUserButtonText("Submitting...");
       if(/^([+]\d{2})?\d{10}$/.test(mobile)){
+        message.success("Callback Requested Successfully");
+        resetData();
+        setUserButtonText("Submit");
+        setIsLoading2(false);
         axios
         .post("https://api.100acress.com/userInsert", {
           ...userDetails,
@@ -378,9 +383,14 @@ const NewBanner = () => {
     }
     const { mobile } = sideDetails;
 
-    if (mobile) {
+    if (/^([+]\d{2})?\d{10}$/.test(mobile)) {
       setIsLoading2(true);
       setSideButtonText("Submitting...");
+      message.success("Callback Requested Successfully");
+      resetData2();
+      setIsLoading2(false);
+      setSideButtonText("Submit");
+
       try {
         await axios.post("https://api.100acress.com/userInsert", {
           ...sideDetails,
