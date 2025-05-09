@@ -1,6 +1,6 @@
 import { Button, Collapse, message } from 'antd';
 import axios from 'axios';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { constructNow, format, isValid, parseISO } from "date-fns";
 import styled from "styled-components";
@@ -51,6 +51,17 @@ const NewBanner = () => {
   const [error, setError] = useState(null);
   const query = projectViewDetails?.builderName ;
   const pUrlRef = useRef(pUrl);
+
+
+  function debouncedHandleSubmit(func,timeout=500){
+    let timer;
+    return function(...args){
+      clearTimeout(timer);
+      timer = setTimeout(()=>{
+        func.apply(this,args);
+      },timeout);
+    }
+  }
 
   useEffect(() => {
 
@@ -251,7 +262,7 @@ const NewBanner = () => {
     setPopDetails({ ...popDetails, [name]: value });
   };
 
-  const popSubmitDetails = async (e) => {
+  const popSubmitDetails = useCallback( async (e) => {
     e.preventDefault();
     if (isLoading1) {
       return;
@@ -259,7 +270,7 @@ const NewBanner = () => {
 
     const { mobile } = popDetails;
 
-    if (mobile.match(/^([+]\d{2})?\d{10}$/) && mobile.length === 10) {
+    if (/^([+]\d{2})?\d{10}$/.test(mobile)) {
       setPopUpButtonText("Submitting...");
       try {
         setIsLoading1(true);
@@ -280,7 +291,7 @@ const NewBanner = () => {
       message.error("Please enter a valid mobile number");
       setPopUpResponseMessage("Please fill in the data");
     }
-  };
+  }, [isLoading1, popDetails, projectViewDetails.projectName, projectViewDetails.projectAddress]);
 
   const resetData = () => {
     setUserDetails({
@@ -321,7 +332,7 @@ const NewBanner = () => {
       alert("Share functionality is not supported on this device/browser.");
     }
   };
-  const userSubmitDetails = (e) => {
+  const userSubmitDetails = useCallback( (e) => {
     e.preventDefault();
 
     if (isLoading2) {
@@ -333,7 +344,7 @@ const NewBanner = () => {
     if (mobile) {
       setIsLoading2(true);
       setUserButtonText("Submitting...");
-      if(mobile.match(/^([+]\d{2})?\d{10}$/) && mobile.length === 10){
+      if(/^([+]\d{2})?\d{10}$/.test(mobile)){
         axios
         .post("https://api.100acress.com/userInsert", {
           ...userDetails,
@@ -358,9 +369,9 @@ const NewBanner = () => {
     } else {
       message.error("Please fill in the details");
     }
-  };
+  },[isLoading2, userDetails, projectViewDetails.projectName, projectViewDetails.projectAddress]);
 
-  const SideSubmitDetails = async (e) => {
+  const SideSubmitDetails = useCallback( async (e) => {
     e.preventDefault();
     if (isLoading2) {
       return;
@@ -390,7 +401,17 @@ const NewBanner = () => {
     } else {
       message.error("Please fill in the data");
     }
-  };
+  },[isLoading2, sideDetails, projectViewDetails.projectName, projectViewDetails.projectAddress]);
+
+  const debouncedPopSubmit = useCallback(
+    debouncedHandleSubmit(popSubmitDetails, 500),
+    [popSubmitDetails]
+  );
+  
+  const debouncedSideSubmit = useCallback(
+    debouncedHandleSubmit(SideSubmitDetails, 500),
+    [SideSubmitDetails]
+  );
 
   const filterProjectsByBuilder = () => {
     const normalizedBuilderName =
@@ -652,7 +673,7 @@ const items =text.map((item, index) => ({
                         <div className="flex justify-center">
                           <button
                             className="group mt-2 w-full md:w-auto rounded-md bg-[#263238] px-10 py-2 font-semibold text-white border border-gray-600 outline-none relative overflow-hidden transition-all duration-500 hover:pr-10 flex items-center justify-center"
-                            onClick={SideSubmitDetails}
+                            onClick={debouncedSideSubmit}
                           >
                             <span className="relative inline-block transition-all px-3 duration-500">
                               {sideButtonText}
@@ -710,10 +731,6 @@ const items =text.map((item, index) => ({
                           Name
                         </span>
                       </div>
-
-
-
-
                       <div className="relative">
                         <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-base"></i>
                         <input
@@ -765,7 +782,7 @@ const items =text.map((item, index) => ({
                       <div className="flex justify-center">
                         <button
                           className="group mt-2 w-full md:w-auto rounded-md bg-[#263238] px-10 py-2 font-semibold text-white border border-gray-600 outline-none relative overflow-hidden transition-all duration-500 hover:pr-10 flex items-center justify-center"
-                          onClick={popSubmitDetails}
+                          onClick={debouncedPopSubmit}
                         >
                           <span className="relative inline-block transition-all px-3 duration-500">
                             {PopUpbuttonText}
