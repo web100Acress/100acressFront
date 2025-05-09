@@ -263,7 +263,7 @@ const NewBanner = () => {
   };
 
   const popSubmitDetails = useCallback( async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (isLoading1) {
       return;
     }
@@ -280,8 +280,10 @@ const NewBanner = () => {
           address: projectViewDetails.projectAddress,
         });
         setPopUpResponseMessage("Callback Requested Successfully");
+        message.success("Callback Requested Successfully");
         resetData1();
       } catch (error) {
+        console.error("Error:", error.message);
         alert(error.message);
       } finally {
         setIsLoading1(false);
@@ -333,7 +335,7 @@ const NewBanner = () => {
     }
   };
   const userSubmitDetails = useCallback( (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     if (isLoading2) {
       return;
@@ -345,6 +347,7 @@ const NewBanner = () => {
       setIsLoading2(true);
       setUserButtonText("Submitting...");
       if(/^([+]\d{2})?\d{10}$/.test(mobile)){
+        console.log("valid mobile number");
         axios
         .post("https://api.100acress.com/userInsert", {
           ...userDetails,
@@ -357,12 +360,15 @@ const NewBanner = () => {
           resetData();
         })
         .catch((error) => {
+          message.error("Error: " + error.message);
           alert(error.message);
+
         })
         .finally(() => {
           setUserButtonText("Submit");
         });
       }
+      console.log("invalid mobile number");
       message.error("Please enter a valid mobile number");
       setIsLoading2(false);
       setUserButtonText("Submit");
@@ -372,13 +378,14 @@ const NewBanner = () => {
   },[isLoading2, userDetails, projectViewDetails.projectName, projectViewDetails.projectAddress]);
 
   const SideSubmitDetails = useCallback( async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (isLoading2) {
       return;
     }
     const { mobile } = sideDetails;
 
-    if (mobile) {
+    if (/^([+]\d{2})?\d{10}$/.test(mobile)) {
+      console.log("valid mobile number");
       setIsLoading2(true);
       setSideButtonText("Submitting...");
       try {
@@ -392,6 +399,7 @@ const NewBanner = () => {
         resetData2();
         setSideButtonText("Submit");
       } catch (error) {
+        message.error("Error: " + error.message);
         console.error("Error:", error.message);
         setSideResponseMessage("Error: " + error.message);
         setSideButtonText("Submit");
@@ -399,6 +407,7 @@ const NewBanner = () => {
         setIsLoading2(false);
       }
     } else {
+      console.log("invalid mobile number");
       message.error("Please fill in the data");
     }
   },[isLoading2, sideDetails, projectViewDetails.projectName, projectViewDetails.projectAddress]);
@@ -412,6 +421,11 @@ const NewBanner = () => {
     debouncedHandleSubmit(SideSubmitDetails, 500),
     [SideSubmitDetails]
   );
+
+  const debouncedUserSubmit = useCallback(
+    debouncedHandleSubmit(userSubmitDetails, 500),
+    [userSubmitDetails]
+  )
 
   const filterProjectsByBuilder = () => {
     const normalizedBuilderName =
@@ -577,20 +591,150 @@ const items =text.map((item, index) => ({
                   Download Brochure
                 </a>
                 {instantcallbackmodal && (
+                  <form onSubmit={
+                    (e)=>{
+                      e.preventDefault();
+                      debouncedSideSubmit();
+                    }}>
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+                      <div className="relative w-[19rem] sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-t-2xl bg-[#263238] shadow-lg max-w-lg">
+                        <div className="bg-radial-custom px-5 py-2 text-center text-white relative">
+                          <p className="font-serif text-xl mb-0 text-center font-semibold tracking-wider">
+                            Instant Callback
+                          </p>
+                          <button
+                            className="text-gray-800 text-2xl absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer"
+                            onClick={handleCloseInstantcallBack}
+                          >
+                            ✖
+                          </button>
+                        </div>
+
+                        <div className="space-y-4 px-8 py-4 rounded-t-2xl">
+                          <div className="relative"  >
+                            <i
+                              className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-base"
+
+                            ></i>
+                            <input
+                              className="peer w-full pl-10 py-2 rounded-lg bg-[#263238] text-white focus:ring-1 focus:ring-blue-500 border border-red outline-none placeholder-transparent focus:bg-[#263238]"
+                              type="text"
+                              name="name"
+                              placeholder="Name"
+                              onChange={handleChangeSide}
+                              value={sideDetails.name}
+                              required
+                            />
+                            <span
+                              className="absolute left-7 -top-3 px-2 bg-[#263238] text-grey-500 text-base transition-all duration-300 transform scale-75 
+                              peer-valid:text-white
+                              pointer-events-none peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-[#B8B8B8] peer-focus:-top-2 peer-focus:bg-[#263238] peer-focus:text-[#D0D0D0]"
+                            >
+                              Name
+                            </span>
+                          </div>
+
+
+
+
+                          <div className="relative">
+                            <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-base"></i>
+                            <input
+                              className="peer w-full pl-10 py-2 rounded-lg bg-[#263238] text-white focus:ring-1 focus:ring-blue-500 border border-[#707070] outline-none placeholder-transparent focus:bg-[#263238]"
+                              type="number"
+                              name="mobile"
+                              placeholder="Enter your Mobile No"
+                              required
+                              value={sideDetails.mobile}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                // Allow only numbers and ensure length is between 9 and 10 digits
+                                if (/^\d*$/.test(value) && value.length <= 10) {
+                                  handleChangeSide(e);
+                                }
+                              }}
+                            />
+                            <span
+                              className="absolute left-7 -top-3 px-2 bg-[#263238] text-gray-700 text-base transition-all duration-300 transform scale-75 
+                              pointer-events-none peer-valid:text-white peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-[#B8B8B8] peer-focus:-top-2 peer-focus:bg-[#263238] peer-focus:text-white"
+                            >
+                              Contact No
+                            </span>
+                          </div>
+
+
+                          <div className="relative">
+                            <i className="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-base"></i>
+                            <input
+                              className="peer w-full pl-10 py-2 rounded-lg bg-[#263238] text-white focus:ring-1 focus:ring-blue-500 border border-[#707070] outline-none placeholder-transparent focus:bg-[#263238]"
+                              type="email"
+                              name="email"
+                              placeholder="Email (Optional)"
+                              onChange={handleChangeSide}
+                              value={sideDetails.email}
+                            />
+                            <span
+                              className="absolute left-7 -top-3 px-2 bg-[#263238] text-grey-500 text-base transition-all duration-300 transform scale-75 
+                              pointer-events-none peer-valid:text-white peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-[#B8B8B8] peer-focus:-top-2 peer-focus:bg-[#263238] peer-focus:text-white"
+                            >
+                              Email (Optional)
+                            </span>
+                          </div>
+                          <p className='text-xs text-gray-300'> * Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
+
+
+                          {sideResponseMessage && (
+                            <p className="text-grey text-[12px] mb-0">
+                              {sideResponseMessage}
+                            </p>
+                          )}
+
+                          <div className="flex justify-center">
+                            <button
+                              className="group mt-2 w-full md:w-auto rounded-md bg-[#263238] px-10 py-2 font-semibold text-white border border-gray-600 outline-none relative overflow-hidden transition-all duration-500 hover:pr-10 flex items-center justify-center"
+                              type='submit'
+
+
+
+
+>
+                              <span className="relative inline-block transition-all px-3 duration-500">
+                                {sideButtonText}
+                              </span>
+                              <span className="absolute top-1/2 -translate-y-1/2 right-0 opacity-0 transition-all duration-500 transform translate-x-5 group-hover:opacity-100 group-hover:translate-x-0">
+                                <ForwardIcon />
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                )}
+              </div>
+
+            </div>
+
+            {/* Popup form */}
+            <div className="relative">
+              {showPopup && (
+                <form onSubmit={(e)=>{
+                  e.preventDefault();
+                  debouncedPopSubmit();
+                }}>
                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-                    <div className="relative w-[19rem] sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-t-2xl bg-[#263238] shadow-lg max-w-lg">
+                    <div className="relative w-[19rem] sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-[#263238] shadow-lg max-w-lg">
                       <div className="bg-radial-custom px-5 py-2 text-center text-white relative">
                         <p className="font-serif text-xl mb-0 text-center font-semibold tracking-wider">
                           Instant Callback
                         </p>
                         <button
                           className="text-gray-800 text-2xl absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer"
-                          onClick={handleCloseInstantcallBack}
+                          onClick={() => setShowPopup(false)}
                         >
                           ✖
                         </button>
                       </div>
-
                       <div className="space-y-4 px-8 py-4 rounded-t-2xl">
                         <div className="relative"  >
                           <i
@@ -602,22 +746,18 @@ const items =text.map((item, index) => ({
                             type="text"
                             name="name"
                             placeholder="Name"
-                            onChange={handleChangeSide}
-                            value={sideDetails.name}
                             required
+                            onChange={handlePopChange}
+                            value={popDetails.name}
                           />
                           <span
                             className="absolute left-7 -top-3 px-2 bg-[#263238] text-grey-500 text-base transition-all duration-300 transform scale-75 
-                            peer-valid:text-white
-                            pointer-events-none peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-[#B8B8B8] peer-focus:-top-2 peer-focus:bg-[#263238] peer-focus:text-[#D0D0D0]"
+                      peer-valid:text-white
+                      pointer-events-none peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-[#B8B8B8] peer-focus:-top-2 peer-focus:bg-[#263238] peer-focus:text-[#D0D0D0]"
                           >
                             Name
                           </span>
                         </div>
-
-
-
-
                         <div className="relative">
                           <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-base"></i>
                           <input
@@ -626,18 +766,16 @@ const items =text.map((item, index) => ({
                             name="mobile"
                             placeholder="Enter your Mobile No"
                             required
-                            value={sideDetails.mobile}
+                            value={popDetails.mobile}
                             onChange={(e) => {
                               const value = e.target.value;
                               // Allow only numbers and ensure length is between 9 and 10 digits
-                              if (/^\d*$/.test(value) && value.length <= 10) {
-                                handleChangeSide(e);
-                              }
+                              handlePopChange(e);
                             }}
                           />
                           <span
                             className="absolute left-7 -top-3 px-2 bg-[#263238] text-gray-700 text-base transition-all duration-300 transform scale-75 
-                            pointer-events-none peer-valid:text-white peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-[#B8B8B8] peer-focus:-top-2 peer-focus:bg-[#263238] peer-focus:text-white"
+                      pointer-events-none peer-valid:text-white peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-[#B8B8B8] peer-focus:-top-2 peer-focus:bg-[#263238] peer-focus:text-white"
                           >
                             Contact No
                           </span>
@@ -651,32 +789,30 @@ const items =text.map((item, index) => ({
                             type="email"
                             name="email"
                             placeholder="Email (Optional)"
-                            onChange={handleChangeSide}
-                            value={sideDetails.email}
+                            onChange={handlePopChange}
+                            value={popDetails.email}
                           />
                           <span
                             className="absolute left-7 -top-3 px-2 bg-[#263238] text-grey-500 text-base transition-all duration-300 transform scale-75 
-                            pointer-events-none peer-valid:text-white peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-[#B8B8B8] peer-focus:-top-2 peer-focus:bg-[#263238] peer-focus:text-white"
+                      pointer-events-none peer-valid:text-white peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-[#B8B8B8] peer-focus:-top-2 peer-focus:bg-[#263238] peer-focus:text-white"
                           >
                             Email (Optional)
                           </span>
                         </div>
                         <p className='text-xs text-gray-300'> * Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
 
-
-                        {sideResponseMessage && (
+                        {PopUpresponseMessage && (
                           <p className="text-grey text-[12px] mb-0">
-                            {sideResponseMessage}
+                            {PopUpresponseMessage}
                           </p>
                         )}
-
                         <div className="flex justify-center">
                           <button
                             className="group mt-2 w-full md:w-auto rounded-md bg-[#263238] px-10 py-2 font-semibold text-white border border-gray-600 outline-none relative overflow-hidden transition-all duration-500 hover:pr-10 flex items-center justify-center"
-                            onClick={debouncedSideSubmit}
+                            type='submit'
                           >
                             <span className="relative inline-block transition-all px-3 duration-500">
-                              {sideButtonText}
+                              {PopUpbuttonText}
                             </span>
                             <span className="absolute top-1/2 -translate-y-1/2 right-0 opacity-0 transition-all duration-500 transform translate-x-5 group-hover:opacity-100 group-hover:translate-x-0">
                               <ForwardIcon />
@@ -686,115 +822,7 @@ const items =text.map((item, index) => ({
                       </div>
                     </div>
                   </div>
-                )}
-              </div>
-
-            </div>
-
-            {/* Popup form */}
-            <div className="relative">
-              {showPopup && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-                  <div className="relative w-[19rem] sm:w-full md:w-[20rem] mx-auto my-4 overflow-hidden rounded-2xl bg-[#263238] shadow-lg max-w-lg">
-                    <div className="bg-radial-custom px-5 py-2 text-center text-white relative">
-                      <p className="font-serif text-xl mb-0 text-center font-semibold tracking-wider">
-                        Instant Callback
-                      </p>
-                      <button
-                        className="text-gray-800 text-2xl absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer"
-                        onClick={() => setShowPopup(false)}
-                      >
-                        ✖
-                      </button>
-                    </div>
-
-                    <div className="space-y-4 px-8 py-4 rounded-t-2xl">
-                      <div className="relative"  >
-                        <i
-                          className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-base"
-
-                        ></i>
-                        <input
-                          className="peer w-full pl-10 py-2 rounded-lg bg-[#263238] text-white focus:ring-1 focus:ring-blue-500 border border-red outline-none placeholder-transparent focus:bg-[#263238]"
-                          type="text"
-                          name="name"
-                          placeholder="Name"
-                          required
-                          onChange={handlePopChange}
-                          value={popDetails.name}
-                        />
-                        <span
-                          className="absolute left-7 -top-3 px-2 bg-[#263238] text-grey-500 text-base transition-all duration-300 transform scale-75 
-                    peer-valid:text-white
-                    pointer-events-none peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-[#B8B8B8] peer-focus:-top-2 peer-focus:bg-[#263238] peer-focus:text-[#D0D0D0]"
-                        >
-                          Name
-                        </span>
-                      </div>
-                      <div className="relative">
-                        <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-base"></i>
-                        <input
-                          className="peer w-full pl-10 py-2 rounded-lg bg-[#263238] text-white focus:ring-1 focus:ring-blue-500 border border-[#707070] outline-none placeholder-transparent focus:bg-[#263238]"
-                          type="number"
-                          name="mobile"
-                          placeholder="Enter your Mobile No"
-                          required
-                          value={popDetails.mobile}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            // Allow only numbers and ensure length is between 9 and 10 digits
-                            handlePopChange(e);
-                          }}
-                        />
-                        <span
-                          className="absolute left-7 -top-3 px-2 bg-[#263238] text-gray-700 text-base transition-all duration-300 transform scale-75 
-                    pointer-events-none peer-valid:text-white peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-[#B8B8B8] peer-focus:-top-2 peer-focus:bg-[#263238] peer-focus:text-white"
-                        >
-                          Contact No
-                        </span>
-                      </div>
-
-
-                      <div className="relative">
-                        <i className="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-base"></i>
-                        <input
-                          className="peer w-full pl-10 py-2 rounded-lg bg-[#263238] text-white focus:ring-1 focus:ring-blue-500 border border-[#707070] outline-none placeholder-transparent focus:bg-[#263238]"
-                          type="email"
-                          name="email"
-                          placeholder="Email (Optional)"
-                          onChange={handlePopChange}
-                          value={popDetails.email}
-                        />
-                        <span
-                          className="absolute left-7 -top-3 px-2 bg-[#263238] text-grey-500 text-base transition-all duration-300 transform scale-75 
-                    pointer-events-none peer-valid:text-white peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-[#B8B8B8] peer-focus:-top-2 peer-focus:bg-[#263238] peer-focus:text-white"
-                        >
-                          Email (Optional)
-                        </span>
-                      </div>
-                      <p className='text-xs text-gray-300'> * Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
-
-                      {PopUpresponseMessage && (
-                        <p className="text-grey text-[12px] mb-0">
-                          {PopUpresponseMessage}
-                        </p>
-                      )}
-                      <div className="flex justify-center">
-                        <button
-                          className="group mt-2 w-full md:w-auto rounded-md bg-[#263238] px-10 py-2 font-semibold text-white border border-gray-600 outline-none relative overflow-hidden transition-all duration-500 hover:pr-10 flex items-center justify-center"
-                          onClick={debouncedPopSubmit}
-                        >
-                          <span className="relative inline-block transition-all px-3 duration-500">
-                            {PopUpbuttonText}
-                          </span>
-                          <span className="absolute top-1/2 -translate-y-1/2 right-0 opacity-0 transition-all duration-500 transform translate-x-5 group-hover:opacity-100 group-hover:translate-x-0">
-                            <ForwardIcon />
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                </form>
               )}
             </div>
 
@@ -1749,7 +1777,10 @@ const items =text.map((item, index) => ({
 
                 {/* Right Section - Form */}
                 <div className="p-8 rounded-lg shadow-lg">
-                  <form className="space-y-5">
+                  <form onSubmit={(e)=>{
+                          e.preventDefault();
+                          debouncedUserSubmit();
+                  }} className="space-y-5">
                     <div>
                       <label htmlFor="name" className="sr-only">Full Name</label>
                       <input
@@ -1815,7 +1846,7 @@ const items =text.map((item, index) => ({
                     </div>
                     <p className='text-xs text-gray-300'> * Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
                     <button
-                      onClick={userSubmitDetails}
+                      type='submit'
                       className="w-full bg-white hover:bg-blue-600 text-[#263238] font-semibold py-3 rounded-lg transition duration-200"
                     >
                       {userButtonText} <i className="fa-solid fa-arrow-right"></i>
