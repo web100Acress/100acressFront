@@ -752,7 +752,7 @@ const NewSellProperty = () => {
 
           </div>
           <div className="flex gap-2 min-h-fit">
-            <div className="w-fit border bg-gray-100 border-gray-300 rounded-lg p-4 hidden lg:block">
+            <div className="w-fit border bg-gray-100 border-gray-300 rounded-lg p-4 lg:block">
               <Steps
                 className="custom-step-red"
                 progressDot={(dot, { status }) => (
@@ -779,7 +779,7 @@ const NewSellProperty = () => {
 
             </div>
 
-            <div className="flex-1 flex flex-col border-2 border-gray-200 rounded-lg p-4 hidden lg:flex">
+            <div className="flex-1 flex flex-col border-2 border-gray-200 rounded-lg p-4 lg:flex">
               <div className="flex-1">{renderStepContent(current)}</div>
 
               <div className="sticky bottom-0 bg-white py-3 mt-4 flex justify-between border-t border-gray-300 z-10">

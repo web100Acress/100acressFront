@@ -3,6 +3,7 @@ import axios from "axios";
 import Modal from "react-modal";
 import Sidebar from "./Sidebar";
 import { Link, useParams } from "react-router-dom";
+import {message} from "antd"
 
 const customStyle = {
   position: "absolute",
@@ -47,6 +48,7 @@ const ProjectsAddBhk = () => {
 
   const [viewAll, setViewAll] = useState([]);
   const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
 
   const {id} = useParams();
@@ -55,6 +57,7 @@ const ProjectsAddBhk = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(`https://api.100acress.com/bhk_view/${id}`);
+        console.log("bhK details: ",res.data.data);
         setViewAll(res.data.data);
       } catch (error) {
         console.log(error);
@@ -72,11 +75,39 @@ const ProjectsAddBhk = () => {
 
   const submitBHKFromData = async (e) => {
     e.preventDefault();
+    messageApi.open({
+      key:"insertingBHK",
+      type: 'loading',
+      content: 'Inserting...',
+    })
     try {
       const response = await axios.post(`https://api.100acress.com/bhk_insert/${id}`,editFromData);
-      alert("User data inserted successfully");
-      resetData();
+      if (response.status >= 200 && response.status < 300) {
+        messageApi.destroy('insertingBHK');
+        messageApi.open({
+          type: 'success',
+          content: 'BHK has been inserted successfully.',
+          duration: 2,
+        });
+        setViewAll([...viewAll, editFromData]);
+        resetData();
+      }
+      else {
+        messageApi.destroy('insertingBHK');
+        messageApi.open({
+          type: 'error',
+          content: 'Something went wrong while inserting the BHK.',
+          duration: 2,
+        });
+      }
+
     } catch (error) {
+      messageApi.destroy('insertingBHK');
+      messageApi.open({
+        type: 'error',
+        content: 'Something went wrong while inserting the BHK.',
+        duration: 2,
+      });
       console.error('Error inserting user data:', error.message);
     }
   };
@@ -91,13 +122,37 @@ const ProjectsAddBhk = () => {
  
   const handleDeleteUser = async (id) => {
     try {
+      messageApi.open({
+        key:"deletingBHK",
+        type: 'loading',
+        content: 'Deleting...',
+      })
       const response = await axios.delete(`https://api.100acress.com/bhk_delete/${id}`);
       if (response.status >= 200 && response.status < 300) {
-        window.location.reload();
+        messageApi.destroy('deletingBHK');
+        messageApi.open({
+          type: 'success',
+          content: 'BHK has been deleted successfully.',
+          duration: 2,
+        });
+        setViewAll(viewAll.filter(item => item._id !== id));
+        //update the view all remove bhk with the id
       } else {
+        messageApi.destroy('deletingBHK');
+        messageApi.open({
+          type: 'error',
+          content: 'Failed to delete user. Server returned an error.',
+          duration: 2,
+        });
         console.error('Failed to delete user. Server returned an error.');
       }
     } catch (error) {
+      messageApi.destroy('deletingBHK');
+      messageApi.open({
+        type: 'error',
+        content: 'An error occurred while deleting user.',
+        duration: 2,
+      });
       console.error('An error occurred while deleting user:', error.message);
     }
   };
@@ -114,7 +169,7 @@ const ProjectsAddBhk = () => {
     <>
       <Sidebar />
       <div style={customStyle}>
-
+      {contextHolder}
         <div className="flex items-center mb-2 mt-2" style={{ marginLeft: "100px" }}>
           <button className="text-bold bg-red-600 p-2 text-white rounded-md mr-10">Search</button>
           <input
