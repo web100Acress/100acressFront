@@ -48,6 +48,7 @@ const EditDetails = () => {
         const res = await axios.get(
           `https://api.100acress.com/postPerson/propertyoneEdit/${id}`
         );
+        console.log("Property Details",res.data.data.postProperty[0]);
         setValues(res.data.data.postProperty[0]);
       } catch (error) {
         console.log(error);
