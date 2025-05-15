@@ -177,13 +177,13 @@ const AllListedProperties = () => {
                   <tr>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       FrontImage
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                       // onClick={() => toggleSort("title")}
                     >
                       <div className="flex items-center gap-1">
@@ -194,13 +194,13 @@ const AllListedProperties = () => {
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Price
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                       // onClick={() => toggleSort("date")}
                     >
                       <div className="flex items-center gap-1">
@@ -211,13 +211,19 @@ const AllListedProperties = () => {
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-2 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Rent/Sale
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Posted By
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-2 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Actions
                     </th>
@@ -227,7 +233,7 @@ const AllListedProperties = () => {
                   {allListedProperty.length > 0 ? (
                     allListedProperty.map((property) => (
                       <tr key={property._id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-2 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="flex-shrink-0 h-30 w-36 relative">
                               <img
@@ -238,7 +244,7 @@ const AllListedProperties = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-2 py-4">
                           <div className="text-sm font-medium text-gray-900 hover:text-blue-600 cursor-pointer" 
                             
                           >
@@ -246,15 +252,18 @@ const AllListedProperties = () => {
                           </div>
                           <div className="text-sm text-gray-500 line-clamp-2">{property.propertyType}</div>
                         </td>
-                        <td className="w-48 text-wrap px-6 py-4 whitespace-nowrap text-sm text-gray-500">{property?.price} </td>
-                        { property?.address ? <td className="w-48 px-6 py-4 text-wrap text-sm text-gray-500">
+                        <td className="w-48 text-wrap px-2 py-4 whitespace-nowrap text-sm text-gray-500">{property?.price} </td>
+                        { property?.address ? <td className="w-48 px-2 py-4 text-wrap text-sm text-gray-500">
                         {property?.address}
-                        </td> : <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>}
+                        </td> : <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500"></td>}
       
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
                           {property?.propertyLooking}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {property?.name}
+                        </td>
+                        <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex justify-end gap-2">
                             <Link to={`/Admin/viewproperty/viewdetails/${property._id}`}>
                               <button
@@ -287,7 +296,7 @@ const AllListedProperties = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
+                      <td colSpan={6} className="px-2 py-4 text-center text-sm text-gray-500">
                         No Properties found matching your search criteria.
                       </td>
                     </tr>
@@ -296,7 +305,7 @@ const AllListedProperties = () => {
                     <tr>
                       {totalPages >= 1 && 
                         <>
-                          <td className="px-6 py-4">
+                          <td className="px-2 py-4">
                               <PaginationControls
                                 currentPage={currentPage}
                                 setCurrentPage={setCurrentPage}

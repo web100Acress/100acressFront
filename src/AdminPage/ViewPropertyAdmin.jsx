@@ -13,6 +13,11 @@ const customStyle = {
 
 const ViewPropertyAdmin = () => {
   const [viewProperty, setViewAllProperty] = useState([]);
+  const [userDetails, setUserDetails] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
@@ -61,6 +66,12 @@ const ViewPropertyAdmin = () => {
         const res = await axios.get(
           `https://api.100acress.com/postPerson/propertyView/${id}`
         );
+        // console.log("Property Details: ",res.data.data);
+        setUserDetails({
+          name: res.data.data?.name || "",
+          email: res.data.data?.email || "",
+          mobile: res.data.data?.mobile || "",
+        })
         setViewAllProperty(res.data.data.postProperty);
       } catch (error) {
         console.log(error.res || error);
@@ -132,12 +143,16 @@ const ViewPropertyAdmin = () => {
               <div className="flex flex-wrap items-center justify-between">
                 <div className="flex w-0 flex-1 items-center justify-center">
                   <p className="ml-3 truncate space-x-10 text-black font-semibold pt-3">
+                    <span className="text-red-600">Name :</span>{" "}
+                    {userDetails?.name}
+                  </p>
+                  <p className="ml-3 truncate space-x-10 text-black font-semibold pt-3">
                     <span className="text-red-600">Mobile :</span>{" "}
-                    {viewProperty[0].number}
+                    {userDetails?.mobile}
                   </p>
                   <p className="ml-3 truncate space-x-10 text-black font-semibold pt-3">
                     <span className="text-red-600">Email :</span>{" "}
-                    {viewProperty[0].email}
+                    {userDetails?.email}
                   </p>
                 </div>
               </div>
