@@ -751,7 +751,7 @@ const NewSellProperty = () => {
             </Modal>
 
           </div>
-          <div className="flex gap-2 min-h-fit">
+          <div className="flex gap-2 min-h-fit mt-4" >
             <div className="w-fit border bg-gray-100 border-gray-300 rounded-lg p-4 lg:block">
               <Steps
                 className="custom-step-red"
@@ -769,7 +769,7 @@ const NewSellProperty = () => {
               >
                 {steps.map((item, index) => (
                   <Step
-                    className="mt-10"
+                    className="mt-10 w-20 lg:w-28 sm:mt-6 text-xs sm:text-xs"
                     key={item.id}
                     title={item.title}
                     icon={<>{index + 1}</>}
