@@ -265,7 +265,7 @@ const Home = () => {
           className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
         />
         <img
-          src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/navratri+phone.webp"
+          src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/mobilebanner.webp"
           alt="Mobile Banner"
           className="mt-14 block md:hidden w-full h-[38rem]"
         />
