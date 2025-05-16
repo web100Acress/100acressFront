@@ -5,11 +5,11 @@ export default function SignUp() {
   return (
     <>
       <div className="bg-[url('https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/mainbgg.webp')] min-h-[90vh] mt-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mx-5">
-          <div className="">
+      <div className="gap-10 md:gap-6 lg:gap-10 flex flex-col-reverse md:grid lg:grid-cols-2 mx-5 max-sm:items-center">
+      <div className="">
             <div className="w-1/2 my-5">
             </div>
-            <div className="mt-10 lg:mt-48">
+            <div className="mt-10 lg:mt-48 max-sm:mb-6">
               <div className="text-white text-5xl font-Gluten max-lg:mt-6">
                 Let’s find a Home that’s perfect for You.
               </div>

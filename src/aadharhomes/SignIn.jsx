@@ -60,7 +60,7 @@ export default function SignIn() {
       </Helmet>
 
         {contextHolder}
-        <div className="bg-white shadow-xl rounded-2xl mt-14 p-4 my-8">
+        <div className="bg-white shadow-xl rounded-2xl mt-14 p-4 my-8 max-sm:w-[85vw]">
         <div className="text-3xl font-Gluten text-primaryRed font-semibold my-4 text-center">Login to your account</div>
         
                 <form className="space-y-4" onSubmit={handleClick}>
