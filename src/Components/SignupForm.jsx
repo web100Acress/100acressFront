@@ -117,7 +117,7 @@ function SignupForm() {
   return (
     <>
       {contextHolder}
-      <div className="bg-white space-y-2 shadow-xl rounded-2xl mt-14 p-4 my-8">
+      <div className="bg-white space-y-2 shadow-xl rounded-2xl mt-14 p-4 my-8 max-sm:w-[90vw]">
         <div className="text-primaryRed text-3xl font-Gluten text-center font-semibold">Register your Account</div>
         <div className="my-2 flex items-center max-sm:flex-col">
           <p className=" mr-4 my-2">Are you a:</p>
