@@ -157,7 +157,7 @@ const NewSellProperty = () => {
 
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
-    if ((name === "price" || name === "area") && !/^\d*$/.test(value)) {
+    if ((name === "price" || name === "area") && !/^\d*\.?\d*$/.test(value)) {
       return;
     }
     if (name === "selectoption") {
@@ -188,50 +188,6 @@ const NewSellProperty = () => {
 
   const otherImageLength = fileData.otherImage.length;
   const [isLoading, setIsLoading] = useState(false);
-
-  // const submitSellPropertyDetails = async (e) => {
-  //   e.preventDefault();
-  //   if (isLoading) return;
-
-  //   if (!validateStep(current)) {
-  //     message.error("Please fill all required fields before proceeding.");
-  //     return;
-  //   }
-  //   const apiEndpoint = `https://api.100acress.com/postPerson/propertyInsert/${sellerId}`;
-  //   const formDataAPI = new FormData();
-
-  //   for (const key in sellProperty) {
-  //     formDataAPI.append(key, sellProperty[key]);
-  //   }
-
-  //   for (let i = 0; i < otherImageLength; i++) {
-  //     formDataAPI.append("otherImage", fileData.otherImage[i]);
-  //   }
-
-  //   formDataAPI.append("frontImage", fileData.frontImage);
-
-  //   try {
-  //     setIsLoading(true);
-  //     const response = await axios.post(apiEndpoint, formDataAPI);
-  //     console.log(response, "response");
-
-  //     if (response.status === 200) {
-  //       message.success("Submit Successfully, Under Review");
-  //       countDown();
-  //       resetData();
-  //       resetImageData();
-  //       setIsLoading(false);
-  //       setCurrent(0);
-  //     } else {
-  //       message.error("Unexpected response from server.");
-  //       setIsLoading(false); 
-  //     }
-  //   } catch (error) {
-  //     console.error("Error submitting form:", error);
-  //     message.error("There was an error submitting the form. Please try again.");
-  //     setIsLoading(false);
-  //   }   
-  // };
 
   const submitSellPropertyDetails = async (e) => {
     e.preventDefault();
@@ -351,18 +307,18 @@ const NewSellProperty = () => {
         );
 
       case 2:
-        return (
-          sellProperty.bedrooms !== "" &&
-          sellProperty.bathrooms !== "" &&
-          sellProperty.price.trim() !== "" &&
-          sellProperty.priceunits !== "" &&
-          sellProperty.area.trim() !== "" &&
-          sellProperty.areaUnit !== "" &&
-          sellProperty.furnishing !== "" &&
-          sellProperty.builtYear.trim() !== "" &&
-          sellProperty.landMark.trim() !== "" &&
-          sellProperty.descripation.trim() !== ""
-        );
+      const isCommercial = sellProperty.selectoption === "Commercial";
+      return (
+        (isCommercial || (sellProperty.bedrooms !== "" && sellProperty.bathrooms !== "")) &&
+        sellProperty.price.trim() !== "" &&
+        sellProperty.priceunits !== "" &&
+        sellProperty.area.trim() !== "" &&
+        sellProperty.areaUnit !== "" &&
+        sellProperty.furnishing !== "" &&
+        sellProperty.builtYear.trim() !== "" &&
+        sellProperty.landMark.trim() !== "" &&
+        sellProperty.descripation.trim() !== ""
+      );
 
       case 3:
         return (
@@ -503,30 +459,34 @@ const NewSellProperty = () => {
             <div className="grid gap-3 md:grid-cols-2 mt-4">
 
 
-              <select
-                name="bedrooms"
-                value={sellProperty.bedrooms}
-                onChange={handleChangeValue}
-                className=" h-10 rounded-md bg-white border px-2 outline-none"
-              >
-                <option className="hidden" value="">No of Bedrooms</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-              <select
-                name="bathrooms"
-                value={sellProperty.bathrooms}
-                onChange={handleChangeValue}
-                className="h-10 rounded-md bg-white border px-2 outline-none"
-              >
-                <option className="hidden" value="">No of Bathrooms</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
+               {sellProperty.selectoption !== "Commercial" && (
+          <>
+            <select
+              name="bedrooms"
+              value={sellProperty.bedrooms}
+              onChange={handleChangeValue}
+              className=" h-10 rounded-md bg-white border px-2 outline-none"
+            >
+              <option className="hidden" value="">No of Bedrooms</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+            <select
+              name="bathrooms"
+              value={sellProperty.bathrooms}
+              onChange={handleChangeValue}
+              className="h-10 rounded-md bg-white border px-2 outline-none"
+            >
+              <option className="hidden" value="">No of Bathrooms</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </>
+        )}
               <div className="flex items-center">
                 <input
                   type="text"
