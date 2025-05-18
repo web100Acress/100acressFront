@@ -1,6 +1,6 @@
 export const sortByDesiredOrder = (data, desiredOrder, key) => {
     return data
-      .sort((a, b) => {
+      ?.sort((a, b) => {
         const indexA = desiredOrder.indexOf(a[key]);
         const indexB = desiredOrder.indexOf(b[key]);
   

@@ -52,7 +52,8 @@ const Home = () => {
   const LuxuryProjects = useSelector(store => store?.project?.luxury);
   const BudgetHomesProjects = useSelector(store => store?.project?.budget);
   const ProjectinDelhi = useSelector(store => store?.project?.projectindelhi);
-  const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi } = Api_Service();
+  const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll);
+  const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi ,getAllProjects } = Api_Service();
   const [dataLoaded, setDataLoaded] = useState({
     trending: false,
     featured: false,
@@ -86,7 +87,7 @@ const Home = () => {
     commercial: CommercialProjects,
     sco: SCOProjects,
     affordable: AffordableProjects,
-    luxury: LuxuryProjects,
+    luxury: LuxuryAllProject,
     budget: BudgetHomesProjects,
     delhi: ProjectinDelhi,
   }), [
@@ -96,7 +97,7 @@ const Home = () => {
     CommercialProjects,
     SCOProjects,
     AffordableProjects,
-    LuxuryProjects,
+    LuxuryAllProject,
     BudgetHomesProjects,
     ProjectinDelhi
   ]);
@@ -206,7 +207,7 @@ const Home = () => {
                 getUpcoming();
               }
               if (section === "luxury" && LuxuryProjects.length === 0) {
-                getLuxury();
+                getAllProjects("luxury");
               }
               if (section === "budget" && BudgetHomesProjects.length === 0) {
                 getBudgetHomes();
@@ -388,8 +389,8 @@ const Home = () => {
         {/* Luxury Projects */}
         <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
         <div>
-          {LuxuryProjects.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={LuxuryProjects.slice(0, 4)} title="Luxury For You" animation="fade-up" path={"/top-luxury-projects/"} />
+          {LuxuryAllProject.length === 0 ? <CustomSkeleton /> : (
+              <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Luxury For You" animation="fade-up" path={"/top-luxury-projects/"} />
           )}
         </div>
 
