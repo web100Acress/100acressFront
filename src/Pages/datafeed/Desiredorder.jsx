@@ -96,8 +96,15 @@ export const budgetPlots = [
 ];
 
 export const Recommendedreordered = [
-    "Trinity Sky Palazzo" ,
+    "Shapoorji Pallonji Dualis" ,
     "Trump Towers Residences",
     "Experion The Trillion",
     "Experion Nova"
 ];
+
+export const DesiredLuxuryOrder = [
+  "Shapoorji Pallonji Dualis",
+  "Trevoc Royal Residences",
+  "Tarc Ishva",
+  "Max Estate 360",
+]

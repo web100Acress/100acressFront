@@ -11,7 +11,7 @@ import {resale} from "../slice/ResaleSlice";
 import axios from "axios";
 import { API_ROUTES, API_ROUTES_PROJECTS } from "./Constant_Service";
 import { sortByDesiredOrder } from "../../Utils/ProjectSorting";
-import { Affordable_Desired_Order, COMMERCIAL_DESIRED_ORDER, SCO_DESIRED_ORDER, Trending_Desired_Order } from "../../Pages/datafeed/Desiredorder";
+import { Affordable_Desired_Order, COMMERCIAL_DESIRED_ORDER, DesiredLuxuryOrder, SCO_DESIRED_ORDER, Trending_Desired_Order } from "../../Pages/datafeed/Desiredorder";
 import { emaar } from "../slice/ProjectstatusSlice";
 import { useCallback } from "react";
 import { maxpriceproject,minpriceproject } from "../slice/PriceBasedSlice";
@@ -203,7 +203,7 @@ const Api_service = () => {
         dispatch(scoplotsall(AllProjectbyQuery));
       }else
       if(query === "luxury"){
-        dispatch(luxuryAll(AllProjectbyQuery));
+        dispatch(luxuryAll(sortByDesiredOrder((AllProjectbyQuery),DesiredLuxuryOrder,"projectName")));
       }else
       if(query === "deendayalplots"){
         dispatch(deendayalplots(AllProjectbyQuery));
