@@ -468,6 +468,7 @@ const NewSellProperty = () => {
               className=" h-10 rounded-md bg-white border px-2 outline-none"
             >
               <option className="hidden" value="">No of Bedrooms</option>
+              <option value="0">0</option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -483,6 +484,7 @@ const NewSellProperty = () => {
               className="h-10 rounded-md bg-white border px-2 outline-none"
             >
               <option className="hidden" value="">No of Bathrooms</option>
+              <option value="0">0</option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -492,26 +494,7 @@ const NewSellProperty = () => {
             </select>
           </>
         )}
-              <div className="flex items-center">
-                <input
-                  type="text"
-                  placeholder="Price"
-                  name="price"
-                  value={sellProperty.price}
-                  onChange={handleChangeValue}
-                  className="h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
-                />
-                <select
-                  name="priceunits"
-                  value={sellProperty.priceunits}
-                  onChange={handleChangeValue}
-                  className="h-10 ml-2 rounded-md bg-white border px-2 outline-none"
-                >
-                  <option className="hidden" value="">Units</option>
-                  <option value="lakhs">Lakhs</option>
-                  <option value="crores">Crores</option>
-                </select>
-              </div>
+              
               <div className="flex items-center">
                 <input
                   type="text"
@@ -530,6 +513,26 @@ const NewSellProperty = () => {
                   <option className="hidden" value="">Units</option>
                   <option value="sqft">Sqft</option>
                   <option value="sqrd">Sqyd</option>
+                </select>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="text"
+                  placeholder="Price"
+                  name="price"
+                  value={sellProperty.price}
+                  onChange={handleChangeValue}
+                  className="h-10 w-full placeholder:text-black rounded-md bg-white border px-3 outline-none"
+                />
+                <select
+                  name="priceunits"
+                  value={sellProperty.priceunits}
+                  onChange={handleChangeValue}
+                  className="h-10 ml-2 rounded-md bg-white border px-2 outline-none"
+                >
+                  <option className="hidden" value="">Units</option>
+                  <option value="lakhs">Lakhs</option>
+                  <option value="crores">Crores</option>
                 </select>
               </div>
               <select
