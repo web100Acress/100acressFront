@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { PropertyIcon, RupeeIcon } from "../../Assets/icons";
+import { use } from "react";
 
 const BuyPropViewCard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +30,7 @@ const BuyPropViewCard = () => {
   const [position6, setPosition6] = useState("down");
   const [position7, setPosition7] = useState("down");
   const [buyData, setBuyData] = useState([]);
+  const [filterData, setFilterData] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [minRangeValue, setMinRangeValue] = useState("1Cr");
   const [maxRangeValue, setMaxRangeValue] = useState("8Cr");
@@ -79,16 +81,40 @@ const BuyPropViewCard = () => {
     setMaxPrice(value);
   };
   const propertyTypes = [
-    "Independent Floor",
-    "Apartment",
-    "Builder Floor",
-    "Plot",
+    "Independent / Builder Floor",
+    "Flat/Apartment",
+    "Plot / Land",
     "Residential",
-    "Studio",
-    "Villas",
+    "Residential Land",
+    "Office",
+    "Independent House / Villa",
+    "Commercial",
+    "Retail",
+    "Farmhouse",
   ];
-  const areas = ["4 BHK"];
-  const cities = ["Gurugram"];
+  const areas = [
+    "4 BHK",
+    "3 BHK",
+    "2 BHK",
+    "1 BHK"
+  ];
+  const cities = [
+    "Gurugram",
+    "Gurgaon",
+    "Delhi",
+    "Noida",
+    "Sohna",
+    "Alwar",
+    "Gorakhpur",
+    "Naini Tal",
+    "Ghaziabad",
+    "Bahadurgarh",
+    "Faridabad",
+    "Sonipat",
+    "South Delhi",
+    "Jaipur",
+    "Vadodara"
+  ];
 
   const handleCheckboxChange = (e, setSelectedState) => {
     const { value, checked } = e.target;
@@ -144,6 +170,7 @@ const BuyPropViewCard = () => {
       );
 
       setBuyData(res.data.ResaleData);
+      setFilterData(res.data.ResaleData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -152,6 +179,43 @@ const BuyPropViewCard = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+
+
+  useEffect(() => {
+    updateFilteredData();
+  }, [selectedPropertyTypes, selectedAreas, selectedCities]);
+  
+  function normalize(str) {
+    return str.toLowerCase().replace(/\s+/g, "");
+  }
+  
+  function updateFilteredData() {
+    const filteredData = buyData.filter((data) => {
+      const matchPropertyType =
+        selectedPropertyTypes.length === 0 ||
+        selectedPropertyTypes.includes(data.propertyType);
+  
+      const matchArea =
+        selectedAreas.length === 0 ||
+        selectedAreas.some(
+          (area) => normalize(area) === normalize(data.type)
+        );
+  
+      const matchCity =
+        selectedCities.length === 0 ||
+        selectedCities.some(
+          (city) => normalize(city) === normalize(data.city)
+        );
+  
+      return matchPropertyType && matchArea && matchCity;
+    });
+
+    setFilterData(filteredData);
+  }
+
+
+
 
   const toggle = () => {
     setDrop(!drop);
@@ -877,19 +941,19 @@ const BuyPropViewCard = () => {
 
                
                 <section className="flex flex-col items-center bg-white mb-4">
-                    {buyData.length === 0 ? (
+                    {filterData.length === 0 ? (
                       <p><CustomSkeleton /></p>
                     ) :  
                         (
                     <div className="grid max-w-md  grid-cols-1 px-2 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-3 lg:grid-cols-3 sm:gap-4 lg:gap-4 w-full mb-4">
   {     
-                            buyData.map((nestedItem, nestedIndex) => (
+                            filterData.map((nestedItem, nestedIndex) => (
                               <div key={nestedIndex} className="shadow-lg rounded-lg">
                                 <Link
                                   to={
                                     nestedItem.propertyName &&
                                       nestedItem._id
-                                      ? `/rental-properties/${nestedItem.propertyName.replace(
+                                      ? `/buy-properties/${nestedItem.propertyName.replace(
                                         /\s+/g,
                                         "-"
                                       )}/${nestedItem._id}/`
