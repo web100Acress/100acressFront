@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { PropertyIcon, RupeeIcon } from "../../Assets/icons";
+import { use } from "react";
 
 const RentPropViewCard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +32,7 @@ const RentPropViewCard = () => {
 
 
   const [buyData, setBuyData] = useState([]);
+  const [filterData, setFilterData] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [minRangeValue, setMinRangeValue] = useState("1Cr");
   const [maxRangeValue, setMaxRangeValue] = useState("8Cr");
@@ -84,23 +86,44 @@ const RentPropViewCard = () => {
   };
 
   const propertyTypes = [
-    "Independent Floor",
-    "Apartment",
-    "Builder Floor",
-    "Plot",
+    "Independent / Builder Floor",
+    "Flat/Apartment",
+    "Plot / Land",
     "Residential",
-    "Studio",
-    "Villas",
+    "Residential Land",
+    "Office",
+    "Independent House / Villa",
+    "Commercial",
+    "Retail",
+    "Industrial",
   ];
-  const areas = ["4 BHK"];
-  const cities = ["Gurugram"];
+  const areas = [
+    "4 BHK",
+    "3 BHK",
+    "2 BHK",
+    "1 BHK"
+  ];
+  const cities = [
+    "Gurugram",
+    "Gurgaon",
+    "Noida",
+    "Kharar",
+    "Meerut",
+    "Chikhli (Jalna)",
+    "Hubballi",
+    "Pudukkottai",
+    "South West Delhi",
+    "Central Delhi",
+    "Hyderabad"];
 
   const handleCheckboxChange = (e, setSelectedState) => {
     const { value, checked } = e.target;
     setSelectedState((prevState) =>
       checked ? [...prevState, value] : prevState.filter((v) => v !== value)
-    );
+    );  
   };
+  
+   
 
   const handleClearFilters = () => {
     setSelectedPropertyTypes([]);
@@ -151,14 +174,50 @@ const RentPropViewCard = () => {
       const res = await axios.get("https://api.100acress.com/property/rent/viewAll");
       
       setBuyData(res.data.rentaldata);
+      setFilterData(res.data.rentaldata);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-
+      
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    updateFilteredData();
+  }, [selectedPropertyTypes, selectedAreas, selectedCities]);
+  
+  function normalize(str) {
+    return str.toLowerCase().replace(/\s+/g, "");
+  }
+  
+  function updateFilteredData() {
+    const filteredData = buyData.filter((data) => {
+      const matchPropertyType =
+        selectedPropertyTypes.length === 0 ||
+        selectedPropertyTypes.includes(data.propertyType);
+  
+      const matchArea =
+        selectedAreas.length === 0 ||
+        selectedAreas.some(
+          (area) => normalize(area) === normalize(data.type)
+        );
+  
+      const matchCity =
+        selectedCities.length === 0 ||
+        selectedCities.some(
+          (city) => normalize(city) === normalize(data.city)
+        );
+  
+      return matchPropertyType && matchArea && matchCity;
+    });
+  
+    console.log(filteredData, "Combined Filtered Data");
+    setFilterData(filteredData);
+  }
+  
+
 
   const toggle = () => {
     setDrop(!drop);
@@ -889,12 +948,12 @@ const RentPropViewCard = () => {
                 </div>
 
                 <section className="flex flex-col items-center bg-white mb-4">
-                    {buyData.length === 0 ? (
+                    {filterData.length === 0 ? (
                       <p><CustomSkeleton /></p>
                     ) :  
                         (
                     <div className="grid max-w-md  grid-cols-1 px-2 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-3 lg:grid-cols-3 sm:gap-4 lg:gap-4 w-full mb-4">
-                      {buyData.map((properties, propertiesIndex) => (
+                      {filterData.map((properties, propertiesIndex) => (
                               <div key={propertiesIndex} className="shadow-lg rounded-lg">
                                 <Link
                                   to={
