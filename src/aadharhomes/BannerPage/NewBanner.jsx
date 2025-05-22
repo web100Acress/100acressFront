@@ -1,8 +1,8 @@
 import { Button, Collapse, message } from 'antd';
 import axios from 'axios';
 import React, { useContext, useEffect, useRef, useState, useCallback } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { constructNow, format, isValid, parseISO } from "date-fns";
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import {  format, isValid, parseISO } from "date-fns";
 import styled from "styled-components";
 import { Helmet } from 'react-helmet';
 import {
@@ -51,6 +51,7 @@ const NewBanner = () => {
   const [error, setError] = useState(null);
   const query = projectViewDetails?.builderName ;
   const pUrlRef = useRef(pUrl);
+  const navigate = useNavigate();
 
 
   function debouncedHandleSubmit(func,timeout=500){
@@ -146,6 +147,9 @@ const NewBanner = () => {
         const response = await axios.get(
           `https://api.100acress.com/project/View/${pUrl}`
         );
+        if(response.data.dataview.length === 0){
+          navigate("/")
+        }
         const projectData = response?.data?.dataview?.[0];
         if (projectData) {
           setProjectViewDetails(projectData);
