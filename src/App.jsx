@@ -79,6 +79,7 @@ import Jalandhar from "./Pages/ProjectCities/Jalandhar";
 import LuxuryProject from "./Pages/BuilderPages/LuxuryProjects";
 import LazyLoad from "react-lazyload";
 import { BlogWriteModal } from "./AdminPage/BlogWriteModal";
+import Dubai from "./Pages/ProjectCities/Dubai";
 const Addnew = lazy(()=>import(  "./AdminPage/Addnew"));
 const Adminproperty = lazy(()=>import(  "./AdminPage/Adminproperty"));
 const Dashboard = lazy(()=>import(  "./AdminPage/Dashboard"));
@@ -239,6 +240,7 @@ function App() {
               <Route path="/projects-in-jalandhar/" element={<Jalandhar />} />
               <Route path="/project-in-ayodhya/" element={<Ayodhya />} />
               <Route path="/project-in-mumbai/" element={<Mumbai />} />
+              <Route path="/projects-in-dubai/" element={<Dubai />} />
               <Route
                 path="/project-in-underconstruction/"
                 element={<UnderConstruction />}

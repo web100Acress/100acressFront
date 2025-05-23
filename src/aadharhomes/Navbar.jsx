@@ -678,7 +678,7 @@ export default function Navbar() {
                             </Link>
 
                             <Link
-                              to=""
+                              to={`/projects-in-dubai/`}
                               className="block text-sm px-4 py-1 font-semibold text-red-600 hover:text-red-600 hover:underline"
                             >
                               Projects in Dubai{" "}
