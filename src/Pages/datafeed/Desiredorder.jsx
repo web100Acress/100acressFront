@@ -99,12 +99,12 @@ export const Recommendedreordered = [
     "Shapoorji Pallonji Dualis" ,
     "Trump Towers Residences",
     "Experion The Trillion",
-    "Experion Nova"
+    "Experion Windchants Nova"
 ];
 
 export const DesiredLuxuryOrder = [
+  "Experion Windchants Nova",
+  "DLF Privana North",
   "Shapoorji Pallonji Dualis",
   "Trevoc Royal Residences",
-  "Tarc Ishva",
-  "Max Estate 360",
 ]
