@@ -31,7 +31,7 @@ export const COMMERCIAL_DESIRED_ORDER = [
 
 export const imageSrc = [
     {
-      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/t3.webp", link:"/developers/signature-global/"
+      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/titanium-lg.webp", link:"/signature-global-titanium/"
     },
     {
       image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/experionlaptop.jpeg", link:"/experion-the-trillion/"
@@ -55,7 +55,7 @@ export const imageSrc = [
 
 export const phoneSrc = [
   {
-    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/phone.webp", link:"/developers/signature-global/"
+    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/titanium-sm.webp", link:"/signature-global-titanium/"
   },
   {
     image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/trevoc-phone.jpeg", link:"/trevoc-56-gurgaon/"
