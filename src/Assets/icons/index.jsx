@@ -76,7 +76,8 @@ import LocationIconSVG from "../icons/svg/LocationIcon.svg";
 import ShareIconSVG from "../icons/svg/ShareIcon.svg";
 import HeartIconSVG from "../icons/svg/HeartIcon.svg";
 import ForwardIconSVG from "../icons/svg/ForwardIcon.svg";
-import BackwardIconSVG from "../icons/svg/BackwardIcon.svg"
+import BackwardIconSVG from "../icons/svg/BackwardIcon.svg";
+import FilterIconSVG from "../icons/svg/FilterIcon.svg";
 
 const getSVG = (path, style) => (
   <img src={path} alt="Icon" style={{ ...style }} />
@@ -86,7 +87,9 @@ const getSVG = (path, style) => (
 export const LocationIcon = (props) => {
   return <Icon component={()=>getSVG(LocationIconSVG,props.iconstyle)} {...props}  />;
 };
-
+export const FilterIcon = (props) => {
+  return <Icon component={()=>getSVG(FilterIconSVG,props.iconstyle)} {...props}  />;
+};
 export const ShareIcon = (props) => {
   return <Icon component={()=>getSVG(ShareIconSVG,props.iconstyle)} {...props}  />;
 }
