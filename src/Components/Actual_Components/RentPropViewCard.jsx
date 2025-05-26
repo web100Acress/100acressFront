@@ -41,7 +41,7 @@ const RentPropViewCard = () => {
   const [selectedCities, setSelectedCities] = useState([]);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState('propertyType');
   const [selectedValues, setSelectedValues] = useState([]);
  
 
@@ -801,7 +801,7 @@ const RentPropViewCard = () => {
 
                   <div className="fi_acc">
                     <div className="fi_head" onClick={toggle3}>
-                      Area
+                      Unit Type
                       <i
                         className={`fa-solid fa-chevron-${position3} pr-2 text-black text-sm`}
                       ></i>

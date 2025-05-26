@@ -40,7 +40,7 @@ const BuyPropViewCard = () => {
   const [selectedCities, setSelectedCities] = useState([]);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState('propertyType');
   const [selectedValues, setSelectedValues] = useState([]);
 
 
@@ -495,7 +495,7 @@ const BuyPropViewCard = () => {
                 </div>
 
                 <div
-                     className={`fixed  flex top-0 right-0 w-[64%] h-full bg-white text-black z-10 border-l-2 mt-[5vh] p-4 transform ${
+                     className={`fixed  flex top-0 right-0 w-[66%] h-full bg-white text-black z-10 border-l-2 mt-[5vh] p-4 transform ${
                       isSidebarOpen ? "translate-x-0" : "translate-x-full"
                     } transition-transform duration-300 ease-in sm:block`}
 >
