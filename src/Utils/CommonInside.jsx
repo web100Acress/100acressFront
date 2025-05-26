@@ -106,9 +106,18 @@ const CommonInside = ({ title, Actualdata, HelmetTitle, metaContent, linkhref, d
                                     </div>
                                     <div className="pt-0 p-3">
                                         <div className="pb-2">
-                                            <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                                                {item.projectName || item.postProperty?.propertyName}
+                                            <span className="text-[15px] font-semibold hover:text-red-600 duration-500 ease-in-out">
+                                                {item.projectName && item.projectName.length > 28
+                                                    ? `${item.projectName.slice(0, 28)}...`
+                                                    : item.projectName
+                                                        ? item.projectName
+                                                        : item.postProperty?.propertyName && item.postProperty.propertyName.length > 28
+                                                            ? `${item.postProperty.propertyName.slice(0, 28)}...`
+                                                            : item.postProperty?.propertyName
+                                                                ? item.postProperty.propertyName
+                                                                : ""}
                                             </span>
+                                            
                                             <br />
                                             <span className="text-sm text-gray-400 hover:text-red-600 duration-500 ease-in-out">
                                                 {(item.city && item.state)

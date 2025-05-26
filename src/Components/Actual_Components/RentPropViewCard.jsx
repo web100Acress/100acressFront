@@ -998,9 +998,11 @@ const RentPropViewCard = () => {
                                     </div>
                                     <div className="pt-2 p-1" >
                                       <div className="pb-2">
-                                        <span className="text-sm font-semibold truncate overflow-hidden text-ellipsis whitespace-nowrap hover:text-red-600 duration-500 ease-in-out">
-                                          {properties.propertyName}
-                                        </span>
+                                  <span className="text-sm font-semibold truncate hover:overflow-hidden text-ellipsis whitespace-nowrap hover:text-red-600 duration-500 ease-in-out">
+                                    {properties.propertyName.length > 35
+                                      ? `${properties.propertyName.slice(0, 35)}...`
+                                      : properties.propertyName}
+                                  </span>
 
                                         <br />
                                         <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
