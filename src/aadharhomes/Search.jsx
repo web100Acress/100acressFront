@@ -15,7 +15,6 @@ const Search = ({ data1 }) => {
   });
   const [isSmallerThan440] =  useMediaQuery("(max-width: 500px)");
 
-
   useEffect(() => {
     setFormData((prevState) => ({
       ...prevState,

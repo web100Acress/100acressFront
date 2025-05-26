@@ -16,6 +16,8 @@ import SwimmingPoolSVG from '../../../src/Assets/icons/svg/swimming.svg';
 import CarParkingSVG from '../../../src/Assets/icons/svg/carparking.svg';
 import VolleyBallSVG from '../../../src/Assets/icons/svg/volleyball.svg';
 import AtmSVG from '../../../src/Assets/icons/svg/atm.svg';
+import RentSVG from '../../../src/Assets/icons/svg/rent.svg';
+import ResaleSVG from '../../../src/Assets/icons/svg/resale.svg';
 import RestaurantSVG from '../../../src/Assets/icons/svg/restaurant.svg';
 import GrocerySVG from '../../../src/Assets/icons/svg/grocery.svg';
 import LaundrySVG from '../../../src/Assets/icons/svg/laundry.svg';
@@ -125,6 +127,14 @@ export const CarrierIcon = (props) => {
 
 export const PhoneIcon = (props) => {
   return <Icon component={() => getSVG(PHONEICONSVG, props.iconstyle)} {...props} />;
+};
+
+export const RentIcon = (props) =>{
+  return <Icon component={() => getSVG(RentSVG, props.iconstyle)} {...props}/>
+};
+
+export const ResaleIcon = (props) =>{
+  return <Icon component={() => getSVG(ResaleSVG, props.iconstyle)} {...props}/>
 };
 
 export const SendIcon = (props) => {
