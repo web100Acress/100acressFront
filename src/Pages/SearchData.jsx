@@ -21,9 +21,7 @@ const SearchData = () => {
 
   const { key1, key2, key3 } = getFormDataValues(decodedFormData);
   const key = `${key1}${key2}`;
-  console.log(key1,"1keys")
-  console.log(key2,"2keys")
-  console.log(key3,"3keys")
+
   localStorage.setItem("myKey", key);
   const [searchData, setSearchData] = useState([]);
   const [buySearchData, setBuySearchData] = useState([]);
@@ -72,9 +70,6 @@ const combinedSearchData = [
   ...(buySearchData || []),
 ];
 
-console.log(combinedSearchData,"dfer")
-
-console.log(combinedSearchData,"combined one")
   useEffect(() => {}, [searchData, buySearchData, rentSearchData]);
 
   return (
