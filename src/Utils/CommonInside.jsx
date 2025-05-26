@@ -2,7 +2,7 @@ import Aos from 'aos';
 import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from '../Assets/icons';
+import { LocationRedIcon, PropertyIcon, RentIcon, ResaleIcon, RupeeIcon, ShareFrameIcon } from '../Assets/icons';
 import Footer from '../Components/Actual_Components/Footer';
 import CustomSkeleton from "../Utils/CustomSkeleton";
 
@@ -74,29 +74,48 @@ const CommonInside = ({ title, Actualdata, HelmetTitle, metaContent, linkhref, d
                                     key={index}
                                     className="mb-2 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                                 >
-                                    <div className="relative flex p-3">
-                                        <Link to={`/${pUrl}/`} target="_top">
+                                    <div className="relative w-[95%] mt-1 align-center aspect-[4/3]" style={{marginLeft:'7px',marginBottom:'10px'}}>
+                                        <Link to={item.sourceType === "search" ? `/${pUrl}/`:item.sourceType === "rent"?`/rental-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`: `/buy-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`} target="_top">
 
                                             <img
-                                                src={item.frontImage.cdn_url || item.frontImage.url}
+                                                src={
+                                                    item.frontImage?.cdn_url ||
+                                                    item.frontImage?.url ||
+                                                    item?.postProperty?.frontImage?.url ||
+                                                    "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg"
+                                                }
                                                 alt="property In Gurugram"
-                                                className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
+                                                className=" inset-0 w-full h-full object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-105"
                                             />
                                         </Link>
-                                        <div className="absolute top-5 right-5"
+                                        <div className="absolute top-2 right-2"
                                             onClick={() => handleShare(item)}
                                         >
                                             <ShareFrameIcon />
                                         </div>
+                                        {item.sourceType === "rent" && (
+                                            <div className="absolute left-0 -top-2 right-0 ">
+                                                <RentIcon />
+                                            </div>
+                                        )}
+                                        {item.sourceType === "buy" && (
+                                            <div className="absolute left-0 -top-2 right-0 ">
+                                                <ResaleIcon />
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="pt-0 p-3">
                                         <div className="pb-2">
                                             <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                                                {item.projectName}
+                                                {item.projectName || item.postProperty?.propertyName}
                                             </span>
                                             <br />
-                                            <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
-                                                {item.city}, {item.state}
+                                            <span className="text-sm text-gray-400 hover:text-red-600 duration-500 ease-in-out">
+                                                {(item.city && item.state)
+                                                    ? `${item.city}, ${item.state}`
+                                                    : (item?.postProperty?.city && item?.postProperty?.state)
+                                                        ? `${item.postProperty.city}, ${item.postProperty.state}`
+                                                        : "Gurgaon , Haryana"}
                                             </span>
                                         </div>
 
@@ -104,10 +123,10 @@ const CommonInside = ({ title, Actualdata, HelmetTitle, metaContent, linkhref, d
                                             <li className="mr-4 flex items-center text-left">
                                                 <li className="text-left">
                                                     <p className="m-0 text-sm font-medium ">
-                                                        <PropertyIcon />{" "}{item.type}
+                                                        <PropertyIcon />{" "}{item.type || item.postProperty?.propertyType || item.postProperty?.type}
                                                     </p>
                                                     <span className="text-[10px] text-gray-600 block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
-                                                        <LocationRedIcon />{" "}{item.projectAddress}
+                                                        <LocationRedIcon />{" "}{item.projectAddress || item?.postProperty?.address}
                                                     </span>
 
                                                 </li>
@@ -118,22 +137,28 @@ const CommonInside = ({ title, Actualdata, HelmetTitle, metaContent, linkhref, d
                                             <li className="text-left">
                                                 <span className="text-sm font-extrabold text-red-600">
                                                     <span className="text-xl"><RupeeIcon /></span>
-                                                    {!item.minPrice || !item.maxPrice ? (
-                                                        "Reveal Soon"
+                                                    {(!item.minPrice && !item.maxPrice) ? (
+                                                        item.price
+                                                            ? item.price
+                                                            : (item.postProperty?.price || "Reveal Soon")
                                                     ) : (
-                                                        <>
-                                                            {item.minPrice < 1 ? (
-                                                                <>{(item.minPrice * 100).toFixed()} L</>
-                                                            ) : (
-                                                                <>{item.minPrice}</>
-                                                            )}
-                                                            {" - "}
-                                                            {item.maxPrice} Cr
-                                                        </>
+                                                        (!item.minPrice || !item.maxPrice) ? (
+                                                            "Reveal Soon"
+                                                        ) : (
+                                                            <>
+                                                                {item.minPrice < 1 ? (
+                                                                    <>{(item.minPrice * 100).toFixed()} L</>
+                                                                ) : (
+                                                                    <>{item.minPrice}</>
+                                                                )}
+                                                                {" - "}
+                                                                {item.maxPrice} Cr
+                                                            </>
+                                                        )
                                                     )}
                                                 </span>
                                             </li>
-                                            <Link to={`/${pUrl}/`} target="_top">
+                                            <Link to={item.sourceType === "search" ? `/${pUrl}/`:item.sourceType === "rent"?`/rental-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`: `/buy-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`} target="_top">
                                                 <li className="text-left">
                                                     <button
                                                         type="button"
