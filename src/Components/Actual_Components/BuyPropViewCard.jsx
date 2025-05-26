@@ -5,7 +5,7 @@ import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
-import { PropertyIcon, RupeeIcon } from "../../Assets/icons";
+import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
 import { use } from "react";
 
 const BuyPropViewCard = () => {
@@ -32,6 +32,7 @@ const BuyPropViewCard = () => {
   const [buyData, setBuyData] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isRightbarOpen, setIsRightbarOpen] = useState(false);
   const [minRangeValue, setMinRangeValue] = useState("1Cr");
   const [maxRangeValue, setMaxRangeValue] = useState("8Cr");
   const [selectedPropertyTypes, setSelectedPropertyTypes] = useState([]);
@@ -39,6 +40,9 @@ const BuyPropViewCard = () => {
   const [selectedCities, setSelectedCities] = useState([]);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [selectedValues, setSelectedValues] = useState([]);
+
 
   const minPriceOptions = [
     "1Cr",
@@ -81,7 +85,7 @@ const BuyPropViewCard = () => {
     setMaxPrice(value);
   };
   const propertyTypes = [
-    "Independent / Builder Floor",
+    "Independent/Builder Floor",
     "Flat/Apartment",
     "Plot / Land",
     "Residential",
@@ -118,7 +122,12 @@ const BuyPropViewCard = () => {
 
   const handleCheckboxChange = (e, setSelectedState) => {
     const { value, checked } = e.target;
+
     setSelectedState((prevState) =>
+      checked ? [...prevState, value] : prevState.filter((v) => v !== value)
+    );
+
+    setSelectedValues((prevState) =>
       checked ? [...prevState, value] : prevState.filter((v) => v !== value)
     );
   };
@@ -163,6 +172,11 @@ const BuyPropViewCard = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const toggleRightbar = () => {
+    setIsRightbarOpen(!isRightbarOpen); 
+  };
+
+
   const fetchData = async () => {
     try {
       const res = await axios.get(
@@ -194,7 +208,9 @@ const BuyPropViewCard = () => {
     const filteredData = buyData.filter((data) => {
       const matchPropertyType =
         selectedPropertyTypes.length === 0 ||
-        selectedPropertyTypes.includes(data.propertyType);
+        selectedPropertyTypes.some(
+          (type) => normalize(type) === normalize(data.propertyType)
+        );
   
       const matchArea =
         selectedAreas.length === 0 ||
@@ -397,206 +413,194 @@ const BuyPropViewCard = () => {
               </ul>
               <div>
                 {/* on mobile screen  */}
+                <div className="w-[94vw] flex items-center justify-end p-2">
                 <button
-                  className="text-white bg-black py-2 rounded-md px-4 md:hidden lg:block"
-                  onClick={toggleSidebar}
-                >
-                  Clear Filters
-                </button>
+                    className="relative text-white bg-black py-2 rounded-md px-4 md:hidden lg:block sm:mt-9"
+                    onClick={toggleSidebar}
+                  >
+                    {selectedValues.length > 0 && (
+                      <span className="absolute left-0 top-0 size-3">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primaryRed opacity-75"></span>
+                        <span className="relative inline-flex size-3 rounded-full bg-primaryRed"></span>
+                      </span>
+                    )}
+                    <FilterIcon/>
+                  </button>
+                </div>
+
+<div className="absolute w-[100vw] h-[100vh] flex items-center">
                 <div
-                  className={`fixed top-0 left-0 w-64 h-full bg-white text-black z-10  p-4 transform ${
+                  className={`fixed top-0 left-0 w-auto h-full bg-white text-black z-10  p-4 mt-[5vh] transform ${
                     isSidebarOpen ? "translate-x-0" : "-translate-x-full"
                   } transition-transform duration-300 ease-in-out`}
                 >
-                  <div className="mt-4">
-                    <button
-                      className="text-white bg-red-500 py-1 px-2 rounded mt-4 fixed top-0 right-6"
+                  <div className="w-full flex justify-start items-center gap-2 py-4 border-b-2">
+                  <button
+                      className="text-white bg-red-500 py-1 px-2 rounded mt-0"
                       onClick={toggleSidebar}
                     >
                       ✖
                     </button>
+                    <h2 className="text-xl font-semibold mb-0">Filters</h2>
+                   
+                  </div>
+
+                  <div
+                          className={`py-2 px-0 fi_head cursor-pointer ${
+                            activeIndex === "propertyType" ? "bg-red-300" : ""
+                          }`}
+                          onClick={() => {
+                            toggle();
+                            setActiveIndex("propertyType");
+                          }}
+                        >
+                          Property Type
+                  </div>
+
+
+                  <div className="fi_acc">
+                    <div className={`py-2 px-0 fi_head cursor-pointer ${
+                            activeIndex === "area" ? "bg-red-300" : ""
+                          }`} onClick={()=>{
+                      toggle4();
+                      setActiveIndex("area");
+                    }}>
+                     Unit Type
+                    </div>
+                  </div>
+
+                  
+                  <div className="fi_acc">
+                    <div className={`py-2 px-0 fi_head cursor-pointer ${
+                            activeIndex === "city" ? "bg-red-300" : ""
+                          }`} onClick={()=>{
+                      toggle1();
+                      setActiveIndex("city");
+                    }}>
+                      City
+                    </div>
                   </div>
 
                   <div className="fi_acc">
-                    {" "}
-                    <div className="fi_head" onClick={toggle}>
-                      Property Type
-                      <i
-                        className={`fa-solid fa-chevron-${position} pr-2 text-black text-sm`}
-                      ></i>
-                    </div>
-                    {drop && (
+                    <span className={`py-2 px-0 fi_head cursor-pointer ${
+                            activeIndex === "price" ? "bg-red-300" : ""
+                          }`} onClick={()=>{
+                      toggle5();
+                      setActiveIndex("price");
+                    }}>
+                      Price Criteria
+                    </span>
+  
+                  </div>
+                </div>
+
+                <div
+                     className={`fixed  flex top-0 right-0 w-[64%] h-full bg-white text-black z-10 border-l-2 mt-[5vh] p-4 transform ${
+                      isSidebarOpen ? "translate-x-0" : "translate-x-full"
+                    } transition-transform duration-300 ease-in sm:block`}
+>
+               
+                  <div className="w-auto grid gap-2 py-4">
+          
+                  {activeIndex === "propertyType" && (
                       <div
                         className=""
                         style={{ borderBottom: "1px solid #d9d9d9" }}
                       >
-                        <li className="" style={{ listStyle: "none" }}>
+                        <div className="mb-3 mt-5">
+                      {propertyTypes.map((type) => (
+                        <li key={type} style={{ listStyle: "none" }}>
                           <input
                             type="checkbox"
-                            id="independent_house"
+                            id={type.toLowerCase().replace(" ", "_")}
                             name="property_type"
                             className="filter-choice"
-                            value="independent_house"
+                            value={type}
+                            checked={selectedPropertyTypes.includes(type)}
+                            onChange={(e) =>
+                              handleCheckboxChange(e, setSelectedPropertyTypes)
+                            }
                           />
                           <label
-                            for="independent_house"
+                            htmlFor={type.toLowerCase().replace(" ", "_")}
                             className="filter ml-2 text-lg"
                           >
-                            {" "}
-                            Independent Floor
+                            {type}
                           </label>
                         </li>
-                        <li style={{ listStyle: "none" }}>
-                          <input
-                            type="checkbox"
-                            id="aparment_house"
-                            name="property_type"
-                            className="filter-choice"
-                            value="aparment_house"
-                          />
-                          <label for="aparment_house" className="filter ml-2">
-                            {" "}
-                            Apartment
-                          </label>
-                        </li>
-                        <li style={{ listStyle: "none" }}>
-                          <input
-                            type="checkbox"
-                            id="builder_floor"
-                            name="property_type"
-                            className="filter-choice"
-                            value="builder_floor"
-                          />
-                          <label for="builder_floor" className="filter ml-2">
-                            {" "}
-                            Builder Floor
-                          </label>
-                        </li>
-                        <li style={{ listStyle: "none" }}>
-                          <input
-                            type="checkbox"
-                            id=" plot_house"
-                            name="property_type"
-                            className="filter-choice"
-                            value=" plot_house"
-                          />
-                          <label for=" plot_house" className="filter ml-2">
-                            {" "}
-                            Plot
-                          </label>
-                        </li>
-                        <li style={{ listStyle: "none" }}>
-                          <input
-                            type="checkbox"
-                            id=" residencial_house"
-                            name="property_type"
-                            className="filter-choice"
-                            value=" residencial_house"
-                          />
-                          <label
-                            for=" residencial_house"
-                            className="filter ml-2"
-                          >
-                            {" "}
-                            Residential
-                          </label>
-                        </li>
-                        <li style={{ listStyle: "none" }}>
-                          <input
-                            type="checkbox"
-                            id=" studio_house"
-                            name="property_type"
-                            className="filter-choice"
-                            value=" studio_house"
-                          />
-                          <label for=" studio_house" className="filter ml-2">
-                            {" "}
-                            Studio
-                          </label>
-                        </li>
-                        <li className="mb-3" style={{ listStyle: "none" }}>
-                          <input
-                            type="checkbox"
-                            id=" villas_house"
-                            name="property_type"
-                            className="filter-choice"
-                            value=" villas_house"
-                          />
-                          <label for=" villas_house" className="filter ml-2">
-                            {" "}
-                            Villas
-                          </label>
-                        </li>
+                      ))}
+                    </div>
                       </div>
                     )}
-                  </div>
-
-                  <div className="fi_acc">
-                    <div className="fi_head" onClick={toggle4}>
-                      Area
-                      <i
-                        className={`fa-solid fa-chevron-${position4} pr-2 text-sm`}
-                      ></i>
-                    </div>
-                    {drop4 && (
+               
+                  
+                  {activeIndex === "area" && (
                       <div
                         className=""
                         style={{ borderBottom: "1px solid #d9d9d9" }}
                       >
-                        <li className="mb-3" style={{ listStyle: "none" }}>
-                          <input
-                            type="checkbox"
-                            id="oneBhk"
-                            name="bhk_type"
-                            className="filter-choice"
-                            value="oneBhk"
-                          />
-                          <label for="oneBhk" className="filter ml-2">
-                            {" "}
-                            4 BHK
-                          </label>
-                        </li>
+                       <div className="mb-2 mt-5">
+                        {areas.map((area) => (
+                          <li key={area} style={{ listStyle: "none" }}>
+                            <input
+                              type="checkbox"
+                              id={area.toLowerCase().replace(" ", "_")}
+                              name="area"
+                              className="filter-choice"
+                              value={area}
+                              checked={selectedAreas.includes(area)}
+                              onChange={(e) =>
+                                handleCheckboxChange(e, setSelectedAreas)
+                              }
+                            />
+                            <label
+                              htmlFor={area.toLowerCase().replace(" ", "_")}
+                              className="filter ml-2"
+                            >
+                              {area}
+                            </label>
+                          </li>
+                        ))}
+                      </div>
                       </div>
                     )}
-                  </div>
-                  <div className="fi_acc">
-                    <div className="fi_head" onClick={toggle1}>
-                      City
-                      <i
-                        className={`fa-solid fa-chevron-${position1} pr-2 text-sm`}
-                      ></i>
-                    </div>
-                    {drop1 && (
+                  
+
+                    {activeIndex === "city" && (
                       <div
                         className=""
                         style={{ borderBottom: "1px solid #d9d9d9" }}
                       >
-                        <li className="mb-3" style={{ listStyle: "none" }}>
-                          <input
-                            type="checkbox"
-                            id="oneBhk"
-                            name="bhk_type"
-                            className="filter-choice"
-                            value="oneBhk"
-                          />
-                          <label for="oneBhk" className="filter ml-2">
-                            {" "}
-                            Gurugram
-                          </label>
-                        </li>
+                        <div className="mb-2 mt-5">
+                        {cities.map((city) => (
+                          <li key={city} style={{ listStyle: "none" }}>
+                            <input
+                              type="checkbox"
+                              id={city.toLowerCase().replace(" ", "_")}
+                              name="city"
+                              className="filter-choice"
+                              value={city}
+                              checked={selectedCities.includes(city)}
+                              onChange={(e) =>
+                                handleCheckboxChange(e, setSelectedCities)
+                              }
+                            />
+                            <label
+                              htmlFor={city.toLowerCase().replace(" ", "_")}
+                              className="filter ml-2"
+                            >
+                              {city}
+                            </label>
+                          </li>
+                        ))}
+                      </div>
                       </div>
                     )}
-                  </div>
 
-                  <div className="fi_acc">
-                    <span className="fi_head" onClick={toggle5}>
-                      Price Criteria
-                      <i
-                        className={`fa-solid fa-chevron-${position5} pr-2 text-black text-sm`}
-                      ></i>
-                    </span>
-                    {drop5 && (
+
+                      {activeIndex ==="price" && (
                       <>
+                      <div className="grid mt-5">
                         <div className="flex items-center mt-2">
                           <span className="font-medium">Min: ₹{minPrice}</span>
                           <input
@@ -630,7 +634,7 @@ const BuyPropViewCard = () => {
                               onChange={handleMinPriceChange}
                               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                             >
-                              <option value="">Select Min Price</option>
+                              <option value="">Min Price</option>
                               {minPriceOptions.map((price) => (
                                 <option key={price} value={price}>
                                   ₹{price}
@@ -647,19 +651,36 @@ const BuyPropViewCard = () => {
                               onChange={handleMaxPriceChange}
                               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                             >
-                              <option value="">Select Max Price</option>
+                              <div className="w-auto ml-[-10vw]">
+                              <option value="">Max Price</option>
                               {maxPriceOptions.map((price) => (
                                 <option key={price} value={price}>
                                   ₹{price}
                                 </option>
+                                
                               ))}
+                              </div>
                             </select>
                           </div>
                         </div>
+                        </div>
                       </>
-                    )}
+                    )}   
+
+                <div className=" fixed top-[75vh] left-[40vw] w-6 grid items-center gap-2 py-4 border-b-2">
+                  <button
+                      className="text-white bg-red-500 py-1 px-2 rounded mt-0"
+                      onClick={toggleSidebar}
+                    >
+                      Apply
+                    </button>
+                    </div>
                   </div>
-                </div>
+
+                  
+                 </div>
+</div>
+
               </div>
             </div>
           </div>
@@ -777,7 +798,7 @@ const BuyPropViewCard = () => {
 
                   <div className="fi_acc">
                     <div className="fi_head" onClick={toggle3}>
-                      Area
+                      Unit Type
                       <i
                         className={`fa-solid fa-chevron-${position3} pr-2 text-black text-sm`}
                       ></i>
@@ -922,7 +943,7 @@ const BuyPropViewCard = () => {
               <div className="li_items xl:px-8 lg:px-6 md:px-4 px-2">
                 <div className="li_head_row">
                   <div className="heading relative">
-                    <h3 className="title mt-4">Projects in Gurugram</h3>
+                    <h3 className="title mt-4">Best Resale Properties in Gurugram</h3>
 
                     <>
                       {isVisible && (
