@@ -50,7 +50,10 @@ export const imageSrc = [
     },
     {
       image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptplaptop.jpeg", link:"/bptp-verti-greens/"
-    }
+    },
+    {
+      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/whiterandlaptop.jpg", link:"/whiteland-westin-residences/"
+    },
   ];
 
 export const phoneSrc = [
@@ -74,7 +77,10 @@ export const phoneSrc = [
   },
   {
     image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptpphone.jpeg", link:"/bptp-verti-greens/"
-  }
+  },
+  {
+      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/whiterand.jpg", link:"/whiteland-westin-residences/"
+  },
 ];
 
 export const budgetPlots = [
