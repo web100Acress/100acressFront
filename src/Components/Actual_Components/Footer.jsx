@@ -207,7 +207,7 @@ const Footer = () => {
                   Project in Goa
                 </Link>
               </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
+              {/* <li className="list-none text-white text-sm my-1 text-justify">
                 <Link
                   to={"/project-in-ayodhya/"}
                   className=""
@@ -216,7 +216,7 @@ const Footer = () => {
                 >
                   Project in Ayodhya
                 </Link>
-              </li>
+              </li> */}
               <li className="list-none text-white text-sm my-1 text-justify">
                 <Link
                   to={"/project-in-mumbai/"}
@@ -237,7 +237,7 @@ const Footer = () => {
                   Project in Panipat
                 </Link>
               </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
+              {/* <li className="list-none text-white text-sm my-1 text-justify">
                 <Link
                   to={"/project-in-panchkula/"}
                   className=""
@@ -246,7 +246,7 @@ const Footer = () => {
                 >
                   Project in Panchkula
                 </Link>
-              </li>
+              </li> */}
               <li className="list-none text-white text-sm my-1 text-justify">
                 <Link
                   to={"/project-in-kasauli/"}
@@ -257,7 +257,7 @@ const Footer = () => {
                   Project in Kasauli
                 </Link>
               </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
+              {/* <li className="list-none text-white text-sm my-1 text-justify">
                 <Link
                   to={"/projects-in-karnal/"}
                   className=""
@@ -266,8 +266,8 @@ const Footer = () => {
                 >
                   Project in Karnal
                 </Link>
-              </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
+              </li> */}
+              {/* <li className="list-none text-white text-sm my-1 text-justify">
                 <Link
                   to={"/projects-in-jalandhar/"}
                   className=""
@@ -276,8 +276,8 @@ const Footer = () => {
                 >
                   Project in Jalandher
                 </Link>
-              </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
+              </li> */}
+              <li className="list-none text-white font-bold text-sm my-1 text-justify">
                 <Link
                   to={"#"}
                   className=""
