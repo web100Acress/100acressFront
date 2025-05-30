@@ -30,6 +30,9 @@ export const COMMERCIAL_DESIRED_ORDER = [
 ];
 
 export const imageSrc = [
+  {
+    image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/west.webp", link:"/whiteland-westin-residences/"
+  },
     {
       image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/titanium-lg.webp", link:"/signature-global-titanium/"
     },
@@ -51,12 +54,12 @@ export const imageSrc = [
     {
       image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptplaptop.jpeg", link:"/bptp-verti-greens/"
     },
-    {
-      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/whiterandlaptop.jpg", link:"/whiteland-westin-residences/"
-    },
   ];
 
 export const phoneSrc = [
+  {
+      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/westmob.webp", link:"/whiteland-westin-residences/"
+  },
   {
     image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/titanium-sm.webp", link:"/signature-global-titanium/"
   },
@@ -77,9 +80,6 @@ export const phoneSrc = [
   },
   {
     image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptpphone.jpeg", link:"/bptp-verti-greens/"
-  },
-  {
-      image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/whiterand.jpg", link:"/whiteland-westin-residences/"
   },
 ];
 
