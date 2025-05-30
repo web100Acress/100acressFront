@@ -30,7 +30,7 @@ const Builderaction = () => {
           title: "Emaar India", 
           link: "/developers/emaar-india/", 
           image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp" ,
-          backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/dhxv9npqtof8mlrwvanx"
+          backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/q8duitnixfn97gmruqbr"
         },
         { 
           title: "Experion", 
