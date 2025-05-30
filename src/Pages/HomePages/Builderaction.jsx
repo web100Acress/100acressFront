@@ -20,24 +20,31 @@ const Builderaction = () => {
           image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3m.webp", 
           backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3mbuilderimage.jpg"
         },
-        { 
-          title: "Central Park", 
-          link: "/developers/central-park/", 
-          image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg" ,
-          backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralparkprojct.jpg"
+        // { 
+        //   title: "Central Park", 
+        //   link: "/developers/central-park/", 
+        //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg" ,
+        //   backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralparkprojct.jpg"
+        // },
+        {
+          title: "Emaar India", 
+          link: "/developers/emaar-india/", 
+          image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp" ,
+          backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/dhxv9npqtof8mlrwvanx"
         },
         { 
           title: "Experion", 
           link: "/developers/experion-developers/", 
           image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/experion.webp" ,
-          backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/r1kwr3owxa7nevtqzl3b"
+          backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/loedvckg91xfhdnqulho"
         },
         { 
           title: "Signature", 
           link: "/developers/signature-global/", 
           image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp" ,
           backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/dhxv9npqtof8mlrwvanx"
-        }
+        },
+        
       ];
     
   

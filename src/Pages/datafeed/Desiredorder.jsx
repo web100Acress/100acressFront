@@ -109,7 +109,9 @@ export const Recommendedreordered = [
 ];
 
 export const DesiredLuxuryOrder = [
+  "Experion One 42",
   "Experion Windchants Nova",
+  "Trinity Sky Palazzo",
   "DLF Privana North",
   "Shapoorji Pallonji Dualis",
   "Trevoc Royal Residences",
