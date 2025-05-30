@@ -21,7 +21,7 @@ const BuilderPage = React.memo(() => {
     const Trevoc = useSelector(store => store?.builder?.trevoc);
     const IndiaBulls = useSelector(store => store?.builder?.indiabulls);
     const centralpark = useSelector(store => store?.builder?.centralpark);
-
+    const emaarindia = useSelector(store => store?.builder?.emaarindia);
 
   const buildersData = {
     'signature-global': SignatureBuilder,
@@ -35,6 +35,7 @@ const BuilderPage = React.memo(() => {
     'trevoc-group':Trevoc,
     'indiabulls-real-estate':IndiaBulls ,
     'central-park':centralpark,
+    'emaar-india' : emaarindia
   };
 
   const builderProjects = buildersData[builderName] || []; 
@@ -77,6 +78,7 @@ const BuilderPage = React.memo(() => {
         'indiabulls-real-estate' : 'Indiabulls',
         'smartworld-developers' : 'Smartworld',
         'central-park' : 'Central Park',
+        'emaar-india' : 'Emaar India',
       };
 
       const queryValue = builderQueries[builderName.toLowerCase()];

@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { spotlight, trending ,featured,upcoming,affordable,luxury,scoplots,commercial,budget,projectindelhi} from "../slice/projectSlice";
 import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, dubai} from "../slice/StateProject";
 import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026} from "../slice/AllSectionData";
-import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark } from "../slice/BuilderSlice";
+import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia } from "../slice/BuilderSlice";
 import {Possessionin2025,Possessionin2026} from "../slice/PossessionSlice";
 import {bptpplots,orrisplots} from "../slice/ProjectOverviewSlice";
 
@@ -302,6 +302,7 @@ const Api_service = () => {
   const getProjectbyBuilder = useCallback(async (query ,limit ) => {
     try {
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?builderName=${query}&limit=${limit}`);
+      console.log(response,"response from api")
       const BuilderbyQuery = response.data.data;
       switch (query) {
         case 'Signature Global':
@@ -337,6 +338,9 @@ const Api_service = () => {
         case 'Central Park':
           dispatch(centralpark(BuilderbyQuery));
           break;
+        case 'Emaar India':
+        dispatch(emaarindia(BuilderbyQuery));
+        break;
         default:
           console.warn('Unknown builder:', query);
       }
