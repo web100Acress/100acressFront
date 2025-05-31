@@ -30,6 +30,7 @@ const UserAdmin = () => {
           }
         );
         setViewAll(res.data.data);
+        console.log(res.data.data);
       } catch (error) {
         console.log(error);
       }
@@ -52,7 +53,24 @@ const UserAdmin = () => {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
   };
-
+  function formatLastModified(dateInput) {
+    const date = new Date(dateInput);
+  
+    if (isNaN(date.getTime())) {
+      return '';
+    }
+  
+    const options = {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    };
+  
+    return date.toLocaleString(undefined, options);
+  }
+  
   return (
     <>
       <Sidebar />
@@ -72,7 +90,7 @@ const UserAdmin = () => {
 
         <div style={customStyle}>
           <div className="flex justify-center items-center mt-0">
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-5/6 mt-0">
+            <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-auto mt-0">
               <table className="w-full text-sm text-left rtl:text-right text-black-100 dark:text-black-100 ">
                 <thead className="text-xs text-black uppercase dark:text-black border-b-2  border-red-400">
                   <tr className="">
@@ -88,6 +106,9 @@ const UserAdmin = () => {
 
                     <th scope="col" className="px-6 py-3">
                       Mobile Number
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                     Date
                     </th>
                     <th scope="col" className="px-6 py-3">
                       Action
@@ -107,6 +128,7 @@ const UserAdmin = () => {
                         <td className="px-6 py-1">{item.name}</td>
                         <td className="px-6 py-1">{item.email}</td>
                         <td className="px-6 py-1">{item.mobile}</td>
+                        <td className="px-6 py-1">{formatLastModified(item.createdAt)}</td>                       
                         <td className="px-6 py-1 flex space-x-1">
                           <Link to={`/Admin/viewproperty/${userId}`}>
                             <button
