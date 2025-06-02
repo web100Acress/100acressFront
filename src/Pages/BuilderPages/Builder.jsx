@@ -10,26 +10,41 @@ const Builder = () => {
 
 
     const Builder = [
+        // {
+        //     title: "Signature Global",
+        //     link: "/developers/signature-global/",
+        //     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
+        // },
+        // {
+        //     title: "M3M India",
+        //     link: "/developers/m3m-india/",
+        //     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3m.webp",
+        // },
         {
-            title: "Signature Global",
-            link: "/developers/signature-global/",
-            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
+            title: "Godrej Properties",
+            link: "/developers/godrej/",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/godrej.jpg"
         },
         {
-            title: "M3M India",
-            link: "/developers/m3m-india/",
-            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3m.webp",
+            title: "Whiteland Corporation",
+            link: "/developers/whiteland/",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/whiteland.jpg"
+        },
+        {
+            title: "AIPL",
+            link: "/developers/aipl/",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png"
         },
         {
             title: "DLF Homes",
             link: "/developers/dlf-homes/",
             image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/dlf.png",
         },
-        {
-            title: "EXPERION Developers",
-            link: "/developers/experion-developers/",
-            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/experion.webp",
-        },
+        // {
+        //     title: "EXPERION Developers",
+        //     link: "/developers/experion-developers/",
+        //     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/experion.webp",
+        // },
         {
             title: "ELAN Group",
             link: "/developers/elan-group/",
@@ -60,11 +75,11 @@ const Builder = () => {
             link: "/developers/smartworld-developers/",
             image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/smartworld.webp",
         },
-        {
-            title: "Central Park",
-            link: "/developers/central-park/",
-            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg"
-        }
+        // {
+        //     title: "Central Park",
+        //     link: "/developers/central-park/",
+        //     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg"
+        // },
     ]
 
     return (

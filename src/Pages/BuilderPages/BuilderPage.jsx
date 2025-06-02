@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet";
 import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../../Assets/icons";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
+import { aipl, godrej, whiteland } from "../../Redux/slice/BuilderSlice";
 
 const BuilderPage = React.memo(() => {
     const { builderName } = useParams(); 
@@ -22,6 +23,9 @@ const BuilderPage = React.memo(() => {
     const IndiaBulls = useSelector(store => store?.builder?.indiabulls);
     const centralpark = useSelector(store => store?.builder?.centralpark);
     const emaarindia = useSelector(store => store?.builder?.emaarindia);
+    const godrej = useSelector(store => store?.builder?.godrej);
+    const whiteland = useSelector(store => store?.builder?.whiteland);
+    const aipl = useSelector(store => store?.builder?.aipl);
 
   const buildersData = {
     'signature-global': SignatureBuilder,
@@ -35,7 +39,10 @@ const BuilderPage = React.memo(() => {
     'trevoc-group':Trevoc,
     'indiabulls-real-estate':IndiaBulls ,
     'central-park':centralpark,
-    'emaar-india' : emaarindia
+    'emaar-india' : emaarindia,
+    'godrej' : godrej,
+    'whiteland' : whiteland,
+    'aipl' : aipl
   };
 
   const builderProjects = buildersData[builderName] || []; 
@@ -79,6 +86,9 @@ const BuilderPage = React.memo(() => {
         'smartworld-developers' : 'Smartworld',
         'central-park' : 'Central Park',
         'emaar-india' : 'Emaar India',
+        'godrej' : 'Godrej Properties',
+        'whiteland' : 'Whiteland Corporation',
+        'aipl' : 'AIPL'
       };
 
       const queryValue = builderQueries[builderName.toLowerCase()];
