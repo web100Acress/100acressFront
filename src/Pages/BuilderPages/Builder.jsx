@@ -22,7 +22,7 @@ const Builder = () => {
         // },
         {
             title: "Godrej Properties",
-            link: "/developers/godrej/",
+            link: "/developers/godrej-properties/",
             image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/godrej.jpg"
         },
         {

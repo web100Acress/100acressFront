@@ -40,7 +40,7 @@ const BuilderPage = React.memo(() => {
     'indiabulls-real-estate':IndiaBulls ,
     'central-park':centralpark,
     'emaar-india' : emaarindia,
-    'godrej' : godrej,
+    'godrej-properties' : godrej,
     'whiteland' : whiteland,
     'aipl' : aipl
   };
@@ -86,7 +86,7 @@ const BuilderPage = React.memo(() => {
         'smartworld-developers' : 'Smartworld',
         'central-park' : 'Central Park',
         'emaar-india' : 'Emaar India',
-        'godrej' : 'Godrej Properties',
+        'godrej-properties' : 'Godrej Properties',
         'whiteland' : 'Whiteland Corporation',
         'aipl' : 'AIPL'
       };
