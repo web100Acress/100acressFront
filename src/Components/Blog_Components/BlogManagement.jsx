@@ -168,8 +168,13 @@ const handleDeleteUser = async (id) => {
     setModalText('Do you Want to delete this Blog?');
   };
 
+  function cleanString(str) {
+    return str
+        .replace(/\s+/g, '-')        // Replace all spaces with hyphen
+        .replace(/[?!,\.;:\{\}\(\)\$\@]+/g, ''); // Replace punctuation with empty string
+  }
   const handleBlogView = (Title,id) => {
-    const blogTitle = Title.replace(/\s+/g, '-');
+    const blogTitle = cleanString(Title);
     history(`/blog/${blogTitle}/${id}`);
   };
 

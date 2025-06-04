@@ -78,6 +78,7 @@ const Blogging = () => {
                     <Link
                       to={`/blog/${blogTitle
                         .replace(/\s+/g, "-")
+                        .replace(/[?!,\.;:\{\}\(\)\$\@]+/g, '')
                         .toLowerCase()}/${item._id}`}
                     >
                       <button className="bg-red-600 text-white mr-2 px-4 py-1 my-2 rounded-md mt-1">
