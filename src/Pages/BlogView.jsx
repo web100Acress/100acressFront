@@ -87,10 +87,14 @@ const BlogView = () => {
       console.log(error || error.message);
     }
   }
-
+  function cleanString(str) {
+    return str
+        .replace(/\s+/g, '-')        // Replace all spaces with hyphen
+        .replace(/[?!,\.;:\{\}\(\)\$\@]+/g, ''); // Replace punctuation with empty string
+  }
   const handleBlogView = (Title,id) => {
     console.log("BLog TItle", Title)
-    const blogTitle = Title.replace(/\s+/g, '-');
+    const blogTitle = cleanString(Title);
     history(`/blog/${blogTitle}/${id}`);
   };
 
