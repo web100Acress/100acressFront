@@ -102,17 +102,17 @@ export const budgetPlots = [
 ];
 
 export const Recommendedreordered = [
-    "Shapoorji Pallonji Dualis" ,
-    "Trump Towers Residences",
-    "Experion The Trillion",
-    "Experion Windchants Nova"
+  "Shapoorji Pallonji Dualis" ,
+  "Experion Windchants Nova",
+  "Signature Global Cloverdale SPR" ,
+  "Experion The Trillion",
 ];
 
 export const DesiredLuxuryOrder = [
-  "Experion One 42",
-  "Experion Windchants Nova",
-  "Trinity Sky Palazzo",
-  "DLF Privana North",
-  "Shapoorji Pallonji Dualis",
-  "Trevoc Royal Residences",
+"Experion One 42",
+"Experion Windchants Nova",
+"Godrej Miraya",
+"DLF Privana North",
+"Shapoorji Pallonji Dualis",
+"Trevoc Royal Residences",
 ]
