@@ -100,21 +100,24 @@ const Builder = () => {
                            </Link>
                          </div> */}
                        </div>
-                <div className="grid lg:grid-cols-10 md:grid-cols-3 sm:grid-cols-2 grid-cols-3 mx-0 gap-3 pb-4 pt-4">
+                <div className="grid w-full max-w-[1250px] mx-auto lg:grid-cols-10 md:grid-cols-3 sm:grid-cols-2 grid-cols-3 gap-3 py-4 ">
                     {Builder.slice(0,10).map((project, index) => (
                         <Link
                             data-aos="flip-up"
                             to={project.link}
                             key={index}
-                            className="relative group rounded-xl overflow-hidden shadow-lg transform transition-transform duration-300 hover:scale-105 bg-white dark:bg-gray-800"
+                            className="relative group card rounded-xl overflow-hidden shadow-lg transform transition-transform duration-300 bg-white dark:bg-gray-800 "
+                            // pure div ko hover karanane ke keval jo niche style likha gya hai usme keval card ko call kr dijiy just above classname me 
                         >
                             {/* Container for image and text */}
-                            <div className="flex items-center p-1 gap-3">
+                            <div className="flex items-center justify-center w-48 h-48 p-3 gap-3">
+
+                              {/* agar app pre die ke sath image ko bhi hover karana chahte hai to hover:scale-105 add kar do */}
                                 {/* Image Section */}
                                 <img
                                     src={project.image}
                                     alt={project.title}
-                                    className="w-24 h-24 object-contain rounded-xl hover:scale-125" // Reduced image size
+                                    className="w-24 h-24 object-contain rounded-xl" // Reduced image size
                                     loading="lazy"
                                 />
                             </div>
@@ -169,9 +172,9 @@ const Wrapper = styled.section`
   .card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    border: 1px solid #e0e0e0;
+    // border: 1px solid #e0e0e0;
     border-radius: 8px;
     overflow: hidden;
     text-decoration: none;
@@ -179,10 +182,12 @@ const Wrapper = styled.section`
     padding: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
+    height: 96px;
+    width: 100%;
   }
 
   .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
   }
 
   .card-image {
@@ -192,9 +197,9 @@ const Wrapper = styled.section`
     border-radius: 8px;
   }
 
-  .card-image:hover{
-    transform: scale(1.06);
-  }
+  // .card-image:hover{
+  //   transform: scale(1.06);
+  // }
 
   .card-button {
     width: 100%;
