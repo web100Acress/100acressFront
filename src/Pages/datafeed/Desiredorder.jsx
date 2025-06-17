@@ -55,8 +55,8 @@ export const imageSrc = [
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptplaptop.jpeg", link: "/bptp-verti-greens/"
   },
 ];
-
-export const phoneSrc = [
+// added phon and desktop banner
+export const phoneSrc = [  
   {
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/westmob.webp", link: "/whiteland-westin-residences/"
   },
