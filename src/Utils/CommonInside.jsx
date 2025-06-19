@@ -21,7 +21,6 @@ const CommonInside = ({
 }) => {
   const handleShare = (project) => {
     if (!project?.projectName || !project?.project_url) return;
-
     if (navigator.share) {
       navigator
         .share({
@@ -47,12 +46,12 @@ const CommonInside = ({
   // Filter out invalid items and ensure we have valid data
   const validData = Array.isArray(Actualdata)
     ? Actualdata.filter(item => {
-      return item && (
-        (item.projectName || item.postProperty?.propertyName) && // Must have a name
-        (item.project_url || item.postProperty?._id) && // Must have a URL or ID
-        (item.frontImage?.cdn_url || item.frontImage?.url || item?.postProperty?.frontImage?.url) // Must have an image
-      );
-    })
+        return item && (
+          (item.projectName || item.postProperty?.propertyName) && // Must have a name
+          (item.project_url || item.postProperty?._id) && // Must have a URL or ID
+          (item.frontImage?.cdn_url || item.frontImage?.url || item?.postProperty?.frontImage?.url) // Must have an image
+        );
+      })
     : [];
 
   // If no valid data, show a message
@@ -106,14 +105,13 @@ const CommonInside = ({
                 className="mb-2 overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
               >
                 <div className="relative w-[95%] mt-1 align-center aspect-[4/3]" style={{ marginLeft: "7px", marginBottom: "10px" }}>
-                  <Link to={`/${pUrl}/`} target="_top">
-
+                   <Link to={`/${pUrl}/`} target="_top">
                     <img
                       src={imageUrl}
                       alt={propertyName || "Property In Gurugram"}
                       className="inset-0 w-full h-full object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-105"
                       loading="lazy"
-                    />
+                    />  
                   </Link>
                   <div
                     className="absolute top-2 right-2 cursor-pointer"
@@ -185,11 +183,10 @@ const CommonInside = ({
                             {" - "}
                             {item.maxPrice} Cr
                           </>
-
                         )}
                       </span>
                     </li>
-                    <Link to={propertyUrl} target="_top">
+                    <Link to={`/${pUrl}/`} target="_top">
                       <li className="text-left">
                         <button
                           type="button"
@@ -205,7 +202,7 @@ const CommonInside = ({
             );
           })}
         </div>
-      </section>
+      </section>  
       <Footer />
     </div>
   );
