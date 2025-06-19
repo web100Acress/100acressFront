@@ -204,7 +204,8 @@ const CommonInside = ({
             );
           })}
         </div>
-      </section>
+      </section>  
+      
       <Footer />
     </div>
   );
