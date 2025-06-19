@@ -28,6 +28,9 @@ export const DataProvider = ({ children }) => {
   const [typeAffordable, setTypeAffordabele] = useState([]);
   const [delhiData, setDelhiData] = useState([]);
   const [noidaData, setNoidaData] = useState([]);
+  // adde new
+  const [rajasthanData, setRajasthanData] = useState([]);
+
   const [goaData, setGoaData] = useState([]);
   const [panipat, setPanipat] = useState([]);
   const [panchkula, setpanchkula] = useState([]);
@@ -190,6 +193,8 @@ export const DataProvider = ({ children }) => {
         typeAffordable,
         delhiData,
         noidaData,
+        rajasthanData,
+        //  setRajasthanData,
         goaData,
         panipat,
         handleFilter,
