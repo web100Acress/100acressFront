@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
@@ -22,7 +21,6 @@ const CommonInside = ({
 }) => {
   const handleShare = (project) => {
     if (!project?.projectName || !project?.project_url) return;
-    
     if (navigator.share) {
       navigator
         .share({
@@ -205,7 +203,6 @@ const CommonInside = ({
           })}
         </div>
       </section>  
-      
       <Footer />
     </div>
   );
