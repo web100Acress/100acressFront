@@ -573,7 +573,7 @@ export default function Navbar() {
                       className="relative group "
                       onMouseEnter={handleHover2}
                       onMouseLeave={handleLeave2}
-                      style={{padding:"15px"}}
+                      style={{ padding: "15px" }}
                     >
                       <Link
                       // to={"/projects-in-gurugram/"}
@@ -687,8 +687,7 @@ export default function Navbar() {
                               </span>
                             </Link>
                           </div>
-
-                          <div className="w-40">
+                          <div className="flex flex-col w-48">
                             <Link
                               to="#"
                               className="block text-black text-lg px-4 py-1 hover:text-red-600"
@@ -738,7 +737,24 @@ export default function Navbar() {
                             >
                               Above ₹50 Cr
                             </Link>
+                            {/* </div> */}
+                            {/* aman start working here */}
+                            {/* <div className="w-48 mt-1"> */}
+                            <Link
+                              to="#"
+                              className="block px-4 py-1 text-black text-lg"
+                            >
+                              Indian State
+                              <hr className="mt-1" />
+                            </Link>
+                            <Link
+                              to={"/projects-in-rajasthan/"}
+                              className="block text-sm px-4   hover:text-red-600"
+                            >
+                              Projects in Rajasthan
+                            </Link>
                           </div>
+                          {/* /////////////////////// */}
                           {/* I am Working here */}
                           <div className="w-48">
                             <div >
@@ -1018,8 +1034,22 @@ export default function Navbar() {
                               Above ₹50 Cr
                             </Link>
                           </div>
+                          {/* aman work here */}
+                          <div className="mt-4">
+                            <Link
+                              to="#"
+                              className="block px-4 py-1 text-black text-lg"
+                            >
+                              Popular State
+                              <hr className="mt-1" />
+                            </Link>
+                            <Link to="/projects-in/maharashtra" className="block text-sm px-4 py-1 hover:text-red-600">
+                              Maharashtra
+                            </Link>
+                          </div>
+                          {/* aman work end */}
                           {/* I am Working here */}
-                          <div className="w-48">
+                          <div className="">
                             <Link className="block text-black text-lg px-4 py-1 hover:text-red-600">
                               Project Status
                               <hr className="mt-1" />
@@ -1194,7 +1224,7 @@ export default function Navbar() {
                       </div>
                     )}
                   >
-                    {token ? (<section style={{margin: "-15px -15px -15px -15px" }}>
+                    {token ? (<section style={{ margin: "-15px -15px -15px -15px" }}>
                       <MenuItem>
                         <NavLink className="" onClick={handleCancel} to={`/userdashboard/`}>View Profile</NavLink>
                       </MenuItem><MenuItem fontSize="sm">
@@ -1217,7 +1247,7 @@ export default function Navbar() {
                       <MenuItem fontSize="sm" onClick={() => HandleUserLogout({})} refresh="true">
                         <NavLink className=" text-red-500" onClick={ShowLogOutMessage}>LogOut</NavLink>
                       </MenuItem>
-                    </section>) : (<section style={{margin: "-15px -15px -15px -15px"}}>
+                    </section>) : (<section style={{ margin: "-15px -15px -15px -15px" }}>
                       <MenuItem fontSize="sm" color={"red"}>
                         <NavLink className="" onClick={handleCancel} to="/auth/signin/">Login/</NavLink>
                         <NavLink className="" onClick={handleCancel} to="/auth/signup/">Register</NavLink>

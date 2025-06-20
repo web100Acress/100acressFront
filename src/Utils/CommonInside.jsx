@@ -1,4 +1,3 @@
-import Aos from "aos";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
@@ -11,7 +10,6 @@ import {
   ShareFrameIcon,
 } from "../Assets/icons";
 import Footer from "../Components/Actual_Components/Footer";
-import CustomSkeleton from "../Utils/CustomSkeleton";
 
 const CommonInside = ({
   title,
@@ -22,10 +20,11 @@ const CommonInside = ({
   details,
 }) => {
   const handleShare = (project) => {
+    if (!project?.projectName || !project?.project_url) return;
     if (navigator.share) {
       navigator
         .share({
-          title: project?.projectName,
+          title: project.projectName,
           text: `Check out this project: ${project.projectName}`,
           url: `${window.location.origin}/${project.project_url}`,
         })
@@ -37,177 +36,173 @@ const CommonInside = ({
   };
 
   useEffect(() => {
-    Aos.init();
-  }, []);
-  const response = Array.isArray(Actualdata) ? Actualdata : [];
+    if (Array.isArray(Actualdata) && Actualdata.length > 0) {
+      import('aos').then((Aos) => {
+        Aos.init();
+      });
+    }
+  }, [Actualdata]);
+
+  // Filter out invalid items and ensure we have valid data
+  const validData = Array.isArray(Actualdata)
+    ? Actualdata.filter(item => {
+        return item && (
+          (item.projectName || item.postProperty?.propertyName) && // Must have a name
+          (item.project_url || item.postProperty?._id) && // Must have a URL or ID
+          (item.frontImage?.cdn_url || item.frontImage?.url || item?.postProperty?.frontImage?.url) // Must have an image
+        );
+      })
+    : [];
+
+  // If no valid data, show a message
+  if (validData.length === 0) {
+    return (
+      <div className="text-center py-10">
+        <h2 className="text-xl font-semibold text-gray-600">No properties found</h2>
+        <p className="text-gray-500 mt-2">Try modifying your search criteria</p>
+      </div>
+    );
+  }
 
   return (
     <div>
       <Helmet>
         {HelmetTitle && <title>{HelmetTitle}</title>}
-
         {metaContent && <meta name="description" content={`${metaContent}`} />}
         {linkhref && <link rel="canonical" href={`${linkhref}`} />}
       </Helmet>
-      {response.length === 0 ? (
-        <CustomSkeleton />
-      ) : (
-        <section className="flex pt-2 flex-col items-center mt-16">
-          {title && (
-            <h1 className="mb-3 pt-4 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-              {title}
-            </h1>
-          )}
-          {details && (
-            <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
-              {details}
-            </h2>
-          )}
+      <section className="flex pt-2 flex-col items-center mt-16">
+        {title && (
+          <h1 className="mb-3 pt-4 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+            {title}
+          </h1>
+        )}
+        {details && (
+          <h2 className="text-sm text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4">
+            {details}
+          </h2>
+        )}
 
-          <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full mb-4">
-            {response.map((item, index) => {
-              const pUrl = item.project_url;
-              return (
-                <span>
-                  <article
-                    key={index}
-                    className="mb-2 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+        <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full mb-4">
+          {validData.map((item, index) => {
+            const pUrl = item.project_url;
+            const propertyName = item.projectName || item.postProperty?.propertyName;
+            const location = (item.city && item.state)
+              ? `${item.city}, ${item.state}`
+              : (item?.postProperty?.city && item?.postProperty?.state)
+                ? `${item.postProperty.city}, ${item.postProperty.state}`
+                : "Gurgaon, Haryana";
+            const imageUrl = item.frontImage?.cdn_url || item.frontImage?.url || item?.postProperty?.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
+            const propertyUrl = item.sourceType === "search"
+              ? `/${pUrl}/`
+              : item.sourceType === "rent"
+                ? `/rental-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`
+                : `/buy-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`;
+
+            return (
+              <article
+                key={index}
+                className="mb-2 overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+              >
+                <div className="relative w-[95%] mt-1 align-center aspect-[4/3]" style={{ marginLeft: "7px", marginBottom: "10px" }}>
+                   <Link to={`/${pUrl}/`} target="_top">
+                    <img
+                      src={imageUrl}
+                      alt={propertyName || "Property In Gurugram"}
+                      className="inset-0 w-full h-full object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-105"
+                      loading="lazy"
+                    />  
+                  </Link>
+                  <div
+                    className="absolute top-2 right-2 cursor-pointer"
+                    onClick={() => handleShare(item)}
                   >
-                    <div
-                      className="relative w-[95%] mt-1 align-center aspect-[4/3]"
-                      style={{ marginLeft: "7px", marginBottom: "10px" }}
-                    >
-                      <Link to={`/${pUrl}/`} target="_top">
-                        <img
-                          src={
-                            item.frontImage?.cdn_url ||
-                            item.frontImage?.url ||
-                            item?.postProperty?.frontImage?.url ||
-                            "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg"
-                          }
-                          alt="property In Gurugram"
-                          className=" inset-0 w-full h-full object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-105"
-                        />
-                      </Link>
-                      <div
-                        className="absolute top-2 right-2"
-                        onClick={() => handleShare(item)}
-                      >
-                        <ShareFrameIcon />
-                      </div>
-                      {item.sourceType === "rent" && (
-                        <div className="absolute left-0 -top-2 right-0 ">
-                          <RentIcon />
-                        </div>
-                      )}
-                      {item.sourceType === "buy" && (
-                        <div className="absolute left-0 -top-2 right-0 ">
-                          <ResaleIcon />
-                        </div>
-                      )}
+                    <ShareFrameIcon />
+                  </div>
+                  {item.sourceType === "rent" && (
+                    <div className="absolute left-0 -top-2 right-0">
+                      <RentIcon />
                     </div>
-                    <div className="pt-0 p-3">
-                      <div className="pb-2">
-                        <span className="text-[15px] font-semibold hover:text-red-600 duration-500 ease-in-out">
-                          {item.projectName && item.projectName.length > 28
-                            ? `${item.projectName.slice(0, 28)}...`
-                            : item.projectName
-                            ? item.projectName
-                            : item.postProperty?.propertyName &&
-                              item.postProperty.propertyName.length > 28
-                            ? `${item.postProperty.propertyName.slice(
-                                0,
-                                28
-                              )}...`
-                            : item.postProperty?.propertyName
-                            ? item.postProperty.propertyName
-                            : ""}
+                  )}
+                  {item.sourceType === "buy" && (
+                    <div className="absolute left-0 -top-2 right-0">
+                      <ResaleIcon />
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-0 p-3">
+                  <div className="pb-2">
+                    <span className="text-[15px] font-semibold hover:text-red-600 duration-500 ease-in-out">
+                      {propertyName && propertyName.length > 28
+                        ? `${propertyName.slice(0, 28)}...`
+                        : propertyName || ""}
+                    </span>
+                    <br />
+                    <span className="text-sm text-gray-400 hover:text-red-600 duration-500 ease-in-out">
+                      {location}
+                    </span>
+                  </div>
+
+                  <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
+                    <li className="mr-4 flex items-center text-left">
+                      <li className="text-left">
+                        <p className="m-0 text-sm font-medium">
+                          <PropertyIcon />{" "}
+                          {item.type || item.postProperty?.propertyType || item.postProperty?.type}
+                        </p>
+                        <span className="text-[10px] text-gray-600 block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
+                          <LocationRedIcon />{" "}
+                          {item.projectAddress || item?.postProperty?.address}
                         </span>
+                      </li>
+                    </li>
+                  </ul>
 
-                        <br />
-                        <span className="text-sm text-gray-400 hover:text-red-600 duration-500 ease-in-out">
-                          {item.city && item.state
-                            ? `${item.city}, ${item.state}`
-                            : item?.postProperty?.city &&
-                              item?.postProperty?.state
-                            ? `${item.postProperty.city}, ${item.postProperty.state}`
-                            : "Gurgaon , Haryana"}
+                  <ul className="m-0 flex list-none items-center justify-between px-0 pb-0">
+                    <li className="text-left">
+                      <span className="text-sm font-extrabold text-red-600">
+                        <span className="text-xl">
+                          <RupeeIcon />
                         </span>
-                      </div>
-
-                      <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
-                        <li className="mr-4 flex items-center text-left">
-                          <li className="text-left">
-                            <p className="m-0 text-sm font-medium ">
-                              <PropertyIcon />{" "}
-                              {item.type ||
-                                item.postProperty?.propertyType ||
-                                item.postProperty?.type}
-                            </p>
-                            <span className="text-[10px] text-gray-600 block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
-                              <LocationRedIcon />{" "}
-                              {item.projectAddress ||
-                                item?.postProperty?.address}
-                            </span>
-                          </li>
-                        </li>
-                      </ul>
-
-                      <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
-                        <li className="text-left">
-                          <span className="text-sm font-extrabold text-red-600">
-                            <span className="text-xl">
-                              <RupeeIcon />
-                            </span>
-                            {!item.minPrice && !item.maxPrice ? (
-                              item.price ? (
-                                item.price
-                              ) : (
-                                item.postProperty?.price || "Reveal Soon"
-                              )
-                            ) : !item.minPrice || !item.maxPrice ? (
-                              "Reveal Soon"
+                        {!item.minPrice && !item.maxPrice ? (
+                          item.price ? (
+                            item.price
+                          ) : (
+                            item.postProperty?.price || "Reveal Soon"
+                          )
+                        ) : !item.minPrice || !item.maxPrice ? (
+                          "Reveal Soon"
+                        ) : (
+                          <>
+                            {item.minPrice < 1 ? (
+                              <>{(item.minPrice * 100).toFixed()} L</>
                             ) : (
-                              <>
-                                {item.minPrice < 1 ? (
-                                  <>{(item.minPrice * 100).toFixed()} L</>
-                                ) : (
-                                  <>{item.minPrice}</>
-                                )}
-                                {" - "}
-                                {item.maxPrice} Cr
-                              </>
+                              <>{item.minPrice}</>
                             )}
-                          </span>
-                        </li>
-                        <Link
-                          to={
-                            item.sourceType === "search"
-                              ? `/${pUrl}/`
-                              : item.sourceType === "rent"
-                              ? `/rental-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`
-                              : `/buy-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`
-                          }
-                          target="_top"
+                            {" - "}
+                            {item.maxPrice} Cr
+                          </>
+                        )}
+                      </span>
+                    </li>
+                    <Link to={`/${pUrl}/`} target="_top">
+                      <li className="text-left">
+                        <button
+                          type="button"
+                          className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 text-center me-2"
                         >
-                          <li className="text-left">
-                            <button
-                              type="button"
-                              className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
-                            >
-                              View Details
-                            </button>
-                          </li>
-                        </Link>
-                      </ul>
-                    </div>
-                  </article>
-                </span>
-              );
-            })}
-          </div>
-        </section>
-      )}
+                          View Details
+                        </button>
+                      </li>
+                    </Link>
+                  </ul>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>  
       <Footer />
     </div>
   );
