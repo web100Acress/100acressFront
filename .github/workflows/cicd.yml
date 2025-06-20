@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - development  # Optional: Add this if you also want to test from development
+      - development
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: [self-hosted, AWS-EC2]  # ✅ Use your actual runner label
+    runs-on: [self-hosted, AWS-EC2]
     steps:
       - name: Pull image from docker hub
         run: docker pull hunderedacress/100acressfront:latest 
