@@ -38,10 +38,10 @@ jobs:
 
       - name: Free up port 3000 if already in use
         run: |
-          PORT_IN_USE=$(lsof -t -i:3000)
+          PORT_IN_USE=$(lsof -t -i:3000 || true)
           if [ -n "$PORT_IN_USE" ]; then
             kill -9 $PORT_IN_USE || true
           fi
 
       - name: Run Docker Container
-        run: docker run -d -p 3001:80 --name hundredacress-frontend-container hunderedacress/100acressfront
+        run: docker run -d -p 3000:80 --name hundredacress-frontend-container hunderedacress/100acressfront
