@@ -44,4 +44,4 @@ jobs:
           fi
 
       - name: Run Docker Container
-        run: docker run -d -p 3000:80 --name hundredacress-frontend-container hunderedacress/100acressfront
+        run: docker run -d -p 3001:80 --name hundredacress-frontend-container hunderedacress/100acressfront
