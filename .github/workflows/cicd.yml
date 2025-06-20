@@ -1,36 +1,17 @@
-name: Deploy web100Acress-100acressFront
+deploy:
+  needs: build
+  runs-on: self-hosted
+  steps:
+    - name: Pull image from Docker Hub
+      run: docker pull hunderedacress/100acressfront:latest
 
-on: 
-  push:
-    branches:
-      - master
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }} 
-      - name: Login to docker hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}     
-      - name: Build Docker Image
-        run: docker build -t hunderedacress/100acressfront  .
+    - name: Stop and Remove Old Container (if exists)
+      run: |
+        docker stop hundredacress-frontend-container || true
+        docker rm hundredacress-frontend-container || true
 
+    - name: Run Docker Container
+      run: docker run -d --name hundredacress-frontend-container -p 3000:80 hunderedacress/100acressfront:latest
 
-      - name: Publish Image to docker hub
-        run: docker push hunderedacress/100acressfront:latest 
- 
-  deploy:
-    needs: build
-    runs-on: self-hosted 
-    steps:
-      - name: Pull image from docker hub
-        run: docker pull hunderedacress/100acressfront:latest 
-      - name: Delete old container
-        run: |
-            if [ "$(docker ps -aq -f name=hundredacress-frontend-container)" ]; then
-            docker rm -f hundredacress-frontend-container
-            fi
-      - name: Run Docker Container
-        run: docker run -d -p 3000:80 --name hundredacress-frontend-container  hunderedacress/100acressfront
+    - name: Verify Running Containers
+      run: docker ps
