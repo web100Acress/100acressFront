@@ -33,11 +33,7 @@ jobs:
             docker rm -f hundredacress-frontend-container
             fi
 
-            - name: Free port 3000 if already in use
-  run: |
-    if lsof -i :3000; then
-      sudo kill -9 $(lsof -t -i :3000)
-    fi
+  
 
       - name: Run Docker Container
         run: docker run -d -p 3000:80 --name hundredacress-frontend-container  hunderedacress/100acressfront
