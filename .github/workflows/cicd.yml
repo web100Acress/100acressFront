@@ -2,16 +2,20 @@ deploy:
   needs: build
   runs-on: self-hosted
   steps:
-    - name: Pull image from Docker Hub
+    - name: Pull Docker image
       run: docker pull hunderedacress/100acressfront:latest
 
-    - name: Stop and Remove Old Container (if exists)
+    - name: Check for existing container
+      run: docker ps -a
+
+    - name: Stop and Remove Old Container
       run: |
-        docker stop hundredacress-frontend-container || true
-        docker rm hundredacress-frontend-container || true
+        docker stop hundredacress-frontend-container || echo "No container to stop"
+        docker rm hundredacress-frontend-container || echo "No container to remove"
 
-    - name: Run Docker Container
-      run: docker run -d --name hundredacress-frontend-container -p 3000:80 hunderedacress/100acressfront:latest
+    - name: Run New Container
+      run: |
+        docker run -d -p 3000:80 --name hundredacress-frontend-container hunderedacress/100acressfront:latest
 
-    - name: Verify Running Containers
+    - name: Check Running Containers
       run: docker ps
