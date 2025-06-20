@@ -1,16 +1,16 @@
 deploy:
   needs: build
-  runs-on: ubuntu-latest
+  runs-on: [self-hosted, Linux, X64]  # OR: runs-on: [self-hosted, AWS-EC2]
 
   steps:
     - name: Pull latest image
       run: docker pull hunderedacress/100acressfront:latest
 
-    - name: Stop old container if exists
+    - name: Delete old container (if exists)
       run: |
-        docker stop hundredacress-frontend-container || true
-        docker rm hundredacress-frontend-container || true
+        if [ "$(docker ps -aq -f name=hundredacress-frontend-container)" ]; then
+          docker rm -f hundredacress-frontend-container
+        fi
 
-    - name: Run new container
-      run: |
-        docker run -d -p 3000:80 --name hundredacress-frontend-container hunderedacress/100acressfront:latest
+    - name: Run Docker container
+      run: docker run -d -p 3000:80 --name hundredacress-frontend-container hunderedacress/100acressfront:latest
