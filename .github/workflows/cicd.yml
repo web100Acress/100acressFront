@@ -18,7 +18,7 @@ jobs:
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker Image
-        run: docker build -t hunderedacress/100acressfront .
+        run: docker build -t hunderedacress/100acressfront:latest
 
       - name: Publish Image to Docker Hub
         run: docker push hunderedacress/100acressfront:latest
@@ -36,12 +36,19 @@ jobs:
             docker rm -f hundredacress-frontend-container
           fi
 
-      - name: Free up port 3000 if already in use
+      - name: Install lsof if not available
         run: |
-          PORT_IN_USE=$(lsof -t -i:3001 || true)
-          if [ -n "$PORT_IN_USE" ]; then
-            kill -9 $PORT_IN_USE || true
+          if ! command -v lsof &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y lsof
           fi
 
-      - name: Run Docker Container
+      - name: Free up port 3001 if already in use
+        run: |
+          PID=$(lsof -t -i:3001)
+          if [ -n "$PID" ]; then
+            echo "Killing process on port 3001: $PID"
+            kill -9 $PID || true
+          fi
+
+      - name: Run Docker Container on port 3001
         run: docker run -d -p 3001:80 --name hundredacress-frontend-container hunderedacress/100acressfront
