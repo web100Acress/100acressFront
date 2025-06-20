@@ -44,10 +44,12 @@ jobs:
 
       - name: Free up port 3001 if already in use
         run: |
-          PID=$(lsof -t -i:3001)
-          if [ -n "$PID" ]; then
-            echo "Killing process on port 3001: $PID"
+          PID=$(lsof -t -i:3001 || true)
+          if [ ! -z "$PID" ]; then
+            echo "Port 3001 in use by PID $PID, killing..."
             kill -9 $PID || true
+          else
+            echo "Port 3001 is free"
           fi
 
       - name: Run Docker Container on port 3001
