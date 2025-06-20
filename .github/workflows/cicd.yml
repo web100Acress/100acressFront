@@ -1,21 +1,16 @@
 deploy:
   needs: build
-  runs-on: self-hosted
+  runs-on: ubuntu-latest
+
   steps:
-    - name: Pull Docker image
+    - name: Pull latest image
       run: docker pull hunderedacress/100acressfront:latest
 
-    - name: Check for existing container
-      run: docker ps -a
-
-    - name: Stop and Remove Old Container
+    - name: Stop old container if exists
       run: |
-        docker stop hundredacress-frontend-container || echo "No container to stop"
-        docker rm hundredacress-frontend-container || echo "No container to remove"
+        docker stop hundredacress-frontend-container || true
+        docker rm hundredacress-frontend-container || true
 
-    - name: Run New Container
+    - name: Run new container
       run: |
         docker run -d -p 3000:80 --name hundredacress-frontend-container hunderedacress/100acressfront:latest
-
-    - name: Check Running Containers
-      run: docker ps
