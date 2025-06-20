@@ -1,24 +1,16 @@
-  deploy:
-    needs: build
-    runs-on: self-hosted 
-    steps:
-      - name: Pull image from docker hub
-        run: docker pull hunderedacress/100acressfront:latest 
+deploy:
+  needs: build
+  runs-on: [self-hosted, Linux, X64]  # OR: runs-on: [self-hosted, AWS-EC2]
 
-      - name: Delete old container by name
-        run: |
-          if [ "$(docker ps -aq -f name=hundredacress-frontend-container)" ]; then
-            docker rm -f hundredacress-frontend-container
-          fi
+  steps:
+    - name: Pull latest image
+      run: docker pull hunderedacress/100acressfront:latest
 
-      - name: Free port 3000 if already used
-        run: |
-          CONTAINER_ID=$(docker ps -q --filter "publish=3000")
-          if [ "$CONTAINER_ID" ]; then
-            echo "Stopping container on port 3000..."
-            docker stop $CONTAINER_ID
-            docker rm $CONTAINER_ID
-          fi
+    - name: Delete old container (if exists)
+      run: |
+        if [ "$(docker ps -aq -f name=hundredacress-frontend-container)" ]; then
+          docker rm -f hundredacress-frontend-container
+        fi
 
-      - name: Run Docker Container
-        run: docker run -d -p 3000:80 --name hundredacress-frontend-container  hunderedacress/100acressfront
+    - name: Run Docker container
+      run: docker run -d -p 3000:80 --name hundredacress-frontend-container hunderedacress/100acressfront:latest
