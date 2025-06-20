@@ -1,24 +1,24 @@
   deploy:
     needs: build
-    runs-on: self-hosted
+    runs-on: self-hosted 
     steps:
       - name: Pull image from docker hub
-        run: docker pull hunderedacress/100acressfront:latest
+        run: docker pull hunderedacress/100acressfront:latest 
 
-      - name: Delete old container
+      - name: Delete old container by name
         run: |
           if [ "$(docker ps -aq -f name=hundredacress-frontend-container)" ]; then
             docker rm -f hundredacress-frontend-container
           fi
 
-      - name: Kill process on port 3000 (if any)
+      - name: Free port 3000 if already used
         run: |
-          if sudo lsof -i :3000 -t | grep -q . ; then
-            echo "Port 3000 is in use. Killing the process..."
-            sudo fuser -k 3000/tcp
-          else
-            echo "Port 3000 is free."
+          CONTAINER_ID=$(docker ps -q --filter "publish=3000")
+          if [ "$CONTAINER_ID" ]; then
+            echo "Stopping container on port 3000..."
+            docker stop $CONTAINER_ID
+            docker rm $CONTAINER_ID
           fi
 
       - name: Run Docker Container
-        run: docker run -d -p 3000:80 --name hundredacress-frontend-container hunderedacress/100acressfront
+        run: docker run -d -p 3000:80 --name hundredacress-frontend-container  hunderedacress/100acressfront
