@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import axios from "axios";
 const AddNew = () => {
   const [editFromData, setEditFromData] = useState({
@@ -69,7 +69,7 @@ const AddNew = () => {
     setEditFromData({ ...editFromData, type: event.target.value });
   };
 
-  const handleProjectStatus = (event) =>{
+  const handleProjectStatus = (event) => {
     setEditFromData({ ...editFromData, project_Status: event.target.value });
   }
 
@@ -196,7 +196,7 @@ const AddNew = () => {
     formDataAPI.append("projectMaster_plan", fileData.projectMaster_plan);
 
     try {
-      const response = await axios.post(apiEndpoint, formDataAPI);      
+      const response = await axios.post(apiEndpoint, formDataAPI);
       alert("Data Posted");
       resetData();
       resetImageData();
@@ -253,7 +253,7 @@ const AddNew = () => {
             <option value="Farm Houses">Farm House</option>
           </select>
 
-          
+
           <select
             className="text-gray-600 border px-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
             value={editFromData.project_Status}
@@ -279,7 +279,7 @@ const AddNew = () => {
             />
           </label>
 
-          
+
           <label className="block" for="name">
             <input
               className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
@@ -437,12 +437,12 @@ const AddNew = () => {
             />
           </label>
 
-        
-
-          
 
 
-      
+
+
+
+
 
 
           <p className="mt-2 font-medium mb-1 grid grid-cols-4 text-gray-500">
@@ -464,6 +464,8 @@ const AddNew = () => {
             Front Image
           </p>
 
+
+             
           <div className="flex mt-3 ring-black">
             <div class="relative h-10 w-40 min-w-[160px] ring-black">
               <input
