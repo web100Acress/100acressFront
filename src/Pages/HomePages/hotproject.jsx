@@ -106,7 +106,7 @@ const InfoContainer = styled.div`
   transition: opacity 0.3s ease, visibility 0.3s ease;
 
   ${ImageWrapper}:hover & {
-    visibility: hidden;
+    visibility: hidden  ;
     opacity: 1;
   }
 `;
@@ -225,7 +225,7 @@ const ImageGallery = React.memo(() => {
                   <p className="font-semibold mt-2 mb-0 text-gray-800"></p>
                   <button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect w-full md:w-auto   flex justify-center items-center" >View Details</button>
                 </InfoContainer>
-                <CityText className="py-2 px-auto text-xl visible font-Sans">{image.projectName}</CityText>
+                <CityText className="py-2 px-4 text-xl font-sans text-center">{image.projectName}</CityText>
                 <CityText className="">{truncateText(image.projectAddress, 4)}</CityText>
                 <CityText className="py-2 px-auto"><button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-6 py-2 drip-effect w-full md:w-auto   flex justify-center items-center md:auto sm:w-1/2 max-[600px]:w-2/4 " >View Details</button>
                 </CityText>
