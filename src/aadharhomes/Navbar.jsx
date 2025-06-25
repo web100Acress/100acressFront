@@ -660,21 +660,34 @@ export default function Navbar() {
                             </Link>
                             <Link
                               to={`/projects-in-sonipat/`}
-                              className="block text-sm px-4 py-1  hover:text-red-600"
+                              className="block text-sm px-4 py-1 hover:text-red-600"
                             >
                               Projects in Sonipat
                             </Link>
                             <Link
                               to={`/projects-in-karnal/`}
-                              className="block text-sm px-4 py-1 hover:text-red-600"
+                              className="block text-sm px-4 hover:text-red-600"
                             >
                               Projects in Karnal
                             </Link>
                             <Link
                               to={`/projects-in-jalandhar/`}
-                              className="block text-sm px-4   hover:text-red-600"
+                              className="block text-sm px-4 py-1  hover:text-red-600"
                             >
                               Projects in Jalandhar
+                            </Link>
+                            {/* <Link
+                              to="#"
+                              className="block px-4 py-1 text-black text-lg"
+                            >
+                              Indian State
+                              <hr className="mt-1" />
+                            </Link> */}
+                            <Link
+                              to={"/projects-in-pushkar/"}
+                              className="block text-sm px-4   hover:text-red-600"
+                            >
+                              Projects in Pushkar
                             </Link>
 
                             <Link
@@ -740,7 +753,7 @@ export default function Navbar() {
                             {/* </div> */}
                             {/* aman start working here */}
                             {/* <div className="w-48 mt-1"> */}
-                            <Link
+                            {/* <Link
                               to="#"
                               className="block px-4 py-1 text-black text-lg"
                             >
@@ -752,7 +765,7 @@ export default function Navbar() {
                               className="block text-sm px-4   hover:text-red-600"
                             >
                               Projects in Rajasthan
-                            </Link>
+                            </Link> */}
 
                             {/* <Link
                               to="/qr-generator"

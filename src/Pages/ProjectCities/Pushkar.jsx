@@ -41,13 +41,13 @@ const Pushkar = () => {
         </title>
         <meta
           name="description"
-          content="Real Estate Properties in Soni- Get Details for Residential &amp; Commercial Properties"
+          content="Real Estate Properties in Sale in Pushkar- Get Details for Residential &amp; Commercial Properties"
         />
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-16">
         <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em]">
-          Projects in Pushkar
+          Projects in Pushkar (Ajmer) Rajasthan
         </h1>
 
         <h2 className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4 tracking-[0.1em]">
