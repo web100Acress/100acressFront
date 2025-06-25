@@ -93,11 +93,18 @@ const CommonInside = ({
                 ? `${item.postProperty.city}, ${item.postProperty.state}`
                 : "Gurgaon, Haryana";
             const imageUrl = item.frontImage?.cdn_url || item.frontImage?.url || item?.postProperty?.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
-            const propertyUrl = item.sourceType === "search"
-              ? `/${pUrl}/`
-              : item.sourceType === "rent"
-                ? `/rental-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`
-                : `/buy-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`;
+            
+            // Build propertyUrl based on sourceType
+            let propertyUrl = "";
+            if (item.sourceType === "search") {
+              propertyUrl = `/${pUrl}/`;
+            } else if (item.sourceType === "rent") {
+              propertyUrl = `/rental-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`;
+            } else if (item.sourceType === "buy") {
+              propertyUrl = `/buy-properties/${item?.postProperty?.propertyName}/${item?.postProperty?._id}`;
+            } else {
+              propertyUrl = `/${pUrl}/`;
+            }
 
             return (
               <article
@@ -105,7 +112,7 @@ const CommonInside = ({
                 className="mb-2 overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
               >
                 <div className="relative w-[95%] mt-1 align-center aspect-[4/3]" style={{ marginLeft: "7px", marginBottom: "10px" }}>
-                   <Link to={`/${pUrl}/`} target="_top">
+                  <Link to={propertyUrl} target="_top">
                     <img
                       src={imageUrl}
                       alt={propertyName || "Property In Gurugram"}
@@ -186,7 +193,7 @@ const CommonInside = ({
                         )}
                       </span>
                     </li>
-                    <Link to={`/${pUrl}/`} target="_top">
+                    <Link to={propertyUrl} target="_top">
                       <li className="text-left">
                         <button
                           type="button"
