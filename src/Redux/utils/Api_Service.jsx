@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { spotlight, trending ,featured,upcoming,affordable,luxury,scoplots,commercial,budget,projectindelhi} from "../slice/projectSlice";
-import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, dubai, rajasthan} from "../slice/StateProject";
+import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, dubai, setPushkarProjects} from "../slice/StateProject";  
 import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026} from "../slice/AllSectionData";
 import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl } from "../slice/BuilderSlice";
 import {Possessionin2025,Possessionin2026} from "../slice/PossessionSlice";
@@ -141,43 +141,46 @@ const Api_service = () => {
   }
 
 
-  const getProjectbyState = async(query , limit ) => {
-    try {
-      const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?city=${query}&limit=${limit}`);
-      const ProjectbyState = response.data.data;
-        if (query === 'Gurugram') {
-        dispatch(gurugram(ProjectbyState));
-      } else if (query === 'Delhi') {
-        dispatch(delhi(ProjectbyState));
-      } else if (query === 'Noida') {
-        dispatch(noida(ProjectbyState));
-      } else if (query === 'Goa') {
-        dispatch(goa(ProjectbyState));
-      } else if (query === 'Ayodhya') {
-        dispatch(ayodhya(ProjectbyState));
-      } else if (query === 'Mumbai') {
-        dispatch(mumbai(ProjectbyState));
-      } else if (query === 'Panipat') {
-        dispatch(panipat(ProjectbyState));
-      } else if (query === 'Panchkula') {
-        dispatch(panchkula(ProjectbyState));
-      } else if (query === 'Kasauli') {
-        dispatch(kasauli(ProjectbyState));
-      } else if (query === 'Karnal') {
-        dispatch(karnal(ProjectbyState));
-      } else if (query === 'Jalandhar') {
-        dispatch(jalandhar(ProjectbyState));
-      }else if (query === 'Sonipat') {
-        dispatch(sonipat(ProjectbyState));
-      }else if (query === 'Dubai') {
-        dispatch(dubai(ProjectbyState));
-      }else if (query === 'Rajasthan') {
-        dispatch(rajasthan(ProjectbyState));
-      } 
-      } catch (error) {
-      console.error("Error fetching project data based on state:", error);
-    }
-  };
+ const getProjectbyState = async (query, limit) => {
+  try {
+    const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?city=${query}&limit=${limit}`);
+    const ProjectbyState = response.data.data;
+
+    if (query === 'Gurugram') {
+      dispatch(gurugram(ProjectbyState));
+    } else if (query === 'Delhi') {
+      dispatch(delhi(ProjectbyState));
+    } else if (query === 'Noida') {
+      dispatch(noida(ProjectbyState));
+    } else if (query === 'Goa') {
+      dispatch(goa(ProjectbyState));
+    } else if (query === 'Ayodhya') {
+      dispatch(ayodhya(ProjectbyState));
+    } else if (query === 'Mumbai') {
+      dispatch(mumbai(ProjectbyState));
+    } else if (query === 'Panipat') {
+      dispatch(panipat(ProjectbyState));
+    } else if (query === 'Panchkula') {
+      dispatch(panchkula(ProjectbyState));
+    } else if (query === 'Kasauli') {
+      dispatch(kasauli(ProjectbyState));
+    } else if (query === 'Karnal') {
+      dispatch(karnal(ProjectbyState));
+    } else if (query === 'Jalandhar') {
+      dispatch(jalandhar(ProjectbyState));
+    } else if (query === 'Sonipat') {
+      dispatch(sonipat(ProjectbyState));
+    } else if (query === 'Dubai') {
+      dispatch(dubai(ProjectbyState)); // ✅ this was missing
+    } if (query === 'Pushkar') {
+  dispatch(setPushkarProjects(ProjectbyState));
+}
+
+  } catch (error) {
+    console.error("Error fetching project data based on state:", error);
+  }
+};
+
   
 
   const getAllProjects= async(query ,limit )=>{

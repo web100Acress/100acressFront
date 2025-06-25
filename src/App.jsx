@@ -44,8 +44,16 @@ import NoidaProject from "./Pages/ProjectCities/NoidaProject";
 import GoaProject from "./Pages/ProjectCities/GoaProject";
 import PanipatProject from "./Pages/ProjectCities/PanipatProject";
 // added
-import Rajasthan from "./Pages/ProjectState/Rajasthan";
+import Pushkar from "./Pages/ProjectCities/Pushkar";
 
+// adde new
+// import pre from "./Pages/pre";
+import { Toaster } from "./Components/ui/Toaster";
+import { Toaster as Sonner } from "./Components/ui/sonner";
+import { TooltipProvider } from "./Components/ui/Tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import QRGeneratorPage from "./Pages/QRGeneratorPage";
+// //////////////////////////
 import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
 import BudgetPrice from "./Pages/BudgetPrice";
@@ -127,6 +135,8 @@ const BlogManagement = lazy(() => import("./Components/Blog_Components/BlogManag
 const DraftManagement = lazy(() => import("./Components/Blog_Components/DraftManagement"));
 const BlogManagementSidebar = lazy(() => import("./Components/Blog_Components/BlogManagementSidebar"));
 
+
+// const queryClient = new QueryClient();
 
 
 function App() {
@@ -246,7 +256,15 @@ function App() {
               <Route path="/project-in-mumbai/" element={<Mumbai />} />
               <Route path="/projects-in-dubai/" element={<Dubai />} />
               {/* added by me */}
-             <Route path="/projects-in-rajasthan/" element={<Rajasthan />} />
+              <Route path="/projects-in-pushkar/" element={<Pushkar />} />
+              {/* added new */}
+
+               
+          <Route path="/qr-generator" element={<QRGeneratorPage />} />
+             {/* <Route path="/pre" element={<Pre />} /> */}
+
+         
+      
               <Route
                 path="/project-in-underconstruction/"
                 element={<UnderConstruction />}
