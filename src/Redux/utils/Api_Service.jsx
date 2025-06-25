@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { spotlight, trending ,featured,upcoming,affordable,luxury,scoplots,commercial,budget,projectindelhi} from "../slice/projectSlice";
-import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, dubai, setPushkarProjects} from "../slice/StateProject";  
+import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, dubai, pushkar} from "../slice/StateProject";  
 import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026} from "../slice/AllSectionData";
 import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl } from "../slice/BuilderSlice";
 import {Possessionin2025,Possessionin2026} from "../slice/PossessionSlice";
@@ -173,7 +173,7 @@ const Api_service = () => {
     } else if (query === 'Dubai') {
       dispatch(dubai(ProjectbyState)); // ✅ this was missing
     } if (query === 'Pushkar') {
-  dispatch(setPushkarProjects(ProjectbyState));
+  dispatch(pushkar(ProjectbyState));
 }
 
   } catch (error) {

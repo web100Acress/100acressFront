@@ -5,7 +5,7 @@ const StateProjectSlice = createSlice({
   initialState: {
     gurugram: [],
     delhi: [],
-    pushkar: [], // ✅ added this as part of the state
+    pushkars: [], // ✅ added this as part of the state
     noida: [],
     goa: [],
     ayodhya: [],
@@ -58,8 +58,8 @@ const StateProjectSlice = createSlice({
     dubai: (state, action) => {
       state.dubai = action.payload;
     },
-    setPushkarProjects: (state, action) => {
-      state.pushkar = action.payload;
+    pushkar: (state, action) => {
+      state.pushkars = action.payload;
     },
   },
 });
@@ -78,7 +78,7 @@ export const {
   jalandhar,
   sonipat,
   dubai,
-  setPushkarProjects, // ✅ Correct export name
+  pushkar, // ✅ Correct export name
 } = StateProjectSlice.actions;
 
 export default StateProjectSlice.reducer;
