@@ -29,55 +29,55 @@ const PopupForm = ({ onPopupVisibilityChange }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
     console.log("Form submitted:", formData);
     setIsSubmitting(false);
     setShowForm(false);
   };
 
   const formFields = [
-    { 
-      label: "Full Name", 
-      name: "name", 
-      type: "text", 
+    {
+      label: "Full Name",
+      name: "name",
+      type: "text",
       icon: User,
       placeholder: "Enter your full name"
     },
-    { 
-      label: "Email Address", 
-      name: "email", 
-      type: "email", 
+    {
+      label: "Email Address",
+      name: "email",
+      type: "email",
       icon: Mail,
       placeholder: "100acress@gmail.com"
     },
-    { 
-      label: "Phone Number", 
-      name: "phone", 
-      type: "tel", 
+    {
+      label: "Phone Number",
+      name: "phone",
+      type: "tel",
       icon: Phone,
       placeholder: "+91 8500-900-100"
     },
-    { 
-      label: "Preferred Location", 
-      name: "location", 
-      type: "text", 
+    {
+      label: "Preferred Location",
+      name: "location",
+      type: "text",
       icon: MapPin,
       placeholder: "City, State"
     },
-    { 
-      label: "Property Type", 
-      name: "propertyType", 
-      type: "select", 
+    {
+      label: "Property Type",
+      name: "propertyType",
+      type: "select",
       icon: Home,
       options: ["100acress Agricultural land", "100acress Form House", "100acress Township"]
     },
-    { 
-      label: "Budget Range", 
-      name: "budget", 
-      type: "select", 
+    {
+      label: "Budget Range",
+      name: "budget",
+      type: "select",
       icon: DollarSign,
       options: ["Under 5cr", "5cr-10cr", "10cr-15cr", "15cr-above"]
     },
@@ -88,19 +88,27 @@ const PopupForm = ({ onPopupVisibilityChange }) => {
       {showImage && (
         <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
           <div className="relative group">
+            <div
+              className="absolute top-2 right-2 bg-amber-400 hover:bg-white p-1 rounded-full cursor-pointer z-10"
+              onClick={() => setShowImage(false)}
+            >
+              <X size={20} />
+            </div>
             <img
-              src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*XuhF7kYmmDcF98OTbZKYWA.jpeg"
+              src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/100ACRESS.jpg"
               alt="Click to continue"
               className="max-w-full h-auto max-h-[80vh] cursor-pointer rounded-xl shadow-2xl object-contain transition-all duration-300 group-hover:scale-105 group-hover:shadow-3xl"
               onClick={() => {
                 setShowImage(false);
                 setShowForm(true);
               }}
+
             />
+            {/* <X size={20} /> */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent rounded-xl pointer-events-none" />
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-center animate-bounce">
-              <p className="text-lg font-semibold mb-1">Click to Get Started</p>
-              <p className="text-sm opacity-80">Find Your Dream Property</p>
+              {/* <p className="text-lg font-semibold mb-1">Click to Get Started</p> */}
+              {/* <p className="text-sm opacity-80">Find Your Dream Property</p> */}
             </div>
           </div>
         </div>
@@ -109,14 +117,21 @@ const PopupForm = ({ onPopupVisibilityChange }) => {
       {showForm && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
           <div className="bg-white p-6 sm:p-8 rounded-2xl w-full max-w-md lg:max-w-lg shadow-2xl relative animate-scale-in border border-gray-100">
+            <div
+              className="absolute top-2 right-2 bg-amber-400 hover:bg-amber-600 p-1 rounded-full cursor-pointer z-10"
+              onClick={() => setShowForm(false)}
+              aria-label="Close Form"
+            >
+              <X size={20} />
+            </div>
             <button
               onClick={() => setShowForm(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200 p-1 hover:bg-gray-100 rounded-full"
               aria-label="Close Form"
             >
-              <X size={20} />
+              {/* <X size={20} /> */}
             </button>
-            
+
             <div className="text-center mb-3">
               <h2 className="text-2xl font-bold text-gray-800 mb-2">Request Property Info</h2>
               <p className="text-gray-600 text-sm">Fill out the form below and we'll get back to you shortly</p>
@@ -126,46 +141,46 @@ const PopupForm = ({ onPopupVisibilityChange }) => {
               {formFields.map((field) => {
                 const IconComponent = field.icon;
                 return (
-                 <div key={field.name} className="group">
-  <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor={field.name}>
-    {field.label}
-  </label>
+                  <div key={field.name} className="group">
+                    <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor={field.name}>
+                      {field.label}
+                    </label>
 
-  <div className="relative">
-    <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors duration-200">
-      {field.name === "budget" ? (
-        <span className="text-sm font-semibold">Cr</span>
-      ) : (
-        <IconComponent size={18} />
-      )}
-    </div>
+                    <div className="relative">
+                      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors duration-200">
+                        {field.name === "budget" ? (
+                          <span className="text-sm font-semibold">Cr</span>
+                        ) : (
+                          <IconComponent size={18} />
+                        )}
+                      </div>
 
-    {field.type === "select" ? (
-      <select
-        name={field.name}
-        value={formData[field.name]}
-        onChange={handleFormChange}
-        required={field.name !== "budget"}
-        className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-400"
-      >
-        <option value="">Select {field.label}</option>
-        {field.options?.map((option) => (
-          <option key={option} value={option}>{option}</option>
-        ))}
-      </select>
-    ) : (
-      <input
-        type={field.type}
-        name={field.name}
-        value={formData[field.name]}
-        onChange={handleFormChange}
-        placeholder={field.placeholder}
-        required={field.name !== "budget"}
-        className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
-      />
-    )}
-  </div>
-</div>
+                      {field.type === "select" ? (
+                        <select
+                          name={field.name}
+                          value={formData[field.name]}
+                          onChange={handleFormChange}
+                          required={field.name !== "budget"}
+                          className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white hover:border-gray-400"
+                        >
+                          <option value="">Select {field.label}</option>
+                          {field.options?.map((option) => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type={field.type}
+                          name={field.name}
+                          value={formData[field.name]}
+                          onChange={handleFormChange}
+                          placeholder={field.placeholder}
+                          required={field.name !== "budget"}
+                          className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                        />
+                      )}
+                    </div>
+                  </div>
 
                 );
               })}
