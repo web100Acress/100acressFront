@@ -748,12 +748,21 @@ export default function Navbar() {
                               <hr className="mt-1" />
                             </Link>
                             <Link
-                              to={"/projects-in-rajasthan/"}
+                              to={"/projects-in-Pushkar/"}
                               className="block text-sm px-4   hover:text-red-600"
                             >
                               Projects in Rajasthan
                             </Link>
+
+                            {/* <Link
+                              to="/qr-generator"
+                              className="block text-sm px-4 hover:text-red-600"
+                            >
+                              Generate Your QR
+                            </Link> */}
                           </div>
+
+
                           {/* /////////////////////// */}
                           {/* I am Working here */}
                           <div className="w-48">

@@ -1,5 +1,4 @@
-import {useEffect } from "react";
-
+import React, { useEffect } from "react";
 import Footer from "../../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -7,78 +6,62 @@ import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../../
 import { useSelector } from "react-redux";
 import Api_service from "../../Redux/utils/Api_Service";
 
-const  Rajasthan = () => {
+const Pushkar = () => {
 
+  let city = "Pushkar";
   const {getProjectbyState} = Api_service();
-  const rajasthanData = useSelector(store => store?.stateproject?.rajasthan);
-  let city = "Rajasthan";
-      useEffect(()=>{
-        if(Rajasthan.length === 0){
-            getProjectbyState(city,0)
-        }
-      },[]);
+  const pushkar = useSelector(store => store?.stateproject?.pushkars);
 
+  useEffect(() => {
+    if (pushkar.length === 0) {
+      getProjectbyState(city, 0)
+    }
+  }, []);
 
   const handleShare = (project) => {
     if (navigator.share) {
-      navigator
-        .share({
-          title: project?.projectName,
-          text: `Check out this project: ${project.projectName}`,
-          url: `${window.location.origin}/${project.project_url}`,
-        })
-        .then(() => console.log("Shared successfully"))
-        .catch((error) => console.log("Error sharing:", error));
+        navigator
+            .share({
+                title: project?.projectName,
+                text: `Check out this project: ${project.projectName}`,
+                url: `${window.location.origin}/${project.project_url}`,
+            })
+            .then(() => console.log("Shared successfully"))
+            .catch((error) => console.log("Error sharing:", error));
     } else {
-      alert("Share functionality is not supported on this device/browser.");
+        alert("Share functionality is not supported on this device/browser.");
     }
-  };
+};
 
   return (
     <div>
-
       <Helmet>
         <title>
-          Find Your Ideal real estate projects in Rajasthan – 100acress
+          Property in Pushkar - Flats, Villas, House for Sale in Pushkar
         </title>
         <meta
           name="description"
-          content="Invest in exclusive real estate projects in Rajshtan with world-class features and amenities. Visit 100acress for more."
-        />
-        <meta property="og:title" content="Find Your Ideal  real estate projects  in Rajasthan – 100acress" />
-        <meta property="og:site_name" content="100acress" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
-        <meta property="og:url" content="https://www.100acress.com/project-in-rajasthan/" />
-        <meta property="og:description" content="Invest in exclusive real estate projects in rajasthan with world-class features and amenities. Visit 100acress for more." />
-        <meta property="og:keywords" content="projects  in rajasthan" />
-        <meta name="twitter:title" content="Find Your Ideal  real estate projects  in Rajasthan– 100acress" />
-        <meta name="twitter:description" content="Invest in exclusive real estate projects in Rajshtan  with world-class features and amenities. Visit 100acress for more." />
-        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
-        <meta name="twitter:card" content="summary" />
-
-        <link
-          rel="canonical"
-          href="http://localhost:3000/projects-in-rajasthan/"
+          content="Real Estate Properties in Soni- Get Details for Residential &amp; Commercial Properties"
         />
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-16">
-        <h1 className="mb-0 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em]">
-          Projects in Rajathan
+        <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em]">
+          Projects in Pushkar
         </h1>
-        <h2 className="text-sm font-semibold tracking-[0.1em]" >NEW RESIDENTIAL & COMMERCIAL PROJECTS IN RAJASTHAN</h2>
 
-        <p className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4 tracking-[0.1em]">
-          Rajasthan is emerging as a prominent hub for real estate, offering a mix of heritage charm and modern infrastructure.
-          From luxury villas to budget apartments, commercial hubs to eco-friendly townships, Rajasthan is attracting both
-          end-users and investors. Explore our handpicked property options for a secure and profitable investment in Rajasthan.
-        </p>
+        <h2 className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4 tracking-[0.1em]">
+          Pushkar is transforming with major enterprises, including new housing
+          complexes, commercial space, and infrastructure improvements. These
+          developments focus on improving connectivity by developing networks
+          and modern amenities, to enhance the standard of urban living and
+          encourage investment from businesses in the rapidly growing city.
+        </h2>
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {rajasthanData.map((item, index) => {
+          {pushkar?.map((item, index) => {
             const pUrl = item.project_url;
             return (
-              <Link to={`/${pUrl}/`} target="_top">
+              <Link key={index} to={`/${pUrl}/`} target="_top">
                 <article
                   key={index}
                   className="mb-2 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
@@ -115,7 +98,7 @@ const  Rajasthan = () => {
                           <p className="m-0 text-sm font-medium ">
                             <PropertyIcon />{" "}{item.type}
                           </p>
-                          <span className="text-[10px] text-gray-600 block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
+                          <span className="text-[10px] text-gray-600 block truncate text-sm text-gray-400 block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
                             <LocationRedIcon />{" "}{item.projectAddress}
                           </span>
 
@@ -164,4 +147,4 @@ const  Rajasthan = () => {
   );
 };
 
-export default Rajasthan;
+export default Pushkar;
