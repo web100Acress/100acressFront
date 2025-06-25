@@ -269,7 +269,7 @@ const Home = () => {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
       
-  <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} /> 
+{/*   <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} />  */}
 
    {/* This is the div whose background you want to blur more */}
     <div
