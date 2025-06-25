@@ -5,7 +5,7 @@ import { Input } from '../../Components/ui/Input';
 import { Label } from '../../Components/ui/Label';
 import { Card, CardContent, CardHeader, CardTitle } from '../../Components/ui/Card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../Components/ui/Select';
-import { Textarea } from '../../components/ui/Textarea';
+import Textarea from '../../Components/ui/Textarea';
 import { useToast } from '../../hooks/use-toast';
 
 const QRGenerator = () => {
