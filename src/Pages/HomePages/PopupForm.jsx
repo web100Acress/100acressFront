@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { X, User, Mail, Phone, MapPin, Home, DollarSign } from "lucide-react";
+
 const PopupForm = ({ onPopupVisibilityChange }) => {
   const [showImage, setShowImage] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -50,7 +51,7 @@ const PopupForm = ({ onPopupVisibilityChange }) => {
       name: "email",
       type: "email",
       icon: Mail,
-      placeholder: "100acress@gmail.com"
+      placeholder: "support@100acress.com"
     },
     {
       label: "Phone Number",
@@ -104,7 +105,7 @@ const PopupForm = ({ onPopupVisibilityChange }) => {
 
             />
             {/* <X size={20} /> */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent rounded-xl pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t via-transparent to-transparent rounded-xl pointer-events-none" />
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-center animate-bounce">
               {/* <p className="text-lg font-semibold mb-1">Click to Get Started</p> */}
               {/* <p className="text-sm opacity-80">Find Your Dream Property</p> */}

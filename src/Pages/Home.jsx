@@ -317,53 +317,57 @@ const Home = () => {
         <div data-aos="fade-up"
 
           data-aos-duration="1000" className="py-0 mt-3 max-w-[1250px] mx-auto">
-          <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 py-2">
+            <br />
+          <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 ">
             <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl">
               {`${activeFilter}`} Properties in Gurugram
             </h2>
           </div>
 
+
           {/* Filter Buttons */}
-          <div className="flex items-center justify-start gap-3 mx-3 lg:mx-6 xl:ml-14 md:mx-6 pt-2 overflow-x-auto no-scrollbar">
-            <button
-              onClick={() => setActiveFilter("Trending")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:shadow-lg hover:scale-125 duration-500 ease-in-out "}`}
-            >
-              Trending
-            </button>
+        <div className="flex items-center justify-start gap-3 mx-3 lg:mx-6 xl:ml-14 md:mx-6 pt-2 overflow-x-auto no-scrollbar">
+
+            
+              <button
+                onClick={() => setActiveFilter("Trending")}
+                className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:shadow-lg hover:scale-110 duration-500 ease-in-out "}`}
+              >
+                Trending
+              </button>
             <button
               onClick={() => setActiveFilter("Featured")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Featured" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"}`}
+              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Featured" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-110 duration-500 ease-in-out"}`}
             >
               Featured
             </button>
             <button
               onClick={() => setActiveFilter("Upcoming")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Upcoming" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"}`}
+              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Upcoming" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-110 duration-500 ease-in-out"}`}
             >
               Upcoming
             </button>
             <button
               onClick={() => setActiveFilter("Commercial")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Commercial" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"}`}
+              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Commercial" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-110 duration-500 ease-in-out"}`}
             >
               Commercial
             </button>
             <button
               onClick={() => setActiveFilter("Affordable")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Affordable" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"}`}
+              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Affordable" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-110 duration-500 ease-in-out"}`}
             >
               Affordable
             </button>
             <button
               onClick={() => setActiveFilter("SCO")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "SCO" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"}`}
+              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "SCO" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-110 duration-500 ease-in-out"}`}
             >
               SCO
             </button>
             <button
               onClick={() => setActiveFilter("Budget")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Budget" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-125 duration-500 ease-in-out"}`}
+              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Budget" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-110 duration-500 ease-in-out"}`}
             >
               Budget 🏠
             </button>

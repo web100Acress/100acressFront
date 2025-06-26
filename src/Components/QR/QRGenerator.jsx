@@ -1,16 +1,17 @@
-import React, { useState, useRef } from 'react';
-import { QrCode, Download, Copy, Home, MapPin, Phone, Mail, Globe, Building } from 'lucide-react';
+
+import React, { useState, useRef, useEffect } from 'react';
+import { QrCode, Download, Copy, Home, MapPin, Phone, Mail, Globe, Building, User, Lock } from 'lucide-react';
 import { Button } from '../../Components/ui/button';
-import { Input } from '../../Components/ui/Input';
-import { Label } from '../../Components/ui/Label';
-import { Card, CardContent, CardHeader, CardTitle } from '../../Components/ui/Card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../Components/ui/Select';
-import {
-  Textarea
-} from '../../Components/ui/Textarea';
+import { Input } from '../../Components/ui/input';
+import { Label } from '../../Components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '../../Components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../Components/ui/select';
+import { Textarea } from '../../Components/ui/textarea';
 import { useToast } from '../../hooks/use-toast';
 
 const QRGenerator = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [qrData, setQrData] = useState('https://www.100acress.com/');
   const [qrType, setQrType] = useState('url');
   const [qrSize, setQrSize] = useState(256);
@@ -25,6 +26,40 @@ const QRGenerator = () => {
   });
   const qrRef = useRef(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const savedLogin = localStorage.getItem('100acress_login');
+    if (savedLogin) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (loginData.email && loginData.password) {
+      localStorage.setItem('100acress_login', 'true');
+      setIsLoggedIn(true);
+      toast({
+        title: "Login Successful!",
+        description: "Welcome to 100Acress QR Generator.",
+      });
+    } else {
+      toast({
+        title: "Login Failed!",
+        description: "Please enter both email and password.",
+      });
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('100acress_login');
+    setIsLoggedIn(false);
+    setLoginData({ email: '', password: '' });
+    toast({
+      title: "Logged Out!",
+      description: "You have been logged out successfully.",
+    });
+  };
 
   const generateQRURL = () => {
     let data = qrData;
@@ -66,12 +101,83 @@ const QRGenerator = () => {
     });
   };
 
+  const handleExploreProperties = () => {
+    window.open('https://www.100acress.com/', '_blank');
+  };
+
+  const handleFeatureClick = (featureType) => {
+    setQrType(featureType);
+    toast({
+      title: "QR Type Selected!",
+      description: `Switched to ${featureType} QR code generation.`,
+    });
+  };
+
   const qrTypes = [
     { value: 'url', label: 'Website URL', icon: Globe },
     { value: 'property', label: 'Property Details', icon: Building },
     { value: 'contact', label: 'Contact Info', icon: Phone },
     { value: 'custom', label: 'Custom Text', icon: QrCode }
   ];
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center py-8 px-4">
+        <Card className="w-full max-w-md shadow-xl border-0 bg-white/90 backdrop-blur-sm">
+          <CardHeader className="text-center pb-4">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="p-3 bg-blue-600 rounded-xl">
+                <QrCode className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+                100Acress Login
+              </CardTitle>
+            </div>
+            <p className="text-gray-600">Please login to access QR Generator</p>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  Email
+                </Label>
+                <Input
+                  type="email"
+                  value={loginData.email}
+                  onChange={(e) => setLoginData({...loginData, email: e.target.value})}
+                  placeholder="Enter your email"
+                  className="w-full"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium flex items-center gap-2">
+                  <Lock className="w-4 h-4" />
+                  Password
+                </Label>
+                <Input
+                  type="password"
+                  value={loginData.password}
+                  onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+                  placeholder="Enter your password"
+                  className="w-full"
+                  required
+                />
+              </div>
+              <Button 
+                type="submit"
+                className="w-full bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white"
+              >
+                <User className="w-4 h-4 mr-2" />
+                Login
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 py-8 px-4">
@@ -90,6 +196,23 @@ const QRGenerator = () => {
             Generate dynamic QR codes for your properties, contact information, and website links.
             Perfect for marketing materials, business cards, and property listings.
           </p>
+          <div className="mt-4 flex justify-center gap-4">
+            <Button
+              onClick={handleExploreProperties}
+              className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white"
+            >
+              <Building className="w-4 h-4 mr-2" />
+              Explore Properties
+            </Button>
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="border-red-200 text-red-700 hover:bg-red-50"
+            >
+              <User className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -112,13 +235,10 @@ const QRGenerator = () => {
                   <SelectContent>
                     {qrTypes.map((type) => (
                       <SelectItem key={type.value} value={type.value}>
-                        <div className="flex items-center gap-2 px-3 py-2 text-sm text-gray-800 bg-white hover:bg-gray-100 cursor-pointer rounded-md">
-                          <type.icon className="w-4 h-4 text-gray-500" />
-                          <span>{type.label}</span>
+                        <div className="flex items-center gap-2">
+                          <type.icon className="w-4 h-4" />
+                          {type.label}
                         </div>
-
-                        {/* chnages aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa */}
-
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -340,20 +460,27 @@ const QRGenerator = () => {
             {
               icon: MapPin,
               title: "Property QR Codes",
-              description: "Generate QR codes for property listings with all details included"
+              description: "Generate QR codes for property listings with all details included",
+              type: "property"
             },
             {
               icon: Phone,
               title: "Contact Information",
-              description: "Create QR codes with your contact details for easy sharing"
+              description: "Create QR codes with your contact details for easy sharing",
+              type: "contact"
             },
             {
               icon: Globe,
               title: "Website Links",
-              description: "Direct visitors to your website or specific property pages"
+              description: "Direct visitors to your website or specific property pages",
+              type: "url"
             }
           ].map((feature, index) => (
-            <Card key={index} className="text-center p-6 bg-white/60 backdrop-blur-sm border-0 shadow-md hover:shadow-lg transition-shadow">
+            <Card 
+              key={index} 
+              className="text-center p-6 bg-white/60 backdrop-blur-sm border-0 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-1"
+              onClick={() => handleFeatureClick(feature.type)}
+            >
               <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <feature.icon className="w-6 h-6 text-white" />
               </div>

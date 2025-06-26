@@ -717,7 +717,7 @@ export default function Navbar() {
                             </Link>
                             <Link
                               to={`/projects-in-gurugram/budget`}
-                              className="block text-sm px-4 py-1 hover:text-red-600"
+                              className="block text-sm px-4 hover:text-red-600"
                               onClick={() => handlePriceClick(1, 5)}
                             >
                               ₹1 Cr - ₹5 Cr
@@ -731,7 +731,7 @@ export default function Navbar() {
                             </Link>
                             <Link
                               to={`/projects-in-gurugram/budget`}
-                              className="block text-sm px-4 py-1 hover:text-red-600"
+                              className="block text-sm px-4 hover:text-red-600"
                               onClick={() => handlePriceClick(10, 20)}
                             >
                               ₹10 Cr - ₹20 Cr
@@ -745,7 +745,7 @@ export default function Navbar() {
                             </Link>
                             <Link
                               to={`/projects-in-gurugram/budget`}
-                              className="block text-sm px-4 py-1 hover:text-red-600"
+                              className="block text-sm px-4 hover:text-red-600"
                               onClick={() => handlePriceClick(50, Infinity)}
                             >
                               Above ₹50 Cr
@@ -767,12 +767,12 @@ export default function Navbar() {
                               Projects in Rajasthan
                             </Link> */}
 
-                            <Link
+                            {/* <Link
                               to="/qr-generator"
                               className="block text-sm px-4 hover:text-red-600"
                             >
                               Generate Your QR
-                            </Link>
+                            </Link> */}
                           </div>
 
 
@@ -794,9 +794,9 @@ export default function Navbar() {
 
                               <Link
                                 to={"/projects-in-newlaunch/"}
-                                className="block text-sm px-4 py-1  hover:text-red-600"
+                                className="block text-sm px-4 hover:text-red-600"
                               >
-                                New Launch Projects
+                                New Launch Projects   
                               </Link>
 
                               <Link
@@ -808,7 +808,7 @@ export default function Navbar() {
 
                               <Link
                                 to={"/projects-in-gurugram/property-ready-to-move/"}
-                                className="block  py-1 text-sm px-4 hover:text-red-600"
+                                className="block text-sm px-4 hover:text-red-600"
                               >
                                 Ready To Move
                               </Link>
@@ -817,7 +817,7 @@ export default function Navbar() {
 
                             <div className="mt-2">
 
-                              <Link className="block text-black text-lg px-4 py-0 hover:text-red-600">
+                              <Link className="block text-black text-lg px-4 hover:text-red-600">
                                 Project Type
                                 <hr className="mt-1" />
                               </Link>
@@ -829,13 +829,13 @@ export default function Navbar() {
                               </Link>
                               <Link
                                 to={"/projects/villas/"}
-                                className="block  py-1 text-sm px-4 hover:text-red-600"
+                                className="block text-sm px-4 hover:text-red-600"
                               >
                                 Luxury Villas
                               </Link>
                               <Link
                                 to={"/plots-in-gurugram/"}
-                                className="block  py-1 text-sm px-4 hover:text-red-600"
+                                className="block text-sm px-4 hover:text-red-600"
                               >
                                 Plots In Gurugram
                               </Link>
@@ -847,14 +847,14 @@ export default function Navbar() {
                               </Link>
                               <Link
                                 to={"/projects/independentfloors/"}
-                                className="block  py-1 text-sm px-4 hover:text-red-600"
+                                className="block text-sm px-4 hover:text-red-600"
                               >
                                 Independent Floors
                               </Link>
 
                               <Link
                                 to={"/projects/commercial/"}
-                                className="block text-sm px-4 py-1  hover:text-red-600"
+                                className="block text-sm px-4 hover:text-red-600"
                               >
                                 Commercial Projects
                               </Link>
