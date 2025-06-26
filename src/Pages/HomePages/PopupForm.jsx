@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { X, User, Mail, Phone, MapPin, Home, DollarSign } from "lucide-react";
-
 const PopupForm = ({ onPopupVisibilityChange }) => {
   const [showImage, setShowImage] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -115,10 +114,10 @@ const PopupForm = ({ onPopupVisibilityChange }) => {
       )}
 
       {showForm && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white p-6 sm:p-8 rounded-2xl w-full max-w-md lg:max-w-lg shadow-2xl relative animate-scale-in border border-gray-100">
+         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+    <div className="bg-white px-4 py-6 sm:p-6 md:p-8 rounded-2xl w-full max-w-[90vw] sm:max-w-md lg:max-w-lg shadow-2xl relative animate-scale-in border border-gray-100">
             <div
-              className="absolute top-2 right-2 bg-amber-400 hover:bg-amber-600 p-1 rounded-full cursor-pointer z-10"
+               className="absolute top-2 right-2 bg-amber-400 hover:bg-amber-600 p-1 rounded-full cursor-pointer z-10"
               onClick={() => setShowForm(false)}
               aria-label="Close Form"
             >

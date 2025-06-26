@@ -48,11 +48,11 @@ import Pushkar from "./Pages/ProjectCities/Pushkar";
 
 // adde new
 // import pre from "./Pages/pre";
-// import { Toaster } from "./Components/ui/Toaster";
-// import { Toaster as Sonner } from "./Components/ui/sonner";
-// import { TooltipProvider } from "./Components/ui/Tooltip";
-// import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// import QRGeneratorPage from "./Pages/QRGeneratorPage";
+import { Toaster } from "./Components/ui/Toaster";
+import { Toaster as Sonner } from "./Components/ui/sonner";
+import { TooltipProvider } from "./Components/ui/Tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import QRGeneratorPage from "./Pages/QRGeneratorPage";
 // //////////////////////////
 import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
@@ -260,7 +260,7 @@ function App() {
               {/* added new */}
 
                
-          {/* <Route path="/qr-generator" element={<QRGeneratorPage />} /> */}
+          <Route path="/qr-generator" element={<QRGeneratorPage />} />
              {/* <Route path="/pre" element={<Pre />} /> */}
 
          
