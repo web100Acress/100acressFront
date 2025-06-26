@@ -558,6 +558,9 @@ const items =text.map((item, index) => ({
                 alt={projectViewDetails.projectName}
                 loading="lazy"
               />
+
+              {/* "#e8e8e8"
+                                    : "#4F8BA9" */}
               <div className="flex items-center justify-end space-x-4 w-full">
                 <button
                   onClick={handleShowInstantcallBack}
@@ -566,7 +569,7 @@ const items =text.map((item, index) => ({
                   Get a Callback
                 </button>
                 <a className="animate-fadeInRight " href={`tel:${projectViewDetails?.mobileNumber || "9811750130"}`}>
-                  <button className="bg-[#263238] py-0 px-3 rounded-lg text-white text-2xl flex items-center">
+                  <button className="bg-[#4F8BA9] py-0 px-3 rounded-lg text-white text-2xl flex items-center">
                     <PhoneIcon className="mr-2" />
                     {projectViewDetails?.mobileNumber || '\u00A0' + "9811750130"}
                   </button>
@@ -920,7 +923,7 @@ const items =text.map((item, index) => ({
             </div>
 
             {/* Details */}
-            <div className="bg-[#263238]">
+            <div className="bg-[#4F8BA9]">
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 p-2">
                 {/* Acres Section */}
                 <section className="text-white px-4 py-1 rounded-md flex justify-center items-center flex-col">
@@ -1098,7 +1101,7 @@ const items =text.map((item, index) => ({
                   </div>
                   <div className="mt-4 mx-4">
                     <div className="flex flex-col w-full border-black border border-black-700">
-                      <div className="flex flex-shrink-0 bg-[#263238] text-white ">
+                      <div className="flex flex-shrink-0 bg-[#4F8BA9] text-white ">
                         <div className="flex items-center justify-center flex-grow w-0 h-10 p-2 border-b  border-black">
                           <span>Unit Type</span>
                         </div>
@@ -1203,7 +1206,7 @@ const items =text.map((item, index) => ({
                             className="w-full h-auto max-h-[450px] object-fit mt-6 cursor-pointer rounded-lg"
                             onClick={() => openModalfloor(image.url)}
                           />
-                          <div className="bg-[#263238] text-white w-full text-center py-2 rounded-b-lg">
+                          <div className="bg-[#4F8BA9] text-white w-full text-center py-2 rounded-b-lg">
                             <h4 className="text-xl font-bold">
                               {BhK_Details[index]?.bhk_type || BhK_Details[0]?.bhk_type}
                             </h4>
@@ -1739,7 +1742,7 @@ const items =text.map((item, index) => ({
 
             {/* contact us */}
 
-            <section className="bg-[#263238] text-white py-10 px-5 sm:px-10">
+            <section className="bg-[#4F8BA9] text-white py-10 px-5 sm:px-10">
               <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
                 {/* Left Section */}
                 <div className="flex flex-col justify-center space-y-4">
@@ -1773,7 +1776,7 @@ const items =text.map((item, index) => ({
                         value={userDetails.name}
                         required
                         placeholder="Enter Your Name*"
-                        className="w-full px-4 py-3 rounded-lg bg-[#263238] text-white focus:ring-2 focus:ring-blue-500 border border-gray-600 outline-none"
+                        className="w-full px-4 py-3 rounded-lg bg-[#4F8BA9] text-white focus:ring-2 focus:ring-blue-500 border border-gray-600 outline-none"
                       />
                     </div>
                     <div>
@@ -1791,7 +1794,7 @@ const items =text.map((item, index) => ({
                         }}
                         required
                         placeholder="Contact Number*"
-                        className="w-full px-4 py-3 rounded-lg bg-[#263238] text-white focus:ring-2 focus:ring-blue-500 border border-gray-600 outline-none"
+                        className="w-full px-4 py-3 rounded-lg bg-[#4F8BA9] text-white focus:ring-2 focus:ring-blue-500 border border-gray-600 outline-none"
                       />
 
                       {userDetails.mobile && userDetails.mobile.length < 10 && (
@@ -1821,7 +1824,7 @@ const items =text.map((item, index) => ({
                           }
                         }}
                         placeholder="Enter Your Email*"
-                        className="w-full px-4 py-3 rounded-lg bg-[#263238] text-white focus:ring-2 focus:ring-blue-500 border border-gray-600 outline-none"
+                        className="w-full px-4 py-3 rounded-lg bg-[#4F8BA9] text-white focus:ring-2 focus:ring-blue-500 border border-gray-600 outline-none"
                       />
 
                       {emailError && <p className="text-red-500 text-sm">{emailError}</p>}

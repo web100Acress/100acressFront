@@ -767,12 +767,12 @@ export default function Navbar() {
                               Projects in Rajasthan
                             </Link> */}
 
-                            {/* <Link
+                            <Link
                               to="/qr-generator"
                               className="block text-sm px-4 hover:text-red-600"
                             >
                               Generate Your QR
-                            </Link> */}
+                            </Link>
                           </div>
 
 

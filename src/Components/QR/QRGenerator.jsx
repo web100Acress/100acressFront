@@ -5,7 +5,9 @@ import { Input } from '../../Components/ui/Input';
 import { Label } from '../../Components/ui/Label';
 import { Card, CardContent, CardHeader, CardTitle } from '../../Components/ui/Card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../Components/ui/Select';
-import Textarea from '../../Components/ui/Textarea';
+import {
+  Textarea
+} from '../../Components/ui/Textarea';
 import { useToast } from '../../hooks/use-toast';
 
 const QRGenerator = () => {
@@ -26,7 +28,7 @@ const QRGenerator = () => {
 
   const generateQRURL = () => {
     let data = qrData;
-    
+
     if (qrType === 'property') {
       data = `Property: ${propertyDetails.title}\nLocation: ${propertyDetails.location}\nPrice: ${propertyDetails.price}\nContact: ${propertyDetails.contact}\nDescription: ${propertyDetails.description}\nWebsite: https://www.100acress.com/`;
     }
@@ -49,7 +51,7 @@ const QRGenerator = () => {
     link.href = generateQRURL();
     link.download = `100acress-qr-${Date.now()}.png`;
     link.click();
-    
+
     toast({
       title: "QR Code Downloaded!",
       description: "Your QR code has been saved successfully.",
@@ -75,7 +77,7 @@ const QRGenerator = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-<div className="text-center mb-8 mt-10">
+        <div className="text-center mb-8 mt-10">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="p-3 bg-blue-600 rounded-xl">
               <QrCode className="w-8 h-8 text-white" />
@@ -85,7 +87,7 @@ const QRGenerator = () => {
             </h1>
           </div>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Generate dynamic QR codes for your properties, contact information, and website links. 
+            Generate dynamic QR codes for your properties, contact information, and website links.
             Perfect for marketing materials, business cards, and property listings.
           </p>
         </div>
@@ -110,10 +112,13 @@ const QRGenerator = () => {
                   <SelectContent>
                     {qrTypes.map((type) => (
                       <SelectItem key={type.value} value={type.value}>
-                        <div className="flex items-center gap-2">
-                          <type.icon className="w-4 h-4" />
-                          {type.label}
+                        <div className="flex items-center gap-2 px-3 py-2 text-sm text-gray-800 bg-white hover:bg-gray-100 cursor-pointer rounded-md">
+                          <type.icon className="w-4 h-4 text-gray-500" />
+                          <span>{type.label}</span>
                         </div>
+
+                        {/* chnages aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa */}
+
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -141,7 +146,7 @@ const QRGenerator = () => {
                       <Label className="text-sm font-medium">Property Title</Label>
                       <Input
                         value={propertyDetails.title}
-                        onChange={(e) => setPropertyDetails({...propertyDetails, title: e.target.value})}
+                        onChange={(e) => setPropertyDetails({ ...propertyDetails, title: e.target.value })}
                         placeholder="3BHK Luxury Villa"
                       />
                     </div>
@@ -149,7 +154,7 @@ const QRGenerator = () => {
                       <Label className="text-sm font-medium">Location</Label>
                       <Input
                         value={propertyDetails.location}
-                        onChange={(e) => setPropertyDetails({...propertyDetails, location: e.target.value})}
+                        onChange={(e) => setPropertyDetails({ ...propertyDetails, location: e.target.value })}
                         placeholder="Gurgaon, Haryana"
                       />
                     </div>
@@ -159,7 +164,7 @@ const QRGenerator = () => {
                       <Label className="text-sm font-medium">Price</Label>
                       <Input
                         value={propertyDetails.price}
-                        onChange={(e) => setPropertyDetails({...propertyDetails, price: e.target.value})}
+                        onChange={(e) => setPropertyDetails({ ...propertyDetails, price: e.target.value })}
                         placeholder="₹2.5 Crores"
                       />
                     </div>
@@ -167,7 +172,7 @@ const QRGenerator = () => {
                       <Label className="text-sm font-medium">Contact</Label>
                       <Input
                         value={propertyDetails.contact}
-                        onChange={(e) => setPropertyDetails({...propertyDetails, contact: e.target.value})}
+                        onChange={(e) => setPropertyDetails({ ...propertyDetails, contact: e.target.value })}
                         placeholder="+91 9876543210"
                       />
                     </div>
@@ -176,7 +181,7 @@ const QRGenerator = () => {
                     <Label className="text-sm font-medium">Description</Label>
                     <Textarea
                       value={propertyDetails.description}
-                      onChange={(e) => setPropertyDetails({...propertyDetails, description: e.target.value})}
+                      onChange={(e) => setPropertyDetails({ ...propertyDetails, description: e.target.value })}
                       placeholder="Beautiful property with modern amenities..."
                       rows={3}
                     />
@@ -274,7 +279,7 @@ const QRGenerator = () => {
             <CardContent className="space-y-6">
               {/* QR Code Display */}
               <div className="flex justify-center">
-                <div 
+                <div
                   ref={qrRef}
                   className="p-6 bg-white rounded-2xl shadow-lg border-2 border-gray-100"
                   style={{ backgroundColor: bgColor }}
@@ -298,14 +303,14 @@ const QRGenerator = () => {
 
               {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-4">
-                <Button 
+                <Button
                   onClick={downloadQR}
                   className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white"
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Download
                 </Button>
-                <Button 
+                <Button
                   onClick={copyQRLink}
                   variant="outline"
                   className="border-green-200 text-green-700 hover:bg-green-50"
