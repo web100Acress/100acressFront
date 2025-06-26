@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { QrCode, Download, Copy, Home, MapPin, Phone, Mail, Globe, Building, User, Lock } from 'lucide-react';
 import { Button } from '../../Components/ui/button';
-import { Input } from '../../Components/ui/input';
+import { Input } from '../../Components/ui/Input';
 import { Label } from '../../Components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '../../Components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../Components/ui/select';
