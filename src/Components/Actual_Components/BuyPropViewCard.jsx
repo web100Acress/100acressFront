@@ -989,7 +989,7 @@ const BuyPropViewCard = () => {
                                         <img
                                           src={nestedItem.frontImage.url}
                                           alt="frontImage"
-                                          className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
+                                          className="w-full h-48 object-cover overflow-hidden rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                                         />
                                       ) : (
                                         <span>Image not available</span>

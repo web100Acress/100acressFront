@@ -342,6 +342,22 @@ const Footer = () => {
                 >
                   Gurgaon Master Plan
                 </Link>
+                </li>
+                 <li className="list-none text-white text-sm my-1 truncate">
+                 <Link
+                  to="/qr-generator"
+                  className=""
+                  target="_blank"
+                  style={{ color: "white" }}
+                >
+                  Generate Your QR
+                </Link>
+                {/*  <Link
+                                              to="/qr-generator"
+                                              className="block text-sm px-4 hover:text-red-600"
+                                            >
+                                              Generate Your QR
+                                            </Link> */}
               </li>
             </div>
           </div>

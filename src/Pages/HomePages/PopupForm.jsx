@@ -105,7 +105,7 @@ const PopupForm = ({ onPopupVisibilityChange }) => {
 
             />
             {/* <X size={20} /> */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent rounded-xl pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t via-transparent to-transparent rounded-xl pointer-events-none" />
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-center animate-bounce">
               {/* <p className="text-lg font-semibold mb-1">Click to Get Started</p> */}
               {/* <p className="text-sm opacity-80">Find Your Dream Property</p> */}
