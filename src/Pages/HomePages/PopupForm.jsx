@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { X, User, Mail, Phone, MapPin, Home, DollarSign } from "lucide-react";
+
 const PopupForm = ({ onPopupVisibilityChange }) => {
   const [showImage, setShowImage] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -50,7 +51,7 @@ const PopupForm = ({ onPopupVisibilityChange }) => {
       name: "email",
       type: "email",
       icon: Mail,
-      placeholder: "100acress@gmail.com"
+      placeholder: "support@100acress.com"
     },
     {
       label: "Phone Number",
