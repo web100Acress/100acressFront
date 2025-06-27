@@ -112,6 +112,7 @@ const PopupForm = ({ onPopupVisibilityChange }) => {
             </div>
           </div>
         </div>
+        
       )}
 
       {showForm && (
