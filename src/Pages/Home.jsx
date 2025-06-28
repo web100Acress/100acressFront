@@ -26,6 +26,7 @@ import CommonProject from "../Utils/CommonProject";
 import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
+import Chatbot from "../Components/HomePageComponents/Chatbot";
 const ResaleComponent = React.lazy(() => import("./Resale"));
 
 const Home = () => {
@@ -533,15 +534,14 @@ const Home = () => {
 
       {/* <HomeBuilderCarousel /> */}
       <Free />
-      <div>
+      {/* <div>
         <div>
           <a href="tel:8500900100" class="dd-m-phone">
             <i class="fa-solid fa-phone"></i>
           </a>
         </div>
       </div>
-
-      <div>
+        <div>
         <a
           href="https://wa.me/918500900100"
           class="dd-m-whatsapp"
@@ -550,7 +550,11 @@ const Home = () => {
         >
           <i class="fa-brands fa-whatsapp"></i>
         </a>
+      </div> */}
+      <div>
+        <Chatbot />
       </div>
+   
 
       <PossessionProperty />
       <BackToTopButton />
