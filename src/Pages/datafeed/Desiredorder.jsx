@@ -51,9 +51,9 @@ export const imageSrc = [
   {
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/sky-p-laptop.jpeg", link: "/trinity-sector-88b-gurgaon/"
   },
-  {
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptplaptop.jpeg", link: "/bptp-verti-greens/"
-  },
+  // {
+  //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptplaptop.jpeg", link: "/bptp-verti-greens/"
+  // },
 ];
 // added phon and desktop banner qe
 export const phoneSrc = [  
@@ -78,9 +78,9 @@ export const phoneSrc = [
   {
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/sky-p-phone.jpeg", link: "/trinity-sector-88b-gurgaon/"
   },
-  {
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptpphone.jpeg", link: "/bptp-verti-greens/"
-  },
+  // {
+  //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptpphone.jpeg", link: "/bptp-verti-greens/"
+  // },
 ];
 
 export const budgetPlots = [
@@ -102,7 +102,7 @@ export const budgetPlots = [
 ];
 
 export const Recommendedreordered = [
-  "Shapoorji Pallonji Dualis",
+  "BPTP Gaia Residences",
   "Experion Windchants Nova",
   "Signature Global Cloverdale SPR",
   "Experion The Trillion",
