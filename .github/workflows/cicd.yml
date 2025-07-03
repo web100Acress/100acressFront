@@ -59,7 +59,7 @@
 
 name: Deploy web100Acress-100acressFront
 
-on: 
+on:
   push:
     branches:
       - master
@@ -79,34 +79,30 @@ jobs:
       - name: Build Docker Image
         run: docker build -t hunderedacress/100acressfront:latest .
 
-      - name: Publish Image to Docker Hub
+      - name: Push Docker Image to Docker Hub
         run: docker push hunderedacress/100acressfront:latest
 
   deploy:
     needs: build
     runs-on: self-hosted
     steps:
-      - name: Pull image from Docker Hub
+      - name: Pull Latest Docker Image
         run: docker pull hunderedacress/100acressfront:latest
 
-      - name: Stop and remove existing container if running
+      - name: Stop & Remove Any Running Container on Port 3001
         run: |
-          if [ "$(docker ps -aq -f name=hundredacress-frontend-container)" ]; then
-            docker rm -f hundredacress-frontend-container
+          echo "Checking for container using port 3001..."
+          CONTAINER_ID=$(docker ps --filter "publish=3001" --format "{{.ID}}")
+          if [ ! -z "$CONTAINER_ID" ]; then
+            echo "Stopping container: $CONTAINER_ID"
+            docker rm -f $CONTAINER_ID
           fi
+          echo "Port 3001 is now free."
 
-      - name: Kill any process using port 3001
-        run: |
-          PID=$(lsof -t -i:3001 || true)
-          if [ ! -z "$PID" ]; then
-            echo "Port 3001 is in use by PID $PID, killing..."
-            kill -9 $PID || true
-          else
-            echo "Port 3001 is free"
-          fi
-
-      - name: Prune dangling Docker networks
+      - name: Prune Docker Networks (Optional Clean Up)
         run: docker network prune -f || true
 
-      - name: Run Docker Container on port 3001
-        run: docker run -d -p 3001:80 --name hundredacress-frontend-container hunderedacress/100acressfront:latest
+      - name: Run Frontend Docker Container on Port 3001
+        run: |
+          docker run -d --restart=always --name hundredacress-frontend-container \
+            -p 3001:80 hunderedacress/100acressfront:latest
