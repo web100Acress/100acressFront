@@ -1,40 +1,56 @@
-name: Deploy Frontend
+name: Deploy web100Acress-100acressFront
 
-on:
+on: 
   push:
     branches:
       - master
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker Image
+        run: docker build -t hunderedacress/100acressfront:latest .
+
+      - name: Publish Image to Docker Hub
+        run: docker push hunderedacress/100acressfront:latest
+
   deploy:
+    needs: build
     runs-on: self-hosted
     steps:
-      - name: Pull latest frontend image from Docker Hub
+      - name: Pull image from Docker Hub
         run: docker pull hunderedacress/100acressfront:latest
 
-      - name: Remove existing container if it exists
+      - name: Stop and remove existing container if running
         run: |
           if [ "$(docker ps -aq -f name=hundredacress-frontend-container)" ]; then
-            echo "Stopping and removing existing container..."
             docker rm -f hundredacress-frontend-container
-          else
-            echo "No existing container to remove."
           fi
 
-      - name: Free up port 3001 (if used by another container)
+      - name: Install lsof if not available
         run: |
-          CONTAINER_ID=$(docker ps --filter "publish=3001" -q)
-          if [ -n "$CONTAINER_ID" ]; then
-            echo "Port 3001 is in use by container $CONTAINER_ID, stopping..."
-            docker stop "$CONTAINER_ID"
-            docker rm "$CONTAINER_ID"
-          else
-            echo "Port 3001 is free."
+          if ! command -v lsof &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y lsof
           fi
 
-      - name: Run frontend container on port 3001
+      - name: Free up port 3001 if already in use
         run: |
-          docker run -d \
-            -p 3001:80 \
-            --name hundredacress-frontend-container \
-            hunderedacress/100acressfront:latest
+          PID=$(lsof -t -i:3001 || true)
+          if [ ! -z "$PID" ]; then
+            echo "Port 3001 in use by PID $PID, killing..."
+            kill -9 $PID || true
+          else
+            echo "Port 3001 is free"
+          fi
+
+      - name: Run Docker Container on port 3001
+        run: docker run -d -p 3001:80 --name hundredacress-frontend-container hunderedacress/100acressfront:latest
