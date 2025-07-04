@@ -1755,11 +1755,11 @@ const items =text.map((item, index) => ({
                   <h3 className="text-4xl sm:text-5xl font-AbrialFatFace">Make an Enquiry</h3>
                   <p className="text-lg flex items-center space-x-2">
                     <a
-                      href={`tel:${projectViewDetails?.mobileNumber  === 9811750130 ? "8527134491" : "9315375335" }`}
+                      href={`tel:${projectViewDetails?.mobileNumber  === 9811750130 ? "8527134491" : "8500900100" }`}
                       className="flex items-center justify-center text-white text-3xl"
                     >
                      <span className="text-2xl"><PhoneIcon /></span>
-                      <span className="text-2xl"> &nbsp; {`${projectViewDetails?.mobileNumber  === 9811750130 ? "+91 8527-134-491" : "+91 9315-375-335" }`}</span>
+                      <span className="text-2xl"> &nbsp; {`${projectViewDetails?.mobileNumber  === 9811750130 ? "+91 8527-134-491" : "+91 8500 900 100" }`}</span>
                     </a>
                   </p>
                 </div>
