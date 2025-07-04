@@ -26,7 +26,7 @@ import CommonProject from "../Utils/CommonProject";
 import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
-// import Chatbot from "../Components/HomePageComponents/Chatbot";
+import Chatbot from "../Components/HomePageComponents/Chatbot";
 const ResaleComponent = React.lazy(() => import("./Resale"));
 
 const Home = () => {
@@ -277,18 +277,21 @@ const Home = () => {
   className={`
     transition-filter duration-300 ease-in-out
     ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
-  `}
+`}
 >
   {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
       <div className="relative w-full">
         <img
-          src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/summer+banner.png"
+          // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/summer+banner.png"
+          //  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/monsoon-banner.webp"
+           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp"
           alt="Banner"
           className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
         />
         <img
-          src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/mobilebanner.webp"
+          // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/mobilebanner.webp"
+          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-mobile.webp"
           alt="Mobile Banner"
           className="mt-14 block md:hidden w-full h-[38rem]"
         />
@@ -534,7 +537,7 @@ const Home = () => {
 
       {/* <HomeBuilderCarousel /> */}
       <Free />
-      <div>
+      {/* <div>
         <div>
           <a href="tel:8500900100" class="dd-m-phone">
             <i class="fa-solid fa-phone"></i>
@@ -550,11 +553,11 @@ const Home = () => {
         >
           <i class="fa-brands fa-whatsapp"></i>
         </a>
-      </div>
-      {/* <div>
+      </div> */}
+      <div>
         <Chatbot />
       </div>
-    */}
+   
 
       <PossessionProperty />
       <BackToTopButton />

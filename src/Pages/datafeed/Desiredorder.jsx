@@ -40,18 +40,18 @@ export const imageSrc = [
   {
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/experionlaptop.jpeg", link: "/experion-the-trillion/"
   },
-  // {
-  //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/trevoc-laptop.jpeg", link: "/trevoc-56-gurgaon/"
-  // },
+  {
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/spj-desktop.webp", link: "/spj-vedatam/"
+  },
   {
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/windchant-laptop.jpeg", link: "/experion-nova-at-windchants/"
   },
   {
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bazaria-laptop.jpeg", link: "/reach-the-bazaria/"
   },
-  // {
-  //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/sky-p-laptop.jpeg", link: "/trinity-sector-88b-gurgaon/"
-  // },
+  {
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/turban-desktop.webp", link: "/the-turban-resort/"
+  },
   // {
   //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptplaptop.jpeg", link: "/bptp-verti-greens/"
   // },
@@ -64,9 +64,9 @@ export const phoneSrc = [
   {
     image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/spr-mob.jpg", link: "/signature-global-cloverdale-spr/"
   },
-  // {
-  //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/trevoc-phone.jpeg", link: "/trevoc-56-gurgaon/"
-  // },
+  {
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/spj-mobile.webp", link: "/spj-vedatam/"
+  },
   {
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/experionphone.jpeg", link: "/experion-the-trillion/"
   },
@@ -76,9 +76,9 @@ export const phoneSrc = [
   {
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bazaria-phone.jpeg", link: "/reach-the-bazaria/"
   },
-  // {
-  //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/sky-p-phone.jpeg", link: "/trinity-sector-88b-gurgaon/"
-  // },
+  {
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/turban-mobile.webp", link: "/the-turban-resort/"
+  },
   // {
   //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptpphone.jpeg", link: "/bptp-verti-greens/"
   // },
