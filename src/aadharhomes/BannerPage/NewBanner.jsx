@@ -22,6 +22,8 @@ import {
 } from '../../Assets/icons';
 import { DataContext } from '../../MyContext';
 import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import Dynamicsvg from './Dynamicsvg';
 import Api_Service from '../../Redux/utils/Api_Service';
 const NewBanner = () => {
@@ -30,12 +32,15 @@ const NewBanner = () => {
   const [builderName, setBuilderName] = useState([]);
   const { project } = useContext(DataContext);
   const slideRefs = useRef(null);
+  const gallerySlideRefs = useRef(null);
   const [showPopup, setShowPopup] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [userButtonText, setUserButtonText] = useState("Submit");
   const [instantcallbackmodal, setInstantCallbackmodal] = useState(false);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [galleryCurrentIndex, setGalleryCurrentIndex] = useState(0);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [isLoading2, setIsLoading2] = useState(false);
   const [sideButtonText, setSideButtonText] = useState("Submit");
   const [sideResponseMessage, setSideResponseMessage] = useState("");
@@ -84,6 +89,48 @@ const NewBanner = () => {
     fetchData();
   }, [query]);
 
+  // Handle carousel scroll events and auto-scroll
+  useEffect(() => {
+    const container = document.querySelector('.flex.overflow-x-auto');
+    if (container && projectViewDetails?.projectGallery?.length > 1) {
+      const handleScroll = () => {
+        const scrollLeft = container.scrollLeft;
+        const containerWidth = container.offsetWidth;
+        const currentIndex = Math.round(scrollLeft / containerWidth);
+        setGalleryCurrentIndex(currentIndex);
+      };
+      
+      const handleUserInteraction = () => {
+        setIsAutoScrolling(false);
+        // Resume auto-scroll after 3 seconds of no interaction
+        setTimeout(() => setIsAutoScrolling(true), 3000);
+      };
+      
+      container.addEventListener('scroll', handleScroll);
+      container.addEventListener('touchstart', handleUserInteraction);
+      container.addEventListener('mousedown', handleUserInteraction);
+      
+      // Auto-scroll functionality
+      const autoScrollInterval = setInterval(() => {
+        if (isAutoScrolling) {
+          const nextIndex = (galleryCurrentIndex + 1) % projectViewDetails.projectGallery.length;
+          container.scrollTo({
+            left: nextIndex * container.offsetWidth,
+            behavior: 'smooth'
+          });
+          setGalleryCurrentIndex(nextIndex);
+        }
+      }, 2000); // 1 second interval
+      
+      return () => {
+        container.removeEventListener('scroll', handleScroll);
+        container.removeEventListener('touchstart', handleUserInteraction);
+        container.removeEventListener('mousedown', handleUserInteraction);
+        clearInterval(autoScrollInterval);
+      };
+    }
+  }, [projectViewDetails?.projectGallery, galleryCurrentIndex, isAutoScrolling]);
+
 
   const {
     frontImage,
@@ -131,6 +178,33 @@ const NewBanner = () => {
       ></button>
     ),
     afterChange: (index) => setCurrentIndex(index),
+  };
+
+  const gallerySliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: false, // Disabled autoplay for debugging
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+    customPaging: (i) => (
+      <button
+        className={`rounded-full space-x-2 mt-4${i === galleryCurrentIndex
+          ? "bg-gray-800 h-2 w-5"
+          : "bg-gray-400 h-3 w-3"
+          }`}
+      ></button>
+    ),
+    afterChange: (index) => setGalleryCurrentIndex(index),
   };
 
 
@@ -1017,7 +1091,7 @@ const items =text.map((item, index) => ({
                     {projectViewDetails.projectName}
                   </h2>
 
-                  <div className="text-justify text-gray-700 mt-3 md:mt-5 lg:mt-8 xl:mt-10 text-xs sm:text-sm md:text-base lg:text-base xl:text-base overflow-y-auto max-h-[300px] md:max-h-[400px] lg:max-h-[500px]">
+                  <div className="text-justify text-gray-700 mt-3 md:mt-5 lg:mt-8 xl:mt-10 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl overflow-y-auto max-h-[300px] md:max-h-[400px] lg:max-h-[500px]">
                     <div className="leading-relaxed">
                       <div dangerouslySetInnerHTML={{ __html: description }} />
                     </div>
@@ -1045,14 +1119,14 @@ const items =text.map((item, index) => ({
                     {projectViewDetails.projectName}
                   </h2>
 
-                  <div className="text-justify text-gray-700 mt-3 md:mt-5 lg:mt-8 xl:mt-10 text-sm sm:text-sm md:text-base lg:text-sm xl:text-sm overflow-y-auto max-h-[300px] md:max-h-[400px] lg:max-h-[500px]">
+                  <div className="text-justify text-gray-700 mt-3 md:mt-5 lg:mt-8 xl:mt-10 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl overflow-y-auto max-h-[300px] md:max-h-[400px] lg:max-h-[500px]">
                     {/* Highlights List */}
                     {highlight &&
                       Array.isArray(highlight) &&
                       highlight.length > 0 &&
                       highlight.map((item, index) => (
                         <ul className="list-disc" style={{ listStyleType: "circle" }} key={index}>
-                          <li className="text-black text-sm sm:text-base">
+                          <li className="text-gray-700 text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl">
                             {item.highlight_Point}
                           </li>
                         </ul>
@@ -1305,18 +1379,110 @@ const items =text.map((item, index) => ({
                       </h4>
 
                       <div className="pt-4 p-2 max-w-screen-xxl mx-auto">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+
+                        
+                        {/* Mobile Carousel View */}
+                        <div className="md:hidden">
+                          {projectViewDetails?.projectGallery && Array.isArray(projectViewDetails.projectGallery) && projectViewDetails.projectGallery.length > 0 ? (
+                            <div className="relative">
+                              <button
+                                onClick={() => {
+                                  const container = document.querySelector('.flex.overflow-x-auto');
+                                  if (container) {
+                                    const prevIndex = galleryCurrentIndex === 0 
+                                      ? projectViewDetails.projectGallery.length - 1 
+                                      : galleryCurrentIndex - 1;
+                                    container.scrollTo({
+                                      left: prevIndex * container.offsetWidth,
+                                      behavior: 'smooth'
+                                    });
+                                    setGalleryCurrentIndex(prevIndex);
+                                  }
+                                }}
+                                className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-gray-500 p-2 rounded-full z-10 shadow-lg hover:bg-gray-100 transition-colors"
+                              >
+                                <BackwardIcon />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  const container = document.querySelector('.flex.overflow-x-auto');
+                                  if (container) {
+                                    const nextIndex = (galleryCurrentIndex + 1) % projectViewDetails.projectGallery.length;
+                                    container.scrollTo({
+                                      left: nextIndex * container.offsetWidth,
+                                      behavior: 'smooth'
+                                    });
+                                    setGalleryCurrentIndex(nextIndex);
+                                  }
+                                }}
+                                className="absolute top-1/2 right-2 transform -translate-y-1/2 text-gray-700 bg-white p-2 rounded-full z-10 shadow-lg hover:bg-gray-100 transition-colors"
+                              >
+                                <ForwardIcon />
+                              </button>
+                              {/* Simple Carousel Implementation */}
+                              <div className="relative">
+                                <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+                                  {projectViewDetails.projectGallery.map((image, index) => (
+                                    <div key={index} className="flex-shrink-0 w-full snap-start p-2">
+                                      <img
+                                        src={image?.url}
+                                        alt={`${projectViewDetails?.projectName || 'Project'} gallery ${index + 1}`}
+                                        className="w-full h-auto max-h-[400px] object-cover rounded-lg cursor-pointer"
+                                        onClick={() => openModalGallery(image?.url)}
+                                        onError={(e) => {
+                                          e.target.style.display = 'none';
+                                        }}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                                
+                                {/* Navigation Dots */}
+                                <div className="flex justify-center mt-4 space-x-1">
+                                  {projectViewDetails.projectGallery.map((_, index) => (
+                                    <button
+                                      key={index}
+                                      className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                                        index === galleryCurrentIndex ? 'bg-gray-800' : 'bg-gray-300'
+                                      }`}
+                                      onClick={() => {
+                                        const container = document.querySelector('.flex.overflow-x-auto');
+                                        if (container) {
+                                          container.scrollTo({
+                                            left: index * container.offsetWidth,
+                                            behavior: 'smooth'
+                                          });
+                                        }
+                                        setGalleryCurrentIndex(index);
+                                      }}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-center py-8 text-gray-500">
+                              <p>No gallery images available</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Desktop Grid View */}
+                        <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                           {/* Display Images */}
-                          {projectGallery?.map((image, index) => (
+                          {projectViewDetails?.projectGallery?.map((image, index) => (
                             <div
                               key={index}
                               className="relative"
                             >
                               <img
-                                src={image.url}
-                                alt={projectViewDetails.projectName}
+                                src={image?.url || image}
+                                alt={projectViewDetails?.projectName || 'Project'}
                                 className="w-full h-auto rounded-lg object-cover transition-transform duration-200 hover:scale-105"
-                                onClick={() => openModalGallery(image.url)}
+                                onClick={() => openModalGallery(image?.url || image)}
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
                               />
                             </div>
                           ))}
@@ -1880,6 +2046,49 @@ const Wrapper = styled.section`
     top: 400px;
     top: 40vh;
     z-index: 10000;
+  }
+
+  /* Gallery Slider Styles */
+  .gallery-slider {
+    .slick-slider {
+      margin: 0;
+      padding: 0;
+    }
+    
+    .slick-list {
+      margin: 0;
+      padding: 0;
+    }
+    
+    .slick-slide {
+      padding: 0 8px;
+    }
+    
+    .slick-dots {
+      bottom: -30px;
+    }
+    
+    .slick-dots li button:before {
+      font-size: 12px;
+    }
+  }
+
+  /* Custom Carousel Styles */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .snap-x {
+    scroll-snap-type: x mandatory;
+  }
+  
+  .snap-start {
+    scroll-snap-align: start;
   }
 
   .sticky-quote-cta a {
