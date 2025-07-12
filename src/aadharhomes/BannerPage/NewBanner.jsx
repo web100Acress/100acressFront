@@ -822,7 +822,7 @@ const items =text.map((item, index) => ({
                 <div className="flex justify-center">
                   {frontImage?.url && (
                     <img
-                      className="max-w-full h-[80vh] sm:h-auto object-cover mt-14"
+                      className="max-w-full h-[30vh] sm:h-[30vh] md:h-[80vh] lg:h-[80vh] object-cover mt-14"
                       src={frontImage.url}
                       alt={projectViewDetails.projectName}
                     />
