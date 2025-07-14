@@ -889,20 +889,17 @@ const items =text.map((item, index) => ({
               )}
             </div>
 
-
+{/* successulll updated */}
             {/* mainImage */}
-            <div className="w-full mt-0 lg:mt-16 md:mt-10 sm:mt-24 bg-cover bg-no-repeat text-center">
+            <div className="w-full mt-8 md:mt-12 lg:mt-14 bg-cover bg-no-repeat text-center">
               <div className="w-full relative overflow-hidden object-cover">
-                <div className="flex justify-center">
-                  {frontImage?.url && (
-                    <img
-                      className="max-w-full h-[30vh] sm:h-[30vh] md:h-[80vh] lg:h-[80vh] object-cover mt-14"
-                      src={frontImage.url}
-                      alt={projectViewDetails.projectName}
-                    />
-                  )}
-                </div>
-
+                {frontImage?.url && (
+                  <img
+                    className="w-full h-[30vh] sm:h-[30vh] md:h-[80vh] lg:h-[80vh] object-cover"
+                    src={frontImage.url}
+                    alt={projectViewDetails.projectName}
+                  />
+                )}
                 {/* New Div Positioned Below the Image on Mobile */}
                 <div
                   className="absolute top-2/4 right-[70px] transform -translate-y-1/2 bg-black bg-opacity-75 text-white p-6 rounded-lg shadow-lg z-[20] hidden lg:block md:block "
