@@ -305,11 +305,13 @@ export const BackwardIcon = (props) => {
 };
 
 export const PropertyIcon = (props) => {
-  return <Icon component={() => getSVG(PropertyTypeSVG, props.iconstyle)} {...props} />;
+  return <img src="/Images/propertyicon.svg" alt="Property Icon" style={props.iconstyle} {...props} />;
 };
 
 export const RupeeIcon = (props) => {
-  return <Icon component={() => getSVG(RupeeSignSVG, props.iconstyle)} {...props} />;
+  // Default to 16x16 unless overridden
+  const defaultStyle = { width: 16, height: 16, ...props.iconstyle, ...props.style };
+  return <img src="/Images/rupeesign.svg" alt="Rupee Icon" style={defaultStyle} {...props} />;
 };
 
 export const LocationRedIcon = (props) => {
@@ -341,7 +343,7 @@ export const LeftArrowIcon = (props) => {
 };
 
 export const PeopleIcon = (props) => {
-  return <Icon component={() => getSVG(PeopleSVG, props.iconstyle)} {...props} />;
+  return <img src="/Images/people.svg" alt="People Icon" style={props.iconstyle} {...props} />;
 };
 
 export const FillIcon = (props) => {

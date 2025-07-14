@@ -51,7 +51,7 @@
     "redux": "^5.0.1",
     "slick-carousel": "^1.8.1",
     "sonner": "^2.0.5",
-    "styled-components": "^6.0.7",
+    "styled-components": "^6.1.1",
     "sweetalert2": "^11.10.3",
     "swiper": "^11.0.6",
     "tailwind-merge": "^3.3.1",
@@ -60,10 +60,12 @@
   },
   "scripts": {
     "start": "vite",
+    "dev": "vite",
     "build": "vite build",
     "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "serve": "vite preview",
-    "host": "vite --host"
+    "host": "vite --host",
+    "preview": "vite preview"
   },
   "eslintConfig": {
     "extends": [
@@ -87,15 +89,22 @@
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "depcheck": "^1.4.7",
+    "eslint": "^9.31.0",
     "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "postcss": "^8.5.3",
     "react-lazyload": "^3.2.1",
     "tailwindcss": "^3.4.17",
-    "vite": "^6.1.1"
+    "terser": "^5.43.1",
+    "vite": "^6.1.1",
+    "vite-plugin-svgr": "^4.3.0"
   },
   "sideEffects": [
     "*.css",
     "*.scss",
     "**/*.svg"
-  ]
+  ],
+  "overrides": {
+    "styled-components": "^6.1.1"
+  }
 }

@@ -1,96 +1,98 @@
-import ForgetPassword from "./Pages/ForgetPassword";
-import ViewAllProperty from "./Pages/ViewAllProperty";
-import React, { lazy } from "react";
+import React, { lazy, Suspense } from "react";
 import "./App.css";
 import { styled } from "styled-components";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Home from "./Pages/Home";
-import Properties from "./Pages/ProjectCities/Properties";
-import PropertyKnow from "./Components/KnowAbouts/PropertyKnow";
-import PageNotFound from "./Pages/PageNotFound";
-import SignUp from "./aadharhomes/SignUp";
-import SignIn from "./aadharhomes/SignIn";
-import PropViewCardPro from "./Components/Actual_Components/PropViewCardPro";
-import NewSellProperty from "./aadharhomes/NewSellProperty";
-import BuyPropViewCard from "./Components/Actual_Components/BuyPropViewCard";
-import About from "./Pages/About";
-import BuyViewDetails from "./Pages/BuyViewDetails";
-import ResetEmailPassword from "./Pages/ResetEmailPassword";
-import TermsAndConditions from "./Pages/TermsAndConditions";
-import RentViewDetails from "./Pages/RentViewDetails";
-import RentPropViewCard from "./Components/Actual_Components/RentPropViewCard";
-import Privacy from "./Pages/Privacy";
-import ContactUs from "./Pages/ContactUs";
-import SearchData from "./Pages/SearchData";
-import UserViewProperty from "./Pages/UserViewProperty";
-import CareerWithUs from "./Pages/CareerWithUs";
-import UserEditProperty from "./Pages/UserEditProperty";
-import Blogging from "./Pages/Blogging";
 import { DataProvider } from "./MyContext";
-import ResidentialProjects from "./Components/HomePageComponents/ResidentialProjects";
-import UpComingProjects from "./Components/HomePageComponents/UpComingProjects";
-import CommercialProject from "./Components/HomePageComponents/CommercialProject";
-import ScoPlots from "./Components/HomePageComponents/ScoPlots";
-import BuilderIndependentFloor from "./Components/HomePageComponents/BuilderIndependentFloor";
-import DeenDayalPlots from "./Components/HomePageComponents/DeenDayalPlots";
-import NewsandArtical from "./Pages/NewsandArtical";
 import { AuthProvider } from "./AuthContext";
-import UserDashBoard from "./Components/HomePageComponents/UserDashBoard";
-import UserEdit from "./Components/HomePageComponents/UserEdit";
-import BlogView from "./Pages/BlogView";
-import GurugramPrimeLocation from "./Pages/GurugramPrimeLocation";
-import DelhiProject from "./Pages/ProjectCities/DelhiProject";
-import NoidaProject from "./Pages/ProjectCities/NoidaProject";
-import GoaProject from "./Pages/ProjectCities/GoaProject";
-import PanipatProject from "./Pages/ProjectCities/PanipatProject";
-// added
-import Pushkar from "./Pages/ProjectCities/Pushkar";
-
-// adde new
-// import pre from "./Pages/pre";
 import { Toaster } from "./Components/ui/Toaster";
 import { Toaster as Sonner } from "./Components/ui/sonner";
 import { TooltipProvider } from "./Components/ui/Tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import QRGeneratorPage from "./Pages/QRGeneratorPage";
-// //////////////////////////
 import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
-import BudgetPrice from "./Pages/BudgetPrice";
-import ReadyToMoveProject from "./Pages/ReadyToMoveProject";
-import VillasProjects from "./Components/HomePageComponents/VillasProjects";
-import Panchkula from "./Pages/ProjectCities/Panchkula";
-import PossessionAfter2028 from "./Pages/PossessionAfter2028";
-import Bptp from "./Pages/Bptp";
-import Orris from "./Pages/Orris";
-import Jms from "./Pages/Jms";
-import Rof from "./Pages/Rof";
-import EmaarIndia from "./Pages/EmaarIndia";
-import M3mIndia from "./Pages/M3mIndia";
-import Microtek from "./Pages/Microtek";
-import Possessionin2024 from "./Pages/Possessionin2024";
-import Possessionin2025 from "./Pages/Possessionin2025";
-import Mumbai from "./Pages/ProjectCities/Mumbai";
-import KasauliProject from "./Pages/ProjectCities/KasauliProject";
-import Sonipat from "./Pages/ProjectCities/Sonipat";
-import UnderConstruction from "./Pages/UnderConstruction";
-import NewLaunch from "./Pages/NewLaunch";
-import Ayodhya from "./Pages/ProjectCities/Ayodhya";
-import SignatureGlobal from "./Pages/SignatureGlobal";
-import DlfSco from "./Pages/DlfSco";
-import NewBanner from "./aadharhomes/BannerPage/NewBanner";
-import "animate.css";
-import Possessionin2026 from "./Pages/Possessionin2026";
-import BuilderPage from "./Pages/BuilderPages/BuilderPage";
-import OTPVerification from "./Components/OTPVerification";
-import SignupForm from "./Components/SignupForm";
-import EmailVerification from "./Components/EmailVerification";
-import Karnal from "./Pages/ProjectCities/Karnal";
-import Jalandhar from "./Pages/ProjectCities/Jalandhar";
-import LuxuryProject from "./Pages/BuilderPages/LuxuryProjects";
 import LazyLoad from "react-lazyload";
-import { BlogWriteModal } from "./AdminPage/BlogWriteModal";
-import Dubai from "./Pages/ProjectCities/Dubai";
+import "animate.css";
+import LoadingSpinner from "./Components/LoadingSpinner";
+import ErrorBoundary from "./Components/ErrorBoundary";
+import performanceMonitor from "./Utils/performanceMonitor";
+
+// Lazy load all main page components
+const Home = lazy(() => import("./Pages/Home"));
+const Properties = lazy(() => import("./Pages/ProjectCities/Properties"));
+const PropertyKnow = lazy(() => import("./Components/KnowAbouts/PropertyKnow"));
+const PageNotFound = lazy(() => import("./Pages/PageNotFound"));
+const SignUp = lazy(() => import("./aadharhomes/SignUp"));
+const SignIn = lazy(() => import("./aadharhomes/SignIn"));
+const PropViewCardPro = lazy(() => import("./Components/Actual_Components/PropViewCardPro"));
+const NewSellProperty = lazy(() => import("./aadharhomes/NewSellProperty"));
+const BuyPropViewCard = lazy(() => import("./Components/Actual_Components/BuyPropViewCard"));
+const About = lazy(() => import("./Pages/About"));
+const BuyViewDetails = lazy(() => import("./Pages/BuyViewDetails"));
+const ResetEmailPassword = lazy(() => import("./Pages/ResetEmailPassword"));
+const TermsAndConditions = lazy(() => import("./Pages/TermsAndConditions"));
+const RentViewDetails = lazy(() => import("./Pages/RentViewDetails"));
+const RentPropViewCard = lazy(() => import("./Components/Actual_Components/RentPropViewCard"));
+const Privacy = lazy(() => import("./Pages/Privacy"));
+const ContactUs = lazy(() => import("./Pages/ContactUs"));
+const SearchData = lazy(() => import("./Pages/SearchData"));
+const UserViewProperty = lazy(() => import("./Pages/UserViewProperty"));
+const CareerWithUs = lazy(() => import("./Pages/CareerWithUs"));
+const UserEditProperty = lazy(() => import("./Pages/UserEditProperty"));
+const Blogging = lazy(() => import("./Pages/Blogging"));
+const ResidentialProjects = lazy(() => import("./Components/HomePageComponents/ResidentialProjects"));
+const UpComingProjects = lazy(() => import("./Components/HomePageComponents/UpComingProjects"));
+const CommercialProject = lazy(() => import("./Components/HomePageComponents/CommercialProject"));
+const ScoPlots = lazy(() => import("./Components/HomePageComponents/ScoPlots"));
+const BuilderIndependentFloor = lazy(() => import("./Components/HomePageComponents/BuilderIndependentFloor"));
+const DeenDayalPlots = lazy(() => import("./Components/HomePageComponents/DeenDayalPlots"));
+const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
+const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
+const UserEdit = lazy(() => import("./Components/HomePageComponents/UserEdit"));
+const BlogView = lazy(() => import("./Pages/BlogView"));
+const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation"));
+const DelhiProject = lazy(() => import("./Pages/ProjectCities/DelhiProject"));
+const NoidaProject = lazy(() => import("./Pages/ProjectCities/NoidaProject"));
+const GoaProject = lazy(() => import("./Pages/ProjectCities/GoaProject"));
+const PanipatProject = lazy(() => import("./Pages/ProjectCities/PanipatProject"));
+const Pushkar = lazy(() => import("./Pages/ProjectCities/Pushkar"));
+const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
+const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
+const ReadyToMoveProject = lazy(() => import("./Pages/ReadyToMoveProject"));
+const VillasProjects = lazy(() => import("./Components/HomePageComponents/VillasProjects"));
+const Panchkula = lazy(() => import("./Pages/ProjectCities/Panchkula"));
+const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
+const Bptp = lazy(() => import("./Pages/Bptp"));
+const Orris = lazy(() => import("./Pages/Orris"));
+const Jms = lazy(() => import("./Pages/Jms"));
+const Rof = lazy(() => import("./Pages/Rof"));
+const EmaarIndia = lazy(() => import("./Pages/EmaarIndia"));
+const M3mIndia = lazy(() => import("./Pages/M3mIndia"));
+const Microtek = lazy(() => import("./Pages/Microtek"));
+const Possessionin2024 = lazy(() => import("./Pages/Possessionin2024"));
+const Possessionin2025 = lazy(() => import("./Pages/Possessionin2025"));
+const Mumbai = lazy(() => import("./Pages/ProjectCities/Mumbai"));
+const KasauliProject = lazy(() => import("./Pages/ProjectCities/KasauliProject"));
+const Sonipat = lazy(() => import("./Pages/ProjectCities/Sonipat"));
+const UnderConstruction = lazy(() => import("./Pages/UnderConstruction"));
+const NewLaunch = lazy(() => import("./Pages/NewLaunch"));
+const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
+const SignatureGlobal = lazy(() => import("./Pages/SignatureGlobal"));
+const DlfSco = lazy(() => import("./Pages/DlfSco"));
+const NewBanner = lazy(() => import("./aadharhomes/BannerPage/NewBanner"));
+const Possessionin2026 = lazy(() => import("./Pages/Possessionin2026"));
+const BuilderPage = lazy(() => import("./Pages/BuilderPages/BuilderPage"));
+const OTPVerification = lazy(() => import("./Components/OTPVerification"));
+const SignupForm = lazy(() => import("./Components/SignupForm"));
+const EmailVerification = lazy(() => import("./Components/EmailVerification"));
+const Karnal = lazy(() => import("./Pages/ProjectCities/Karnal"));
+const Jalandhar = lazy(() => import("./Pages/ProjectCities/Jalandhar"));
+const LuxuryProject = lazy(() => import("./Pages/BuilderPages/LuxuryProjects"));
+const ForgetPassword = lazy(() => import("./Pages/ForgetPassword"));
+const ViewAllProperty = lazy(() => import("./Pages/ViewAllProperty"));
+const BlogWriteModal = lazy(() => import("./AdminPage/BlogWriteModal"));
+const Dubai = lazy(() => import("./Pages/ProjectCities/Dubai"));
+
+// Admin components (already lazy loaded)
 const Addnew = lazy(() => import("./AdminPage/Addnew"));
 const Adminproperty = lazy(() => import("./AdminPage/Adminproperty"));
 const Dashboard = lazy(() => import("./AdminPage/Dashboard"));
@@ -117,7 +119,7 @@ const ProjectView = lazy(() => import("./AdminPage/ProjectView"));
 const ProjectEdit = lazy(() => import("./AdminPage/ProjectEdit"));
 const ProjectsAddBhk = lazy(() => import("./AdminPage/ProjectAddBhk"));
 const ProjectEditBHK = lazy(() => import("./AdminPage/ProjectEditBHK"));
-const ProjectAddHighligths = lazy(() => import("./AdminPage/ProjectAddHighligths"));;
+const ProjectAddHighligths = lazy(() => import("./AdminPage/ProjectAddHighligths"));
 const ProjectEditHighlight = lazy(() => import("./AdminPage/ProjectEditHighlight"));
 const BlogEdit = lazy(() => import("./AdminPage/BlogEdit"));
 const BlogWrite = lazy(() => import("./AdminPage/BlogWrite"));
@@ -136,17 +138,18 @@ const DraftManagement = lazy(() => import("./Components/Blog_Components/DraftMan
 const BlogManagementSidebar = lazy(() => import("./Components/Blog_Components/BlogManagementSidebar"));
 
 
-// const queryClient = new QueryClient();
 
+// const queryClient = new QueryClient();
 
 function App() {
   const token = localStorage.getItem("myToken");
 
   return (
+    <ErrorBoundary>
     <DataProvider>
       <AuthProvider>
         <Wrapper className="section">
-          {/* <Router> */}
+            <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route element={<PublicRoute />}>
               <Route index element={<Home />} />
@@ -255,16 +258,8 @@ function App() {
               <Route path="/project-in-ayodhya/" element={<Ayodhya />} />
               <Route path="/project-in-mumbai/" element={<Mumbai />} />
               <Route path="/projects-in-dubai/" element={<Dubai />} />
-              {/* added by me */}
               <Route path="/projects-in-pushkar/" element={<Pushkar />} />
-              {/* added new */}
-
-               
           <Route path="/qr-generator" element={<QRGeneratorPage />} />
-             {/* <Route path="/pre" element={<Pre />} /> */}
-
-         
-      
               <Route
                 path="/project-in-underconstruction/"
                 element={<UnderConstruction />}
@@ -336,7 +331,6 @@ function App() {
                 path="viewproperty/:id"
                 element={<LazyLoad><ViewPropertyAdmin /></LazyLoad>}
               />
-              {/* hi there */}
               <Route
                 path="viewproperty/viewdetails/:id"
                 element={<LazyLoad><ClientDetails /></LazyLoad>}
@@ -424,10 +418,11 @@ function App() {
               </Route>
             </Route>
           </Routes>
-          {/* </Router> */}
+          </Suspense>
         </Wrapper>
       </AuthProvider>
     </DataProvider>
+    </ErrorBoundary>
   );
 }
 
