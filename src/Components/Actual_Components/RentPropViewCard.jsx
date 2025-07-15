@@ -1025,8 +1025,7 @@ const RentPropViewCard = () => {
                                       <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
                                         <li className="text-left">
                                           <span className="text-sm font-extrabold text-red-600">
-                                            <span className="text-xl"><RupeeIcon /></span>
-                                            {properties?.price}
+                                            <span style={{display: 'flex', alignItems: 'center', color: 'red', fontWeight: 'bold'}}><RupeeIcon style={{marginRight: 4}} />{properties?.price}</span>
                                           </span>
                                         </li>
                                         <li className="text-left">

@@ -104,24 +104,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                             <ul className="m-0 flex list-none items-center justify-between px-0 pb-0">
                               <li className="text-left">
                                 <span className="text-sm font-extrabold text-red-600">
-                                  <span className="text-xl"><RupeeIcon /></span>
-                                  {!item.minPrice || !item.maxPrice ? (
-                                    "Reveal Soon"
-                                  ) : (
-                                    <>
-                                      {item.minPrice < 1 ? (
-                                        <>{(item.minPrice * 100).toFixed()} L</>
-                                      ) : (
-                                        <>{item.minPrice}</>
-                                      )}
-                                      {" - "}
-                                      {item.maxPrice < 1 ? (
-                                        <>{(item.maxPrice * 100).toFixed()} L</>
-                                      ) : (
-                                        <>{item.maxPrice} Cr</>
-                                      )}
-                                    </>
-                                  )}
+                                  <span style={{display: 'flex', alignItems: 'center', color: 'red', fontWeight: 'bold'}}><RupeeIcon style={{marginRight: 4}} />6.94 - 11.58 Cr</span>
                                 </span>
                               </li>
                               <Link to={`/${pUrl}/`} target="_top">
