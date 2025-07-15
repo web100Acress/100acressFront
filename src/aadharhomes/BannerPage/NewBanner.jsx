@@ -889,7 +889,7 @@ const items =text.map((item, index) => ({
               )}
             </div>
 
-
+{/* successulll updated */}
             {/* mainImage */}
             <div className="w-full mt-8 md:mt-12 lg:mt-14 bg-cover bg-no-repeat text-center">
               <div className="w-full relative overflow-hidden object-cover">
