@@ -485,7 +485,7 @@ const Home = () => {
 
         <div ref={setRef("resale")} data-section="resale" className="flex items-center justify-between max-w-[1250px] mx-auto lg:mx-6 xl:mx-14 md:mx-6 pt-4">
           <div className="flex items-center">
-            <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  sm:text-left">
+            <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left ml-6 sm:ml-0">
               Best Resale Property <span> For You</span>
             </h2>
           </div>

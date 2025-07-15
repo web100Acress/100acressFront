@@ -28,7 +28,7 @@ const Resale = () => {
   return (
     <section className="bg-white py-3 sm:py-6 lg:py-8">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8">
-        <div className="grid gap-4 sm:grid-cols-2 sm:gap-12 lg:grid-cols-4 xl:grid-cols-4 xl:gap-16">        
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 sm:gap-6 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 xl:gap-16">        
                     {resalePropertydata && resalePropertydata.length > 0 ? (
                       resalePropertydata.slice(0,8).map((property) => (
                         <Link
@@ -60,7 +60,7 @@ const Resale = () => {
                             <li className="text-left flex items-end gap-2">
                               
                              
-                              <div className="text-sm font-thin truncate w-64 md:w-64 lg:w-32 xl:w-48">
+                              <div className="text-sm font-thin truncate w-full md:w-64 lg:w-32 xl:w-48">
                                 <span className="text-xs text-white-600 hover:text-red-600 duration-500 ease-in-out block truncate">
                                 {property.address &&
                                     property.address
@@ -69,7 +69,10 @@ const Resale = () => {
                                       .join(" ")}
                                 </span>
                                 <span className="text-lg text-[#C13B44] block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
-                                <RupeeIcon/>{property.price}
+                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
+                                    <RupeeIcon />
+                                    {property.price}
+                                  </span>
                                 </span>
                               </div>
                             </li>
