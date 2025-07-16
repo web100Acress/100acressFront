@@ -2027,6 +2027,21 @@ const items =text.map((item, index) => ({
           </>
         </Wrapper>
 
+        {/* Sticky Schedule Site Visit button for mobile only */}
+        <div className="fixed bottom-0 left-0 right-0 z-[9999] md:hidden block w-full">
+          <button
+            className="w-full bg-gradient-to-r from-[#4F8BA9] to-[#357ca5] text-white text-base font-semibold py-2 shadow-xl rounded-t-2xl flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200 active:scale-95"
+            onClick={handleShowInstantcallBack}
+            style={{ boxShadow: '0 -2px 16px 0 rgba(79,139,169,0.18)' }}
+          >
+            {/* Calendar icon for 'Schedule Site Visit' */}
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <rect x="3" y="4" width="18" height="18" rx="4" stroke="currentColor" strokeWidth="2" fill="none"/>
+              <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            Schedule Site Visit
+          </button>
+        </div>
       </div>
     
   );
@@ -2114,7 +2129,7 @@ const Wrapper = styled.section`
       .dd-m-phone {
     position: fixed;
     z-index: 999;
-    bottom: 10px;
+    bottom: 40px; // was 10px, moved up
     right: 8px;
     width: 45px;
     height: 45px;
@@ -2168,7 +2183,7 @@ const Wrapper = styled.section`
   .dd-m-whatsapp {
     position: fixed;
     z-index: 999;
-    bottom: 70px;
+    bottom: 90px; // was 70px, moved up
     right: 8px;
     width: 45px;
     height: 45px;
