@@ -895,7 +895,7 @@ const items =text.map((item, index) => ({
               <div className="w-full relative overflow-hidden object-cover">
                 {frontImage?.url && (
                   <img
-                    className="w-full h-[30vh] sm:h-[30vh] md:h-[80vh] lg:h-[80vh] object-cover"
+                    className="w-full object-contain"
                     src={frontImage.url}
                     alt={projectViewDetails.projectName}
                   />
