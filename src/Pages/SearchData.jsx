@@ -35,9 +35,9 @@ const SearchData = () => {
 
   const isEmptySearch = !key1 && !key2;
 
-useEffect(() => {
-  const fetchData = async () => {
-    try {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
         if (isEmptySearch) {
           const allProjectsRes = await axios.get(
             "https://api.100acress.com/project/viewAll/data"
@@ -63,34 +63,38 @@ useEffect(() => {
           return;
         }
 
-      const res = await axios.get(
-        `https://api.100acress.com/property/search/${key}`
-      );
+        const res = await axios.get(
+          `https://api.100acress.com/property/search/${key}`
+        );
         const searchArr = (res.data.searchdata || []).map((item) => ({
-        ...item,
+          ...item,
           sourceType: "search",
-      }));
-      setSearchData(searchArr);
+        }));
+        setSearchData(searchArr);
 
-      const rentRes = await axios.get(
-        `https://api.100acress.com/rentproperty/search/${key}`
-      );
+        const rentRes = await axios.get(
+          `https://api.100acress.com/rentproperty/search/${key}`
+        );
         const rentArr = (rentRes.data.data || []).map((item) => ({
-        ...item,
+          ...item,
           sourceType: "rent",
-      }));
-      setRentSearchData(rentArr);
+        }));
+        setRentSearchData(rentArr);
 
-      const buyRes = await axios.get(
-        `https://api.100acress.com/buyproperty/search/${key}`
-      );
+        const buyRes = await axios.get(
+          `https://api.100acress.com/buyproperty/search/${key}`
+        );
         const buyArr = (buyRes.data.data || []).map((item) => ({
-        ...item,
+          ...item,
           sourceType: "buy",
-      }));
-      setBuySearchData(buyArr);
+        }));
+        setBuySearchData(buyArr);
 
-        if (searchArr.length === 0 && rentArr.length === 0 && buyArr.length === 0) {
+        if (
+          searchArr.length === 0 &&
+          rentArr.length === 0 &&
+          buyArr.length === 0
+        ) {
           const allProjectsRes = await axios.get(
             "https://api.100acress.com/project/viewAll/data"
           );
@@ -115,7 +119,7 @@ useEffect(() => {
         } else {
           setIsFallbackMode(false);
         }
-    } catch (error) {
+      } catch (error) {
         if (error.response && error.response.status === 404) {
           const allProjectsRes = await axios.get(
             "https://api.100acress.com/project/viewAll/data"
@@ -139,19 +143,19 @@ useEffect(() => {
           setSearchData(allProjectsArr);
           setIsFallbackMode(true);
         } else {
-      console.log(error.message);
+          console.log(error.message);
         }
-    }
-  };
-  fetchData();
+      }
+    };
+    fetchData();
   }, [key, key3, isEmptySearch]);
 
   const combinedSearchData = useMemo(() => {
     return [
-  ...(searchData || []),
-  ...(rentSearchData || []),
-  ...(buySearchData || []),
-];
+      ...(searchData || []),
+      ...(rentSearchData || []),
+      ...(buySearchData || []),
+    ];
   }, [searchData, rentSearchData, buySearchData]);
 
   const filteredFallbackProjects = useMemo(() => {
@@ -159,22 +163,28 @@ useEffect(() => {
     if (!isFallbackMode) return data;
     if (cityFilter) {
       data = data.filter(
-        (item) => item.city && item.city.toLowerCase().includes(cityFilter.toLowerCase())
+        (item) =>
+          item.city &&
+          item.city.toLowerCase().includes(cityFilter.toLowerCase())
       );
     }
     if (primeLocation) {
       data = data.filter(
-        (item) => item.city && item.city.toLowerCase() === primeLocation.toLowerCase()
+        (item) =>
+          item.city && item.city.toLowerCase() === primeLocation.toLowerCase()
       );
     }
     if (projectStatus) {
       data = data.filter(
-        (item) => item.status && item.status.toLowerCase() === projectStatus.toLowerCase()
+        (item) =>
+          item.status &&
+          item.status.toLowerCase() === projectStatus.toLowerCase()
       );
     }
     if (projectType) {
       data = data.filter(
-        (item) => item.type && item.type.toLowerCase() === projectType.toLowerCase()
+        (item) =>
+          item.type && item.type.toLowerCase() === projectType.toLowerCase()
       );
     }
     if (priceRange) {
@@ -185,7 +195,15 @@ useEffect(() => {
       });
     }
     return data;
-  }, [searchData, cityFilter, primeLocation, projectStatus, projectType, priceRange, isFallbackMode]);
+  }, [
+    searchData,
+    cityFilter,
+    primeLocation,
+    projectStatus,
+    projectType,
+    priceRange,
+    isFallbackMode,
+  ]);
 
   const cityOptions = useMemo(() => {
     if (!isFallbackMode) return [];
@@ -196,123 +214,136 @@ useEffect(() => {
   return (
     <div style={{ overflowX: "hidden" }}>
       {isFallbackMode && (
-        <div className="sticky top-20 z-30 bg-gray-100 shadow-md rounded-2xl px-4 py-4 mb-4">
+        <div className="sticky top-20 z-30 bg-white/90 shadow-lg rounded-2xl px-4 py-4 mb-4 backdrop-blur-md border border-gray-200 w-full max-w-7xl mx-auto">
           {/* Show/Hide Filter Button for Mobile */}
-          {/* This button is visible only on screens smaller than 'md' (768px by default in Tailwind) */}
-          <div className="md:hidden flex justify-center mb-4">
+          <div className="md:hidden flex justify-center mb-2">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="bg-red-500 text-white font-semibold px-6 py-2 rounded-full hover:bg-red-600 transition"
+              className="bg-red-500 text-white font-semibold px-5 py-2 rounded-full hover:bg-red-600 transition shadow-md"
             >
               {showFilters ? "Close Filters" : "Show Filters"}
             </button>
           </div>
 
-          {/* Filter Container */}
-          {/* This div will be hidden on mobile by default and shown when 'showFilters' is true.
-              On desktop ('md' and up), it will always be visible and use flex-row.
-              For mobile, it will use 'flex-wrap' and 'flex-col' for default (xs screens),
-              then transition to 'flex-row' for 'sm' screens, allowing two items per row. */}
+          {/* Enhanced Filter Container */}
           <div
             className={`${
-              showFilters ? "flex" : "hidden"
-            } flex-col sm:flex-row sm:flex-wrap md:flex md:flex-row md:flex-wrap md:justify-center gap-3`}
+              showFilters ? "grid" : "hidden"
+            } md:grid grid-cols-2 md:grid-cols-6 gap-x-8 gap-y-4 items-center justify-items-center w-full transition-all duration-300`}
           >
-            {/* Filter inputs/selects */}
-            <input
-              type="text"
-              placeholder="Project / City"
-              // Adjusted width for mobile: w-full for very small, sm:w-[calc(50%-0.375rem)] for 2-column
-              className="border border-red-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 w-full sm:w-[calc(50%-0.375rem)] md:w-auto"
-              value={cityFilter}
-              onChange={(e) => setCityFilter(e.target.value)}
-            />
-
-            <select
-              className="border border-red-300 rounded-full px-4 py-2 text-sm w-full sm:w-[calc(50%-0.375rem)] md:w-auto"
-              value={primeLocation}
-              onChange={(e) => setPrimeLocation(e.target.value)}
-            >
-              <option value="">Prime Locations</option>
-              <option value="gurugram">Gurugram</option>
-              <option value="delhi">Delhi</option>
-              <option value="noida">Noida</option>
-              <option value="goa">Goa</option>
-              <option value="mumbai">Mumbai</option>
-              <option value="panipat">Panipat</option>
-              <option value="kasauli">Kasauli</option>
-              <option value="panchkula">Panchkula</option>
-              <option value="jalandhar">Jalandhar</option>
-              <option value="ayodhya">Ayodhya</option>
-              <option value="dubai">Dubai</option>
-            </select>
-
-            <select
-              className="border border-red-300 rounded-full px-4 py-2 text-sm w-full sm:w-[calc(50%-0.375rem)] md:w-auto"
-              value={projectStatus}
-              onChange={(e) => setProjectStatus(e.target.value)}
-            >
-              <option value="">Project Status</option>
-              <option value="ready to move">Ready to Move</option>
-              <option value="under construction">Under Construction</option>
-              <option value="upcoming">Upcoming</option>
-              <option value="new launch">New Launch</option>
-            </select>
-
-            <select
-              className="border border-red-300 rounded-full px-4 py-2 text-sm w-full sm:w-[calc(50%-0.375rem)] md:w-auto"
-              value={projectType}
-              onChange={(e) => setProjectType(e.target.value)}
-            >
-              <option value="">Project Type</option>
-              <option value="sco">SCO</option>
-              <option value="commercial">Commercial</option>
-              <option value="residential">Residential</option>
-              <option value="deen dayal residential">Deen Dayal Residential</option>
-              <option value="independent">Independent</option>
-              <option value="builder affordable">Builder Affordable</option>
-              <option value="villas">Villas</option>
-              <option value="farmhouse">Farmhouse</option>
-            </select>
-
-            <select
-              className="border border-red-300 rounded-full px-4 py-2 text-sm w-full sm:w-[calc(50%-0.375rem)] md:w-auto"
-              value={priceRange}
-              onChange={(e) => setPriceRange(e.target.value)}
-            >
-              <option value="">Price</option>
-              <option value="0-5000000">Up to 50 Lakh</option>
-              <option value="5000000-10000000">50 Lakh - 1 Cr</option>
-              <option value="10000000-20000000">1 Cr - 2 Cr</option>
-              <option value="20000000-50000000">2 Cr - 5 Cr</option>
-              <option value="50000000-100000000">5 Cr - 10 Cr</option>
-              <option value="100000000-">10 Cr +</option>
-            </select>
-
-            {/* Search Button (now also within the toggled filter section) */}
-            <button
-              className="bg-black text-white font-semibold px-6 py-2 rounded-full hover:bg-red-600 transition w-full sm:w-[calc(50%-0.375rem)] md:w-auto"
-              onClick={() => {
-                // You can add additional logic here if needed, e.g., to close filters after search
-                // For now, it just re-filters the data via useMemo
-                if (window.innerWidth < 768) { // Assuming md breakpoint is 768px
-                  setShowFilters(false); // Close filters after search on mobile
-                }
-              }}
-              type="button"
-            >
-              Search
-            </button>
+            {/* Project/City Search */}
+            <div className="w-full">
+              <label className="hidden md:block text-xs font-semibold text-gray-600 mb-2">Project/City</label>
+              <input
+                type="text"
+                placeholder="Search by Project or City"
+                className="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-200"
+                value={cityFilter}
+                onChange={(e) => setCityFilter(e.target.value)}
+              />
+            </div>
+            {/* Prime Location */}
+            <div className="w-full">
+              <label className="hidden md:block text-xs font-semibold text-gray-600 mb-2">Prime Location</label>
+              <select
+                className="border border-gray-300 bg-white rounded-xl px-4 py-2 text-sm w-full shadow-sm"
+                value={primeLocation}
+                onChange={(e) => setPrimeLocation(e.target.value)}
+              >
+                <option value="">Prime Location</option>
+                {/* Example cities, replace/add as needed */}
+                <option value="gurugram">Gurugram</option>
+                <option value="delhi">Delhi</option>
+                <option value="noida">Noida</option>
+                <option value="goa">Goa</option>
+                <option value="mumbai">Mumbai</option>
+                <option value="panipat">Panipat</option>
+                <option value="kasauli">Kasauli</option>
+                <option value="panchkula">Panchkula</option>
+                <option value="jalandhar">Jalandhar</option>
+                <option value="ayodhya">Ayodhya</option>
+                <option value="dubai">Dubai</option>
+              </select>
+            </div>
+            {/* Project Status */}
+            <div className="w-full">
+              <label className="hidden md:block text-xs font-semibold text-gray-600 mb-2">Project Status</label>
+              <select
+                className="border border-gray-300 bg-white rounded-xl px-4 py-2 text-sm w-full shadow-sm"
+                value={projectStatus}
+                onChange={(e) => setProjectStatus(e.target.value)}
+              >
+                <option value="">Project Status</option>
+                <option value="ready to move">Ready to Move</option>
+                <option value="under construction">Under Construction</option>
+                <option value="upcoming">Upcoming</option>
+                <option value="new launch">New Launch</option>
+              </select>
+            </div>
+            {/* Project Type */}
+            <div className="w-full">
+              <label className="hidden md:block text-xs font-semibold text-gray-600 mb-2">Project Type</label>
+              <select
+                className="border border-gray-300 bg-white rounded-xl px-4 py-2 text-sm w-full shadow-sm"
+                value={projectType}
+                onChange={(e) => setProjectType(e.target.value)}
+              >
+                <option value="">Project Type</option>
+                <option value="sco">SCO</option>
+                <option value="commercial">Commercial</option>
+                <option value="residential">Residential</option>
+                <option value="deen dayal residential">
+                  Deen Dayal Residential
+                </option>
+                <option value="independent">Independent</option>
+                <option value="builder affordable">Builder Affordable</option>
+                <option value="villas">Villas</option>
+                <option value="farmhouse">Farmhouse</option>
+              </select>
+            </div>
+            {/* Price Range */}
+            <div className="w-full col-span-2 md:col-span-1">
+              <label className="hidden md:block text-xs font-semibold text-gray-600 mb-2">Price Range</label>
+              <select
+                className="border border-gray-300 bg-white rounded-xl px-4 py-2 text-sm w-full shadow-sm"
+                value={priceRange}
+                onChange={(e) => setPriceRange(e.target.value)}
+              >
+                <option value="">Price</option>
+                <option value="0-5000000">Up to 50 Lakh</option>
+                <option value="5000000-10000000">50 Lakh - 1 Cr</option>
+                <option value="10000000-20000000">1 Cr - 2 Cr</option>
+                <option value="20000000-50000000">2 Cr - 5 Cr</option>
+                <option value="50000000-100000000">5 Cr - 10 Cr</option>
+                <option value="100000000-">10 Cr +</option>
+              </select>
+            </div>
+            {/* Search Button */}
+            <div className="w-full col-span-2 md:col-span-1 flex justify-center items-end">
+              <button
+                className="bg-black text-white font-bold px-8 py-2 rounded-xl hover:bg-red-600 transition shadow-md w-full md:w-auto"
+                onClick={() => {
+                  if (window.innerWidth < 768) {
+                    setShowFilters(false);
+                  }
+                }}
+              >
+                Search
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Rendering searchData if available (filtered in fallback mode) */}
-      {combinedSearchData?.length > 0 || (isFallbackMode && filteredFallbackProjects.length > 0) ? (
+      {combinedSearchData?.length > 0 ||
+      (isFallbackMode && filteredFallbackProjects.length > 0) ? (
         <section className="flex flex-col items-center bg-white">
           <CommonInside
-          title={`Results For ${key1}`}
-            Actualdata={isFallbackMode ? filteredFallbackProjects : combinedSearchData}
+            title={`Results For ${key1}`}
+            Actualdata={
+              isFallbackMode ? filteredFallbackProjects : combinedSearchData
+            }
           />
         </section>
       ) : (
