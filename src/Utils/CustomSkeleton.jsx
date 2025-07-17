@@ -17,7 +17,7 @@ const ProjectsSkeleton = () => {
           <Skeleton.Button active size="medium" shape="round" />
         </div>
       </div>
-      <section className="flex flex-col items-center bg-white mt-3">
+      <section className="flex flex-col items-center bg-white mt-3  ">
         <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
           {[...Array(4)].map((_, index) => (
             <article

@@ -73,7 +73,7 @@ const CommonInside = ({
       </Helmet>
       <section className="flex pt-2 flex-col items-center mt-16">
         {title && (
-          <h1 className="mb-3 pt-4 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+          <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
             {title}
           </h1>
         )}
