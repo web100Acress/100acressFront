@@ -147,6 +147,7 @@ const SearchData = () => {
         }
       }
     };
+    // EHFBHEDB
     fetchData();
   }, [key, key3, isEmptySearch]);
 
