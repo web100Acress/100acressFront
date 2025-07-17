@@ -165,8 +165,8 @@ const BuilderPage = React.memo(() => {
                           <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
                             <li className="mr-4 flex items-center text-left">
                               <li className="text-left">
-                                <p className="m-0 text-sm font-medium ">
-                                  <PropertyIcon />{" "}{item.type}
+                                <p className="m-0 text-sm font-medium flex items-center">
+                                  <PropertyIcon className="mr-1" />{item.type}
                                 </p>
                                 <span className="text-[10px] text-gray-600 block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
                                   <LocationRedIcon />{" "}{item.projectAddress}
@@ -178,8 +178,8 @@ const BuilderPage = React.memo(() => {
       
                           <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
                             <li className="text-left">
-                              <span className="text-sm font-extrabold text-red-600">
-                                <span className="text-xl"><RupeeIcon /></span>
+                              <span className="text-sm font-extrabold text-red-600 flex items-center">
+                                <span className="text-xl mr-1"><RupeeIcon /></span>
                                 {item.minPrice < 1 ? (
                                   <>{item.minPrice * 100} L</>
                                 ) : (
