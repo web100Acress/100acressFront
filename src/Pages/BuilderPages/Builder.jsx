@@ -56,9 +56,9 @@ const Builder = () => {
             image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp",
         },
         {
-            title: "Adani Realty",
-            link: "/developers/adani-realty/",
-            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/adanireality.webp",
+            title: "Birla Estates",
+            link: "/developers/birla-estate/",
+            image: "https://www.birlaestates.com/images/birla-estate-logo.webp"
         },
         {
             title: "Trevoc Group",
@@ -109,7 +109,9 @@ const Builder = () => {
                             className="relative group card rounded-xl overflow-hidden shadow-lg transform transition-transform duration-300 bg-white dark:bg-gray-800 "
                             // pure div ko hover karanane ke keval jo niche style likha gya hai usme keval card ko call kr dijiy just above classname me 
                         >
-                            {/* Container for image and text */}
+                            {/* Container for image and text */}-+
+
+
                             <div className="flex items-center justify-center w-48 h-48 p-3 gap-3">
 
                               {/* agar app pre die ke sath image ko bhi hover karana chahte hai to hover:scale-105 add kar do */}

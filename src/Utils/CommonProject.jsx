@@ -49,8 +49,10 @@ const CommonProject = ({ data, title, path ,animation }) => {
                 </Link>
               </div>}
             </div>
+
+
             { response && 
-              <section className="flex flex-col items-center bg-white mt-3">
+              <section className="flex flex-col items-center bg-white mt-3 ">
                 <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
                   {response?.map((item, index) => {
                     const pUrl = item.project_url;
@@ -59,11 +61,10 @@ const CommonProject = ({ data, title, path ,animation }) => {
 
                         <article
                           key={index}
-                          className="mb-2 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                          className="mb-2 overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl h-full flex flex-col"
                         >
                           <div className="relative flex p-3">
                             <Link to={`/${pUrl}/`} target="_top">
-
                               <img
                                 src={`https://d16gdc5rm7f21b.cloudfront.net/${item?.thumbnailImage?.public_id}`}
                                 alt="property In Gurugram"
@@ -71,53 +72,60 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                 loading="lazy"
                               />
                             </Link>
-                            <div className="absolute top-5 right-5"
-                              onClick={() => handleShare(item)}
-                            >
+                            <div className="absolute top-5 right-5" onClick={() => handleShare(item)}>
                               <ShareFrameIcon />
                             </div>
                           </div>
-                          <div className="pt-0 p-3">
+                          <div className="flex flex-col flex-1 justify-between p-4 h-full">
                             <div className="pb-2">
-                              <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
-                                {item.projectName}
-                              </span>
-                              <br />
-                              <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
+                              {item && item.projectName && (
+                                <>
+                                  <span className="text-[15px] font-semibold hover:text-red-600 duration-500 ease-in-out">
+                                    {item.projectName}
+                                  </span>
+                                  <br />
+                                </>
+                              )}
+                              <span className="text-sm text-gray-400 hover:text-red-600 duration-500 ease-in-out">
                                 {item.city}, {item.state}
                               </span>
                             </div>
-
                             <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
-                              <li className="mr-4 flex items-center text-left">
+                              <li className="mr-4 flex flex-col text-left">
                                 <li className="text-left">
                                   <p className="m-0 text-sm font-medium flex items-center gap-1">
-                                    <PropertyIcon />{" "}{item.type}
+                                    <PropertyIcon /> {item.type}
                                   </p>
-                                  <span className="text-[10px] text-sm text-gray-400 flex items-center truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
-                                    <LocationRedIcon />{" "}{item.projectAddress.slice(0, 32)}...
+                                  <span className="text-[10px] text-sm text-gray-400 flex items-center truncate hover:overflow-visible hover:whitespace-normal hover:bg-white">
+                                    <span className="inline-block w-4 h-4 align-middle mr-1">
+                                      <LocationRedIcon style={{ width: '16px', height: '16px' }} />
+                                    </span>
+                                    {item.projectAddress.slice(0, 32)}...
                                   </span>
-
                                 </li>
                               </li>
                             </ul>
-                            <ul className="m-0 flex list-none items-center justify-between px-0 pb-0">
-                              <li className="text-left">
-                                <span className="text-sm font-extrabold text-red-600">
-                                  <span style={{display: 'flex', alignItems: 'center', color: 'red', fontWeight: 'bold'}}><RupeeIcon style={{marginRight: 4}} />6.94 - 11.58 Cr</span>
-                                </span>
-                              </li>
+                            {/* Button row: price and button always in the same row */}
+                            <div className="flex flex-row items-center justify-between mt-1 w-full gap-2">
+                              <span className="text-sm font-extrabold text-red-600 flex items-center" style={{color: 'red', fontWeight: 'bold'}}>
+                                <RupeeIcon style={{marginRight: 4}} />
+                                {item.minPrice && item.maxPrice
+                                  ? (
+                                    item.minPrice < 1
+                                      ? `${(item.minPrice * 100).toFixed(2)} L`
+                                      : `${item.minPrice} Cr`
+                                    ) + " - " + `${item.maxPrice} Cr`
+                                  : "Reveal Soon"}
+                              </span>
                               <Link to={`/${pUrl}/`} target="_top">
-                                <li className="text-left">
-                                  <button
-                                    type="button"
-                                    className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 text-center me-2"
-                                  >
-                                    View Details
-                                  </button>
-                                </li>
+                                <button
+                                  type="button"
+                                  className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-md text-[12px] px-3 py-2 text-center me-2 whitespace-nowrap ml-2"
+                                >
+                                  View Details
+                                </button>
                               </Link>
-                            </ul>
+                            </div>
                           </div>
                         </article>
                         {/* <div className="absolute top-5 right-5"
@@ -125,7 +133,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                     >
                       <ShareFrameIcon />
                       </div> */}
-                      </span>
+                        </span>
                     );
                   })}
                 </div>
