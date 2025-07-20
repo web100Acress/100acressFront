@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../Components/Actual_Components/Footer";
 import { PaginationControls } from "../Components/Blog_Components/BlogManagement";
@@ -6,29 +6,102 @@ import { Helmet } from "react-helmet";
 import Free from "./Free";
 import axios from "axios";
 
-const Blogging = () => {
-  // const { blogData } = useContext(DataContext);
-  const [blogData, setBlogData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(12); 
-  const [totalPages, setTotalPages] = useState(0);
+// Brand colors and tagline
+const BRAND_RED = '#b8333a';
+const DARK_TEXT = '#333';
+const TAGLINE = "Insights, Updates, and Stories from the World of Real Estate";
+const FEATURED_BLOG_ID = "replace_with_featured_blog_id"; // Set your featured blog _id here
 
-  useEffect(() => { 
-  const fetchBlogData = async () => {
-    try {
-      const res = await axios.get(`https://api.100acress.com/blog/view?page=${currentPage}&limit=${postsPerPage}`);
-      setBlogData(res.data.data);
-      setTotalPages(res.data.totalPages);
-    } catch (error) {
-      console.log(error || error.message);
-    }
-  }
-  fetchBlogData();
-}, [currentPage, postsPerPage]);
-  
+const getMeta = (blog) => {
+  let meta = [];
+  if (blog.blog_Category) meta.push(blog.blog_Category);
+  if (blog.sector) meta.push(blog.sector);
+  if (blog.location) meta.push(blog.location);
+  return meta.join(" | ");
+};
+const getSlug = (title) =>
+  title.replace(/\s+/g, "-").replace(/[?!,\.;:\{\}\(\)\$\@]+/g, "").toLowerCase();
+
+// Funnel SVG icon
+const FunnelIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 4.5h18m-16.5 0a.75.75 0 01.75-.75h13.5a.75.75 0 01.75.75m-16.5 0v2.25c0 .414.336.75.75.75h15a.75.75 0 00.75-.75V4.5m-16.5 0L9.75 13.5v5.25a.75.75 0 00.75.75h3a.75.75 0 00.75-.75V13.5L20.25 4.5" />
+  </svg>
+);
+
+const Blogging = () => {
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(12);
+  const [totalPages, setTotalPages] = useState(0);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("latest");
+  const [loading, setLoading] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+  // Fetch all blogs for featured and pagination
+  useEffect(() => {
+    const fetchAllBlogs = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(`https://api.100acress.com/blog/view?page=1&limit=1000`);
+        setAllBlogs(res.data.data || []);
+      } catch (error) {
+        setAllBlogs([]);
+      }
+      setLoading(false);
+    };
+    fetchAllBlogs();
+  }, []);
+
+  // Featured blog: by ID, then isFeatured, then first
+  const featuredBlog = useMemo(() =>
+    allBlogs.find((b) => b._id === FEATURED_BLOG_ID) ||
+    allBlogs.find((b) => b.isFeatured) ||
+    allBlogs[0],
+    [allBlogs]
+  );
+  // Filtered blogs (excluding featured)
+  const filteredBlogs = useMemo(() => {
+    let blogs = allBlogs.filter((b) => b !== featuredBlog);
+    if (search)
+      blogs = blogs.filter(
+        (b) =>
+          b.blog_Title?.toLowerCase().includes(search.toLowerCase()) ||
+          b.blog_Description?.toLowerCase().includes(search.toLowerCase())
+      );
+    if (sort === "latest")
+      blogs = blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    if (sort === "oldest")
+      blogs = blogs.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    if (sort === "popular")
+      blogs = blogs; // Add your own popularity sort logic if available
+    return blogs;
+  }, [allBlogs, featuredBlog, search, sort]);
+
+  // Pagination logic (client-side)
+  const totalPagesCalc = Math.ceil(filteredBlogs.length / postsPerPage) || 1;
+  useEffect(() => {
+    setTotalPages(totalPagesCalc);
+    if (currentPage > totalPagesCalc) setCurrentPage(1);
+  }, [totalPagesCalc]);
+  const paginatedBlogs = useMemo(() => {
+    const start = (currentPage - 1) * postsPerPage;
+    return filteredBlogs.slice(start, start + postsPerPage);
+  }, [filteredBlogs, currentPage, postsPerPage]);
+
+  // Fill last row with placeholders if needed
+  const columns = 3; // for desktop
+  const remainder = paginatedBlogs.length % columns;
+  const placeholders = remainder === 0 ? 0 : columns - remainder;
+
+  // Scroll to top on page change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
 
   return (
-    <>
+    <div className="min-h-screen bg-white font-['Poppins','Inter',sans-serif]">
       <Helmet>
         <meta
           name="description"
@@ -37,72 +110,243 @@ const Blogging = () => {
         <title>Blog | Expert Guidance on Real Estate | 100acress.com</title>
         <link rel="canonical" href="https://www.100acress.com/blog/" />
       </Helmet>
-
-      <div className="mt-16">
-        <p class="my-8 lg:mt-10 text-3xl text-center text-red-600 font-medium sm:text-4xl xl:text-5xl">
-          100acress Blog
-        </p>
+      {/* Modern Brand-Aligned Title */}
+      <div className="max-w-7xl mx-auto px-4 pt-12 pb-6 mt-10">
+        <div className="flex flex-col items-center justify-center">
+          <h1
+            className="text-center font-['Poppins','Inter',sans-serif] font-bold md:text-[36px] text-[28px] leading-tight mb-2 tracking-tight animate-fadeIn"
+            style={{ letterSpacing: '-0.5px' }}
+          >
+            <span style={{ color: BRAND_RED, fontWeight: 800 }}>100acress</span>
+            <span style={{ color: DARK_TEXT, fontWeight: 500 }}> Blogs</span>
+          </h1>
+          {/* Gradient underline */}
+          <div className="w-32 h-1 rounded-full mx-auto mb-2" style={{ background: 'linear-gradient(90deg, #f5e9e0 0%, #e0e7ef 100%)' }} />
+          <div className="text-gray-500 text-sm text-center max-w-xl animate-fadeIn delay-100">
+            {TAGLINE}
+          </div>
+        </div>
       </div>
-
-      <div className="w-full px-4 sm:px-10">
-        <div className="w-full grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-6">
-          {blogData.map((item, index) => {
-            const blogTitle = item.blog_Title;
-            return (
-              <article
-                key={index}
-                className="transition duration-300 ease-in-out transform shadow-lg hover:scale-105 hover:shadow-md border-[1px] items-center gap-2 md:flex-row lg:gap-4 rounded-lg overflow-hidden"
+      {/* Mobile Filter Toggle (Funnel Icon) */}
+      <div className="max-w-7xl mx-auto px-4 mb-4 md:hidden flex justify-end">
+        <button
+          className="bg-primaryRed text-white rounded-full p-3 shadow hover:bg-red-700 transition flex items-center justify-center"
+          aria-label="Show search and filter"
+          onClick={() => setShowMobileFilters((v) => !v)}
+        >
+          <FunnelIcon />
+        </button>
+      </div>
+      {/* Modern Search Bar & Sort Dropdown */}
+      <div className="max-w-7xl mx-auto px-4 mb-6 w-full">
+        {/* Desktop/Tablet: always show search/sort */}
+        <div className="w-full hidden md:flex flex-row gap-3 items-center">
+          <div className="relative flex-1 w-full">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </span>
+            <input
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search blogs..."
+              className="w-full pl-12 pr-10 py-3 rounded-full border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-[#999] font-['Poppins','Inter',sans-serif] text-base focus:outline-none focus:ring-2 focus:ring-[#b8333a] focus:border-[#b8333a] transition-all duration-200"
+              style={{ fontSize: 16 }}
+            />
+            {/* Clear button */}
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#b8333a] transition"
+                aria-label="Clear search"
               >
-                {/* Circular Image */}
-                <span className="h-24 w-24 lg:h-32 lg:w-32 overflow-hidden flex-shrink-0">
-                  {item.blog_Image && (
-                    <img
-                      src={item.blog_Image.url}
-                      loading="lazy"
-                      alt="blogImage"
-                      className="h-60 w-full p-3 object-cover rounded-3xl"
-                    />
-                  )}
-                </span>
-
-                {/* Blog Content */}
-                <div className="flex flex-col justify-center lg:p-2 md:p-0 p-0 w-full">
-                  <p className="text-black mb-2 px-3 font-semibold border-b-1">
-                    <span className="transition text-center hover:text-red-600 text-sm sm:text-base md:text-sm lg:text-sm xl:text-lg duration-500 ease-in-out">
-                      {blogTitle}
-                    </span>
-                  </p>
-
-                  {/* "Read More" Button after the description */}
-                  <div className="flex justify-end">
-                    <Link
-                      to={`/blog/${blogTitle
-                        .replace(/\s+/g, "-")
-                        .replace(/[?!,\.;:\{\}\(\)\$\@]+/g, '')
-                        .toLowerCase()}/${item._id}`}
-                    >
-                      <button className="bg-red-600 text-white mr-2 px-4 py-1 my-2 rounded-md mt-1">
-                        Read More
-                      </button>
-                    </Link>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
+                &#10005;
+              </button>
+            )}
+          </div>
+          <select
+            className="px-4 py-3 rounded-full border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 font-['Poppins','Inter',sans-serif] text-base focus:outline-none focus:ring-2 focus:ring-[#b8333a] focus:border-[#b8333a] transition-all duration-200"
+            style={{ fontSize: 16, minWidth: 120 }}
+            value={sort}
+            onChange={e => setSort(e.target.value)}
+          >
+            <option value="latest">Latest</option>
+            <option value="oldest">Oldest</option>
+            <option value="popular">Popular</option>
+          </select>
         </div>
+        {/* Mobile: show search/sort only if showMobileFilters is true */}
+        {showMobileFilters && (
+          <div className="flex flex-col gap-3 md:hidden bg-white/90 p-4 rounded-xl shadow-md animate-fadeIn">
+            <div className="relative flex-1 w-full">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </span>
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search blogs..."
+                className="w-full pl-12 pr-10 py-3 rounded-full border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-[#999] font-['Poppins','Inter',sans-serif] text-base focus:outline-none focus:ring-2 focus:ring-[#b8333a] focus:border-[#b8333a] transition-all duration-200"
+                style={{ fontSize: 16 }}
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#b8333a] transition"
+                  aria-label="Clear search"
+                >
+                  &#10005;
+                </button>
+              )}
+            </div>
+            <select
+              className="px-4 py-3 rounded-full border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 font-['Poppins','Inter',sans-serif] text-base focus:outline-none focus:ring-2 focus:ring-[#b8333a] focus:border-[#b8333a] transition-all duration-200"
+              style={{ fontSize: 16, minWidth: 120 }}
+              value={sort}
+              onChange={e => setSort(e.target.value)}
+            >
+              <option value="latest">Latest</option>
+              <option value="oldest">Oldest</option>
+              <option value="popular">Popular</option>
+            </select>
+          </div>
+        )}
       </div>
-      <div className="flex justify-center items-center">
-          <PaginationControls
-            currentPage={currentPage}
-            totalPages={totalPages}
-            setCurrentPage={setCurrentPage}
-          />
+      {/* Featured Blog */}
+      {featuredBlog && (
+        <div className="max-w-7xl mx-auto px-4 mb-8">
+          <div className="bg-white rounded-2xl shadow-xl flex flex-col md:flex-row overflow-hidden group hover:shadow-2xl transition">
+            <Link
+              to={`/blog/${getSlug(featuredBlog.blog_Title)}/${featuredBlog._id}`}
+              className="md:w-1/2 w-full h-64 md:h-80 overflow-hidden"
+            >
+              <img
+                src={featuredBlog.blog_Image?.url}
+                alt={featuredBlog.blog_Title}
+                className="w-full h-full object-cover group-hover:scale-105 transition"
+              />
+            </Link>
+            <div className="flex-1 p-6 flex flex-col justify-between">
+              <div>
+                <span className="inline-block bg-primaryRed text-white text-xs font-semibold px-3 py-1 rounded-full mb-2">
+                  Featured
+                </span>
+                <h2 className="text-2xl font-bold mb-2 line-clamp-2">
+                  {featuredBlog.blog_Title}
+                </h2>
+                <div className="text-xs text-gray-500 mb-2">
+                  {getMeta(featuredBlog)}
+                  {featuredBlog.createdAt && (
+                    <>
+                      {getMeta(featuredBlog) && " | "}
+                      {new Date(featuredBlog.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </>
+                  )}
+                </div>
+                <p className="text-gray-600 mb-4 line-clamp-3">
+                  {featuredBlog.blog_Description?.replace(/<[^>]+>/g, "").slice(0, 180)}
+                  {featuredBlog.blog_Description?.length > 180 ? "..." : ""}
+                </p>
+              </div>
+              <Link
+                to={`/blog/${getSlug(featuredBlog.blog_Title)}/${featuredBlog._id}`}
+              >
+                <button className="bg-primaryRed text-white px-6 py-2 rounded-lg font-semibold shadow hover:bg-red-700 transition">
+                  Read More
+                </button>
+              </Link>
+            </div>
+          </div>
         </div>
+      )}
+      {/* Blog Grid */}
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
+        {loading ? (
+          <div className="col-span-full text-center py-10 text-gray-400 text-lg">Loading...</div>
+        ) : paginatedBlogs.length === 0 ? (
+          <div className="col-span-full text-center py-10 text-gray-400 text-lg">No blogs found.</div>
+        ) : (
+          <>
+            {paginatedBlogs.map((blog) => (
+              <div
+                key={blog._id}
+                className="bg-white rounded-2xl shadow-lg flex flex-col overflow-hidden hover:shadow-2xl hover:scale-[1.03] transition"
+              >
+                <Link
+                  to={`/blog/${getSlug(blog.blog_Title)}/${blog._id}`}
+                  className="block w-full aspect-video overflow-hidden"
+                >
+                  <img
+                    src={blog.blog_Image?.url}
+                    alt={blog.blog_Title}
+                    className="w-full h-full object-cover"
+                  />
+                </Link>
+                <div className="p-5 flex flex-col flex-1">
+                  <h3 className="text-lg font-bold mb-1 line-clamp-2">
+                    {blog.blog_Title}
+                  </h3>
+                  <div className="text-xs text-gray-500 mb-2">
+                    {getMeta(blog)}
+                    {blog.createdAt && (
+                      <>
+                        {getMeta(blog) && " | "}
+                        {new Date(blog.createdAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </>
+                    )}
+                  </div>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    {blog.blog_Description?.replace(/<[^>]+>/g, "").slice(0, 120)}
+                    {blog.blog_Description?.length > 120 ? "..." : ""}
+                  </p>
+                  <Link
+                    to={`/blog/${getSlug(blog.blog_Title)}/${blog._id}`}
+                    className="mt-auto"
+                  >
+                    <button className="w-full bg-primaryRed text-white py-2 rounded-lg font-semibold shadow hover:bg-red-700 transition">
+                      Read More
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            ))}
+            {/* Placeholders to fill last row */}
+            {Array.from({ length: placeholders }).map((_, i) => (
+              <div key={`placeholder-${i}`} className="invisible" />
+            ))}
+          </>
+        )}
+      </div>
+      {/* Pagination/Load More */}
+      <div className="flex justify-center my-8">
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
+      </div>
       <Free />
       <Footer />
-    </>
+    </div>
   );
 };
 
 export default Blogging;
+// Add this to your global CSS or tailwind.config.js for fade-in:
+// .animate-fadeIn { animation: fadeInUp 0.7s cubic-bezier(0.23, 1, 0.32, 1) both; }
+// @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
