@@ -53,7 +53,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
 
             { response && 
               <section className="flex flex-col items-center bg-white mt-3 ">
-                <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+                <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full mb-4">
                   {response?.map((item, index) => {
                     const pUrl = item.project_url;
                     return (
@@ -61,9 +61,9 @@ const CommonProject = ({ data, title, path ,animation }) => {
 
                         <article
                           key={index}
-                          className="mb-2 overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl h-full flex flex-col"
+                          className="mb-1 overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl h-full flex flex-col"
                         >
-                          <div className="relative flex p-3">
+                          <div className="relative flex p-0">
                             <Link to={`/${pUrl}/`} target="_top">
                               <img
                                 src={`https://d16gdc5rm7f21b.cloudfront.net/${item?.thumbnailImage?.public_id}`}
@@ -76,7 +76,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                               <ShareFrameIcon />
                             </div>
                           </div>
-                          <div className="flex flex-col flex-1 justify-between p-4 h-full">
+                          <div className="flex flex-col flex-1 justify-between p-3 h-full">
                             <div className="pb-2">
                               {item && item.projectName && (
                                 <>
@@ -90,7 +90,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                 {item.city}, {item.state}
                               </span>
                             </div>
-                            <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
+                            <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-1">
                               <li className="mr-4 flex flex-col text-left">
                                 <li className="text-left">
                                   <p className="m-0 text-sm font-medium flex items-center gap-1">
@@ -106,8 +106,8 @@ const CommonProject = ({ data, title, path ,animation }) => {
                               </li>
                             </ul>
                             {/* Button row: price and button always in the same row */}
-                            <div className="flex flex-row items-center justify-between mt-1 w-full gap-2">
-                              <span className="text-sm font-extrabold text-red-600 flex items-center" style={{color: 'red', fontWeight: 'bold'}}>
+                            <div className="flex flex-row items-center justify-between mt-0 w-full">
+                              <span className="m-0 flex list-none items-center justify-between px-0 pb-0" style={{color: 'red', fontWeight: 'bold'}}>
                                 <RupeeIcon style={{marginRight: 4}} />
                                 {item.minPrice && item.maxPrice
                                   ? (
@@ -120,9 +120,9 @@ const CommonProject = ({ data, title, path ,animation }) => {
                               <Link to={`/${pUrl}/`} target="_top">
                                 <button
                                   type="button"
-                                  className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-md text-[12px] px-3 py-2 text-center me-2 whitespace-nowrap ml-2"
+                                  className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-md text-[12px] px-3 py-2 text-center me-2 whitespace-nowrap ml-2 "
                                 >
-                                  View Details
+                                  Explore
                                 </button>
                               </Link>
                             </div>
