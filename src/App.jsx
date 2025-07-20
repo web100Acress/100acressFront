@@ -136,7 +136,7 @@ const SeoPrivateRoute = lazy(() => import("./Components/Blog_Components/SeoPriva
 const BlogManagement = lazy(() => import("./Components/Blog_Components/BlogManagement"));
 const DraftManagement = lazy(() => import("./Components/Blog_Components/DraftManagement"));
 const BlogManagementSidebar = lazy(() => import("./Components/Blog_Components/BlogManagementSidebar"));
-
+const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
 
 
 // const queryClient = new QueryClient();
@@ -326,7 +326,7 @@ function App() {
 
             {/* Admin Routing */}
             <Route path="/admin" element={<PrivateRoute />}>
-              <Route index element={<LazyLoad><Dashboard /></LazyLoad>} />
+              <Route index element={<LazyLoad><AdminDashboard /></LazyLoad>} />
               <Route
                 path="viewproperty/:id"
                 element={<LazyLoad><ViewPropertyAdmin /></LazyLoad>}
@@ -403,7 +403,7 @@ function App() {
               />
               <Route
                 path="dashboard"
-                element={<LazyLoad><Dashboard /></LazyLoad>}
+                element={<LazyLoad><AdminDashboard /></LazyLoad>}
               />
             </Route>
 
