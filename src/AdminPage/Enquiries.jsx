@@ -2,43 +2,53 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Sidebar from "./Sidebar";
 import BackToTopButton from "../Pages/BackToTopButton";
-import {ClipLoader} from "react-spinners";
+import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-import {message} from "antd"
-
-const customStyle = {
-  marginLeft: "290px",
-  width: "75%",
-};
+import { message } from "antd";
 
 const Enquiries = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const pageSize = 100; 
-  const [downloadProgess, setDownloadProgress] = useState(0);
+  const pageSize = 100;
+  const [downloadProgress, setDownloadProgress] = useState(0);
 
-  const {messageApi,contextHolder} = message.useMessage();
+  const { messageApi, contextHolder } = message.useMessage();
   const navigate = useNavigate();
   const token = localStorage.getItem("myToken");
+
+  // Effect to inject styles into the document head
+  useEffect(() => {
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
+    styleSheet.innerText = enquiryStyles;
+    document.head.appendChild(styleSheet);
+
+    return () => {
+      // Clean up styles on component unmount
+      document.head.removeChild(styleSheet);
+    };
+  }, []); // Run once on mount to inject styles
 
   const fetchData = async () => {
     setLoading(true);
 
-
-    if (!token) return navigate("/");
+    if (!token) {
+      navigate("/");
+      return;
+    }
     try {
       const response = await axios.get(`https://api.100acress.com/userViewAll?limit=2000`,
         {
-          headers:{
+          headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           }
         }
       );
 
-      if( response.status !== 200) {
+      if (response.status !== 200) {
         messageApi.open({
           type: "error",
           content: "Error While Fetching Data",
@@ -46,10 +56,15 @@ const Enquiries = () => {
         });
         console.error("Failed to fetch data");
       }
-      
+
       setData(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
+      messageApi.open({
+        type: "error",
+        content: "Error fetching data. Please try again.",
+        duration: 2,
+      });
     }
     setLoading(false);
   };
@@ -88,76 +103,11 @@ const Enquiries = () => {
 
   const totalPages = Math.ceil(filteredData.length / pageSize);
 
-  const generateSVG = () => {
-    const headers = `
-      <tr>
-        ${[
-          "Sr.No",
-          "Name",
-          "Mobile",
-          "Project Name",
-          "Status",
-          "Assign",
-          "Date",
-        ]
-          .map((header) => `<th>${header}</th>`)
-          .join("")}
-      </tr>
-    `;
-    const rows = currentData
-      .map(
-        (item, index) => `
-        <tr>
-          <td>${index + 1 + (currentPage - 1) * pageSize}</td>
-          <td>${item.name}</td>
-          <td>${item.mobile}</td>
-          <td>${item.projectName}</td>
-          <td>${item.status ? "Complete" : "Not Complete"}</td>
-          <td>${item.assign}</td>
-          <td>${new Date(item.createdAt).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-          })}</td>
-        </tr>
-      `
-      )
-      .join("");
-    const svgContent = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
-        <foreignObject x="0" y="0" width="800" height="600">
-          <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: Arial, sans-serif;">
-            <table border="1" style="width: 100%; border-collapse: collapse; font-size: 14px;">
-              <thead>${headers}</thead>
-              <tbody>${rows}</tbody>
-            </table>
-          </div>
-        </foreignObject>
-      </svg>
-    `;
-    return svgContent;
-  };
-
-  const downloadSVG = () => {
-    const svgContent = generateSVG();
-    const blob = new Blob([svgContent], {
-      type: "image/svg+xml;charset=utf-8",
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "data.svg";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  const downloadExelFile = async()=>{
+  const downloadExelFile = async () => {
     try {
       const response = await fetch("https://api.100acress.com/userViewAll/dowloadData",
         {
-          headers:{
+          headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
@@ -168,12 +118,12 @@ const Enquiries = () => {
       }
       const contentLength = response.headers.get('Content-Length');
       const contentDisposition = response.headers.get('Content-Disposition');
-      console.log("ContentLength",contentLength);
-      console.log("ContentDisposition",contentDisposition);
+      console.log("ContentLength", contentLength);
+      console.log("ContentDisposition", contentDisposition);
 
       if (!contentLength) {
-          console.error('Content-Length header is missing. Progress cannot be tracked.');
-          return;
+        console.error('Content-Length header is missing. Progress cannot be tracked.');
+        return;
       }
       const total = parseInt(contentLength, 10);
 
@@ -182,17 +132,17 @@ const Enquiries = () => {
 
       let receivedLength = 0;
 
-      while(true){
-        const {done,value} = await reader.read();
+      while (true) {
+        const { done, value } = await reader.read();
 
-        if(done) break;
+        if (done) break;
 
         chunks.push(value);
         receivedLength += value.length;
 
         const progress = Math.round((receivedLength / total) * 100);
         console.log(`Download progress: ${progress}%`);
-        setDownloadProgress(progress); // Update progress every 1 
+        setDownloadProgress(progress); // Update progress every 1
       }
 
       const blob = new Blob(chunks, { type: response.headers.get('Content-Type') });
@@ -200,14 +150,14 @@ const Enquiries = () => {
       const link = document.createElement('a');
       link.href = url;
       const fileName = contentDisposition
-          ? contentDisposition.split('filename=')[1]?.replace(/"/g, '')
-          : 'download.xlsx';
+        ? contentDisposition.split('filename=')[1]?.replace(/"/g, '')
+        : 'download.xlsx';
       link.download = fileName;
-        
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-        
+
       // Revoke the Blob URL
       window.URL.revokeObjectURL(url);
       setDownloadProgress(0);
@@ -215,48 +165,51 @@ const Enquiries = () => {
 
     } catch (error) {
       console.error('Error downloading the file:', error);
+      messageApi.open({
+        type: "error",
+        content: "Error downloading file. Please try again.",
+        duration: 2,
+      });
       setDownloadProgress(0); // Reset progress
     }
   }
 
-  console.log(downloadProgess);
-
   return (
     <>
-      <Sidebar /> 
-      <div style={customStyle} className="absolute right-auto p-4">
+      <Sidebar />
+      <div className="enquiries-main-content">
         {contextHolder}
-        <div className="flex justify-between mb-4">
-          <div className="flex items-center bg-white shadow-md rounded-md overflow-hidden max-w-md">
+        <div className="enquiries-header">
+          <div className="search-container">
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search by Name, Mobile, or Project..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="p-2 border-b-2 border-red-600 text-black placeholder-gray-500 outline-none flex-grow"
+              className="search-input"
             />
-            <button className="bg-red-600 text-white p-2 rounded-md ml-2">
+            <button className="search-button">
               Search
             </button>
           </div>
-          {downloadProgess > 0 ? 
+          {downloadProgress > 0 ?
             <button
-              className="bg-red-400 p-2 rounded-lg text-white ml-4"
+              className="download-button download-in-progress"
             >
-             <ClipLoader color="#C13B44"/>
-            {downloadProgess}
-          </button>
-          :
-          <button
-            className="bg-blue-700 p-2 rounded-lg text-white ml-4"
-            onClick={downloadExelFile}
-          >
-            Download Data
-          </button>
-}
+              <ClipLoader color="#C13B44" size={20} />
+              <span className="download-progress-text">{downloadProgress}%</span>
+            </button>
+            :
+            <button
+              className="download-button download-ready"
+              onClick={downloadExelFile}
+            >
+              Download Data 📥
+            </button>
+          }
         </div>
-        <div className="overflow-x-auto shadow-md rounded-lg">
-          <table className="min-w-full bg-white divide-y divide-gray-200">
+        <div className="table-container">
+          <table className="enquiries-table">
             <thead>
               <tr>
                 {[
@@ -268,10 +221,7 @@ const Enquiries = () => {
                   "Assign",
                   "Date",
                 ].map((header) => (
-                  <th
-                    key={header}
-                    className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
-                  >
+                  <th key={header} className="table-header">
                     {header}
                   </th>
                 ))}
@@ -279,28 +229,30 @@ const Enquiries = () => {
             </thead>
 
             {currentData.length !== 0 ? (
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="table-body">
                 {currentData.map((item, index) => (
-                  <tr key={index}>
-                    <td className="px-6 py-2 text-center text-sm text-gray-800">
+                  <tr key={index} className="table-row">
+                    <td className="table-cell">
                       {index + 1 + (currentPage - 1) * pageSize}
                     </td>
-                    <td className="px-6 py-2 text-center text-sm text-gray-800">
+                    <td className="table-cell">
                       {item.name}
                     </td>
-                    <td className="px-6 py-2 text-center text-sm text-gray-800">
+                    <td className="table-cell">
                       {item.mobile}
                     </td>
-                    <td className="px-6 py-2 text-center text-sm text-gray-800">
+                    <td className="table-cell">
                       {item.projectName}
                     </td>
-                    <td className="px-6 py-2 text-center text-sm text-gray-800">
-                      {item.status ? "Complete" : "Not Complete"}
+                    <td className="table-cell">
+                      <span className={`status-badge ${item.status ? 'status-complete' : 'status-pending'}`}>
+                        {item.status ? "Complete" : "Pending"}
+                      </span>
                     </td>
-                    <td className="px-6 py-2 text-center text-sm text-gray-800">
+                    <td className="table-cell">
                       {item.assign}
                     </td>
-                    <td className="px-6 py-2 text-center text-sm text-gray-800">
+                    <td className="table-cell">
                       {new Date(item.createdAt).toLocaleDateString("en-GB", {
                         day: "2-digit",
                         month: "long",
@@ -313,47 +265,46 @@ const Enquiries = () => {
             ) : (
               <tbody>
                 <tr>
-                  <td colSpan="7" className="text-center py-4">
-                    No data available.
+                  <td colSpan="7" className="no-data-message">
+                    {loading ? <p>Loading data...</p> : <p>No data available.</p>}
                   </td>
                 </tr>
               </tbody>
             )}
           </table>
           <BackToTopButton />
-          {loading && <p>Loading...</p>}
-          <div className="flex  my-4">
-            <button
-              className={`px-4 py-2 mx-1 rounded ${currentPage === 1 ? "bg-gray-200 text-gray-700 cursor-not-allowed" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
-              onClick={loadBack}
-              disabled={currentPage === 1 || loading}
-            >
-              Previous
-            </button>
+        </div>
+        <div className="pagination-container">
+          <button
+            className={`pagination-button ${currentPage === 1 ? "pagination-disabled" : ""}`}
+            onClick={loadBack}
+            disabled={currentPage === 1 || loading}
+          >
+            Previous
+          </button>
 
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => handleClick(index + 1)}
-                disabled={currentPage === index + 1}
-                className={`px-4 py-2 mx-1 rounded ${
-                  currentPage === index + 1
-                    ? "bg-red-600 text-white"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
-
+          {Array.from({ length: totalPages }, (_, index) => (
             <button
-              className={`px-4 py-2 mx-1 rounded ${currentPage === totalPages ? "bg-gray-200 text-gray-700 cursor-not-allowed" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
-              onClick={loadMore}
-              disabled={currentPage === totalPages || loading}
+              key={index + 1}
+              onClick={() => handleClick(index + 1)}
+              disabled={currentPage === index + 1}
+              className={`pagination-button ${
+                currentPage === index + 1
+                  ? "pagination-active"
+                  : ""
+              }`}
             >
-              Next
+              {index + 1}
             </button>
-          </div>
+          ))}
+
+          <button
+            className={`pagination-button ${currentPage === totalPages ? "pagination-disabled" : ""}`}
+            onClick={loadMore}
+            disabled={currentPage === totalPages || loading}
+          >
+            Next
+          </button>
         </div>
       </div>
     </>
@@ -361,3 +312,275 @@ const Enquiries = () => {
 };
 
 export default Enquiries;
+
+// --- Embedded CSS Styles ---
+const enquiryStyles = `
+/* Overall Layout */
+.enquiries-main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 3rem 1.5rem; /* Increased padding for more breathing room */
+  margin-left: 250px; /* Aligns with Sidebar width, adjust if Sidebar changes */
+  background-color: #f0f2f5; /* Softer, light grey background */
+  min-height: 100vh; /* Ensure it takes full height */
+  box-sizing: border-box; /* Include padding in element's total width and height */
+  font-family: 'Inter', sans-serif; /* Modern, clean font */
+  color: #344767; /* Deeper text color */
+}
+
+@media (max-width: 768px) {
+  .enquiries-main-content {
+    margin-left: 0; /* Remove margin on smaller screens if sidebar collapses */
+    padding: 2rem 1rem;
+  }
+}
+
+/* Header and Controls */
+.enquiries-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem; /* More space below header */
+  flex-wrap: wrap;
+  gap: 1.5rem; /* Increased gap */
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 12px; /* Softer rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* More subtle, spread-out shadow */
+  overflow: hidden;
+  max-width: 450px; /* Slightly wider search */
+  flex-grow: 1;
+  border: 1px solid #e0e0e0; /* Light border */
+}
+
+.search-input {
+  padding: 12px 18px; /* More padding */
+  border: none;
+  border-bottom: 2px solid #ea5c5c; /* Modern red accent */
+  color: #344767;
+  outline: none;
+  flex-grow: 1;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.search-input::placeholder {
+  color: #a0a8b3; /* Softer placeholder color */
+}
+
+.search-input:focus {
+  border-color: #d63333; /* Darker red on focus */
+}
+
+.search-button {
+  background-color: #ea5c5c; /* Red color */
+  color: #ffffff;
+  padding: 12px 22px; /* More padding */
+  border: none;
+  border-radius: 0 12px 12px 0; /* Only right corners */
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600; /* Bolder text */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: inset 0 0 0 rgba(0,0,0,0); /* For consistent box-shadow transition */
+}
+
+.search-button:hover {
+  background-color: #d63333; /* Darker red on hover */
+  transform: translateY(-1px); /* Slight lift effect */
+  box-shadow: 0 2px 5px rgba(234, 92, 92, 0.3);
+}
+
+.download-button {
+  padding: 12px 24px; /* More padding */
+  border-radius: 12px; /* Softer rounded corners */
+  border: none;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* More space between icon and text */
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Standard shadow */
+}
+
+.download-ready {
+  background-color: #4a7dff; /* Modern blue */
+  box-shadow: 0 4px 15px rgba(74, 125, 255, 0.3);
+}
+
+.download-ready:hover {
+  background-color: #3b66df; /* Darker blue on hover */
+  box-shadow: 0 6px 20px rgba(74, 125, 255, 0.4);
+  transform: translateY(-2px); /* Slight lift */
+}
+
+.download-in-progress {
+  background-color: #e0e0e0; /* Light grey, subtle disabled look */
+  cursor: not-allowed;
+  color: #888; /* Softer text color */
+  box-shadow: none;
+}
+
+.download-progress-text {
+  font-weight: bold;
+  color: #344767; /* Match main text color */
+}
+
+/* Table Styling */
+.table-container {
+  overflow-x-auto;
+  background-color: #ffffff;
+  border-radius: 16px; /* Larger, more elegant border-radius */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12); /* Deeper, softer shadow */
+  margin-bottom: 2rem;
+  border: 1px solid #e0e0e0; /* Light border */
+}
+
+.enquiries-table {
+  width: 100%;
+  border-collapse: separate; /* Use separate to allow border-spacing */
+  border-spacing: 0; /* Remove default spacing */
+  min-width: 800px; /* Ensure ample width */
+  font-size: 0.95rem; /* Slightly larger text */
+}
+
+.table-header {
+  padding: 18px 24px; /* More padding */
+  text-align: center;
+  font-size: 0.85rem; /* Slightly smaller header font for elegance */
+  font-weight: 700; /* Bolder */
+  color: #6c7a89; /* Muted header text color */
+  text-transform: uppercase;
+  letter-spacing: 0.08em; /* Increased letter spacing */
+  background-color: #f6f9fc; /* Very light, almost white header background */
+  border-bottom: 2px solid #e8eaf1; /* Subtler border */
+}
+
+.table-header:first-child {
+  border-top-left-radius: 16px; /* Match container radius */
+}
+
+.table-header:last-child {
+  border-top-right-radius: 16px; /* Match container radius */
+}
+
+.table-body .table-row:nth-child(even) { /* Changed to even for slightly more visual break */
+  background-color: #fdfdfd;
+}
+
+.table-body .table-row:hover {
+  background-color: #e6f7ff; /* Lighter, more inviting blue on hover */
+  transition: background-color 0.3s ease;
+}
+
+.table-cell {
+  padding: 16px 24px; /* Increased padding */
+  text-align: center;
+  font-size: 0.95rem;
+  color: #344767;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid #e8eaf1; /* Subtler border */
+}
+
+.table-body .table-row:last-child .table-cell {
+  border-bottom: none; /* No border on last row's cells */
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 30px; /* More vertical padding */
+  color: #8898aa; /* Softer text color */
+  font-size: 1.1rem;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex; /* Use flex for vertical alignment if text wraps */
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px; /* More padding */
+  border-radius: 25px; /* Fully rounded pills */
+  font-size: 0.85rem; /* Slightly larger font */
+  font-weight: 700;
+  text-transform: uppercase; /* Uppercase for status */
+  letter-spacing: 0.03em;
+  min-width: 90px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08); /* Small shadow for depth */
+}
+
+.status-complete {
+  background-color: #e6ffe6; /* Very light green */
+  color: #28a745; /* Vibrant green text */
+  border: 1px solid #a3e6a3; /* Subtle border */
+}
+
+.status-pending {
+  background-color: #fff0f5; /* Very light red/pink */
+  color: #dc3545; /* Vibrant red text */
+  border: 1px solid #f9c8c8; /* Subtle border */
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem; /* Increased gap */
+  margin-top: 2rem; /* More space above pagination */
+  padding-bottom: 3rem; /* More space at the bottom */
+}
+
+.pagination-button {
+  padding: 12px 18px; /* More padding */
+  border-radius: 10px; /* Softer corners */
+  border: 1px solid #dcdcdc; /* Light border */
+  background-color: #ffffff;
+  color: #6c7a89; /* Muted text color */
+  font-size: 0.95rem; /* Slightly larger font */
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Subtle shadow */
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #f7f9fa; /* Very light hover */
+  border-color: #b0b8c0;
+  color: #344767;
+  transform: translateY(-1px); /* Slight lift */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.pagination-active {
+  background-color: #ea5c5c; /* Red for active page */
+  color: #ffffff;
+  border-color: #ea5c5c;
+  font-weight: 700; /* Bolder active text */
+  box-shadow: 0 4px 15px rgba(234, 92, 92, 0.4);
+}
+
+.pagination-active:hover {
+  background-color: #d63333; /* Darker red on hover for active */
+  border-color: #d63333;
+  color: #ffffff;
+}
+
+.pagination-disabled {
+  background-color: #f5f5f5; /* Lighter disabled background */
+  color: #b0b8c0; /* Lighter disabled text */
+  cursor: not-allowed;
+  opacity: 0.7; /* Slightly more opaque */
+  border-color: #f5f5f5;
+  box-shadow: none;
+}
+`;

@@ -53,13 +53,13 @@ const Sidebar = () => {
           }`}
         >
           <div className="flex flex-col">
-            {/* <Link
+            <Link
               to="/Admin/dashboard"
               className="flex items-center hover:bg-gray-400 text-white text-center fa-xl p-1"
             >
               <MdSpaceDashboard className="icon fa-sm m-3.5" />
               <span className="text-lg font-semibold">Dashboard</span>
-            </Link> */}
+            </Link>
             <Link
               to="/Admin/enquiries"
               className="flex items-center hover:bg-gray-400 text-white text-center fa-xl p-1"
