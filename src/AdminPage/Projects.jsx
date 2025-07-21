@@ -197,7 +197,7 @@ const Projects = () => {
                       <td className="table-cell serial-number">{serialNumber}</td>
                       <td className="table-cell project-name">{item.projectName}</td>
                       <td className="table-cell">{item.type}</td>
-                      <td className="table-cell">{item.state}</td>
+                      <td className="table-cell">{item.city}</td>
                       <td className="table-cell project-address">{item.projectAddress}</td>
 
                       <td className="table-cell action-buttons-cell">
