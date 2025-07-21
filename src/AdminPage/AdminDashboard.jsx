@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import Sidebar from './Sidebar';
+import Sidebar from './Sidebar'; // Assuming Sidebar is correctly imported
 import { MdBarChart, MdAssignment, MdHome, MdShoppingCart, MdBusiness, MdContactMail, MdPerson, MdPeople, MdLibraryBooks, MdWork, MdAccountCircle } from 'react-icons/md';
 
 // Custom hook for count up animation
 function useCountUp(target, duration = 1000) {
   const [count, setCount] = useState(0);
   const ref = useRef();
-  
+
   useEffect(() => {
     let start = 0;
     let startTime = null;
@@ -30,110 +30,108 @@ function useCountUp(target, duration = 1000) {
     }
     return () => cancelAnimationFrame(ref.current);
   }, [target, duration]);
-  
+
   return count;
 }
 
 const sections = [
-  { 
-    name: 'Project Enquiries', 
-    api: '/api/admin/project-enquiries/count', 
-    link: '/Admin/enquiries', 
-    gradient: 'from-slate-900 via-slate-800 to-slate-700',
-    icon: <MdAssignment size={32} className="text-white/90" />, 
-    description: 'All project-related enquiries from users.',
-    shadowColor: 'shadow-slate-500/20'
-  },
-  { 
-    name: 'Projects', 
-    api: '/api/admin/projects/count', 
-    link: '/Admin/Projects/property', 
-    gradient: 'from-gray-800 via-gray-700 to-gray-600',
-    icon: <MdBarChart size={32} className="text-white/90" />, 
-    description: 'Total number of projects listed.',
-    shadowColor: 'shadow-gray-500/20'
-  },
-  { 
-    name: 'Resale Enquiries', 
-    api: '/api/admin/resale-enquiries/count', 
-    link: '/Admin/resale-enquiries', 
-    gradient: 'from-zinc-800 via-zinc-700 to-zinc-600',
-    icon: <MdHome size={32} className="text-white/90" />, 
-    description: 'Enquiries for resale properties.',
-    shadowColor: 'shadow-zinc-500/20'
-  },
-  { 
-    name: 'Buy', 
-    api: '/api/admin/buy/count', 
-    link: '/Admin/buy', 
-    gradient: 'from-neutral-800 via-neutral-700 to-neutral-600',
-    icon: <MdShoppingCart size={32} className="text-white/90" />, 
-    description: 'Buy property requests.',
-    shadowColor: 'shadow-neutral-500/20'
-  },
-  { 
-    name: 'Properties', 
-    api: '/api/admin/properties/count', 
-    link: '/Admin/all-listed-properties', 
-    gradient: 'from-stone-800 via-stone-700 to-stone-600',
-    icon: <MdBusiness size={32} className="text-white/90" />, 
-    description: 'All properties listed on the platform.',
-    shadowColor: 'shadow-stone-500/20'
-  },
-  { 
-    name: 'Contact Us', 
-    api: '/api/admin/contact/count', 
-    link: '/Admin/contact', 
-    gradient: 'from-slate-700 via-slate-600 to-slate-500',
-    icon: <MdContactMail size={32} className="text-white/90" />, 
-    description: 'Contact form submissions.',
-    shadowColor: 'shadow-slate-400/20'
-  },
-  { 
-    name: 'Contact User', 
-    api: '/api/admin/contact-user/count', 
-    link: '#', 
-    gradient: 'from-gray-700 via-gray-600 to-gray-500',
-    icon: <MdPerson size={32} className="text-white/90" />, 
-    description: 'Direct user contact requests.',
-    shadowColor: 'shadow-gray-400/20'
-  },
-  { 
-    name: 'User Property', 
-    api: '/api/admin/user-property/count', 
-    link: '#', 
-    gradient: 'from-zinc-700 via-zinc-600 to-zinc-500',
-    icon: <MdPeople size={32} className="text-white/90" />, 
-    description: 'Properties listed by users.',
-    shadowColor: 'shadow-zinc-400/20'
-  },
-  { 
-    name: 'Blog', 
-    api: '/api/admin/blog/count', 
-    link: '/Admin/blog', 
-    gradient: 'from-neutral-700 via-neutral-600 to-neutral-500',
-    icon: <MdLibraryBooks size={32} className="text-white/90" />, 
-    description: 'Blog posts and articles.',
-    shadowColor: 'shadow-neutral-400/20'
-  },
-  { 
-    name: 'Career', 
-    api: '/api/admin/career/count', 
-    link: '/Admin/career', 
-    gradient: 'from-stone-700 via-stone-600 to-stone-500',
-    icon: <MdWork size={32} className="text-white/90" />, 
-    description: 'Career and job postings.',
-    shadowColor: 'shadow-stone-400/20'
-  },
-  { 
-    name: 'User', 
-    api: '/api/admin/user/count', 
-    link: '/Admin/user', 
-    gradient: 'from-slate-600 via-slate-500 to-slate-400',
-    icon: <MdAccountCircle size={32} className="text-white/90" />, 
+  {
+    name: 'User',
+    api: 'https://api.100acress.com/postPerson/view/allusers',
+    link: '/Admin/user',
+    gradientClass: 'bg-medium-slate-gradient',
+    icon: <MdAccountCircle size={32} className="card-icon" />,
     description: 'Registered users.',
-    shadowColor: 'shadow-slate-300/20'
+    shadowClass: 'shadow-medium-slate'
   },
+  {
+    name: 'Project Enquiries',
+    api: 'https://api.100acress.com/userViewAll?limit=2000',
+    link: '/Admin/enquiries',
+    gradientClass: 'bg-slate-gradient',
+    icon: <MdAssignment size={32} className="card-icon" />,
+    description: 'All project-related enquiries from users.',
+    shadowClass: 'shadow-slate'
+  },
+  {
+    name: 'Projects',
+    api: 'https://api.100acress.com/project/viewAll/data',
+    link: '/Admin/Projects/property',
+    gradientClass: 'bg-gray-gradient',
+    icon: <MdBarChart size={32} className="card-icon" />,
+    description: 'Total number of projects listed.',
+    shadowClass: 'shadow-gray'
+  },
+  {
+    name: 'Resale Enquiries',
+    api: 'https://api.100acress.com/postEnq_view',
+    link: '/Admin/resale-enquiries',
+    gradientClass: 'bg-zinc-gradient',
+    icon: <MdHome size={32} className="card-icon" />,
+    description: 'Enquiries for resale properties.',
+    shadowClass: 'shadow-zinc'
+  },
+  {
+    name: 'Blog',
+    api: 'https://api.100acress.com/blog/view?page=1&limit=1000',
+    link: '/Admin/blog',
+    gradientClass: 'bg-light-neutral-gradient',
+    icon: <MdLibraryBooks size={32} className="card-icon" />,
+    description: 'Blog posts and articles.',
+    shadowClass: 'shadow-light-neutral'
+  },
+  {
+    name: 'Buy',
+    api: 'https://api.100acress.com/property/buy/viewAll',
+    link: '/Admin/buy',
+    gradientClass: 'bg-neutral-gradient',
+    icon: <MdShoppingCart size={32} className="card-icon" />,
+    description: 'Buy property requests.',
+    shadowClass: 'shadow-neutral'
+  },
+  {
+    name: 'Properties',
+    // The API string below uses template literals, but as a string, variables like ${currentPage} won't be replaced.
+    // To display data, use a static endpoint that returns the total count, or fetch all and count length.
+    // For dashboard counts, use a high limit to get all items, then count them.
+    api: 'https://api.100acress.com/postPerson/view/allListedProperty/?page=1&limit=10000&verify=verified',
+    link: '/Admin/all-listed-properties',
+    gradientClass: 'bg-stone-gradient',
+    icon: <MdBusiness size={32} className="card-icon" />,
+    description: 'All properties listed on the platform.',
+    shadowClass: 'shadow-stone'
+  },
+  {
+    name: 'Contact Us',
+    api: '/api/admin/contact/count',
+    link: '/Admin/contact',
+    gradientClass: 'bg-light-slate-gradient',
+    icon: <MdContactMail size={32} className="card-icon" />,
+    description: 'Contact form submissions.',
+    shadowClass: 'shadow-light-slate'
+  },
+  {
+    name: 'Contact User',
+    api: '/api/admin/contact-user/count',
+    link: '#',
+    gradientClass: 'bg-light-gray-gradient',
+    icon: <MdPerson size={32} className="card-icon" />,
+    description: 'Direct user contact requests.',
+    shadowClass: 'shadow-light-gray'
+  },
+
+  
+  {
+    name: 'Career',
+    api: '/api/admin/career/count',
+    link: '/Admin/career',
+    gradientClass: 'bg-light-stone-gradient',
+    icon: <MdWork size={32} className="card-icon" />,
+    description: 'Career and job postings.',
+    shadowClass: 'shadow-light-stone'
+  },
+  
+  
 ];
 
 function formatNumber(num) {
@@ -142,12 +140,12 @@ function formatNumber(num) {
 }
 
 const SkeletonCard = () => (
-  <div className="relative rounded-xl animate-pulse bg-gradient-to-br from-slate-200 to-slate-300 shadow-lg p-6 h-40 flex flex-col justify-between border border-slate-200">
-    <div className="flex items-center justify-between mb-2">
-      <div className="h-6 w-32 bg-slate-300 rounded"></div>
-      <div className="h-8 w-8 bg-slate-300 rounded-full"></div>
+  <div className="skeleton-card">
+    <div className="skeleton-card-header">
+      <div className="skeleton-card-text-line-long"></div>
+      <div className="skeleton-card-circle"></div>
     </div>
-    <div className="h-10 w-20 bg-slate-300 rounded mt-2"></div>
+    <div className="skeleton-card-text-line-short"></div>
   </div>
 );
 
@@ -157,6 +155,20 @@ const AdminDashboard = () => {
   const [error, setError] = useState(null);
   const [animatedCounts, setAnimatedCounts] = useState({});
 
+  // Effect to inject styles into the document head
+  useEffect(() => {
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
+    styleSheet.innerText = dashboardStyles;
+    document.head.appendChild(styleSheet);
+
+    return () => {
+      // Clean up styles on component unmount
+      document.head.removeChild(styleSheet);
+    };
+  }, []); // Run once on mount to inject styles
+
+  // Effect for data fetching and interval
   useEffect(() => {
     console.log('Component mounted');
     fetchCounts();
@@ -175,28 +187,62 @@ const AdminDashboard = () => {
     setError(null);
     try {
       console.log('Fetching counts from API...');
-      // Fetch user data from the new endpoint
-      const userRes = await fetch("https://api.100acress.com/userViewAll/dowloadData");
-      const userData = await userRes.json();
-      console.log('API response for User:', userData);
-      // You may need to adjust this depending on the response structure
-      // For example, if userData is an array:
-      const userCount = Array.isArray(userData) ? userData.length : (userData.count || 0);
-
-      // Fetch other sections as before
+      const token = localStorage.getItem("myToken");
       const results = await Promise.all(
         sections.map(section =>
-          section.name === 'User'
-            ? userCount
-            : axios.get(section.api)
-                .then(res => {
-                  console.log(`API response for ${section.name}:`, res.data);
-                  return res.data.count;
-                })
-                .catch((err) => {
-                  console.error(`API error for ${section.name}:`, err);
-                  return 0;
-                })
+          axios.get(section.api, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            }
+          })
+            .then(res => {
+              // Check for the nested structure of Properties API first, using totalCount if available
+              if (
+                typeof res.data === 'object' && res.data !== null && Array.isArray(res.data.data) && res.data.data.length > 0 && res.data.data[0]
+              ) {
+                // Prefer totalCount for paginated results
+                if (typeof res.data.data[0].totalCount === 'number') {
+                  return res.data.data[0].totalCount;
+                }
+                // Fallback to counting the nested data array
+                if (Array.isArray(res.data.data[0].data)) {
+                  return res.data.data[0].data.length;
+                }
+              }
+
+              // Check for Project Enquiries structure (data property is the array)
+              if (typeof res.data === 'object' && res.data !== null && Array.isArray(res.data.data)) {
+                return res.data.data.length;
+              }
+
+              // Check for User structure (users property is the array)
+              if (typeof res.data === 'object' && res.data !== null && Array.isArray(res.data.users)) {
+                return res.data.users.length;
+              }
+
+              // Check for User structure (allusers property is the array)
+              if (typeof res.data === 'object' && res.data !== null && Array.isArray(res.data.allusers)) {
+                return res.data.allusers.length;
+              }
+              
+              // Check for a direct array response
+              if (Array.isArray(res.data)) {
+                return res.data.length;
+              }
+
+              // Check for a simple count property
+              if (typeof res.data === 'object' && res.data !== null && 'count' in res.data) {
+                return res.data.count;
+              }
+
+              // Fallback if no other structure matches
+              return 0;
+            })
+            .catch((err) => {
+              console.error(`API error for ${section.name}:`, err);
+              return 0;
+            })
         )
       );
       const countsObj = {};
@@ -257,16 +303,16 @@ const AdminDashboard = () => {
   if (error) {
     console.error('Dashboard error:', error);
     return (
-      <div className="flex min-h-screen bg-slate-50">
+      <div className="error-container">
         <Sidebar />
-        <div className="flex-1 flex items-center justify-center p-8">
-          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center border border-slate-200">
-            <div className="text-slate-400 text-6xl mb-4">⚠️</div>
-            <h2 className="text-xl font-bold text-slate-800 mb-2">Connection Error</h2>
-            <p className="text-slate-600 mb-6">{error}</p>
-            <button 
-              onClick={fetchCounts} 
-              className="bg-gradient-to-r from-slate-600 to-slate-700 text-white px-6 py-3 rounded-xl hover:from-slate-700 hover:to-slate-800 transition-all duration-200 font-medium shadow-lg hover:shadow-xl"
+        <div className="error-content-wrapper">
+          <div className="error-card">
+            <div className="error-icon">⚠️</div>
+            <h2 className="error-title">Connection Error</h2>
+            <p className="error-message">{error}</p>
+            <button
+              onClick={fetchCounts}
+              className="error-retry-button"
             >
               Try Again
             </button>
@@ -277,18 +323,20 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50">
+    <div className="admin-dashboard-container">
       <Sidebar />
-      <div className="flex-1 max-w-6xl mx-auto p-10">
+      <div className="admin-dashboard-content">
         {/* Header */}
-        <div className="mb-10">
-        
-          <div className="w-24 h-1 bg-gradient-to-r from-slate-400 to-gray-300 rounded-full"></div>
-          {/* <p className="text-slate-600 mt-3 text-lg">Real-time analytics and system overview</p> */}
+        <div className="dashboard-header">
+          {/* Added the new header for the dashboard */}
+          <h1 className="main-dashboard-title">
+            <b>Admin Dashboard</b> 📊
+          </h1>
+          <div className="header-underline"></div>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+        <div className="stats-grid">
           {loading ? (
             Array.from({ length: sections.length }).map((_, i) => <SkeletonCard key={i} />)
           ) : (
@@ -296,25 +344,25 @@ const AdminDashboard = () => {
               <Link
                 to={section.link}
                 key={section.name}
-                className="block focus:outline-none group"
+                className="card-link"
               >
-                <div className={`relative rounded-2xl bg-gradient-to-br ${section.gradient} shadow-xl ${section.shadowColor} hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 hover:scale-105 active:scale-95 p-6 h-48 flex flex-col justify-between overflow-hidden border border-white/10`}>
-                  
+                <div className={`dashboard-card ${section.gradientClass} ${section.shadowClass}`}>
+
                   {/* Subtle background patterns */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.03] rounded-full -translate-y-16 translate-x-16"></div>
-                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/[0.03] rounded-full translate-y-12 -translate-x-12"></div>
-                  
+                  <div className="card-bg-overlay"></div>
+                  <div className="card-circle-top-right"></div>
+                  <div className="card-circle-bottom-left"></div>
+
                   {/* Geometric accent */}
-                  <div className="absolute top-4 right-4 w-2 h-2 bg-white/20 rounded-full"></div>
-                  <div className="absolute top-6 right-6 w-1 h-1 bg-white/30 rounded-full"></div>
-                  
+                  <div className="card-dot-top-right-large"></div>
+                  <div className="card-dot-top-right-small"></div>
+
                   {/* Content */}
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex-1">
+                  <div className="card-content-wrapper">
+                    <div className="card-header-flex">
+                      <div className="card-name-container">
                         <span
-                          className="text-xl font-semibold text-white/95 drop-shadow-sm relative block leading-tight"
+                          className="card-name"
                           onMouseEnter={e => showTooltip(section.description, e)}
                           onMouseLeave={hideTooltip}
                           tabIndex={0}
@@ -322,25 +370,24 @@ const AdminDashboard = () => {
                         >
                           {section.name}
                         </span>
-                        <div className="w-8 h-0.5 bg-white/30 rounded-full mt-2 group-hover:w-12 transition-all duration-300"></div>
+                        <div className="card-name-underline"></div>
                       </div>
-                      <div className="ml-4 p-2 bg-white/10 backdrop-blur-sm rounded-xl group-hover:bg-white/20 group-hover:scale-110 transition-all duration-300">
+                      <div className="card-icon-wrapper">
                         {section.icon}
                       </div>
                     </div>
-                    
-                    <div className="space-y-3">
-                      <div className="text-4xl font-bold text-white/95 drop-shadow-sm group-hover:scale-110 transition-transform duration-300 origin-left">
+
+                    <div className="card-number-section">
+                      <div className="card-number">
                         {formatNumber(animatedCounts[section.name] || 0)}
                       </div>
-                      
+
                       {/* Minimalist progress indicator */}
-                     
-                     + <div className="w-full bg-white/10 rounded-full h-1 overflow-hidden">
-                        <div 
-                          className="h-full bg-white/30 rounded-full transition-all duration-1000 ease-out"
-                          style={{ 
-                            width: `${Math.min((animatedCounts[section.name] || 0) / Math.max(...Object.values(animatedCounts), 1) * 100, 100)}%` 
+                      <div className="progress-bar-container">
+                        <div
+                          className="progress-bar-fill"
+                          style={{
+                            width: `${Math.min((animatedCounts[section.name] || 0) / Math.max(...Object.values(animatedCounts), 1) * 100, 100)}%`
                           }}
                         ></div>
                       </div>
@@ -351,15 +398,15 @@ const AdminDashboard = () => {
             ))
           )}
         </div>
-       
+
         {/* Enhanced Tooltip */}
         {tooltip.show && (
           <div
-            className="fixed z-50 px-4 py-3 rounded-xl bg-slate-900/95 backdrop-blur-sm text-white text-sm shadow-2xl pointer-events-none border border-slate-700 max-w-xs"
+            className="tooltip"
             style={{ left: tooltip.x + 15, top: tooltip.y - 50 }}
           >
-            <div className="font-medium text-slate-100">{tooltip.text}</div>
-            <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-0 h-0 border-t-4 border-b-4 border-r-8 border-transparent border-r-slate-900/95"></div>
+            <div className="tooltip-text">{tooltip.text}</div>
+            <div className="tooltip-arrow"></div>
           </div>
         )}
       </div>
@@ -368,3 +415,479 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+// --- Embedded CSS Styles ---
+const dashboardStyles = `
+/* General Layout */
+.admin-dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #f8fafc, #f9fafb, #f0f9ff);
+}
+
+.admin-dashboard-content {
+  flex: 1;
+  min-width: 0;
+  padding: 2.5rem 0.5rem;
+  /* Added margin-left to push content past the sidebar */
+  /* Assuming Sidebar has a fixed width, e.g., 250px. Adjust this value if your sidebar is wider/narrower */
+  margin-left: 250px; /* Adjust this value to match your Sidebar's width */
+}
+
+@media (min-width: 640px) {
+  .admin-dashboard-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .admin-dashboard-content {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-dashboard-content {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Header */
+.dashboard-header {
+  margin-bottom: 2.5rem;
+  text-align: center; /* Center the new title */
+}
+
+.main-dashboard-title {
+  font-size: 2.5rem; /* Larger font size for the title */
+  color: #1e293b; /* Darker color for prominence */
+  margin-bottom: 1rem; /* Space below the title */
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Subtle text shadow */
+}
+
+.header-underline {
+  width: 6rem;
+  height: 0.25rem;
+  background: linear-gradient(to right, #94a3b8, #d1d5db);
+  border-radius: 9999px;
+  margin: 0 auto; /* Center the underline as well */
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Card Link Wrapper */
+.card-link {
+  display: block;
+  outline: none;
+}
+
+.card-link:focus {
+  outline: none;
+}
+
+/* Card Base */
+.dashboard-card {
+  position: relative;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  height: 12rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.5s ease-in-out;
+}
+
+.card-link:hover .dashboard-card {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: translateY(-0.75rem) scale(1.05);
+}
+
+.card-link:active .dashboard-card {
+  transform: scale(0.95);
+}
+
+/* Card Background Gradients */
+.bg-slate-gradient {
+  background: linear-gradient(to bottom right, #1e293b, #1e293b, #334155);
+}
+.bg-gray-gradient {
+  background: linear-gradient(to bottom right, #4b5563, #374151, #1f2937);
+}
+.bg-zinc-gradient {
+  background: linear-gradient(to bottom right, #3f3f46, #27272a, #18181b);
+}
+.bg-neutral-gradient {
+  background: linear-gradient(to bottom right, #404040, #262626, #0a0a0a);
+}
+.bg-stone-gradient {
+  background: linear-gradient(to bottom right, #44403c, #292524, #1c1917);
+}
+.bg-light-slate-gradient {
+  background: linear-gradient(to bottom right, #475569, #334155, #64748b);
+}
+.bg-light-gray-gradient {
+  background: linear-gradient(to bottom right, #6b7280, #4b5563, #374151);
+}
+.bg-light-zinc-gradient {
+  background: linear-gradient(to bottom right, #52525b, #3f3f46, #27272a);
+}
+.bg-light-neutral-gradient {
+  background: linear-gradient(to bottom right, #737373, #525252, #404040);
+}
+.bg-light-stone-gradient {
+  background: linear-gradient(to bottom right, #78716c, #57534e, #44403c);
+}
+.bg-medium-slate-gradient {
+  background: linear-gradient(to bottom right, #64748b, #475569, #94a3b8);
+}
+
+/* Card Shadow Colors */
+.shadow-slate {
+  box-shadow: 0 10px 15px -3px rgba(71, 85, 105, 0.2), 0 4px 6px -2px rgba(71, 85, 105, 0.2);
+}
+.shadow-gray {
+  box-shadow: 0 10px 15px -3px rgba(107, 114, 128, 0.2), 0 4px 6px -2px rgba(107, 114, 128, 0.2);
+}
+.shadow-zinc {
+  box-shadow: 0 10px 15px -3px rgba(113, 113, 122, 0.2), 0 4px 6px -2px rgba(113, 113, 122, 0.2);
+}
+.shadow-neutral {
+  box-shadow: 0 10px 15px -3px rgba(163, 163, 163, 0.2), 0 4px 6px -2px rgba(163, 163, 163, 0.2);
+}
+.shadow-stone {
+  box-shadow: 0 10px 15px -3px rgba(168, 162, 158, 0.2), 0 4px 6px -2px rgba(168, 162, 158, 0.2);
+}
+.shadow-light-slate {
+  box-shadow: 0 10px 15px -3px rgba(148, 163, 184, 0.2), 0 4px 6px -2px rgba(148, 163, 184, 0.2);
+}
+.shadow-light-gray {
+  box-shadow: 0 10px 15px -3px rgba(156, 163, 175, 0.2), 0 4px 6px -2px rgba(156, 163, 175, 0.2);
+}
+.shadow-light-zinc {
+  box-shadow: 0 10px 15px -3px rgba(161, 161, 170, 0.2), 0 4px 6px -2px rgba(161, 161, 170, 0.2);
+}
+.shadow-light-neutral {
+  box-shadow: 0 10px 15px -3px rgba(189, 189, 189, 0.2), 0 4px 6px -2px rgba(189, 189, 189, 0.2);
+}
+.shadow-light-stone {
+  box-shadow: 0 10px 15px -3px rgba(214, 211, 209, 0.2), 0 4px 6px -2px rgba(214, 211, 209, 0.2);
+}
+.shadow-medium-slate {
+  box-shadow: 0 10px 15px -3px rgba(203, 213, 225, 0.2), 0 4px 6px -2px rgba(203, 213, 225, 0.2);
+}
+
+
+/* Card Internal Elements */
+.card-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.05), transparent);
+}
+
+.card-circle-top-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8rem;
+  height: 8rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 9999px;
+  transform: translateY(-4rem) translateX(4rem);
+}
+
+.card-circle-bottom-left {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 6rem;
+  height: 6rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 9999px;
+  transform: translateY(3rem) translateX(-3rem);
+}
+
+.card-dot-top-right-large {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+}
+
+.card-dot-top-right-small {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 0.25rem;
+  height: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+}
+
+.card-content-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+.card-header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.card-name-container {
+  flex: 1;
+}
+
+.card-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
+  position: relative;
+  display: block;
+  line-height: 1.25;
+}
+
+.card-name-underline {
+  width: 2rem;
+  height: 0.125rem;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.card-link:hover .card-name-underline {
+  width: 3rem;
+}
+
+.card-icon-wrapper {
+  margin-left: 1rem;
+  padding: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  border-radius: 0.75rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.card-link:hover .card-icon-wrapper {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.card-icon {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.card-number-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.card-number {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
+  transform-origin: left;
+  transition: transform 0.3s ease-in-out;
+}
+
+.card-link:hover .card-number {
+  transform: scale(1.1);
+}
+
+.progress-bar-container {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  height: 0.25rem;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+  transition: all 1s ease-out;
+}
+
+/* Skeleton Card */
+.skeleton-card {
+  position: relative;
+  border-radius: 0.75rem;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background: linear-gradient(to bottom right, #e2e8f0, #cbd5e1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  height: 10rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #e2e8f0;
+}
+
+.skeleton-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-card-text-line-long {
+  height: 1.5rem;
+  width: 8rem;
+  background-color: #cbd5e1;
+  border-radius: 0.25rem;
+}
+
+.skeleton-card-circle {
+  height: 2rem;
+  width: 2rem;
+  background-color: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.skeleton-card-text-line-short {
+  height: 2.5rem;
+  width: 5rem;
+  background-color: #cbd5e1;
+  border-radius: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+/* Error State */
+.error-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+.error-content-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.error-card {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  max-width: 28rem;
+  width: 100%;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+
+.error-icon {
+  color: #94a3b8;
+  font-size: 3.75rem;
+  margin-bottom: 1rem;
+}
+
+.error-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.error-message {
+  color: #475569;
+  margin-bottom: 1.5rem;
+}
+
+.error-retry-button {
+  background: linear-gradient(to right, #475569, #334155);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease-in-out;
+  font-weight: 500;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.error-retry-button:hover {
+  background: linear-gradient(to right, #334155, #1e293b);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Tooltip */
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background-color: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(4px);
+  color: white;
+  font-size: 0.875rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  border: 1px solid #334155;
+  max-width: 16rem;
+}
+
+.tooltip-text {
+  font-weight: 500;
+  color: #f1f5f9;
+}
+
+.tooltip-arrow {
+  position: absolute;
+  left: -0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 0.25rem solid transparent;
+  border-bottom: 0.25rem solid transparent;
+  border-right: 0.5rem solid rgba(15, 23, 42, 0.95);
+}
+`;
