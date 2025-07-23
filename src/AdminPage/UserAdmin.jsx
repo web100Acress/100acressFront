@@ -4,7 +4,6 @@ import Sidebar from "./Sidebar";
 import Tippy from '@tippyjs/react';
 import { Link } from "react-router-dom";
 import { MdPeople, MdSearch, MdVisibility } from "react-icons/md";
-import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 
