@@ -1250,7 +1250,7 @@ export default function Navbar() {
                       <MenuItem>
                         <NavLink className="" onClick={handleCancel} to={`/userdashboard/`}>View Profile</NavLink>
                       </MenuItem><MenuItem fontSize="sm">
-                        {decodedToken?.role === "Admin" && <NavLink className="" onClick={handleCancel} to={`/Admin/user`}>Admin</NavLink>}
+                        {decodedToken?.role === "Admin" && <NavLink className="" onClick={handleCancel} to={`/Admin/dashboard`}>Admin</NavLink>}
                         {decodedToken?.role === "ContentWriter" && <NavLink className="" to={`/seo/blogs`}>Blog Management</NavLink>}
                       </MenuItem>
 
