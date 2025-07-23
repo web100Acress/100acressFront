@@ -2,37 +2,52 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { MdInfo, MdAttachMoney, MdDateRange, MdBarChart, MdDescription, MdStar, MdCheckCircle } from "react-icons/md";
 
-const customStyle = {
-  position: "absolute",
-  top: "10px",
-  marginLeft: "250px",
-  right: "auto",
-  width: "80%",
-};
-
-function handleFileChange(event) {
-  const input = event.target;
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const previewImage = document.getElementById("previewImage");
-      previewImage.src = e.target.result;
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-}
 const ProjectView = () => {
-  const [viewDetails, setViewDetails] = useState([]);
+  const [viewDetails, setViewDetails] = useState({});
   const { pUrl } = useParams();
+
   const {
-    project_floorplan_Image,
-    projectRedefine_Connectivity,
-    projectRedefine_Business,
-    projectRedefine_Education,
-    projectRedefine_Entertainment,
-    Amenities,
-    projectGallery
+    project_floorplan_Image = [],
+    projectRedefine_Connectivity = [],
+    projectRedefine_Business = [],
+    projectRedefine_Education = [],
+    projectRedefine_Entertainment = [],
+    Amenities = [],
+    projectGallery = [],
+    frontImage,
+    thumbnailImage,
+    project_locationImage,
+    logo,
+    highlightImage,
+    projectMaster_plan,
+    projectName,
+    paymentPlan,
+    country,
+    luxury,
+    spotlight,
+    totalLandArea,
+    totalUnit,
+    towerNumber,
+    mobileNumber,
+    possessionDate,
+    maxPrice,
+    minPrice,
+    launchingDate,
+    project_discripation,
+    project_Status,
+    builderName,
+    projectAddress,
+    city,
+    state,
+    projectOverview,
+    projectReraNo,
+    AboutDeveloper,
+    type,
+    project_url,
+    meta_title,
+    meta_description,
   } = viewDetails;
 
   useEffect(() => {
@@ -41,539 +56,202 @@ const ProjectView = () => {
         const res = await axios.get(
           `https://api.100acress.com/project/View/${pUrl}`
         );
-        setViewDetails(res.data.dataview[0]);
+        setViewDetails(res.data.dataview[0] || {});
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching project details:", error);
       }
     };
     fetchData();
-  }, []);
-  
+  }, [pUrl]);
+
+  // Helper for rendering a single image with a title
+  const renderSingleImageCard = (imageObject, title) => (
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 flex flex-col items-center justify-center space-y-4 border border-gray-100">
+      <h3 className="text-xl font-semibold text-gray-800 text-center">{title}</h3>
+      <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200">
+        {imageObject && imageObject.url ? (
+          <img
+            src={imageObject.url}
+            alt={title}
+            className="max-h-full max-w-full object-contain" // Use object-contain for full image visibility
+          />
+        ) : (
+          <span className="text-gray-500 text-sm italic">No {title} available</span>
+        )}
+      </div>
+    </div>
+  );
+
+  // Helper for rendering image galleries
+  const renderGalleryCard = (images, title) => (
+    <section className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border border-gray-100">
+      <h3 className="text-xl font-semibold text-gray-800 mb-6 border-b pb-3 border-gray-200">{title}</h3>
+      {images && Array.isArray(images) && images.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {images.map((image, index) => (
+            <article
+              key={index}
+              className="relative w-full aspect-video overflow-hidden rounded-lg shadow-md group cursor-pointer" // aspect-video for consistent ratio
+            >
+              <img
+                src={image.url}
+                alt={`${title} ${index + 1}`}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span className="text-white text-sm font-medium">View Image</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p className="text-gray-500 italic text-center">No {title} images available.</p>
+      )}
+    </section>
+  );
+
+  // Helper for rendering lists with a modern badge/chip style
+  const renderFeatureList = (items, title) => (
+    <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+      <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-3 border-gray-200">{title}</h3>
+      {items && Array.isArray(items) && items.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {items.map((item, index) => (
+            <span
+              key={index}
+              className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full shadow-sm" // Modern badge style
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <p className="text-gray-500 italic">No {title.toLowerCase()} available.</p>
+      )}
+    </div>
+  );
+
+  // Helper for rendering a detail row in the main information table
+  const renderDetailRow = (label, value) => (
+    <tr className="group even:bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+      <th className="px-8 py-4 text-left text-red-700 font-medium align-top whitespace-nowrap border-r border-gray-200">
+        {label}
+      </th>
+      <td className="px-8 py-4 text-left text-gray-800 break-words font-light">
+        {value || <span className="text-gray-500 italic">N/A</span>}
+      </td>
+    </tr>
+  );
+
+  const groupedSections = [
+    {
+      icon: <MdInfo className="text-2xl text-blue-500 mr-2" />, title: "Basic Info", fields: [
+        { label: "Property Name", value: projectName, icon: <MdInfo className="inline mr-1" /> },
+        { label: "Type", value: type, icon: <MdInfo className="inline mr-1" /> },
+        { label: "Project Status", value: project_Status, icon: <MdInfo className="inline mr-1" /> },
+        { label: "Builder Name", value: builderName, icon: <MdInfo className="inline mr-1" /> },
+        { label: "Address", value: projectAddress, icon: <MdInfo className="inline mr-1" /> },
+        { label: "City", value: city, icon: <MdInfo className="inline mr-1" /> },
+        { label: "State", value: state, icon: <MdInfo className="inline mr-1" /> },
+        { label: "Country", value: country, icon: <MdInfo className="inline mr-1" /> },
+      ]
+    },
+    {
+      icon: <MdAttachMoney className="text-2xl text-green-500 mr-2" />, title: "Pricing & Dates", fields: [
+        { label: "Minimum Price", value: minPrice, icon: <MdAttachMoney className="inline mr-1" /> },
+        { label: "Maximum Price", value: maxPrice, icon: <MdAttachMoney className="inline mr-1" /> },
+        { label: "Payment Plan", value: paymentPlan, icon: <MdAttachMoney className="inline mr-1" /> },
+        { label: "Launching Date", value: launchingDate, icon: <MdDateRange className="inline mr-1" /> },
+        { label: "Possession Date", value: possessionDate, icon: <MdDateRange className="inline mr-1" /> },
+        { label: "Project Rera No", value: projectReraNo, icon: <MdCheckCircle className="inline mr-1" /> },
+      ]
+    },
+    {
+      icon: <MdBarChart className="text-2xl text-purple-500 mr-2" />, title: "Project Stats", fields: [
+        { label: "Total Land Area", value: totalLandArea, icon: <MdBarChart className="inline mr-1" /> },
+        { label: "Total Unit", value: totalUnit, icon: <MdBarChart className="inline mr-1" /> },
+        { label: "Tower Number", value: towerNumber, icon: <MdBarChart className="inline mr-1" /> },
+        { label: "Mobile Number", value: mobileNumber, icon: <MdBarChart className="inline mr-1" /> },
+      ]
+    },
+    {
+      icon: <MdDescription className="text-2xl text-orange-500 mr-2" />, title: "Descriptions", fields: [
+        { label: "Project Overview", value: projectOverview, icon: <MdDescription className="inline mr-1" /> },
+        { label: "Project Description", value: project_discripation, icon: <MdDescription className="inline mr-1" />, textarea: true },
+        { label: "About Developer", value: AboutDeveloper, icon: <MdDescription className="inline mr-1" /> },
+        { label: "Meta Title", value: meta_title, icon: <MdDescription className="inline mr-1" /> },
+        { label: "Meta Description", value: meta_description, icon: <MdDescription className="inline mr-1" /> },
+      ]
+    },
+    {
+      icon: <MdStar className="text-2xl text-yellow-500 mr-2" />, title: "Features", fields: [
+        { label: "Luxury", value: luxury, icon: <MdStar className="inline mr-1" /> },
+        { label: "Spotlight", value: spotlight, icon: <MdStar className="inline mr-1" /> },
+        { label: "Amenities", value: Amenities, icon: <MdStar className="inline mr-1" />, textarea: true },
+        { label: "Project Redefine Business", value: projectRedefine_Business, icon: <MdStar className="inline mr-1" /> },
+        { label: "Project Redefine Connectivity", value: projectRedefine_Connectivity, icon: <MdStar className="inline mr-1" /> },
+        { label: "Project Redefine Education", value: projectRedefine_Education, icon: <MdStar className="inline mr-1" /> },
+        { label: "Project Redefine Entertainment", value: projectRedefine_Entertainment, icon: <MdStar className="inline mr-1" /> },
+      ]
+    },
+  ];
+
+
   return (
-    <div style={{overflowX:"hidden"}}>
+    <div className="flex bg-gray-50 min-h-screen"> {/* Lighter background */}
       <Sidebar />
-      <div style={customStyle}>
-        <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
-          <div className="card-body">
-            <table className="table table-striped table-bordered">
-              <tbody>
-                <tr>
-                  <th>Front Images</th>
-                </tr>
-                <tr>
-                  <td>
-                    <img
-                      src={
-                        viewDetails.frontImage ? viewDetails.frontImage.url : ""
-                      }
-                      alt=""
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <th>Thumbnail Image</th>
-                </tr>
-                <tr>
-                  <td>
-                    <img
-                      src={
-                        viewDetails?.thumbnailImage ? viewDetails.thumbnailImage.url : ""
-                      }
-                      alt=""
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                  </td>
-                </tr>
+      <div className="flex-1 p-8 ml-64 overflow-auto font-sans"> {/* Increased padding, added font-sans */}
+        <div className="max-w-7xl mx-auto space-y-10"> {/* Wider max-width, increased space-y */}
+          
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-10 text-center tracking-tight"> {/* More prominent title */}
+            Project Overview
+          </h1>
 
-              
-
-                <tr>
-                  <th>Project FloorPlan Image</th>
-                </tr>
-                <tr>
-                  <td>
-                    <section className="w-full mx-4">
-                      <div className="flex flex-wrap max-w-screen-md ">
-                        {project_floorplan_Image &&
-                          Array.isArray(project_floorplan_Image) &&
-                          project_floorplan_Image.length > 0 &&
-                          project_floorplan_Image.map((image, index) => (
-                            <article
-                              key={index}
-                              className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
-                            >
-                              <img
-                                src={image.url}
-                                alt={`Image ${index + 1}`}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                            </article>
-                          ))}
-                      </div>
-                    </section>
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>Project Location Image</th>
-                </tr>
-                <tr>
-                  <td>
-                    <img
-                      src={
-                        viewDetails.project_locationImage
-                          ? viewDetails.project_locationImage.url
-                          : ""
-                      }
-                      alt=""
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>Project Logo Image</th>
-                </tr>
-                <tr>
-                  <td>
-                    <img
-                      src={
-                        viewDetails.logo
-                          ? viewDetails.logo.url
-                          : ""
-                      }
-                      alt=""
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>Project highlight Image</th>
-                </tr>
-                <tr>
-                  <td>
-                    <img
-                      src={
-                        viewDetails.highlightImage
-                          ? viewDetails.highlightImage.url
-                          : ""
-                      }
-                      alt=""
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>Project Master Plan</th>
-                </tr>
-                <tr>
-                  <td>
-                    <img
-                      src={
-                        viewDetails.projectMaster_plan
-                          ? viewDetails.projectMaster_plan.url
-                          : ""
-                      }
-                      alt="projectMaster_plan"
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>Project projectGallery Image</th>
-                </tr>
-                <tr>
-                  <td>
-                    <section className="w-full mx-4">
-                      <div className="flex flex-wrap max-w-screen-md ">
-                        {projectGallery &&
-                          Array.isArray(projectGallery) &&
-                          projectGallery.length > 0 &&
-                          projectGallery.map((image, index) => (
-                            <article
-                              key={index}
-                              className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
-                            >
-                              <img
-                                src={image.url}
-                                alt={`Image ${index + 1}`}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                            </article>
-                          ))}
-                      </div>
-                    </section>
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Property Name :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.projectName}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Payment Plan :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.paymentPlan}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Country :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails?.country}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Luxury :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails?.luxury}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Total LandArea Name :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.totalLandArea}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Total Unit  :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.totalUnit}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Tower Number  :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.towerNumber}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Mobile Number  :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.mobileNumber}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Possession Date   :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.possessionDate}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                     Maximum Price  :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.maxPrice}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Minimum Price  :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.minPrice}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Launching Date  :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.launchingDate}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Description :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.project_discripation}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Status :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.project_Status}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Builder Name :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.builderName}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Address :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.projectAddress}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      City:{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.city}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      State :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.state}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Overview :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.projectOverview}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold">
-                      Project Redefine  Connectivity:
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {projectRedefine_Connectivity &&
-                        Array.isArray(projectRedefine_Connectivity) &&
-                        projectRedefine_Connectivity.length > 0
-                          ? projectRedefine_Connectivity.map((item, index) => (
-                              <span key={index}> {" "}
-                               {item}
-                              </span>
-                            ))
-                          : " No connectivity information available."}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Redefine Business :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {projectRedefine_Business && Array.isArray(projectRedefine_Business) && 
-                        projectRedefine_Business.length > 0 ? projectRedefine_Business.map((item,index)=>(
-                          <span key={index}>{" "}
-                          {item}
-                          </span>
-                        )) :" No Business information available."}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Redefine Education :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                      {projectRedefine_Education && Array.isArray(projectRedefine_Education) && 
-                      projectRedefine_Education.length > 0 ? projectRedefine_Education.map((item,index)=>(
-                        <span key={index}>
-                        {item}
-                        </span>
-                      )): "No Project Redefine Education"}
-
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Redefine Entertainment :{" "}
-                      <span
-                        style={{ color: "black", fontWeight: "normal" }}>
-                          {projectRedefine_Entertainment && Array.isArray (projectRedefine_Entertainment) && 
-                          projectRedefine_Entertainment.length > 0 ? projectRedefine_Entertainment.map((item,index)=>(
-                            <span key={index}>{item}</span>
-                          )) :" No  Project Redefine Entertainment"
-                          }
-                        </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Rera No :{" "}
-                      <span
-                        style={{ color: "black", fontWeight: "normal" }}
-                      >{viewDetails.projectReraNo}</span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      About Developer :{" "}
-                      <span
-                        style={{ color: "black", fontWeight: "normal" }}
-                      > {viewDetails.AboutDeveloper}</span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Amenities :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {Amenities && Array.isArray(Amenities) && Amenities.length > 0 ? Amenities.map((item,index)=>(
-                             <span key={index}>
-                              {item}
-                             </span>
-                        )):"No Amenities"}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Type :{" "}
-                      <span
-                        style={{ color: "black", fontWeight: "normal" }}
-                      >{viewDetails.type}</span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project URL :{" "}
-                      <span
-                        style={{ color: "black", fontWeight: "normal" }}
-                      >{viewDetails.project_url}</span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Meta Title :{" "}
-                      <span
-                        style={{ color: "black", fontWeight: "normal" }}
-                      >{viewDetails.meta_title}</span>
-                    </span>
-                  </th>
-                </tr>
-
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Meta Description :{" "}
-                      <span
-                        style={{ color: "black", fontWeight: "normal" }}
-                      >{viewDetails.meta_description}</span>
-                    </span>
-                  </th>
-                </tr>
-
-              </tbody>
-            </table>
+          {/* Image Gallery Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"> {/* Larger gap */}
+            {renderSingleImageCard(frontImage, "Front Images")}
+            {renderSingleImageCard(thumbnailImage, "Thumbnail Image")}
+            {renderSingleImageCard(project_locationImage, "Project Location Image")}
+            {renderSingleImageCard(logo, "Project Logo Image")}
+            {renderSingleImageCard(highlightImage, "Project highlight Image")}
+            {renderSingleImageCard(projectMaster_plan, "Project Master Plan")}
           </div>
+
+          <div className="space-y-8"> {/* Separate space for galleries */}
+            {renderGalleryCard(project_floorplan_Image, "Project FloorPlan Image")}
+            {renderGalleryCard(projectGallery, "Project projectGallery Image")}
+          </div>
+          
+          {/* Project Information Table */}
+          <section className="space-y-8">
+            {groupedSections.map((section, idx) => (
+              <div key={section.title} className="bg-white rounded-xl shadow-2xl border-l-4 border-gradient-to-r from-blue-400 to-purple-400 p-8 hover:shadow-3xl transition-shadow duration-300">
+                <div className="flex items-center mb-6">
+                  {section.icon}
+                  <h2 className="text-2xl font-bold text-gray-800">{section.title}</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {section.fields.map(field => (
+                    <div key={field.label}>
+                      <label className="block text-red-700 font-semibold mb-2 flex items-center">{field.icon}{field.label}</label>
+                      <div className={`w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800${field.textarea ? ' whitespace-pre-wrap' : ''}`}>{field.value || <span className="text-gray-400 italic">N/A</span>}</div>
+                    </div>
+                  ))}
+                </div>
+                {idx < groupedSections.length - 1 && <hr className="my-8 border-t-2 border-dashed border-gray-200" />}
+              </div>
+            ))}
+          </section>
+
+          {/* Features and Amenities Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8"> {/* Grid for lists */}
+            {renderFeatureList(projectRedefine_Connectivity, "Project Redefine Connectivity")}
+            {renderFeatureList(projectRedefine_Business, "Project Redefine Business")}
+            {renderFeatureList(projectRedefine_Education, "Project Redefine Education")}
+            {renderFeatureList(projectRedefine_Entertainment, "Project Redefine Entertainment")}
+            {renderFeatureList(Amenities, "Amenities")}
+          </div>
+
         </div>
       </div>
     </div>

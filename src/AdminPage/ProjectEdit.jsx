@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import { MdOutlineDeleteOutline } from "react-icons/md";
+import { MdOutlineDeleteOutline, MdInfo, MdAttachMoney, MdDateRange, MdBarChart, MdDescription, MdStar, MdCheckCircle, MdUpdate } from "react-icons/md";
 const customStyle = {
   position: "absolute",
   top: "100px",
@@ -311,1003 +311,234 @@ const ProjectEdit = () => {
     }
   };
 
+  const [loading, setLoading] = useState(false);
+
+  const groupedSections = [
+    {
+      icon: <MdInfo className="text-2xl text-blue-500 mr-2" />, title: "Basic Info", fields: [
+        { label: "Property Name", name: "projectName", icon: <MdInfo className="inline mr-1" /> },
+        { label: "Type", name: "type", icon: <MdInfo className="inline mr-1" /> },
+        { label: "Project Status", name: "project_Status", icon: <MdInfo className="inline mr-1" /> },
+        { label: "Builder Name", name: "builderName", icon: <MdInfo className="inline mr-1" /> },
+        { label: "Address", name: "projectAddress", icon: <MdInfo className="inline mr-1" /> },
+        { label: "City", name: "city", icon: <MdInfo className="inline mr-1" /> },
+        { label: "State", name: "state", icon: <MdInfo className="inline mr-1" /> },
+        { label: "Country", name: "country", icon: <MdInfo className="inline mr-1" /> },
+      ]
+    },
+    {
+      icon: <MdAttachMoney className="text-2xl text-green-500 mr-2" />, title: "Pricing & Dates", fields: [
+        { label: "Minimum Price", name: "minPrice", icon: <MdAttachMoney className="inline mr-1" /> },
+        { label: "Maximum Price", name: "maxPrice", icon: <MdAttachMoney className="inline mr-1" /> },
+        { label: "Payment Plan", name: "paymentPlan", icon: <MdAttachMoney className="inline mr-1" /> },
+        { label: "Launching Date", name: "launchingDate", icon: <MdDateRange className="inline mr-1" /> },
+        { label: "Possession Date", name: "possessionDate", icon: <MdDateRange className="inline mr-1" /> },
+        { label: "Project Rera No", name: "projectReraNo", icon: <MdCheckCircle className="inline mr-1" /> },
+      ]
+    },
+    {
+      icon: <MdBarChart className="text-2xl text-purple-500 mr-2" />, title: "Project Stats", fields: [
+        { label: "Total Land Area", name: "totalLandArea", icon: <MdBarChart className="inline mr-1" /> },
+        { label: "Total Unit", name: "totalUnit", icon: <MdBarChart className="inline mr-1" /> },
+        { label: "Tower Number", name: "towerNumber", icon: <MdBarChart className="inline mr-1" /> },
+        { label: "Mobile Number", name: "mobileNumber", icon: <MdBarChart className="inline mr-1" /> },
+      ]
+    },
+    {
+      icon: <MdDescription className="text-2xl text-orange-500 mr-2" />, title: "Descriptions", fields: [
+        { label: "Project Overview", name: "projectOverview", icon: <MdDescription className="inline mr-1" /> },
+        { label: "Project Description", name: "project_discripation", icon: <MdDescription className="inline mr-1" />, textarea: true },
+        { label: "About Developer", name: "AboutDeveloper", icon: <MdDescription className="inline mr-1" /> },
+        { label: "Meta Title", name: "meta_title", icon: <MdDescription className="inline mr-1" /> },
+        { label: "Meta Description", name: "meta_description", icon: <MdDescription className="inline mr-1" /> },
+      ]
+    },
+    {
+      icon: <MdStar className="text-2xl text-yellow-500 mr-2" />, title: "Features", fields: [
+        { label: "Luxury", name: "luxury", icon: <MdStar className="inline mr-1" />, select: true, options: ["True", "False"] },
+        { label: "Spotlight", name: "spotlight", icon: <MdStar className="inline mr-1" />, select: true, options: ["True", "False"] },
+        { label: "Amenities", name: "Amenities", icon: <MdStar className="inline mr-1" />, textarea: true },
+        { label: "Project Redefine Business", name: "projectRedefine_Business", icon: <MdStar className="inline mr-1" /> },
+        { label: "Project Redefine Connectivity", name: "projectRedefine_Connectivity", icon: <MdStar className="inline mr-1" /> },
+        { label: "Project Redefine Education", name: "projectRedefine_Education", icon: <MdStar className="inline mr-1" /> },
+        { label: "Project Redefine Entertainment", name: "projectRedefine_Entertainment", icon: <MdStar className="inline mr-1" /> },
+      ]
+    },
+  ];
+
   return (
-    <>
+    <div className="flex bg-gray-50 min-h-screen">
       <Sidebar />
-      <div style={customStyle}>
-        <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
-          <div className="card-body">
-            <table className="table table-striped table-bordered">
-              <tbody>
-                <tr>
-                  <th>Project Front Image</th>
-                </tr>
+      <div className="flex-1 p-8 ml-64 overflow-auto font-sans">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-10 text-center tracking-tight">
+            Edit Project
+          </h1>
 
-                <tr>
-                  {/* Front Image code here */}
-                  <td>
-                    <img
-                      src={values.frontImage ? values.frontImage.url : ""}
-                      alt="frontImage"
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                    <br />
-                    <input type="file" onChange={(e) => handleFileChange(e)} />
-                  </td>
-                </tr>
-                <tr>
-                  <th>Project Thumbnail Image</th>
-                </tr>
-
-                <tr>
-                  {/* Front Image code here */}
-                  <td>
-                    <img
-                      src={values?.thumbnailImage ? values.thumbnailImage.url : ""}
-                      alt="thumbnailImage"
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                    <br />
-                    <input type="file" onChange={(e) => handleThumbnailImageChange(e)} />
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>Project FloorPlan Image</th>
-                </tr>
-
-                <tr>
-                  <td>
-                    <section className="w-full mx-4 mb-4">
-                      <div className="flex flex-wrap max-w-screen-md">
-                        {project_floorplan_Image &&
-                          Array.isArray(project_floorplan_Image) &&
-                          project_floorplan_Image.length > 0 &&
-                          project_floorplan_Image.map((image, index) => (
-
-                            <article
-                              key={index}
-                              className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
-                            >
-
-                              <MdOutlineDeleteOutline
-                                onClick={() => deleteFloorPlanImage(index)}
-                                size={30}
-                                className="group-hover:text-red-500"
-                              />
-
-                              <img
-                                src={image.url}
-                                alt={`Image ${index + 1}`}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                            </article>
-                          ))}
-                        <br />
-                        <input
-                          type="file"
-                          name="project_floorplan_Image"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const files = Array.from(e.target.files);
-                            const updatedImages = files.map((file) => ({
-                              url: URL.createObjectURL(file),
-                              file,
-                            }));
-                            setValues({
-                              ...values,
-                              project_floorplan_Image: [
-                                ...(project_floorplan_Image || []),
-                                ...updatedImages,
-                              ],
-                            });
-                          }}
-                          multiple
-                          className="mt-2"
-                        />
-                      </div>
-                    </section>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Project Highlight Image</th>
-                </tr>
-
-                <tr>
-                  <td>
-                    <tr>
-                      <td>
-                        <img
-                          src={
-                            values.highlightImage
-                              ? values.highlightImage.url
-                              : ""
-                          }
-                          alt="highlightImage"
-                          style={{ maxWidth: "50%" }}
-                          id="previewImage"
-                        />
-                        <br />
-                        <input
-                          type="file"
-                          name="highlightImage"
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-
-                            setValues({
-                              ...values,
-                              highlightImage: file,
-                            });
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>Project Gallery Image</th>
-                </tr>
-
-                <tr>
-                  <td>
-                    <section className="w-full mx-4 mb-4">
-                      <div className="flex flex-wrap max-w-screen-md">
-                        {projectGallery &&
-                          Array.isArray(projectGallery) &&
-                          projectGallery.length > 0 &&
-                          projectGallery.map((image, index) => (
-
-                            <article
-                              key={index}
-                              className="group w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
-                            >
-
-                              <MdOutlineDeleteOutline
-                                onClick={() => deleteFloorPlanImage(index)}
-                                size={30}
-                                className="group-hover:text-red-500"
-                              />
-
-                              <img
-                                src={image.url}
-                                alt={`Image ${index + 1}`}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                            </article>
-                          ))}
-                        <br />
-                        <input
-                          type="file"
-                          name="projectGallery"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const files = Array.from(e.target.files);
-                            const updatedImages = files.map((file) => ({
-                              url: URL.createObjectURL(file),
-                              file,
-                            }));
-                            setValues({
-                              ...values,
-                              projectGallery: [
-                                ...(projectGallery || []),
-                                ...updatedImages,
-                              ],
-                            });
-                          }}
-                          multiple
-                          className="mt-2"
-                        />
-                        
-                      </div>
-                    </section>
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>Project Location Image</th>
-                </tr>
-
-                <tr>
-                  <td>
-                    <tr>
-                      <td>
-                        <img
-                          src={
-                            values.project_locationImage
-                              ? values.project_locationImage.url
-                              : ""
-                          }
-                          alt="location"
-                          style={{ maxWidth: "50%" }}
-                          id="previewImage"
-                        />
-                        <br />
-                        <input
-                          type="file"
-                          name="project_locationImage"
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-
-                            setValues({
-                              ...values,
-                              project_locationImage: file,
-                            });
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  </td>
-                </tr>
-
-                <tr>
-                  <th> Project Logo Image</th>
-                </tr>
-
-                <tr>
-                  <td>
-                    <tr>
-                      <td>
-                        <img
-                          src={values.logo ? values.logo.url : ""}
-                          alt="logo"
-                          style={{ maxWidth: "50%" }}
-                        />
-                        <br />
-                        <input
-                          type="file"
-                          name="logo"
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-                            // console.log("Selected file:", file.name);
-                            setValues({ ...values, logo: file });
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  </td>
-                </tr>
-
-                <tr>
-                  <th> Project Master Plan</th>
-                </tr>
-
-                <tr>
-                  <td>
-                    <tr>
-                      <td>
-                        <img
-                          src={values.projectMaster_plan ? values.projectMaster_plan.url : ""}
-                          alt="logo"
-                          style={{ maxWidth: "50%" }}
-                        />
-                        <br />
-                        <input
-                          type="file"
-                          name="projectMaster_plan"
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-                            setValues({ ...values, projectMaster_plan: file });
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Property Name :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          value={values.projectName}
-                          name="projectName"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              projectName: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Total LandArea :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          value={values.totalLandArea}
-                          name="totalLandArea"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              totalLandArea: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Total Unit :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          value={values.totalUnit}
-                          name="totalUnit"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              totalUnit: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Tower Number :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          value={values.towerNumber}
-                          name="towerNumber"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              towerNumber: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Mobile Number :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          value={values.mobileNumber}
-                          name="mobileNumber"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              mobileNumber: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Possession Date :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          value={values.possessionDate}
-                          name="possessionDate"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              possessionDate: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Launching Date :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          value={values.launchingDate}
-                          name="launchingDate"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              launchingDate: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Minimum Price :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          value={values.minPrice}
-                          name="minPrice"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              minPrice: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Maximum Price :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          value={values.maxPrice}
-                          name="maxPrice"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              maxPrice: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold">
-                      Project Description :
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <textarea
-                          type="text"
-                          className="outline-none w-full"
-                          value={values.project_discripation}
-                          name="project_discripation"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              project_discripation: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold">
-                      Ammenities :
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <textarea
-                          type="text"
-                          className="outline-none w-full"
-                          value={values.Amenities}
-                          name="Amenities"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              Amenities: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Payment Plan :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          name="paymentPlan"
-                          value={values.paymentPlan}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              paymentPlan: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Status :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          name="project_Status"
-                          value={values.project_Status}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              project_Status: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Builder Name :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          name="builderName"
-                          value={values.builderName}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              builderName: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Address :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          name="projectAddress"
-                          className="outline-none"
-                          value={values.projectAddress}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              projectAddress: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      City:{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          name="city"
-                          className="outline-none"
-                          value={values.city}
-                          onChange={(e) =>
-                            setValues({ ...values, city: e.target.value })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      State :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          name="state"
-                          value={values.state}
-                          onChange={(e) =>
-                            setValues({ ...values, state: e.target.value })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Overview :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          name="projectOverview"
-                          value={values.projectOverview}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              projectOverview: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Redefine Business :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          value={values.projectRedefine_Business}
-                          name="projectRedefine_Business"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              projectRedefine_Business: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Redefine Connectivity :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          name="projectRedefine_Connectivity"
-                          value={values.projectRedefine_Connectivity}
-                          className="outline-none"
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              projectRedefine_Connectivity: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                {/* Country Update */}
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Country :
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          name="country"
-                          value={values.country}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              country: e.target.value,
-                            })
-                          }
-                          className="outline-none"
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-{/* Luxury Update */}
-            <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Luxury :
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <select 
-                            name="luxury" 
-                            id="luxury" 
-                            value={values.luxury} 
-                            onChange={(e) =>
-                              setValues({
-                                ...values,
-                                luxury: e.target.value,
-                              })
-                            }
-                        >
-                          <option value="Select Luxury Type" selected hidden disabled ></option>
-                          <option value="True">True</option>
-                          <option value="False">False</option>
-                        </select>
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-
-{/* Spotlight Update */}
-<tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Spotlight :
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <select 
-                            name="spotlight" 
-                            id="spotlight" 
-                            value={values.spotlight} 
-                            onChange={(e) =>
-                              setValues({
-                                ...values,
-                                spotlight: e.target.value,
-                              })
-                            }
-                        >
-                          <option value="Select spotlight Type" selected hidden disabled ></option>
-                          <option value="True">True</option>
-                          <option value="False">False</option>
-                        </select>
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Redefine Education :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          name="projectRedefine_Education"
-                          value={values.projectRedefine_Education}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              projectRedefine_Education: e.target.value,
-                            })
-                          }
-                          className="outline-none"
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Redefine Entertainment :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          name="projectRedefine_Entertainment"
-                          value={values.projectRedefine_Entertainment}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              projectRedefine_Entertainment: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project Rera No :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          name="projectReraNo"
-                          value={values.projectReraNo}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              projectReraNo: e.target.value,
-                            })
-                          }
-                          className="outline-none"
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      About Developer :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          name="AboutDeveloper"
-                          value={values.AboutDeveloper}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              AboutDeveloper: e.target.value,
-                            })
-                          }
-                          className="outline-none"
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                {/* <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Amenities :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          name="Amenities"
-                          value={values.Amenities}
-                          onChange={(e) =>
-                            setValues({ ...values, Amenities: e.target.value })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr> */}
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Type :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          name="type"
-                          value={values.type}
-                          onChange={(e) =>
-                            setValues({ ...values, type: e.target.value })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Project URL :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          name="project_url"
-                          value={values.project_url}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              project_url: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Meta Title :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          name="meta_title"
-                          value={values.meta_title}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              meta_title: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Meta Description :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        <input
-                          type="text"
-                          className="outline-none"
-                          name="meta_description"
-                          value={values.meta_description}
-                          onChange={(e) =>
-                            setValues({
-                              ...values,
-                              meta_description: e.target.value,
-                            })
-                          }
-                        />
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-              </tbody>
-            </table>
-
-            <button
-              type="button"
-              onClick={handleUpdateUser}
-              class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-            >
-              Update
-            </button>
+          {/* Image Upload Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Front Image */}
+            <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">Front Image</h3>
+              <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
+                {values.frontImage && values.frontImage.url ? (
+                  <img src={values.frontImage.url} alt="frontImage" className="max-h-full max-w-full object-contain" />
+                ) : (
+                  <span className="text-gray-500 text-sm italic">No Front Image</span>
+                )}
+              </div>
+              <input type="file" onChange={handleFileChange} className="mt-2" />
+            </div>
+            {/* Thumbnail Image */}
+            <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">Thumbnail Image</h3>
+              <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
+                {values.thumbnailImage && values.thumbnailImage.url ? (
+                  <img src={values.thumbnailImage.url} alt="thumbnailImage" className="max-h-full max-w-full object-contain" />
+                ) : (
+                  <span className="text-gray-500 text-sm italic">No Thumbnail Image</span>
+                )}
+              </div>
+              <input type="file" onChange={handleThumbnailImageChange} className="mt-2" />
+            </div>
+            {/* Project Location Image */}
+            <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">Project Location Image</h3>
+              <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
+                {values.project_locationImage && values.project_locationImage.url ? (
+                  <img src={values.project_locationImage.url} alt="location" className="max-h-full max-w-full object-contain" />
+                ) : (
+                  <span className="text-gray-500 text-sm italic">No Location Image</span>
+                )}
+              </div>
+              <input type="file" name="project_locationImage" onChange={(e) => {
+                const file = e.target.files[0];
+                setValues({ ...values, project_locationImage: file });
+              }} className="mt-2" />
+            </div>
+            {/* Logo Image */}
+            <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">Project Logo Image</h3>
+              <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
+                {values.logo && values.logo.url ? (
+                  <img src={values.logo.url} alt="logo" className="max-h-full max-w-full object-contain" />
+                ) : (
+                  <span className="text-gray-500 text-sm italic">No Logo Image</span>
+                )}
+              </div>
+              <input type="file" name="logo" onChange={(e) => {
+                const file = e.target.files[0];
+                setValues({ ...values, logo: file });
+              }} className="mt-2" />
+            </div>
+            {/* Highlight Image */}
+            <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">Highlight Image</h3>
+              <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
+                {values.highlightImage && values.highlightImage.url ? (
+                  <img src={values.highlightImage.url} alt="highlightImage" className="max-h-full max-w-full object-contain" />
+                ) : (
+                  <span className="text-gray-500 text-sm italic">No Highlight Image</span>
+                )}
+              </div>
+              <input type="file" name="highlightImage" onChange={(e) => {
+                const file = e.target.files[0];
+                setValues({ ...values, highlightImage: file });
+              }} className="mt-2" />
+            </div>
+            {/* Master Plan Image */}
+            <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">Project Master Plan</h3>
+              <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
+                {values.projectMaster_plan && values.projectMaster_plan.url ? (
+                  <img src={values.projectMaster_plan.url} alt="masterplan" className="max-h-full max-w-full object-contain" />
+                ) : (
+                  <span className="text-gray-500 text-sm italic">No Master Plan</span>
+                )}
+              </div>
+              <input type="file" name="projectMaster_plan" onChange={(e) => {
+                const file = e.target.files[0];
+                setValues({ ...values, projectMaster_plan: file });
+              }} className="mt-2" />
+            </div>
           </div>
+
+          {/* Floor Plan Images */}
+          <section className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+            <h3 className="text-xl font-semibold text-gray-800 mb-6 border-b pb-3 border-gray-200">Project FloorPlan Images</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {project_floorplan_Image && Array.isArray(project_floorplan_Image) && project_floorplan_Image.length > 0 &&
+                          project_floorplan_Image.map((image, index) => (
+                  <article key={index} className="relative w-full aspect-video overflow-hidden rounded-lg shadow-md group cursor-pointer">
+                    <MdOutlineDeleteOutline onClick={() => deleteFloorPlanImage(index)} size={30} className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors z-10" />
+                    <img src={image.url} alt={`Image ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
+                            </article>
+                          ))}
+              <input type="file" name="project_floorplan_Image" accept="image/*" onChange={(e) => {
+                            const files = Array.from(e.target.files);
+                const updatedImages = files.map((file) => ({ url: URL.createObjectURL(file), file }));
+                setValues({ ...values, project_floorplan_Image: [...(project_floorplan_Image || []), ...updatedImages] });
+              }} multiple className="mt-2 col-span-full" />
+                      </div>
+                    </section>
+
+          {/* Project Gallery Images */}
+          <section className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+            <h3 className="text-xl font-semibold text-gray-800 mb-6 border-b pb-3 border-gray-200">Project Gallery Images</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {projectGallery && Array.isArray(projectGallery) && projectGallery.length > 0 &&
+                          projectGallery.map((image, index) => (
+                  <article key={index} className="relative w-full aspect-video overflow-hidden rounded-lg shadow-md group cursor-pointer">
+                    <MdOutlineDeleteOutline onClick={() => deleteFloorPlanImage(index)} size={30} className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors z-10" />
+                    <img src={image.url} alt={`Image ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
+                            </article>
+                          ))}
+              <input type="file" name="projectGallery" accept="image/*" onChange={(e) => {
+                            const files = Array.from(e.target.files);
+                const updatedImages = files.map((file) => ({ url: URL.createObjectURL(file), file }));
+                setValues({ ...values, projectGallery: [...(projectGallery || []), ...updatedImages] });
+              }} multiple className="mt-2 col-span-full" />
+                      </div>
+                    </section>
+
+          {/* Project Details Form */}
+          <section className="space-y-8">
+            {groupedSections.map((section, idx) => (
+              <div key={section.title} className="bg-white rounded-xl shadow-2xl border-l-4 border-gradient-to-r from-blue-400 to-purple-400 p-8 hover:shadow-3xl transition-shadow duration-300">
+                <div className="flex items-center mb-6">
+                  {section.icon}
+                  <h2 className="text-2xl font-bold text-gray-800">{section.title}</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {section.fields.map(field => (
+                    <div key={field.name}>
+                      <label className="block text-red-700 font-semibold mb-2 flex items-center">{field.icon}{field.label}</label>
+                      {field.select ? (
+                        <select name={field.name} value={values[field.name]} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none">
+                          <option value="">Select {field.label}</option>
+                          {field.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                      ) : field.textarea ? (
+                        <textarea name={field.name} value={values[field.name]} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none" />
+                      ) : (
+                        <input type="text" name={field.name} value={values[field.name]} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {idx < groupedSections.length - 1 && <hr className="my-8 border-t-2 border-dashed border-gray-200" />}
+              </div>
+            ))}
+            <div className="flex justify-end mt-8">
+              <button type="button" onClick={async () => { setLoading(true); await handleUpdateUser(); setLoading(false); }} className="flex items-center gap-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-lg px-8 py-3 shadow-lg transition-all disabled:opacity-60" disabled={loading}>
+                <MdUpdate className="text-2xl" />
+                {loading ? <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span> : "Update"}
+              </button>
+            </div>
+          </section>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

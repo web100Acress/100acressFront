@@ -80,15 +80,7 @@ const sections = [
     description: 'Blog posts and articles.',
     shadowClass: 'shadow-light-neutral'
   },
-  {
-    name: 'Buy',
-    api: 'https://api.100acress.com/property/buy/viewAll',
-    link: '/Admin/buy',
-    gradientClass: 'bg-neutral-gradient',
-    icon: <MdShoppingCart size={32} className="card-icon" />,
-    description: 'Buy property requests.',
-    shadowClass: 'shadow-neutral'
-  },
+ 
   {
     name: 'Properties',
     // The API string below uses template literals, but as a string, variables like ${currentPage} won't be replaced.
@@ -100,6 +92,15 @@ const sections = [
     icon: <MdBusiness size={32} className="card-icon" />,
     description: 'All properties listed on the platform.',
     shadowClass: 'shadow-stone'
+  },
+  {
+    name: 'Buy',
+    api: 'https://api.100acress.com/property/buy/viewAll',
+    link: '/Admin/buy',
+    gradientClass: 'bg-neutral-gradient',
+    icon: <MdShoppingCart size={32} className="card-icon" />,
+    description: 'Buy property requests.',
+    shadowClass: 'shadow-neutral'
   },
   {
     name: 'Contact Us',
