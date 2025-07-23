@@ -82,13 +82,13 @@ const Sidebar = () => {
               <FaHome className="icon fa-sm m-3.5" />{" "}
               <span className="text-lg font-semibold">Resale Enquiries</span>
             </Link>
-            <Link
+            {/* <Link
               to="/Admin/buy"
               className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0"
             >
               <GiFamilyHouse className="icon fa-sm m-3.5" />{" "}
               <span className="text-lg font-semibold">Buy</span>
-            </Link>
+            </Link> */}
             <Link
               to="/Admin/all-listed-properties"
               className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0"
@@ -96,7 +96,7 @@ const Sidebar = () => {
               <FaHome className="icon fa-sm m-3.5" />{" "}
               <span className="text-lg font-semibold">Properties</span>
             </Link>
-            <Link
+            {/* <Link
               to="/Admin/contact"
               onClick={() => {
                 toggleDropdown();
@@ -105,7 +105,7 @@ const Sidebar = () => {
             >
               <AiFillPropertySafety className="icon fa-sm m-3.5" />{" "}
               <span className="text-lg font-semibold">Contact Us</span>
-            </Link>
+            </Link> */}
 
             {showDropdown && (
               <div className="bg-black">
@@ -137,13 +137,13 @@ const Sidebar = () => {
               <span className="text-lg font-semibold">Blog</span>
             </Link>
 
-            <Link
+            {/* <Link
               to="/Admin/career"
               className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0"
             >
               <BiSolidGraduation size={25} className="icon fa-sm m-3.5 " />{" "}
               <span className="text-lg font-semibold">Career</span>
-            </Link>
+            </Link> */}
 
             <Link
               to="/Admin/user"
