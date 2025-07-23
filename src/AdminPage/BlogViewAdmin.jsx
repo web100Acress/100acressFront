@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { MdArticle, MdImage, MdTitle, MdDescription, MdCategory, MdPerson } from "react-icons/md";
 
 const customStyle = {
   position: "absolute",
@@ -37,71 +38,48 @@ const BlogViewAdmin = () => {
   return (
     <>
       <Sidebar />
-      <div style={customStyle}>
-        <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
-          <div className="card-body">
-            <table className="table table-striped table-bordered">
-              <tbody>
-                <tr>
-                  <th>Blog Image</th>
-                </tr>
-                
-                <tr>
-                  <td>
-                    <img
-                      src={
-                        viewDetails.blog_Image
-                          ? viewDetails.blog_Image.url
-                          : ""
-                      }
-                      alt=""
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Blog Title :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.blog_Title}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Blog Description :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.blog_Description}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Blog Category :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.blog_Category}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Author :{" "}
-                      <span style={{ color: "black", fontWeight: "normal" }}>
-                        {viewDetails.author}
-                      </span>
-                    </span>
-                  </th>
-                </tr>
-              </tbody>
-            </table>
+      <div className="flex bg-gray-50 min-h-screen">
+        <div className="flex-1 p-8 ml-64 overflow-auto font-sans">
+          <div className="max-w-2xl mx-auto space-y-10">
+            {/* Header */}
+            <div className="flex items-center gap-2 mb-8">
+              <MdArticle className="text-3xl text-blue-500 animate-pulse" />
+              <h1 className="text-3xl font-bold text-gray-800">Blog Details</h1>
+            </div>
+            {/* Card View */}
+            <section className="bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100 p-8">
+              {/* Blog Image */}
+              <div className="mb-8 flex flex-col items-center">
+                <label className="block text-red-700 font-semibold mb-2 flex items-center gap-2"><MdImage />Blog Image</label>
+                <div className="flex items-center justify-center h-40 w-40 overflow-hidden rounded-lg bg-gray-50 border border-gray-200">
+                  {viewDetails.blog_Image && viewDetails.blog_Image.url ? (
+                    <img src={viewDetails.blog_Image.url} alt="blog_Image" className="max-h-full max-w-full object-contain" id="previewImage" />
+                  ) : (
+                    <span className="text-gray-500 text-sm italic">No Blog Image</span>
+                  )}
+                </div>
+              </div>
+              {/* Blog Title */}
+              <div className="mb-6">
+                <label className="block text-red-700 font-semibold mb-2 flex items-center gap-2"><MdTitle />Blog Title</label>
+                <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.blog_Title || <span className="text-gray-400 italic">N/A</span>}</div>
+              </div>
+              {/* Blog Description */}
+              <div className="mb-6">
+                <label className="block text-red-700 font-semibold mb-2 flex items-center gap-2"><MdDescription />Blog Description</label>
+                <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800 whitespace-pre-wrap">{viewDetails.blog_Description || <span className="text-gray-400 italic">N/A</span>}</div>
+              </div>
+              {/* Blog Category */}
+              <div className="mb-6">
+                <label className="block text-red-700 font-semibold mb-2 flex items-center gap-2"><MdCategory />Blog Category</label>
+                <span className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full shadow-sm">{viewDetails.blog_Category || <span className="text-gray-400 italic">N/A</span>}</span>
+              </div>
+              {/* Author */}
+              <div className="mb-6">
+                <label className="block text-red-700 font-semibold mb-2 flex items-center gap-2"><MdPerson />Author</label>
+                <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.author || <span className="text-gray-400 italic">N/A</span>}</div>
+              </div>
+            </section>
           </div>
         </div>
       </div>

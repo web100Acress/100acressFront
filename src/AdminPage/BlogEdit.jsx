@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { MdEdit, MdImage, MdTitle, MdDescription, MdCategory, MdPerson } from "react-icons/md";
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale.css';
 
 const customStyle = {
   position: "absolute",
@@ -21,6 +25,13 @@ const BlogEdit = () => {
   });
   const { id } = useParams();
   const token = localStorage.getItem("myToken");
+
+  // Theme state
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const handleUpdateUser = async () => {
     try {
@@ -130,154 +141,112 @@ const BlogEdit = () => {
   return (
     <>
       <Sidebar />
-      <div style={customStyle}>
-        <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
-          <div className="card-body">
-            <table className="table table-striped table-bordered">
-              <tbody>
-                <tr>
-                  <th>
-                    {" "}
-                    <span className="text-red-600 font-semibold ">
-                      Blog Image :{" "}
-                    </span>
-                  </th>
-                </tr>
-                {/* <tr>
-                  <td>
-                    <img
-                      src={
-                        viewDetails.blog_Image ? viewDetails.blog_Image.url : ""
-                      }
-                      alt="blog_Image"
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                    <br />
-                    <input type="file" onChange={(e) => handleFileChange(e)} />
-                  </td>
-                </tr> */}
-
-                <tr>
-                  <td>
-                    <img
-                      src={viewDetails.blog_Image ? viewDetails.blog_Image.url : ""}
-                      alt="blog_Image"
-                      style={{ maxWidth: "20%" }}
-                      id="previewImage"
-                    />
-                    <br />
-                    <input type="file" onChange={(e) => handleFileChange(e)} />
-                  </td>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Blog Title :{" "}
-                    </span>
-                    <input
-                      name="blog_Title"
-                      placeholder="Blog Title"
-                      className="w-full p-2 outline-none border-2 placeholder-black mt-4 rounded-md  text-black  border-gray-200  mobile-input"
-                      value={viewDetails.blog_Title}
-                      onChange={(e) =>
-                        setViewDetails({
-                          ...viewDetails,
-                          blog_Title: e.target.value,
-                        })
-                      }
-                    />
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Blog Description :{" "}
-                      <textarea
-                        name="blog_Description"
-                        placeholder="Blog Description"
-                        className="w-full p-2 outline-none border-2 placeholder-black mt-4 rounded-md  text-black  border-gray-200  mobile-input"
-                        value={viewDetails.blog_Description}
-                        onChange={(e) =>
-                          setViewDetails({
-                            ...viewDetails,
-                            blog_Description: e.target.value,
-                          })
-                        }
-                      />
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Blog Category :{" "}
-                      <select
-                        className="text-black border-2 p-2 outline-none w-full border-gray-200 mt-4 rounded-md"
-                        value={viewDetails.blog_Category}
-                        onChange={(e) =>
-                          setViewDetails({
-                            ...viewDetails,
-                            blog_Category: e.target.value,
-                          })
-                        }
-                      >
-                        <option value="" className="text-gray-600">
-                          Blog Category
-                        </option>
-                        <option value="Commercial Property">
-                          Commercial Property
-                        </option>
-                        <option value="Residential Flats">
-                          Residential Flats
-                        </option>
-                        <option value="SCO Plots">SCO Plots</option>
-                        <option value="Deendayal Plots">
-                          Deen Dayal Plots
-                        </option>
-                        <option value="Residential Plots">
-                          Residential Plots
-                        </option>
-                        <option value="Independent Floors">
-                          Independent Floors
-                        </option>
-                        <option value="Builder Floors">Builder Floors</option>
-                        <option value="Affordable Homes">
-                          Affordable Homes
-                        </option>
-                      </select>
-                    </span>
-                  </th>
-                </tr>
-                <tr>
-                  <th>
-                    <span className="text-red-600 font-semibold ">
-                      Author :{" "}
-                      <input
-                        name="author"
-                        placeholder="author"
-                        className="w-full p-2 outline-none border-2 placeholder-black mt-4 rounded-md  text-black  border-gray-200  mobile-input"
-                        value={viewDetails.author}
-                        onChange={(e) =>
-                          setViewDetails({
-                            ...viewDetails,
-                            author: e.target.value,
-                          })
-                        }
-                      />
-                    </span>
-                  </th>
-                </tr>
-              </tbody>
-            </table>
+      <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <div className="flex-1 p-8 ml-64 overflow-auto font-sans">
+          <div className="max-w-2xl mx-auto space-y-10">
+            {/* Header */}
+            <div className="flex items-center gap-2 mb-8 justify-between">
+              <div className="flex items-center gap-2">
+                <MdEdit className="text-3xl text-blue-500 animate-pulse" />
+                <h1 className={`text-3xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>Edit Blog</h1>
+              </div>
+              <button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className={`px-4 py-2 rounded-lg shadow-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${theme === 'dark' ? 'bg-gray-800 text-gray-100 hover:bg-gray-700' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
+              </button>
+            </div>
+            {/* Card Form */}
+            <section className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-2xl overflow-hidden border p-8`}> 
+              {/* Blog Image */}
+              <div className="mb-6">
+                <Tippy content={<span>Blog Image</span>} animation="scale" theme="light-border">
+                  <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdImage />Blog Image</label>
+                </Tippy>
+                <div className="flex items-center gap-4">
+                  <div className={`flex items-center justify-center h-32 w-32 overflow-hidden rounded-lg ${theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border`}>
+                    {viewDetails.blog_Image && viewDetails.blog_Image.url ? (
+                      <img src={viewDetails.blog_Image.url} alt="blog_Image" className="max-h-full max-w-full object-contain" id="previewImage" />
+                    ) : (
+                      <span className="text-gray-500 text-sm italic">No Blog Image</span>
+                    )}
+                  </div>
+                  <input type="file" onChange={handleFileChange} className="mt-2" />
+                </div>
+              </div>
+              {/* Blog Title */}
+              <div className="mb-6">
+                <Tippy content={<span>Blog Title</span>} animation="scale" theme="light-border">
+                  <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdTitle />Blog Title</label>
+                </Tippy>
+                <input
+                  name="blog_Title"
+                  placeholder="Blog Title"
+                  className={`w-full rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-900 text-gray-100 placeholder-gray-400' : 'border-gray-300'} px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none`}
+                  value={viewDetails.blog_Title}
+                  onChange={(e) => setViewDetails({ ...viewDetails, blog_Title: e.target.value })}
+                />
+              </div>
+              {/* Blog Description */}
+              <div className="mb-6">
+                <Tippy content={<span>Blog Description</span>} animation="scale" theme="light-border">
+                  <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdDescription />Blog Description</label>
+                </Tippy>
+                <textarea
+                  name="blog_Description"
+                  placeholder="Blog Description"
+                  className={`w-full rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-900 text-gray-100 placeholder-gray-400' : 'border-gray-300'} px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none min-h-[120px]`}
+                  value={viewDetails.blog_Description}
+                  onChange={(e) => setViewDetails({ ...viewDetails, blog_Description: e.target.value })}
+                />
+              </div>
+              {/* Blog Category */}
+              <div className="mb-6">
+                <Tippy content={<span>Blog Category</span>} animation="scale" theme="light-border">
+                  <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdCategory />Blog Category</label>
+                </Tippy>
+                <select
+                  className={`w-full rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-900 text-gray-100' : 'border-gray-300'} px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none`}
+                  value={viewDetails.blog_Category}
+                  onChange={(e) => setViewDetails({ ...viewDetails, blog_Category: e.target.value })}
+                >
+                  <option value="" className="text-gray-600">Blog Category</option>
+                  <option value="Commercial Property">Commercial Property</option>
+                  <option value="Residential Flats">Residential Flats</option>
+                  <option value="SCO Plots">SCO Plots</option>
+                  <option value="Deendayal Plots">Deen Dayal Plots</option>
+                  <option value="Residential Plots">Residential Plots</option>
+                  <option value="Independent Floors">Independent Floors</option>
+                  <option value="Builder Floors">Builder Floors</option>
+                  <option value="Affordable Homes">Affordable Homes</option>
+                </select>
+              </div>
+              {/* Author */}
+              <div className="mb-6">
+                <Tippy content={<span>Author</span>} animation="scale" theme="light-border">
+                  <label className={`block font-semibold mb-2 flex items-center gap-2 ${theme === 'dark' ? 'text-blue-300' : 'text-red-700'}`}><MdPerson />Author</label>
+                </Tippy>
+                <input
+                  name="author"
+                  placeholder="Author"
+                  className={`w-full rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-900 text-gray-100 placeholder-gray-400' : 'border-gray-300'} px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none`}
+                  value={viewDetails.author}
+                  onChange={(e) => setViewDetails({ ...viewDetails, author: e.target.value })}
+                />
+              </div>
+              <div className="flex justify-end mt-8">
+                <button
+                  type="button"
+                  onClick={handleUpdateUser}
+                  className={`flex items-center gap-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-lg px-8 py-3 shadow-lg transition-all ${theme === 'dark' ? 'bg-gradient-to-r from-blue-700 via-blue-800 to-gray-900' : ''}`}
+                >
+                  <MdEdit className="text-xl" /> Update
+                </button>
+              </div>
+            </section>
           </div>
-          <button
-            type="button"
-            onClick={handleUpdateUser}
-            class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          >
-            Update
-          </button>
         </div>
       </div>
     </>

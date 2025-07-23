@@ -533,8 +533,8 @@ const ProjectEdit = () => {
               <button type="button" onClick={async () => { setLoading(true); await handleUpdateUser(); setLoading(false); }} className="flex items-center gap-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-lg px-8 py-3 shadow-lg transition-all disabled:opacity-60" disabled={loading}>
                 <MdUpdate className="text-2xl" />
                 {loading ? <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span> : "Update"}
-              </button>
-            </div>
+            </button>
+          </div>
           </section>
         </div>
       </div>

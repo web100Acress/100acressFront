@@ -72,11 +72,11 @@ const ViewDetails = () => {
                 <h3 className="text-xl font-semibold text-gray-800 text-center mb-2 flex items-center gap-2"><MdImage />Other Images</h3>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {otherImage && Array.isArray(otherImage) && otherImage.length > 0 ? (
-                    otherImage.map((image, index) => (
+                          otherImage.map((image, index) => (
                       <img
-                        key={index}
-                        src={image.url}
-                        alt={`Image ${index + 1}`}
+                              key={index}
+                                src={image.url}
+                                alt={`Image ${index + 1}`}
                         className="w-24 h-24 object-cover rounded-lg border border-gray-200"
                       />
                     ))
@@ -208,8 +208,8 @@ const ViewDetails = () => {
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.type || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                 </div>
-              </div>
-            </section>
+                      </div>
+                    </section>
           </div>
         </div>
       </div>

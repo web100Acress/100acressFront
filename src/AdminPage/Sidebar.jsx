@@ -137,13 +137,13 @@ const Sidebar = () => {
               <span className="text-lg font-semibold">Blog</span>
             </Link>
 
-            <Link
+            {/* <Link
               to="/Admin/career"
               className="flex items-center hover:bg-gray-400  text-white text-center fa-xl p-0"
             >
               <BiSolidGraduation size={25} className="icon fa-sm m-3.5 " />{" "}
               <span className="text-lg font-semibold">Career</span>
-            </Link>
+            </Link> */}
 
             <Link
               to="/Admin/user"
