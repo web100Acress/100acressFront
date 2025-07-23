@@ -169,6 +169,8 @@ const ViewPropertyAdmin = () => {
                   {/* <button className="bg-blue-700 px-6 py-2 rounded-lg text-white ml-2 font-medium shadow-md hover:bg-blue-800 transition duration-200">Add New</button> */}
                 </Link>
               </div>
+
+              {/* ggggg */}
             </div>
             {/* User Info Card */}
             <div className="bg-white rounded-xl shadow-lg p-6 flex flex-wrap items-center gap-8 mb-6 border-l-4 border-gradient-to-r from-red-400 to-red-600">
