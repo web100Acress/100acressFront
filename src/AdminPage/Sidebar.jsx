@@ -96,7 +96,7 @@ const Sidebar = () => {
               <FaHome className="icon fa-sm m-3.5" />{" "}
               <span className="text-lg font-semibold">Properties</span>
             </Link>
-            <Link
+            {/* <Link
               to="/Admin/contact"
               onClick={() => {
                 toggleDropdown();
@@ -105,7 +105,7 @@ const Sidebar = () => {
             >
               <AiFillPropertySafety className="icon fa-sm m-3.5" />{" "}
               <span className="text-lg font-semibold">Contact Us</span>
-            </Link>
+            </Link> */}
 
             {showDropdown && (
               <div className="bg-black">
