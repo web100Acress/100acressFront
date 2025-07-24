@@ -167,9 +167,9 @@ const Enquiries = () => {
   }
 
   return (
-    <>
+    <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
-      <div className="enquiries-main-content">
+      <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
         {contextHolder}
         <div className="enquiries-header">
           <div className="search-container">
@@ -315,7 +315,7 @@ const Enquiries = () => {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

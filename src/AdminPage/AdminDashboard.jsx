@@ -328,13 +328,13 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="admin-dashboard-container">
+    <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
       <Sidebar />
-      <div className="admin-dashboard-content">
+      <div className="flex-1 min-w-0 p-10 ml-[250px] transition-colors duration-300">
         {/* Header */}
         <div className="dashboard-header">
           {/* Added the new header for the dashboard */}
-          <h1 className="main-dashboard-title">
+          <h1 className="main-dashboard-title dark:text-white">
             <b>Admin Dashboard</b> 📊
           </h1>
           <div className="header-underline"></div>

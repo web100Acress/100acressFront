@@ -367,19 +367,19 @@ const ProjectEdit = () => {
   ];
 
   return (
-    <div className="flex bg-gray-50 min-h-screen">
+    <div className="flex bg-gray-50 dark:bg-gray-900 dark:text-white min-h-screen">
       <Sidebar />
       <div className="flex-1 p-8 ml-64 overflow-auto font-sans">
         <div className="max-w-7xl mx-auto space-y-10">
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-10 text-center tracking-tight">
+          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-10 text-center tracking-tight">
             Edit Project
           </h1>
 
           {/* Image Upload Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Front Image */}
-            <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
-              <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">Front Image</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white text-center mb-2">Front Image</h3>
               <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
                 {values.frontImage && values.frontImage.url ? (
                   <img src={values.frontImage.url} alt="frontImage" className="max-h-full max-w-full object-contain" />
@@ -387,11 +387,11 @@ const ProjectEdit = () => {
                   <span className="text-gray-500 text-sm italic">No Front Image</span>
                 )}
               </div>
-              <input type="file" onChange={handleFileChange} className="mt-2" />
+              <input type="file" onChange={handleFileChange} className="mt-2 dark:bg-gray-900 dark:text-white" />
             </div>
             {/* Thumbnail Image */}
-            <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
-              <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">Thumbnail Image</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white text-center mb-2">Thumbnail Image</h3>
               <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
                 {values.thumbnailImage && values.thumbnailImage.url ? (
                   <img src={values.thumbnailImage.url} alt="thumbnailImage" className="max-h-full max-w-full object-contain" />
@@ -399,11 +399,11 @@ const ProjectEdit = () => {
                   <span className="text-gray-500 text-sm italic">No Thumbnail Image</span>
                 )}
               </div>
-              <input type="file" onChange={handleThumbnailImageChange} className="mt-2" />
+              <input type="file" onChange={handleThumbnailImageChange} className="mt-2 dark:bg-gray-900 dark:text-white" />
             </div>
             {/* Project Location Image */}
-            <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
-              <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">Project Location Image</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white text-center mb-2">Project Location Image</h3>
               <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
                 {values.project_locationImage && values.project_locationImage.url ? (
                   <img src={values.project_locationImage.url} alt="location" className="max-h-full max-w-full object-contain" />
@@ -414,11 +414,11 @@ const ProjectEdit = () => {
               <input type="file" name="project_locationImage" onChange={(e) => {
                 const file = e.target.files[0];
                 setValues({ ...values, project_locationImage: file });
-              }} className="mt-2" />
+              }} className="mt-2 dark:bg-gray-900 dark:text-white" />
             </div>
             {/* Logo Image */}
-            <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
-              <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">Project Logo Image</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white text-center mb-2">Project Logo Image</h3>
               <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
                 {values.logo && values.logo.url ? (
                   <img src={values.logo.url} alt="logo" className="max-h-full max-w-full object-contain" />
@@ -429,11 +429,11 @@ const ProjectEdit = () => {
               <input type="file" name="logo" onChange={(e) => {
                 const file = e.target.files[0];
                 setValues({ ...values, logo: file });
-              }} className="mt-2" />
+              }} className="mt-2 dark:bg-gray-900 dark:text-white" />
             </div>
             {/* Highlight Image */}
-            <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
-              <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">Highlight Image</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white text-center mb-2">Highlight Image</h3>
               <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
                 {values.highlightImage && values.highlightImage.url ? (
                   <img src={values.highlightImage.url} alt="highlightImage" className="max-h-full max-w-full object-contain" />
@@ -444,11 +444,11 @@ const ProjectEdit = () => {
               <input type="file" name="highlightImage" onChange={(e) => {
                 const file = e.target.files[0];
                 setValues({ ...values, highlightImage: file });
-              }} className="mt-2" />
+              }} className="mt-2 dark:bg-gray-900 dark:text-white" />
             </div>
             {/* Master Plan Image */}
-            <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
-              <h3 className="text-xl font-semibold text-gray-800 text-center mb-2">Project Master Plan</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white text-center mb-2">Project Master Plan</h3>
               <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
                 {values.projectMaster_plan && values.projectMaster_plan.url ? (
                   <img src={values.projectMaster_plan.url} alt="masterplan" className="max-h-full max-w-full object-contain" />
@@ -459,13 +459,13 @@ const ProjectEdit = () => {
               <input type="file" name="projectMaster_plan" onChange={(e) => {
                 const file = e.target.files[0];
                 setValues({ ...values, projectMaster_plan: file });
-              }} className="mt-2" />
+              }} className="mt-2 dark:bg-gray-900 dark:text-white" />
             </div>
           </div>
 
           {/* Floor Plan Images */}
-          <section className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-            <h3 className="text-xl font-semibold text-gray-800 mb-6 border-b pb-3 border-gray-200">Project FloorPlan Images</h3>
+          <section className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-6 border-b pb-3 border-gray-200">Project FloorPlan Images</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {project_floorplan_Image && Array.isArray(project_floorplan_Image) && project_floorplan_Image.length > 0 &&
                           project_floorplan_Image.map((image, index) => (
@@ -478,13 +478,13 @@ const ProjectEdit = () => {
                             const files = Array.from(e.target.files);
                 const updatedImages = files.map((file) => ({ url: URL.createObjectURL(file), file }));
                 setValues({ ...values, project_floorplan_Image: [...(project_floorplan_Image || []), ...updatedImages] });
-              }} multiple className="mt-2 col-span-full" />
+              }} multiple className="mt-2 col-span-full dark:bg-gray-900 dark:text-white" />
                       </div>
                     </section>
 
           {/* Project Gallery Images */}
-          <section className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-            <h3 className="text-xl font-semibold text-gray-800 mb-6 border-b pb-3 border-gray-200">Project Gallery Images</h3>
+          <section className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-6 border-b pb-3 border-gray-200">Project Gallery Images</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {projectGallery && Array.isArray(projectGallery) && projectGallery.length > 0 &&
                           projectGallery.map((image, index) => (
@@ -497,31 +497,31 @@ const ProjectEdit = () => {
                             const files = Array.from(e.target.files);
                 const updatedImages = files.map((file) => ({ url: URL.createObjectURL(file), file }));
                 setValues({ ...values, projectGallery: [...(projectGallery || []), ...updatedImages] });
-              }} multiple className="mt-2 col-span-full" />
+              }} multiple className="mt-2 col-span-full dark:bg-gray-900 dark:text-white" />
                       </div>
                     </section>
 
           {/* Project Details Form */}
           <section className="space-y-8">
             {groupedSections.map((section, idx) => (
-              <div key={section.title} className="bg-white rounded-xl shadow-2xl border-l-4 border-gradient-to-r from-blue-400 to-purple-400 p-8 hover:shadow-3xl transition-shadow duration-300">
+              <div key={section.title} className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl border-l-4 border-gradient-to-r from-blue-400 to-purple-400 p-8 hover:shadow-3xl transition-shadow duration-300">
                 <div className="flex items-center mb-6">
                   {section.icon}
-                  <h2 className="text-2xl font-bold text-gray-800">{section.title}</h2>
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{section.title}</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {section.fields.map(field => (
                     <div key={field.name}>
                       <label className="block text-red-700 font-semibold mb-2 flex items-center">{field.icon}{field.label}</label>
                       {field.select ? (
-                        <select name={field.name} value={values[field.name]} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none">
+                        <select name={field.name} value={values[field.name]} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none dark:bg-gray-900 dark:text-white">
                           <option value="">Select {field.label}</option>
                           {field.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                         </select>
                       ) : field.textarea ? (
-                        <textarea name={field.name} value={values[field.name]} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none" />
+                        <textarea name={field.name} value={values[field.name]} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none dark:bg-gray-900 dark:text-white" />
                       ) : (
-                        <input type="text" name={field.name} value={values[field.name]} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none" />
+                        <input type="text" name={field.name} value={values[field.name]} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none dark:bg-gray-900 dark:text-white" />
                       )}
                     </div>
                   ))}
