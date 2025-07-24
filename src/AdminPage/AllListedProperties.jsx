@@ -133,9 +133,9 @@ const AllListedProperties = () => {
 
 
   return (
-    <>
+    <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
-      <div className="all-listed-properties-main-content">
+      <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
         {contextHolder} {/* For Ant Design messages */}
         <div className="properties-header">
           <h1 className="properties-title">Properties Listed</h1>
@@ -285,7 +285,7 @@ const AllListedProperties = () => {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

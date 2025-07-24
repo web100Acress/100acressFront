@@ -158,9 +158,9 @@ const ResaleEnquiries = () => {
 
 
   return (
-    <>
+    <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
-      <div className="resale-enquiries-main-content">
+      <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
         {contextHolder}
         <div className="resale-enquiries-header">
           <div className="search-container">
@@ -260,7 +260,7 @@ const ResaleEnquiries = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

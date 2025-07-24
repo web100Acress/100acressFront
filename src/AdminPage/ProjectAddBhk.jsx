@@ -180,7 +180,7 @@ const ProjectsAddBhk = () => {
   return (
     <>
       <Sidebar />
-      <div className="flex-1 p-8 ml-64 bg-gray-50 min-h-screen">
+      <div className="flex-1 p-8 ml-64 bg-gray-50 dark:bg-gray-900 dark:text-white min-h-screen">
         {contextHolder} {/* Ant Design message context holder */}
 
         {/* Header and Controls */}
@@ -211,7 +211,7 @@ const ProjectsAddBhk = () => {
         </div>
 
         {/* BHK Table (Collapsible) */}
-        <div className="bg-white rounded-xl shadow-2xl border-l-4 border-gradient-to-r from-blue-400 to-purple-400 mb-10">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl border-l-4 border-gradient-to-r from-blue-400 to-purple-400 mb-10">
           <button
             className="w-full flex items-center gap-2 px-8 py-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white rounded-t-xl focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             onClick={() => setBhkListOpen((open) => !open)}
@@ -293,7 +293,7 @@ const ProjectsAddBhk = () => {
           style={customModalStyles}
           contentLabel="Add Floor Plan"
         >
-          <div className="bg-white rounded-xl">
+          <div className="bg-white dark:bg-gray-800 rounded-xl">
             <button
               className="w-full flex items-center gap-2 bg-red-600 rounded-t-xl px-6 py-4 text-center text-white focus:outline-none focus:ring-2 focus:ring-red-400 transition"
               onClick={() => setModalSectionOpen((open) => !open)}
@@ -318,7 +318,7 @@ const ProjectsAddBhk = () => {
                   <Tippy content={<span>Enter the area for this BHK (e.g., 1200 sqft)</span>} animation="scale" theme="light-border">
                 <input
                   id="bhk_Area"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200"
+                  className="w-full rounded-lg border border-gray-300 bg-white dark:bg-gray-900 dark:text-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200"
                   type="text"
                   placeholder="Add BHK Area (e.g., 1200 sqft)"
                   name="bhk_Area"
@@ -333,7 +333,7 @@ const ProjectsAddBhk = () => {
                   <Tippy content={<span>Enter the type for this BHK (e.g., 2BHK)</span>} animation="scale" theme="light-border">
                 <input
                   id="bhk_type"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200"
+                  className="w-full rounded-lg border border-gray-300 bg-white dark:bg-gray-900 dark:text-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200"
                       type="text"
                   placeholder="Add BHK Type (e.g., 2BHK)"
                   name="bhk_type"
@@ -348,7 +348,7 @@ const ProjectsAddBhk = () => {
                   <Tippy content={<span>Enter the price for this BHK (e.g., ₹50 Lacs)</span>} animation="scale" theme="light-border">
                 <input
                   id="price"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200"
+                  className="w-full rounded-lg border border-gray-300 bg-white dark:bg-gray-900 dark:text-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200"
                       type="text"
                   placeholder="Price (e.g., ₹50 Lacs)"
                   name="price"

@@ -104,10 +104,9 @@ const Blog = () => {
   };
 
   return (
-    <>
+    <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex font-sans">
       <Sidebar />
-      {/* Main content area, replacing customStyle with Tailwind classes */}
-      <div className="flex-1 p-8 ml-64 bg-gray-50 min-h-screen font-sans">
+      <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
         {contextHolder} {/* Ant Design message context holder */}
 
         {/* Header and Controls */}
@@ -226,7 +225,7 @@ const Blog = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

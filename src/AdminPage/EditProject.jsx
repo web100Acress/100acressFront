@@ -72,7 +72,7 @@ const EditProject = () => {
     <div className="mx-20 my-20">
       <div className=" sm:w-[38rem] lg:w-full mx-auto lg:h-auto my-10 overflow-hidden rounded-2xl bg-white shadow-lg sm:max-w-lg">
         <div className="bg-red-500 px-5 py-5 text-center text-white">
-          <p className="font-serif text-2xl font-semibold tracking-wider">
+          <p className="font-serif text-2xl font-semibold tracking-wider text-gray-900 dark:text-white">
             Edit Your Project
           </p>
         </div>
@@ -275,7 +275,7 @@ const EditProject = () => {
             </div>
           </label>
           <label className="block" for="name">
-            <p className="text-gray-600">About Developer</p>
+            <p className="text-gray-600 dark:text-gray-100">About Developer</p>
             <textarea
               className="h-32 w-full rounded-md border bg-white px-2 py-2 outline-none ring-black focus:ring-1"
               type="text"
@@ -286,7 +286,7 @@ const EditProject = () => {
             ></textarea>
           </label>
 
-          <p className="mt-4 font-medium mb-1 grid grid-cols-4 text-gray-500">
+          <p className="mt-4 font-medium mb-1 grid grid-cols-4 text-gray-500 dark:text-gray-100">
             Attach Photos
           </p>
 

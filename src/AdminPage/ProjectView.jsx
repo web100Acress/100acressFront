@@ -67,7 +67,7 @@ const ProjectView = () => {
   // Helper for rendering a single image with a title
   const renderSingleImageCard = (imageObject, title) => (
     <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 flex flex-col items-center justify-center space-y-4 border border-gray-100">
-      <h3 className="text-xl font-semibold text-gray-800 text-center">{title}</h3>
+      <h3 className="text-xl font-semibold text-gray-800 dark:text-white text-center">{title}</h3>
       <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200">
         {imageObject && imageObject.url ? (
           <img
@@ -85,7 +85,7 @@ const ProjectView = () => {
   // Helper for rendering image galleries
   const renderGalleryCard = (images, title) => (
     <section className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border border-gray-100">
-      <h3 className="text-xl font-semibold text-gray-800 mb-6 border-b pb-3 border-gray-200">{title}</h3>
+      <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-6 border-b pb-3 border-gray-200">{title}</h3>
       {images && Array.isArray(images) && images.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {images.map((image, index) => (
@@ -113,7 +113,7 @@ const ProjectView = () => {
   // Helper for rendering lists with a modern badge/chip style
   const renderFeatureList = (items, title) => (
     <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-      <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-3 border-gray-200">{title}</h3>
+      <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 border-b pb-3 border-gray-200">{title}</h3>
       {items && Array.isArray(items) && items.length > 0 ? (
         <div className="flex flex-wrap gap-2">
           {items.map((item, index) => (
@@ -137,7 +137,7 @@ const ProjectView = () => {
       <th className="px-8 py-4 text-left text-red-700 font-medium align-top whitespace-nowrap border-r border-gray-200">
         {label}
       </th>
-      <td className="px-8 py-4 text-left text-gray-800 break-words font-light">
+      <td className="px-8 py-4 text-left text-gray-800 dark:text-white break-words font-light">
         {value || <span className="text-gray-500 italic">N/A</span>}
       </td>
     </tr>
@@ -198,12 +198,12 @@ const ProjectView = () => {
 
 
   return (
-    <div className="flex bg-gray-50 min-h-screen"> {/* Lighter background */}
+    <div className="flex bg-gray-50 min-h-screen dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300"> {/* Lighter background */}
       <Sidebar />
       <div className="flex-1 p-8 ml-64 overflow-auto font-sans"> {/* Increased padding, added font-sans */}
         <div className="max-w-7xl mx-auto space-y-10"> {/* Wider max-width, increased space-y */}
           
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-10 text-center tracking-tight"> {/* More prominent title */}
+          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-10 text-center tracking-tight"> {/* More prominent title */}
             Project Overview
           </h1>
 
@@ -228,13 +228,13 @@ const ProjectView = () => {
               <div key={section.title} className="bg-white rounded-xl shadow-2xl border-l-4 border-gradient-to-r from-blue-400 to-purple-400 p-8 hover:shadow-3xl transition-shadow duration-300">
                 <div className="flex items-center mb-6">
                   {section.icon}
-                  <h2 className="text-2xl font-bold text-gray-800">{section.title}</h2>
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{section.title}</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {section.fields.map(field => (
                     <div key={field.label}>
                       <label className="block text-red-700 font-semibold mb-2 flex items-center">{field.icon}{field.label}</label>
-                      <div className={`w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800${field.textarea ? ' whitespace-pre-wrap' : ''}`}>{field.value || <span className="text-gray-400 italic">N/A</span>}</div>
+                      <div className={`w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800 dark:text-white${field.textarea ? ' whitespace-pre-wrap' : ''}`}>{field.value || <span className="text-gray-400 italic">N/A</span>}</div>
                     </div>
                   ))}
                 </div>

@@ -133,9 +133,9 @@ const Projects = () => {
   };
 
   return (
-    <div>
+    <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
-      <div className="projects-main-content">
+      <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
         {contextHolder} {/* Ant Design message context holder */}
         <div className="projects-header">
           <div className="search-container">
@@ -194,11 +194,21 @@ const Projects = () => {
                       key={id} // Use item._id as key for better performance and uniqueness
                       className="table-row"
                     >
-                      <td className="table-cell serial-number">{serialNumber}</td>
-                      <td className="table-cell project-name">{item.projectName}</td>
-                      <td className="table-cell">{item.type}</td>
-                      <td className="table-cell">{item.city}</td>
-                      <td className="table-cell project-address">{item.projectAddress}</td>
+                      <td className="table-cell serial-number">
+                        {serialNumber}
+                      </td>
+                      <td className="table-cell project-name">
+                        {item.projectName}
+                      </td>
+                      <td className="table-cell">
+                        {item.type}
+                      </td>
+                      <td className="table-cell">
+                        {item.city}
+                      </td>
+                      <td className="table-cell project-address">
+                        {item.projectAddress}
+                      </td>
 
                       <td className="table-cell action-buttons-cell">
                         <Link to={`/Admin/ProjectsView/${pUrl}`}>
