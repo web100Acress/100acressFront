@@ -187,13 +187,13 @@ const EditDetails = () => {
             {/* Verify Switch */}
             <div className="flex items-center mb-4">
               <Tippy content={<span>Toggle property verification</span>} animation="scale" theme="light-border">
-                <Switch
+            <Switch 
                   checked={values.verify === "verified"}
                   onChange={handleVerifyToggle}
                   checkedChildren={<FaCheck size={20} />}
                   unCheckedChildren={<FaXmark size={20} />}
-                  className="bg-[#808080]"
-                />
+              className="bg-[#808080]"
+            />
               </Tippy>
               <span className={`ml-3 font-semibold ${values.verify === "verified" ? "text-green-600" : "text-red-600"}`}>{values.verify === "verified" ? "Verified" : "Unverified"}</span>
             </div>
@@ -210,13 +210,13 @@ const EditDetails = () => {
                   )}
                 </div>
                 <input type="file" onChange={handleFileChange} className="mt-2" />
-              </div>
+          </div>
               {/* Other Images */}
               <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
                 <h3 className="text-xl font-semibold text-gray-800 text-center mb-2 flex items-center gap-2"><MdImage />Other Images</h3>
                 <div className="flex flex-wrap gap-2 justify-center mb-2">
                   {values.otherImage && Array.isArray(values.otherImage) && values.otherImage.length > 0 ? (
-                    values.otherImage.map((image, index) => (
+                          values.otherImage.map((image, index) => (
                       <img key={index} src={image.url} alt={`Image ${index + 1}`} className="w-24 h-24 object-cover rounded-lg border border-gray-200" />
                     ))
                   ) : (
@@ -225,15 +225,15 @@ const EditDetails = () => {
                 </div>
                 <input type="file" name="otherImage" multiple accept="image/*" onChange={handleOtherImageFileChange} className="mt-2" />
               </div>
-            </div>
+                      </div>
             {/* Info Section (Collapsible) */}
             <section className="bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100">
-              <button
+            <button
                 className="w-full flex items-center gap-2 px-8 py-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                 onClick={() => setInfoOpen((open) => !open)}
                 aria-expanded={infoOpen}
                 aria-controls="property-info-section"
-                type="button"
+              type="button"
               >
                 <Tippy content={<span>Property Information</span>} animation="scale" theme="light-border">
                   <span><MdInfo className="text-2xl text-blue-500" /></span>
@@ -365,7 +365,7 @@ const EditDetails = () => {
               <div className="flex justify-end mt-8 p-8 border-t border-gray-200 bg-gradient-to-r from-white to-gray-50">
                 <button type="button" onClick={handleUpdateUser} className="inline-flex items-center gap-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-semibold rounded-lg text-base px-8 py-3 shadow-lg transition-all duration-300 transform hover:scale-105">
                   <MdHome className="animate-pulse" /> Update
-                </button>
+            </button>
               </div>
             </section>
           </div>

@@ -46,7 +46,7 @@ const sections = [
   },
   {
     name: 'Project Enquiries',
-    api: 'https://api.100acress.com/userViewAll?limit=2000',
+    api: 'https://api.100acress.com/userViewAll?limit=1&page=1', // Only fetch 1, but get the total count
     link: '/Admin/enquiries',
     gradientClass: 'bg-slate-gradient',
     icon: <MdAssignment size={32} className="card-icon" />,
@@ -198,6 +198,10 @@ const AdminDashboard = () => {
             }
           })
             .then(res => {
+              // For Project Enquiries, use the 'total' field if available
+              if (section.name === 'Project Enquiries' && typeof res.data === 'object' && res.data !== null && typeof res.data.total === 'number') {
+                return res.data.total;
+              }
               // Check for the nested structure of Properties API first, using totalCount if available
               if (
                 typeof res.data === 'object' && res.data !== null && Array.isArray(res.data.data) && res.data.data.length > 0 && res.data.data[0]

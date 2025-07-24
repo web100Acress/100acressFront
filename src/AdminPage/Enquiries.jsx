@@ -11,8 +11,9 @@ const Enquiries = () => {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const pageSize = 100;
+  const pageSize = 50;
   const [downloadProgress, setDownloadProgress] = useState(0);
+  const [total, setTotal] = useState(0);
 
   const { messageApi, contextHolder } = message.useMessage();
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const Enquiries = () => {
     };
   }, []); // Run once on mount to inject styles
 
-  const fetchData = async () => {
+  const fetchData = async (page = 1) => {
     setLoading(true);
 
     if (!token) {
@@ -39,7 +40,8 @@ const Enquiries = () => {
       return;
     }
     try {
-      const response = await axios.get(`https://api.100acress.com/userViewAll?limit=2000`,
+      const response = await axios.get(
+        `https://api.100acress.com/userViewAll?limit=${pageSize}&page=${page}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -58,6 +60,8 @@ const Enquiries = () => {
       }
 
       setData(response.data.data);
+      setTotal(response.data.total || 0);
+      setCurrentPage(page);
     } catch (error) {
       console.error("Error fetching data:", error);
       messageApi.open({
@@ -70,38 +74,26 @@ const Enquiries = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData(1);
   }, []);
 
   const handleClick = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    fetchData(pageNumber);
   };
 
-  const filteredData = data.filter(
-    (item) =>
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.mobile.includes(search) ||
-      item.projectName.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const currentData = filteredData.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
-
   const loadMore = () => {
-    if (currentPage * pageSize < filteredData.length) {
-      setCurrentPage((prevPage) => prevPage + 1);
+    if (currentPage < totalPages) {
+      fetchData(currentPage + 1);
     }
   };
 
   const loadBack = () => {
     if (currentPage > 1) {
-      setCurrentPage((prevPage) => prevPage - 1);
+      fetchData(currentPage - 1);
     }
   };
 
-  const totalPages = Math.ceil(filteredData.length / pageSize);
+  const totalPages = Math.ceil(total / pageSize);
 
   const downloadExelFile = async () => {
     try {
@@ -228,9 +220,9 @@ const Enquiries = () => {
               </tr>
             </thead>
 
-            {currentData.length !== 0 ? (
+            {data.length !== 0 ? (
               <tbody className="table-body">
-                {currentData.map((item, index) => (
+                {data.map((item, index) => (
                   <tr key={index} className="table-row">
                     <td className="table-cell">
                       {index + 1 + (currentPage - 1) * pageSize}
@@ -282,22 +274,38 @@ const Enquiries = () => {
           >
             Previous
           </button>
-
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => handleClick(index + 1)}
-              disabled={currentPage === index + 1}
-              className={`pagination-button ${
-                currentPage === index + 1
-                  ? "pagination-active"
-                  : ""
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-
+          {Array.from({ length: totalPages }, (_, index) => index + 1)
+            .filter(pageNum =>
+              pageNum === 1 ||
+              pageNum === totalPages ||
+              (pageNum >= currentPage - 2 && pageNum <= currentPage + 2)
+            )
+            .map((pageNum, idx, arr) => {
+              // Add ellipsis if needed
+              if (idx > 0 && pageNum - arr[idx - 1] > 1) {
+                return [<span key={`ellipsis-${pageNum}`}>...</span>, (
+                  <button
+                    key={pageNum}
+                    onClick={() => handleClick(pageNum)}
+                    disabled={currentPage === pageNum}
+                    className={`pagination-button ${currentPage === pageNum ? "pagination-active" : ""}`}
+                  >
+                    {pageNum}
+                  </button>
+                )];
+              }
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => handleClick(pageNum)}
+                  disabled={currentPage === pageNum}
+                  className={`pagination-button ${currentPage === pageNum ? "pagination-active" : ""}`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })
+          }
           <button
             className={`pagination-button ${currentPage === totalPages ? "pagination-disabled" : ""}`}
             onClick={loadMore}

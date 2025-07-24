@@ -313,61 +313,61 @@ const ProjectsAddBhk = () => {
               aria-hidden={!modalSectionOpen}
             >
               <form onSubmit={submitBHKFromData} className="space-y-5">
-                <div>
-                  <label htmlFor="bhk_Area" className="sr-only">BHK Area</label>
+              <div>
+                <label htmlFor="bhk_Area" className="sr-only">BHK Area</label>
                   <Tippy content={<span>Enter the area for this BHK (e.g., 1200 sqft)</span>} animation="scale" theme="light-border">
-                    <input
-                      id="bhk_Area"
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200"
-                      type="text"
-                      placeholder="Add BHK Area (e.g., 1200 sqft)"
-                      name="bhk_Area"
-                      value={editFromData.bhk_Area}
-                      onChange={handleEditChangeFrom}
-                      required
-                    />
+                <input
+                  id="bhk_Area"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200"
+                  type="text"
+                  placeholder="Add BHK Area (e.g., 1200 sqft)"
+                  name="bhk_Area"
+                  value={editFromData.bhk_Area}
+                  onChange={handleEditChangeFrom}
+                  required
+                />
                   </Tippy>
-                </div>
-                <div>
-                  <label htmlFor="bhk_type" className="sr-only">BHK Type</label>
+              </div>
+              <div>
+                <label htmlFor="bhk_type" className="sr-only">BHK Type</label>
                   <Tippy content={<span>Enter the type for this BHK (e.g., 2BHK)</span>} animation="scale" theme="light-border">
-                    <input
-                      id="bhk_type"
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200"
+                <input
+                  id="bhk_type"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200"
                       type="text"
-                      placeholder="Add BHK Type (e.g., 2BHK)"
-                      name="bhk_type"
-                      value={editFromData.bhk_type}
-                      onChange={handleEditChangeFrom}
-                      required
-                    />
+                  placeholder="Add BHK Type (e.g., 2BHK)"
+                  name="bhk_type"
+                  value={editFromData.bhk_type}
+                  onChange={handleEditChangeFrom}
+                  required
+                />
                   </Tippy>
-                </div>
-                <div>
-                  <label htmlFor="price" className="sr-only">Price</label>
+              </div>
+              <div>
+                <label htmlFor="price" className="sr-only">Price</label>
                   <Tippy content={<span>Enter the price for this BHK (e.g., ₹50 Lacs)</span>} animation="scale" theme="light-border">
-                    <input
-                      id="price"
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200"
+                <input
+                  id="price"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none ring-blue-500 focus:ring-1 shadow-sm transition duration-200"
                       type="text"
-                      placeholder="Price (e.g., ₹50 Lacs)"
-                      name="price"
-                      value={editFromData.price}
-                      onChange={handleEditChangeFrom}
-                      required
-                    />
+                  placeholder="Price (e.g., ₹50 Lacs)"
+                  name="price"
+                  value={editFromData.price}
+                  onChange={handleEditChangeFrom}
+                  required
+                />
                   </Tippy>
-                </div>
+              </div>
 
                 <Tippy content={<span>Insert new BHK floor plan</span>} animation="scale" theme="light-border">
-                  <button
-                    type="submit"
+              <button
+                type="submit"
                     className="mt-6 w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-red-500 to-red-700 px-6 py-3 font-semibold text-white shadow-md hover:from-red-600 hover:to-red-800 transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 group"
-                  >
+              >
                     <MdAddCircle className="text-xl group-hover:animate-bounce" /> Insert
-                  </button>
+              </button>
                 </Tippy>
-              </form>
+            </form>
             </div>
           </div>
         </Modal>
