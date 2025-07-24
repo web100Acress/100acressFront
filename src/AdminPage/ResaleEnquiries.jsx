@@ -29,8 +29,9 @@ const ResaleEnquiries = () => {
     setLoading(true);
     try {
       const res = await axios.get("https://api.100acress.com/postEnq_view");
-      console.log("Data: ", res.data.data); //
-      setEnquiries(res.data.data); //
+      // Sort by createdAt descending (newest first)
+      const sorted = [...res.data.data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setEnquiries(sorted);
     } catch (error) {
       console.error("Error fetching resale enquiries:", error);
       messageApi.open({
