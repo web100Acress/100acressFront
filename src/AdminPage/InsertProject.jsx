@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Sidebar from "./Sidebar";
-const customStyle = {
-  position: "absolute",
-  top: "20px",
-  marginLeft: "100px",
-  right: "auto",
-  width: "80%",
-};
+import { message } from "antd"; // Import Ant Design message for modern notifications
+import { MdInfo, MdLocationOn, MdAttachMoney, MdApartment, MdTitle, MdDescription, MdPerson, MdImage, MdBusiness, MdDateRange, MdOutlineNumbers, MdOutlinePhone, MdOutlineAttachMoney, MdOutlineInsertDriveFile, MdOutlineCloudUpload, MdOutlineCategory, MdStar, MdSchool, MdMovie } from "react-icons/md";
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale.css';
+import { useDropzone } from 'react-dropzone';
+
 const InsertProject = () => {
   const [editFromData, setEditFromData] = useState({
     projectName: "",
@@ -17,13 +17,13 @@ const InsertProject = () => {
     project_discripation: "",
     AboutDeveloper: "",
     builderName: "",
-    projectRedefine_Connectivity: [],
-    projectRedefine_Education: [],
-    projectRedefine_Business: [],
-    projectRedefine_Entertainment: [],
-    Amenities: [],
-    luxury: "",
-    spotlight: "",
+    projectRedefine_Connectivity: "", // Changed to string for input, will be split for array
+    projectRedefine_Education: "",   // Changed to string for input, will be split for array
+    projectRedefine_Business: "",    // Changed to string for input, will be split for array
+    projectRedefine_Entertainment: "", // Changed to string for input, will be split for array
+    Amenities: "",                   // Changed to string for input, will be split for array
+    luxury: "False",
+    spotlight: "False",
     paymentPlan: "",
     meta_title: "",
     meta_description: "",
@@ -41,8 +41,23 @@ const InsertProject = () => {
     possessionDate: "",
     minPrice: "",
     maxPrice: "",
-    launchingDate: ""
+    launchingDate: "",
   });
+
+  const [fileData, setFileData] = useState({
+    frontImage: null,
+    logo: null,
+    thumbnailImage: null,
+    project_locationImage: null,
+    project_floorplan_Image: [], // Initialize as empty array for multiple files
+    highlightImage: null,
+    project_Brochure: null,
+    projectGallery: [], // Initialize as empty array for multiple files
+    projectMaster_plan: null,
+  });
+
+  const [loading, setLoading] = useState(false); // State for loading indicator
+  const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
 
   const resetData = () => {
     setEditFromData({
@@ -53,13 +68,14 @@ const InsertProject = () => {
       project_discripation: "",
       AboutDeveloper: "",
       builderName: "",
-      projectRedefine_Connectivity: [],
-      projectRedefine_Education: [],
-      projectRedefine_Business: [],
-      projectRedefine_Entertainment: [],
-      Amenities: [],
+      projectRedefine_Connectivity: "",
+      projectRedefine_Education: "",
+      projectRedefine_Business: "",
+      projectRedefine_Entertainment: "",
+      Amenities: "",
       luxury: "False",
       spotlight: "False",
+      paymentPlan: "",
       meta_title: "",
       meta_description: "",
       projectBgContent: "",
@@ -82,48 +98,19 @@ const InsertProject = () => {
 
   const resetImageData = () => {
     setFileData({
-      frontImage: "",
-      logo: "",
-      project_locationImage: "",
-      project_floorplan_Image: "",
+      frontImage: null,
+      logo: null,
+      thumbnailImage: null,
+      project_locationImage: null,
+      project_floorplan_Image: [],
+      highlightImage: null,
+      project_Brochure: null,
+      projectGallery: [],
+      projectMaster_plan: null,
     });
   };
 
-  const handleProjectOverviewChange = (event) => {
-    setEditFromData({
-      ...editFromData,
-      projectOverview: event.target.value,
-    });
-  };
-
-  const handleProjectType = (event) => {
-    setEditFromData({ ...editFromData, type: event.target.value });
-  };
-
-  const handleProjectStatus = (event) => {
-    setEditFromData({ ...editFromData, project_Status: event.target.value });
-  };
-
-  const handleLuxuryStatus = (event) => {
-    setEditFromData({ ...editFromData, luxury: event.target.value });
-  };
-
-  const handleSpotlightStatus = (event) => {
-    setEditFromData({ ...editFromData, spotlight: event.target.value });
-  }
-
-  const [fileData, setFileData] = useState({
-    frontImage: null,
-    logo: null,
-    thumbnailImage: null,
-    project_locationImage: null,
-    project_floorplan_Image: [null],
-    highlightImage: null,
-    project_Brochure: null,
-    projectGallery: [null],
-    projectMaster_plan: null,
-  });
-
+  // Generic handler for all text and select inputs in editFromData
   const handleChangeProjectData = (e) => {
     setEditFromData({
       ...editFromData,
@@ -131,701 +118,809 @@ const InsertProject = () => {
     });
   };
 
-  const handleInputChange = (event, category) => {
-    let newArray = [];
-
-    if (event.target.name === category) {
-      newArray = event.target.value;
-    }
-    setEditFromData((prevState) => ({
-      ...prevState,
-      [category]: newArray.length > 0 ? newArray : event.target.value,
+  // Handler for multiple file inputs (project_floorplan_Image, projectGallery)
+  const handleMultipleFilesChange = (e, key) => {
+    const files = Array.from(e.target.files); // Convert FileList to Array
+    setFileData((prevFileData) => ({
+      ...prevFileData,
+      [key]: files,
     }));
   };
 
-  // Amenities
-  const handleChangeValueAmenities = (event) => {
-    handleInputChange(event, "Amenities");
+  // Handler for single file inputs
+  const handleSingleFileChange = (e, key) => {
+    const file = e.target.files[0];
+    setFileData((prevFileData) => ({
+      ...prevFileData,
+      [key]: file,
+    }));
   };
-
-  // Connectivity
-  const handleChangeValueprojectRedefine_Connectivity = (event) => {
-    handleInputChange(event, "projectRedefine_Connectivity");
-  };
-
-  // Education
-  const handleChangeValueprojectRedefine_Education = (event) => {
-    handleInputChange(event, "projectRedefine_Education");
-  };
-
-  // Business
-  const handleChangeValueprojectRedefine_Business = (event) => {
-    handleInputChange(event, "projectRedefine_Business");
-  };
-
-  // Entertainment
-  const handleChangeValueprojectRedefine_Entertainment = (event) => {
-    handleInputChange(event, "projectRedefine_Entertainment");
-  };
-
-  const handleOtherImageChange = (e) => {
-    var files = e.target.files;
-    if (files) {
-      const updatedOtherImage = [];
-      for (let i = 0; i < files.length; i++) {
-        updatedOtherImage.push(files[i]);
-      }
-      setFileData({
-        ...fileData,
-        project_floorplan_Image: updatedOtherImage,
-      });
-    } else {
-      console.error("No files selected");
-    }
-  };
-
-  const handleGalleryImageChange = (e) => {
-    var files = e.target.files;
-    if (files) {
-      const updatedOtherImage = [];
-      for (let i = 0; i < files.length; i++) {
-        updatedOtherImage.push(files[i]);
-      }
-      setFileData({
-        ...fileData,
-        projectGallery: updatedOtherImage,
-      });
-    } else {
-      console.error("No files selected");
-    }
-  };
-
-  const otherImageLength = fileData.project_floorplan_Image
-    ? fileData.project_floorplan_Image.length
-    : 0;
-  const GalleryImageLength = fileData.projectGallery
-    ? fileData.projectGallery.length
-    : 0;
 
   const handleSubmitProject = async (e) => {
     e.preventDefault();
-    const apiEndpoint = "https://api.100acress.com/project/Insert";
+    setLoading(true);
+    messageApi.open({
+      key: "insertProject",
+      type: 'loading',
+      content: 'Adding new project...',
+    });
 
+    const apiEndpoint = "https://api.100acress.com/project/Insert";
     const formDataAPI = new FormData();
 
+    // Append all text/select data from editFromData
     for (const key in editFromData) {
-      formDataAPI.append(key, editFromData[key]);
+      if (
+        key === "projectRedefine_Connectivity" ||
+        key === "projectRedefine_Education" ||
+        key === "projectRedefine_Business" ||
+        key === "projectRedefine_Entertainment" ||
+        key === "Amenities"
+      ) {
+        // For fields expected as arrays, split the string by comma and append each item
+        const items = editFromData[key].split(',').map(item => item.trim()).filter(item => item !== '');
+        items.forEach(item => formDataAPI.append(key, item));
+      } else {
+        formDataAPI.append(key, editFromData[key]);
+      }
     }
 
-    for (let i = 0; i < otherImageLength; i++) {
-      formDataAPI.append(
-        "project_floorplan_Image",
-        fileData.project_floorplan_Image[i]
-      );
-    }
+    // Append all single image files
+    if (fileData.logo) formDataAPI.append("logo", fileData.logo);
+    if (fileData.thumbnailImage) formDataAPI.append("thumbnailImage", fileData.thumbnailImage);
+    if (fileData.project_locationImage) formDataAPI.append("project_locationImage", fileData.project_locationImage);
+    if (fileData.frontImage) formDataAPI.append("frontImage", fileData.frontImage);
+    if (fileData.project_Brochure) formDataAPI.append("project_Brochure", fileData.project_Brochure);
+    if (fileData.highlightImage) formDataAPI.append("highlightImage", fileData.highlightImage);
+    if (fileData.projectMaster_plan) formDataAPI.append("projectMaster_plan", fileData.projectMaster_plan);
 
-    for (let i = 0; i < GalleryImageLength; i++) {
-      formDataAPI.append("projectGallery", fileData.projectGallery[i]);
-    }
+    // Append multiple image files
+    fileData.project_floorplan_Image.forEach((file) => {
+      formDataAPI.append("project_floorplan_Image", file);
+    });
+    fileData.projectGallery.forEach((file) => {
+      formDataAPI.append("projectGallery", file);
+    });
 
-    formDataAPI.append("logo", fileData.logo);
-    formDataAPI.append("thumbnailImage", fileData.thumbnailImage);
-    formDataAPI.append("project_locationImage", fileData.project_locationImage);
-    formDataAPI.append("frontImage", fileData.frontImage);
-    formDataAPI.append("project_Brochure", fileData.project_Brochure);
-    formDataAPI.append("highlightImage", fileData.highlightImage);
-    formDataAPI.append("projectMaster_plan", fileData.projectMaster_plan);
+    // --- DEBUG LOGGING ---
+    console.log("Submitting Project FormData:");
+    for (let pair of formDataAPI.entries()) {
+      if (pair[1] instanceof File) {
+        console.log(pair[0], "(File):", pair[1].name, pair[1].type, pair[1].size + " bytes");
+      } else {
+        console.log(pair[0], ":", pair[1]);
+      }
+    }
+    // --- END DEBUG LOGGING ---
 
     try {
       const myToken = localStorage.getItem("myToken");
-      const response = await axios.post(apiEndpoint, formDataAPI,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${myToken}`,
-          },
-        });
-      const responseData = response.data;
+      const response = await axios.post(apiEndpoint, formDataAPI, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${myToken}`,
+        },
+      });
+
       if (response.status === 200) {
-        console.log(responseData);
-        alert("Data Posted");
+        messageApi.destroy("insertProject");
+        messageApi.open({
+          type: 'success',
+          content: 'Project added successfully!',
+          duration: 2,
+        });
         resetData();
         resetImageData();
+      } else {
+        messageApi.destroy("insertProject");
+        messageApi.open({
+          type: 'error',
+          content: 'Failed to add project. Server returned an unexpected status.',
+          duration: 3,
+        });
+        console.error("Failed to add project. Server response:", response.status, response.data);
       }
     } catch (error) {
+      messageApi.destroy("insertProject");
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        if (error.response.status === 401) {
-          console.log("Unauthorized: You don't have permission to delete this user.");
-          alert("You are not authorized to delete this user.");
-        } else {
-          console.error("An error occurred while deleting user:", error.response.status);
-        }
+        messageApi.open({
+          type: 'error',
+          content: `Error: ${error.response.data?.message || 'Server error.'}`,
+          duration: 4,
+        });
+        console.error("Server Error:", error.response.status, error.response.data);
       } else if (error.request) {
-        // The request was made but no response was received
-        console.error("No response received from the server.");
+        messageApi.open({
+          type: 'error',
+          content: 'No response from server. Check network connection.',
+          duration: 4,
+        });
+        console.error("Network Error:", error.request);
       } else {
-        // Something happened in setting up the request that triggered an error
-        console.error("Error in request setup:", error.message);
+        messageApi.open({
+          type: 'error',
+          content: `Request Error: ${error.message}`,
+          duration: 4,
+        });
+        console.error("Error setting up request:", error.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleFileChange = (e, key) => {
-    const newFileData = { ...fileData };
-    newFileData[key] = e.target.files[0];
-    setFileData(newFileData);
-  };
+  // Helper for file input display names
+  const getFileName = (file) => file ? file.name : "No file chosen";
+  const getMultipleFileNames = (files) =>
+    files && files.length > 0 ? files.map(file => file.name).join(', ') : "No files chosen";
 
-  const [content, setContent] = useState("");
-  const handleContent = (value) => {
-    setContent(value);
-  };
-
-
-
-
-  console.log(editFromData);
+  // Helper Dropzone component for single file
+  function FileDropzone({ onDrop, label, currentFile }) {
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+      onDrop: (acceptedFiles) => {
+        if (acceptedFiles && acceptedFiles[0]) {
+          onDrop(acceptedFiles[0]);
+        }
+      },
+      multiple: false,
+      maxFiles: 1,
+    });
+    return (
+      <div {...getRootProps()} className={`border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer transition ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'}`}> 
+        <input {...getInputProps()} />
+        <span className="text-gray-600 mb-2">{label}</span>
+        {currentFile ? (
+          currentFile.type && currentFile.type.startsWith('image') ? (
+            <img src={URL.createObjectURL(currentFile)} alt="Preview" className="w-24 h-24 object-cover rounded mb-2" />
+          ) : (
+            <span className="text-xs text-gray-500">{currentFile.name}</span>
+          )
+        ) : (
+          <span className="text-xs text-gray-400">Drag & drop or click to select</span>
+        )}
+      </div>
+    );
+  }
+  // Helper Dropzone component for multiple files
+  function MultiFileDropzone({ onDrop, label, currentFiles }) {
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+      onDrop: (acceptedFiles) => {
+        if (acceptedFiles && acceptedFiles.length > 0) {
+          onDrop(acceptedFiles);
+        }
+      },
+      multiple: true,
+    });
+    return (
+      <div {...getRootProps()} className={`border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer transition ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'}`}> 
+        <input {...getInputProps()} />
+        <span className="text-gray-600 mb-2">{label}</span>
+        <div className="flex flex-wrap gap-2 justify-center">
+          {currentFiles && currentFiles.length > 0 ? (
+            currentFiles.map((file, idx) =>
+              file.type && file.type.startsWith('image') ? (
+                <img key={idx} src={URL.createObjectURL(file)} alt={`Preview ${idx + 1}`} className="w-12 h-12 object-cover rounded" />
+              ) : (
+                <span key={idx} className="text-xs text-gray-500">{file.name}</span>
+              )
+            )
+          ) : (
+            <span className="text-xs text-gray-400">Drag & drop or click to select</span>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ overflowX: "hidden" }}>
+    <div className="flex bg-gray-50 min-h-screen">
       <Sidebar />
-      <div className="" style={customStyle}>
-        <div className=" sm:w-[38rem] lg:w-full mx-auto lg:h-auto my-10  rounded-2xl mt-0 mb-0 bg-white shadow-lg sm:max-w-lg">
-          <div
-            className="bg-red-500 pb-1
-         pt-2 text-center text-white"
-            style={{ width: "850px" }}
-          >
-            <p className="font-serif text-2xl font-semibold tracking-wider">
-              Add New Project
-            </p>
-          </div>
+      {contextHolder} {/* Ant Design message context holder */}
 
-          <div
-            className="space-y-4 px-8  py-3 pt-3 bg-white shadow-lg"
-            style={{ width: "850px" }}
-          >
-            <div className="flex">
-              <select
-                className="text-gray-600 border px-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
-                value={editFromData.projectOverview}
-                onChange={handleProjectOverviewChange}
-              >
-                <option selected disabled hidden value="">Select Project Overview</option>
-                <option value="trending">Trending</option>
-                <option value="featured">Featured</option>
-                <option value="none">None</option>
-              </select>
+      {/* Main content area */}
+      <div className="flex-1 p-8 ml-64">
+        {/* Page Header */}
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-2 flex items-center gap-2 justify-center"><MdBusiness className="text-3xl text-blue-500" /> Add New Project</h1>
+          <p className="text-lg text-gray-600">Fill in the details to create a new project listing.</p>
+        </div>
 
-              <select
-                className="text-gray-600 border px-2 mx-3 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
-                value={editFromData.type}
-                onChange={handleProjectType}
-              >
-                <option value="" selected disabled hidden className="text-gray-600">
-                  Project Type
-                </option>
-                <option value="Commercial Property">Commercial Property</option>
-                <option value="Residential Flats">Residential Flats</option>
-                <option value="SCO Plots">SCO Plots</option>
-                <option value="Deen Dayal Plots">Deen Dayal Plots</option>
-                <option value="Residential Plots">Residential Plots</option>
-                <option value="Independent Floors">Independent Floors</option>
-                <option value="Builder Floors">Builder Floors</option>
-                <option value="Affordable Homes">Affordable Homes</option>
-                <option value="Villas">Villas</option>
-                <option value="Farm Houses">Farm House</option>
-              </select>
+        {/* Responsive Form + Preview Layout */}
+        <div className="flex flex-col md:flex-row gap-8 items-start">
+        {/* Project Form Card */}
+          <div className="bg-white rounded-2xl shadow-2xl p-10 border border-gray-100 w-full md:w-2/3 mb-10 relative">
+          {loading && (
+            <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-xl z-10">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-red-500"></div>
+            </div>
+          )}
+            <form className="space-y-12" onSubmit={handleSubmitProject}>
+              {/* --- Project Info Section --- */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <MdInfo className="text-2xl text-blue-500" />
+                  <h2 className="text-2xl font-bold text-gray-800">Project Info</h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                  <div>
+                    <Tippy content={<span>Project Overview (trending/featured/none)</span>} animation="scale" theme="light-border">
+                      <label htmlFor="projectOverview" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdOutlineCategory /> Project Overview</label>
+                    </Tippy>
+                <select
+                  id="projectOverview"
+                  name="projectOverview"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                  value={editFromData.projectOverview}
+                  onChange={handleChangeProjectData} // Generic handler
+                >
+                  <option value="" disabled hidden>Select Project Overview</option>
+                  <option value="trending">Trending</option>
+                  <option value="featured">Featured</option>
+                  <option value="none">None</option>
+                </select>
+              </div>
 
-              <select
-                className="text-gray-600 border  px-2 mx-2 py-1 outline-none w-full rounded-md ring-black focus:ring-1"
-                value={editFromData.project_Status}
-                onChange={handleProjectStatus}
+              <div>
+                    <Tippy content={<span>Project Type (e.g., Commercial, Residential)</span>} animation="scale" theme="light-border">
+                      <label htmlFor="type" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdApartment /> Project Type</label>
+                    </Tippy>
+                <select
+                  id="type"
+                  name="type"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                  value={editFromData.type}
+                  onChange={handleChangeProjectData} // Generic handler
+                >
+                  <option value="" disabled hidden>Select Project Type</option>
+                  <option value="Commercial Property">Commercial Property</option>
+                  <option value="Residential Flats">Residential Flats</option>
+                  <option value="SCO Plots">SCO Plots</option>
+                  <option value="Deen Dayal Plots">Deen Dayal Plots</option>
+                  <option value="Residential Plots">Residential Plots</option>
+                  <option value="Independent Floors">Independent Floors</option>
+                  <option value="Builder Floors">Builder Floors</option>
+                  <option value="Affordable Homes">Affordable Homes</option>
+                  <option value="Villas">Villas</option>
+                  <option value="Farm Houses">Farm House</option>
+                </select>
+              </div>
 
-              >
-                <option value="" selected disabled hidden className="text-gray-600">
-                  Project Status
-                </option>
-                <option value="underconstruction">Under Construction</option>
-                <option value="comingsoon">Coming Soon</option>
-                <option value="newlaunch">New Launch</option>
-                <option value="readytomove">Ready To Move</option>
-              </select>
+              <div>
+                    <Tippy content={<span>Project Status (e.g., Under Construction)</span>} animation="scale" theme="light-border">
+                      <label htmlFor="project_Status" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdInfo /> Project Status</label>
+                    </Tippy>
+                <select
+                  id="project_Status"
+                  name="project_Status"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                  value={editFromData.project_Status}
+                  onChange={handleChangeProjectData} // Generic handler
+                >
+                  <option value="" disabled hidden>Select Project Status</option>
+                  <option value="underconstruction">Under Construction</option>
+                  <option value="comingsoon">Coming Soon</option>
+                  <option value="newlaunch">New Launch</option>
+                  <option value="readytomove">Ready To Move</option>
+                </select>
             </div>
 
-            <div className="flex space-x-4">
-              <label className="block" for="project_url">
+              <div>
+                    <Tippy content={<span>Project URL (slug)</span>} animation="scale" theme="light-border">
+                      <label htmlFor="project_url" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdOutlineInsertDriveFile /> Project URL</label>
+                    </Tippy>
                 <input
-                  className=" w-[270px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                   type="text"
-                  placeholder="Project URL"
+                  id="project_url"
                   name="project_url"
+                  placeholder="e.g., your-project-slug"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                   value={editFromData.project_url}
                   onChange={handleChangeProjectData}
                 />
-              </label>
+              </div>
+                </div>
+              </div>
 
-              <label className="block" for="state">
+              {/* --- Location Section --- */}
+              <div>
+                <div className="flex items-center gap-2 mb-4 mt-8">
+                  <MdLocationOn className="text-2xl text-green-500" />
+                  <h2 className="text-2xl font-bold text-gray-800">Location & Details</h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                  <div>
+                    <Tippy content={<span>State</span>} animation="scale" theme="light-border">
+                      <label htmlFor="state" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdLocationOn /> State</label>
+                    </Tippy>
                 <input
-                  className="w-[270px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                   type="text"
-                  placeholder="State"
+                  id="state"
                   name="state"
+                  placeholder="e.g., Haryana"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                   value={editFromData.state}
                   onChange={handleChangeProjectData}
                 />
-              </label>
-
-              <label className="block" for="city">
+              </div>
+              <div>
+                    <Tippy content={<span>City</span>} animation="scale" theme="light-border">
+                      <label htmlFor="city" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdLocationOn /> City</label>
+                    </Tippy>
                 <input
-                  className="w-[210px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                   type="text"
-                  placeholder="City"
+                  id="city"
                   name="city"
+                  placeholder="e.g., Gurugram"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                   value={editFromData.city}
                   onChange={handleChangeProjectData}
                 />
-              </label>
-            </div>
-            <div className="flex w-full">
-              <label className="basis-1/4" for="country">
+              </div>
+              <div>
+                    <Tippy content={<span>Country</span>} animation="scale" theme="light-border">
+                      <label htmlFor="country" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdLocationOn /> Country</label>
+                    </Tippy>
                 <input
-                  className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                   type="text"
-                  placeholder="Country"
+                  id="country"
                   name="country"
+                  placeholder="e.g., India"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                   value={editFromData.country}
                   onChange={handleChangeProjectData}
                 />
-              </label>
-              <select
-                className="basis-1/4 text-gray-600 border  px-2 mx-2 py-1 outline-none rounded-md ring-black focus:ring-1"
-                value={editFromData.luxury}
-                onChange={handleLuxuryStatus}
-              >
-                <option className="hidden" value="">
-                  luxury
-                </option>
-                <option value="True">True</option>
-                <option value="False">False</option>
-              </select>
-              <select
-                className="basis-1/4 text-gray-600 border  px-2 mx-2 py-1 outline-none rounded-md ring-black focus:ring-1"
-                value={editFromData.spotlight}
-                onChange={handleSpotlightStatus}
-              >
-                <option className="hidden" value="">Spotlight</option>
-                <option value="True">True</option>
-                <option value="False">False</option>
-              </select>
-              <label className="basis-1/4 px-2 " for="paymentplan">
-                <input
-                  className="w-full rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                  type="text"
-                  placeholder="Payment Plan"
-                  name="paymentPlan"
-                  value={editFromData.paymentPlan}
-                  onChange={handleChangeProjectData}
-                />
-              </label>
+              </div>
+              <div>
+                    <Tippy content={<span>Luxury Status</span>} animation="scale" theme="light-border">
+                      <label htmlFor="luxury" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdStar /> Luxury</label>
+                    </Tippy>
+                <select
+                  id="luxury"
+                  name="luxury"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                  value={editFromData.luxury}
+                  onChange={handleChangeProjectData} // Generic handler
+                >
+                  <option value="False">False</option>
+                  <option value="True">True</option>
+                </select>
+              </div>
+              </div>
             </div>
 
-            {/* New projet Data add */}
-
-            <div className="flex space-x-4">
-              <label className="block" for="project_url">
+              {/* --- Numeric Details Section --- */}
+              <div>
+                <div className="flex items-center gap-2 mb-4 mt-8">
+                  <MdOutlineNumbers className="text-2xl text-purple-500" />
+                  <h2 className="text-2xl font-bold text-gray-800">Numeric Details</h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                  <div>
+                    <Tippy content={<span>Total Land Area</span>} animation="scale" theme="light-border">
+                      <label htmlFor="totalLandArea" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdOutlineNumbers /> Total Land Area</label>
+                    </Tippy>
                 <input
-                  className=" w-[270px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                   type="text"
-                  placeholder="Total Land Area"
+                  id="totalLandArea"
                   name="totalLandArea"
+                  placeholder="e.g., 10 Acres"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                   value={editFromData.totalLandArea}
                   onChange={handleChangeProjectData}
                 />
-              </label>
-
-              <label className="block" for="state">
+              </div>
+              <div>
+                    <Tippy content={<span>Total Units</span>} animation="scale" theme="light-border">
+                      <label htmlFor="totalUnit" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdOutlineNumbers /> Total Units</label>
+                    </Tippy>
                 <input
-                  className="w-[270px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                   type="text"
-                  placeholder="Total Unit"
+                  id="totalUnit"
                   name="totalUnit"
+                  placeholder="e.g., 500"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                   value={editFromData.totalUnit}
                   onChange={handleChangeProjectData}
                 />
-              </label>
-
-              <div className="flex">
-                <label className="block" for="city">
-                  <input
-                    className="w-[100px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                    type="text"
-                    placeholder="Tower Number"
-                    name="towerNumber"
-                    value={editFromData.towerNumber}
-                    onChange={handleChangeProjectData}
-                  />
-                </label>
-
-                <label className="block" for="city">
-                  <input
-                    className="w-[100px] mx-2 rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                    type="text"
-                    placeholder="Launching Date"
-                    name="launchingDate"
-                    value={editFromData.launchingDate}
-                    onChange={handleChangeProjectData}
-                  />
-                </label>
+              </div>
+              <div>
+                    <Tippy content={<span>Number of Towers</span>} animation="scale" theme="light-border">
+                      <label htmlFor="towerNumber" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdOutlineNumbers /> Towers</label>
+                    </Tippy>
+                <input
+                  type="text"
+                  id="towerNumber"
+                  name="towerNumber"
+                  placeholder="e.g., 5"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                  value={editFromData.towerNumber}
+                  onChange={handleChangeProjectData}
+                />
+              </div>
+              <div>
+                    <Tippy content={<span>Launching Date</span>} animation="scale" theme="light-border">
+                      <label htmlFor="launchingDate" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdDateRange /> Launching Date</label>
+                    </Tippy>
+                <input
+                    type="date"
+                  id="launchingDate"
+                  name="launchingDate"
+                    placeholder="e.g., 2024-12-17"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                  value={editFromData.launchingDate}
+                  onChange={handleChangeProjectData}
+                />
+                  </div>
               </div>
             </div>
 
-            <div className="flex space-x-4">
-              <label className="block" for="project_url">
+              {/* --- Contact & Price Section --- */}
+              <div>
+                <div className="flex items-center gap-2 mb-4 mt-8">
+                  <MdOutlinePhone className="text-2xl text-orange-500" />
+                  <h2 className="text-2xl font-bold text-gray-800">Contact & Pricing</h2>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                  <div>
+                    <Tippy content={<span>Mobile Number</span>} animation="scale" theme="light-border">
+                      <label htmlFor="mobileNumber" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdOutlinePhone /> Mobile Number</label>
+                    </Tippy>
                 <input
-                  className=" w-[270px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                   type="number"
-                  placeholder="Mobile Number"
+                  id="mobileNumber"
                   name="mobileNumber"
+                  placeholder="e.g., 9876543210"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                   value={editFromData.mobileNumber}
                   onChange={handleChangeProjectData}
                 />
-              </label>
-
-              <label className="block" for="state">
+              </div>
+              <div>
+                    <Tippy content={<span>Possession Date</span>} animation="scale" theme="light-border">
+                      <label htmlFor="possessionDate" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdDateRange /> Possession Date</label>
+                    </Tippy>
                 <input
-                  className="w-[270px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                  type="text"
-                  placeholder="Possession Date"
+                    type="date"
+                  id="possessionDate"
                   name="possessionDate"
+                    placeholder="e.g., 2024-12-17"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                   value={editFromData.possessionDate}
                   onChange={handleChangeProjectData}
                 />
-              </label>
-
-              <div className="flex">
-                <label className="block" for="city">
+              </div>
+                <div>
+                    <Tippy content={<span>Min Price</span>} animation="scale" theme="light-border">
+                      <label htmlFor="minPrice" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdOutlineAttachMoney /> Min Price (₹)</label>
+                    </Tippy>
                   <input
-                    className="w-[100px] rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                     type="text"
-                    placeholder="₹ Min Price"
+                    id="minPrice"
                     name="minPrice"
+                    placeholder="e.g., 50 Lacs"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                     value={editFromData.minPrice}
                     onChange={handleChangeProjectData}
                   />
-                </label>
-
-                <label className="block" for="city">
+                </div>
+                <div>
+                    <Tippy content={<span>Max Price</span>} animation="scale" theme="light-border">
+                      <label htmlFor="maxPrice" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdOutlineAttachMoney /> Max Price (₹)</label>
+                    </Tippy>
                   <input
-                    className="w-[100px] rounded-md border mx-2 bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                     type="text"
-                    placeholder="₹ Max Price"
+                    id="maxPrice"
                     name="maxPrice"
+                    placeholder="e.g., 1 Crore"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                     value={editFromData.maxPrice}
                     onChange={handleChangeProjectData}
                   />
-                </label>
+                </div>
               </div>
             </div>
 
-            {/* New projet Data End */}
-
-            <label className="block" for="name">
+            {/* Main Project Details */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                  <Tippy content={<span>Project Name</span>} animation="scale" theme="light-border">
+                    <label htmlFor="projectName" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdTitle /> Project Name</label>
+                  </Tippy>
               <input
-                className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                 type="text"
-                placeholder="Project Name"
+                id="projectName"
                 name="projectName"
+                placeholder="Enter project name"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                 value={editFromData.projectName}
                 onChange={handleChangeProjectData}
               />
-            </label>
-
-            <label className="block" for="name">
+            </div>
+            <div>
+                  <Tippy content={<span>Project Address</span>} animation="scale" theme="light-border">
+                    <label htmlFor="projectAddress" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdLocationOn /> Project Address</label>
+                  </Tippy>
               <input
-                className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                 type="text"
-                placeholder="Project Address"
+                id="projectAddress"
                 name="projectAddress"
+                placeholder="Enter full project address"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                 value={editFromData.projectAddress}
                 onChange={handleChangeProjectData}
               />
-            </label>
-
-            <label className="block" for="name">
+            </div>
+            <div>
+                  <Tippy content={<span>Project Description</span>} animation="scale" theme="light-border">
+                    <label htmlFor="project_discripation" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdDescription /> Project Description</label>
+                  </Tippy>
               <textarea
-                className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                type="text"
-                rows={4}
-                placeholder="Project Description"
+                id="project_discripation"
                 name="project_discripation"
+                rows={4}
+                placeholder="Detailed description of the project"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 resize-y"
                 value={editFromData.project_discripation}
                 onChange={handleChangeProjectData}
               />
-            </label>
-
-            <label className="block" for="name">
+            </div>
+            <div>
+                  <Tippy content={<span>About Developer</span>} animation="scale" theme="light-border">
+                    <label htmlFor="AboutDeveloper" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdPerson /> About Developer</label>
+                  </Tippy>
               <textarea
-                className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
-                type="text"
-                rows={4}
-                placeholder="About Developer"
+                id="AboutDeveloper"
                 name="AboutDeveloper"
+                rows={4}
+                placeholder="Information about the developer"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 resize-y"
                 value={editFromData.AboutDeveloper}
                 onChange={handleChangeProjectData}
               />
-            </label>
-
-            <label className="block" for="name">
+            </div>
+            <div>
+                  <Tippy content={<span>Builder Name</span>} animation="scale" theme="light-border">
+                    <label htmlFor="builderName" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdPerson /> Builder Name</label>
+                  </Tippy>
               <input
-                className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                 type="text"
-                placeholder="Builder Name"
+                id="builderName"
                 name="builderName"
+                placeholder="Enter builder's name"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                 value={editFromData.builderName}
                 onChange={handleChangeProjectData}
               />
-            </label>
-
-            <label className="block" for="name">
+            </div>
+            <div>
+                  <Tippy content={<span>Connectivity (e.g., Metro Station, Highway)</span>} animation="scale" theme="light-border">
+                    <label htmlFor="projectRedefine_Connectivity" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdBusiness /> Connectivity</label>
+                  </Tippy>
               <input
-                className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                 type="text"
-                placeholder="Connectivity"
+                id="projectRedefine_Connectivity"
                 name="projectRedefine_Connectivity"
+                placeholder="e.g., Metro Station, Highway"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                 value={editFromData.projectRedefine_Connectivity}
-                onChange={handleChangeValueprojectRedefine_Connectivity}
+                onChange={handleChangeProjectData}
               />
-            </label>
-
-            <label className="block" for="name">
+            </div>
+            <div>
+                  <Tippy content={<span>Education (e.g., Schools, Universities)</span>} animation="scale" theme="light-border">
+                    <label htmlFor="projectRedefine_Education" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdSchool /> Education</label>
+                  </Tippy>
               <input
-                className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                 type="text"
-                placeholder="Education"
+                id="projectRedefine_Education"
                 name="projectRedefine_Education"
+                placeholder="e.g., Schools, Universities"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                 value={editFromData.projectRedefine_Education}
-                onChange={handleChangeValueprojectRedefine_Education}
+                onChange={handleChangeProjectData}
               />
-            </label>
-
-            <label className="block" for="name">
+            </div>
+            <div>
+                  <Tippy content={<span>Business (e.g., Tech Parks, Business Hubs)</span>} animation="scale" theme="light-border">
+                    <label htmlFor="projectRedefine_Business" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdBusiness /> Business</label>
+                  </Tippy>
               <input
-                className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                 type="text"
-                placeholder="Business"
+                id="projectRedefine_Business"
                 name="projectRedefine_Business"
+                placeholder="e.g., Tech Parks, Business Hubs"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                 value={editFromData.projectRedefine_Business}
-                onChange={handleChangeValueprojectRedefine_Business}
+                onChange={handleChangeProjectData}
               />
-            </label>
-
-            <label className="block" for="name">
+            </div>
+            <div>
+                  <Tippy content={<span>Entertainment (e.g., Malls, Cinemas)</span>} animation="scale" theme="light-border">
+                    <label htmlFor="projectRedefine_Entertainment" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdMovie /> Entertainment</label>
+                  </Tippy>
               <input
-                className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                 type="text"
-                placeholder="Entertainment"
+                id="projectRedefine_Entertainment"
                 name="projectRedefine_Entertainment"
+                placeholder="e.g., Malls, Cinemas"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                 value={editFromData.projectRedefine_Entertainment}
-                onChange={handleChangeValueprojectRedefine_Entertainment}
+                onChange={handleChangeProjectData}
               />
-            </label>
-
-            <label className="block" for="name">
+            </div>
+            <div>
+                  <Tippy content={<span>Amenities (e.g., Swimming Pool, Gym, Park)</span>} animation="scale" theme="light-border">
+                    <label htmlFor="Amenities" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdOutlineCategory /> Amenities</label>
+                  </Tippy>
               <input
-                className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                 type="text"
-                placeholder="Amenities"
+                id="Amenities"
                 name="Amenities"
+                placeholder="e.g., Swimming Pool, Gym, Park"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                 value={editFromData.Amenities}
-                onChange={handleChangeValueAmenities}
+                onChange={handleChangeProjectData}
               />
-            </label>
-
-            <label className="block" for="name">
+            </div>
+            <div>
+                  <Tippy content={<span>Banner Content Heading</span>} animation="scale" theme="light-border">
+                    <label htmlFor="projectBgContent" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdTitle /> Banner Content Heading</label>
+                  </Tippy>
               <input
-                className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                 type="text"
-                placeholder="Banner Content Heading"
+                id="projectBgContent"
                 name="projectBgContent"
+                placeholder="Catchy heading for banner"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                 value={editFromData.projectBgContent}
                 onChange={handleChangeProjectData}
               />
-            </label>
-
-            <label className="block" for="name">
+            </div>
+            <div>
+                  <Tippy content={<span>Project RERA Number</span>} animation="scale" theme="light-border">
+                    <label htmlFor="projectReraNo" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdOutlineInsertDriveFile /> Project RERA Number</label>
+                  </Tippy>
               <input
-                className="w-full  rounded-md border bg-white px-2 py-1 outline-none ring-black focus:ring-1"
                 type="text"
-                placeholder="Project ReraNo"
+                id="projectReraNo"
                 name="projectReraNo"
+                placeholder="Enter RERA registration number"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                 value={editFromData.projectReraNo}
                 onChange={handleChangeProjectData}
               />
-            </label>
-
-            <p className="mt-2 font-medium mb-1 grid grid-cols-4 text-gray-500">
-              Project Logo
-            </p>
-            <div className="flex mt-3 ring-black">
-              <div className="relative h-10 w-40 min-w-[160px] ring-black">
-                <input
-                  type="file"
-                  name="logo"
-                  accept="image/*"
-                  // value={editFromData.logo}
-                  onChange={(e) => handleFileChange(e, "logo")}
-                />
-              </div>
-            </div>
-            <p className="mt-2 font-medium mb-1 grid grid-cols-4 text-gray-500">
-              Thumbnail Image
-            </p>
-            <div className="flex mt-3 ring-black">
-              <div className="relative h-10 w-40 min-w-[160px] ring-black">
-                <input
-                  type="file"
-                  name="thumbnailImage"
-                  accept="image/*"
-                  // value={editFromData.logo}
-                  onChange={(e) => handleFileChange(e, "thumbnailImage")}
-                />
-              </div>
+                </div>
             </div>
 
-            <p className="mt-2 font-medium mb-1 grid grid-cols-4 text-gray-500">
-              Front Image
-            </p>
-
-            <div className="flex mt-3 ring-black">
-              <div className="relative h-10 w-40 min-w-[160px] ring-black">
-                <input
-                  type="file"
-                  name="frontImage"
-                  accept="image/*"
-                  // value={editFromData.frontImage}
-                  onChange={(e) => handleFileChange(e, "frontImage")}
-                />
-              </div>
+            {/* File Uploads Section */}
+            <div className="border-t border-gray-200 pt-6 mt-6 space-y-4">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2"><MdOutlineCloudUpload /> Upload Project Images & Documents</h3>
+                {/* All File Uploads in a single grid: 3 columns per row */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <FileDropzone onDrop={(file) => handleSingleFileChange({ target: { files: [file] } }, "logo")} label="Project Logo" currentFile={fileData.logo} />
+                  <FileDropzone onDrop={(file) => handleSingleFileChange({ target: { files: [file] } }, "thumbnailImage")} label="Thumbnail Image" currentFile={fileData.thumbnailImage} />
+                  <FileDropzone onDrop={(file) => handleSingleFileChange({ target: { files: [file] } }, "frontImage")} label="Front Image" currentFile={fileData.frontImage} />
+                  <FileDropzone onDrop={(file) => handleSingleFileChange({ target: { files: [file] } }, "project_locationImage")} label="Project Location Image" currentFile={fileData.project_locationImage} />
+                  <FileDropzone onDrop={(file) => handleSingleFileChange({ target: { files: [file] } }, "projectMaster_plan")} label="Project Master Plan" currentFile={fileData.projectMaster_plan} />
+                  <FileDropzone onDrop={(file) => handleSingleFileChange({ target: { files: [file] } }, "project_Brochure")} label="Project Brochure" currentFile={fileData.project_Brochure} />
+                  <FileDropzone onDrop={(file) => handleSingleFileChange({ target: { files: [file] } }, "highlightImage")} label="Highlight Image" currentFile={fileData.highlightImage} />
+                  <MultiFileDropzone onDrop={(files) => handleMultipleFilesChange({ target: { files } }, "project_floorplan_Image")} label="Project Floor Plan Images" currentFiles={fileData.project_floorplan_Image} />
+                  <MultiFileDropzone onDrop={(files) => handleMultipleFilesChange({ target: { files } }, "projectGallery")} label="Project Gallery Images" currentFiles={fileData.projectGallery} />
+                  </div>
             </div>
 
-            <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
-              Project Location Image
-            </p>
-            <div className="flex mt-3 ring-black">
-              <div className="relative h-10 w-40 min-w-[160px] ring-black">
+            {/* SEO Fields */}
+            <div className="border-t border-gray-200 pt-6 mt-6 space-y-4">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2"><MdOutlineInsertDriveFile /> SEO Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                    <Tippy content={<span>Meta Title</span>} animation="scale" theme="light-border">
+                      <label htmlFor="meta_title" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdTitle /> Meta Title</label>
+                    </Tippy>
                 <input
-                  type="file"
-                  name="project_locationImage"
-                  accept="image/*"
-                  // value={editFromData.project_locationImage}
-                  onChange={(e) => handleFileChange(e, "project_locationImage")}
+                  type="text"
+                  id="meta_title"
+                  name="meta_title"
+                  placeholder="Concise title for search engines"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                  value={editFromData.meta_title}
+                  onChange={handleChangeProjectData}
                 />
+              </div>
+              <div>
+                    <Tippy content={<span>Meta Description</span>} animation="scale" theme="light-border">
+                      <label htmlFor="meta_description" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdDescription /> Meta Description</label>
+                    </Tippy>
+                <textarea
+                  id="meta_description"
+                  name="meta_description"
+                  rows={3}
+                  placeholder="Brief description for search engines"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 resize-y"
+                  value={editFromData.meta_description}
+                  onChange={handleChangeProjectData}
+                />
+                  </div>
               </div>
             </div>
 
-            <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
-              Project Master Plan
-            </p>
-            <div className="flex mt-3 ring-black">
-              <div className="relative h-10 w-40 min-w-[160px] ring-black">
-                <input
-                  type="file"
-                  name="projectMaster_plan"
-                  accept="image/*"
-                  // value={editFromData.project_locationImage}
-                  onChange={(e) => handleFileChange(e, "projectMaster_plan")}
-                />
+            {/* Submit Button */}
+              <div className="pt-6 flex justify-center">
+              <button
+                type="submit"
+                className="px-8 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200"
+                disabled={loading} // Disable button when loading
+              >
+                {loading ? 'Adding Project...' : 'Add Project'}
+              </button>
+            </div>
+          </form>
+        </div>
+
+          {/* Live Preview Card */}
+          <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200 w-full md:w-1/3 p-6 sticky top-24">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2"><MdInfo className="text-blue-500" /> Live Preview</h2>
+            <div className="space-y-4">
+              
+              <div>
+                <span className="block text-gray-500 text-xs mb-1">Project Name</span>
+                <div className="text-lg font-semibold text-gray-900">{editFromData.projectName || <span className="text-gray-400">(Not set)</span>}</div>
+              </div>
+             
+              <div className="flex gap-4">
+                <div>
+                  <span className="block text-gray-500 text-xs mb-1">Type</span>
+                  <div className="text-base text-gray-700">{editFromData.type || <span className="text-gray-400">-</span>}</div>
+                </div>
+                <div>
+                  <span className="block text-gray-500 text-xs mb-1">Status</span>
+                  <div className="text-base text-gray-700">{editFromData.project_Status || <span className="text-gray-400">-</span>}</div>
+                </div>
+              </div>
+              
+              <div className="flex gap-4">
+                <div>
+                  <span className="block text-gray-500 text-xs mb-1">City</span>
+                  <div className="text-base text-gray-700">{editFromData.city || <span className="text-gray-400">-</span>}</div>
+                </div>
+                <div>
+                  <span className="block text-gray-500 text-xs mb-1">State</span>
+                  <div className="text-base text-gray-700">{editFromData.state || <span className="text-gray-400">-</span>}</div>
+                </div>
+              </div>
+            
+              <div className="flex gap-4">
+                <div>
+                  <span className="block text-gray-500 text-xs mb-1">Min Price</span>
+                  <div className="text-base text-gray-700">{editFromData.minPrice || <span className="text-gray-400">-</span>}</div>
+                </div>
+                <div>
+                  <span className="block text-gray-500 text-xs mb-1">Max Price</span>
+                  <div className="text-base text-gray-700">{editFromData.maxPrice || <span className="text-gray-400">-</span>}</div>
+                </div>
+              </div>
+             
+              <div>
+                <span className="block text-gray-500 text-xs mb-1">Front Image</span>
+                {fileData.frontImage ? (
+                  <img src={URL.createObjectURL(fileData.frontImage)} alt="Front Preview" className="w-full h-32 object-cover rounded-lg border border-gray-200" />
+                ) : (
+                  <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">No Image</div>
+                )}
+              </div>
+              <div>
+                <span className="block text-gray-500 text-xs mb-1">Gallery Images</span>
+                <div className="flex flex-wrap gap-2">
+                  {fileData.projectGallery && fileData.projectGallery.length > 0 ? (
+                    fileData.projectGallery.map((img, idx) => (
+                      <img key={idx} src={URL.createObjectURL(img)} alt={`Gallery ${idx + 1}`} className="w-16 h-16 object-cover rounded border border-gray-200" />
+                    ))
+                  ) : (
+                    <span className="text-gray-400">No Images</span>
+                  )}
+                </div>
               </div>
             </div>
-
-            <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
-              Project Brochure
-            </p>
-            <div className="flex mt-3 ring-black">
-              <div className="relative h-10 w-40 min-w-[160px] ring-black">
-                <input
-                  type="file"
-                  name="project_Brochure"
-                  accept="image/*"
-                  // value={editFromData.project_locationImage}
-                  onChange={(e) => handleFileChange(e, "project_Brochure")}
-                />
-              </div>
-            </div>
-
-            <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
-              Highlight Image
-            </p>
-            <div className="flex mt-3 ring-black">
-              <div className="relative h-10 w-40 min-w-[160px] ring-black">
-                <input
-                  type="file"
-                  name="highlightImage"
-                  accept="image/*"
-                  // value={editFromData.project_locationImage}
-                  onChange={(e) => handleFileChange(e, "highlightImage")}
-                />
-              </div>
-            </div>
-
-            <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
-              Project Floor plan Image
-            </p>
-            <div className="flex mt-3 ring-black">
-              <div className="relative h-10 w-40 min-w-[160px] ring-black">
-                <input
-                  type="file"
-                  name="project_floorplan_Image"
-                  accept="image/*"
-                  multiple
-                  onChange={handleOtherImageChange}
-                />
-              </div>
-            </div>
-
-            <p className="mt-2 font-medium mb-1 grid grid-cols-1 text-gray-500">
-              Project Gallery
-            </p>
-            <div className="flex mt-3 ring-black">
-              <div className="relative h-10 w-40 min-w-[160px] ring-black">
-                <input
-                  type="file"
-                  name="projectGallery"
-                  accept="image/*"
-                  multiple
-                  onChange={handleGalleryImageChange}
-                />
-              </div>
-            </div>
-
-            <input
-              className="w-full mt-4 rounded-md border bg-white px-2 py-2 outline-none ring-black focus:ring-1"
-              type="text"
-              placeholder="Meta Title*"
-              name="meta_title"
-              value={editFromData.meta_title}
-              onChange={handleChangeProjectData}
-            />
-
-            <input
-              className="w-full mt-4 rounded-md border bg-white px-2 py-2 outline-none ring-black focus:ring-1"
-              type="text"
-              placeholder="Meta Description*"
-              name="meta_description"
-              value={editFromData.meta_description}
-              onChange={(e) => handleChangeProjectData(e)}
-            />
-
-            <button
-              className="mt-4 rounded-full bg-red-500 px-5
-             py-2 font-semibold text-white hover:bg-blue-600"
-              onClick={(e) => handleSubmitProject(e)}
-            >
-              Update
-            </button>
           </div>
         </div>
       </div>

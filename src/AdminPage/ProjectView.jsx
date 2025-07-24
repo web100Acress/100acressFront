@@ -239,7 +239,7 @@ const ProjectView = () => {
                   ))}
                 </div>
                 {idx < groupedSections.length - 1 && <hr className="my-8 border-t-2 border-dashed border-gray-200" />}
-              </div>
+            </div>
             ))}
           </section>
 
