@@ -16,6 +16,16 @@ import {
 } from "../Assets/icons";
 import styled from "styled-components";
 import Gallery from "../Components/Gallery";
+import StarCarousel from "./HomePageComponents/Carousel";
+
+function formatPrice(price) {
+  if (!price) return '';
+  if (price < 100) {
+    return `${price} CR`;
+  } else {
+    return `${(price / 10000000).toFixed(2)} CR`;
+  }
+}
 
 const ShowPropertyDetails = ({ id }) => {
 
@@ -30,6 +40,8 @@ const ShowPropertyDetails = ({ id }) => {
     agentEmail: "",
   });
   const [loading, setLoading] = useState(false);
+  const [showFormPopup, setShowFormPopup] = useState(false);
+  const [highlightForm, setHighlightForm] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,7 +56,7 @@ const ShowPropertyDetails = ({ id }) => {
           setAgentDetails({
             agentName: res.data?.data?.agentName || "",
             agentNumber: res.data?.data?.agentNumber || "",
-            agentEmail: res.data?.data?.agentEmail || "", 
+            agentEmail: res.data?.data?.agentEmail || "",
           });
           let ImagesData = res.data.data?.postProperty?.otherImage.map(
             (image) => {
@@ -160,243 +172,264 @@ const ShowPropertyDetails = ({ id }) => {
     fetchData();
   }, []);
 
+  // Ref for inquiry form
+  const inquiryFormRef = useRef(null);
+  // Phone button click handler
+  const handlePhoneClick = (e) => {
+    e.preventDefault();
+    if (inquiryFormRef.current) {
+      inquiryFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setHighlightForm(true);
+      setShowFormPopup(true);
+      setTimeout(() => setHighlightForm(false), 2000);
+    } else {
+      setShowFormPopup(true);
+    }
+  };
+
   return (
-    <div >
-      <Wrapper>
+    <div className="bg-[#f8fafc] min-h-screen font-['Inter','Poppins','sans-serif']">
+      {/* Breadcrumb navigation (inline, above property name) */}
+      <div className="pt-20 max-w-6xl mx-auto px-2 sm:px-4">
         {loading ? (
           <Skeleton active />
         ) : (
           rentViewDetails && (
-            <div className="block w-11/12 mx-auto mt-20 mb-8">
-              {OpenGallery && (
-                <Gallery
-                  images={GalleryImageData}
-                  OpenGallery={OpenGallery}
-                  setOpenGallery={setOpenGallery}
-                />
-              )}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="mt-auto">
-                  <div>
-                    <h3 className="text-2xl font-semibold capitalize">
-                      {rentViewDetails.propertyName}
-                    </h3>
-                    <h6 className="text-base capitalize">
-                      <span className="font-medium mr-2">
-                        {rentViewDetails.propertyType}
-                      </span>
-                      <span>{rentViewDetails.area}</span>
-                    </h6>
-                    <p className="flex text-sm">
-                      <LcoationBiggerIcon color="#C13B44" />
-                      <span className="ml-2 text-primaryRed capitalize">
-                        {rentViewDetails.address}, {rentViewDetails.city},{" "}
-                        {rentViewDetails.state}
-                      </span>
-                    </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+              {/* Left: Property Image & Info */}
+              <div>
+                {/* Breadcrumb above property name */}
+                <nav className="mb-2" aria-label="Breadcrumb">
+                  <ol className="flex items-center space-x-2 text-sm text-gray-500">
+                    <li>
+                      <a href="/buy-properties/best-resale-property-in-gurugram/" className="hover:text-[#e63946] font-medium transition-colors">Resale Property</a>
+                    </li>
+                    <li>
+                      <span className="mx-1">&gt;</span>
+                    </li>
+                    <li className="truncate max-w-xs font-semibold text-gray-700" aria-current="page">
+                      {rentViewDetails?.propertyName || 'Property'}
+                    </li>
+                  </ol>
+                </nav>
+                <div className="mb-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-3xl font-extrabold text-gray-900">{rentViewDetails.propertyName}</span>
+                    <span className="bg-[#e63946]/10 text-[#e63946] font-semibold px-3 py-1 rounded-full text-xs uppercase tracking-wide">{rentViewDetails.propertyType}</span>
+                    
+                    {/* Optional badge */}
+                    <span className="ml-2 bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full text-xs">Verified</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-1 w-fit mb-2">
+                    <LcoationBiggerIcon className="h-5 w-5 text-[#e63946]" />
+                    <span className="text-sm text-gray-700">Located in {rentViewDetails.address}, {rentViewDetails.city}, {rentViewDetails.state}</span>
                   </div>
                 </div>
-                <div className="flex justify-start self-start md:justify-end md:self-end">
-                  <div className="block w-full">
-                    <h5 className="text-end text-2xl font-medium text-primaryRed">
-                      &#8377;
-                      {rentViewDetails.price}
-                    </h5>
-                    <div className="flex justify-between align-bottom items-end md:justify-end gap-4">
-                      {/* <HeartIcon /> */}
-                      <div
-                        className="hover:cursor-pointer"
-                        onClick={() => handleShare(rentViewDetails)}
-                      >
-                        <ShareIcon />
-                      </div>
-                      {showNumber ? (
-                        <div className="bg-primaryRed  text-white p-2 rounded relative">
-                          <a
-                            className="text-base hover:text-white"
-                            href={`tel:${rentViewDetails.number}`}
-                          >
-                            <PhoneIcon className="" />
-                            <span className="mx-2">{rentViewDetails.number}</span>
-                          </a>
-                        </div>
-                      ) : (
-                        <div className="bg-primaryRed text-base  text-white px-3 py-2 rounded">
-                          <PhoneIcon />
-                          {rentViewDetails.number.slice(0, 2) +
-                            "**********" +
-                            rentViewDetails.number.slice(11)}
-                        </div>
-                      )}
-                    </div>
+                {/* Property Image */}
+                <div className="relative mb-4">
+                  <img
+                    src={rentViewDetails.frontImage.url}
+                    alt={rentViewDetails.propertyName}
+                    className="w-full h-72 sm:h-96 object-cover rounded-3xl shadow-xl border border-gray-100 transition-transform duration-300 hover:scale-105"
+                  />
+                  {/* Floating Call Button */}
+                  <button
+                    onClick={handlePhoneClick}
+                    aria-label="Contact via phone"
+                    className="fixed bottom-4 right-4 z-50 bg-gradient-to-r from-[#e63946] to-[#d7263d] shadow-2xl rounded-full h-14 px-6 flex items-center gap-3 border-4 border-white focus:outline-none focus:ring-2 focus:ring-[#e63946]/30 transition-all duration-200 hover:scale-105 hover:shadow-[0_8px_32px_0_rgba(230,57,70,0.35)]"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="h-7 w-7" aria-hidden="true">
+                      <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.07 21 3 13.93 3 5a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z" fill="#fff"/>
+                    </svg>
+                    <span className="text-white font-bold text-base">Call Now</span>
+                  </button>
+                  {/* Optional badge overlay */}
+                  <span className="absolute top-4 left-4 bg-[#e63946] text-white font-bold px-3 py-1 rounded-full text-xs shadow-lg animate-pulse">Hot Property</span>
+                </div>
+                {/* Property Image Gallery Thumbnails */}
+                <div className="mb-6">
+                  <div className="flex gap-2 overflow-x-auto pb-2">
+                    {[rentViewDetails.frontImage, ...(rentViewDetails.otherImage || [])].map((img, idx) => (
+                      <img
+                        key={img.url || idx}
+                        src={img.url}
+                        alt={`Property image ${idx + 1}`}
+                        className="h-20 w-32 object-cover rounded-lg border border-gray-200 cursor-pointer transition-transform duration-200 hover:scale-105"
+                        onClick={() => { setGalleryImageData([rentViewDetails.frontImage, ...(rentViewDetails.otherImage || [])].map(i => ({ url: i.url, thumbnail: i.url }))); setOpenGallery(true); }}
+                      />
+                    ))}
                   </div>
+                  {OpenGallery && (
+                    <Gallery
+                      images={GalleryImageData}
+                      OpenGallery={OpenGallery}
+                      setOpenGallery={setOpenGallery}
+                    />
+                  )}
+                </div>
+                {/* Price */}
+                <div className="flex items-center gap-2 mb-6">
+                  <span className="text-2xl font-extrabold text-[#e63946]">₹ {formatPrice(rentViewDetails.price)}</span>
+                </div>
+                {/* About Property & Highlights */}
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold mb-2">About Property</h3>
+                  <p className="text-base text-gray-700 mb-4">{rentViewDetails.descripation || 'Please call us for further information'}</p>
+                  <h4 className="text-lg font-semibold mb-1">Property Highlights</h4>
+                  <ul className="list-disc pl-5 text-base text-gray-600 space-y-1">
+                    {rentViewDetails.area && <li>{rentViewDetails.area}</li>}
+                    {rentViewDetails.furnishing && <li>{rentViewDetails.furnishing}</li>}
+                    {rentViewDetails.landMark && <li>{rentViewDetails.landMark}</li>}
+                    {rentViewDetails.type && <li>{rentViewDetails.type}</li>}
+                  </ul>
                 </div>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3  my-2 gap-4 ">
-                <div className="col-span-2  ">
-                  <div class="grid grid-cols-4 grid-rows-3 gap-1 relative">
-                    <div
-                      className={`col-span-3 row-span-3  h-full ${
-                        rentViewDetails.otherImage.length >= 4
-                          ? "col-span-2"
-                          : "col-span-4"
-                      }`}
-                    >
-                      <img
-                        className="col-span-2 row-span-3 rounded-lg object-cover w-full h-[50vh] md:h-[83vh] border"
-                        src={rentViewDetails.frontImage.url}
-                        alt="Project name"
-                        loading="lazy"
-                      />
-                    </div>
-                    {rentViewDetails.otherImage.length >= 4 &&
-                      rentViewDetails.otherImage.slice(1, 4).map((image) => (
-                        <img
-                          key={image.url}
-                          onClick={() => {
-                            setOpenGallery(true);
-                          }}
-                          className="col-span-1 row-span-1 rounded-lg cursor-pointer object-cover w-full h-[15vh] md:h-[27vh] border "
-                          src={image.url}
-                          alt="Project name"
-                          loading="lazy"
-                        />
-                      ))}
-                    {rentViewDetails.otherImage.length >= 4 && (
-                      <div
-                        onClick={() => {
-                          setOpenGallery(true);
-                        }}
-                        class="absolute text-white text-center flex items-center justify-center h-[16vh] md:h-[27vh] w-1/4 border rounded-lg bg-black/50 bottom-1 right-0 cursor-pointer "
-                      >
-                        {rentViewDetails.otherImage.length - 3} + Photos
+              {/* Right: Inquiry Form & CTA */}
+              <div className="w-full max-w-md mx-auto md:mx-0" ref={inquiryFormRef}>
+                {/* Modern Inquiry Form */}
+                <div className={`bg-white/80 rounded-2xl shadow-xl p-6 mb-6 border border-gray-100 relative transition-all duration-300 ${highlightForm ? 'ring-2 ring-[#e63946] ring-offset-2' : ''}`}>
+                  {showFormPopup && (
+                    <div className="absolute inset-0 flex items-center justify-center z-20">
+                      <div className="bg-white border border-[#e63946] rounded-xl shadow-lg px-6 py-4 text-center text-[#e63946] font-semibold text-base animate-fade-in">
+                        First fill the form to see the contact details.
+                        <button className="block mx-auto mt-3 px-4 py-1 bg-[#e63946] text-white rounded-full text-sm shadow hover:bg-red-700 transition" onClick={() => setShowFormPopup(false)}>OK</button>
                       </div>
-                    )}
-                  </div>
-                  <div className="my-4">
-                    <h3 className="text-2xl  capitalize">About Property</h3>
-                    <p className="text-base">
-                      {rentViewDetails.descripation
-                        ? rentViewDetails.descripation
-                        : "Please call us for further information"}
-                    </p>
-                  </div>
-                  <div className="my-4 text-2xl  capitalize">
-                    <h3>Property Highlights</h3>
-                    <ul className="list-disc text-base capitalize ">
-                      <li
-                        className={`${rentViewDetails.area ? " " : "hidden"}`}
-                      >
-                        {rentViewDetails.area}
-                      </li>
-                      <li
-                        className={`${
-                          rentViewDetails.furnishing ? " " : "hidden"
-                        }`}
-                      >
-                        {rentViewDetails.furnishing}
-                      </li>
-                      <li
-                        className={`${
-                          rentViewDetails.landMark ? " " : "hidden"
-                        }`}
-                      >
-                        {rentViewDetails.landMark}
-                      </li>
-                      <li
-                        className={`${rentViewDetails.type ? " " : "hidden"}`}
-                      >
-                        {rentViewDetails.type}
-                      </li>
-                    </ul>
-                  </div>
-                  {/* <div className="my-4">
-                  <h3>Amenities</h3>
-                  <div className="flex flex-col justify-center items-center w-1/3 bg-white my-4 p-4 shadow rounded-lg" >
-                      <CarParkingIcon/>
-                      <span>Car Parking</span>
-                  </div>
-                </div> */}
-                  <div>
-                    {rentViewDetails.otherImage.length <= 3 && (
-                      <div className="my-4 ">
-                        <h5
-                          className={`text-2xl  capitalize ${
-                            rentViewDetails.otherImage.length === 0
-                              ? "hidden"
-                              : ""
-                          }`}
-                        >
-                          Other Images
-                        </h5>
-                        <ImageGalleryView images={rentViewDetails.otherImage} />
-                      </div>
-                    )}
-                    <div className="my-4 relative">
-                      <h5 className="text-2xl  capitalize">Similar Properties</h5>
-                      <Carousel AllProjects={buyData} />
                     </div>
-                  </div>
-                </div>
-                {/* Sidebar contact sticky */}
-                <div className="col-span-1  ">
-                  <div className="sticky top-16">
-                    <div className="bg-white shadow-md p-4 rounded-lg mb-4 border-[0.2px]">
-                      <h3 className="text-2xl " >Know more about property</h3>
+                  )}
+                  <h3 className="text-xl font-bold mb-4">Know more about property</h3>
+                  <form onSubmit={handleSubmitFormData} className="space-y-5">
+                    <div className="relative">
                       <input
                         type="text"
                         name="custName"
-                        placeholder="Full Name"
-                        className="w-full border p-2 my-2 rounded-lg"
+                        required
+                        className="peer w-full border border-gray-300 rounded-lg bg-gray-50 px-4 pt-6 pb-2 text-base focus:outline-none focus:ring-2 focus:ring-[#e63946] transition-all"
                         onChange={handleUserFormChange}
+                        value={userForm.custName}
+                        placeholder=" "
                       />
+                      <label className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm bg-white/80 px-1 rounded">Full Name</label>
+                    </div>
+                    <div className="relative">
                       <input
                         type="number"
                         name="custNumber"
-                        placeholder="Mobile Number"
-                        className="w-full border p-2 my-2 rounded-lg"
+                        required
+                        className="peer w-full border border-gray-300 rounded-lg bg-gray-50 px-4 pt-6 pb-2 text-base focus:outline-none focus:ring-2 focus:ring-[#e63946] transition-all"
                         onChange={handleUserFormChange}
+                        value={userForm.custNumber}
+                        placeholder=" "
                       />
+                      <label className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm bg-white/80 px-1 rounded">Mobile Number</label>
+                    </div>
+                    <div className="relative">
                       <input
                         type="email"
                         name="custEmail"
-                        placeholder="Email address"
-                        className="w-full border p-2 my-2 rounded-lg"
+                        required
+                        className="peer w-full border border-gray-300 rounded-lg bg-gray-50 px-4 pt-6 pb-2 text-base focus:outline-none focus:ring-2 focus:ring-[#e63946] transition-all"
                         onChange={handleUserFormChange}
+                        value={userForm.custEmail}
+                        placeholder=" "
                       />
-                      <p className="text-sm text-primaryRed">
-                        Fill out form only one - time. After get the contact
-                        number
-                      </p>
-                      <button
-                        className="block w-full px-5 py-2 text-base font-semibold bg-primaryRed text-white rounded-md"
-                        onClick={handleSubmitFormData}
-                      >
-                        Get Details
-                      </button>
+                      <label className="absolute left-4 top-2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:top-2 peer-focus:text-sm bg-white/80 px-1 rounded">Email address</label>
                     </div>
-                    <div className="shadow-md p-4 rounded-lg my-4 border-[0.2px]">
-                      <h5 className="text-2xl ">
-                        Post your Property for{" "}
-                        <span className="text-2xl  text-primaryRed">FREE!</span>
-                      </h5>
-                      <Link to={"https://100acress.com/postproperty/"}>
-                        <button className="block w-full px-5 py-2 text-base  bg-primaryRed text-white rounded-md">
-                          List Properties{" "}
-                          <span className="bg-white text-xs  text-primaryRed p-1 mx-1 rounded">
-                            FREE
-                          </span>
-                        </button>
-                      </Link>
-                    </div>
-                  </div>
+                    <p className="text-xs text-gray-500 mt-1">Fill out form only once to get contact details</p>
+                    <button
+                      type="submit"
+                      className="w-full bg-[#e63946] hover:bg-red-700 text-white font-bold py-3 rounded-full shadow-lg transition-all duration-200 text-base mt-2"
+                    >
+                      Get Details
+                    </button>
+                  </form>
+                </div>
+                {/* Post Property CTA Card */}
+                <div className="bg-gradient-to-r from-[#e63946]/10 to-[#457b9d]/10 rounded-2xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+                  <h5 className="text-lg font-bold mb-2 text-gray-800">Post your Property for <span className="text-[#e63946]">FREE!</span></h5>
+                  <Link to={"https://100acress.com/postproperty/"}>
+                    <button className="mt-2 bg-[#e63946] hover:bg-red-700 text-white font-bold px-6 py-2 rounded-full shadow transition-all duration-200 text-base">
+                      List Properties <span className="bg-white text-xs text-[#e63946] p-1 mx-1 rounded">FREE</span>
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>
           )
         )}
-      </Wrapper>
+      </div>
+      {buyData && buyData.length > 0 && (
+        <div className="w-full mt-2 mb-0 pb-0 max-w-5xl mx-auto
+">
+          <div className="similar-properties-container mb-4">
+            <h3 className="text-2xl font-bold mb-2 text-gray-900">Similar Properties</h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 min-h-[40vh] py-8">
+            {buyData.slice(0, 12).map((property, idx) => (
+              <div key={property._id || idx} className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col w-full h-64 border border-gray-100">
+                <img
+                  src={property.frontImage?.url}
+                  alt={property.propertyName}
+                  className="w-full h-28 object-cover rounded-t-xl"
+                  loading="lazy"
+                />
+                <div className="p-2 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h4 className="font-semibold text-base mb-0 truncate">{property.propertyName}</h4>
+                    <div className="flex items-center text-gray-500 text-xs mb-0.5">
+                      <span className="mr-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline-block text-[#e63946]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                      </span>
+                      <span className="truncate">{property.address}</span>
+                    </div>
+                    <div className="text-xs text-gray-400 mb-1 truncate">{property.city},{property.state}</div>
+                  </div>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="font-bold text-xs text-gray-900">Starting at <span className="text-[#e63946]">₹ {formatPrice(property.price)}</span></span>
+                    <a href={`/buy-properties/${property.propertyName ? property.propertyName.replace(/\s+/g, '-') : 'unknown'}/${property._id}`} target="_blank" rel="noopener noreferrer">
+                      <button className="bg-[#e63946] hover:bg-red-700 text-white rounded-xl p-2 transition-all duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                      </button>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <style>{`
+            .custom-slick-arrows .slick-arrow {
+              z-index: 10;
+              background: #fff;
+              border-radius: 50%;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+              width: 32px;
+              height: 32px;
+              display: flex !important;
+              align-items: center;
+              justify-content: center;
+              top: 38%;
+            }
+            .custom-slick-arrows .slick-arrow:before {
+              color: #e63946;
+              font-size: 22px;
+            }
+            .custom-slick-arrows .slick-prev {
+              left: -12px;
+            }
+            .custom-slick-arrows .slick-next {
+              right: -12px;
+            }
+            .custom-slick-arrows,
+            .similar-properties-container,
+            .slick-list,
+            .slick-track {
+              margin-bottom: 1rem !important;
+              padding-bottom: 0 !important;
+              min-height: unset !important;
+              height: auto !important;
+            }
+          `}</style>
+        </div>
+      )}
       <Footer />
     </div>
   );
@@ -504,161 +537,9 @@ const ImageGalleryView = ({ images }) => {
           </div>
         )}
       </div>
-
       {/* Button to toggle the view */}
     </div>
   );
 };
 
-// Carousel
-const Carousel = ({ AllProjects }) => {
-  
-  const sliderRef = useRef();
-
-  const setting = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    adaptiveHeight: false, // Enables height adjustment
-    responsive: [
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-  };
-
-  return (
-    <>
-      <button
-        onClick={() => sliderRef.current.slickPrev()}
-        className="mr-2 absolute top-0 lg:top-0 sm:top-0 right-10 transform -translate-y-1 bg-white text-gray-700 p-2 rounded-full shadow-xl z-10"
-      >
-        <BackwardIcon />
-      </button>
-      <button
-        onClick={() => sliderRef.current.slickNext()}
-        className="ml-2 absolute top-0 lg:top-0 sm:top-0 right-0 transform -translate-y-0 text-gray-700 bg-white p-2 rounded-full shadow-xl z-10"
-      >
-        <ForwardIcon />
-      </button>
-      <div className="">
-        <Slider {...setting} ref={sliderRef}>
-          {AllProjects.length > 0 &&
-            AllProjects.map((nestedItem) => (
-              <>
-                  <section className="">
-                    <div className="w-full">
-                      {/* const pUrl = item.project_url; */}
-                      <Link
-                        to={
-                          nestedItem.propertyName && nestedItem._id
-                            ? `/rental-properties/${nestedItem.propertyName.replace(
-                                /\s+/g,
-                                "-"
-                              )}/${nestedItem._id}/`
-                            : "#"
-                        }
-                        target="_top"
-                      >
-                        <article
-                          key={nestedItem._id}
-                          className="mx-2 transition overflow-hidden rounded-md  text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                          onDrag={(e) => {
-                            e.preventDefault();
-                          }}
-                        >
-                          <div className="p-3 relative overflow-hidden">
-                            <img
-                              src={nestedItem.frontImage.url}
-                              alt="property In Gurugram"
-                              className="w-full h-[200px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
-                              loading="lazy"
-                            />
-                          </div>
-                          <div className="p-2 pt-0">
-                            <span className="text-[15px]  text-black-600  hover:text-red-600 duration-500 ease-in-out">
-                              {nestedItem.propertyName.length > 15
-                                ? `${nestedItem.propertyName.slice(0, 15)}...`
-                                : nestedItem.propertyName}
-                            </span>
-
-                            <ul className="m-0 p-0 flex text-white-600 justify-between px-0 pb-0">
-                              <li className="text-left flex items-end gap-2">
-                                {/* Icon */}
-                                <span className="text-red-600 flex-shrink-0">
-                                  <LcoationBiggerIcon />
-                                </span>
-                                {/* Text */}
-                                <div className="text-sm font-thin truncate w-64 md:w-64 lg:w-32 ">
-                                  <span className="text-sm text-white-600 hover:text-red-600 duration-500 ease-in-out block truncate">
-                                    {nestedItem.address}
-                                  </span>
-                                  <span className="text-xs text-[#656565] block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
-                                    {nestedItem.city},{nestedItem.state}
-                                  </span>
-                                </div>
-                              </li>
-
-                              <li className=" text-left flex item-center">
-                                <button
-                                  type="button"
-                                  className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-1 py-1 text-center me-2"
-                                >
-                                  <ArrowIcon />
-                                </button>
-                              </li>
-                            </ul>
-                          </div>
-                        </article>
-                      </Link>
-                    </div>
-                  </section>
-              </>
-            ))}
-        </Slider>
-      </div>
-    </>
-  );
-};
-
 export default ShowPropertyDetails;
-
-const Wrapper = styled.section`
-  /* Override slick slider container styles */
-  .slick-slider {
-    height: auto !important;
-  }
-
-  .slick-list {
-    overflow: hidden; /* Ensure no overflow issues */
-    height: auto !important;
-  }
-
-  /* Adjust slides to fit content */
-  .slick-slide {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Align items at the top */
-    height: auto !important;
-  }
-
-  /* Ensure the carousel adapts to content */
-  .slick-track {
-    display: flex;
-    align-items: flex-start;
-    height: auto !important;
-  }
-`;

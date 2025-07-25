@@ -32,8 +32,8 @@ const [trendingProject, setTrendingProject] = useState([]);
     if (!hasFetchedData) {
       const fetchData = async () => {
         try {
-          const res = await axios.get('https://acre.onrender.com/project/trending');
-          setTrendingProject(res.data.data);
+          const res = await axios.get('/api/property/buy/ViewAll');
+          setTrendingProject(res.data.ResaleData);
           setHasFetchedData(true);
         } catch (error) {
           console.log(error || error.message);

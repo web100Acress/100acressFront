@@ -3,7 +3,7 @@ import { Carousel } from "@trendyol-js/react-carousel";
 import styled from "styled-components";
 import StarCard from "./Card";
 import { MdLocationPin } from "react-icons/md";
-function StarCarousel() {
+function StarCarousel({ AllProjects = [] }) {
   const [number, setNumber] = useState(4);
 
   const updateNumber = () => {
@@ -39,36 +39,13 @@ function StarCarousel() {
           slide={1}
           transition={0.5}
         >
-          {/* {[...Array(number)].map((_, index) => (
-            <StarCard key={index} />
-          ))} */}
-
-<div className='w9HDn0'>
-        <div className='sQoIH w-100 h-auto'>
-          <div className='xjNJ w-100'>
-            <img
-              src='https://media.istockphoto.com/id/1281554848/photo/dream-home-luxury-house-success-suburban-house.jpg?s=612x612&w=0&k=20&c=TpI1wOZx5-v0GlIfNORAHV7z6Hfd_TRrHKKzxO5nvwI='
-              alt='image'
-              className="w-100 h-100"
-            />
-          </div>
-          <div className='eoiU d-flex align-items-center'>
-            <div className='dsfds43 d-flex align-items-center'>
-              <div className='q2jam'>
-                <MdLocationPin size={14} color='#0a9e88' />
-              </div>
-              <div style={{ fontWeight: "600", fontSize: "14px" }}>Delhi</div>
-            </div>
-          </div>
-        </div>
-        <div className='w238N'>
-          <h2>Project Name</h2>
-          <p style={{ margin: "0", marginTop: "14px" }}>
-            Starting at <span>₹ 3Cr CR/-</span>
-          </p>
-        </div>
-      </div>
-
+          {AllProjects && AllProjects.length > 0 ? (
+            AllProjects.slice(0, 3).map((property, idx) => (
+              <StarCard key={property._id || idx} {...property} />
+            ))
+          ) : (
+            <div style={{ padding: 32, textAlign: 'center', width: '100%' }}>No similar properties found.</div>
+          )}
         </Carousel>
       </div>
     </Wrapper>
