@@ -318,7 +318,7 @@ const BuyPropViewCard = () => {
   };
 
 
-  console.log(buyData,"Resale data");
+  
   
   // Ref for property grid
   const propertyGridRef = React.useRef(null);
