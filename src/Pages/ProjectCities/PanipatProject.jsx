@@ -109,7 +109,10 @@ const PanipatProject = () => {
                       <li className="mr-4 flex items-center text-left">
                         <li className="text-left">
                           <p className="m-0 text-sm font-medium ">
-                            <PropertyIcon />{" "}{item.type}
+                            <div className="flex items-center gap-1">
+                              <PropertyIcon />
+                              <span>{item.type}</span>
+                            </div>
                           </p>
                           <span className="text-[10px] text-gray-600 block truncate text-sm text-gray-400 block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
                             <LocationRedIcon />{" "}{item.projectAddress}
@@ -121,20 +124,22 @@ const PanipatProject = () => {
                     <ul className="m-0 flex list-none items-center justify-between px-0 pb-0">
                       <li className="text-left">
                         <span className="text-sm font-extrabold text-red-600">
-                          <span className="text-xl"><RupeeIcon /></span>
-                          {!item.minPrice || !item.maxPrice ? (
-                            "Reveal Soon"
-                          ) : (
-                            <>
-                              {item.minPrice < 1 ? (
-                                <>{item.minPrice * 100} L</>
-                              ) : (
-                                <>{item.minPrice}</>
-                              )}
-                              {" - "}
-                              {item.maxPrice} Cr
-                            </>
-                          )}
+                          <div className="flex items-center gap-1">
+                            <span className="text-xl"><RupeeIcon /></span>
+                            {!item.minPrice || !item.maxPrice ? (
+                              "Reveal Soon"
+                            ) : (
+                              <>
+                                {item.minPrice < 1 ? (
+                                  <>{item.minPrice * 100} L</>
+                                ) : (
+                                  <>{item.minPrice}</>
+                                )}
+                                {" - "}
+                                {item.maxPrice} Cr
+                              </>
+                            )}
+                          </div>
                         </span>
                       </li>
                       <Link to={`/${pUrl}/`} target="_top">

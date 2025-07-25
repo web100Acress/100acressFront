@@ -12,7 +12,8 @@ export const Trending_Desired_Order = [
 ];
 
 export const Affordable_Desired_Order = [
-  "TLC The First Acre",
+  "Wal 92",
+  "TLC The First Acre"
 ];
 
 export const SCO_DESIRED_ORDER = [
@@ -31,7 +32,7 @@ export const COMMERCIAL_DESIRED_ORDER = [
 
 export const imageSrc = [
   {
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/west.webp", link: "/whiteland-westin-residences/"
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/gaia-desktop.webp", link: "/bptp-gaia-residences/"
   },
   {
     image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/spr-web.jpg", link: "/signature-global-cloverdale-spr/"
@@ -40,7 +41,7 @@ export const imageSrc = [
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/experionlaptop.jpeg", link: "/experion-the-trillion/"
   },
   {
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/trevoc-laptop.jpeg", link: "/trevoc-56-gurgaon/"
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/spj-desktop.webp", link: "/spj-vedatam/"
   },
   {
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/windchant-laptop.jpeg", link: "/experion-nova-at-windchants/"
@@ -49,22 +50,22 @@ export const imageSrc = [
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bazaria-laptop.jpeg", link: "/reach-the-bazaria/"
   },
   {
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/sky-p-laptop.jpeg", link: "/trinity-sector-88b-gurgaon/"
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/turban-desktop.webp", link: "/the-turban-resort/"
   },
-  {
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptplaptop.jpeg", link: "/bptp-verti-greens/"
-  },
+  // {
+  //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptplaptop.jpeg", link: "/bptp-verti-greens/"
+  // },
 ];
 // added phon and desktop banner qe
 export const phoneSrc = [  
-  {
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/westmob.webp", link: "/whiteland-westin-residences/"
-  },
+   {
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/gaia-mobile.webp", link: "/bptp-gaia-residences/"
+   },
   {
     image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/spr-mob.jpg", link: "/signature-global-cloverdale-spr/"
   },
   {
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/trevoc-phone.jpeg", link: "/trevoc-56-gurgaon/"
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/spj-mobile.webp", link: "/spj-vedatam/"
   },
   {
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/experionphone.jpeg", link: "/experion-the-trillion/"
@@ -76,11 +77,11 @@ export const phoneSrc = [
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bazaria-phone.jpeg", link: "/reach-the-bazaria/"
   },
   {
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/sky-p-phone.jpeg", link: "/trinity-sector-88b-gurgaon/"
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/turban-mobile.webp", link: "/the-turban-resort/"
   },
-  {
-    image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptpphone.jpeg", link: "/bptp-verti-greens/"
-  },
+  // {
+  //   image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/bptpphone.jpeg", link: "/bptp-verti-greens/"
+  // },
 ];
 
 export const budgetPlots = [
@@ -102,7 +103,7 @@ export const budgetPlots = [
 ];
 
 export const Recommendedreordered = [
-  "Shapoorji Pallonji Dualis",
+  "BPTP Gaia Residences",
   "Experion Windchants Nova",
   "Signature Global Cloverdale SPR",
   "Experion The Trillion",
@@ -112,7 +113,7 @@ export const DesiredLuxuryOrder = [
   "Experion One 42",
   "Experion Windchants Nova",
   "Godrej Miraya",
-  "DLF Privana North",
+  "Birla Arika",
   "Shapoorji Pallonji Dualis",
   "Trevoc Royal Residences",
 ]

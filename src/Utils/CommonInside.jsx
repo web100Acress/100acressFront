@@ -73,7 +73,7 @@ const CommonInside = ({
       </Helmet>
       <section className="flex pt-2 flex-col items-center mt-16">
         {title && (
-          <h1 className="mb-3 pt-4 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
+          <h1 className="mb-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
             {title}
           </h1>
         )}
@@ -154,10 +154,12 @@ const CommonInside = ({
                   <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
                     <li className="mr-4 flex items-center text-left">
                       <li className="text-left">
-                        <p className="m-0 text-sm font-medium">
-                          <PropertyIcon />{" "}
-                          {item.type || item.postProperty?.propertyType || item.postProperty?.type}
-                        </p>
+                        <div className="flex items-center gap-1 m-0 text-sm font-medium">
+                          <PropertyIcon />
+                          <span>
+                            {item.type || item.postProperty?.propertyType || item.postProperty?.type}
+                          </span>
+                        </div>
                         <span className="text-[10px] text-gray-600 block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
                           <LocationRedIcon />{" "}
                           {item.projectAddress || item?.postProperty?.address}
@@ -168,30 +170,32 @@ const CommonInside = ({
 
                   <ul className="m-0 flex list-none items-center justify-between px-0 pb-0">
                     <li className="text-left">
-                      <span className="text-sm font-extrabold text-red-600">
+                      <div className="flex items-center gap-1 text-sm font-extrabold text-red-600">
                         <span className="text-xl">
                           <RupeeIcon />
                         </span>
-                        {!item.minPrice && !item.maxPrice ? (
-                          item.price ? (
-                            item.price
-                          ) : (
-                            item.postProperty?.price || "Reveal Soon"
-                          )
-                        ) : !item.minPrice || !item.maxPrice ? (
-                          "Reveal Soon"
-                        ) : (
-                          <>
-                            {item.minPrice < 1 ? (
-                              <>{(item.minPrice * 100).toFixed()} L</>
+                        <span>
+                          {!item.minPrice && !item.maxPrice ? (
+                            item.price ? (
+                              item.price
                             ) : (
-                              <>{item.minPrice}</>
-                            )}
-                            {" - "}
-                            {item.maxPrice} Cr
-                          </>
-                        )}
-                      </span>
+                              item.postProperty?.price || "Reveal Soon"
+                            )
+                          ) : !item.minPrice || !item.maxPrice ? (
+                            "Reveal Soon"
+                          ) : (
+                            <>
+                              {item.minPrice < 1 ? (
+                                <>{(item.minPrice * 100).toFixed()} L</>
+                              ) : (
+                                <>{item.minPrice}</>
+                              )}
+                              {" - "}
+                              {item.maxPrice} Cr
+                            </>
+                          )}
+                        </span>
+                      </div>
                     </li>
                     <Link to={propertyUrl} target="_top">
                       <li className="text-left">

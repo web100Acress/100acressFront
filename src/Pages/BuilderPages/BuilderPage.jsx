@@ -5,11 +5,12 @@ import { Helmet } from "react-helmet";
 import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../../Assets/icons";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
-import { aipl, godrej, whiteland } from "../../Redux/slice/BuilderSlice";
+// Removed unused imports as they are not used in this file
 
 const BuilderPage = React.memo(() => {
     const { builderName } = useParams(); 
     const [query, setQuery] = useState("");
+    const [loading, setLoading] = useState(true);
     const {getProjectbyBuilder} = Api_Service();
     const SignatureBuilder = useSelector(store => store?.builder?.signatureglobal);
     const M3M = useSelector(store => store?.builder?.m3m);
@@ -26,6 +27,7 @@ const BuilderPage = React.memo(() => {
     const godrej = useSelector(store => store?.builder?.godrej);
     const whiteland = useSelector(store => store?.builder?.whiteland);
     const aipl = useSelector(store => store?.builder?.aipl);
+    const birla = useSelector(store => store?.builder?.birla);
 
   const buildersData = {
     'signature-global': SignatureBuilder,
@@ -42,10 +44,20 @@ const BuilderPage = React.memo(() => {
     'emaar-india' : emaarindia,
     'godrej-properties' : godrej,
     'whiteland' : whiteland,
-    'aipl' : aipl
+    'aipl' : aipl,
+    'birla-estate': birla
   };
+  const builderProjects = buildersData[builderName] || [];
 
-  const builderProjects = buildersData[builderName] || []; 
+  const filteredBuilderProjects = builderName === 'birla-estate'
+    ? (builderProjects || []).filter(
+        p => p.builderName && p.builderName.trim().toLowerCase().includes('birla estate') &&
+             (!p.type || p.type.toLowerCase() !== 'rental') &&
+             (!p.project_Status || p.project_Status.toLowerCase() !== 'rental')
+      )
+    : builderProjects;
+  console.log('builderProjects:', builderProjects);
+  console.log('filteredBuilderProjects:', filteredBuilderProjects);
 
   const handleShare = (project) => {
     if (navigator.share) {
@@ -88,7 +100,8 @@ const BuilderPage = React.memo(() => {
         'emaar-india' : 'Emaar India',
         'godrej-properties' : 'Godrej Properties',
         'whiteland' : 'Whiteland Corporation',
-        'aipl' : 'AIPL'
+        'aipl' : 'AIPL',
+        'birla-estate': 'Birla Estates'
       };
 
       const queryValue = builderQueries[builderName.toLowerCase()];
@@ -100,9 +113,15 @@ const BuilderPage = React.memo(() => {
 
   useEffect(() => {
     if (query) {
-      getProjectbyBuilder(query,0);
+      setLoading(true);
+      Promise.resolve(getProjectbyBuilder(query,0)).finally(() => setLoading(false));
     }
   }, [ query,getProjectbyBuilder]);
+
+  // Render loading state if data is not yet available
+  if (loading) {
+    return <div className="flex justify-center items-center min-h-[40vh] text-xl font-semibold text-red-600">Loading Birla Estates projects...</div>;
+  }
 
   return (
     <div>
@@ -127,7 +146,7 @@ const BuilderPage = React.memo(() => {
               
       
               <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-                {builderProjects?.map((item, index) => {
+                {filteredBuilderProjects?.map((item, index) => {
                   const pUrl = item.project_url;
                   return (
                     <span >

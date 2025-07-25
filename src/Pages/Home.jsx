@@ -277,18 +277,21 @@ const Home = () => {
   className={`
     transition-filter duration-300 ease-in-out
     ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
-  `}
+`}
 >
   {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
       <div className="relative w-full">
         <img
-          src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/summer+banner.png"
+          // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/summer+banner.png"
+          //  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/monsoon-banner.webp"
+           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp"
           alt="Banner"
           className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
         />
         <img
-          src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/mobilebanner.webp"
+          // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/mobilebanner.webp"
+          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-mobile.webp"
           alt="Mobile Banner"
           className="mt-14 block md:hidden w-full h-[38rem]"
         />
@@ -482,7 +485,7 @@ const Home = () => {
 
         <div ref={setRef("resale")} data-section="resale" className="flex items-center justify-between max-w-[1250px] mx-auto lg:mx-6 xl:mx-14 md:mx-6 pt-4">
           <div className="flex items-center">
-            <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl  sm:text-left">
+            <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left ml-6 sm:ml-0">
               Best Resale Property <span> For You</span>
             </h2>
           </div>

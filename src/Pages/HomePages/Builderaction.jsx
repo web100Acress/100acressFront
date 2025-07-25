@@ -10,7 +10,7 @@ const Builderaction = () => {
   const projects = [
         {
           title: "Adani Realty",
-          link:"developers/adani-realty",
+          link:"developers/adani-realty/",
           image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/adanireality.webp",
           backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/zcasashag5pnabbtk9ox"
         },
