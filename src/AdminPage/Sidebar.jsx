@@ -92,8 +92,8 @@ const Sidebar = () => {
       >
         {/* Brand/Logo Section */}
         <div className="sidebar-brand flex items-center gap-2 px-6 py-6 border-b border-gray-200/10 dark:border-gray-700/30">
-          <img src="/Images/logo.png" alt="Logo" className="w-10 h-10 rounded-full shadow-lg border-2 border-white/40 bg-white/80" />
-          <span className="text-lg font-extrabold tracking-wide text-white drop-shadow-lg whitespace-nowrap dark:text-gray-100">100Acress.com</span>
+          <img src="https://instagram.fdel27-6.fna.fbcdn.net/v/t51.2885-19/468910235_1105544217867275_5246324212179295865_n.jpg?stp=dst-jpg_s150x150_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby41MjUuYzIifQ&_nc_ht=instagram.fdel27-6.fna.fbcdn.net&_nc_cat=111&_nc_oc=Q6cZ2QEu4hBS5pdurvYmGdgSFWZ6hkNzmiOg6f8HET699wQXIBHz5p9QMnuf4HFaZ93_slZZeuphUR8y53AQEoDJQCo7&_nc_ohc=eMmHXNAQAy0Q7kNvwHFBBiS&_nc_gid=4vd4uVelMWvETb8vAJB3tg&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfRJG3PdyNcg2Yc7BqyR6xEiNNXSBTPKEP8k5PLrWTSxIg&oe=688AA186&_nc_sid=8b3546" alt="Logo" className="w-12 h-12 rounded-full shadow-lg border-2 border-white/40 bg-white/80 object-contain bg-white p-1" />
+          <span className="text-lg font-extrabold tracking-wide text-white drop-shadow-lg whitespace-nowrap dark:text-gray-100">100Acress.com </span>
         </div>
         {/* Navigation */}
         <div className="sidebar-nav-list flex-1 flex flex-col gap-1 px-2 py-4 overflow-y-auto">
@@ -107,7 +107,7 @@ const Sidebar = () => {
           </Link>
           <Link to="/Admin/Projects/property" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/Projects/property") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <FaDiagramProject className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
-            <span>Projects</span>
+            <span>Listed Projects</span>
           </Link>
           <Link to="/Admin/resale-enquiries" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/resale-enquiries") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <FaHome className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
@@ -115,7 +115,7 @@ const Sidebar = () => {
           </Link>
           <Link to="/Admin/all-listed-properties" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/all-listed-properties") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <FaHome className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
-            <span>Properties</span>
+            <span>Listed Properties</span>
           </Link>
           {/* Contact Us Dropdown */}
           {/* <a href="#" onClick={toggleContactDropdown} className="sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white text-gray-200 font-medium text-base cursor-pointer select-none dark:text-gray-300 dark:hover:text-white dark:hover:bg-gradient-to-r dark:hover:from-blue-700/80 dark:hover:to-purple-700/80">
@@ -137,11 +137,11 @@ const Sidebar = () => {
           )} */}
           <Link to="/Admin/blog" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/blog") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <SiBloglovin className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
-            <span>Blog</span>
+            <span>Blog Posts</span>
           </Link>
           <Link to="/Admin/user" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/user") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <FaRegUserCircle className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
-            <span>User</span>
+            <span>Resistered User</span>
           </Link>
         </div>
         {/* Dark Mode Toggle Button */}

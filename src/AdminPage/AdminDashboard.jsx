@@ -94,15 +94,6 @@ const sections = [
     shadowClass: 'shadow-stone'
   },
   {
-    name: 'Buy',
-    api: 'https://api.100acress.com/property/buy/viewAll',
-    link: '/Admin/buy',
-    gradientClass: 'bg-neutral-gradient',
-    icon: <MdShoppingCart size={32} className="card-icon" />,
-    description: 'Buy property requests.',
-    shadowClass: 'shadow-neutral'
-  },
-  {
     name: 'Contact Us',
     api: '/api/admin/contact/count',
     link: '/Admin/contact',
@@ -120,19 +111,6 @@ const sections = [
     description: 'Direct user contact requests.',
     shadowClass: 'shadow-light-gray'
   },
-
-  
-  {
-    name: 'Career',
-    api: '/api/admin/career/count',
-    link: '/Admin/career',
-    gradientClass: 'bg-light-stone-gradient',
-    icon: <MdWork size={32} className="card-icon" />,
-    description: 'Career and job postings.',
-    shadowClass: 'shadow-light-stone'
-  },
-  
-  
 ];
 
 function formatNumber(num) {
