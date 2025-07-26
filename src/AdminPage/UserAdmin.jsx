@@ -34,7 +34,32 @@ const UserAdmin = () => {
     fetchData();
   }, []);
 
-  const filteredProjects = viewAll.filter((item) =>
+  // Sort users by newest first
+  const sortedUsers = [...viewAll].sort((a, b) => {
+    // Try to sort by createdAt first
+    if (a.createdAt && b.createdAt) {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
+        return dateB - dateA; // Newest first
+      }
+    }
+    
+    // Fallback: sort by _id (MongoDB ObjectIds contain timestamp)
+    // Extract timestamp from ObjectId
+    const getTimestampFromId = (id) => {
+      if (!id) return 0;
+      const hex = id.toString().substring(0, 8);
+      return parseInt(hex, 16) * 1000; // Convert to milliseconds
+    };
+    
+    const timestampA = getTimestampFromId(a._id);
+    const timestampB = getTimestampFromId(b._id);
+    
+    return timestampB - timestampA; // Newest first
+  });
+  
+  const filteredProjects = sortedUsers.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -67,14 +92,14 @@ const UserAdmin = () => {
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
       <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
-        <div className="max-w-6xl mx-auto space-y-10">
+        <div className="w-full space-y-4">
           {/* Header */}
           {/* <div className="flex items-center gap-2 mb-8">
                 <MdPeople className="text-3xl text-blue-500 animate-pulse" />
                 <h1 className="text-3xl font-bold text-gray-800">Registered Users</h1>
               </div> */}
           {/* Search Bar */}
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-4">
             <div className="relative w-full max-w-lg">
               <Tippy content={<span>Search by name</span>} animation="scale" theme="light-border">
                 <input
@@ -89,7 +114,7 @@ const UserAdmin = () => {
             </div>
           </div>
           {/* User Table Card */}
-          <div className="bg-white rounded-xl shadow-2xl border-l-4 border-gradient-to-r from-red-400 to-red-600 p-6">
+          <div className="bg-white rounded-xl shadow-2xl border-l-4 border-gradient-to-r from-red-400 to-red-600 p-6 w-full">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
