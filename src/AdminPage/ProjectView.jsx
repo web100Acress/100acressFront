@@ -201,14 +201,14 @@ const ProjectView = () => {
     <div className="flex bg-gray-50 min-h-screen dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300"> {/* Lighter background */}
       <Sidebar />
       <div className="flex-1 p-8 ml-64 overflow-auto font-sans"> {/* Increased padding, added font-sans */}
-        <div className="max-w-7xl mx-auto space-y-10"> {/* Wider max-width, increased space-y */}
+        <div className="w-full space-y-10"> {/* Full width, no max-width constraint */}
           
-          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-10 text-center tracking-tight"> {/* More prominent title */}
+          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4 text-center tracking-tight"> {/* More prominent title */}
             Project Overview
           </h1>
 
           {/* Image Gallery Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"> {/* Larger gap */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8"> {/* 3 columns for images */}
             {renderSingleImageCard(frontImage, "Front Images")}
             {renderSingleImageCard(thumbnailImage, "Thumbnail Image")}
             {renderSingleImageCard(project_locationImage, "Project Location Image")}
@@ -230,7 +230,7 @@ const ProjectView = () => {
                   {section.icon}
                   <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{section.title}</h2>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {section.fields.map(field => (
                     <div key={field.label}>
                       <label className="block text-red-700 font-semibold mb-2 flex items-center">{field.icon}{field.label}</label>
@@ -244,7 +244,7 @@ const ProjectView = () => {
           </section>
 
           {/* Features and Amenities Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8"> {/* Grid for lists */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8"> {/* 3 columns for features/amenities */}
             {renderFeatureList(projectRedefine_Connectivity, "Project Redefine Connectivity")}
             {renderFeatureList(projectRedefine_Business, "Project Redefine Business")}
             {renderFeatureList(projectRedefine_Education, "Project Redefine Education")}
