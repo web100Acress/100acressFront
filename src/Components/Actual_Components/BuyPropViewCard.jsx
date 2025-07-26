@@ -9,6 +9,27 @@ import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
 import { use } from "react";
 import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
 
+// Price formatting function
+function formatPrice(price) {
+  if (!price || isNaN(price)) return 'Contact for price';
+  const num = Number(price);
+  if (num < 10) {
+    // User probably means crores
+    return `${num} Cr`;
+  } else if (num < 100) {
+    // User probably means lakhs
+    return `${num} LAC`;
+  } else if (num < 10000000) {
+    // Less than 1 crore, treat as rupees and show in LAC
+    const lakhs = num / 100000;
+    return `${lakhs.toFixed(2)} LAC`;
+  } else {
+    // 1 crore or more, show in Cr
+    const crores = num / 10000000;
+    return `${crores.toFixed(1)} Cr`;
+  }
+}
+
 const BuyPropViewCard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [toOpen, setToOpen] = useState(false);
@@ -44,7 +65,7 @@ const BuyPropViewCard = () => {
   const [activeIndex, setActiveIndex] = useState('propertyType');
   const [selectedValues, setSelectedValues] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
+  const itemsPerPage = 18;
   const [filterModalOpen, setFilterModalOpen] = useState(false);
 
   // Accordion state for modal
@@ -258,6 +279,20 @@ const BuyPropViewCard = () => {
     setCurrentPage(1); // Reset to first page when filters change
   }, [selectedPropertyTypes, selectedAreas, selectedCities]);
 
+  // Add click outside handler for dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isOpen && !event.target.closest('.dropdown-container')) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   const toggle = () => {
     setDrop(!drop);
     setPosition(position === "down" ? "up" : "down");
@@ -329,8 +364,64 @@ const BuyPropViewCard = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   
+  // Dropdown state for filter bar
+  const [openFilterDropdown, setOpenFilterDropdown] = useState(null); // 'unitType', 'city', 'priceCriteria', or null
+
+  // Click outside handler for filter bar dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        openFilterDropdown &&
+        !event.target.closest('.filterbar-dropdown') &&
+        !event.target.closest('.filterbar-btn')
+      ) {
+        setOpenFilterDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [openFilterDropdown]);
+  
+  const quickFilters = [
+    { label: 'Gurgaon', icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path d="M12 8v4l3 3" strokeWidth="2" /></svg>
+    ) },
+    { label: 'Plot', icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" strokeWidth="2" /></svg>
+    ) },
+    { label: 'Flat', icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" strokeWidth="2" /><path d="M9 9h6v6H9z" strokeWidth="2" /></svg>
+    ) },
+    // Add more as needed
+  ];
+  const [selectedQuickFilters, setSelectedQuickFilters] = useState([]);
+
+  function handleQuickFilterClick(label) {
+    setSelectedQuickFilters((prev) =>
+      prev.includes(label)
+        ? prev.filter((f) => f !== label)
+        : [...prev, label]
+    );
+  }
+
   return (
     <>
+      {/* SEO Meta Tags */}
+      <Helmet>
+        <title>Best Resale Properties in India | 100Acress</title>
+        <meta name="description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details. Your trusted partner for property investment." />
+        <meta name="keywords" content="resale properties, property for sale, real estate, property investment, buy property, residential properties, commercial properties" />
+        <link rel="canonical" href="https://100acress.com/buy-properties/best-resale-property-in-gurugram/" />
+        <meta property="og:title" content="Best Resale Properties in India | 100Acress" />
+        <meta property="og:description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://100acress.com/buy-properties" />
+        <meta property="og:image" content="https://100acress.com/logo.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Best Resale Properties in India | 100Acress" />
+        <meta name="twitter:description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details." />
+      </Helmet>
+
       {/* Filter Button */}
       {/* Filter Modal */}
       {filterModalOpen && (
@@ -493,60 +584,424 @@ const BuyPropViewCard = () => {
               Premium Resale Properties — Value, Location, and Trust Redefined.
             </div>
           </div>
-          {/* Search Bar + Filter Button Row */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 mb-6 w-full">
-            <div className="relative w-full max-w-2xl">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                {/* Search Icon SVG */}
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
-              </span>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                placeholder="Search by property name or city..."
-                className="bg-white rounded-full pl-12 pr-4 py-2 shadow-md w-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-200 transition text-base"
-              />
-            </div>
-            <button
-              className="mt-2 md:mt-0 bg-red-500 text-white px-5 py-2 rounded-full shadow-lg hover:bg-red-600 transition flex items-center gap-2"
-              onClick={() => setFilterModalOpen(true)}
-              aria-label="Open Filters"
-              type="button"
-            >
-              <FilterIcon className="inline-block" /> Filters
-            </button>
-          </div>
-          {/* Filter Chips */}
-          {(selectedPropertyTypes.length > 0 || selectedAreas.length > 0 || selectedCities.length > 0 || minPrice || maxPrice) && (
-            <div className="flex flex-wrap gap-2 mb-4 justify-center">
-              {selectedPropertyTypes.map(type => (
-                <span key={type} className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs flex items-center gap-1 animate-fade-in">
-                  {type}
-                  <button onClick={() => removePropertyType(type)} className="ml-1 text-red-500 hover:text-red-700">×</button>
-                </span>
-              ))}
-              {selectedAreas.map(area => (
-                <span key={area} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs flex items-center gap-1 animate-fade-in">
-                  {area}
-                  <button onClick={() => removeArea(area)} className="ml-1 text-blue-500 hover:text-blue-700">×</button>
-                </span>
-              ))}
-              {selectedCities.map(city => (
-                <span key={city} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs flex items-center gap-1 animate-fade-in">
-                  {city}
-                  <button onClick={() => removeCity(city)} className="ml-1 text-green-500 hover:text-green-700">×</button>
-                </span>
-              ))}
-              {(minPrice || maxPrice) && (
-                <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs flex items-center gap-1 animate-fade-in">
-                  ₹{minPrice || '0'} - ₹{maxPrice || 'Any'}
-                  <button onClick={removePrice} className="ml-1 text-gray-500 hover:text-gray-700">×</button>
-                </span>
+
+          {/* New Search Bar Design */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
+            {/* Desktop Version */}
+            <div className="hidden lg:block">
+              <div className="flex flex-col lg:flex-row items-center gap-3">
+                {/* Property Type Dropdown */}
+                <div className="relative dropdown-container">
+                  <button
+                    onClick={toggleDropdown}
+                    className={`flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-4 py-2 text-gray-700 hover:border-[#e5652e] focus:ring-2 focus:ring-[#e5652e] transition min-w-[140px] font-medium ${isOpen ? 'border-[#e5652e]' : ''}`}
+                    style={{ boxShadow: isOpen ? '0 2px 8px rgba(229,101,46,0.08)' : '' }}
+                  >
+                    <span>All Residential</span>
+                    <svg 
+                      className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {isOpen && (
+                    <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl z-10 min-w-[200px] dropdown-container animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                      <div className="p-2">
+                        <div className="text-sm font-semibold text-[#e5652e] mb-2">Property Type</div>
+                        {propertyTypes.map((type) => (
+                          <label key={type} className="flex items-center gap-2 text-sm cursor-pointer px-2 py-1 rounded hover:bg-[#fff3ed]">
+                            <input
+                              type="checkbox"
+                              className="accent-[#e5652e]"
+                              value={type}
+                              checked={selectedPropertyTypes.includes(type)}
+                              onChange={e => handleCheckboxChange(e, setSelectedPropertyTypes)}
+                            />
+                            <span className="text-gray-700">{type}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Search Input */}
+                <div className="flex-1 relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#e5652e]">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    placeholder="Search '3 BHK for sale in Mumbai'"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e] text-gray-700 bg-white font-medium shadow-sm"
+                  />
+                </div>
+
+                {/* Search Button */}
+                <button className="bg-[#e5652e] text-white px-6 py-2 rounded-xl hover:bg-[#ff3333] transition font-semibold shadow-md focus:ring-2 focus:ring-[#e5652e]">
+                  Search
+                </button>
+              </div>
+
+              {/* Filter Chips Section */}
+              {(selectedPropertyTypes.length > 0 || selectedAreas.length > 0 || selectedCities.length > 0 || minPrice || maxPrice) && (
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-semibold text-[#e5652e]">Applied Filters:</span>
+                    <button 
+                      onClick={handleClearFilters}
+                      className="text-sm text-[#e5652e] hover:text-[#ff3333] underline font-medium"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedPropertyTypes.map(type => (
+                      <span key={type} className="bg-[#fff3ed] text-[#e5652e] px-3 py-1 rounded-full text-xs flex items-center gap-1 border border-[#ffe0d1] font-medium shadow-sm">
+                        {type}
+                        <button onClick={() => removePropertyType(type)} className="ml-1 text-[#e5652e] hover:text-[#ff3333]">×</button>
+                      </span>
+                    ))}
+                    {selectedAreas.map(area => (
+                      <span key={area} className="bg-[#e6f0ff] text-[#1d4ed8] px-3 py-1 rounded-full text-xs flex items-center gap-1 border border-[#bcdcff] font-medium shadow-sm">
+                        {area}
+                        <button onClick={() => removeArea(area)} className="ml-1 text-[#1d4ed8] hover:text-[#2563eb]">×</button>
+                      </span>
+                    ))}
+                    {selectedCities.map(city => (
+                      <span key={city} className="bg-[#e7fbe7] text-[#059669] px-3 py-1 rounded-full text-xs flex items-center gap-1 border border-[#b6f5c6] font-medium shadow-sm">
+                        {city}
+                        <button onClick={() => removeCity(city)} className="ml-1 text-[#059669] hover:text-[#047857]">×</button>
+                      </span>
+                    ))}
+                    {(minPrice || maxPrice) && (
+                      <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs flex items-center gap-1 border border-gray-200 font-medium shadow-sm">
+                        ₹{minPrice || '0'} - ₹{maxPrice || 'Any'}
+                        <button onClick={removePrice} className="ml-1 text-gray-500 hover:text-gray-700">×</button>
+                      </span>
+                    )}
+                  </div>
+                </div>
               )}
-              <button onClick={handleClearFilters} className="bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-xs hover:bg-gray-200 ml-2">Clear All</button>
+
+              {/* Additional Filter Options */}
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="flex flex-wrap gap-3">
+                  {/* Unit Type Dropdown */}
+                  <div className="relative">
+                    <button
+                      className={`flex items-center gap-2 text-sm text-gray-700 hover:text-[#e5652e] filterbar-btn px-3 py-2 rounded-xl border border-gray-200 bg-white font-medium shadow-sm transition ${openFilterDropdown === 'unitType' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                      onClick={() => setOpenFilterDropdown(openFilterDropdown === 'unitType' ? null : 'unitType')}
+                    >
+                      Unit Type
+                      <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'unitType' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {openFilterDropdown === 'unitType' && (
+                      <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[180px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                        {areas.map((area) => (
+                          <label key={area} className="flex items-center gap-2 text-sm cursor-pointer mb-1 px-2 py-1 rounded hover:bg-[#fff3ed]">
+                            <input
+                              type="checkbox"
+                              className="accent-[#e5652e]"
+                              value={area}
+                              checked={selectedAreas.includes(area)}
+                              onChange={e => handleCheckboxChange(e, setSelectedAreas)}
+                            />
+                            {area}
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {/* City Dropdown */}
+                  <div className="relative">
+                    <button
+                      className={`flex items-center gap-2 text-sm text-gray-700 hover:text-[#e5652e] filterbar-btn px-3 py-2 rounded-xl border border-gray-200 bg-white font-medium shadow-sm transition ${openFilterDropdown === 'city' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                      onClick={() => setOpenFilterDropdown(openFilterDropdown === 'city' ? null : 'city')}
+                    >
+                      City
+                      <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'city' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {openFilterDropdown === 'city' && (
+                      <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[220px] max-h-60 overflow-y-auto animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                        {cities.map((city) => (
+                          <label key={city} className="flex items-center gap-2 text-sm cursor-pointer mb-1 px-2 py-1 rounded hover:bg-[#fff3ed]">
+                            <input
+                              type="checkbox"
+                              className="accent-[#e5652e]"
+                              value={city}
+                              checked={selectedCities.includes(city)}
+                              onChange={e => handleCheckboxChange(e, setSelectedCities)}
+                            />
+                            {city}
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {/* Price Criteria Dropdown */}
+                  <div className="relative">
+                    <button
+                      className={`flex items-center gap-2 text-sm text-gray-700 hover:text-[#e5652e] filterbar-btn px-3 py-2 rounded-xl border border-gray-200 bg-white font-medium shadow-sm transition ${openFilterDropdown === 'priceCriteria' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                      onClick={() => setOpenFilterDropdown(openFilterDropdown === 'priceCriteria' ? null : 'priceCriteria')}
+                    >
+                      Price Criteria
+                      <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'priceCriteria' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {openFilterDropdown === 'priceCriteria' && (
+                      <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[200px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                        <div className="flex flex-col gap-2">
+                          <div className="flex gap-2 items-center">
+                            <label className="text-sm">Min Price:</label>
+                            <select
+                              value={minPrice}
+                              onChange={handleMinPriceChange}
+                              className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e]"
+                            >
+                              <option value="">Min Price</option>
+                              {minPriceOptions.map((price) => (
+                                <option key={price} value={price}>₹{price}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="flex gap-2 items-center">
+                            <label className="text-sm">Max Price:</label>
+                            <select
+                              value={maxPrice}
+                              onChange={handleMaxPriceChange}
+                              className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e]"
+                            >
+                              <option value="">Max Price</option>
+                              {maxPriceOptions.map((price) => (
+                                <option key={price} value={price}>₹{price}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
-          )}
+
+            {/* Mobile Version */}
+            <div className="lg:hidden sticky top-0 z-30 bg-[#f7f7f7] pb-2" style={{fontFamily: 'Poppins, Inter, sans-serif'}}>
+              {/* Sticky Search Bar */}
+              <div className="flex items-center px-2 pt-2 pb-1">
+                <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm mr-2">
+                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    placeholder="Search City/Locality/Project"
+                    className="w-full rounded-full bg-white shadow px-4 py-3 pr-12 text-gray-700 placeholder-gray-400 font-medium focus:outline-none focus:ring-2 focus:ring-[#e5652e] border border-gray-100"
+                    style={{fontFamily: 'Poppins, Inter, sans-serif'}}
+                  />
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+                    </svg>
+                  </div>
+                </div>
+                <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm ml-2">
+                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                </button>
+              </div>
+              {/* Filter Row */}
+              <div className="flex items-center gap-2 px-2 pt-1 overflow-x-auto scrollbar-hide">
+                {/* Animated Filter Icon Button */}
+                <button
+                  onClick={() => setFilterModalOpen(true)}
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow border border-gray-100 text-[#e5652e] animate-pulse hover:scale-110 transition-transform duration-150"
+                  aria-label="Open Filters"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" /></svg>
+                </button>
+                {/* Quick Filter Pills */}
+                {quickFilters.map((filter) => (
+                  <button
+                    key={filter.label}
+                    onClick={() => handleQuickFilterClick(filter.label)}
+                    className={`flex items-center gap-1 px-4 py-2 rounded-full shadow-sm border border-gray-100 font-semibold text-sm transition-all duration-150 mr-1 ${selectedQuickFilters.includes(filter.label) ? 'bg-[#ffe5e0] text-[#e5652e] scale-105' : 'bg-white text-gray-700 hover:bg-[#f7f7f7]'} active:scale-95`}
+                    style={{fontFamily: 'Poppins, Inter, sans-serif'}}
+                  >
+                    <span className="mr-1">{filter.icon}</span>
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile Filter Chips - Moved to Main Div */}
+            <div className="lg:hidden mb-6">
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {/* Unit Type Dropdown */}
+                <div className="relative">
+                  <button
+                    className={`flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition ${openFilterDropdown === 'unitType' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                    onClick={() => setOpenFilterDropdown(openFilterDropdown === 'unitType' ? null : 'unitType')}
+                  >
+                    Unit Type
+                    <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'unitType' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {openFilterDropdown === 'unitType' && (
+                    <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[180px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                      {areas.map((area) => (
+                        <label key={area} className="flex items-center gap-2 text-sm cursor-pointer mb-1 px-2 py-1 rounded hover:bg-[#fff3ed]">
+                          <input
+                            type="checkbox"
+                            className="accent-[#e5652e]"
+                            value={area}
+                            checked={selectedAreas.includes(area)}
+                            onChange={e => handleCheckboxChange(e, setSelectedAreas)}
+                          />
+                          {area}
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* City Dropdown */}
+                <div className="relative">
+                  <button
+                    className={`flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition ${openFilterDropdown === 'city' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                    onClick={() => setOpenFilterDropdown(openFilterDropdown === 'city' ? null : 'city')}
+                  >
+                    City
+                    <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'city' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {openFilterDropdown === 'city' && (
+                    <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[220px] max-h-60 overflow-y-auto animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                      {cities.map((city) => (
+                        <label key={city} className="flex items-center gap-2 text-sm cursor-pointer mb-1 px-2 py-1 rounded hover:bg-[#fff3ed]">
+                          <input
+                            type="checkbox"
+                            className="accent-[#e5652e]"
+                            value={city}
+                            checked={selectedCities.includes(city)}
+                            onChange={e => handleCheckboxChange(e, setSelectedCities)}
+                          />
+                          {city}
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Price Criteria Dropdown */}
+                <div className="relative">
+                  <button
+                    className={`flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition ${openFilterDropdown === 'priceCriteria' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                    onClick={() => setOpenFilterDropdown(openFilterDropdown === 'priceCriteria' ? null : 'priceCriteria')}
+                  >
+                    Price
+                    <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'priceCriteria' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {openFilterDropdown === 'priceCriteria' && (
+                    <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[200px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex gap-2 items-center">
+                          <label className="text-sm">Min:</label>
+                          <select
+                            value={minPrice}
+                            onChange={handleMinPriceChange}
+                            className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e]"
+                          >
+                            <option value="">Min</option>
+                            {minPriceOptions.map((price) => (
+                              <option key={price} value={price}>₹{price}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                          <label className="text-sm">Max:</label>
+                          <select
+                            value={maxPrice}
+                            onChange={handleMaxPriceChange}
+                            className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e]"
+                          >
+                            <option value="">Max</option>
+                            {maxPriceOptions.map((price) => (
+                              <option key={price} value={price}>₹{price}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Property Type Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={toggleDropdown}
+                    className={`flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition ${isOpen ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                  >
+                    Property
+                    <svg 
+                      className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {isOpen && (
+                    <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 dropdown-container min-w-[200px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                      <div className="p-2">
+                        <div className="text-sm font-semibold text-[#e5652e] mb-2">Property Type</div>
+                        {propertyTypes.map((type) => (
+                          <label key={type} className="flex items-center gap-2 text-sm cursor-pointer px-2 py-1 rounded hover:bg-[#fff3ed]">
+                            <input
+                              type="checkbox"
+                              className="accent-[#e5652e]"
+                              value={type}
+                              checked={selectedPropertyTypes.includes(type)}
+                              onChange={e => handleCheckboxChange(e, setSelectedPropertyTypes)}
+                            />
+                            <span className="text-gray-700">{type}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Sort Button */}
+                <button className="flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition">
+                  Sort
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
           <section className="flex flex-col items-center bg-white mb-4 rounded-xl shadow-md p-4">
             {filteredAndSearchedData.length === 0 ? (
               <div><CustomSkeleton /></div>
@@ -586,13 +1041,8 @@ const BuyPropViewCard = () => {
                         <div className="mt-auto flex flex-col gap-1 pb-0">
                           <span className="text-red-500 font-bold text-lg flex items-center gap-1">
                             <RupeeIcon /> {(() => {
-                              if (!property.price) return '';
-                              const priceNum = Number(property.price);
-                              if (priceNum <= 150) {
-                                return `${priceNum} Cr`;
-                              } else {
-                                return `${(priceNum / 10000000).toFixed(2)} Cr`;
-                              }
+                              console.log('Property price:', property.propertyName, 'Price:', property.price, 'Type:', typeof property.price);
+                              return formatPrice(property.price);
                             })()}
                           </span>
                           <div
@@ -614,6 +1064,7 @@ const BuyPropViewCard = () => {
               </>
             )}
           </section>
+        </div>
         </div>
       </main>
       <Footer />

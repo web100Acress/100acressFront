@@ -312,7 +312,7 @@ const RentPropViewCard = () => {
 
           <link
             rel="canonical"
-            href="https://www.100acress.com/buy-properties/best-resale-property-in-gurugram/"
+            href="https://www.100acress.com/rental-properties/best-rental-property-in-gurugram/"
           />
         </Helmet>
         <nav className="navbar d-lg-none d-xl-none d-xxl-none">
