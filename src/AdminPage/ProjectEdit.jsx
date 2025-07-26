@@ -369,9 +369,9 @@ const ProjectEdit = () => {
   return (
     <div className="flex bg-gray-50 dark:bg-gray-900 dark:text-white min-h-screen">
       <Sidebar />
-      <div className="flex-1 p-8 ml-64 overflow-auto font-sans">
-        <div className="max-w-7xl mx-auto space-y-10">
-          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-10 text-center tracking-tight">
+      <div className="flex-1 p-4 ml-64 overflow-auto font-sans">
+        <div className="w-full space-y-10">
+          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4 text-center tracking-tight">
             Edit Project
           </h1>
 
@@ -509,7 +509,7 @@ const ProjectEdit = () => {
                   {section.icon}
                   <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{section.title}</h2>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {section.fields.map(field => (
                     <div key={field.name}>
                       <label className="block text-red-700 font-semibold mb-2 flex items-center">{field.icon}{field.label}</label>
