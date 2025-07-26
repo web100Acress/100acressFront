@@ -16,7 +16,7 @@ const InsertProject = () => {
     projectAddress: "",
     project_discripation: "",
     AboutDeveloper: "",
-    builderName: "",
+    builderName: "",  
     projectRedefine_Connectivity: "", // Changed to string for input, will be split for array
     projectRedefine_Education: "",   // Changed to string for input, will be split for array
     projectRedefine_Business: "",    // Changed to string for input, will be split for array
@@ -479,6 +479,21 @@ const InsertProject = () => {
                   name="luxury"
                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
                   value={editFromData.luxury}
+                  onChange={handleChangeProjectData} // Generic handler
+                >
+                  <option value="False">False</option>
+                  <option value="True">True</option>
+                </select>
+              </div>
+              <div>
+                    <Tippy content={<span>Spotlight Status</span>} animation="scale" theme="light-border">
+                      <label htmlFor="spotlight" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdStar /> Spotlight</label>
+                    </Tippy>
+                <select
+                  id="spotlight"
+                  name="spotlight"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                  value={editFromData.spotlight}
                   onChange={handleChangeProjectData} // Generic handler
                 >
                   <option value="False">False</option>
