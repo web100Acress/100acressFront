@@ -92,7 +92,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                             </div>
                             <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-1">
                               <li className="mr-4 flex flex-col text-left">
-                                <li className="text-left">
+                                <div className="text-left">
                                   <p className="m-0 text-sm font-medium flex items-center gap-1">
                                     <PropertyIcon /> {item.type}
                                   </p>
@@ -102,7 +102,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                     </span>
                                     {item.projectAddress.slice(0, 32)}...
                                   </span>
-                                </li>
+                                </div>
                               </li>
                             </ul>
                             {/* Button row: price and button always in the same row */}
@@ -117,13 +117,8 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                     ) + " - " + `${item.maxPrice} Cr`
                                   : "Reveal Soon"}
                               </span>
-                              <Link to={`/${pUrl}/`} target="_top">
-                                <button
-                                  type="button"
-                                  className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-md text-[12px] px-3 py-2 text-center me-2 whitespace-nowrap ml-2 "
-                                >
-                                  Explore
-                                </button>
+                              <Link to={`/${pUrl}/`} target="_top" className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-md text-[12px] px-3 py-2 text-center me-2 whitespace-nowrap ml-2">
+                                Explore
                               </Link>
                             </div>
                           </div>

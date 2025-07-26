@@ -983,20 +983,20 @@ const RentPropViewCard = () => {
                                   }
                                   target="_top"
                                 >
-                                  <div className="relative p-3">
-                                    <div >
+                                  <div className="relative p-3 h-[500px] flex flex-col justify-between">
+                                    <div>
                                       {properties.frontImage &&
                                         properties.frontImage.url ? (
                                         <img
                                           src={properties.frontImage.url}
                                           alt="frontImage"
-                                          className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
+                                          className="w-full h-[200px] object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                                         />
                                       ) : (
                                         <span>Image not available</span>
                                       )}
                                     </div>
-                                    <div className="pt-2 p-1" >
+                                    <div className="pt-2 p-1 flex-1 flex flex-col justify-between">
                                       <div className="pb-2">
                                   <span className="text-sm font-semibold truncate hover:overflow-hidden text-ellipsis whitespace-nowrap hover:text-red-600 duration-500 ease-in-out">
                                     {properties.propertyName.length > 35
@@ -1031,7 +1031,7 @@ const RentPropViewCard = () => {
                                         <li className="text-left">
                                           <button
                                             type="button"
-                                            className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
+                                            className="bg-[#D32F2F] hover:bg-red-800 text-white px-7 py-2 rounded-full text-base font-bold shadow-lg transition-all duration-300 min-w-[120px] focus:outline-none focus:ring-2 focus:ring-[#D32F2F] focus:ring-offset-2"
                                           >
                                             View Details
                                           </button>
