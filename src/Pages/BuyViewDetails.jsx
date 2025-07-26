@@ -5,7 +5,7 @@ function BuyViewDetails() {
   const { id } = useParams();
   return (
     <>
-      <ShowPropertyDetails id={id} />
+      <ShowPropertyDetails id={id} type="resale" />
     </>
   )
 }

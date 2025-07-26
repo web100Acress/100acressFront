@@ -20,14 +20,19 @@ import StarCarousel from "./HomePageComponents/Carousel";
 
 function formatPrice(price) {
   if (!price) return '';
-  if (price < 100) {
-    return `${price} CR`;
+  
+  // If price is less than 1 crore (10000000), show in lakhs
+  if (price < 10000000) {
+    const lakhs = price / 100000;
+    return `${lakhs.toFixed(2)} LAC`;
   } else {
-    return `${(price / 10000000).toFixed(2)} CR`;
+    // If price is 1 crore or more, show in crores
+    const crores = price / 10000000;
+    return `${crores.toFixed(2)} CR`;
   }
 }
 
-const ShowPropertyDetails = ({ id }) => {
+const ShowPropertyDetails = ({ id, type }) => {
 
   const [rentViewDetails, setRentViewDetails] = useState();
   const [buyData, setBuyData] = useState([]);
@@ -187,6 +192,55 @@ const ShowPropertyDetails = ({ id }) => {
     }
   };
 
+  // SEO Meta Tags Effect
+  useEffect(() => {
+    if (rentViewDetails && rentViewDetails.propertyName) {
+      // Update document title
+      document.title = `${rentViewDetails.propertyName} - ${rentViewDetails.propertyType || 'Property'} for Sale in ${rentViewDetails.city || 'India'}, ${rentViewDetails.state || ''} | 100Acress`;
+      
+      // Update meta description
+      const description = `${rentViewDetails.propertyName} - ${rentViewDetails.propertyType || 'Property'} available for sale in ${rentViewDetails.city || 'India'}, ${rentViewDetails.state || ''}. Price: ₹${rentViewDetails.price ? formatPrice(rentViewDetails.price) : 'Contact for price'}. ${rentViewDetails.address ? `Located at ${rentViewDetails.address}.` : ''} View detailed property information, photos, and contact details on 100Acress.`;
+      
+      // Update or create meta description
+      let metaDescription = document.querySelector('meta[name="description"]');
+      if (!metaDescription) {
+        metaDescription = document.createElement('meta');
+        metaDescription.name = 'description';
+        document.head.appendChild(metaDescription);
+      }
+      metaDescription.content = description;
+      
+      // Update or create canonical URL
+      let canonicalLink = document.querySelector('link[rel="canonical"]');
+      if (!canonicalLink) {
+        canonicalLink = document.createElement('link');
+        canonicalLink.rel = 'canonical';
+        document.head.appendChild(canonicalLink);
+      }
+      canonicalLink.href = `https://100acress.com/buy-properties/${rentViewDetails.propertyName.replace(/\s+/g, '-')}/${id}/`;
+      
+    } else {
+      // Default meta tags when no property data
+      document.title = "Property Details | 100Acress";
+      
+      let metaDescription = document.querySelector('meta[name="description"]');
+      if (!metaDescription) {
+        metaDescription = document.createElement('meta');
+        metaDescription.name = 'description';
+        document.head.appendChild(metaDescription);
+      }
+      metaDescription.content = "Discover detailed property information, photos, and contact details for properties across India on 100Acress.";
+      
+      let canonicalLink = document.querySelector('link[rel="canonical"]');
+      if (!canonicalLink) {
+        canonicalLink = document.createElement('link');
+        canonicalLink.rel = 'canonical';
+        document.head.appendChild(canonicalLink);
+      }
+      canonicalLink.href = "https://100acress.com/buy-properties/";
+    }
+  }, [rentViewDetails, id]);
+
   return (
     <div className="bg-[#f8fafc] min-h-screen font-['Inter','Poppins','sans-serif']">
       {/* Breadcrumb navigation (inline, above property name) */}
@@ -214,22 +268,21 @@ const ShowPropertyDetails = ({ id }) => {
                 </nav>
                 <div className="mb-4">
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl font-extrabold text-gray-900">{rentViewDetails.propertyName}</span>
-                    <span className="bg-[#e63946]/10 text-[#e63946] font-semibold px-3 py-1 rounded-full text-xs uppercase tracking-wide">{rentViewDetails.propertyType}</span>
-                    
+                    <span className="text-3xl font-extrabold text-gray-900">{rentViewDetails?.propertyName}</span>
+                    <span className="bg-[#e63946]/10 text-[#e63946] font-semibold px-3 py-1 rounded-full text-xs uppercase tracking-wide">{rentViewDetails?.propertyType}</span>
                     {/* Optional badge */}
                     <span className="ml-2 bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full text-xs">Verified</span>
                   </div>
                   <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-1 w-fit mb-2">
                     <LcoationBiggerIcon className="h-5 w-5 text-[#e63946]" />
-                    <span className="text-sm text-gray-700">Located in {rentViewDetails.address}, {rentViewDetails.city}, {rentViewDetails.state}</span>
+                    <span className="text-sm text-gray-700">Located in {rentViewDetails?.address}, {rentViewDetails?.city}, {rentViewDetails?.state}</span>
                   </div>
                 </div>
                 {/* Property Image */}
                 <div className="relative mb-4">
                   <img
-                    src={rentViewDetails.frontImage.url}
-                    alt={rentViewDetails.propertyName}
+                    src={rentViewDetails?.frontImage?.url}
+                    alt={rentViewDetails?.propertyName}
                     className="w-full h-72 sm:h-96 object-cover rounded-3xl shadow-xl border border-gray-100 transition-transform duration-300 hover:scale-105"
                   />
                   {/* Floating Call Button */}
@@ -249,15 +302,17 @@ const ShowPropertyDetails = ({ id }) => {
                 {/* Property Image Gallery Thumbnails */}
                 <div className="mb-6">
                   <div className="flex gap-2 overflow-x-auto pb-2">
-                    {[rentViewDetails.frontImage, ...(rentViewDetails.otherImage || [])].map((img, idx) => (
-                      <img
-                        key={img.url || idx}
-                        src={img.url}
-                        alt={`Property image ${idx + 1}`}
-                        className="h-20 w-32 object-cover rounded-lg border border-gray-200 cursor-pointer transition-transform duration-200 hover:scale-105"
-                        onClick={() => { setGalleryImageData([rentViewDetails.frontImage, ...(rentViewDetails.otherImage || [])].map(i => ({ url: i.url, thumbnail: i.url }))); setOpenGallery(true); }}
-                      />
-                    ))}
+                    {[rentViewDetails?.frontImage, ...(rentViewDetails?.otherImage || [])]
+                      .filter(img => img && img.url)
+                      .map((img, idx) => (
+                        <img
+                          key={img.url || idx}
+                          src={img.url}
+                          alt={`Property image ${idx + 1}`}
+                          className="h-20 w-32 object-cover rounded-lg border border-gray-200 cursor-pointer transition-transform duration-200 hover:scale-105"
+                          onClick={() => { setGalleryImageData([rentViewDetails?.frontImage, ...(rentViewDetails?.otherImage || [])].filter(i => i && i.url).map(i => ({ url: i.url, thumbnail: i.url }))); setOpenGallery(true); }}
+                        />
+                      ))}
                   </div>
                   {OpenGallery && (
                     <Gallery
@@ -269,18 +324,18 @@ const ShowPropertyDetails = ({ id }) => {
                 </div>
                 {/* Price */}
                 <div className="flex items-center gap-2 mb-6">
-                  <span className="text-2xl font-extrabold text-[#e63946]">₹ {formatPrice(rentViewDetails.price)}</span>
+                  <span className="text-2xl font-extrabold text-[#e63946]">₹ {formatPrice(rentViewDetails?.price)}</span>
                 </div>
                 {/* About Property & Highlights */}
                 <div className="mb-6">
                   <h3 className="text-xl font-bold mb-2">About Property</h3>
-                  <p className="text-base text-gray-700 mb-4">{rentViewDetails.descripation || 'Please call us for further information'}</p>
+                  <p className="text-base text-gray-700 mb-4">{rentViewDetails?.descripation || 'Please call us for further information'}</p>
                   <h4 className="text-lg font-semibold mb-1">Property Highlights</h4>
                   <ul className="list-disc pl-5 text-base text-gray-600 space-y-1">
-                    {rentViewDetails.area && <li>{rentViewDetails.area}</li>}
-                    {rentViewDetails.furnishing && <li>{rentViewDetails.furnishing}</li>}
-                    {rentViewDetails.landMark && <li>{rentViewDetails.landMark}</li>}
-                    {rentViewDetails.type && <li>{rentViewDetails.type}</li>}
+                    {rentViewDetails?.area && <li>{rentViewDetails.area}</li>}
+                    {rentViewDetails?.furnishing && <li>{rentViewDetails.furnishing}</li>}
+                    {rentViewDetails?.landMark && <li>{rentViewDetails.landMark}</li>}
+                    {rentViewDetails?.type && <li>{rentViewDetails.type}</li>}
                   </ul>
                 </div>
               </div>
@@ -358,8 +413,7 @@ const ShowPropertyDetails = ({ id }) => {
         )}
       </div>
       {buyData && buyData.length > 0 && (
-        <div className="w-full mt-2 mb-0 pb-0 max-w-5xl mx-auto
-">
+        <div className="w-full mt-2 mb-0 pb-0 max-w-5xl mx-auto">
           <div className="similar-properties-container mb-4">
             <h3 className="text-2xl font-bold mb-2 text-gray-900">Similar Properties</h3>
           </div>
