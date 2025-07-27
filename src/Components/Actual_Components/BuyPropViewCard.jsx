@@ -414,6 +414,57 @@ const BuyPropViewCard = () => {
     );
   }
 
+  // Property Header Component
+  const PropertyHeader = ({ property }) => (
+    <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-6 border border-gray-100">
+      {/* Breadcrumbs */}
+      <div className="flex items-center text-xs md:text-sm text-gray-500 mb-4">
+        <span className="hover:text-[#e5652e] cursor-pointer">Resale Property</span>
+        <svg className="w-3 h-3 md:w-4 md:h-4 mx-1 md:mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+        <span className="text-gray-600">{property?.propertyName || 'M3M ONE KEY RESIMENTS'}</span>
+      </div>
+
+      {/* Single Horizontal Row with All Elements */}
+      <div className="flex items-center gap-3 md:gap-4 lg:gap-6 overflow-x-auto">
+        {/* Property Title */}
+        <div className="flex-shrink-0">
+          <h1 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 leading-tight whitespace-nowrap">
+            {property?.propertyName || 'M3M ONE KEY'} RESIMENTS
+          </h1>
+        </div>
+
+        {/* Tags */}
+        <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+          <span className="inline-flex items-center px-2 md:px-3 py-1 md:py-2 rounded-full text-xs md:text-sm font-semibold bg-pink-500 text-white border border-pink-500 whitespace-nowrap">
+            SERVICED APARTMENT
+          </span>
+          <span className="inline-flex items-center px-2 md:px-3 py-1 md:py-2 rounded-full text-xs md:text-sm font-semibold bg-green-500 text-white border border-green-500 whitespace-nowrap">
+            <svg className="w-3 h-3 md:w-4 md:h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+            Verified
+          </span>
+        </div>
+
+        {/* Location Information */}
+        <div className="flex items-center gap-2 md:gap-3 bg-gray-50 rounded-xl px-3 md:px-4 py-2 md:py-3 border border-gray-100 flex-shrink-0">
+          <div className="flex-shrink-0">
+            <svg className="w-4 h-4 md:w-5 md:h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs md:text-sm lg:text-base text-gray-700 font-medium whitespace-nowrap">
+              Located in Sector 67 Gurgaon, Gurugram, Haryana
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
       {/* SEO Meta Tags */}
@@ -580,6 +631,9 @@ const BuyPropViewCard = () => {
       {/* Main Content */}
       <main className="min-h-screen bg-gray-50 pt-20 pb-10">
         <div className="max-w-7xl mx-auto px-4 md:px-12">
+          {/* Property Header Component */}
+          {/* <PropertyHeader property={filteredAndSearchedData[0]} /> */}
+
           <div className="flex flex-col items-center justify-center py-0 mb-3">
             <h2
               className="text-center font-sans font-bold text-3xl md:text-4xl tracking-tight text-[#111827] drop-shadow-sm relative"

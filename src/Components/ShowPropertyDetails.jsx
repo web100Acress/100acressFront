@@ -335,8 +335,8 @@ const ShowPropertyDetails = ({ id, type }) => {
               {/* Left: Property Image & Info */}
               <div className="w-full">
                 {/* Breadcrumb above property name */}
-                <nav className="mb-0 flex justify-start" aria-label="Breadcrumb">
-                  <ol className="flex items-center space-x-2 text-sm text-gray-500">
+                <nav className="mb-0 flex justify-start -ml-2" aria-label="Breadcrumb">
+                  <ol className="flex items-center space-x-2 text-sm text-gray-500 pl-2">
                     <li>
                       <a href={propertyType === "rental" ? "/rental-properties/best-rental-property-in-gurugram/" : "/buy-properties/best-resale-property-in-gurugram/"} className="hover:text-[#e63946] font-medium transition-colors">
                         {propertyType === "rental" ? "Rental Property" : "Resale Property"}
@@ -351,14 +351,16 @@ const ShowPropertyDetails = ({ id, type }) => {
                   </ol>
                 </nav>
                 <div className="mb-4">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl font-extrabold text-gray-900">{rentViewDetails?.propertyName}</span>
-                    <span className="bg-[#e63946]/10 text-[#e63946] font-semibold px-3 py-1 rounded-full text-xs uppercase tracking-wide">{rentViewDetails?.propertyType}</span>
-                    {/* Optional badge */}
-                    <span className="ml-2 bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full text-xs">Verified</span>
+                  <div className="flex flex-col gap-2 mb-2">
+                    <span className="text-3xl font-extrabold text-gray-900 whitespace-nowrap overflow-hidden text-ellipsis">{rentViewDetails?.propertyName}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="bg-[#e63946]/10 text-[#e63946] font-semibold px-3 py-1 rounded-full text-xs uppercase tracking-wide">{rentViewDetails?.propertyType}</span>
+                      {/* Optional badge */}
+                      <span className="bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full text-xs">Verified</span>
+                    </div>
                   </div>
                   <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-1 w-fit mb-2">
-                    <LcoationBiggerIcon className="h-5 w-5 text-[#e63946]" />
+                    <LcoationBiggerIcon className="h-4 w-4 text-[#e63946]" />
                     <span className="text-sm text-gray-700">Located in {rentViewDetails?.address}, {rentViewDetails?.city}, {rentViewDetails?.state}</span>
                   </div>
                 </div>
