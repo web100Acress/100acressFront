@@ -5,7 +5,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { Skeleton } from "antd";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   ShareIcon,
   PhoneIcon,
@@ -47,6 +47,7 @@ function formatPrice(price, type = 'buy') {
 }
 
 const ShowPropertyDetails = ({ id, type }) => {
+  const navigate = useNavigate();
 
   const [rentViewDetails, setRentViewDetails] = useState();
   const [buyData, setBuyData] = useState([]);
@@ -61,6 +62,7 @@ const ShowPropertyDetails = ({ id, type }) => {
   const [loading, setLoading] = useState(false);
   const [showFormPopup, setShowFormPopup] = useState(false);
   const [highlightForm, setHighlightForm] = useState(false);
+  const [propertyType, setPropertyType] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,7 +73,54 @@ const ShowPropertyDetails = ({ id, type }) => {
         );
         if (res.data.data) {
           console.log("Property details loaded successfully");
-          setRentViewDetails(res.data.data.postProperty);
+          const propertyData = res.data.data.postProperty;
+          setRentViewDetails(propertyData);
+          
+          // Check if property exists in the specified category
+          const checkPropertyInCategory = async () => {
+            try {
+              const endpoint = type === "rental" 
+                ? "https://api.100acress.com/property/rent/viewAll"
+                : "https://api.100acress.com/property/buy/ViewAll";
+              
+              const categoryRes = await axios.get(endpoint);
+              const categoryData = type === "rental" 
+                ? categoryRes.data.rentaldata || []
+                : categoryRes.data.ResaleData || [];
+              
+              const propertyExists = categoryData.some(prop => prop._id === id);
+              
+              if (!propertyExists) {
+                // Property doesn't exist in this category, check the other category
+                const otherEndpoint = type === "rental" 
+                  ? "https://api.100acress.com/property/buy/ViewAll"
+                  : "https://api.100acress.com/property/rent/viewAll";
+                
+                const otherRes = await axios.get(otherEndpoint);
+                const otherData = type === "rental" 
+                  ? otherRes.data.ResaleData || []
+                  : otherRes.data.rentaldata || [];
+                
+                const existsInOther = otherData.some(prop => prop._id === id);
+                
+                if (existsInOther) {
+                  // Redirect to the correct category
+                  const correctType = type === "rental" ? "buy-properties" : "rental-properties";
+                  const propertyName = propertyData.propertyName ? propertyData.propertyName.replace(/\s+/g, '-') : 'property';
+                  navigate(`/${correctType}/${propertyName}/${id}/`, { replace: true });
+                  return;
+                }
+              }
+              
+              setPropertyType(type);
+            } catch (error) {
+              console.error("Error checking property category:", error);
+              setPropertyType(type); // Fallback to original type
+            }
+          };
+          
+          checkPropertyInCategory();
+          
           setAgentDetails({
             agentName: res.data?.data?.agentName || "",
             agentNumber: res.data?.data?.agentNumber || "",
@@ -99,7 +148,7 @@ const ShowPropertyDetails = ({ id, type }) => {
       }
     };
     fetchData();
-  }, []);
+  }, [id, type, navigate]);
 
   const handleShare = (project) => {
     if (navigator.share) {
@@ -179,13 +228,13 @@ const ShowPropertyDetails = ({ id, type }) => {
 
   const fetchData = async () => {
     try {
-      const endpoint = type === "rental" 
+      const endpoint = propertyType === "rental" 
         ? "https://api.100acress.com/property/rent/viewAll"
         : "https://api.100acress.com/property/buy/ViewAll";
       
       const res = await axios.get(endpoint);
       
-      if (type === "rental") {
+      if (propertyType === "rental") {
         setBuyData(res.data.rentaldata || []);
       } else {
         setBuyData(res.data.ResaleData || []);
@@ -196,8 +245,10 @@ const ShowPropertyDetails = ({ id, type }) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (propertyType) {
+      fetchData();
+    }
+  }, [propertyType]);
 
   // Ref for inquiry form
   const inquiryFormRef = useRef(null);
@@ -239,7 +290,7 @@ const ShowPropertyDetails = ({ id, type }) => {
         canonicalLink.rel = 'canonical';
         document.head.appendChild(canonicalLink);
       }
-      canonicalLink.href = `https://www.100acress.com/buy-properties/${rentViewDetails.propertyName.replace(/\s+/g, '-')}/${id}/`;
+      canonicalLink.href = `https://100acress.com/${propertyType === "rental" ? "rental-properties" : "buy-properties"}/${rentViewDetails.propertyName.replace(/\s+/g, '-')}/${id}/`;
       
     } else {
       // Default meta tags when no property data
@@ -259,15 +310,15 @@ const ShowPropertyDetails = ({ id, type }) => {
         canonicalLink.rel = 'canonical';
         document.head.appendChild(canonicalLink);
       }
-      canonicalLink.href = "https://www.100acress.com/buy-properties/";
+      canonicalLink.href = `https://100acress.com/${propertyType === "rental" ? "rental-properties" : "buy-properties"}/`;
     }
-  }, [rentViewDetails, id]);
+      }, [rentViewDetails, id, propertyType]);
 
   return (
     <div className="bg-[#f8fafc] min-h-screen font-['Inter','Poppins','sans-serif']">
       {/* Breadcrumb navigation (inline, above property name) */}
       <div className="pt-20 max-w-6xl mx-auto px-2 sm:px-4">
-        {loading ? (
+        {loading || !propertyType ? (
           <Skeleton active />
         ) : (
           rentViewDetails && (
@@ -278,8 +329,8 @@ const ShowPropertyDetails = ({ id, type }) => {
                 <nav className="mb-0 flex justify-start" aria-label="Breadcrumb">
                   <ol className="flex items-center space-x-2 text-sm text-gray-500">
                     <li>
-                      <a href={type === "rental" ? "/rental-properties/best-rental-property-in-gurugram/" : "/buy-properties/best-resale-property-in-gurugram/"} className="hover:text-[#e63946] font-medium transition-colors">
-                        {type === "rental" ? "Rental Property" : "Resale Property"}
+                      <a href={propertyType === "rental" ? "/rental-properties/best-rental-property-in-gurugram/" : "/buy-properties/best-resale-property-in-gurugram/"} className="hover:text-[#e63946] font-medium transition-colors">
+                        {propertyType === "rental" ? "Rental Property" : "Resale Property"}
                       </a>
                     </li>
                     <li>
@@ -348,7 +399,7 @@ const ShowPropertyDetails = ({ id, type }) => {
                 </div>
                 {/* Price */}
                 <div className="flex items-center gap-2 mb-6">
-                  <span className="text-2xl font-extrabold text-[#e63946]">₹ {formatPrice(rentViewDetails?.price, type)}</span>
+                  <span className="text-2xl font-extrabold text-[#e63946]">₹ {formatPrice(rentViewDetails?.price, propertyType)}</span>
                 </div>
                 {/* About Property & Highlights */}
                 <div className="mb-6">
@@ -462,8 +513,8 @@ const ShowPropertyDetails = ({ id, type }) => {
                     <div className="text-xs text-gray-400 mb-1 truncate">{property.city},{property.state}</div>
                   </div>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="font-bold text-xs text-gray-900"><span className="text-[#e63946]">₹ {formatPrice(property.price, type)}</span></span>
-                    <a href={`${type === "rental" ? "/rental-properties" : "/buy-properties"}/${property.propertyName ? property.propertyName.replace(/\s+/g, '-') : 'unknown'}/${property._id}`} target="_blank" rel="noopener noreferrer">
+                                          <span className="font-bold text-xs text-gray-900"><span className="text-[#e63946]">₹ {formatPrice(property.price, propertyType)}</span></span>
+                    <a href={`${propertyType === "rental" ? "/rental-properties" : "/buy-properties"}/${property.propertyName ? property.propertyName.replace(/\s+/g, '-') : 'unknown'}/${property._id}`} target="_blank" rel="noopener noreferrer">
                       <button className="bg-[#e63946] hover:bg-red-700 text-white rounded-xl p-2 transition-all duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                       </button>
