@@ -197,7 +197,11 @@ function App() {
               />
               <Route
                 path="/projects-in-gurugram/property-possession-in-2024/"
-                element={<Possessionin2024 />}
+                element={<Navigate to="/projects-in-gurugram/property-ready-to-move/" replace />}
+              />
+              <Route
+                path="/projects-in-gurugram/property-possession-in-2024"
+                element={<Navigate to="/projects-in-gurugram/property-ready-to-move/" replace />}
               />
               <Route
                 path="/developers/:builderName"
