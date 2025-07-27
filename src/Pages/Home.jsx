@@ -27,7 +27,6 @@ import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
-const ResaleComponent = React.lazy(() => import("./Resale"));
 
 const Home = () => {
 
@@ -481,37 +480,6 @@ const Home = () => {
         </div>
 
         <Builder />
-
-
-        <div ref={setRef("resale")} data-section="resale" className="flex items-center justify-between max-w-[1250px] mx-auto lg:mx-6 xl:mx-14 md:mx-6 pt-4">
-          <div className="flex items-center">
-            <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left ml-6 sm:ml-0">
-              Best Resale Property <span> For You</span>
-            </h2>
-          </div>
-          <div className="ml-2 hidden sm:block">
-            <Link
-              to="/buy-properties/best-resale-property-in-gurugram/"
-              target="_top"
-            >
-              <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-                <EyeIcon />
-                <span className="ml-2" style={{ marginLeft: "8px" }}>
-                  View All
-                </span>
-              </span>
-            </Link>
-          </div>
-        </div>
-
-        {observedSections["resale"] ? (
-          <Suspense fallback={<CustomSkeleton />}>
-            <ResaleComponent />
-          </Suspense>
-        ) : (
-          <CustomSkeleton />
-        )}
-
 
 
         <OurServices />
