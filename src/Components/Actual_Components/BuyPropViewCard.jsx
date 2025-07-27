@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
 import axios from "axios";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
@@ -31,6 +31,7 @@ function formatPrice(price) {
 }
 
 const BuyPropViewCard = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [toOpen, setToOpen] = useState(false);
   const [show, setShow] = useState(false);
@@ -67,6 +68,15 @@ const BuyPropViewCard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 18;
   const [filterModalOpen, setFilterModalOpen] = useState(false);
+
+  // Check and redirect if URL is missing trailing slash
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    if (!currentPath.endsWith('/')) {
+      const newPath = currentPath + '/';
+      navigate(newPath, { replace: true });
+    }
+  }, [navigate]);
 
   // Accordion state for modal
   const [accordion, setAccordion] = useState({

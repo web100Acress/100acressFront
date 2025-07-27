@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function PropViewCardPro() {
+  const navigate = useNavigate();
   const [rentData, setRentData] = useState([]);
+
+  // Check and redirect if URL is missing trailing slash
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    if (!currentPath.endsWith('/')) {
+      const newPath = currentPath + '/';
+      navigate(newPath, { replace: true });
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const fetchData = async () => {
