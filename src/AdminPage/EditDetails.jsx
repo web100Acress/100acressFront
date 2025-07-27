@@ -177,10 +177,10 @@ const EditDetails = () => {
       <Sidebar />
       {contextHolder}
       <div className="flex bg-gray-50 min-h-screen">
-        <div className="flex-1 p-8 ml-64 overflow-auto font-sans">
-          <div className="max-w-4xl mx-auto space-y-10">
+        <div className="flex-1 p-4 ml-64 overflow-auto font-sans">
+          <div className="w-full space-y-6">
             {/* Header */}
-            <div className="flex items-center gap-2 mb-8">
+            <div className="flex items-center gap-2 mb-4">
               <MdHome className="text-3xl text-blue-500 animate-pulse" />
               <h1 className="text-3xl font-bold text-gray-800">Edit Property Details</h1>
             </div>
@@ -198,7 +198,7 @@ const EditDetails = () => {
               <span className={`ml-3 font-semibold ${values.verify === "verified" ? "text-green-600" : "text-red-600"}`}>{values.verify === "verified" ? "Verified" : "Unverified"}</span>
             </div>
             {/* Images Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Front Image */}
               <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
                 <h3 className="text-xl font-semibold text-gray-800 text-center mb-2 flex items-center gap-2"><MdImage />Front Image</h3>
@@ -247,11 +247,11 @@ const EditDetails = () => {
               </button>
               <div
                 id="property-info-section"
-                className={`transition-all duration-300 ${infoOpen ? 'max-h-[1000px] opacity-100 p-8' : 'max-h-0 opacity-0 p-0'}`}
+                className={`transition-all duration-300 ${infoOpen ? 'max-h-[1000px] opacity-100 p-6' : 'max-h-0 opacity-0 p-0'}`}
                 style={{ willChange: 'max-height, opacity, padding' }}
                 aria-hidden={!infoOpen}
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* Property Name */}
                   <div>
                     <Tippy content={<span>Property Name</span>} animation="scale" theme="light-border">
@@ -301,13 +301,6 @@ const EditDetails = () => {
                     </Tippy>
                     <input type="text" value={values.state} name="state" className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800" onChange={e => setValues({ ...values, state: e.target.value })} />
                   </div>
-                  {/* Project Description */}
-                  <div className="md:col-span-2">
-                    <Tippy content={<span>Project Description</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Project Description</label>
-                    </Tippy>
-                    <input type="text" name="descripation" value={values.descripation} className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800" onChange={e => setValues({ ...values, descripation: e.target.value })} />
-                  </div>
                   {/* LandMark */}
                   <div>
                     <Tippy content={<span>LandMark</span>} animation="scale" theme="light-border">
@@ -336,21 +329,12 @@ const EditDetails = () => {
                     </Tippy>
                     <input type="text" name="availableDate" value={values.availableDate} className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800" onChange={e => setValues({ ...values, availableDate: e.target.value })} />
                   </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
                   {/* Select Property Type */}
                   <div>
                     <Tippy content={<span>Select Property Type</span>} animation="scale" theme="light-border">
                       <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Select Property Type</label>
                     </Tippy>
                     <input type="text" name="propertyLooking" value={values.propertyLooking} className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800" onChange={e => setValues({ ...values, propertyLooking: e.target.value })} />
-                  </div>
-                  {/* Amenities */}
-                  <div>
-                    <Tippy content={<span>Amenities</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Amenities</label>
-                    </Tippy>
-                    <input type="text" value={values.amenities} className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800" onChange={e => setValues({ ...values, amenities: e.target.value })} />
                   </div>
                   {/* Type */}
                   <div>
@@ -359,10 +343,24 @@ const EditDetails = () => {
                     </Tippy>
                     <input type="text" value={values.type} className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800" onChange={e => setValues({ ...values, type: e.target.value })} />
                   </div>
+                  {/* Amenities */}
+                  <div>
+                    <Tippy content={<span>Amenities</span>} animation="scale" theme="light-border">
+                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Amenities</label>
+                    </Tippy>
+                    <input type="text" value={values.amenities} className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800" onChange={e => setValues({ ...values, amenities: e.target.value })} />
+                  </div>
+                  {/* Project Description */}
+                  <div className="sm:col-span-2 lg:col-span-4">
+                    <Tippy content={<span>Project Description</span>} animation="scale" theme="light-border">
+                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Project Description</label>
+                    </Tippy>
+                    <input type="text" name="descripation" value={values.descripation} className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800" onChange={e => setValues({ ...values, descripation: e.target.value })} />
+                  </div>
                 </div>
               </div>
               {/* Update Button always visible at the bottom */}
-              <div className="flex justify-end mt-8 p-8 border-t border-gray-200 bg-gradient-to-r from-white to-gray-50">
+              <div className="flex justify-end mt-8 p-6 border-t border-gray-200 bg-gradient-to-r from-white to-gray-50">
                 <button type="button" onClick={handleUpdateUser} className="inline-flex items-center gap-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-semibold rounded-lg text-base px-8 py-3 shadow-lg transition-all duration-300 transform hover:scale-105">
                   <MdHome className="animate-pulse" /> Update
             </button>
