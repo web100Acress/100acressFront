@@ -97,6 +97,7 @@ const AllListedProperties = () => {
 
   const handleDeleteProperty = async (id) => {
     try {
+      console.log("Attempting to delete property with ID:", id);
       const res = await axios.delete(
         `https://api.100acress.com/postPerson/propertyDelete/${id}`,
         {
@@ -106,21 +107,25 @@ const AllListedProperties = () => {
             }
         }
       );
+      console.log("Delete response:", res);
       if (res.status >= 200 && res.status < 300) {
         return {
           success: true,
           message: "Property deleted successfully",
         }
       } else {
+        console.error("Delete failed with status:", res.status);
         return {
           success: false,
           message: res.data?.message || "Unknown error",
         }
       }
     } catch (error) {
+      console.error("Delete property error:", error);
+      console.error("Error response:", error.response);
       return {
         success: false,
-        message: error.response?.data?.message || error.message,
+        message: error.response?.data?.error || error.response?.data?.message || error.message,
       }
     }
   };
