@@ -196,7 +196,7 @@ const Enquiries = () => {
               className="download-button download-ready"
               onClick={downloadExelFile}
             >
-              Download Data 📥
+              Export to CSV📥
             </button>
           }
         </div>

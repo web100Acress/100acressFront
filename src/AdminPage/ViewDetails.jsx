@@ -46,16 +46,16 @@ const ViewDetails = () => {
     <>
       <Sidebar />
       <div className="flex bg-gray-50 min-h-screen">
-        <div className="flex-1 p-8 ml-64 overflow-auto font-sans">
-          <div className="max-w-4xl mx-auto space-y-10">
+        <div className="flex-1 p-4 ml-64 overflow-auto font-sans">
+          <div className="w-full space-y-6">
             {/* Header */}
-            <div className="flex items-center gap-2 mb-8">
+            <div className="flex items-center gap-2 mb-4">
               <MdHome className="text-3xl text-blue-500 animate-pulse" />
               <h1 className="text-3xl font-bold text-gray-800">Property Details</h1>
             </div>
 
             {/* Images Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Front Image */}
               <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
                 <h3 className="text-xl font-semibold text-gray-800 text-center mb-2 flex items-center gap-2"><MdImage />Front Image</h3>
@@ -108,11 +108,11 @@ const ViewDetails = () => {
               </button>
               <div
                 id="property-info-section"
-                className={`transition-all duration-300 ${infoOpen ? 'max-h-[1000px] opacity-100 p-8' : 'max-h-0 opacity-0 p-0'}`}
+                className={`transition-all duration-300 ${infoOpen ? 'max-h-[1000px] opacity-100 p-6' : 'max-h-0 opacity-0 p-0'}`}
                 style={{ willChange: 'max-height, opacity, padding' }}
                 aria-hidden={!infoOpen}
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
                     <Tippy content={<span>Property Name</span>} animation="scale" theme="light-border">
                       <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Property Name</label>
@@ -155,12 +155,6 @@ const ViewDetails = () => {
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.state || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
-                  <div className="md:col-span-2">
-                    <Tippy content={<span>Project Description</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Project Description</label>
-                    </Tippy>
-                    <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800 whitespace-pre-wrap">{viewDetails.description || <span className="text-gray-400 italic">N/A</span>}</div>
-                  </div>
                   <div>
                     <Tippy content={<span>LandMark</span>} animation="scale" theme="light-border">
                       <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdLocationOn className="mr-1" />LandMark</label>
@@ -191,7 +185,19 @@ const ViewDetails = () => {
                     </Tippy>
                     <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.propertyLooking || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
-                  <div className="md:col-span-2">
+                  <div>
+                    <Tippy content={<span>Type</span>} animation="scale" theme="light-border">
+                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Type</label>
+                    </Tippy>
+                    <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.type || <span className="text-gray-400 italic">N/A</span>}</div>
+                  </div>
+                  <div className="sm:col-span-2 lg:col-span-4">
+                    <Tippy content={<span>Project Description</span>} animation="scale" theme="light-border">
+                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Project Description</label>
+                    </Tippy>
+                    <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800 whitespace-pre-wrap">{viewDetails.description || <span className="text-gray-400 italic">N/A</span>}</div>
+                  </div>
+                  <div className="sm:col-span-2 lg:col-span-4">
                     <Tippy content={<span>Amenities</span>} animation="scale" theme="light-border">
                       <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdInfo className="mr-1" />Amenities</label>
                     </Tippy>
@@ -200,12 +206,6 @@ const ViewDetails = () => {
                         <span key={index} className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full shadow-sm">{item}</span>
                       )) : <span className="text-gray-400 italic">No Amenities</span>}
                     </div>
-                  </div>
-                  <div>
-                    <Tippy content={<span>Type</span>} animation="scale" theme="light-border">
-                      <label className="block text-red-700 font-semibold mb-2 flex items-center"><MdApartment className="mr-1" />Type</label>
-                    </Tippy>
-                    <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-800">{viewDetails.type || <span className="text-gray-400 italic">N/A</span>}</div>
                   </div>
                 </div>
                       </div>
