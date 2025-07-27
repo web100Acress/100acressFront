@@ -2,13 +2,36 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
 import axios from "axios";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
 import { use } from "react";
+import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
+
+// Price formatting function
+function formatPrice(price) {
+  if (!price || isNaN(price)) return 'Contact for price';
+  const num = Number(price);
+  if (num < 10) {
+    // User probably means crores
+    return `${num} Cr`;
+  } else if (num < 100) {
+    // User probably means lakhs
+    return `${num} LAC`;
+  } else if (num < 10000000) {
+    // Less than 1 crore, treat as rupees and show in LAC
+    const lakhs = num / 100000;
+    return `${lakhs.toFixed(2)} LAC`;
+  } else {
+    // 1 crore or more, show in Cr
+    const crores = num / 10000000;
+    return `${crores.toFixed(1)} Cr`;
+  }
+}
 
 const BuyPropViewCard = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [toOpen, setToOpen] = useState(false);
   const [show, setShow] = useState(false);
@@ -42,6 +65,38 @@ const BuyPropViewCard = () => {
   const [maxPrice, setMaxPrice] = useState("");
   const [activeIndex, setActiveIndex] = useState('propertyType');
   const [selectedValues, setSelectedValues] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 18;
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+
+  // Check and redirect if URL is missing trailing slash
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    if (!currentPath.endsWith('/')) {
+      const newPath = currentPath + '/';
+      navigate(newPath, { replace: true });
+    }
+  }, [navigate]);
+
+  // Accordion state for modal
+  const [accordion, setAccordion] = useState({
+    propertyType: true,
+    unitType: false,
+    city: false,
+    price: false,
+  });
+  const toggleAccordion = (key) => setAccordion((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  // Add search state
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filtered and searched data
+  const filteredAndSearchedData = filterData.filter(property =>
+    property.propertyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    property.city?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const paginatedData = filteredAndSearchedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(filteredAndSearchedData.length / itemsPerPage);
 
 
   const minPriceOptions = [
@@ -230,8 +285,23 @@ const BuyPropViewCard = () => {
     setFilterData(filteredData);
   }
 
+  useEffect(() => {
+    setCurrentPage(1); // Reset to first page when filters change
+  }, [selectedPropertyTypes, selectedAreas, selectedCities]);
 
+  // Add click outside handler for dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isOpen && !event.target.closest('.dropdown-container')) {
+        setIsOpen(false);
+      }
+    };
 
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   const toggle = () => {
     setDrop(!drop);
@@ -293,760 +363,774 @@ const BuyPropViewCard = () => {
   };
 
 
-  console.log(buyData,"Resale data");
   
+  
+  // Ref for property grid
+  const propertyGridRef = React.useRef(null);
+
+  // Scroll to top of grid on page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
+  // Dropdown state for filter bar
+  const [openFilterDropdown, setOpenFilterDropdown] = useState(null); // 'unitType', 'city', 'priceCriteria', or null
+
+  // Click outside handler for filter bar dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        openFilterDropdown &&
+        !event.target.closest('.filterbar-dropdown') &&
+        !event.target.closest('.filterbar-btn')
+      ) {
+        setOpenFilterDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [openFilterDropdown]);
+  
+  const quickFilters = [
+    { label: 'Gurgaon', icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path d="M12 8v4l3 3" strokeWidth="2" /></svg>
+    ) },
+    { label: 'Plot', icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" strokeWidth="2" /></svg>
+    ) },
+    { label: 'Flat', icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" strokeWidth="2" /><path d="M9 9h6v6H9z" strokeWidth="2" /></svg>
+    ) },
+    // Add more as needed
+  ];
+  const [selectedQuickFilters, setSelectedQuickFilters] = useState([]);
+
+  function handleQuickFilterClick(label) {
+    setSelectedQuickFilters((prev) =>
+      prev.includes(label)
+        ? prev.filter((f) => f !== label)
+        : [...prev, label]
+    );
+  }
+
+  // Property Header Component
+  const PropertyHeader = ({ property }) => (
+    <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-6 border border-gray-100">
+      {/* Breadcrumbs */}
+      <div className="flex items-center text-xs md:text-sm text-gray-500 mb-4">
+        <span className="hover:text-[#e5652e] cursor-pointer">Resale Property</span>
+        <svg className="w-3 h-3 md:w-4 md:h-4 mx-1 md:mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+        <span className="text-gray-600">{property?.propertyName || 'M3M ONE KEY RESIMENTS'}</span>
+      </div>
+
+      {/* Single Horizontal Row with All Elements */}
+      <div className="flex items-center gap-3 md:gap-4 lg:gap-6 overflow-x-auto">
+        {/* Property Title */}
+        <div className="flex-shrink-0">
+          <h1 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 leading-tight whitespace-nowrap">
+            {property?.propertyName || 'M3M ONE KEY'} RESIMENTS
+          </h1>
+        </div>
+
+        {/* Tags */}
+        <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+          <span className="inline-flex items-center px-2 md:px-3 py-1 md:py-2 rounded-full text-xs md:text-sm font-semibold bg-pink-500 text-white border border-pink-500 whitespace-nowrap">
+            SERVICED APARTMENT
+          </span>
+          <span className="inline-flex items-center px-2 md:px-3 py-1 md:py-2 rounded-full text-xs md:text-sm font-semibold bg-green-500 text-white border border-green-500 whitespace-nowrap">
+            <svg className="w-3 h-3 md:w-4 md:h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+            Verified
+          </span>
+        </div>
+
+        {/* Location Information */}
+        <div className="flex items-center gap-2 md:gap-3 bg-gray-50 rounded-xl px-3 md:px-4 py-2 md:py-3 border border-gray-100 flex-shrink-0">
+          <div className="flex-shrink-0">
+            <svg className="w-4 h-4 md:w-5 md:h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs md:text-sm lg:text-base text-gray-700 font-medium whitespace-nowrap">
+              Located in Sector 67 Gurgaon, Gurugram, Haryana
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
-      <Wrapper className="Section mt-12">
+      {/* SEO Meta Tags */}
       <Helmet>
-            <title>Best Resale Properties in Gurugram at Great Prices: 100acress</title>
-            <meta
-              name="description"
-              content="Explore premium resale properties in Gurugram at affordable prices. 100acress offers the best deals for homes and investments. Call now!"
-            />
-            <link
-              rel="canonical"
-              href="https://www.100acress.com/buy-properties/best-resale-property-in-gurugram/"
-            />
-          </Helmet>
-        <nav className="navbar d-lg-none d-xl-none d-xxl-none">
-          <div className="container-fluid">
-            {/* on tablet screen */}
-            <div className="">
-              <ul className="w-full md:w-[740px] mb-0 mb-lg-0 shadow-none flex flex-wrap justify-center space-x-2 pl-0">
-                <li className="flex-1 mb-2 relative d-none d-sm-block">
-                  <button
-                    type="button"
-                    className="w-full btn btn-outline-danger"
-                    aria-expanded={isOpen}
-                    onClick={toggleDropdown}
-                  >
-                    Property Type
-                  </button>
-                  {isOpen && (
-                    <div className="absolute left-0 mt-2 w-56 z-10 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Independent Floor
-                      </Link>
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Apartment
-                      </Link>
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Builder Floor
-                      </Link>
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Plot
-                      </Link>
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Residential
-                      </Link>
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Studio
-                      </Link>
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Villas
-                      </Link>
-                    </div>
-                  )}
-                </li>
-                <li className="flex-1 mb-2 relative d-none d-sm-block">
-                  <button
-                    type="button"
-                    className="w-full btn btn-outline-danger"
-                    aria-expanded={toOpen}
-                    onClick={openDropdown}
-                  >
-                    Area
-                  </button>
-                  {toOpen && (
-                    <div className="absolute left-0 mt-2 w-56 z-10 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        1 BHK
-                      </Link>
-                    </div>
-                  )}
-                </li>
-                <li className="flex-1 mb-2 relative d-none d-sm-block">
-                  <button
-                    type="button"
-                    className="w-full btn btn-outline-danger"
-                    aria-expanded={show}
-                    onClick={showDropdown}
-                  >
-                    City
-                  </button>
-                  {show && (
-                    <div className="absolute left-0 mt-2 w-56 z-10 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none">
-                      <Link
-                        to=""
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Gurugram
-                      </Link>
-                    </div>
-                  )}
-                </li>
-              </ul>
+        <title>Best Resale Properties in India | 100Acress</title>
+        <meta name="description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details. Your trusted partner for property investment." />
+        <meta name="keywords" content="resale properties, property for sale, real estate, property investment, buy property, residential properties, commercial properties" />
+        <link rel="canonical" href="https://www.100acress.com/buy-properties/best-resale-property-in-gurugram/" />
+        <meta property="og:title" content="Best Resale Properties in India | 100Acress" />
+        <meta property="og:description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.100acress.com/buy-properties" />
+        <meta property="og:image" content="https://www.100acress.com/logo.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Best Resale Properties in India | 100Acress" />
+        <meta name="twitter:description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details." />
+      </Helmet>
+
+      {/* Filter Button */}
+      {/* Filter Modal */}
+      {filterModalOpen && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-white/60 backdrop-blur-sm transition-all" onClick={() => setFilterModalOpen(false)}>
+          <div
+            className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto relative animate-fade-in"
+            onClick={e => e.stopPropagation()}
+            tabIndex={-1}
+          >
+            <button
+              className="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-2xl font-bold"
+              onClick={() => setFilterModalOpen(false)}
+              aria-label="Close Filters"
+            >
+              ×
+            </button>
+            <h2 className="text-xl font-semibold mb-4 text-center">Filters</h2>
+            {/* Accordion Sections */}
+            <div className="space-y-4">
+              {/* Property Type */}
               <div>
-                {/* on mobile screen  */}
-                <div className="w-[94vw] flex items-center justify-end p-2">
-                <button
-                    className="relative text-white bg-black py-2 rounded-md px-4 md:hidden lg:block sm:mt-9"
-                    onClick={toggleSidebar}
-                  >
-                    {selectedValues.length > 0 && (
-                      <span className="absolute left-0 top-0 size-3">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primaryRed opacity-75"></span>
-                        <span className="relative inline-flex size-3 rounded-full bg-primaryRed"></span>
-                      </span>
-                    )}
-                    <FilterIcon/>
-                  </button>
-                </div>
-
-<div className="absolute w-[100vw] h-[100vh] flex items-center">
-                <div
-                  className={`fixed top-0 left-0 w-auto h-full bg-white text-black z-10  p-4 mt-[5vh] transform ${
-                    isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-                  } transition-transform duration-300 ease-in-out`}
-                >
-                  <div className="w-full flex justify-start items-center gap-2 py-4 border-b-2">
-                  <button
-                      className="text-white bg-red-500 py-1 px-2 rounded mt-0"
-                      onClick={toggleSidebar}
-                    >
-                      ✖
-                    </button>
-                    <h2 className="text-xl font-semibold mb-0">Filters</h2>
-                   
-                  </div>
-
-                  <div
-                          className={`py-2 px-0 fi_head cursor-pointer ${
-                            activeIndex === "propertyType" ? "bg-red-300" : ""
-                          }`}
-                          onClick={() => {
-                            toggle();
-                            setActiveIndex("propertyType");
-                          }}
-                        >
-                          Property Type
-                  </div>
-
-
-                  <div className="fi_acc">
-                    <div className={`py-2 px-0 fi_head cursor-pointer ${
-                            activeIndex === "area" ? "bg-red-300" : ""
-                          }`} onClick={()=>{
-                      toggle4();
-                      setActiveIndex("area");
-                    }}>
-                     Unit Type
-                    </div>
-                  </div>
-
-                  
-                  <div className="fi_acc">
-                    <div className={`py-2 px-0 fi_head cursor-pointer ${
-                            activeIndex === "city" ? "bg-red-300" : ""
-                          }`} onClick={()=>{
-                      toggle1();
-                      setActiveIndex("city");
-                    }}>
-                      City
-                    </div>
-                  </div>
-
-                  <div className="fi_acc">
-                    <span className={`py-2 px-0 fi_head cursor-pointer ${
-                            activeIndex === "price" ? "bg-red-300" : ""
-                          }`} onClick={()=>{
-                      toggle5();
-                      setActiveIndex("price");
-                    }}>
-                      Price Criteria
-                    </span>
-  
-                  </div>
-                </div>
-
-                <div
-                     className={`fixed  flex top-0 right-0 w-[66%] h-full bg-white text-black z-10 border-l-2 mt-[5vh] p-4 transform ${
-                      isSidebarOpen ? "translate-x-0" : "translate-x-full"
-                    } transition-transform duration-300 ease-in sm:block`}
->
-               
-                  <div className="w-auto grid gap-2 py-4">
-          
-                  {activeIndex === "propertyType" && (
-                      <div
-                        className=""
-                        style={{ borderBottom: "1px solid #d9d9d9" }}
-                      >
-                        <div className="mb-3 mt-5">
-                      {propertyTypes.map((type) => (
-                        <li key={type} style={{ listStyle: "none" }}>
-                          <input
-                            type="checkbox"
-                            id={type.toLowerCase().replace(" ", "_")}
-                            name="property_type"
-                            className="filter-choice"
-                            value={type}
-                            checked={selectedPropertyTypes.includes(type)}
-                            onChange={(e) =>
-                              handleCheckboxChange(e, setSelectedPropertyTypes)
-                            }
-                          />
-                          <label
-                            htmlFor={type.toLowerCase().replace(" ", "_")}
-                            className="filter ml-2 text-lg"
-                          >
-                            {type}
-                          </label>
-                        </li>
-                      ))}
-                    </div>
-                      </div>
-                    )}
-               
-                  
-                  {activeIndex === "area" && (
-                      <div
-                        className=""
-                        style={{ borderBottom: "1px solid #d9d9d9" }}
-                      >
-                       <div className="mb-2 mt-5">
-                        {areas.map((area) => (
-                          <li key={area} style={{ listStyle: "none" }}>
-                            <input
-                              type="checkbox"
-                              id={area.toLowerCase().replace(" ", "_")}
-                              name="area"
-                              className="filter-choice"
-                              value={area}
-                              checked={selectedAreas.includes(area)}
-                              onChange={(e) =>
-                                handleCheckboxChange(e, setSelectedAreas)
-                              }
-                            />
-                            <label
-                              htmlFor={area.toLowerCase().replace(" ", "_")}
-                              className="filter ml-2"
-                            >
-                              {area}
-                            </label>
-                          </li>
-                        ))}
-                      </div>
-                      </div>
-                    )}
-                  
-
-                    {activeIndex === "city" && (
-                      <div
-                        className=""
-                        style={{ borderBottom: "1px solid #d9d9d9" }}
-                      >
-                        <div className="mb-2 mt-5">
-                        {cities.map((city) => (
-                          <li key={city} style={{ listStyle: "none" }}>
-                            <input
-                              type="checkbox"
-                              id={city.toLowerCase().replace(" ", "_")}
-                              name="city"
-                              className="filter-choice"
-                              value={city}
-                              checked={selectedCities.includes(city)}
-                              onChange={(e) =>
-                                handleCheckboxChange(e, setSelectedCities)
-                              }
-                            />
-                            <label
-                              htmlFor={city.toLowerCase().replace(" ", "_")}
-                              className="filter ml-2"
-                            >
-                              {city}
-                            </label>
-                          </li>
-                        ))}
-                      </div>
-                      </div>
-                    )}
-
-
-                      {activeIndex ==="price" && (
-                      <>
-                      <div className="grid mt-5">
-                        <div className="flex items-center mt-2">
-                          <span className="font-medium">Min: ₹{minPrice}</span>
-                          <input
-                            className="accent-blue-900 mr-2 h-2 w-full appearance-none rounded-full bg-blue-100"
-                            value={parseInt(minPrice)}
-                            min="1"
-                            max="8"
-                            step="1"
-                            type="range"
-                            onChange={handleMinRangeChange}
-                          />
-                          <span className="font-medium">Max: ₹{maxPrice}</span>
-                          <input
-                            className="accent-blue-900 ml-2 h-2 w-full appearance-none rounded-full bg-blue-100"
-                            value={parseInt(maxPrice)}
-                            min="1"
-                            max="8"
-                            step="1"
-                            type="range"
-                            onChange={handleMaxRangeChange}
-                          />
-                        </div>
-
-                        <div className="mt-4 d-flex">
-                          <div className="mb-4 mx-2">
-                            <label className="block text-gray-700">
-                              Min Price:
-                            </label>
-                            <select
-                              value={minPrice}
-                              onChange={handleMinPriceChange}
-                              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            >
-                              <option value="">Min Price</option>
-                              {minPriceOptions.map((price) => (
-                                <option key={price} value={price}>
-                                  ₹{price}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="mx-2">
-                            <label className="block text-gray-700">
-                              Max Price:
-                            </label>
-                            <select
-                              value={maxPrice}
-                              onChange={handleMaxPriceChange}
-                              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            >
-                              <div className="w-auto ml-[-10vw]">
-                              <option value="">Max Price</option>
-                              {maxPriceOptions.map((price) => (
-                                <option key={price} value={price}>
-                                  ₹{price}
-                                </option>
-                                
-                              ))}
-                              </div>
-                            </select>
-                          </div>
-                        </div>
-                        </div>
-                      </>
-                    )}   
-
-                <div className=" fixed top-[75vh] left-[40vw] w-6 grid items-center gap-2 py-4 border-b-2">
-                  <button
-                      className="text-white bg-red-500 py-1 px-2 rounded mt-0"
-                      onClick={toggleSidebar}
-                    >
-                      Apply
-                    </button>
-                    </div>
-                  </div>
-
-                  
-                 </div>
-</div>
-
-              </div>
-            </div>
-          </div>
-        </nav>
-        {/* on larger screen  */}
-        <div className="container-fluid bg-white">
-          <div className="row ">
-            <div className="col-lg-3 col-md-4 col-sm-6 d-none d-lg-block bg-white shadow-md">
-              <div className="d-flex flex-wrap">
-                <div className="li_options w-100 position-relative">
-                  <div className="fi_space md:p-1 sm:p-1 flex justify-end text-red-600">
-                    <button
-                      type="button"
-                      className="text-end"
-                      onClick={handleClearFilters}
-                    >
-                      Clear All
-                    </button>
-                  </div>
-
-                  <div className="selected-filters mb-4">
-                    {selectedPropertyTypes.length > 0 &&
-                      selectedPropertyTypes.map((propertyType, index) => (
-                        <div
-                          key={index}
-                          className="border-2 w-50 border-red-300 text-sm rounded-xl p-0 mb-2 flex justify-between items-center"
-                        >
-                          <span className="pl-4"> {propertyType}</span>
-                          <button
-                            onClick={() => removePropertyType(propertyType)}
-                            className="mr-2 text-red-600 text-2xl"
-                          >
-                            &times;
-                          </button>
-                        </div>
-                      ))}
-                    {selectedAreas.length > 0 &&
-                      selectedAreas.map((area, index) => (
-                        <div
-                          key={index}
-                          className="border-2 w-1/2 border-red-300 text-sm rounded-xl p-0 mb-2 flex justify-between items-center"
-                        >
-                          <span className="pl-4"> {area}</span>
-                          <button
-                            onClick={() => removeArea(area)}
-                            className="mr-2 text-red-500 text-2xl"
-                          >
-                            &times;
-                          </button>
-                        </div>
-                      ))}
-                    {selectedCities.length > 0 &&
-                      selectedCities.map((city, index) => (
-                        <div
-                          key={index}
-                          className="border-2 w-1/2 rounded-xl border-red-300 text-sm  p-0 mb-2 flex justify-between items-center"
-                        >
-                          <span className="pl-4"> {city}</span>
-                          <button
-                            onClick={() => removeCity(city)}
-                            className="mr-2 text-red-500 text-2xl "
-                          >
-                            &times;
-                          </button>
-                        </div>
-                      ))}
-                    {(minPrice || maxPrice) && (
-                      <div className="border-2 rounded-xl w-1/2 border-red-300 text-sm p-0 mb-2 flex justify-between items-center">
-                        <span className="pl-4">
-                          {" "}
-                          ₹{minPrice} - ₹{maxPrice}
-                        </span>
-                        <button
-                          onClick={removePrice}
-                          className="mr-2 text-red-500 text-2xl"
-                        >
-                          &times;
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="fi_acc">
-                    <div className="fi_head" onClick={toggle2}>
-                      Property Type
-                      <i
-                        className={`fa-solid fa-chevron-up pr-2 text-black text-sm`}
-                      ></i>
-                    </div>
-
-                    <div className="mb-3">
-                      {propertyTypes.map((type) => (
-                        <li key={type} style={{ listStyle: "none" }}>
-                          <input
-                            type="checkbox"
-                            id={type.toLowerCase().replace(" ", "_")}
-                            name="property_type"
-                            className="filter-choice"
-                            value={type}
-                            checked={selectedPropertyTypes.includes(type)}
-                            onChange={(e) =>
-                              handleCheckboxChange(e, setSelectedPropertyTypes)
-                            }
-                          />
-                          <label
-                            htmlFor={type.toLowerCase().replace(" ", "_")}
-                            className="filter ml-2 text-lg"
-                          >
-                            {type}
-                          </label>
-                        </li>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="fi_acc">
-                    <div className="fi_head" onClick={toggle3}>
-                      Unit Type
-                      <i
-                        className={`fa-solid fa-chevron-${position3} pr-2 text-black text-sm`}
-                      ></i>
-                    </div>
-                    {drop3 && (
-                      <div className="mb-2">
-                        {areas.map((area) => (
-                          <li key={area} style={{ listStyle: "none" }}>
-                            <input
-                              type="checkbox"
-                              id={area.toLowerCase().replace(" ", "_")}
-                              name="area"
-                              className="filter-choice"
-                              value={area}
-                              checked={selectedAreas.includes(area)}
-                              onChange={(e) =>
-                                handleCheckboxChange(e, setSelectedAreas)
-                              }
-                            />
-                            <label
-                              htmlFor={area.toLowerCase().replace(" ", "_")}
-                              className="filter ml-2"
-                            >
-                              {area}
-                            </label>
-                          </li>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="fi_acc">
-                    <div className="fi_head" onClick={toggle6}>
-                      City
-                      <i
-                        className={`fa-solid fa-chevron-${position6} pr-2 text-black text-sm`}
-                      ></i>
-                    </div>
-                    {drop6 && (
-                      <div className="mb-2">
-                        {cities.map((city) => (
-                          <li key={city} style={{ listStyle: "none" }}>
-                            <input
-                              type="checkbox"
-                              id={city.toLowerCase().replace(" ", "_")}
-                              name="city"
-                              className="filter-choice"
-                              value={city}
-                              checked={selectedCities.includes(city)}
-                              onChange={(e) =>
-                                handleCheckboxChange(e, setSelectedCities)
-                              }
-                            />
-                            <label
-                              htmlFor={city.toLowerCase().replace(" ", "_")}
-                              className="filter ml-2"
-                            >
-                              {city}
-                            </label>
-                          </li>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="fi_acc ">
-                    <span className="fi_head " onClick={toggle7}>
-                      Price Criteria
-                      <i
-                        className={`fa-solid fa-chevron-${position7} pr-2 text-black text-sm`}
-                      ></i>
-                    </span>
-                    {drop7 && (
-                      <>
-                        <div className="flex items-center mt-2">
-                          <span className="font-medium">Min: ₹{minPrice}</span>
-                          <input
-                            className="accent-blue-900 mr-2 h-2 w-full appearance-none rounded-full bg-blue-100"
-                            value={parseInt(minPrice)}
-                            min="1"
-                            max="8"
-                            step="1"
-                            type="range"
-                            onChange={handleMinRangeChange}
-                          />
-                          <span className="font-medium">Max: ₹{maxPrice}</span>
-                          <input
-                            className="accent-blue-900 ml-2 h-2 w-full appearance-none rounded-full bg-blue-100"
-                            value={parseInt(maxPrice)}
-                            min="1"
-                            max="8"
-                            step="1"
-                            type="range"
-                            onChange={handleMaxRangeChange}
-                          />
-                        </div>
-
-                        <div className="mt-4 d-flex">
-                          <div className="mb-4 mx-2">
-                            <label className="block text-gray-700">
-                              Min Price:
-                            </label>
-                            <select
-                              value={minPrice}
-                              onChange={handleMinPriceChange}
-                              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            >
-                              <option value="">Select Min Price</option>
-                              {minPriceOptions.map((price) => (
-                                <option key={price} value={price}>
-                                  ₹{price}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="mx-2">
-                            <label className="block text-gray-700">
-                              Max Price:
-                            </label>
-                            <select
-                              value={maxPrice}
-                              onChange={handleMaxPriceChange}
-                              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            >
-                              <option value="">Select Max Price</option>
-                              {maxPriceOptions.map((price) => (
-                                <option key={price} value={price}>
-                                  ₹{price}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-lg-9 col-md-12 col-sm-12">
-              <div className="li_items xl:px-8 lg:px-6 md:px-4 px-2">
-                <div className="li_head_row">
-                  <div className="heading relative">
-                    <h3 className="title mt-4">Best Resale Properties in Gurugram</h3>
-
-                    <>
-                      {isVisible && (
-                        <div
-                          className="fixed bottom-4 right-4 z-10"
-                          onClick={scrollToTop}
-                        >
-                          <button className="bg-red-600 border-white text-white p-3 flex items-center rounded-full animate-bounce">
-                            <i className="fa-solid fa-arrow-up transform rotate-360"></i>
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  </div>
-                </div>
-
-               
-                <section className="flex flex-col items-center bg-white mb-4">
-                    {filterData.length === 0 ? (
-                      <p><CustomSkeleton /></p>
-                    ) :  
-                        (
-                    <div className="grid max-w-md  grid-cols-1 px-2 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-3 lg:grid-cols-3 sm:gap-4 lg:gap-4 w-full mb-4">
-  {     
-                            filterData.map((nestedItem, nestedIndex) => (
-                              <div key={nestedIndex} className="shadow-lg rounded-lg">
-                                <Link
-                                  to={
-                                    nestedItem.propertyName &&
-                                      nestedItem._id
-                                      ? `/buy-properties/${nestedItem.propertyName.replace(
-                                        /\s+/g,
-                                        "-"
-                                      )}/${nestedItem._id}/`
-                                      : "#"
-                                  }
-                                  target="_top"
-                                >
-                                  <div className="relative p-3">
-                                    <div >
-                                      {nestedItem.frontImage &&
-                                        nestedItem.frontImage.url ? (
-                                        <img
-                                          src={nestedItem.frontImage.url}
-                                          alt="frontImage"
-                                          className="w-full h-48 object-cover overflow-hidden rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
-                                        />
-                                      ) : (
-                                        <span>Image not available</span>
-                                      )}
-                                    </div>
-                                    <div className="pt-2 p-1" >
-                                      <div className="pb-2">
-                                        <span className="text-sm font-semibold block truncate overflow-hidden whitespace-nowrap hover:text-red-600 duration-500 ease-in-out">
-                                          {nestedItem.propertyName}
-                                        </span>
-                                        <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
-                                          {nestedItem.city}, {nestedItem.state}
-                                        </span>
-                                      </div>
-                                      <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
-                                        <li className="mr-4 flex items-center text-left">
-                                          <li className="text-left">
-                                            <p className="m-0 text-sm font-medium ">
-                                              <PropertyIcon />{" "}{nestedItem.propertyType}
-                                            </p>
-                                            <span className="text-[10px] text-gray-600 block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
-                                              {/* <LocationRedIcon />{" "}{item.projectAddress} */}
-                                            </span>
-
-                                          </li>
-                                        </li>
-                                      </ul>
-                                      <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
-                                        <li className="text-left">
-                                          <span className="text-sm font-extrabold text-red-600 block truncate">
-                                            <span style={{display: 'flex', alignItems: 'center', color: 'red', fontWeight: 'bold'}}><RupeeIcon style={{marginRight: 4}} />{nestedItem?.price}</span>
-                                          </span>
-                                        </li>
-                                        <li className="text-left">
-                                          <button
-                                            type="button"
-                                            className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
-                                          >
-                                            View Details
-                                          </button>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </Link>
-                              </div>
-                            )
-                            )
-                        }
+                <button className="w-full flex justify-between items-center py-2 font-semibold text-left" onClick={() => toggleAccordion('propertyType')}>
+                  Property Type
+                  <span>{accordion.propertyType ? '−' : '+'}</span>
+                </button>
+                {accordion.propertyType && (
+                  <div className="pl-2 flex flex-wrap gap-2">
+                    {propertyTypes.map((type) => (
+                      <label key={type} className="flex items-center gap-2 text-sm cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="accent-red-500"
+                          value={type}
+                          checked={selectedPropertyTypes.includes(type)}
+                          onChange={e => handleCheckboxChange(e, setSelectedPropertyTypes)}
+                        />
+                        {type}
+                      </label>
+                    ))}
                   </div>
                 )}
-                </section>
               </div>
+              {/* Unit Type */}
+              <div>
+                <button className="w-full flex justify-between items-center py-2 font-semibold text-left" onClick={() => toggleAccordion('unitType')}>
+                  Unit Type
+                  <span>{accordion.unitType ? '−' : '+'}</span>
+                </button>
+                {accordion.unitType && (
+                  <div className="pl-2 flex flex-wrap gap-2">
+                    {areas.map((area) => (
+                      <label key={area} className="flex items-center gap-2 text-sm cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="accent-red-500"
+                          value={area}
+                          checked={selectedAreas.includes(area)}
+                          onChange={e => handleCheckboxChange(e, setSelectedAreas)}
+                        />
+                        {area}
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {/* City */}
+              <div>
+                <button className="w-full flex justify-between items-center py-2 font-semibold text-left" onClick={() => toggleAccordion('city')}>
+                  City
+                  <span>{accordion.city ? '−' : '+'}</span>
+                </button>
+                {accordion.city && (
+                  <div className="pl-2 flex flex-wrap gap-2">
+                    {cities.map((city) => (
+                      <label key={city} className="flex items-center gap-2 text-sm cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="accent-red-500"
+                          value={city}
+                          checked={selectedCities.includes(city)}
+                          onChange={e => handleCheckboxChange(e, setSelectedCities)}
+                        />
+                        {city}
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {/* Price Criteria */}
+              <div>
+                <button className="w-full flex justify-between items-center py-2 font-semibold text-left" onClick={() => toggleAccordion('price')}>
+                  Price Criteria
+                  <span>{accordion.price ? '−' : '+'}</span>
+                </button>
+                {accordion.price && (
+                  <div className="pl-2 flex flex-col gap-2">
+                    <div className="flex gap-2 items-center">
+                      <label className="text-sm">Min Price:</label>
+                      <select
+                        value={minPrice}
+                        onChange={handleMinPriceChange}
+                        className="rounded-lg border border-gray-300 px-2 py-1 text-sm"
+                      >
+                        <option value="">Min Price</option>
+                        {minPriceOptions.map((price) => (
+                          <option key={price} value={price}>₹{price}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      <label className="text-sm">Max Price:</label>
+                      <select
+                        value={maxPrice}
+                        onChange={handleMaxPriceChange}
+                        className="rounded-lg border border-gray-300 px-2 py-1 text-sm"
+                      >
+                        <option value="">Max Price</option>
+                        {maxPriceOptions.map((price) => (
+                          <option key={price} value={price}>₹{price}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* Modal Actions */}
+            <div className="flex justify-between mt-6 gap-2">
+              <button
+                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 transition"
+                onClick={handleClearFilters}
+              >
+                Clear All
+              </button>
+              <button
+                className="bg-red-500 text-white px-6 py-2 rounded-full shadow hover:bg-red-600 transition"
+                onClick={() => setFilterModalOpen(false)}
+              >
+                Apply
+              </button>
             </div>
           </div>
         </div>
-      </Wrapper>
+      )}
+
+      {/* Main Content */}
+      <main className="min-h-screen bg-gray-50 pt-20 pb-10">
+        <div className="max-w-7xl mx-auto px-4 md:px-12">
+          {/* Property Header Component */}
+          {/* <PropertyHeader property={filteredAndSearchedData[0]} /> */}
+
+          <div className="flex flex-col items-center justify-center py-0 mb-3">
+            <h2
+              className="text-center font-sans font-bold text-3xl md:text-4xl tracking-tight text-[#111827] drop-shadow-sm relative"
+              style={{ fontFamily: 'Poppins, Inter, Montserrat, sans-serif' }}
+            >
+              <span className="inline-block">
+                Best Resale Properties
+              </span>
+              <span className="block mx-auto mt-2 h-1 w-16 rounded-full bg-gradient-to-r from-red-400 via-red-600 to-red-400 opacity-80 transition-all duration-300 group-hover:w-24"></span>
+            </h2>
+            <div className="text-center mt-2 mb-2 text-base md:text-lg font-medium text-gray-600">
+              Premium Resale Properties — Value, Location, and Trust Redefined.
+            </div>
+          </div>
+
+          {/* New Search Bar Design */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
+            {/* Desktop Version */}
+            <div className="hidden lg:block">
+              <div className="flex flex-col lg:flex-row items-center gap-3">
+                {/* Property Type Dropdown */}
+                <div className="relative dropdown-container">
+                  <button
+                    onClick={toggleDropdown}
+                    className={`flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-4 py-2 text-gray-700 hover:border-[#e5652e] focus:ring-2 focus:ring-[#e5652e] transition min-w-[140px] font-medium ${isOpen ? 'border-[#e5652e]' : ''}`}
+                    style={{ boxShadow: isOpen ? '0 2px 8px rgba(229,101,46,0.08)' : '' }}
+                  >
+                    <span>All Residential</span>
+                    <svg 
+                      className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {isOpen && (
+                    <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl z-10 min-w-[200px] dropdown-container animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                      <div className="p-2">
+                        <div className="text-sm font-semibold text-[#e5652e] mb-2">Property Type</div>
+                        {propertyTypes.map((type) => (
+                          <label key={type} className="flex items-center gap-2 text-sm cursor-pointer px-2 py-1 rounded hover:bg-[#fff3ed]">
+                            <input
+                              type="checkbox"
+                              className="accent-[#e5652e]"
+                              value={type}
+                              checked={selectedPropertyTypes.includes(type)}
+                              onChange={e => handleCheckboxChange(e, setSelectedPropertyTypes)}
+                            />
+                            <span className="text-gray-700">{type}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Search Input */}
+                <div className="flex-1 relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#e5652e]">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    placeholder="Search '3 BHK for sale in Mumbai'"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e] text-gray-700 bg-white font-medium shadow-sm"
+                  />
+                </div>
+
+                {/* Search Button */}
+                <button className="bg-[#e5652e] text-white px-6 py-2 rounded-xl hover:bg-[#ff3333] transition font-semibold shadow-md focus:ring-2 focus:ring-[#e5652e]">
+                  Search
+                </button>
+              </div>
+
+              {/* Filter Chips Section */}
+              {(selectedPropertyTypes.length > 0 || selectedAreas.length > 0 || selectedCities.length > 0 || minPrice || maxPrice) && (
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-semibold text-[#e5652e]">Applied Filters:</span>
+                    <button 
+                      onClick={handleClearFilters}
+                      className="text-sm text-[#e5652e] hover:text-[#ff3333] underline font-medium"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedPropertyTypes.map(type => (
+                      <span key={type} className="bg-[#fff3ed] text-[#e5652e] px-3 py-1 rounded-full text-xs flex items-center gap-1 border border-[#ffe0d1] font-medium shadow-sm">
+                        {type}
+                        <button onClick={() => removePropertyType(type)} className="ml-1 text-[#e5652e] hover:text-[#ff3333]">×</button>
+                      </span>
+                    ))}
+                    {selectedAreas.map(area => (
+                      <span key={area} className="bg-[#e6f0ff] text-[#1d4ed8] px-3 py-1 rounded-full text-xs flex items-center gap-1 border border-[#bcdcff] font-medium shadow-sm">
+                        {area}
+                        <button onClick={() => removeArea(area)} className="ml-1 text-[#1d4ed8] hover:text-[#2563eb]">×</button>
+                      </span>
+                    ))}
+                    {selectedCities.map(city => (
+                      <span key={city} className="bg-[#e7fbe7] text-[#059669] px-3 py-1 rounded-full text-xs flex items-center gap-1 border border-[#b6f5c6] font-medium shadow-sm">
+                        {city}
+                        <button onClick={() => removeCity(city)} className="ml-1 text-[#059669] hover:text-[#047857]">×</button>
+                      </span>
+                    ))}
+                    {(minPrice || maxPrice) && (
+                      <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs flex items-center gap-1 border border-gray-200 font-medium shadow-sm">
+                        ₹{minPrice || '0'} - ₹{maxPrice || 'Any'}
+                        <button onClick={removePrice} className="ml-1 text-gray-500 hover:text-gray-700">×</button>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Additional Filter Options */}
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="flex flex-wrap gap-3">
+                  {/* Unit Type Dropdown */}
+                  <div className="relative">
+                    <button
+                      className={`flex items-center gap-2 text-sm text-gray-700 hover:text-[#e5652e] filterbar-btn px-3 py-2 rounded-xl border border-gray-200 bg-white font-medium shadow-sm transition ${openFilterDropdown === 'unitType' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                      onClick={() => setOpenFilterDropdown(openFilterDropdown === 'unitType' ? null : 'unitType')}
+                    >
+                      Unit Type
+                      <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'unitType' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {openFilterDropdown === 'unitType' && (
+                      <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[180px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                        {areas.map((area) => (
+                          <label key={area} className="flex items-center gap-2 text-sm cursor-pointer mb-1 px-2 py-1 rounded hover:bg-[#fff3ed]">
+                            <input
+                              type="checkbox"
+                              className="accent-[#e5652e]"
+                              value={area}
+                              checked={selectedAreas.includes(area)}
+                              onChange={e => handleCheckboxChange(e, setSelectedAreas)}
+                            />
+                            {area}
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {/* City Dropdown */}
+                  <div className="relative">
+                    <button
+                      className={`flex items-center gap-2 text-sm text-gray-700 hover:text-[#e5652e] filterbar-btn px-3 py-2 rounded-xl border border-gray-200 bg-white font-medium shadow-sm transition ${openFilterDropdown === 'city' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                      onClick={() => setOpenFilterDropdown(openFilterDropdown === 'city' ? null : 'city')}
+                    >
+                      City
+                      <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'city' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {openFilterDropdown === 'city' && (
+                      <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[220px] max-h-60 overflow-y-auto animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                        {cities.map((city) => (
+                          <label key={city} className="flex items-center gap-2 text-sm cursor-pointer mb-1 px-2 py-1 rounded hover:bg-[#fff3ed]">
+                            <input
+                              type="checkbox"
+                              className="accent-[#e5652e]"
+                              value={city}
+                              checked={selectedCities.includes(city)}
+                              onChange={e => handleCheckboxChange(e, setSelectedCities)}
+                            />
+                            {city}
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {/* Price Criteria Dropdown */}
+                  <div className="relative">
+                    <button
+                      className={`flex items-center gap-2 text-sm text-gray-700 hover:text-[#e5652e] filterbar-btn px-3 py-2 rounded-xl border border-gray-200 bg-white font-medium shadow-sm transition ${openFilterDropdown === 'priceCriteria' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                      onClick={() => setOpenFilterDropdown(openFilterDropdown === 'priceCriteria' ? null : 'priceCriteria')}
+                    >
+                      Price Criteria
+                      <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'priceCriteria' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {openFilterDropdown === 'priceCriteria' && (
+                      <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[200px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                        <div className="flex flex-col gap-2">
+                          <div className="flex gap-2 items-center">
+                            <label className="text-sm">Min Price:</label>
+                            <select
+                              value={minPrice}
+                              onChange={handleMinPriceChange}
+                              className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e]"
+                            >
+                              <option value="">Min Price</option>
+                              {minPriceOptions.map((price) => (
+                                <option key={price} value={price}>₹{price}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="flex gap-2 items-center">
+                            <label className="text-sm">Max Price:</label>
+                            <select
+                              value={maxPrice}
+                              onChange={handleMaxPriceChange}
+                              className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e]"
+                            >
+                              <option value="">Max Price</option>
+                              {maxPriceOptions.map((price) => (
+                                <option key={price} value={price}>₹{price}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Version */}
+            <div className="lg:hidden sticky top-0 z-30 bg-[#f7f7f7] pb-2" style={{fontFamily: 'Poppins, Inter, sans-serif'}}>
+              {/* Sticky Search Bar */}
+              <div className="flex items-center px-2 pt-2 pb-1">
+                <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm mr-2">
+                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    placeholder="Search City/Locality/Project"
+                    className="w-full rounded-full bg-white shadow px-4 py-3 pr-12 text-gray-700 placeholder-gray-400 font-medium focus:outline-none focus:ring-2 focus:ring-[#e5652e] border border-gray-100"
+                    style={{fontFamily: 'Poppins, Inter, sans-serif'}}
+                  />
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+                    </svg>
+                  </div>
+                </div>
+                <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm ml-2">
+                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                </button>
+              </div>
+              {/* Filter Row */}
+              <div className="flex items-center gap-2 px-2 pt-1 overflow-x-auto scrollbar-hide">
+                {/* Animated Filter Icon Button */}
+                <button
+                  onClick={() => setFilterModalOpen(true)}
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow border border-gray-100 text-[#e5652e] animate-pulse hover:scale-110 transition-transform duration-150"
+                  aria-label="Open Filters"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" /></svg>
+                </button>
+                {/* Quick Filter Pills */}
+                {quickFilters.map((filter) => (
+                  <button
+                    key={filter.label}
+                    onClick={() => handleQuickFilterClick(filter.label)}
+                    className={`flex items-center gap-1 px-4 py-2 rounded-full shadow-sm border border-gray-100 font-semibold text-sm transition-all duration-150 mr-1 ${selectedQuickFilters.includes(filter.label) ? 'bg-[#ffe5e0] text-[#e5652e] scale-105' : 'bg-white text-gray-700 hover:bg-[#f7f7f7]'} active:scale-95`}
+                    style={{fontFamily: 'Poppins, Inter, sans-serif'}}
+                  >
+                    <span className="mr-1">{filter.icon}</span>
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile Filter Chips - Moved to Main Div */}
+            <div className="lg:hidden mb-6">
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {/* Unit Type Dropdown */}
+                <div className="relative">
+                  <button
+                    className={`flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition ${openFilterDropdown === 'unitType' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                    onClick={() => setOpenFilterDropdown(openFilterDropdown === 'unitType' ? null : 'unitType')}
+                  >
+                    Unit Type
+                    <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'unitType' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {openFilterDropdown === 'unitType' && (
+                    <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[180px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                      {areas.map((area) => (
+                        <label key={area} className="flex items-center gap-2 text-sm cursor-pointer mb-1 px-2 py-1 rounded hover:bg-[#fff3ed]">
+                          <input
+                            type="checkbox"
+                            className="accent-[#e5652e]"
+                            value={area}
+                            checked={selectedAreas.includes(area)}
+                            onChange={e => handleCheckboxChange(e, setSelectedAreas)}
+                          />
+                          {area}
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* City Dropdown */}
+                <div className="relative">
+                  <button
+                    className={`flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition ${openFilterDropdown === 'city' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                    onClick={() => setOpenFilterDropdown(openFilterDropdown === 'city' ? null : 'city')}
+                  >
+                    City
+                    <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'city' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {openFilterDropdown === 'city' && (
+                    <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[220px] max-h-60 overflow-y-auto animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                      {cities.map((city) => (
+                        <label key={city} className="flex items-center gap-2 text-sm cursor-pointer mb-1 px-2 py-1 rounded hover:bg-[#fff3ed]">
+                          <input
+                            type="checkbox"
+                            className="accent-[#e5652e]"
+                            value={city}
+                            checked={selectedCities.includes(city)}
+                            onChange={e => handleCheckboxChange(e, setSelectedCities)}
+                          />
+                          {city}
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Price Criteria Dropdown */}
+                <div className="relative">
+                  <button
+                    className={`flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition ${openFilterDropdown === 'priceCriteria' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                    onClick={() => setOpenFilterDropdown(openFilterDropdown === 'priceCriteria' ? null : 'priceCriteria')}
+                  >
+                    Price
+                    <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'priceCriteria' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {openFilterDropdown === 'priceCriteria' && (
+                    <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[200px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex gap-2 items-center">
+                          <label className="text-sm">Min:</label>
+                          <select
+                            value={minPrice}
+                            onChange={handleMinPriceChange}
+                            className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e]"
+                          >
+                            <option value="">Min</option>
+                            {minPriceOptions.map((price) => (
+                              <option key={price} value={price}>₹{price}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                          <label className="text-sm">Max:</label>
+                          <select
+                            value={maxPrice}
+                            onChange={handleMaxPriceChange}
+                            className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e]"
+                          >
+                            <option value="">Max</option>
+                            {maxPriceOptions.map((price) => (
+                              <option key={price} value={price}>₹{price}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Property Type Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={toggleDropdown}
+                    className={`flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition ${isOpen ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
+                  >
+                    Property
+                    <svg 
+                      className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {isOpen && (
+                    <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 dropdown-container min-w-[200px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
+                      <div className="p-2">
+                        <div className="text-sm font-semibold text-[#e5652e] mb-2">Property Type</div>
+                        {propertyTypes.map((type) => (
+                          <label key={type} className="flex items-center gap-2 text-sm cursor-pointer px-2 py-1 rounded hover:bg-[#fff3ed]">
+                            <input
+                              type="checkbox"
+                              className="accent-[#e5652e]"
+                              value={type}
+                              checked={selectedPropertyTypes.includes(type)}
+                              onChange={e => handleCheckboxChange(e, setSelectedPropertyTypes)}
+                            />
+                            <span className="text-gray-700">{type}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Sort Button */}
+                <button className="flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition">
+                  Sort
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+          <section className="flex flex-col items-center bg-white mb-4 rounded-xl shadow-md p-4">
+            {filteredAndSearchedData.length === 0 ? (
+              <div><CustomSkeleton /></div>
+            ) :  (
+              <>
+                <div ref={propertyGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                  {paginatedData.map((property, idx) => (
+                    <Link
+                      key={property._id || idx}
+                      to={property.propertyName && property._id
+                        ? `/buy-properties/${property.propertyName.replace(/\s+/g, '-')}/${property._id}/`
+                        : "#"}
+                      target="_top"
+                      className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col transition hover:shadow-xl hover:scale-105 duration-300 animate-fade-in group cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-400"
+                      style={{ animationDelay: `${idx * 60}ms` }}
+                      tabIndex={0}
+                    >
+                      <div className="overflow-hidden">
+                        <img
+                          src={property.frontImage?.url}
+                          alt={property.propertyName}
+                          className="w-full h-48 object-cover rounded-t-2xl transition-transform duration-500 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="flex flex-col flex-1 p-5 pb-4">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">{property.propertyName}</h3>
+                        <div className="flex items-center gap-1 text-sm text-gray-500 mb-1">
+                          {/* Location pin icon */}
+                          <svg xmlns='http://www.w3.org/2000/svg' className='h-4 w-4 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 11c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 10c-4.418 0-8-7.163-8-10a8 8 0 1116 0c0 2.837-3.582 10-8 10z' /></svg>
+                          <span className="truncate">{property.city}, {property.state}</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-gray-500 mb-3">
+                          <PropertyIcon style={{ width: 16, height: 16, minWidth: 16, minHeight: 16 }} />
+                          <span className="truncate">{property.propertyType || 'Property'}</span>
+                        </div>
+                        <div className="mt-auto flex flex-col gap-1 pb-0">
+                          <span className="text-red-500 font-bold text-lg flex items-center gap-1">
+                            <RupeeIcon /> {(() => {
+                              console.log('Property price:', property.propertyName, 'Price:', property.price, 'Type:', typeof property.price);
+                              return formatPrice(property.price);
+                            })()}
+                          </span>
+                          <div
+                            className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full shadow-md text-base font-semibold text-center transition mt-1 mb-0 cursor-pointer"
+                            tabIndex={-1}
+                          >
+                            View Details
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+                <PaginationControls
+                  currentPage={currentPage}
+                  setCurrentPage={handlePageChange}
+                  totalPages={totalPages}
+                />
+              </>
+            )}
+          </section>
+        </div>
+        </div>
+      </main>
       <Footer />
     </>
   );

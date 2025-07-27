@@ -6,7 +6,7 @@ function RentViewDetails() {
 
   return (
     <>
-      <ShowPropertyDetails id={id} />
+      <ShowPropertyDetails id={id} type="rental" />
     </>
   )
 }
