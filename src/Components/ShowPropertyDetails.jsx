@@ -18,17 +18,31 @@ import styled from "styled-components";
 import Gallery from "../Components/Gallery";
 import StarCarousel from "./HomePageComponents/Carousel";
 
-function formatPrice(price) {
-  if (!price) return '';
+// Price formatting function
+function formatPrice(price, type = 'buy') {
+  if (!price || isNaN(price)) return 'Contact for price';
+  const num = Number(price);
   
-  // If price is less than 1 crore (10000000), show in lakhs
-  if (price < 10000000) {
-    const lakhs = price / 100000;
+  // For rental properties, show exact price as is
+  if (type === 'rental') {
+    return num.toLocaleString('en-IN');
+  }
+  
+  // For resale properties, use the original logic
+  if (num < 10) {
+    // User probably means crores
+    return `${num} Cr`;
+  } else if (num < 100) {
+    // User probably means lakhs
+    return `${num} LAC`;
+  } else if (num < 10000000) {
+    // Less than 1 crore, treat as rupees and show in LAC
+    const lakhs = num / 100000;
     return `${lakhs.toFixed(2)} LAC`;
   } else {
-    // If price is 1 crore or more, show in crores
-    const crores = price / 10000000;
-    return `${crores.toFixed(2)} CR`;
+    // 1 crore or more, show in Cr
+    const crores = num / 10000000;
+    return `${crores.toFixed(1)} Cr`;
   }
 }
 
@@ -56,7 +70,7 @@ const ShowPropertyDetails = ({ id, type }) => {
           `https://api.100acress.com/property/view/${id}`
         );
         if (res.data.data) {
-          console.log(res.data.data);
+          console.log("Property details loaded successfully");
           setRentViewDetails(res.data.data.postProperty);
           setAgentDetails({
             agentName: res.data?.data?.agentName || "",
@@ -165,9 +179,17 @@ const ShowPropertyDetails = ({ id, type }) => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get("https://api.100acress.com/property/buy/ViewAll");
-      // console.log(res.data.ResaleData, "All Buyable Property Information");
-      setBuyData(res.data.ResaleData);
+      const endpoint = type === "rental" 
+        ? "https://api.100acress.com/property/rent/viewAll"
+        : "https://api.100acress.com/property/buy/ViewAll";
+      
+      const res = await axios.get(endpoint);
+      
+      if (type === "rental") {
+        setBuyData(res.data.rentaldata || []);
+      } else {
+        setBuyData(res.data.ResaleData || []);
+      }
     } catch (error) {
       console.error("Error fetching Data", error);
     }
@@ -251,12 +273,14 @@ const ShowPropertyDetails = ({ id, type }) => {
           rentViewDetails && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
               {/* Left: Property Image & Info */}
-              <div>
+              <div className="w-full">
                 {/* Breadcrumb above property name */}
-                <nav className="mb-2" aria-label="Breadcrumb">
+                <nav className="mb-0 flex justify-start" aria-label="Breadcrumb">
                   <ol className="flex items-center space-x-2 text-sm text-gray-500">
                     <li>
-                      <a href="/buy-properties/best-resale-property-in-gurugram/" className="hover:text-[#e63946] font-medium transition-colors">Resale Property</a>
+                      <a href={type === "rental" ? "/rental-properties/best-rental-property-in-gurugram/" : "/buy-properties/best-resale-property-in-gurugram/"} className="hover:text-[#e63946] font-medium transition-colors">
+                        {type === "rental" ? "Rental Property" : "Resale Property"}
+                      </a>
                     </li>
                     <li>
                       <span className="mx-1">&gt;</span>
@@ -324,7 +348,7 @@ const ShowPropertyDetails = ({ id, type }) => {
                 </div>
                 {/* Price */}
                 <div className="flex items-center gap-2 mb-6">
-                  <span className="text-2xl font-extrabold text-[#e63946]">₹ {formatPrice(rentViewDetails?.price)}</span>
+                  <span className="text-2xl font-extrabold text-[#e63946]">₹ {formatPrice(rentViewDetails?.price, type)}</span>
                 </div>
                 {/* About Property & Highlights */}
                 <div className="mb-6">
@@ -438,8 +462,8 @@ const ShowPropertyDetails = ({ id, type }) => {
                     <div className="text-xs text-gray-400 mb-1 truncate">{property.city},{property.state}</div>
                   </div>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="font-bold text-xs text-gray-900">Starting at <span className="text-[#e63946]">₹ {formatPrice(property.price)}</span></span>
-                    <a href={`/buy-properties/${property.propertyName ? property.propertyName.replace(/\s+/g, '-') : 'unknown'}/${property._id}`} target="_blank" rel="noopener noreferrer">
+                    <span className="font-bold text-xs text-gray-900"><span className="text-[#e63946]">₹ {formatPrice(property.price, type)}</span></span>
+                    <a href={`${type === "rental" ? "/rental-properties" : "/buy-properties"}/${property.propertyName ? property.propertyName.replace(/\s+/g, '-') : 'unknown'}/${property._id}`} target="_blank" rel="noopener noreferrer">
                       <button className="bg-[#e63946] hover:bg-red-700 text-white rounded-xl p-2 transition-all duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                       </button>
