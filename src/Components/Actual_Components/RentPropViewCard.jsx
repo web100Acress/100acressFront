@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
 
 const RentPropViewCard = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [toOpen, setToOpen] = useState(false);
   const [show, setShow] = useState(false);
@@ -46,6 +47,15 @@ const RentPropViewCard = () => {
  
 
   console.log(buyData, "buydata");
+
+  // Check and redirect if URL is missing trailing slash
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    if (!currentPath.endsWith('/')) {
+      const newPath = currentPath + '/';
+      navigate(newPath, { replace: true });
+    }
+  }, [navigate]);
 
   const minPriceOptions = [
     "1Cr",

@@ -64,6 +64,15 @@ const ShowPropertyDetails = ({ id, type }) => {
   const [highlightForm, setHighlightForm] = useState(false);
   const [propertyType, setPropertyType] = useState(null);
 
+  // Check and redirect if URL is missing trailing slash
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    if (!currentPath.endsWith('/')) {
+      const newPath = currentPath + '/';
+      navigate(newPath, { replace: true });
+    }
+  }, [navigate]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
