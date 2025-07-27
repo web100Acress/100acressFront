@@ -415,8 +415,8 @@ const BuyPropViewCard = () => {
         <meta property="og:title" content="Best Resale Properties in India | 100Acress" />
         <meta property="og:description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://100acress.com/buy-properties" />
-        <meta property="og:image" content="https://100acress.com/logo.png" />
+        <meta property="og:url" content="https://www.100acress.com/buy-properties" />
+        <meta property="og:image" content="https://www.100acress.com/logo.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Best Resale Properties in India | 100Acress" />
         <meta name="twitter:description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details." />
