@@ -351,7 +351,7 @@ const SearchData = () => {
         <CustomSkeleton />
       )}
 
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };

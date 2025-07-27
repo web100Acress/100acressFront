@@ -67,7 +67,7 @@ const CommonInside = ({
   return (
     <div>
       <Helmet>
-        {HelmetTitle && <title>{HelmetTitle}</title>}~
+        {HelmetTitle && <title>{HelmetTitle}</title>}
         {metaContent && <meta name="description" content={`${metaContent}`} />}
         {linkhref && <link rel="canonical" href={`${linkhref}`} />}
       </Helmet>
@@ -214,7 +214,6 @@ const CommonInside = ({
           })}
         </div>
       </section>  
-      <Footer />
     </div>
   );
 };
