@@ -411,7 +411,7 @@ const BuyPropViewCard = () => {
         <title>Best Resale Properties in India | 100Acress</title>
         <meta name="description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details. Your trusted partner for property investment." />
         <meta name="keywords" content="resale properties, property for sale, real estate, property investment, buy property, residential properties, commercial properties" />
-        <link rel="canonical" href="https://100acress.com/buy-properties/best-resale-property-in-gurugram/" />
+        <link rel="canonical" href="https://www.100acress.com/buy-properties/best-resale-property-in-gurugram/" />
         <meta property="og:title" content="Best Resale Properties in India | 100Acress" />
         <meta property="og:description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details." />
         <meta property="og:type" content="website" />

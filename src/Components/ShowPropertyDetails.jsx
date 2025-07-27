@@ -239,7 +239,7 @@ const ShowPropertyDetails = ({ id, type }) => {
         canonicalLink.rel = 'canonical';
         document.head.appendChild(canonicalLink);
       }
-      canonicalLink.href = `https://100acress.com/buy-properties/${rentViewDetails.propertyName.replace(/\s+/g, '-')}/${id}/`;
+      canonicalLink.href = `https://www.100acress.com/buy-properties/${rentViewDetails.propertyName.replace(/\s+/g, '-')}/${id}/`;
       
     } else {
       // Default meta tags when no property data
@@ -259,7 +259,7 @@ const ShowPropertyDetails = ({ id, type }) => {
         canonicalLink.rel = 'canonical';
         document.head.appendChild(canonicalLink);
       }
-      canonicalLink.href = "https://100acress.com/buy-properties/";
+      canonicalLink.href = "https://www.100acress.com/buy-properties/";
     }
   }, [rentViewDetails, id]);
 
