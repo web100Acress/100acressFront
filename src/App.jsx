@@ -91,6 +91,7 @@ const ForgetPassword = lazy(() => import("./Pages/ForgetPassword"));
 const ViewAllProperty = lazy(() => import("./Pages/ViewAllProperty"));
 const BlogWriteModal = lazy(() => import("./AdminPage/BlogWriteModal"));
 const Dubai = lazy(() => import("./Pages/ProjectCities/Dubai"));
+const GlobalBudgetPrice = lazy(() => import("./Pages/GlobalBudgetPrice"));
 
 // Admin components (already lazy loaded)
 const Addnew = lazy(() => import("./AdminPage/Addnew"));
@@ -186,6 +187,10 @@ function App() {
               <Route
                 path="/projects-in-gurugram/budget"
                 element={<BudgetPrice />}
+              />
+              <Route
+                path="/budget-properties/"
+                element={<GlobalBudgetPrice />}
               />
               <Route
                 path="/projects-in-gurugram/property-ready-to-move/"

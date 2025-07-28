@@ -709,42 +709,42 @@ export default function Navbar() {
                               <hr className="mt-1" />
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/budget-properties/`}
                               className="block text-sm px-4 hover:text-red-600"
                               onClick={() => handlePriceClick(0, 1)}
                             >
                               Under ₹1 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/budget-properties/`}
                               className="block text-sm px-4 hover:text-red-600"
                               onClick={() => handlePriceClick(1, 5)}
                             >
                               ₹1 Cr - ₹5 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/budget-properties/`}
                               className="block text-sm px-4  hover:text-red-600"
                               onClick={() => handlePriceClick(5, 10)}
                             >
                               ₹5 Cr - ₹10 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/budget-properties/`}
                               className="block text-sm px-4 hover:text-red-600"
                               onClick={() => handlePriceClick(10, 20)}
                             >
                               ₹10 Cr - ₹20 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/budget-properties/`}
                               className="block text-sm px-4  hover:text-red-600"
                               onClick={() => handlePriceClick(20, 50)}
                             >
                               ₹20 Cr - ₹50 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/budget-properties/`}
                               className="block text-sm px-4 hover:text-red-600"
                               onClick={() => handlePriceClick(50, Infinity)}
                             >
@@ -1014,42 +1014,42 @@ export default function Navbar() {
                               <hr className="mt-1" />
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/budget-properties/`}
                               className="block text-sm px-4 hover:text-red-600"
                               onClick={() => handlePriceClick(0, 1)}
                             >
                               Under ₹1 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/budget-properties/`}
                               className="block text-sm px-4 py-1 hover:text-red-600"
                               onClick={() => handlePriceClick(1, 5)}
                             >
                               ₹1 Cr - ₹5 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/budget-properties/`}
                               className="block text-sm px-4  hover:text-red-600"
                               onClick={() => handlePriceClick(5, 10)}
                             >
                               ₹5 Cr - ₹10 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/budget-properties/`}
                               className="block text-sm px-4 py-1 hover:text-red-600"
                               onClick={() => handlePriceClick(10, 20)}
                             >
                               ₹10 Cr - ₹20 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/budget-properties/`}
                               className="block text-sm px-4  hover:text-red-600"
                               onClick={() => handlePriceClick(20, 50)}
                             >
                               ₹20 Cr - ₹50 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/budget-properties/`}
                               className="block text-sm px-4 py-1 hover:text-red-600"
                               onClick={() => handlePriceClick(50, Infinity)}
                             >

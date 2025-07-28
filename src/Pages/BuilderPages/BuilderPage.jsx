@@ -28,6 +28,10 @@ const BuilderPage = React.memo(() => {
     const whiteland = useSelector(store => store?.builder?.whiteland);
     const aipl = useSelector(store => store?.builder?.aipl);
     const birla = useSelector(store => store?.builder?.birla);
+    const sobha = useSelector(store => store?.builder?.sobha);
+    const trump = useSelector(store => store?.builder?.trump);
+    const puri = useSelector(store => store?.builder?.puri);
+    const aarize = useSelector(store => store?.builder?.aarize);
 
   const buildersData = {
     'signature-global': SignatureBuilder,
@@ -45,7 +49,11 @@ const BuilderPage = React.memo(() => {
     'godrej-properties' : godrej,
     'whiteland' : whiteland,
     'aipl' : aipl,
-    'birla-estate': birla
+    'birla-estate': birla,
+    'sobha-developers': sobha,
+    'trump-towers': trump,
+    'puri-developers': puri,
+    'aarize-developers': aarize
   };
   const builderProjects = buildersData[builderName] || [];
 
@@ -56,8 +64,10 @@ const BuilderPage = React.memo(() => {
              (!p.project_Status || p.project_Status.toLowerCase() !== 'rental')
       )
     : builderProjects;
-  console.log('builderProjects:', builderProjects);
-  console.log('filteredBuilderProjects:', filteredBuilderProjects);
+  console.log('🔍 builderProjects:', builderProjects);
+  console.log('🔍 filteredBuilderProjects:', filteredBuilderProjects);
+  console.log('🔍 builderName from URL:', builderName);
+  console.log('🔍 query value:', query);
 
   const handleShare = (project) => {
     if (navigator.share) {
@@ -101,7 +111,11 @@ const BuilderPage = React.memo(() => {
         'godrej-properties' : 'Godrej Properties',
         'whiteland' : 'Whiteland Corporation',
         'aipl' : 'AIPL',
-        'birla-estate': 'Birla Estates'
+        'birla-estate': 'Birla Estates',
+        'sobha-developers': 'Sobha',
+        'trump-towers': 'Trump Towers',
+        'puri-developers': 'Puri Constructions',
+        'aarize-developers': 'Aarize Group'
       };
 
       const queryValue = builderQueries[builderName.toLowerCase()];
@@ -113,14 +127,15 @@ const BuilderPage = React.memo(() => {
 
   useEffect(() => {
     if (query) {
+      console.log('🔍 Fetching projects for builder:', query);
       setLoading(true);
-      Promise.resolve(getProjectbyBuilder(query,0)).finally(() => setLoading(false));
+      Promise.resolve(getProjectbyBuilder(query, 0)).finally(() => setLoading(false));
     }
-  }, [ query,getProjectbyBuilder]);
+  }, [query, getProjectbyBuilder]);
 
   // Render loading state if data is not yet available
   if (loading) {
-    return <div className="flex justify-center items-center min-h-[40vh] text-xl font-semibold text-red-600">Loading Birla Estates projects...</div>;
+    return <div className="flex justify-center items-center min-h-[40vh] text-xl font-semibold text-red-600">Loading projects...</div>;
   }
 
   return (

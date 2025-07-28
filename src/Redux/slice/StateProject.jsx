@@ -17,6 +17,7 @@ const StateProjectSlice = createSlice({
     karnal: [],
     jalandhar: [],
     dubai: [],
+    
   },
   reducers: {
     gurugram: (state, action) => {
