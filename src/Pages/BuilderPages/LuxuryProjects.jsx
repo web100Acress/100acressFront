@@ -2,6 +2,7 @@ import React, {  useEffect } from "react";
 import CommonInside from "../../Utils/CommonInside";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
+import Footer from "../../Components/Actual_Components/Footer";
 
 
 const LuxuryProject = () => {
@@ -21,6 +22,7 @@ const LuxuryProject = () => {
         metaContent="Luxury Projects are renowned for ideal locations, impeccable quality of construction, desirable amenities and reasonable prices"
         linkhref="https://www.100acress.com/top-luxury-projects/"
       />
+      <Footer />
     </div>
   );
 };

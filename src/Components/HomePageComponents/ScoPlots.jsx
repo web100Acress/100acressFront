@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import CommonInside from "../../Utils/CommonInside";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
+import Footer from "../Actual_Components/Footer";
 
 const ScoPlots = () => {
   let query = "scoplots";
@@ -48,6 +49,7 @@ const ScoPlots = () => {
           with a promising avenue for business growth and expansion."
         Actualdata={scoPlots}
       />
+      <Footer />
     </div>
   );
 };
