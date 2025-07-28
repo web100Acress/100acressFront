@@ -1,6 +1,6 @@
 import React, {useEffect, useState } from "react";
 import Footer from "../../Components/Actual_Components/Footer";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { LocationRedIcon,PropertyIcon,RupeeIcon,ShareFrameIcon } from "../../Assets/icons";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,14 +10,21 @@ import { maxprice, minprice } from "../../Redux/slice/PriceBasedSlice";
 const Dubai = () => {
   let city = "Dubai";
   const {getProjectbyState, getProjectBasedOnminPrice, getProjectBasedOnmaxPrice} = Api_service();
-  const dubaiProject = useSelector(store => store?.stateproject?.dubai);
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
   const [filteredProjects, setFilteredProjects] = useState([]);
-  const [selectedBudget, setSelectedBudget] = useState(null);
-  const [showBudgetFilter, setShowBudgetFilter] = useState(false);
-
-  const minpriceproject = useSelector(store => store?.PriceBased?.minpriceproject);
+  const [isFiltering, setIsFiltering] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const dubaiProject = useSelector(store => store?.stateproject?.dubai);
+  const minPriceFromStore = useSelector(store => store?.PriceBased?.minprice);
+  const maxPriceFromStore = useSelector(store => store?.PriceBased?.maxprice);
   const maxpriceproject = useSelector(store => store?.PriceBased?.maxpriceproject);
+  const minpriceproject = useSelector(store => store?.PriceBased?.minpriceproject);
+
+  // Check if budget filtering is active from URL params
+  const minPriceParam = searchParams.get('minPrice');
+  const maxPriceParam = searchParams.get('maxPrice');
 
   useEffect(() => {
     if (dubaiProject.length === 0) {
@@ -25,37 +32,46 @@ const Dubai = () => {
     }
   }, []);
 
+  // Handle budget filtering
   useEffect(() => {
-    if (selectedBudget) {
-      const { min, max } = selectedBudget;
-      getProjectBasedOnminPrice(min, 0);
-      getProjectBasedOnmaxPrice(max, 0);
+    if (minPriceParam && maxPriceParam) {
+      setIsFiltering(true);
+      setIsLoading(true);
+      try {
+        const minPrice = parseFloat(minPriceParam);
+        const maxPrice = maxPriceParam === 'Infinity' ? Infinity : parseFloat(maxPriceParam);
+        dispatch(minprice(minPrice));
+        dispatch(maxprice(maxPrice));
+        getProjectBasedOnmaxPrice(maxPrice, 0);
+        getProjectBasedOnminPrice(minPrice, 0);
+      } catch (error) {
+        console.error('Error parsing price parameters:', error);
+        setIsFiltering(false);
+        setIsLoading(false);
+      }
     } else {
+      setIsFiltering(false);
+      setIsLoading(false);
       setFilteredProjects(dubaiProject);
     }
-  }, [selectedBudget]);
+  }, [minPriceParam, maxPriceParam, dubaiProject]);
 
+  // Filter projects based on price range
   useEffect(() => {
-    if (selectedBudget && maxpriceproject && minpriceproject) {
+    if (isFiltering && maxpriceproject && minpriceproject) {
       const common = maxpriceproject.filter(maxProject =>
         minpriceproject.some(minProject => minProject._id === maxProject._id)
       );
-      setFilteredProjects(common);
-    } else {
+      // Filter to only show Dubai projects
+      const dubaiFiltered = common.filter(project => 
+        project.city === "Dubai" || project.state === "Dubai"
+      );
+      setFilteredProjects(dubaiFiltered);
+      setIsLoading(false);
+    } else if (!isFiltering) {
       setFilteredProjects(dubaiProject);
     }
-  }, [maxpriceproject, minpriceproject, selectedBudget, dubaiProject]);
-
-  const handleBudgetClick = (min, max) => {
-    setSelectedBudget({ min, max });
-    dispatch(minprice(min));
-    dispatch(maxprice(max));
-  };
-
-  const clearBudgetFilter = () => {
-    setSelectedBudget(null);
-    setFilteredProjects(dubaiProject);
-  };
+  }, [maxpriceproject, minpriceproject, isFiltering, dubaiProject]);
 
   const handleShare = (project) => {
     if (navigator.share) {
@@ -72,14 +88,8 @@ const Dubai = () => {
     }
 };
 
-  const budgetRanges = [
-    { label: "Under ₹1 Cr", min: 0, max: 1 },
-    { label: "₹1 Cr - ₹5 Cr", min: 1, max: 5 },
-    { label: "₹5 Cr - ₹10 Cr", min: 5, max: 10 },
-    { label: "₹10 Cr - ₹20 Cr", min: 10, max: 20 },
-    { label: "₹20 Cr - ₹50 Cr", min: 20, max: 50 },
-    { label: "Above ₹50 Cr", min: 50, max: Infinity }
-  ];
+  // Get the projects to display
+  const projectsToDisplay = isFiltering ? filteredProjects : dubaiProject;
 
   return (
     <div>
@@ -107,50 +117,32 @@ const Dubai = () => {
           financial capital.
         </h2>
 
-        {/* Budget Filter Section */}
-        <div className="w-full max-w-4xl mb-6">
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Budget</h3>
-              <hr className="flex-1 mx-4 border-gray-300" />
-              <button
-                onClick={() => setShowBudgetFilter(!showBudgetFilter)}
-                className="text-red-600 hover:text-red-800 font-medium"
-              >
-                {showBudgetFilter ? "Hide" : "Show"} Filter
-              </button>
-            </div>
-            
-            {showBudgetFilter && (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
-                {budgetRanges.map((range, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleBudgetClick(range.min, range.max)}
-                    className={`px-3 py-2 text-sm rounded-md transition-colors duration-200 ${
-                      selectedBudget?.min === range.min && selectedBudget?.max === range.max
-                        ? "bg-red-600 text-white"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                  >
-                    {range.label}
-                  </button>
-                ))}
-                {selectedBudget && (
-                  <button
-                    onClick={clearBudgetFilter}
-                    className="px-3 py-2 text-sm rounded-md bg-gray-500 text-white hover:bg-gray-600 transition-colors duration-200"
-                  >
-                    Clear Filter
-                  </button>
-                )}
-              </div>
-            )}
+        {isFiltering && (
+          <div className="mb-4 text-center">
+            <span className="text-sm text-gray-600">
+              Showing projects from ₹{minPriceParam} Cr to ₹{maxPriceParam === 'Infinity' ? '∞' : maxPriceParam} Cr
+            </span>
           </div>
-        </div>
+        )}
 
-        <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {filteredProjects.map((item, index) => {
+        {isLoading && (
+          <div className="mb-4 text-center">
+            <span className="text-sm text-gray-600">Loading filtered projects...</span>
+          </div>
+        )}
+
+        {projectsToDisplay.length === 0 && !isLoading ? (
+          <div className="text-center py-8">
+            <p className="text-gray-500 text-lg">
+              {isFiltering 
+                ? `No projects found in the price range ₹${minPriceParam} Cr to ₹${maxPriceParam === 'Infinity' ? '∞' : maxPriceParam} Cr`
+                : "No projects found in Dubai"
+              }
+            </p>
+          </div>
+        ) : (
+          <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+            {projectsToDisplay.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
@@ -163,7 +155,7 @@ const Dubai = () => {
 
                       <img
                         src={item.frontImage.url}
-                        alt="property In Dubai"
+                        alt="property In Gurugram"
                         className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                       />
                     </Link>
@@ -238,6 +230,7 @@ const Dubai = () => {
             );
           })}
         </div>
+        )}
       </section>
       <Footer />
     </div>

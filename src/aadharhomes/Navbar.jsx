@@ -709,44 +709,38 @@ export default function Navbar() {
                               <hr className="mt-1" />
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/projects-in-dubai/?minPrice=0&maxPrice=1`}
                               className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(0, 1)}
                             >
                               Under ₹1 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/projects-in-dubai/?minPrice=1&maxPrice=5`}
                               className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(1, 5)}
                             >
                               ₹1 Cr - ₹5 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/projects-in-dubai/?minPrice=5&maxPrice=10`}
                               className="block text-sm px-4  hover:text-red-600"
-                              onClick={() => handlePriceClick(5, 10)}
                             >
                               ₹5 Cr - ₹10 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/projects-in-dubai/?minPrice=10&maxPrice=20`}
                               className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(10, 20)}
                             >
                               ₹10 Cr - ₹20 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/projects-in-dubai/?minPrice=20&maxPrice=50`}
                               className="block text-sm px-4  hover:text-red-600"
-                              onClick={() => handlePriceClick(20, 50)}
                             >
                               ₹20 Cr - ₹50 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/projects-in-dubai/?minPrice=50&maxPrice=Infinity`}
                               className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(50, Infinity)}
                             >
                               Above ₹50 Cr
                             </Link>
@@ -1014,44 +1008,38 @@ export default function Navbar() {
                               <hr className="mt-1" />
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/projects-in-dubai/?minPrice=0&maxPrice=1`}
                               className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(0, 1)}
                             >
                               Under ₹1 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/projects-in-dubai/?minPrice=1&maxPrice=5`}
                               className="block text-sm px-4 py-1 hover:text-red-600"
-                              onClick={() => handlePriceClick(1, 5)}
                             >
                               ₹1 Cr - ₹5 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/projects-in-dubai/?minPrice=5&maxPrice=10`}
                               className="block text-sm px-4  hover:text-red-600"
-                              onClick={() => handlePriceClick(5, 10)}
                             >
                               ₹5 Cr - ₹10 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/projects-in-dubai/?minPrice=10&maxPrice=20`}
                               className="block text-sm px-4 py-1 hover:text-red-600"
-                              onClick={() => handlePriceClick(10, 20)}
                             >
                               ₹10 Cr - ₹20 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/projects-in-dubai/?minPrice=20&maxPrice=50`}
                               className="block text-sm px-4  hover:text-red-600"
-                              onClick={() => handlePriceClick(20, 50)}
                             >
                               ₹20 Cr - ₹50 Cr
                             </Link>
                             <Link
-                              to={`/projects-in-gurugram/budget`}
+                              to={`/projects-in-dubai/?minPrice=50&maxPrice=Infinity`}
                               className="block text-sm px-4 py-1 hover:text-red-600"
-                              onClick={() => handlePriceClick(50, Infinity)}
                             >
                               Above ₹50 Cr
                             </Link>
