@@ -1,21 +1,62 @@
-import React, {useEffect } from "react";
+import React, {useEffect, useState } from "react";
 import Footer from "../../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { LocationRedIcon,PropertyIcon,RupeeIcon,ShareFrameIcon } from "../../Assets/icons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Api_service from "../../Redux/utils/Api_Service";
+import { maxprice, minprice } from "../../Redux/slice/PriceBasedSlice";
 
 const Dubai = () => {
   let city = "Dubai";
-  const {getProjectbyState} = Api_service();
+  const {getProjectbyState, getProjectBasedOnminPrice, getProjectBasedOnmaxPrice} = Api_service();
   const dubaiProject = useSelector(store => store?.stateproject?.dubai);
+  const dispatch = useDispatch();
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [selectedBudget, setSelectedBudget] = useState(null);
+  const [showBudgetFilter, setShowBudgetFilter] = useState(false);
+
+  const minpriceproject = useSelector(store => store?.PriceBased?.minpriceproject);
+  const maxpriceproject = useSelector(store => store?.PriceBased?.maxpriceproject);
 
   useEffect(() => {
     if (dubaiProject.length === 0) {
       getProjectbyState(city, 0)
     }
   }, []);
+
+  useEffect(() => {
+    if (selectedBudget) {
+      const { min, max } = selectedBudget;
+      getProjectBasedOnminPrice(min, 0);
+      getProjectBasedOnmaxPrice(max, 0);
+    } else {
+      setFilteredProjects(dubaiProject);
+    }
+  }, [selectedBudget]);
+
+  useEffect(() => {
+    if (selectedBudget && maxpriceproject && minpriceproject) {
+      const common = maxpriceproject.filter(maxProject =>
+        minpriceproject.some(minProject => minProject._id === maxProject._id)
+      );
+      setFilteredProjects(common);
+    } else {
+      setFilteredProjects(dubaiProject);
+    }
+  }, [maxpriceproject, minpriceproject, selectedBudget, dubaiProject]);
+
+  const handleBudgetClick = (min, max) => {
+    setSelectedBudget({ min, max });
+    dispatch(minprice(min));
+    dispatch(maxprice(max));
+  };
+
+  const clearBudgetFilter = () => {
+    setSelectedBudget(null);
+    setFilteredProjects(dubaiProject);
+  };
+
   const handleShare = (project) => {
     if (navigator.share) {
         navigator
@@ -30,6 +71,15 @@ const Dubai = () => {
         alert("Share functionality is not supported on this device/browser.");
     }
 };
+
+  const budgetRanges = [
+    { label: "Under ₹1 Cr", min: 0, max: 1 },
+    { label: "₹1 Cr - ₹5 Cr", min: 1, max: 5 },
+    { label: "₹5 Cr - ₹10 Cr", min: 5, max: 10 },
+    { label: "₹10 Cr - ₹20 Cr", min: 10, max: 20 },
+    { label: "₹20 Cr - ₹50 Cr", min: 20, max: 50 },
+    { label: "Above ₹50 Cr", min: 50, max: Infinity }
+  ];
 
   return (
     <div>
@@ -52,12 +102,55 @@ const Dubai = () => {
         <h2 className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4 tracking-[0.1em]">
           Dubai is witnessing transformational projects. Some major
           developments are luxury residences, commercial centers, and waterfront
-          spaces. These initiatives are designed to improve urban connectivity,
+          spaces. These initiatives are designed to improve urban connectivity,
           enhance urban living, and force economic growth in UAE's booming
           financial capital.
         </h2>
+
+        {/* Budget Filter Section */}
+        <div className="w-full max-w-4xl mb-6">
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Budget</h3>
+              <hr className="flex-1 mx-4 border-gray-300" />
+              <button
+                onClick={() => setShowBudgetFilter(!showBudgetFilter)}
+                className="text-red-600 hover:text-red-800 font-medium"
+              >
+                {showBudgetFilter ? "Hide" : "Show"} Filter
+              </button>
+            </div>
+            
+            {showBudgetFilter && (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+                {budgetRanges.map((range, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleBudgetClick(range.min, range.max)}
+                    className={`px-3 py-2 text-sm rounded-md transition-colors duration-200 ${
+                      selectedBudget?.min === range.min && selectedBudget?.max === range.max
+                        ? "bg-red-600 text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    {range.label}
+                  </button>
+                ))}
+                {selectedBudget && (
+                  <button
+                    onClick={clearBudgetFilter}
+                    className="px-3 py-2 text-sm rounded-md bg-gray-500 text-white hover:bg-gray-600 transition-colors duration-200"
+                  >
+                    Clear Filter
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-          {dubaiProject.map((item, index) => {
+          {filteredProjects.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
@@ -70,7 +163,7 @@ const Dubai = () => {
 
                       <img
                         src={item.frontImage.url}
-                        alt="property In Gurugram"
+                        alt="property In Dubai"
                         className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                       />
                     </Link>
