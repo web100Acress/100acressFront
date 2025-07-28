@@ -10,12 +10,91 @@ const Builder = () => {
   }, []);
 
   const Builder = [
-   
-   
     {
       title: "Godrej Properties",
       link: "/developers/godrej-properties/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/godrej.jpg",
+    },
+    {
+      title: "DLF Homes",
+      link: "/developers/dlf-homes/",
+      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/dlf.png",
+    },
+    {
+      title: "Emaar India",
+      link: "/developers/emaar-india/",
+      image:
+        "https://cdn.in.emaar.com/wp-content/themes/emaar/inc/assets/images/emaar-india-logo-en.svg",
+    },
+    {
+      title: "Birla Estates",
+      link: "/developers/birla-estate/",
+      image: "https://www.birlaestates.com/images/birla-estate-logo.webp",
+    },
+    {
+      title: "Adani Realty",
+      link: "/developers/adani-realty/",
+      image:
+        "https://www.adanirealty.com/-/media/project/realty/header/logo.ashx",
+    },
+    {
+      title: "Experion",
+      link: "/developers/experion-developers/",
+      image: "https://www.experion.co/img/logo/experion-logo.png",
+    },
+    {
+      title: "Signature Global",
+      link: "/developers/signature-global/",
+      image:
+        "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
+    },
+    {
+      title: "sobha",
+      link: "/developers/sobha-developers/",
+      image:
+        "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/sobha.webp",
+    },
+    {
+      title: "Central Park",
+      link: "/developers/central-park/",
+      image:
+        "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg",
+    },
+    {
+      title: "Trump Towers",
+      link: "/developers/trump-towers/",
+      image:
+        "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/Trump-Tower.webp",
+    },
+    {
+      title: "ELAN Group",
+      link: "/developers/elan-group/",
+      image:
+        "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/elan-logo.webp",
+    },
+    {
+      title: "Puri Constructions",
+      link: "/developers/puri-developers/",
+      image:
+        "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/puri+(1).webp",
+    },
+
+    {
+      title: "M3M India",
+      link: "/developers/m3m-india/",
+      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3m.webp",
+    },
+    {
+      title: "SmartWorld Developers",
+      link: "/developers/smartworld-developers/",
+      image:
+        "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/smartworld.webp",
+    },
+
+    {
+      title: "BPTP Limited",
+      link: "/developers/bptp-limited/",
+      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp",
     },
     {
       title: "Whiteland Corporation",
@@ -24,105 +103,29 @@ const Builder = () => {
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/whiteland.jpg",
     },
     {
-      title: "AIPL",
-      link: "/developers/aipl/",
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png",
-    },
-    {
-      title: "DLF Homes",
-      link: "/developers/dlf-homes/",
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/dlf.png",
-    },
-    // {
-    //     title: "EXPERION Developers",
-    //     link: "/developers/experion-developers/",
-    //     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/experion.webp",
-    // },
-    {
-      title: "ELAN Group",
-      link: "/developers/elan-group/",
-      image:
-        "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/elan-logo.webp",
-    },
-    {
-      title: "BPTP Limited",
-      link: "/developers/bptp-limited/",
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp",
-    },
-    {
-      title: "Birla Estates",
-      link: "/developers/birla-estate/",
-      image: "https://www.birlaestates.com/images/birla-estate-logo.webp",
-    },
-    {
-      title: "Trevoc Group",
-      link: "/developers/trevoc-group/",
-      image:
-        "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/trevoc.webp",
-    },
-    {
       title: "Indiabulls Real Estate",
       link: "/developers/indiabulls-real-estate/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/indiabulls.webp",
     },
     {
-      title: "SmartWorld Developers",
-      link: "/developers/smartworld-developers/",
+      title: "AIPL",
+      link: "/developers/aipl/",
+      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png",
+    },
+
+    {
+      title: "Trevoc Group",
+      link: "/developers/trevoc-group/",
       image:
-        "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/smartworld.webp",
+        "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/trevoc.webp",
     },
-    {
-      title: "Signature Global",
-      link: "/developers/signature-global/",
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
-  },
-  {
-      title: "M3M India",
-      link: "/developers/m3m-india/",
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3m.webp",
-  },
-  {
-    title: "Adani Realty",
-    link: "/developers/adani-realty/",
-    image:
-      "https://www.adanirealty.com/-/media/project/realty/header/logo.ashx",
-  },
-  
-  {
-    title: "Emaar India",
-    link: "/developers/emaar-india/",
-    image:"https://cdn.in.emaar.com/wp-content/themes/emaar/inc/assets/images/emaar-india-logo-en.svg",
-  },
-  {
-    title: "Experion",
-    link: "/developers/experion-developers/",
-    image: "https://www.experion.co/img/logo/experion-logo.png",
-  },
-    {
-        title: "Central Park",
-        link: "/developers/central-park/",
-        image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg"
-    },
-    {
-      title: "sobha",
-      link: "/developers/sobha-developers/",
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/sobha.webp",
-    },
-    {
-      title: "Trump Towers",
-      link: "/developers/trump-towers/",
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/Trump-Tower.webp",
-    },
-    {
-      title: "Puri",
-      link: "/developers/puri-developers/",
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/puri+(1).webp",
-    },
+
     {
       title: "Aarize",
       link: "/developers/aarize-developers/",
-      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/tmfm0mywshnqqnmz7j9x",
+      image:
+        "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/tmfm0mywshnqqnmz7j9x",
     },
   ];
 
@@ -144,33 +147,13 @@ const Builder = () => {
                            </Link>
                          </div> */}
         </div>
-        {/* First row: first 10 builders */}
-        <div className="grid w-full max-w-[1250px] mx-auto lg:grid-cols-10 md:grid-cols-3 sm:grid-cols-2 grid-cols-3 gap-3 py-4 ">
-          {Builder.slice(0, 10).map((project, index) => (
+        {/* Single responsive grid for all builders */}
+        <div className="grid w-full max-w-[1250px] mx-auto lg:grid-cols-10 md:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-3 py-4">
+          {Builder.map((project, index) => (
             <Link
               data-aos="flip-up"
               to={project.link}
               key={index}
-              className="relative group card rounded-xl overflow-hidden shadow-lg transform transition-transform duration-300 bg-white dark:bg-gray-800 "
-            >
-              <div className="flex items-center justify-center w-48 h-48 p-3 gap-3">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-24 h-24 object-contain rounded-xl"
-                  loading="lazy"
-                />
-              </div>
-            </Link>
-          ))}
-        </div>
-        {/* Second row: next 10 builders */}
-        <div className="grid w-full max-w-[1250px] mx-auto lg:grid-cols-10 md:grid-cols-3 sm:grid-cols-2 grid-cols-3 gap-3 py-4 ">
-          {Builder.slice(10, 20).map((project, index) => (
-            <Link
-              data-aos="flip-up"
-              to={project.link}
-              key={index + 10}
               className="relative group card rounded-xl overflow-hidden shadow-lg transform transition-transform duration-300 bg-white dark:bg-gray-800 "
             >
               <div className="flex items-center justify-center w-48 h-48 p-3 gap-3">

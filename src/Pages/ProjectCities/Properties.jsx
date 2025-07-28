@@ -4,6 +4,7 @@ import ProjectSearching from "../ProjectSearching";
 import CommonInside from "../../Utils/CommonInside";
 import { useSelector } from "react-redux";
 import Api_service from "../../Redux/utils/Api_Service";
+import Footer from "../../Components/Actual_Components/Footer";
 const Properties = () => {
   
   let city = "Gurugram";
@@ -72,6 +73,7 @@ const Properties = () => {
         Actualdata={filtereddata.length === 0 ? datafromsearch?.gurugramProject : filtereddata}
         />
       </section>
+      <Footer />
     </div>
   );
 }

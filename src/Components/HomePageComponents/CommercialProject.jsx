@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet";
 import CommonInside from "../../Utils/CommonInside";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
+import Footer from "../Actual_Components/Footer";
 
 const CommercialProject = () => {
   // let query ="commercial";
@@ -49,6 +50,7 @@ const CommercialProject = () => {
           considerations in terms of location, design, zoning regulations, and
           target client."
       />
+      <Footer />
     </div>
   );
 };
