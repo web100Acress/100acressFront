@@ -62,7 +62,7 @@ const ReadyToMoveProject = () => {
         </title>
         <link
           rel="canonical"
-          href="https://www.100acress.com/projects-in-gurugram/ready-to-move/property/"
+          href="https://www.100acress.com/projects-in-gurugram/property-ready-to-move/"
         />
       </Helmet>
       <ProjectSearching searchdata={readyToMoveData} sendDatatoparent={handleDatafromSearch}/>

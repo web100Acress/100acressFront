@@ -169,7 +169,7 @@ const PossessionProperty = () => {
               propertiesCount: "620+ Properties",
             },
             {
-              to: "/projects-in-gurugram/property-possession-in-2024/",
+              to: "/projects-in-gurugram/property-ready-to-move/",
               imgSrc: "../../Images/p2.webp",
               title: "Possession by 2024",
               propertiesCount: "600+ Properties",

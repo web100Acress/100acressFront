@@ -8,7 +8,8 @@ import CommonInside from "../Utils/CommonInside";
 import axios from "axios";
 import { API_ROUTES_PROJECTS } from "../Redux/utils/Constant_Service";
 
-const BudgetPrice = () => {  
+const GlobalBudgetPrice = () => {  
+  const {getAllProjects} = Api_Service(); 
   const [allProjects, setAllProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,14 +67,14 @@ const BudgetPrice = () => {
       <Helmet>
         <meta
           name="description"
-          content="Upgrade your lifestyle with best real estate Projects in Gurugram. Browse modern apartments, villas, and investment properties at 100acress. Contact us now!"
+          content="Find properties across all cities in your budget range. Browse apartments, villas, and investment properties at 100acress. Contact us now!"
         />
         <title>
-          Best Real Estate Projects in Gurugram - 100acress
+          Properties in Budget Range - All Cities - 100acress
         </title>
         <link
           rel="canonical"
-          href="https://www.100acress.com/projects-in-gurugram/"
+          href="https://www.100acress.com/budget-properties/"
         />
       </Helmet>
       
@@ -96,4 +97,4 @@ const BudgetPrice = () => {
   );
 };
 
-export default BudgetPrice;
+export default GlobalBudgetPrice; 

@@ -1,78 +1,21 @@
-import React, {useEffect, useState } from "react";
+import React, {useEffect } from "react";
 import Footer from "../../Components/Actual_Components/Footer";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { LocationRedIcon,PropertyIcon,RupeeIcon,ShareFrameIcon } from "../../Assets/icons";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Api_service from "../../Redux/utils/Api_Service";
-import { maxprice, minprice } from "../../Redux/slice/PriceBasedSlice";
 
 const Dubai = () => {
   let city = "Dubai";
-  const {getProjectbyState, getProjectBasedOnminPrice, getProjectBasedOnmaxPrice} = Api_service();
-  const dispatch = useDispatch();
-  const [searchParams] = useSearchParams();
-  const [filteredProjects, setFilteredProjects] = useState([]);
-  const [isFiltering, setIsFiltering] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  
+  const {getProjectbyState} = Api_service();
   const dubaiProject = useSelector(store => store?.stateproject?.dubai);
-  const minPriceFromStore = useSelector(store => store?.PriceBased?.minprice);
-  const maxPriceFromStore = useSelector(store => store?.PriceBased?.maxprice);
-  const maxpriceproject = useSelector(store => store?.PriceBased?.maxpriceproject);
-  const minpriceproject = useSelector(store => store?.PriceBased?.minpriceproject);
-
-  // Check if budget filtering is active from URL params
-  const minPriceParam = searchParams.get('minPrice');
-  const maxPriceParam = searchParams.get('maxPrice');
 
   useEffect(() => {
     if (dubaiProject.length === 0) {
       getProjectbyState(city, 0)
     }
   }, []);
-
-  // Handle budget filtering
-  useEffect(() => {
-    if (minPriceParam && maxPriceParam) {
-      setIsFiltering(true);
-      setIsLoading(true);
-      try {
-        const minPrice = parseFloat(minPriceParam);
-        const maxPrice = maxPriceParam === 'Infinity' ? Infinity : parseFloat(maxPriceParam);
-        dispatch(minprice(minPrice));
-        dispatch(maxprice(maxPrice));
-        getProjectBasedOnmaxPrice(maxPrice, 0);
-        getProjectBasedOnminPrice(minPrice, 0);
-      } catch (error) {
-        console.error('Error parsing price parameters:', error);
-        setIsFiltering(false);
-        setIsLoading(false);
-      }
-    } else {
-      setIsFiltering(false);
-      setIsLoading(false);
-      setFilteredProjects(dubaiProject);
-    }
-  }, [minPriceParam, maxPriceParam, dubaiProject]);
-
-  // Filter projects based on price range
-  useEffect(() => {
-    if (isFiltering && maxpriceproject && minpriceproject) {
-      const common = maxpriceproject.filter(maxProject =>
-        minpriceproject.some(minProject => minProject._id === maxProject._id)
-      );
-      // Filter to only show Dubai projects
-      const dubaiFiltered = common.filter(project => 
-        project.city === "Dubai" || project.state === "Dubai"
-      );
-      setFilteredProjects(dubaiFiltered);
-      setIsLoading(false);
-    } else if (!isFiltering) {
-      setFilteredProjects(dubaiProject);
-    }
-  }, [maxpriceproject, minpriceproject, isFiltering, dubaiProject]);
-
   const handleShare = (project) => {
     if (navigator.share) {
         navigator
@@ -87,9 +30,6 @@ const Dubai = () => {
         alert("Share functionality is not supported on this device/browser.");
     }
 };
-
-  // Get the projects to display
-  const projectsToDisplay = isFiltering ? filteredProjects : dubaiProject;
 
   return (
     <div>
@@ -112,37 +52,12 @@ const Dubai = () => {
         <h2 className="text-sm mb-4 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4 tracking-[0.1em]">
           Dubai is witnessing transformational projects. Some major
           developments are luxury residences, commercial centers, and waterfront
-          spaces. These initiatives are designed to improve urban connectivity,
+          spaces. These initiatives are designed to improve urban connectivity,
           enhance urban living, and force economic growth in UAE's booming
           financial capital.
         </h2>
-
-        {isFiltering && (
-          <div className="mb-4 text-center">
-            <span className="text-sm text-gray-600">
-              Showing projects from ₹{minPriceParam} Cr to ₹{maxPriceParam === 'Infinity' ? '∞' : maxPriceParam} Cr
-            </span>
-          </div>
-        )}
-
-        {isLoading && (
-          <div className="mb-4 text-center">
-            <span className="text-sm text-gray-600">Loading filtered projects...</span>
-          </div>
-        )}
-
-        {projectsToDisplay.length === 0 && !isLoading ? (
-          <div className="text-center py-8">
-            <p className="text-gray-500 text-lg">
-              {isFiltering 
-                ? `No projects found in the price range ₹${minPriceParam} Cr to ₹${maxPriceParam === 'Infinity' ? '∞' : maxPriceParam} Cr`
-                : "No projects found in Dubai"
-              }
-            </p>
-          </div>
-        ) : (
-          <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-            {projectsToDisplay.map((item, index) => {
+        <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+          {dubaiProject.map((item, index) => {
             const pUrl = item.project_url;
             return (
               <Link to={`/${pUrl}/`} target="_top">
@@ -230,7 +145,6 @@ const Dubai = () => {
             );
           })}
         </div>
-        )}
       </section>
       <Footer />
     </div>
