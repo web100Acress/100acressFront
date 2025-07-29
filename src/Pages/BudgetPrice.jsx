@@ -76,20 +76,20 @@ const BudgetPrice = () => {
           href="https://www.100acress.com/projects-in-gurugram/"
         />
       </Helmet>
-      
+
       {isLoading ? (
         <div className="my-10 text-center">
           <p className="text-gray-600">Loading properties...</p>
-        </div>
+      </div>
       ) : filteredProjects.length === 0 ? (
-        <div className="my-10">
-          <NoPropertiesMessage/>      
-        </div>
+      <div className="my-10">
+        <NoPropertiesMessage/>      
+      </div>
       ) : (
-        <CommonInside 
+      <CommonInside 
           Actualdata={filteredProjects}
           title={`Properties in Budget Range: ${getPriceRangeText()}`}
-        />
+      />
       )}
       <Footer />
     </div>

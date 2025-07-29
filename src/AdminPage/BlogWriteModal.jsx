@@ -1,11 +1,11 @@
-import React, { useEffect, useState, lazy } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import axios from'axios';
-const ReactQuill = lazy(()=> import('react-quill'));
+import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import {message, Switch} from "antd";
 
-export const BlogWriteModal = () => {
+const BlogWriteModal = () => {
 
   const {id} = useParams();
   const navigate = useNavigate();
@@ -43,9 +43,19 @@ export const BlogWriteModal = () => {
           console.error(error); 
         }
       } else {
-        const agentData = JSON.parse(localStorage.getItem('agentData'));
+        try {
+          const agentData = localStorage.getItem('agentData');
+          if (agentData) {
+            const parsedData = JSON.parse(agentData);
+            setAuthor(parsedData?.name || 'Admin');
+          } else {
+            setAuthor('Admin');
+          }
+        } catch (error) {
+          console.error('Error parsing agentData:', error);
+          setAuthor('Admin');
+        }
         setNewBlog(true);
-        setAuthor(agentData?.name);
         resetForm();
       }
     }
@@ -66,28 +76,62 @@ export const BlogWriteModal = () => {
   const handleSubmit = async(e,isPublished=false) => {
     e.preventDefault();
     if(isSubmitting) return;
+    
+    // Validation
+    if (!title || !title.trim()) {
+      messageApi.open({
+        key: 'validationError',
+        type: 'error',
+        content: 'Please enter a blog title',
+      });
+      return;
+    }
+    
+    if (!descripition || !descripition.trim()) {
+      messageApi.open({
+        key: 'validationError',
+        type: 'error',
+        content: 'Please enter blog description',
+      });
+      return;
+    }
+    
+    if (!categories) {
+      messageApi.open({
+        key: 'validationError',
+        type: 'error',
+        content: 'Please select a blog category',
+      });
+      return;
+    }
+    
+    if (!frontImage && !blogToEdit) {
+      messageApi.open({
+        key: 'validationError',
+        type: 'error',
+        content: 'Please select a blog image',
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     const formDataAPI = new FormData();
+    
     // Append data to formData only if it's not null
     if (title) {
-      // console.log("Title",title);
-      formDataAPI.append('blog_Title', title);
+      formDataAPI.append('blog_Title', title.trim());
     }
     if (frontImage) {
-      // console.log("Image",frontImage);
       formDataAPI.append('blog_Image', frontImage);
     }
     if (descripition) {
-      // console.log("Description",descripition);
-      formDataAPI.append('blog_Description', descripition);
+      formDataAPI.append('blog_Description', descripition.trim());
     }
     if (categories) {
-      // console.log("Category",categories);
       formDataAPI.append('blog_Category', categories); 
     }
 
     if(author){
-      // console.log("Author",author);
       formDataAPI.append('author', author);
     }
 
@@ -97,7 +141,7 @@ export const BlogWriteModal = () => {
       formDataAPI.append('isPublished', false);
     }
     
-    const apiEndpoint = blogToEdit? `https://api.100acress.com/blog/Update/${blogId}` : 'https://api.100acress.com/blog/Insert';
+    const apiEndpoint = blogToEdit? `https://api.100acress.com/blog/update/${blogId}` : 'https://api.100acress.com/blog/insert';
     if (blogToEdit) {
       try {
 
@@ -116,7 +160,7 @@ export const BlogWriteModal = () => {
             }
           }
         );
-        if(res.statusText === "OK") {
+        if(res.status === 200) {
           messageApi.destroy('updateloading');
           messageApi.open({
             key: 'updateSuccess',
@@ -152,6 +196,14 @@ export const BlogWriteModal = () => {
           type: 'loading',
           content: 'Adding New Blog...', 
         });
+        console.log('Submitting blog with data:', {
+          title: title.trim(),
+          author: author,
+          category: categories,
+          hasImage: !!frontImage,
+          isPublished: isPublished
+        });
+        
         const res = await axios.post('https://api.100acress.com/blog/insert', formDataAPI,
           {
             headers: {
@@ -160,7 +212,9 @@ export const BlogWriteModal = () => {
             }
           }
         );
-        if(res.statusText === "OK") {
+        
+        console.log('API Response:', res.data);
+        if(res.status === 200) {
           messageApi.destroy('loadingNewBlog');
           messageApi.open({
             key: 'newBlogSuccess',
@@ -183,12 +237,22 @@ export const BlogWriteModal = () => {
       }
       catch (error) {
         messageApi.destroy('loadingNewBlog');
+        console.error('Blog creation error:', error);
+        
+        let errorMessage = 'Error adding blog';
+        if (error.response) {
+          // Server responded with error status
+          errorMessage = error.response.data?.message || `Server error: ${error.response.status}`;
+        } else if (error.request) {
+          // Network error
+          errorMessage = 'Network error. Please check your connection.';
+        }
+        
         messageApi.open({
           key: 'newBlogError',
           type:'error',
-          content: 'Error adding blog',
+          content: errorMessage,
         });
-        console.error(error); 
       }
       finally{
         setIsSubmitting(false);
@@ -205,10 +269,11 @@ export const BlogWriteModal = () => {
     setBlogId("");
   };
 
-  return (
-    <div className="flex items-center justify-center z-50 overflow-y-auto py-4">
-      {contextHolder}
-      <div className="bg-white rounded-lg w-full mx-4  flex flex-col p-4">
+  try {
+    return (
+      <div className="flex items-center justify-center z-50 overflow-y-auto py-4">
+        {contextHolder}
+        <div className="bg-white rounded-lg w-full mx-4  flex flex-col p-4">
         <div className="flex justify-between items-center py-2 border-b sticky top-0 bg-white z-10">
           <h2 className="text-2xl font-bold text-gray-900">
             {blogToEdit ? 'Edit Blog' : 'Create New Blog'}
@@ -259,22 +324,31 @@ export const BlogWriteModal = () => {
                 Description
                 </label>
                 <div className="h-48">
-                <ReactQuill
-                    theme="snow"
+                {ReactQuill ? (
+                  <ReactQuill
+                      theme="snow"
+                      value={descripition || ''}
+                      onChange={setDescription}
+                      className=""
+                      modules={{
+                      toolbar: [
+                          [{ header: [1, 2,3,4, false] }],
+                          ['bold', 'italic', 'underline', 'strike'],
+                          [{ list: 'ordered' }, { list: 'bullet' }],
+                          ['link'],
+                          [{ 'align': ''},{'align': 'center'}, {'align': 'right'}, {'align': 'justify'}],
+                          ['clean']
+                      ]
+                      }}
+                  />
+                ) : (
+                  <textarea
                     value={descripition || ''}
-                    onChange={setDescription}
-                    className=""
-                    modules={{
-                    toolbar: [
-                        [{ header: [1, 2,3,4, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ list: 'ordered' }, { list: 'bullet' }],
-                        ['link'],
-                        [{ 'align': ''},{'align': 'center'}, {'align': 'right'}, {'align': 'justify'}],
-                        ['clean']
-                    ]
-                    }}
-                />
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="w-full h-full p-2 border border-gray-300 rounded-md"
+                    placeholder="Enter blog description..."
+                  />
+                )}
                 </div>
             </div>
             <div className='' >
@@ -323,5 +397,24 @@ export const BlogWriteModal = () => {
         </div>
       </div>
     </div>
-  );
+    );
+  } catch (error) {
+    console.error('Error in BlogWriteModal:', error);
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="bg-white rounded-lg p-8 shadow-lg">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Blog Editor</h2>
+          <p className="text-gray-600 mb-4">There was an error loading the blog editor. Please try refreshing the page.</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          >
+            Refresh Page
+          </button>
+        </div>
+      </div>
+    );
+  }
 };
+
+export default BlogWriteModal;
