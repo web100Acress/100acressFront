@@ -1876,7 +1876,7 @@ const items =text.map((item, index) => ({
                           </div>
 
                           {builderProject.length > 4 && (
-                            <div className="flex justify-end mt-2 animate-bounce">
+                            <div className="flex justify-end mt-2">
                               {" "}
                               {/* Center the button */}
                               <button
