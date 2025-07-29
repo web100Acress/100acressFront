@@ -9,13 +9,13 @@ const Builder = () => {
     AOS.init();
   }, []);
 
-  const Builder = [
+    const Builder = [
     {
       title: "Godrej Properties",
-      link: "/developers/godrej-properties/",
+          link: "/developers/godrej-properties/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/godrej.jpg",
-    },
-    {
+      },
+      {
       title: "DLF Homes",
       link: "/developers/dlf-homes/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/dlf.png",
@@ -36,39 +36,39 @@ const Builder = () => {
       link: "/developers/adani-realty/",
       image:
         "https://www.adanirealty.com/-/media/project/realty/header/logo.ashx",
-    },
-    {
-      title: "Experion",
+  },
+  {
+    title: "Experion",
       link: "/developers/experion-developers/",
       image: "https://www.experion.co/img/logo/experion-logo.png",
-    },
-    {
-      title: "Signature Global",
+},
+{
+  title: "Signature Global",
       link: "/developers/signature-global/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
-    },
-    {
+        },
+        {
       title: "sobha",
       link: "/developers/sobha-developers/",
       image:
         "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/sobha.webp",
-    },
-    {
+        },
+        {
       title: "Central Park",
       link: "/developers/central-park/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg",
-    },
+        },
     {
       title: "Trump Towers",
       link: "/developers/trump-towers/",
       image:
         "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/Trump-Tower.webp",
     },
-    {
-      title: "ELAN Group",
-      link: "/developers/elan-group/",
+        {
+            title: "ELAN Group",
+            link: "/developers/elan-group/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/elan-logo.webp",
     },
@@ -89,30 +89,30 @@ const Builder = () => {
       link: "/developers/smartworld-developers/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/smartworld.webp",
-    },
+        },
 
-    {
-      title: "BPTP Limited",
-      link: "/developers/bptp-limited/",
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp",
-    },
-    {
+        {
+            title: "BPTP Limited",
+            link: "/developers/bptp-limited/",
+            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp",
+        },
+        {
       title: "Whiteland Corporation",
       link: "/developers/whiteland/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/whiteland.jpg",
-    },
-    {
-      title: "Indiabulls Real Estate",
-      link: "/developers/indiabulls-real-estate/",
+        },
+        {
+            title: "Indiabulls Real Estate",
+            link: "/developers/indiabulls-real-estate/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/indiabulls.webp",
-    },
-    {
+        },
+        {
       title: "AIPL",
       link: "/developers/aipl/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png",
-    },
+        },
 
     {
       title: "Trevoc Group",
@@ -129,16 +129,16 @@ const Builder = () => {
     },
   ];
 
-  return (
-    <Wrapper className="section">
-      <div className="container">
-        <div className="flex items-center justify-between mx-3 lg:mx-3 xl:mx-14 md:mx-6 py-2">
-          <div className="flex items-center ">
-            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
-              Top Developers in Gurugram
-            </h2>
-          </div>
-          {/* <div className="ml-2 hidden sm:block">
+    return (
+        <Wrapper className="section">
+            <div className="container">
+               <div className="flex items-center justify-between mx-3 lg:mx-3 xl:mx-14 md:mx-6 py-2">
+                         <div className="flex items-center ">
+                           <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
+                             Top Developers in Gurugram
+                           </h2>
+                         </div>
+                         {/* <div className="ml-2 hidden sm:block">
                            <Link to="/top-luxury-projects/" target="_top">
                              <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
                                <EyeIcon />
@@ -146,30 +146,30 @@ const Builder = () => {
                              </span>
                            </Link>
                          </div> */}
-        </div>
+                       </div>
         {/* Single responsive grid for all builders */}
         <div className="grid w-full max-w-[1250px] mx-auto lg:grid-cols-10 md:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-3 py-4">
           {Builder.map((project, index) => (
-            <Link
-              data-aos="flip-up"
-              to={project.link}
-              key={index}
-              className="relative group card rounded-xl overflow-hidden shadow-lg transform transition-transform duration-300 bg-white dark:bg-gray-800 "
-            >
-              <div className="flex items-center justify-center w-48 h-48 p-3 gap-3">
-                <img
-                  src={project.image}
-                  alt={project.title}
+                        <Link
+                            data-aos="flip-up"
+                            to={project.link}
+                            key={index}
+                            className="relative group card rounded-xl overflow-hidden shadow-lg transform transition-transform duration-300 bg-white dark:bg-gray-800 "
+                        >
+                            <div className="flex items-center justify-center w-48 h-48 p-3 gap-3">
+                                <img
+                                    src={project.image}
+                                    alt={project.title}
                   className="w-24 h-24 object-contain rounded-xl"
-                  loading="lazy"
-                />
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </Wrapper>
-  );
+                                    loading="lazy"
+                                />
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+        </Wrapper>
+    );
 };
 
 export default Builder;
