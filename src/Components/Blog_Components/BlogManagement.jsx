@@ -498,8 +498,6 @@ export const PaginationControls = ({
 
   const pageRange = getPageRange();
 
-
-
   return (
     <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -571,7 +569,6 @@ export const PaginationControls = ({
               </div>
             ))}
           </div>
-
 
           {/* Next Page */}
           <button
