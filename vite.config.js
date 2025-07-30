@@ -20,7 +20,39 @@ export default defineConfig(() => {
       outDir: 'build',
       rollupOptions: {
         output: {
-          // manualChunks removed to let Vite handle chunking automatically
+          // Intelligent chunk splitting
+          manualChunks: {
+            // Vendor chunks
+            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+            'ui-vendor': ['antd', '@chakra-ui/react', '@emotion/react', '@emotion/styled'],
+            'utils-vendor': ['axios', 'date-fns', 'country-state-city'],
+            'editor-vendor': ['jodit-react'],
+            'icons-vendor': ['lucide-react', 'react-icons', 'mdb-react-ui-kit'],
+            'styled-vendor': ['styled-components'],
+            'state-vendor': ['@reduxjs/toolkit', 'react-redux', '@tanstack/react-query'],
+            'carousel-vendor': ['react-slick', 'slick-carousel', 'react-multi-carousel', '@trendyol-js/react-carousel'],
+            'animation-vendor': ['aos', 'animate.css'],
+            'form-vendor': ['react-dropzone', 'react-quill'],
+            'chart-vendor': ['chart.js', 'react-chartjs-2'],
+            
+            // Route-based chunks
+            'admin-pages': [
+              './src/AdminPage/Addnew.jsx',
+              './src/AdminPage/Dashboard.jsx',
+              './src/AdminPage/Blog.jsx',
+              './src/AdminPage/Projects.jsx'
+            ],
+            'city-pages': [
+              './src/Pages/ProjectCities/DelhiProject.jsx',
+              './src/Pages/ProjectCities/NoidaProject.jsx',
+              './src/Pages/ProjectCities/Mumbai.jsx',
+              './src/Pages/ProjectCities/Dubai.jsx'
+            ],
+            'builder-pages': [
+              './src/Pages/BuilderPages/BuilderPage.jsx',
+              './src/Pages/BuilderPages/LuxuryProjects.jsx'
+            ]
+          },
           chunkFileNames: (chunkInfo) => {
             const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk';
             return `js/[name]-[hash].js`;
@@ -46,20 +78,37 @@ export default defineConfig(() => {
         compress: {
           drop_console: true, // Remove console.log in production
           drop_debugger: true,
+          pure_funcs: ['console.log', 'console.info', 'console.debug'],
         },
+        mangle: {
+          safari10: true,
+        },
+      },
+      // Enable tree shaking
+      target: 'esnext',
+      // Optimize dependencies
+      commonjsOptions: {
+        include: [/node_modules/],
       },
     },
     plugins: [
-      react(),
+      react({
+        // Optimize React refresh
+        fastRefresh: true,
+        // Enable JSX optimization
+        jsxImportSource: '@emotion/react',
+      }),
       viteCompression({
         algorithm: 'brotliCompress',
         threshold: 10240, // >10KB files
         ext: '.br',
+        deleteOriginFile: false,
       }),
       viteCompression({
         algorithm: 'gzip',
         threshold: 10240, // >10KB files
         ext: '.gz',
+        deleteOriginFile: false,
       }),
     ],
     optimizeDeps: {
@@ -78,12 +127,34 @@ export default defineConfig(() => {
         'country-state-city',
         '@tanstack/react-query',
         'react-lazyload',
-        'animate.css'
+        'animate.css',
+        'aos',
+        'date-fns'
       ],
       exclude: [
         // Exclude large dependencies that should be lazy loaded
-        'jodit-react'
-      ]
+        'jodit-react',
+        'chart.js',
+        'react-chartjs-2',
+        'react-slick',
+        'slick-carousel',
+        'react-multi-carousel',
+        '@trendyol-js/react-carousel'
+      ],
+      // Force pre-bundling of common dependencies
+      force: true
+    },
+    // Enable CSS code splitting
+    css: {
+      devSourcemap: false,
+    },
+    // Optimize asset handling
+    assetsInclude: ['**/*.webp', '**/*.avif'],
+    // Enable HTTP/2 push hints
+    server: {
+      headers: {
+        'Cache-Control': 'public, max-age=31536000, immutable',
+      },
     },
   };
 });
