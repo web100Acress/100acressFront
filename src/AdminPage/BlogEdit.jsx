@@ -126,16 +126,32 @@ const BlogEdit = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log('Fetching blog data for ID:', id);
         const res = await axios.get(
-          `https://api.100acress.com/blog/edit/${id}`
+          `https://api.100acress.com/blog/edit/${id}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            }
+          }
         );
+        console.log('Blog data received:', res.data);
         setViewDetails(res.data.data);
       } catch (error) {
-        console.log(error);
+        console.error('Error fetching blog data:', error);
+        
+        let errorMessage = 'Failed to load blog data';
+        if (error.response) {
+          errorMessage = error.response.data?.message || `Server error: ${error.response.status}`;
+        } else if (error.request) {
+          errorMessage = 'Network error. Please check your connection.';
+        }
+        
+        alert(errorMessage);
       }
     };
     fetchData();
-  }, []);
+  }, [id]);
 
 
   return (
