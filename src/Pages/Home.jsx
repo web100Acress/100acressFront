@@ -282,28 +282,24 @@ const Home = () => {
 
       <div className="relative w-full">
         <img
-          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp"
-          alt="100acress - Find Your Perfect Property in Gurugram"
+          // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/summer+banner.png"
+          //  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/monsoon-banner.webp"
+           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp"
+          alt="Banner"
           className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
-          width="1920"
-          height="600"
-          fetchPriority="high"
-          decoding="async"
         />
         <img
+          // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/mobilebanner.webp"
           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-mobile.webp"
-          alt="100acress Mobile - Find Your Perfect Property in Gurugram"
+          alt="Mobile Banner"
           className="mt-14 block md:hidden w-full h-[38rem]"
-          width="768"
-          height="600"
-          fetchPriority="high"
-          decoding="async"
         />
 
         {/* Center the SearchBar */}
         <div className="absolute inset-0 flex items-center justify-center mt-16 md:mt-0 lg:mt-24">
           <SearchBar />
         </div>
+
       </div>
 
       <div className="relative">

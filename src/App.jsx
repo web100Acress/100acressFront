@@ -14,7 +14,6 @@ import LazyLoad from "react-lazyload";
 import "animate.css";
 import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
-import performanceMonitor from "./Utils/performanceMonitor";
 
 // Lazy load all main page components
 const Home = lazy(() => import("./Pages/Home"));
