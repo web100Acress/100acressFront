@@ -633,6 +633,7 @@ export const BlogPaginationControls = ({
   );
 };
 
+
 // Simple pagination for other components
 export const PaginationControls = ({
   currentPage,
@@ -669,3 +670,4 @@ export const PaginationControls = ({
     </button>
   </div>
 );
+
