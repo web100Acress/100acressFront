@@ -368,34 +368,32 @@ const handleDeleteUser = async (id) => {
 
 
 export const PaginationControls = ({currentPage,setCurrentPage, totalPages, }) => (
-  <div className="flex justify-between items-center mt-4">
-    <div className="flex gap-2">
-      <button
-        className={`px-4 py-2 rounded-md ${
-          currentPage === 1
-            ? 'bg-gray-300 cursor-not-allowed'
-            : 'bg-primaryRed hover:bg-red-700 text-white'
-        }`}
-        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-        disabled={currentPage === 1}
-      >
-        Previous
-      </button>
-            <div className="text-sm text-gray-600">
-              Page {currentPage} of {totalPages}
-            </div>
-      <button
-        className={`px-4 py-2 rounded-md ${
-          currentPage === totalPages
-            ? 'bg-gray-300 cursor-not-allowed'
-            : 'bg-primaryRed hover:bg-red-700 text-white'
-        }`}
-        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-        disabled={currentPage === totalPages}
-      >
-        Next
-      </button>
+  <div className="flex justify-center items-center mt-4 gap-4">
+    <button
+      className={`px-4 py-2 rounded-md ${
+        currentPage === 1
+          ? 'bg-gray-300 cursor-not-allowed'
+          : 'bg-primaryRed hover:bg-red-700 text-white'
+      }`}
+      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+      disabled={currentPage === 1}
+    >
+      Previous
+    </button>
+    <div className="text-sm text-gray-600 font-medium">
+      Page {currentPage} of {totalPages}
     </div>
+    <button
+      className={`px-4 py-2 rounded-md ${
+        currentPage === totalPages
+          ? 'bg-gray-300 cursor-not-allowed'
+          : 'bg-primaryRed hover:bg-red-700 text-white'
+      }`}
+      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+      disabled={currentPage === totalPages}
+    >
+      Next
+    </button>
   </div>
 );
 
