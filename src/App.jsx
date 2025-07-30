@@ -134,6 +134,7 @@ const AllListedProperties = lazy(() => import("./AdminPage/AllListedProperties")
 const BlogViewAdmin = lazy(() => import("./AdminPage/BlogViewAdmin"));
 const SeoPrivateRoute = lazy(() => import("./Components/Blog_Components/SeoPrivateRoute"));
 const BlogManagement = lazy(() => import("./Components/Blog_Components/BlogManagement"));
+const BlogDashboard = lazy(() => import("./Components/Blog_Components/BlogDashboard"));
 const DraftManagement = lazy(() => import("./Components/Blog_Components/DraftManagement"));
 const BlogManagementSidebar = lazy(() => import("./Components/Blog_Components/BlogManagementSidebar"));
 const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
@@ -418,7 +419,9 @@ function App() {
             {/* Blog route only user with role Blog will be able to login */}
             <Route path="/seo/" element={<SeoPrivateRoute />}>
               <Route path="blogs" element={<BlogManagementSidebar />} >
-                <Route index element={<BlogManagement />} />
+                <Route index element={<BlogDashboard />} />
+                <Route path="dashboard" element={<BlogDashboard />} />
+                <Route path="manage" element={<BlogManagement />} />
                 <Route path="write" element={<BlogWriteModal />} />
                 <Route path="view/:id" element={<BlogView />} />
                 <Route path="edit/:id" element={<BlogWriteModal />} />
