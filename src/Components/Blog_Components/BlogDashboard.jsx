@@ -105,6 +105,7 @@ import {
   InputNumber as AntInputNumber
 } from "antd";
 import { Link, useNavigate } from "react-router-dom";
+import { BlogPaginationControls } from "./BlogManagement";
 
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
@@ -162,16 +163,22 @@ export default function BlogDashboard() {
     pageSpeed: 0
   });
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   useEffect(() => {
     fetchDashboardData();
-  }, [timeRange]);
+  }, [timeRange, currentPage, pageSize]);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("https://api.100acress.com/blog/view");
+      const res = await axios.get(`https://api.100acress.com/blog/view?page=${currentPage}&limit=${pageSize}`);
       const fetchedBlogs = res.data.data || [];
       setBlogs(fetchedBlogs);
+      setTotalPages(res.data.totalPages || 1);
       calculateAnalytics(fetchedBlogs);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
@@ -904,24 +911,31 @@ export default function BlogDashboard() {
               </Link>
             </Empty>
           ) : (
-            <Table
-              columns={columns}
-              dataSource={filteredBlogs}
-              loading={loading}
-              pagination={{
-                pageSize: 10,
-                showSizeChanger: true,
-                showQuickJumper: true,
-                pageSizeOptions: ['5', '10', '20', '50'],
-                showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} blogs`,
-              }}
-              rowKey="_id"
-              className="professional-table"
-              scroll={{ x: 'max-content' }}
-              rowClassName={(record, index) => 
-                index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-              }
-            />
+            <>
+              <Table
+                columns={columns}
+                dataSource={filteredBlogs}
+                loading={loading}
+                pagination={false}
+                rowKey="_id"
+                className="professional-table"
+                scroll={{ x: 'max-content' }}
+                rowClassName={(record, index) => 
+                  index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                }
+              />
+              
+              {/* Custom Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-6 flex justify-center">
+                  <BlogPaginationControls
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    totalPages={totalPages}
+                  />
+                </div>
+              )}
+            </>
           )}
         </Card>
 
