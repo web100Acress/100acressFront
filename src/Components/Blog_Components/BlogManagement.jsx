@@ -451,7 +451,7 @@ export default function BlogManagement() {
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="mt-8">
-              <PaginationControls
+              <BlogPaginationControls
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 totalPages={totalPages}
@@ -464,7 +464,7 @@ export default function BlogManagement() {
   );
 }
 
-export const PaginationControls = ({
+export const BlogPaginationControls = ({
   currentPage,
   setCurrentPage,
   totalPages,
@@ -500,128 +500,126 @@ export const PaginationControls = ({
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-        {/* Page Info */}
-        <div className="flex items-center space-x-2 text-sm text-gray-600">
-          <div className="flex items-center space-x-1">
-            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-            <span className="font-medium">Page {currentPage}</span>
-            <span className="text-gray-400">of {totalPages}</span>
-          </div>
-          {totalPages > 1 && (
-            <div className="hidden sm:flex items-center space-x-1 text-xs text-gray-400">
-              <span>•</span>
-              <span>{totalPages} total pages</span>
-            </div>
-          )}
+      {/* Page Info - Top */}
+      <div className="flex justify-center items-center space-x-2 text-sm text-gray-600 mb-4">
+        <div className="flex items-center space-x-1">
+          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+          <span className="font-medium">Page {currentPage}</span>
+          <span className="text-gray-400">of {totalPages}</span>
         </div>
-
-        {/* Navigation Controls */}
-        <div className="flex items-center space-x-2">
-          {/* First Page */}
-          {totalPages > 1 && (
-            <button
-              className={`p-2 rounded-lg transition-all duration-200 ${
-                currentPage === 1
-                  ? "text-gray-300 cursor-not-allowed"
-                  : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
-              }`}
-              onClick={() => setCurrentPage(1)}
-              disabled={currentPage === 1}
-              title="First page"
-            >
-              <ArrowUp size={16} className="rotate-90" />
-            </button>
-          )}
-
-          {/* Previous Page */}
-          <button
-            className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 ${
-              currentPage === 1
-                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
-            }`}
-            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-          >
-            <ArrowUp size={16} className="rotate-90" />
-            <span className="hidden sm:inline">Previous</span>
-          </button>
-
-          {/* Page Numbers */}
-          <div className="flex items-center space-x-1">
-            {pageRange.map((page, index) => (
-              <div key={index}>
-                {page === '...' ? (
-                  <span className="px-3 py-2 text-gray-400">...</span>
-                ) : (
-                  <button
-                    className={`w-10 h-10 rounded-lg font-semibold transition-all duration-200 ${
-                      currentPage === page
-                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg transform scale-105"
-                        : "bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                    }`}
-                    onClick={() => setCurrentPage(page)}
-                  >
-                    {page}
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Next Page */}
-          <button
-            className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 ${
-              currentPage === totalPages
-                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
-            }`}
-            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-            disabled={currentPage === totalPages}
-          >
-            <span className="hidden sm:inline">Next</span>
-            <ArrowDown size={16} className="rotate-90" />
-          </button>
-
-          {/* Last Page */}
-          {totalPages > 1 && (
-            <button
-              className={`p-2 rounded-lg transition-all duration-200 ${
-                currentPage === totalPages
-                  ? "text-gray-300 cursor-not-allowed"
-                  : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
-              }`}
-              onClick={() => setCurrentPage(totalPages)}
-              disabled={currentPage === totalPages}
-              title="Last page"
-            >
-              <ArrowDown size={16} className="rotate-90" />
-            </button>
-          )}
-        </div>
-
-        {/* Quick Jump */}
-        {totalPages > 5 && (
-          <div className="flex items-center space-x-2 text-sm">
-            <span className="text-gray-500">Go to:</span>
-            <select
-              className="px-3 py-1 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={currentPage}
-              onChange={(e) => setCurrentPage(Number(e.target.value))}
-            >
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                <option key={page} value={page}>
-                  Page {page}
-                </option>
-              ))}
-            </select>
+        {totalPages > 1 && (
+          <div className="hidden sm:flex items-center space-x-1 text-xs text-gray-400">
+            <span>•</span>
+            <span>{totalPages} total pages</span>
           </div>
         )}
       </div>
 
-      {/* Progress Bar */}
-      {totalPages > 1 && (
+      {/* Centered Navigation Controls */}
+      <div className="flex justify-center items-center space-x-2">
+        {/* First Page */}
+        {totalPages > 1 && (
+          <button
+            className={`p-2 rounded-lg transition-all duration-200 ${
+              currentPage === 1
+                ? "text-gray-300 cursor-not-allowed"
+                : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+            }`}
+            onClick={() => setCurrentPage(1)}
+            disabled={currentPage === 1}
+            title="First page"
+          >
+            <ArrowUp size={16} className="rotate-90" />
+          </button>
+        )}
+
+        {/* Previous Page */}
+        <button
+          className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 ${
+            currentPage === 1
+              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+              : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
+          }`}
+          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+        >
+          <ArrowUp size={16} className="rotate-90" />
+          <span className="hidden sm:inline">Previous</span>
+        </button>
+
+        {/* Page Numbers */}
+        <div className="flex items-center space-x-1">
+          {pageRange.map((page, index) => (
+            <div key={index}>
+              {page === '...' ? (
+                <span className="px-3 py-2 text-gray-400">...</span>
+              ) : (
+                <button
+                  className={`w-10 h-10 rounded-lg font-semibold transition-all duration-200 ${
+                    currentPage === page
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg transform scale-105"
+                      : "bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-blue-600"
+                  }`}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Next Page */}
+        <button
+          className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1 ${
+            currentPage === totalPages
+              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+              : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 hover:from-blue-100 hover:to-indigo-100 border border-blue-200"
+          }`}
+          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage === totalPages}
+        >
+          <span className="hidden sm:inline">Next</span>
+          <ArrowDown size={16} className="rotate-90" />
+        </button>
+
+        {/* Last Page */}
+        {totalPages > 1 && (
+          <button
+            className={`p-2 rounded-lg transition-all duration-200 ${
+              currentPage === totalPages
+                ? "text-gray-300 cursor-not-allowed"
+                : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+            }`}
+            onClick={() => setCurrentPage(totalPages)}
+            disabled={currentPage === totalPages}
+            title="Last page"
+          >
+            <ArrowDown size={16} className="rotate-90" />
+          </button>
+        )}
+      </div>
+
+      {/* Quick Jump - Bottom */}
+      {totalPages > 5 && (
+        <div className="flex justify-center items-center space-x-2 text-sm mt-4">
+          <span className="text-gray-500">Go to:</span>
+          <select
+            className="px-3 py-1 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            value={currentPage}
+            onChange={(e) => setCurrentPage(Number(e.target.value))}
+          >
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <option key={page} value={page}>
+                Page {page}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Progress Bar - Bottom */}
+      {/* {totalPages > 1 && (
         <div className="mt-4">
           <div className="w-full bg-gray-200 rounded-full h-1">
             <div 
@@ -630,7 +628,44 @@ export const PaginationControls = ({
             ></div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
+
+// Simple pagination for other components
+export const PaginationControls = ({
+  currentPage,
+  setCurrentPage,
+  totalPages,
+}) => (
+  <div className="flex justify-center items-center space-x-2 mt-6">
+    <button
+      className={`px-4 py-2 rounded-md font-medium transition-colors ${
+        currentPage === 1
+          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+          : "bg-blue-600 text-white hover:bg-blue-700"
+      }`}
+      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+      disabled={currentPage === 1}
+    >
+      Previous
+    </button>
+    
+    <span className="px-4 py-2 text-gray-600">
+      Page {currentPage} of {totalPages}
+    </span>
+    
+    <button
+      className={`px-4 py-2 rounded-md font-medium transition-colors ${
+        currentPage === totalPages
+          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+          : "bg-blue-600 text-white hover:bg-blue-700"
+      }`}
+      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+      disabled={currentPage === totalPages}
+    >
+      Next
+    </button>
+  </div>
+);

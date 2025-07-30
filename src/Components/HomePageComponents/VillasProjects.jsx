@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 import { Helmet } from "react-helmet";
 import CommonInside from "../../Utils/CommonInside";
+import Footer from "../Actual_Components/Footer";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 const VillasProjects = () => {
@@ -46,6 +47,8 @@ const VillasProjects = () => {
           experiences."
         Actualdata={villasProject} 
       />
+      
+      <Footer />
     </div>
   );
 };
