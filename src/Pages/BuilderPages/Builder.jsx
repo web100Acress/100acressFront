@@ -1,21 +1,141 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
 const Builder = () => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const scrollContainerRef = useRef(null);
+  const animationRef = useRef(null);
+
   useEffect(() => {
     AOS.init();
   }, []);
 
-    const Builder = [
+  // Auto-scroll animation
+  const startAutoScroll = useCallback(() => {
+    if (isHovered || isDragging || !scrollContainerRef.current) return;
+
+    const scrollContainer = scrollContainerRef.current;
+    const scrollWidth = scrollContainer.scrollWidth;
+    const clientWidth = scrollContainer.clientWidth;
+    const maxScroll = scrollWidth - clientWidth;
+
+    if (maxScroll <= 0) return;
+
+    let currentScroll = scrollContainer.scrollLeft;
+    
+    const animate = () => {
+      if (isHovered || isDragging) return;
+      
+      currentScroll += 0.5; // Smooth, moderate speed
+      
+      if (currentScroll >= maxScroll) {
+        currentScroll = 0; // Reset to start for infinite loop
+      }
+      
+      scrollContainer.scrollLeft = currentScroll;
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+  }, [isHovered, isDragging]);
+
+  // Mouse event handlers
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (!isDragging) {
+      startAutoScroll();
+    }
+  };
+
+  // Touch/Drag event handlers
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
+    
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    if (!isHovered) {
+      startAutoScroll();
+    }
+  };
+
+  // Touch event handlers for mobile
+  const handleTouchStart = (e) => {
+    setIsDragging(true);
+    setStartX(e.touches[0].pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
+    
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging) return;
+    
+    const x = e.touches[0].pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    if (!isHovered) {
+      startAutoScroll();
+    }
+  };
+
+  // Start auto-scroll on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isHovered && !isDragging) {
+        startAutoScroll();
+      }
+    }, 1000);
+    
+    return () => {
+      clearTimeout(timer);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [isHovered, isDragging, startAutoScroll]);
+
+  const Builder = [
     {
       title: "Godrej Properties",
-          link: "/developers/godrej-properties/",
+      link: "/developers/godrej-properties/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/godrej.jpg",
-      },
-      {
+    },
+    {
       title: "DLF Homes",
       link: "/developers/dlf-homes/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/dlf.png",
@@ -36,39 +156,39 @@ const Builder = () => {
       link: "/developers/adani-realty/",
       image:
         "https://www.adanirealty.com/-/media/project/realty/header/logo.ashx",
-  },
-  {
-    title: "Experion",
+    },
+    {
+      title: "Experion",
       link: "/developers/experion-developers/",
       image: "https://www.experion.co/img/logo/experion-logo.png",
-},
-{
-  title: "Signature Global",
+    },
+    {
+      title: "Signature Global",
       link: "/developers/signature-global/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
-        },
-        {
+    },
+    {
       title: "sobha",
       link: "/developers/sobha-developers/",
       image:
         "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/sobha.webp",
-        },
-        {
+    },
+    {
       title: "Central Park",
       link: "/developers/central-park/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg",
-        },
+    },
     {
       title: "Trump Towers",
       link: "/developers/trump-towers/",
       image:
         "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/Trump-Tower.webp",
     },
-        {
-            title: "ELAN Group",
-            link: "/developers/elan-group/",
+    {
+      title: "ELAN Group",
+      link: "/developers/elan-group/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/elan-logo.webp",
     },
@@ -78,7 +198,6 @@ const Builder = () => {
       image:
         "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/puri+(1).webp",
     },
-
     {
       title: "M3M India",
       link: "/developers/m3m-india/",
@@ -89,38 +208,35 @@ const Builder = () => {
       link: "/developers/smartworld-developers/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/smartworld.webp",
-        },
-
-        {
-            title: "BPTP Limited",
-            link: "/developers/bptp-limited/",
-            image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp",
-        },
-        {
+    },
+    {
+      title: "BPTP Limited",
+      link: "/developers/bptp-limited/",
+      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp",
+    },
+    {
       title: "Whiteland Corporation",
       link: "/developers/whiteland/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/whiteland.jpg",
-        },
-        {
-            title: "Indiabulls Real Estate",
-            link: "/developers/indiabulls-real-estate/",
+    },
+    {
+      title: "Indiabulls Real Estate",
+      link: "/developers/indiabulls-real-estate/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/indiabulls.webp",
-        },
-        {
+    },
+    {
       title: "AIPL",
       link: "/developers/aipl/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png",
-        },
-
+    },
     {
       title: "Trevoc Group",
       link: "/developers/trevoc-group/",
       image:
         "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/trevoc.webp",
     },
-
     {
       title: "Aarize",
       link: "/developers/aarize-developers/",
@@ -129,153 +245,239 @@ const Builder = () => {
     },
   ];
 
-    return (
-        <Wrapper className="section">
-            <div className="container">
-               <div className="flex items-center justify-between mx-3 lg:mx-3 xl:mx-14 md:mx-6 py-2">
-                         <div className="flex items-center ">
-                           <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
-                             Top Developers in Gurugram
-                           </h2>
-                         </div>
-                         {/* <div className="ml-2 hidden sm:block">
-                           <Link to="/top-luxury-projects/" target="_top">
-                             <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
-                               <EyeIcon />
-                               <span className="ml-2">View All</span>
-                             </span>
-                           </Link>
-                         </div> */}
-                       </div>
-        {/* Single responsive grid for all builders */}
-        <div className="grid w-full max-w-[1250px] mx-auto lg:grid-cols-10 md:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-3 py-4">
-          {Builder.map((project, index) => (
-                        <Link
-                            data-aos="flip-up"
-                            to={project.link}
-                            key={index}
-                            className="relative group card rounded-xl overflow-hidden shadow-lg transform transition-transform duration-300 bg-white dark:bg-gray-800 "
-                        >
-                            <div className="flex items-center justify-center w-48 h-48 p-3 gap-3">
-                                <img
-                                    src={project.image}
-                                    alt={project.title}
-                  className="w-24 h-24 object-contain rounded-xl"
-                                    loading="lazy"
-                                />
-                            </div>
-                        </Link>
-                    ))}
-                </div>
-            </div>
-        </Wrapper>
-    );
+  return (
+    <Wrapper className="section">
+      <div className="container">
+        <div className="flex items-center justify-between mx-3 lg:mx-3 xl:mx-14 md:mx-6 py-2">
+          <div className="flex items-center">
+            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
+              Top Developers in Gurugram
+            </h2>
+          </div>
+        </div>
+        
+        {/* Horizontal Scrolling Carousel */}
+        {/* <div className="text-center mb-2 text-sm text-gray-600">
+          Developer Logos Carousel ({Builder.length} developers)
+        </div> */}
+        <div 
+          style={{
+            padding: '20px',
+            margin: '20px 0',
+            minHeight: '160px'
+          }}
+        >
+          <div
+            ref={scrollContainerRef}
+            className="carousel-scroll-container"
+            style={{
+              display: 'flex',
+              gap: '20px',
+              overflowX: 'auto',
+              padding: '10px',
+              minHeight: '140px',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none'
+            }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {Builder.map((project, index) => (
+              <div
+                key={index}
+                style={{
+                  flex: '0 0 180px',
+                  height: '120px',
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  padding: '15px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                  cursor: 'pointer',
+                  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.05)';
+                  e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
+                }}
+              >
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    objectFit: 'contain',
+                    transition: 'transform 0.3s ease-in-out'
+                  }}
+                  onError={(e) => {
+                    console.log('Image failed to load:', project.title);
+                    e.target.style.display = 'none';
+                  }}
+                  onLoad={() => console.log('Image loaded:', project.title)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  );
 };
 
 export default Builder;
 
 const Wrapper = styled.section`
-  .dffasPL {
-    padding-top: 10px;
-    padding-bottom: 20px;
-  }
   .container {
     max-width: 1250px;
     margin: auto;
-    padding: 10px;
+    padding: 20px 10px;
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-
-  .title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-  }
-
-  .view-all {
-    text-decoration: none;
-    font-size: 1rem;
-    color: #ff0000;
-    font-weight: 600;
-  }
-
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-  }
-
-  .card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    // border: 1px solid #e0e0e0;
-    border-radius: 8px;
+  /* Carousel Wrapper */
+  .carousel-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1250px;
+    margin: 0 auto;
     overflow: hidden;
+    padding: 20px 0;
+  }
+
+  /* Carousel Container */
+  .carousel-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: grab;
+    padding: 10px 20px;
+    
+    /* Hide scrollbar */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* Prevent text selection during drag */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    
+    /* Active dragging state */
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  /* Carousel Item */
+  .carousel-item {
+    flex: 0 0 180px;
+    height: 120px;
     text-decoration: none;
-    background: #fff;
-    padding: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    height: 96px;
-    width: 100%;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
   }
 
-  .card:hover {
-    transform: translateY(-8px);
+  /* Developer Card */
+  .developer-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f1f5f9;
+    padding: 15px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      transform: scale(1.02);
+    }
   }
 
-  .card-image {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
+  /* Developer Logo */
+  .developer-logo {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
     border-radius: 8px;
+    transition: transform 0.3s ease;
   }
 
-  // .card-image:hover{
-  //   transform: scale(1.06);
-  // }
-
-  .card-button {
-    width: 100%;
-    margin-top: 10px;
-    border-radius:10px;
-    padding: 10px 0px;
-    background-color: #C13B44;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    text-transform: capitalize;
-    transition: background-color 0.3s ease;
-  }
-
-  .card-button:hover {
-    background-color: #7C1920;
-    transform: scale(1.06);
-  }
-
+  /* Responsive Design */
   @media (max-width: 768px) {
-    .title {
-      font-size: 1.25rem;
+    .carousel-item {
+      flex: 0 0 140px;
+      height: 100px;
     }
-
-    .card-image {
-      height: 150px;
+    
+    .carousel-container {
+      gap: 15px;
+      padding: 10px 15px;
     }
-
-    .card-button {
-      font-size: 0.9rem;
+    
+    .developer-card {
+      padding: 12px;
     }
   }
 
+  @media (max-width: 480px) {
+    .carousel-item {
+      flex: 0 0 120px;
+      height: 80px;
+    }
+    
+    .carousel-container {
+      gap: 12px;
+      padding: 8px 12px;
+    }
+    
+    .developer-card {
+      padding: 10px;
+    }
+  }
+
+  /* Hide scrollbar for all browsers */
+  .carousel-scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .carousel-scroll-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Touch-friendly improvements */
+  @media (hover: none) and (pointer: coarse) {
+    .carousel-container {
+      scroll-snap-type: x mandatory;
+    }
+    
+    .carousel-item {
+      scroll-snap-align: start;
+    }
   }
 `;
+

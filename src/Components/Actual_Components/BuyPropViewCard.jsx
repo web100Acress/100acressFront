@@ -68,7 +68,6 @@ const BuyPropViewCard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 18;
   const [filterModalOpen, setFilterModalOpen] = useState(false);
-
   // Check and redirect if URL is missing trailing slash
   useEffect(() => {
     const currentPath = window.location.pathname;
@@ -97,7 +96,6 @@ const BuyPropViewCard = () => {
   );
   const paginatedData = filteredAndSearchedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(filteredAndSearchedData.length / itemsPerPage);
-
 
   const minPriceOptions = [
     "1Cr",
@@ -139,6 +137,7 @@ const BuyPropViewCard = () => {
     const value = e.target.value;
     setMaxPrice(value);
   };
+  
   const propertyTypes = [
     "Independent/Builder Floor",
     "Flat/Apartment",
@@ -191,29 +190,53 @@ const BuyPropViewCard = () => {
     setSelectedPropertyTypes([]);
     setSelectedAreas([]);
     setSelectedCities([]);
+    setSelectedQuickFilters([]);
     setMinPrice("");
     setMaxPrice("");
     setMinRangeValue("1Cr");
     setMaxRangeValue("8Cr");
   };
+  
   const removePropertyType = (propertyType) => {
     setSelectedPropertyTypes(
       selectedPropertyTypes.filter((item) => item !== propertyType)
+    );
+    // Also remove from quick filters if it exists
+    setSelectedQuickFilters(prev => 
+      prev.filter(filter => {
+        const quickFilter = quickFilters.find(qf => qf.value === propertyType && qf.type === 'property');
+        return !quickFilter || filter !== quickFilter.label;
+      })
     );
   };
 
   const removeArea = (area) => {
     setSelectedAreas(selectedAreas.filter((item) => item !== area));
+    // Also remove from quick filters if it exists
+    setSelectedQuickFilters(prev => 
+      prev.filter(filter => {
+        const quickFilter = quickFilters.find(qf => qf.value === area && qf.type === 'unit');
+        return !quickFilter || filter !== quickFilter.label;
+      })
+    );
   };
 
   const removeCity = (city) => {
     setSelectedCities(selectedCities.filter((item) => item !== city));
+    // Also remove from quick filters if it exists
+    setSelectedQuickFilters(prev => 
+      prev.filter(filter => {
+        const quickFilter = quickFilters.find(qf => qf.value === city && qf.type === 'city');
+        return !quickFilter || filter !== quickFilter.label;
+      })
+    );
   };
 
   const removePrice = () => {
     setMinPrice(null);
     setMaxPrice(null);
   };
+
   const toggle5 = () => {
     setDrop5(!drop5);
     setPosition5(position5 === "down" ? "up" : "down");
@@ -231,7 +254,6 @@ const BuyPropViewCard = () => {
     setIsRightbarOpen(!isRightbarOpen); 
   };
 
-
   const fetchData = async () => {
     try {
       const res = await axios.get(
@@ -248,8 +270,6 @@ const BuyPropViewCard = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
-
 
   useEffect(() => {
     updateFilteredData();
@@ -362,9 +382,6 @@ const BuyPropViewCard = () => {
     });
   };
 
-
-  
-  
   // Ref for property grid
   const propertyGridRef = React.useRef(null);
 
@@ -375,7 +392,7 @@ const BuyPropViewCard = () => {
   };
   
   // Dropdown state for filter bar
-  const [openFilterDropdown, setOpenFilterDropdown] = useState(null); // 'unitType', 'city', 'priceCriteria', or null
+  const [openFilterDropdown, setOpenFilterDropdown] = useState(null);
 
   // Click outside handler for filter bar dropdowns
   useEffect(() => {
@@ -393,77 +410,62 @@ const BuyPropViewCard = () => {
   }, [openFilterDropdown]);
   
   const quickFilters = [
-    { label: 'Gurgaon', icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path d="M12 8v4l3 3" strokeWidth="2" /></svg>
-    ) },
-    { label: 'Plot', icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" strokeWidth="2" /></svg>
-    ) },
-    { label: 'Flat', icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" strokeWidth="2" /><path d="M9 9h6v6H9z" strokeWidth="2" /></svg>
-    ) },
-    // Add more as needed
+    { label: 'Gurgaon', icon: '🏢', type: 'city', value: 'Gurugram' },
+    { label: 'Delhi', icon: '🏛️', type: 'city', value: 'Delhi' },
+    { label: 'Noida', icon: '🏙️', type: 'city', value: 'Noida' },
+    { label: 'Plot', icon: '🏞️', type: 'property', value: 'Plot / Land' },
+    { label: 'Flat', icon: '🏠', type: 'property', value: 'Flat/Apartment' },
+    { label: 'Villa', icon: '🏡', type: 'property', value: 'Independent House / Villa' },
+    { label: '3 BHK', icon: '🏘️', type: 'unit', value: '3 BHK' },
+    { label: '2 BHK', icon: '🏘️', type: 'unit', value: '2 BHK' },
+    { label: '4 BHK', icon: '🏘️', type: 'unit', value: '4 BHK' },
   ];
   const [selectedQuickFilters, setSelectedQuickFilters] = useState([]);
 
-  function handleQuickFilterClick(label) {
+  function handleQuickFilterClick(filter) {
+    // Toggle quick filter selection
     setSelectedQuickFilters((prev) =>
-      prev.includes(label)
-        ? prev.filter((f) => f !== label)
-        : [...prev, label]
+      prev.includes(filter.label)
+        ? prev.filter((f) => f !== filter.label)
+        : [...prev, filter.label]
     );
+
+    // Apply the actual filter based on type
+    if (filter.type === 'city') {
+      setSelectedCities((prev) =>
+        prev.includes(filter.value)
+          ? prev.filter((city) => city !== filter.value)
+          : [...prev, filter.value]
+      );
+    } else if (filter.type === 'property') {
+      setSelectedPropertyTypes((prev) =>
+        prev.includes(filter.value)
+          ? prev.filter((type) => type !== filter.value)
+          : [...prev, filter.value]
+      );
+    } else if (filter.type === 'unit') {
+      setSelectedAreas((prev) =>
+        prev.includes(filter.value)
+          ? prev.filter((area) => area !== filter.value)
+          : [...prev, filter.value]
+      );
+    }
   }
 
-  // Property Header Component
-  const PropertyHeader = ({ property }) => (
-    <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-6 border border-gray-100">
-      {/* Breadcrumbs */}
-      <div className="flex items-center text-xs md:text-sm text-gray-500 mb-4">
-        <span className="hover:text-[#e5652e] cursor-pointer">Resale Property</span>
-        <svg className="w-3 h-3 md:w-4 md:h-4 mx-1 md:mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-        <span className="text-gray-600">{property?.propertyName || 'M3M ONE KEY RESIMENTS'}</span>
-      </div>
+  // Collapsible filter panel state
+  const [filterSections, setFilterSections] = useState({
+    city: true,
+    propertyType: true,
+    budget: true,
+    area: false,
+    bedrooms: false,
+    amenities: false,
+    verified: false,
+  });
 
-      {/* Single Horizontal Row with All Elements */}
-      <div className="flex items-center gap-3 md:gap-4 lg:gap-6 overflow-x-auto">
-        {/* Property Title */}
-        <div className="flex-shrink-0">
-          <h1 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 leading-tight whitespace-nowrap">
-            {property?.propertyName || 'M3M ONE KEY'} RESIMENTS
-          </h1>
-        </div>
-
-        {/* Tags */}
-        <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-          <span className="inline-flex items-center px-2 md:px-3 py-1 md:py-2 rounded-full text-xs md:text-sm font-semibold bg-pink-500 text-white border border-pink-500 whitespace-nowrap">
-            SERVICED APARTMENT
-          </span>
-          <span className="inline-flex items-center px-2 md:px-3 py-1 md:py-2 rounded-full text-xs md:text-sm font-semibold bg-green-500 text-white border border-green-500 whitespace-nowrap">
-            <svg className="w-3 h-3 md:w-4 md:h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-            </svg>
-            Verified
-          </span>
-        </div>
-
-        {/* Location Information */}
-        <div className="flex items-center gap-2 md:gap-3 bg-gray-50 rounded-xl px-3 md:px-4 py-2 md:py-3 border border-gray-100 flex-shrink-0">
-          <div className="flex-shrink-0">
-            <svg className="w-4 h-4 md:w-5 md:h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs md:text-sm lg:text-base text-gray-700 font-medium whitespace-nowrap">
-              Located in Sector 67 Gurgaon, Gurugram, Haryana
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const toggleSection = (key) => {
+    setFilterSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   return (
     <>
@@ -483,145 +485,171 @@ const BuyPropViewCard = () => {
         <meta name="twitter:description" content="Discover premium resale properties across India. Find verified properties with detailed information, pricing, and location details." />
       </Helmet>
 
-      {/* Filter Button */}
+
+
       {/* Filter Modal */}
       {filterModalOpen && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-white/60 backdrop-blur-sm transition-all" onClick={() => setFilterModalOpen(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setFilterModalOpen(false)}>
           <div
-            className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto relative animate-fade-in"
+            className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto relative animate-fade-in mx-4"
             onClick={e => e.stopPropagation()}
             tabIndex={-1}
           >
             <button
-              className="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-2xl font-bold"
+              className="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl font-bold"
               onClick={() => setFilterModalOpen(false)}
               aria-label="Close Filters"
             >
               ×
             </button>
-            <h2 className="text-xl font-semibold mb-4 text-center">Filters</h2>
+            <h2 className="text-xl font-semibold mb-6 text-center text-gray-900">Filters</h2>
+            
             {/* Accordion Sections */}
             <div className="space-y-4">
               {/* Property Type */}
-              <div>
-                <button className="w-full flex justify-between items-center py-2 font-semibold text-left" onClick={() => toggleAccordion('propertyType')}>
-                  Property Type
-                  <span>{accordion.propertyType ? '−' : '+'}</span>
+              <div className="border border-gray-200 rounded-xl overflow-hidden">
+                <button className="w-full flex justify-between items-center py-4 px-4 font-semibold text-left bg-gray-50" onClick={() => toggleAccordion('propertyType')}>
+                  <span className="flex items-center gap-2">
+                    <span className="text-lg">🏠</span>
+                    Property Type
+                  </span>
+                  <span className="text-gray-500">{accordion.propertyType ? '−' : '+'}</span>
                 </button>
                 {accordion.propertyType && (
-                  <div className="pl-2 flex flex-wrap gap-2">
-                    {propertyTypes.map((type) => (
-                      <label key={type} className="flex items-center gap-2 text-sm cursor-pointer">
-                        <input
-                          type="checkbox"
-                          className="accent-red-500"
-                          value={type}
-                          checked={selectedPropertyTypes.includes(type)}
-                          onChange={e => handleCheckboxChange(e, setSelectedPropertyTypes)}
-                        />
-                        {type}
-                      </label>
-                    ))}
+                  <div className="p-4 bg-white">
+                    <div className="grid grid-cols-1 gap-3">
+                      {propertyTypes.map((type) => (
+                        <label key={type} className="flex items-center gap-3 text-sm cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                          <input
+                            type="checkbox"
+                            className="accent-red-500 w-4 h-4"
+                            value={type}
+                            checked={selectedPropertyTypes.includes(type)}
+                            onChange={e => handleCheckboxChange(e, setSelectedPropertyTypes)}
+                          />
+                          <span className="text-gray-700">{type}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
+
               {/* Unit Type */}
-              <div>
-                <button className="w-full flex justify-between items-center py-2 font-semibold text-left" onClick={() => toggleAccordion('unitType')}>
-                  Unit Type
-                  <span>{accordion.unitType ? '−' : '+'}</span>
+              <div className="border border-gray-200 rounded-xl overflow-hidden">
+                <button className="w-full flex justify-between items-center py-4 px-4 font-semibold text-left bg-gray-50" onClick={() => toggleAccordion('unitType')}>
+                  <span className="flex items-center gap-2">
+                    <span className="text-lg">🏡</span>
+                    Unit Type
+                  </span>
+                  <span className="text-gray-500">{accordion.unitType ? '−' : '+'}</span>
                 </button>
                 {accordion.unitType && (
-                  <div className="pl-2 flex flex-wrap gap-2">
-                    {areas.map((area) => (
-                      <label key={area} className="flex items-center gap-2 text-sm cursor-pointer">
-                        <input
-                          type="checkbox"
-                          className="accent-red-500"
-                          value={area}
-                          checked={selectedAreas.includes(area)}
-                          onChange={e => handleCheckboxChange(e, setSelectedAreas)}
-                        />
-                        {area}
-                      </label>
-                    ))}
+                  <div className="p-4 bg-white">
+                    <div className="grid grid-cols-1 gap-3">
+                      {areas.map((area) => (
+                        <label key={area} className="flex items-center gap-3 text-sm cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                          <input
+                            type="checkbox"
+                            className="accent-red-500 w-4 h-4"
+                            value={area}
+                            checked={selectedAreas.includes(area)}
+                            onChange={e => handleCheckboxChange(e, setSelectedAreas)}
+                          />
+                          <span className="text-gray-700">{area}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
+
               {/* City */}
-              <div>
-                <button className="w-full flex justify-between items-center py-2 font-semibold text-left" onClick={() => toggleAccordion('city')}>
-                  City
-                  <span>{accordion.city ? '−' : '+'}</span>
+              <div className="border border-gray-200 rounded-xl overflow-hidden">
+                <button className="w-full flex justify-between items-center py-4 px-4 font-semibold text-left bg-gray-50" onClick={() => toggleAccordion('city')}>
+                  <span className="flex items-center gap-2">
+                    <span className="text-lg">📍</span>
+                    City
+                  </span>
+                  <span className="text-gray-500">{accordion.city ? '−' : '+'}</span>
                 </button>
                 {accordion.city && (
-                  <div className="pl-2 flex flex-wrap gap-2">
-                    {cities.map((city) => (
-                      <label key={city} className="flex items-center gap-2 text-sm cursor-pointer">
-                        <input
-                          type="checkbox"
-                          className="accent-red-500"
-                          value={city}
-                          checked={selectedCities.includes(city)}
-                          onChange={e => handleCheckboxChange(e, setSelectedCities)}
-                        />
-                        {city}
-                      </label>
-                    ))}
+                  <div className="p-4 bg-white max-h-60 overflow-y-auto">
+                    <div className="grid grid-cols-1 gap-3">
+                      {cities.map((city) => (
+                        <label key={city} className="flex items-center gap-3 text-sm cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                          <input
+                            type="checkbox"
+                            className="accent-red-500 w-4 h-4"
+                            value={city}
+                            checked={selectedCities.includes(city)}
+                            onChange={e => handleCheckboxChange(e, setSelectedCities)}
+                          />
+                          <span className="text-gray-700">{city}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
+
               {/* Price Criteria */}
-              <div>
-                <button className="w-full flex justify-between items-center py-2 font-semibold text-left" onClick={() => toggleAccordion('price')}>
-                  Price Criteria
-                  <span>{accordion.price ? '−' : '+'}</span>
+              <div className="border border-gray-200 rounded-xl overflow-hidden">
+                <button className="w-full flex justify-between items-center py-4 px-4 font-semibold text-left bg-gray-50" onClick={() => toggleAccordion('price')}>
+                  <span className="flex items-center gap-2">
+                    <span className="text-lg">💰</span>
+                    Price Range
+                  </span>
+                  <span className="text-gray-500">{accordion.price ? '−' : '+'}</span>
                 </button>
                 {accordion.price && (
-                  <div className="pl-2 flex flex-col gap-2">
-                    <div className="flex gap-2 items-center">
-                      <label className="text-sm">Min Price:</label>
-                      <select
-                        value={minPrice}
-                        onChange={handleMinPriceChange}
-                        className="rounded-lg border border-gray-300 px-2 py-1 text-sm"
-                      >
-                        <option value="">Min Price</option>
-                        {minPriceOptions.map((price) => (
-                          <option key={price} value={price}>₹{price}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="flex gap-2 items-center">
-                      <label className="text-sm">Max Price:</label>
-                      <select
-                        value={maxPrice}
-                        onChange={handleMaxPriceChange}
-                        className="rounded-lg border border-gray-300 px-2 py-1 text-sm"
-                      >
-                        <option value="">Max Price</option>
-                        {maxPriceOptions.map((price) => (
-                          <option key={price} value={price}>₹{price}</option>
-                        ))}
-                      </select>
+                  <div className="p-4 bg-white">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-700">Minimum Price</label>
+                        <select
+                          value={minPrice}
+                          onChange={handleMinPriceChange}
+                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        >
+                          <option value="">Select Min Price</option>
+                          {minPriceOptions.map((price) => (
+                            <option key={price} value={price}>₹{price}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-700">Maximum Price</label>
+                        <select
+                          value={maxPrice}
+                          onChange={handleMaxPriceChange}
+                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        >
+                          <option value="">Select Max Price</option>
+                          {maxPriceOptions.map((price) => (
+                            <option key={price} value={price}>₹{price}</option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
                 )}
               </div>
             </div>
+
             {/* Modal Actions */}
-            <div className="flex justify-between mt-6 gap-2">
+            <div className="flex justify-between mt-8 gap-3">
               <button
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300 transition"
+                className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition font-medium"
                 onClick={handleClearFilters}
               >
                 Clear All
               </button>
               <button
-                className="bg-red-500 text-white px-6 py-2 rounded-full shadow hover:bg-red-600 transition"
+                className="flex-1 bg-red-500 text-white px-6 py-3 rounded-xl shadow-lg hover:bg-red-600 transition font-semibold"
                 onClick={() => setFilterModalOpen(false)}
               >
-                Apply
+                Apply Filters
               </button>
             </div>
           </div>
@@ -629,516 +657,319 @@ const BuyPropViewCard = () => {
       )}
 
       {/* Main Content */}
-      <main className="min-h-screen bg-gray-50 pt-20 pb-10">
-        <div className="max-w-7xl mx-auto px-4 md:px-12">
-          {/* Property Header Component */}
-          {/* <PropertyHeader property={filteredAndSearchedData[0]} /> */}
-
-          <div className="flex flex-col items-center justify-center py-0 mb-3">
-            <h2
-              className="text-center font-sans font-bold text-3xl md:text-4xl tracking-tight text-[#111827] drop-shadow-sm relative"
-              style={{ fontFamily: 'Poppins, Inter, Montserrat, sans-serif' }}
-            >
-              <span className="inline-block">
-                Best Resale Properties
-              </span>
-              <span className="block mx-auto mt-2 h-1 w-16 rounded-full bg-gradient-to-r from-red-400 via-red-600 to-red-400 opacity-80 transition-all duration-300 group-hover:w-24"></span>
-            </h2>
-            <div className="text-center mt-2 mb-2 text-base md:text-lg font-medium text-gray-600">
-              Premium Resale Properties — Value, Location, and Trust Redefined.
+      <main className="min-h-screen bg-gray-50 pt-8 pb-10">
+        <div className="max-w-7xl mx-auto px-4">
+          
+          {/* Enhanced Header Title Section */}
+          <div className="relative text-center py-6 mb-4 px-2">
+            {/* Background blur/gradient effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-white to-purple-50/30 rounded-3xl blur-2xl opacity-70"></div>
+            
+            {/* Content container */}
+            <div className="relative z-10 max-w-5xl mx-auto pt-4">
+              {/* Main Title with gradient effect and enhanced styling */}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 tracking-wide leading-tight" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                <span className="bg-gradient-to-r from-red-600 via-red-500 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
+                  Best
+                </span>
+                <span className="text-gray-900 drop-shadow-sm"> Resale Properties</span>
+              </h1>
+              
+              {/* Decorative underline */}
+              <div className="w-32 h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-orange-500 mx-auto mb-3 rounded-full shadow-lg"></div>
+              
+              {/* Subtitle with reduced size */}
+              <p className="text-base md:text-lg text-slate-600 max-w-4xl mx-auto leading-relaxed font-medium tracking-wide" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                Premium Resale Properties — Value, Location, and Trust Redefined.
+              </p>
             </div>
+            
+            {/* Subtle glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-transparent to-orange-500/10 rounded-3xl blur-3xl"></div>
           </div>
 
-          {/* New Search Bar Design */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
-            {/* Desktop Version */}
-            <div className="hidden lg:block">
-              <div className="flex flex-col lg:flex-row items-center gap-3">
-                {/* Property Type Dropdown */}
-                <div className="relative dropdown-container">
-                  <button
-                    onClick={toggleDropdown}
-                    className={`flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-4 py-2 text-gray-700 hover:border-[#e5652e] focus:ring-2 focus:ring-[#e5652e] transition min-w-[140px] font-medium ${isOpen ? 'border-[#e5652e]' : ''}`}
-                    style={{ boxShadow: isOpen ? '0 2px 8px rgba(229,101,46,0.08)' : '' }}
-                  >
-                    <span>All Residential</span>
-                    <svg 
-                      className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
+
+
+          {/* Responsive 2-Column Layout */}
+          <div className="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto px-2 md:px-4">
+            {/* Filter Sidebar (Desktop) */}
+            <aside className="hidden lg:block w-[280px] bg-gray-50 rounded-2xl shadow border border-gray-100 px-5 py-6 sticky top-20 self-start">
+              {/* Property Type */}
+              <div className="mb-3">
+                <div className="font-semibold text-gray-800 mb-3">Property Type</div>
+                <div className="flex flex-wrap gap-2 items-start">
+                  {propertyTypes.map(type => (
+                    <label
+                      key={type}
+                      className="flex items-start gap-2 text-sm min-w-0 whitespace-nowrap"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      <input
+                        type="checkbox"
+                        className="accent-red-500 w-4 h-4 mt-0.5 flex-shrink-0"
+                        value={type}
+                        checked={selectedPropertyTypes.includes(type)}
+                        onChange={e => handleCheckboxChange(e, setSelectedPropertyTypes)}
+                      />
+                      <span className="whitespace-nowrap">{type}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {/* Unit Type */}
+              <div className="mb-3">
+                <div className="font-semibold text-gray-800 mb-3">Unit Type</div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 items-start">
+                  {areas.map(area => (
+                    <label
+                      key={area}
+                      className="flex items-start gap-2 text-sm min-w-0 whitespace-normal break-words"
+                    >
+                      <input
+                        type="checkbox"
+                        className="accent-red-500 w-4 h-4 mt-0.5 flex-shrink-0"
+                        value={area}
+                        checked={selectedAreas.includes(area)}
+                        onChange={e => handleCheckboxChange(e, setSelectedAreas)}
+                      />
+                      <span className="break-words whitespace-normal">{area}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {/* City */}
+              <div className="mb-3">
+                <div className="font-semibold text-gray-800 mb-3">City</div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 items-start">
+                  {cities.map(city => (
+                    <label
+                      key={city}
+                      className="flex items-start gap-2 text-sm min-w-0 whitespace-normal break-words"
+                    >
+                      <input
+                        type="checkbox"
+                        className="accent-red-500 w-4 h-4 mt-0.5 flex-shrink-0"
+                        value={city}
+                        checked={selectedCities.includes(city)}
+                        onChange={e => handleCheckboxChange(e, setSelectedCities)}
+                      />
+                      <span className="break-words whitespace-normal">{city}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {/* Price Criteria */}
+              <div>
+                <div className="font-semibold text-gray-800 mb-3">Price Criteria</div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm font-medium text-gray-700 mb-2">
+                    <span>Min: ₹{minPrice || minPriceOptions[0]} Cr</span>
+                    <span>Max: ₹{maxPrice || maxPriceOptions[maxPriceOptions.length - 1]} Cr</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="range"
+                      min={minPriceOptions[0]}
+                      max={maxPriceOptions[maxPriceOptions.length - 1]}
+                      step={1}
+                      value={minPrice || minPriceOptions[0]}
+                      onChange={e => {
+                        const value = e.target.value;
+                        setMinPrice(value);
+                        if (!maxPrice || parseInt(value) > parseInt(maxPrice)) setMaxPrice(value);
+                      }}
+                      className="w-full accent-red-500"
+                    />
+                    <input
+                      type="range"
+                      min={minPriceOptions[0]}
+                      max={maxPriceOptions[maxPriceOptions.length - 1]}
+                      step={1}
+                      value={maxPrice || maxPriceOptions[maxPriceOptions.length - 1]}
+                      onChange={e => {
+                        const value = e.target.value;
+                        setMaxPrice(value);
+                        if (!minPrice || parseInt(value) < parseInt(minPrice)) setMinPrice(value);
+                      }}
+                      className="w-full accent-red-500"
+                    />
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+
+            {/* TODO: Implement mobile filter drawer/modal here if needed */}
+
+            {/* Main Content Area (Listings) */}
+            <main className="flex-1 min-w-0">
+              {/* Search Bar */}
+              <div className="mb-2">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                  </button>
-                  {isOpen && (
-                    <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl z-10 min-w-[200px] dropdown-container animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
-                      <div className="p-2">
-                        <div className="text-sm font-semibold text-[#e5652e] mb-2">Property Type</div>
-                        {propertyTypes.map((type) => (
-                          <label key={type} className="flex items-center gap-2 text-sm cursor-pointer px-2 py-1 rounded hover:bg-[#fff3ed]">
-                            <input
-                              type="checkbox"
-                              className="accent-[#e5652e]"
-                              value={type}
-                              checked={selectedPropertyTypes.includes(type)}
-                              onChange={e => handleCheckboxChange(e, setSelectedPropertyTypes)}
-                            />
-                            <span className="text-gray-700">{type}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search properties by name or city..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 shadow-sm hover:shadow-md"
+                  />
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm("")}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    >
+                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
                   )}
                 </div>
-
-                {/* Search Input */}
-                <div className="flex-1 relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#e5652e]">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
-                    </svg>
+                {searchTerm && (
+                  <div className="mt-2 text-sm text-gray-600">
+                    Showing {filteredAndSearchedData.length} results for "{searchTerm}"
                   </div>
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                    placeholder="Search '3 BHK for sale in Mumbai'"
-                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e] text-gray-700 bg-white font-medium shadow-sm"
-                  />
-                </div>
-
-                {/* Search Button */}
-                <button className="bg-[#e5652e] text-white px-6 py-2 rounded-xl hover:bg-[#ff3333] transition font-semibold shadow-md focus:ring-2 focus:ring-[#e5652e]">
-                  Search
-                </button>
+                )}
               </div>
 
-              {/* Filter Chips Section */}
-              {(selectedPropertyTypes.length > 0 || selectedAreas.length > 0 || selectedCities.length > 0 || minPrice || maxPrice) && (
-                <div className="mt-4 pt-4 border-t border-gray-100">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-semibold text-[#e5652e]">Applied Filters:</span>
-                    <button 
-                      onClick={handleClearFilters}
-                      className="text-sm text-[#e5652e] hover:text-[#ff3333] underline font-medium"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedPropertyTypes.map(type => (
-                      <span key={type} className="bg-[#fff3ed] text-[#e5652e] px-3 py-1 rounded-full text-xs flex items-center gap-1 border border-[#ffe0d1] font-medium shadow-sm">
-                        {type}
-                        <button onClick={() => removePropertyType(type)} className="ml-1 text-[#e5652e] hover:text-[#ff3333]">×</button>
-                      </span>
-                    ))}
-                    {selectedAreas.map(area => (
-                      <span key={area} className="bg-[#e6f0ff] text-[#1d4ed8] px-3 py-1 rounded-full text-xs flex items-center gap-1 border border-[#bcdcff] font-medium shadow-sm">
-                        {area}
-                        <button onClick={() => removeArea(area)} className="ml-1 text-[#1d4ed8] hover:text-[#2563eb]">×</button>
-                      </span>
-                    ))}
-                    {selectedCities.map(city => (
-                      <span key={city} className="bg-[#e7fbe7] text-[#059669] px-3 py-1 rounded-full text-xs flex items-center gap-1 border border-[#b6f5c6] font-medium shadow-sm">
-                        {city}
-                        <button onClick={() => removeCity(city)} className="ml-1 text-[#059669] hover:text-[#047857]">×</button>
-                      </span>
-                    ))}
-                    {(minPrice || maxPrice) && (
-                      <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs flex items-center gap-1 border border-gray-200 font-medium shadow-sm">
-                        ₹{minPrice || '0'} - ₹{maxPrice || 'Any'}
-                        <button onClick={removePrice} className="ml-1 text-gray-500 hover:text-gray-700">×</button>
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Additional Filter Options */}
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <div className="flex flex-wrap gap-3">
-                  {/* Unit Type Dropdown */}
-                  <div className="relative">
-                    <button
-                      className={`flex items-center gap-2 text-sm text-gray-700 hover:text-[#e5652e] filterbar-btn px-3 py-2 rounded-xl border border-gray-200 bg-white font-medium shadow-sm transition ${openFilterDropdown === 'unitType' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
-                      onClick={() => setOpenFilterDropdown(openFilterDropdown === 'unitType' ? null : 'unitType')}
-                    >
-                      Unit Type
-                      <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'unitType' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    {openFilterDropdown === 'unitType' && (
-                      <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[180px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
-                        {areas.map((area) => (
-                          <label key={area} className="flex items-center gap-2 text-sm cursor-pointer mb-1 px-2 py-1 rounded hover:bg-[#fff3ed]">
-                            <input
-                              type="checkbox"
-                              className="accent-[#e5652e]"
-                              value={area}
-                              checked={selectedAreas.includes(area)}
-                              onChange={e => handleCheckboxChange(e, setSelectedAreas)}
-                            />
-                            {area}
-                          </label>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  {/* City Dropdown */}
-                  <div className="relative">
-                    <button
-                      className={`flex items-center gap-2 text-sm text-gray-700 hover:text-[#e5652e] filterbar-btn px-3 py-2 rounded-xl border border-gray-200 bg-white font-medium shadow-sm transition ${openFilterDropdown === 'city' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
-                      onClick={() => setOpenFilterDropdown(openFilterDropdown === 'city' ? null : 'city')}
-                    >
-                      City
-                      <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'city' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    {openFilterDropdown === 'city' && (
-                      <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[220px] max-h-60 overflow-y-auto animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
-                        {cities.map((city) => (
-                          <label key={city} className="flex items-center gap-2 text-sm cursor-pointer mb-1 px-2 py-1 rounded hover:bg-[#fff3ed]">
-                            <input
-                              type="checkbox"
-                              className="accent-[#e5652e]"
-                              value={city}
-                              checked={selectedCities.includes(city)}
-                              onChange={e => handleCheckboxChange(e, setSelectedCities)}
-                            />
-                            {city}
-                          </label>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  {/* Price Criteria Dropdown */}
-                  <div className="relative">
-                    <button
-                      className={`flex items-center gap-2 text-sm text-gray-700 hover:text-[#e5652e] filterbar-btn px-3 py-2 rounded-xl border border-gray-200 bg-white font-medium shadow-sm transition ${openFilterDropdown === 'priceCriteria' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
-                      onClick={() => setOpenFilterDropdown(openFilterDropdown === 'priceCriteria' ? null : 'priceCriteria')}
-                    >
-                      Price Criteria
-                      <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'priceCriteria' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    {openFilterDropdown === 'priceCriteria' && (
-                      <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[200px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
-                        <div className="flex flex-col gap-2">
-                          <div className="flex gap-2 items-center">
-                            <label className="text-sm">Min Price:</label>
-                            <select
-                              value={minPrice}
-                              onChange={handleMinPriceChange}
-                              className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e]"
-                            >
-                              <option value="">Min Price</option>
-                              {minPriceOptions.map((price) => (
-                                <option key={price} value={price}>₹{price}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="flex gap-2 items-center">
-                            <label className="text-sm">Max Price:</label>
-                            <select
-                              value={maxPrice}
-                              onChange={handleMaxPriceChange}
-                              className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e]"
-                            >
-                              <option value="">Max Price</option>
-                              {maxPriceOptions.map((price) => (
-                                <option key={price} value={price}>₹{price}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile Version */}
-            <div className="lg:hidden sticky top-0 z-30 bg-[#f7f7f7] pb-2" style={{fontFamily: 'Poppins, Inter, sans-serif'}}>
-              {/* Sticky Search Bar */}
-              <div className="flex items-center px-2 pt-2 pb-1">
-                <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm mr-2">
-                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                </button>
-                <div className="flex-1 relative">
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                    placeholder="Search City/Locality/Project"
-                    className="w-full rounded-full bg-white shadow px-4 py-3 pr-12 text-gray-700 placeholder-gray-400 font-medium focus:outline-none focus:ring-2 focus:ring-[#e5652e] border border-gray-100"
-                    style={{fontFamily: 'Poppins, Inter, sans-serif'}}
-                  />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
-                    </svg>
-                  </div>
-                </div>
-                <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm ml-2">
-                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-                </button>
-              </div>
-              {/* Filter Row */}
-              <div className="flex items-center gap-2 px-2 pt-1 overflow-x-auto scrollbar-hide">
-                {/* Animated Filter Icon Button */}
-                <button
+              {/* Mobile Filter Button */}
+              <div className="lg:hidden flex justify-end mb-4">
+                <button 
                   onClick={() => setFilterModalOpen(true)}
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow border border-gray-100 text-[#e5652e] animate-pulse hover:scale-110 transition-transform duration-150"
-                  aria-label="Open Filters"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-gray-700 font-medium shadow hover:bg-gray-200 border border-gray-200 transition-colors"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" /></svg>
-                </button>
-                {/* Quick Filter Pills */}
-                {quickFilters.map((filter) => (
-                  <button
-                    key={filter.label}
-                    onClick={() => handleQuickFilterClick(filter.label)}
-                    className={`flex items-center gap-1 px-4 py-2 rounded-full shadow-sm border border-gray-100 font-semibold text-sm transition-all duration-150 mr-1 ${selectedQuickFilters.includes(filter.label) ? 'bg-[#ffe5e0] text-[#e5652e] scale-105' : 'bg-white text-gray-700 hover:bg-[#f7f7f7]'} active:scale-95`}
-                    style={{fontFamily: 'Poppins, Inter, sans-serif'}}
-                  >
-                    <span className="mr-1">{filter.icon}</span>
-                    {filter.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Mobile Filter Chips - Moved to Main Div */}
-            <div className="lg:hidden mb-6">
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {/* Unit Type Dropdown */}
-                <div className="relative">
-                  <button
-                    className={`flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition ${openFilterDropdown === 'unitType' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
-                    onClick={() => setOpenFilterDropdown(openFilterDropdown === 'unitType' ? null : 'unitType')}
-                  >
-                    Unit Type
-                    <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'unitType' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {openFilterDropdown === 'unitType' && (
-                    <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[180px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
-                      {areas.map((area) => (
-                        <label key={area} className="flex items-center gap-2 text-sm cursor-pointer mb-1 px-2 py-1 rounded hover:bg-[#fff3ed]">
-                          <input
-                            type="checkbox"
-                            className="accent-[#e5652e]"
-                            value={area}
-                            checked={selectedAreas.includes(area)}
-                            onChange={e => handleCheckboxChange(e, setSelectedAreas)}
-                          />
-                          {area}
-                        </label>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* City Dropdown */}
-                <div className="relative">
-                  <button
-                    className={`flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition ${openFilterDropdown === 'city' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
-                    onClick={() => setOpenFilterDropdown(openFilterDropdown === 'city' ? null : 'city')}
-                  >
-                    City
-                    <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'city' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {openFilterDropdown === 'city' && (
-                    <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[220px] max-h-60 overflow-y-auto animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
-                      {cities.map((city) => (
-                        <label key={city} className="flex items-center gap-2 text-sm cursor-pointer mb-1 px-2 py-1 rounded hover:bg-[#fff3ed]">
-                          <input
-                            type="checkbox"
-                            className="accent-[#e5652e]"
-                            value={city}
-                            checked={selectedCities.includes(city)}
-                            onChange={e => handleCheckboxChange(e, setSelectedCities)}
-                          />
-                          {city}
-                        </label>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Price Criteria Dropdown */}
-                <div className="relative">
-                  <button
-                    className={`flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition ${openFilterDropdown === 'priceCriteria' ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
-                    onClick={() => setOpenFilterDropdown(openFilterDropdown === 'priceCriteria' ? null : 'priceCriteria')}
-                  >
-                    Price
-                    <svg className={`w-4 h-4 transition-transform ${openFilterDropdown === 'priceCriteria' ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {openFilterDropdown === 'priceCriteria' && (
-                    <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 filterbar-dropdown min-w-[200px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
-                      <div className="flex flex-col gap-2">
-                        <div className="flex gap-2 items-center">
-                          <label className="text-sm">Min:</label>
-                          <select
-                            value={minPrice}
-                            onChange={handleMinPriceChange}
-                            className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e]"
-                          >
-                            <option value="">Min</option>
-                            {minPriceOptions.map((price) => (
-                              <option key={price} value={price}>₹{price}</option>
-                            ))}
-                          </select>
-                        </div>
-                        <div className="flex gap-2 items-center">
-                          <label className="text-sm">Max:</label>
-                          <select
-                            value={maxPrice}
-                            onChange={handleMaxPriceChange}
-                            className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-[#e5652e] focus:border-[#e5652e]"
-                          >
-                            <option value="">Max</option>
-                            {maxPriceOptions.map((price) => (
-                              <option key={price} value={price}>₹{price}</option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Property Type Dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={toggleDropdown}
-                    className={`flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition ${isOpen ? 'border-[#e5652e] text-[#e5652e]' : ''}`}
-                  >
-                    Property
-                    <svg 
-                      className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180 text-[#e5652e]' : 'text-gray-400'}`} 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {isOpen && (
-                    <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 p-3 dropdown-container min-w-[200px] animate-fade-in" style={{boxShadow:'0 4px 24px rgba(229,101,46,0.10)'}}>
-                      <div className="p-2">
-                        <div className="text-sm font-semibold text-[#e5652e] mb-2">Property Type</div>
-                        {propertyTypes.map((type) => (
-                          <label key={type} className="flex items-center gap-2 text-sm cursor-pointer px-2 py-1 rounded hover:bg-[#fff3ed]">
-                            <input
-                              type="checkbox"
-                              className="accent-[#e5652e]"
-                              value={type}
-                              checked={selectedPropertyTypes.includes(type)}
-                              onChange={e => handleCheckboxChange(e, setSelectedPropertyTypes)}
-                            />
-                            <span className="text-gray-700">{type}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Sort Button */}
-                <button className="flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium whitespace-nowrap shadow-sm hover:border-[#e5652e] transition">
-                  Sort
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
+                  Filters
                 </button>
               </div>
-            </div>
 
-          <section className="flex flex-col items-center bg-white mb-4 rounded-xl shadow-md p-4">
-            {filteredAndSearchedData.length === 0 ? (
-              <div><CustomSkeleton /></div>
-            ) :  (
-              <>
-                <div ref={propertyGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-                  {paginatedData.map((property, idx) => (
+              {/* Grid/List Toggle Placeholder */}
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
+                <div className="text-gray-700 font-semibold flex-shrink-0">Showing Properties</div>
+                <div className="flex flex-wrap gap-2">
+                  {selectedCities.map(city => (
+                    <span key={city} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      {city}
+                      <button className="ml-1 hover:text-green-900" onClick={() => setSelectedCities(selectedCities.filter(c => c !== city))}>×</button>
+                    </span>
+                  ))}
+                  {selectedPropertyTypes.map(type => (
+                    <span key={type} className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      {type}
+                      <button className="ml-1 hover:text-red-900" onClick={() => setSelectedPropertyTypes(selectedPropertyTypes.filter(t => t !== type))}>×</button>
+                    </span>
+                  ))}
+                  {selectedAreas.map(area => (
+                    <span key={area} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      {area}
+                      <button className="ml-1 hover:text-blue-900" onClick={() => setSelectedAreas(selectedAreas.filter(a => a !== area))}>×</button>
+                    </span>
+                  ))}
+                  {(minPrice || maxPrice) && (
+                    <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      ₹{minPrice || '0'} - ₹{maxPrice || 'Any'}
+                      <button className="ml-1 hover:text-gray-900" onClick={() => { setMinPrice(''); setMaxPrice(''); }}>×</button>
+                    </span>
+                  )}
+                </div>
+              </div>
+              {/* Property Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filteredAndSearchedData.length === 0 ? (
+                  <div className="col-span-full"><CustomSkeleton /></div>
+                ) : (
+                  paginatedData.map((property, idx) => (
                     <Link
                       key={property._id || idx}
                       to={property.propertyName && property._id
                         ? `/buy-properties/${property.propertyName.replace(/\s+/g, '-')}/${property._id}/`
                         : "#"}
                       target="_top"
-                      className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col transition hover:shadow-xl hover:scale-105 duration-300 animate-fade-in group cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-400"
-                      style={{ animationDelay: `${idx * 60}ms` }}
+                      className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-400"
+                      style={{ animationDelay: `${idx * 50}ms` }}
                       tabIndex={0}
                     >
-                      <div className="overflow-hidden">
+                      {/* Property Image */}
+                      <div className="relative overflow-hidden">
                         <img
                           src={property.frontImage?.url}
                           alt={property.propertyName}
-                          className="w-full h-48 object-cover rounded-t-2xl transition-transform duration-500 group-hover:scale-110"
+                          className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                           loading="lazy"
                         />
+                        <div className="absolute top-3 right-3">
+                          <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                            Resale
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex flex-col flex-1 p-5 pb-4">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">{property.propertyName}</h3>
-                        <div className="flex items-center gap-1 text-sm text-gray-500 mb-1">
-                          {/* Location pin icon */}
-                          <svg xmlns='http://www.w3.org/2000/svg' className='h-4 w-4 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 11c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 10c-4.418 0-8-7.163-8-10a8 8 0 1116 0c0 2.837-3.582 10-8 10z' /></svg>
+
+                      {/* Property Details */}
+                      <div className="flex flex-col flex-1 p-4">
+                        {/* Property Name */}
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight">
+                          {property.propertyName}
+                        </h3>
+
+                        {/* Location */}
+                        <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                          <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
                           <span className="truncate">{property.city}, {property.state}</span>
                         </div>
-                        <div className="flex items-center gap-1 text-xs text-gray-500 mb-3">
-                          <PropertyIcon style={{ width: 16, height: 16, minWidth: 16, minHeight: 16 }} />
+
+                        {/* Property Type */}
+                        <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+                          <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          </svg>
                           <span className="truncate">{property.propertyType || 'Property'}</span>
                         </div>
-                        <div className="mt-auto flex flex-col gap-1 pb-0">
-                          <span className="text-red-500 font-bold text-lg flex items-center gap-1">
-                            <RupeeIcon /> {(() => {
-                              console.log('Property price:', property.propertyName, 'Price:', property.price, 'Type:', typeof property.price);
-                              return formatPrice(property.price);
-                            })()}
-                          </span>
-                          <div
-                            className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full shadow-md text-base font-semibold text-center transition mt-1 mb-0 cursor-pointer"
-                            tabIndex={-1}
-                          >
-                            View Details
+
+                        {/* Price and CTA */}
+                        <div className="mt-auto">
+                          <div className="text-red-500 font-bold text-xl mb-3 flex items-center gap-1">
+                            ₹
+                            {formatPrice(property.price)}
                           </div>
+                          <button className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg font-semibold transition-colors text-sm">
+                            View Details
+                          </button>
                         </div>
                       </div>
                     </Link>
-                  ))}
-                </div>
+                  ))
+                )}
+              </div>
+              {/* Pagination */}
+              <div className="mt-8 flex justify-center">
                 <PaginationControls
                   currentPage={currentPage}
                   setCurrentPage={handlePageChange}
                   totalPages={totalPages}
                 />
-              </>
-            )}
-          </section>
-        </div>
+              </div>
+            </main>
+          </div>
         </div>
       </main>
       <Footer />
     </>
   );
 };
+
 export default BuyPropViewCard;
+
 const Wrapper = styled.section`
   box-sizing: border-box;
   font-family: DM Sans, sans-serif;
+
+
 
   .li_options {
     padding: 30px 0;
@@ -1160,7 +991,7 @@ const Wrapper = styled.section`
     cursor: pointer;
   }
   .li_options .fi_heading {
-    font-family: DM Sans;
+    font-family: DM Sans, sans-serif;
     font-size: 12px;
     font-weight: 500;
     line-height: 16px;
@@ -1259,6 +1090,123 @@ const Wrapper = styled.section`
   label {
     font-size: 14px;
   }
+  
+  /* Custom scrollbar styles */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 3px;
+  }
+  
+  .scrollbar-track-gray-100::-webkit-scrollbar-track {
+    background-color: #f3f4f6;
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thumb-gray-400::-webkit-scrollbar-thumb {
+    background-color: #9ca3af;
+  }
+  
+  /* Hide scrollbar for mobile when needed */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Line clamp utility */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Animation for fade in */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Enhanced search bar animations */
+  .search-input:focus {
+    transform: scale(1.02);
+  }
+
+  /* Filter chip animations */
+  .filter-chip {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .filter-chip:hover {
+    transform: translateY(-2px);
+  }
+
+  .filter-chip.active {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    }
+  }
+
+  /* Smooth transitions for all interactive elements */
+  * {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  /* Mobile-specific improvements */
+  @media (max-width: 768px) {
+    /* Touch-friendly button sizes */
+    .filter-chip {
+      min-height: 44px; /* iOS recommended touch target */
+      min-width: 44px;
+    }
+    
+    /* Improved scroll experience on mobile */
+    .mobile-scroll {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+    
+    /* Better focus states for mobile */
+    .mobile-focus:focus {
+      outline: 2px solid #ef4444;
+      outline-offset: 2px;
+    }
+    
+    /* Active state for touch feedback */
+    .filter-chip:active {
+      transform: scale(0.95);
+    }
+  }
+
   @media only screen and (max-width: 570px) {
     .li_options {
       display: none;
