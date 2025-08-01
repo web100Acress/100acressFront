@@ -111,9 +111,11 @@ export const Recommendedreordered = [
 
 export const DesiredLuxuryOrder = [
   "Experion One 42",
-  "Experion Windchants Nova",
+  "Trump Towers Delhi NCR",
   "Godrej Miraya",
   "Birla Arika",
   "Shapoorji Pallonji Dualis",
   "Trevoc Royal Residences",
+  "Experion Windchants Nova",
+  
 ]
