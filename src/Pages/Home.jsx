@@ -410,7 +410,7 @@ const Home = () => {
         <div ref={setRef("upcoming")} data-section="upcoming" style={{ height: "10px" }}></div>
         <div>
           {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={UpcomingProjects} title="Upcoming Projects in Gurugram" animation="fade-down" path={"/projects/upcoming-projects-in-gurgaon/"} />
+            <CommonProject data={UpcomingProjects} title="Upcoming Projects " animation="fade-down" path={"/projects/upcoming-projects-in-gurgaon/"} />
           )}
         </div>
 
