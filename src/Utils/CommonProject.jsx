@@ -68,8 +68,11 @@ const CommonProject = ({ data, title, path ,animation }) => {
                               <img
                                 src={`https://d16gdc5rm7f21b.cloudfront.net/${item?.thumbnailImage?.public_id}`}
                                 alt="property In Gurugram"
-                                className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
+                                className="w-full h-48 object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                                 loading="lazy"
+                                onError={(e) => {
+                                  e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f3f4f6'/%3E%3Ctext x='200' y='100' font-family='Arial' font-size='14' text-anchor='middle' fill='%236b7280'%3EProject Image%3C/text%3E%3C/svg%3E";
+                                }}
                               />
                             </Link>
                             <div className="absolute top-5 right-5" onClick={() => handleShare(item)}>
