@@ -161,31 +161,38 @@ function BlogManagementSidebar() {
             <div className="mt-8 pt-6 border-t border-gray-200">
               <div className="space-y-2">
                 {/* Settings */}
-                <button className="flex items-center w-full p-3 text-gray-700 rounded-xl hover:bg-gray-50 group transition-all duration-200">
+                {/* <button className="flex items-center w-full p-3 text-gray-700 rounded-xl hover:bg-gray-50 group transition-all duration-200">
                   <Settings className="w-5 h-5 text-gray-500 group-hover:text-gray-600 transition-all duration-200" />
                   <span className="ms-3 font-medium">Settings</span>
-                </button>
+                </button> */}
 
                 {/* Profile */}
-                <button className="flex items-center w-full p-3 text-gray-700 rounded-xl hover:bg-gray-50 group transition-all duration-200">
+                {/* <button className="flex items-center w-full p-3 text-gray-700 rounded-xl hover:bg-gray-50 group transition-all duration-200">
                   <User className="w-5 h-5 text-gray-500 group-hover:text-gray-600 transition-all duration-200" />
                   <span className="ms-3 font-medium">Profile</span>
-                </button>
+                </button> */}
 
                 {/* Logout */}
                 <button 
                   type='button' 
                   onClick={HandleUserLogout}
-                  className="flex items-center w-full p-3 text-red-600 rounded-xl hover:bg-red-50 group transition-all duration-200"
+                  className="flex items-center w-full p-2 text-white bg-gradient-to-r from-red-500 to-red-600 rounded-2xl hover:from-red-600 hover:to-red-700 group transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 border border-red-400/20"
                 >
-                  <LogOutIcon className="w-5 h-5 text-red-500 group-hover:text-red-600 transition-all duration-200" />
-                  <span className="ms-3 font-medium">Sign Out</span>
+                  <div className="flex items-center justify-center w-8 h-8 bg-white/20 rounded-lg group-hover:bg-white/30 transition-all duration-300">
+                    <LogOutIcon className="w-4 h-4 text-white group-hover:scale-110 transition-all duration-300" />
+                  </div>
+                  <span className="ms-3 font-semibold text-sm tracking-wide">Sign Out</span>
+                  <div className="ml-auto opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <svg className="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </button>
               </div>
             </div>
 
             {/* Footer */}
-            <div className="mt-8 pt-4 border-t border-gray-200">
+            <div className="mt-4 pt-2   border-gray-200">
               <div className="text-center">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg mx-auto mb-2 flex items-center justify-center">
                   <span className="text-white text-xs font-bold">BM</span>
