@@ -219,7 +219,7 @@ export default function BlogManagement() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8 w-full">
         <div className="w-full max-w-none">
           {/* Header Section */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
+          {/* <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
               <div className="space-y-2">
                 <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
@@ -237,7 +237,7 @@ export default function BlogManagement() {
               </button>
             </Link>
             </div>
-          </div>
+          </div> */}
 
           {/* Performance Metrics */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
