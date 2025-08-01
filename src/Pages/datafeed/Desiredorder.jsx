@@ -41,7 +41,7 @@ export const imageSrc = [
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/experionlaptop.jpeg", link: "/experion-the-trillion/"
   },
   {
-    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/spj-desktop.webp", link: "/spj-vedatam/"
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/m3mfreedomsellweb.jpg", link: "/developers/m3m-india/"
   },
   {
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/windchant-laptop.jpeg", link: "/experion-nova-at-windchants/"
@@ -65,7 +65,7 @@ export const phoneSrc = [
     image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/spr-mob.jpg", link: "/signature-global-cloverdale-spr/"
   },
   {
-    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/spj-mobile.webp", link: "/spj-vedatam/"
+    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/m3mfreedomsellmobile.jpg", link: "/developers/m3m-india/"
   },
   {
     image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/experionphone.jpeg", link: "/experion-the-trillion/"
