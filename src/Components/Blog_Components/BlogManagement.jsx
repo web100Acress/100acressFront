@@ -224,18 +224,18 @@ export default function BlogManagement() {
               <div className="space-y-2">
                 <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   Blog Management Dashboard
-                </h1>
+            </h1>
                 <p className="text-gray-600 text-lg">
                   Comprehensive analytics and management for your blog content
                 </p>
               </div>
-              <Link to="/seo/blogs/write">
+            <Link to="/seo/blogs/write">
                 <button className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-2xl">
                   <Plus size={24} className="group-hover:rotate-90 transition-transform duration-300" />
                   <span className="text-lg">Add New Blog</span>
                   <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300"></div>
-                </button>
-              </Link>
+              </button>
+            </Link>
             </div>
           </div>
 
@@ -272,7 +272,7 @@ export default function BlogManagement() {
               </div>
               <div className="text-lg font-semibold text-gray-800 truncate">
                 {analytics.topPerformingBlog?.blog_Title || "No data"}
-              </div>
+            </div>
               <p className="text-sm text-gray-600 mt-2">
                 {analytics.topPerformingBlog ? 
                   `${analytics.topPerformingBlog.views || 0} views` : 
@@ -320,21 +320,28 @@ export default function BlogManagement() {
 
           {/* Blog Cards Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-            {filteredAndSortedBlogs.length > 0 ? (
-              filteredAndSortedBlogs.map((blog) => (
+                  {filteredAndSortedBlogs.length > 0 ? (
+                    filteredAndSortedBlogs.map((blog) => (
                 <div
                   key={blog._id}
                   className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-2 border border-gray-100 overflow-hidden"
                 >
                   {/* Blog Image */}
                   <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={
-                        blog.blog_Image?.url ||
-                        "https://via.placeholder.com/400x200?text=No+Image"
-                      }
-                      alt={blog.blog_Title || "Blog Image"}
+                              <img
+                                src={
+                        blog.blog_Image?.url && typeof blog.blog_Image.url === 'string' && !blog.blog_Image.url.includes('via.placeholder.com')
+                          ? blog.blog_Image.url
+                          : blog.blog_Image && typeof blog.blog_Image === 'string' && !blog.blog_Image.includes('via.placeholder.com')
+                          ? blog.blog_Image
+                          : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f3f4f6'/%3E%3Ctext x='200' y='110' font-family='Arial' font-size='14' text-anchor='middle' fill='%236b7280'%3ENo Image%3C/text%3E%3C/svg%3E"
+                                }
+                                alt={blog.blog_Title || "Blog Image"}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      onError={(e) => {
+                        console.log('Image failed to load for blog:', blog._id, 'URL:', blog.blog_Image?.url);
+                        e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f3f4f6'/%3E%3Ctext x='200' y='110' font-family='Arial' font-size='14' text-anchor='middle' fill='%236b7280'%3ENo Image%3C/text%3E%3C/svg%3E";
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     
@@ -344,8 +351,8 @@ export default function BlogManagement() {
                         status={blog?.isPublished ? "success" : "default"}
                         text={blog?.isPublished ? "Published" : "Draft"}
                         className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium"
-                      />
-                    </div>
+                              />
+                            </div>
 
                     {/* Performance Metrics Overlay */}
                     <div className="absolute bottom-4 left-4 right-4 flex justify-between text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -373,45 +380,45 @@ export default function BlogManagement() {
                       <span className="text-sm text-gray-500">
                         {blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : "N/A"}
                       </span>
-                    </div>
+                          </div>
 
                     <h3
                       className="text-xl font-bold text-gray-800 mb-3 line-clamp-2 hover:text-blue-600 cursor-pointer transition-colors duration-200"
                       onClick={() => handleBlogView(blog.blog_Title, blog._id)}
-                    >
-                      {blog.blog_Title}
+                          >
+                            {blog.blog_Title}
                     </h3>
 
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                      {BlogPreview(blog.blog_Description)}
+                            {BlogPreview(blog.blog_Description)}
                     </p>
 
                     {/* Action Buttons */}
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       <div className="flex items-center gap-2">
-                        <button
+                            <button
                           className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200"
                           onClick={() => handleBlogView(blog.blog_Title, blog._id)}
-                          title="View Blog"
-                        >
+                              title="View Blog"
+                            >
                           <Eye size={18} />
-                        </button>
-                        <Link to={`/seo/blogs/edit/${blog._id}`}>
-                          <button
+                            </button>
+                            <Link to={`/seo/blogs/edit/${blog._id}`}>
+                              <button
                             className="p-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-all duration-200"
-                            title="Edit Blog"
-                          >
+                                title="Edit Blog"
+                              >
                             <Edit size={18} />
-                          </button>
-                        </Link>
-                        <button
+                              </button>
+                            </Link>
+                            <button
                           className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
-                          onClick={() => handleDeleteButtonClick(blog._id)}
-                          title="Delete Blog"
-                        >
+                              onClick={() => handleDeleteButtonClick(blog._id)}
+                              title="Delete Blog"
+                            >
                           <Trash2 size={18} />
-                        </button>
-                      </div>
+                            </button>
+                          </div>
 
                       {/* Published Toggle */}
                       <div className="flex items-center gap-2">
@@ -426,8 +433,8 @@ export default function BlogManagement() {
                     </div>
                   </div>
                 </div>
-              ))
-            ) : (
+                    ))
+                  ) : (
               <div className="col-span-full">
                 <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
                   <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -446,18 +453,18 @@ export default function BlogManagement() {
                 </div>
               </div>
             )}
-          </div>
+            </div>
 
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="mt-8">
               <BlogPaginationControls
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                totalPages={totalPages}
-              />
-            </div>
-          )}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                  totalPages={totalPages}
+                />
+              </div>
+            )}
         </div>
       </div>
     </>

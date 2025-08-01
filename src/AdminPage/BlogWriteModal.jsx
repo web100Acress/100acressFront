@@ -300,12 +300,12 @@ const BlogWriteModal = () => {
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900">
                     {blogToEdit ? 'Edit Blog Post' : 'Create New Blog'}
-                  </h2>
+          </h2>
                   <p className="text-gray-600 mt-1">
                     {blogToEdit ? 'Update your blog content and settings' : 'Write and publish your next blog post'}
                   </p>
                 </div>
-              </div>
+        </div>
               <button
                 onClick={() => navigate("/seo/blogs")}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200"
@@ -325,18 +325,18 @@ const BlogWriteModal = () => {
                   <FileText className="w-5 h-5 text-blue-600" />
                   <label htmlFor="title" className="text-lg font-semibold text-gray-900">
                     Blog Title
-                  </label>
+                </label>
                 </div>
                 <input
-                  type="text"
-                  id="title"
-                  value={title || ''}
-                  onChange={(e) => setTitle(e.target.value)}
+                type="text"
+                id="title"
+                value={title || ''}
+                onChange={(e) => setTitle(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-lg"
                   placeholder="Enter your blog title..."
-                  required
+                required
                 />
-              </div>
+            </div>
 
               {/* Image Section */}
               <div className="space-y-3">
@@ -344,16 +344,16 @@ const BlogWriteModal = () => {
                   <Image className="w-5 h-5 text-green-600" />
                   <label htmlFor="frontImage" className="text-lg font-semibold text-gray-900">
                     Featured Image
-                  </label>
+                </label>
                 </div>
                 
                 {frontImage?.url && (
                   <div className="relative group">
-                    <img
-                      src={frontImage.url}
-                      alt="Front Image"
+                <img
+                    src={frontImage.url}
+                    alt="Front Image"
                       className="w-full h-64 object-cover rounded-xl shadow-lg"
-                    />
+                />
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-xl flex items-center justify-center">
                       <div className="opacity-0 group-hover:opacity-100 transition-all duration-200">
                         <Upload className="w-8 h-8 text-white" />
@@ -363,7 +363,7 @@ const BlogWriteModal = () => {
                 )}
                 
                 <div className="relative">
-                  <input
+                <input
                     type="file"
                     name="blog_Image"
                     accept="image/*"
@@ -404,7 +404,7 @@ const BlogWriteModal = () => {
                   <option value="Builder Floors" className="text-gray-900">Builder Floors</option>
                   <option value="Affordable Homes" className="text-gray-900">Affordable Homes</option>
                 </select>
-              </div>
+            </div>
 
               {/* Description Section */}
               <div className="space-y-3">
@@ -412,41 +412,41 @@ const BlogWriteModal = () => {
                   <Edit3 className="w-5 h-5 text-orange-600" />
                   <label className="text-lg font-semibold text-gray-900">
                     Blog Content
-                  </label>
+                </label>
                 </div>
                 <div className="border border-gray-200 rounded-xl overflow-hidden">
-                  {ReactQuill ? (
-                    <ReactQuill
+                {ReactQuill ? (
+                  <ReactQuill
                       theme="snow"
                       value={descripition || ''}
                       onChange={setDescription}
                       className="h-64"
                       modules={{
-                        toolbar: [
+                      toolbar: [
                           [{ header: [1, 2, 3, 4, false] }],
                           ['bold', 'italic', 'underline', 'strike'],
                           [{ list: 'ordered' }, { list: 'bullet' }],
                           ['link'],
                           [{ 'align': '' }, { 'align': 'center' }, { 'align': 'right' }, { 'align': 'justify' }],
                           ['clean']
-                        ]
+                      ]
                       }}
-                    />
-                  ) : (
-                    <textarea
-                      value={descripition || ''}
-                      onChange={(e) => setDescription(e.target.value)}
+                  />
+                ) : (
+                  <textarea
+                    value={descripition || ''}
+                    onChange={(e) => setDescription(e.target.value)}
                       className="w-full h-64 p-4 border-0 focus:outline-none resize-none text-lg"
                       placeholder="Write your blog content here..."
-                    />
-                  )}
+                  />
+                )}
                 </div>
-              </div>
+            </div>
 
               {/* Action Buttons */}
               <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
                 {!blogToEdit && (
-                  <button
+                <button
                     type="button"
                     className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all duration-200 font-medium flex items-center space-x-2"
                     disabled={isSubmitting}
@@ -454,7 +454,7 @@ const BlogWriteModal = () => {
                   >
                     <Save className="w-4 h-4" />
                     <span>{isSubmitting ? 'Saving...' : 'Save as Draft'}</span>
-                  </button>
+                </button>
                 )}
 
                 <button
@@ -475,11 +475,11 @@ const BlogWriteModal = () => {
                     </>
                   )}
                 </button>
-              </div>
+            </div>
             </form>
-          </div>
         </div>
       </div>
+    </div>
     );
   } catch (error) {
     console.error('Error in BlogWriteModal:', error);
@@ -490,14 +490,14 @@ const BlogWriteModal = () => {
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <X className="w-8 h-8 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Blog Editor</h2>
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Blog Editor</h2>
             <p className="text-gray-600 mb-6">There was an error loading the blog editor. Please try refreshing the page.</p>
-            <button 
-              onClick={() => window.location.reload()} 
+          <button 
+            onClick={() => window.location.reload()} 
               className="bg-red-600 text-white px-6 py-3 rounded-xl hover:bg-red-700 transition-all duration-200 font-medium"
-            >
-              Refresh Page
-            </button>
+          >
+            Refresh Page
+          </button>
           </div>
         </div>
       </div>

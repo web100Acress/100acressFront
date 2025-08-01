@@ -17,6 +17,11 @@ const QRGenerator = () => {
   const [qrSize, setQrSize] = useState(256);
   const [qrColor, setQrColor] = useState('#1a365d');
   const [bgColor, setBgColor] = useState('#ffffff');
+  const [showLogo, setShowLogo] = useState(true);
+  const [logoSize, setLogoSize] = useState('medium');
+  const [logoUrl, setLogoUrl] = useState('');
+  const [showCornerDots, setShowCornerDots] = useState(false);
+  const [cornerDotColor, setCornerDotColor] = useState('#dc2626');
   const [propertyDetails, setPropertyDetails] = useState({
     title: '',
     location: '',
@@ -81,16 +86,199 @@ const QRGenerator = () => {
     return `https://api.qrserver.com/v1/create-qr-code/?${params.toString()}`;
   };
 
-  const downloadQR = () => {
-    const link = document.createElement('a');
-    link.href = generateQRURL();
-    link.download = `100acress-qr-${Date.now()}.png`;
-    link.click();
-
-    toast({
-      title: "QR Code Downloaded!",
-      description: "Your QR code has been saved successfully.",
-    });
+  const downloadQR = async () => {
+    try {
+      if (showLogo) {
+        // Create canvas to combine QR code with logo
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        canvas.width = qrSize;
+        canvas.height = qrSize;
+        
+        // Load QR code image
+        const qrImage = new Image();
+        qrImage.crossOrigin = 'anonymous';
+        
+        qrImage.onload = () => {
+          // Draw QR code
+          ctx.drawImage(qrImage, 0, 0, qrSize, qrSize);
+          
+          // Load and draw logo
+          const logoImage = new Image();
+          logoImage.crossOrigin = 'anonymous';
+          
+                                           logoImage.onload = () => {
+             // Calculate logo position (center)
+             const logoSizePercent = logoSize === 'small' ? 0.15 : logoSize === 'medium' ? 0.20 : 0.28;
+             const logoSizePixels = qrSize * logoSizePercent;
+             const logoX = (qrSize - logoSizePixels) / 2;
+             const logoY = (qrSize - logoSizePixels) / 2;
+             
+                           // Draw logo
+              ctx.drawImage(logoImage, logoX, logoY, logoSizePixels, logoSizePixels);
+             
+              // Draw corner dots if enabled
+              if (showCornerDots) {
+                const dotSize = qrSize * 0.02; // 2% of QR size
+                const dotRadius = dotSize / 2;
+                const margin = qrSize * 0.1; // 10% margin
+                
+                // Convert hex color to RGB
+                const hex = cornerDotColor.replace('#', '');
+                const r = parseInt(hex.substr(0, 2), 16);
+                const g = parseInt(hex.substr(2, 2), 16);
+                const b = parseInt(hex.substr(4, 2), 16);
+                
+                ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                
+                // Top Left
+                ctx.beginPath();
+                ctx.arc(margin, margin, dotRadius, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Top Right
+                ctx.beginPath();
+                ctx.arc(qrSize - margin, margin, dotRadius, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Bottom Left
+                ctx.beginPath();
+                ctx.arc(margin, qrSize - margin, dotRadius, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Bottom Right
+                ctx.beginPath();
+                ctx.arc(qrSize - margin, qrSize - margin, dotRadius, 0, 2 * Math.PI);
+                ctx.fill();
+              }
+             
+              // Download the combined image
+              canvas.toBlob((blob) => {
+               const url = URL.createObjectURL(blob);
+               const link = document.createElement('a');
+               link.href = url;
+               link.download = `100acress-qr-${Date.now()}.png`;
+               link.click();
+               URL.revokeObjectURL(url);
+               
+               toast({
+                 title: "QR Code Downloaded!",
+                 description: "Your QR code with logo has been saved successfully.",
+               });
+             });
+           };
+           
+                       logoImage.onerror = () => {
+              // If custom logo fails, try default logo
+              if (logoUrl && logoImage.src !== '/Images/100logo.jpg') {
+                logoImage.src = '/Images/100logo.jpg';
+              } else {
+                // If default logo also fails, download QR code without logo
+                const link = document.createElement('a');
+                link.href = generateQRURL();
+                link.download = `100acress-qr-${Date.now()}.png`;
+                link.click();
+                
+                toast({
+                  title: "QR Code Downloaded!",
+                  description: "Your QR code has been saved successfully.",
+                });
+              }
+            };
+           
+                       logoImage.src = logoUrl || '/Images/100logo.jpg';
+        };
+        
+        qrImage.src = generateQRURL();
+             } else {
+         // Download QR code without logo but with corner dots if enabled
+         if (showCornerDots) {
+           // Create canvas to add corner dots to QR code
+           const canvas = document.createElement('canvas');
+           const ctx = canvas.getContext('2d');
+           
+           canvas.width = qrSize;
+           canvas.height = qrSize;
+           
+           const qrImage = new Image();
+           qrImage.crossOrigin = 'anonymous';
+           
+           qrImage.onload = () => {
+             // Draw QR code
+             ctx.drawImage(qrImage, 0, 0, qrSize, qrSize);
+             
+             // Draw corner dots
+             const dotSize = qrSize * 0.02; // 2% of QR size
+             const dotRadius = dotSize / 2;
+             const margin = qrSize * 0.1; // 10% margin
+             
+             // Convert hex color to RGB
+             const hex = cornerDotColor.replace('#', '');
+             const r = parseInt(hex.substr(0, 2), 16);
+             const g = parseInt(hex.substr(2, 2), 16);
+             const b = parseInt(hex.substr(4, 2), 16);
+             
+             ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+             
+             // Top Left
+             ctx.beginPath();
+             ctx.arc(margin, margin, dotRadius, 0, 2 * Math.PI);
+             ctx.fill();
+             
+             // Top Right
+             ctx.beginPath();
+             ctx.arc(qrSize - margin, margin, dotRadius, 0, 2 * Math.PI);
+             ctx.fill();
+             
+             // Bottom Left
+             ctx.beginPath();
+             ctx.arc(margin, qrSize - margin, dotRadius, 0, 2 * Math.PI);
+             ctx.fill();
+             
+             // Bottom Right
+             ctx.beginPath();
+             ctx.arc(qrSize - margin, qrSize - margin, dotRadius, 0, 2 * Math.PI);
+             ctx.fill();
+             
+             // Download the combined image
+             canvas.toBlob((blob) => {
+               const url = URL.createObjectURL(blob);
+               const link = document.createElement('a');
+               link.href = url;
+               link.download = `100acress-qr-${Date.now()}.png`;
+               link.click();
+               URL.revokeObjectURL(url);
+               
+               toast({
+                 title: "QR Code Downloaded!",
+                 description: "Your QR code with corner dots has been saved successfully.",
+               });
+             });
+           };
+           
+           qrImage.src = generateQRURL();
+         } else {
+           // Download QR code without logo and without corner dots
+           const link = document.createElement('a');
+           link.href = generateQRURL();
+           link.download = `100acress-qr-${Date.now()}.png`;
+           link.click();
+ 
+           toast({
+             title: "QR Code Downloaded!",
+             description: "Your QR code has been saved successfully.",
+           });
+         }
+       }
+    } catch (error) {
+      console.error('Download error:', error);
+      toast({
+        title: "Download Failed!",
+        description: "There was an error downloading the QR code.",
+      });
+    }
   };
 
   const copyQRLink = () => {
@@ -385,8 +573,116 @@ const QRGenerator = () => {
                   />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+
+              {/* Logo Overlay Toggle */}
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">Show Logo in Center</Label>
+                <div className="flex items-center space-x-2">
+                                     <input
+                     type="checkbox"
+                     id="showLogo"
+                     checked={showLogo}
+                                           onChange={(e) => {
+                        setShowLogo(e.target.checked);
+                      }}
+                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                   />
+                  <label htmlFor="showLogo" className="text-sm text-gray-600">
+                    {showLogo ? 'Enabled' : 'Disabled'}
+                  </label>
+                </div>
+              </div>
+
+              {/* Logo Size Selection */}
+              {showLogo && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Logo Size</Label>
+                                                         <Select value={logoSize} onValueChange={(value) => {
+                      setLogoSize(value);
+                    }}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                                           <SelectItem value="small">Small (15%)</SelectItem>
+                     <SelectItem value="medium">Medium (20%)</SelectItem>
+                     <SelectItem value="large">Large (28%)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                             )}
+
+               {/* Logo URL Input */}
+               {showLogo && (
+                 <div className="space-y-2">
+                   <Label className="text-sm font-medium">Custom Logo URL (Optional)</Label>
+                   <div className="flex gap-2">
+                     <Input
+                       type="url"
+                       value={logoUrl}
+                       onChange={(e) => setLogoUrl(e.target.value)}
+                       placeholder="https://example.com/logo.png"
+                       className="flex-1"
+                     />
+                     {logoUrl && (
+                       <Button
+                         type="button"
+                         variant="outline"
+                         size="sm"
+                         onClick={() => setLogoUrl('')}
+                         className="px-3"
+                       >
+                         Clear
+                       </Button>
+                     )}
+                   </div>
+                   <p className="text-xs text-gray-500">
+                     Leave empty to use default logo, or enter a custom logo URL
+                   </p>
+                 </div>
+               )}
+
+               {/* Corner Dots Toggle */}
+               <div className="flex items-center justify-between">
+                 <Label className="text-sm font-medium">Show Corner Dots</Label>
+                 <div className="flex items-center space-x-2">
+                   <input
+                     type="checkbox"
+                     id="showCornerDots"
+                     checked={showCornerDots}
+                     onChange={(e) => {
+                       setShowCornerDots(e.target.checked);
+                     }}
+                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                   />
+                   <label htmlFor="showCornerDots" className="text-sm text-gray-600">
+                     {showCornerDots ? 'Enabled' : 'Disabled'}
+                   </label>
+                 </div>
+               </div>
+
+               {/* Corner Dot Color Selection */}
+               {showCornerDots && (
+                 <div className="space-y-2">
+                   <Label className="text-sm font-medium">Corner Dot Color</Label>
+                   <div className="flex gap-2">
+                     <Input
+                       type="color"
+                       value={cornerDotColor}
+                       onChange={(e) => setCornerDotColor(e.target.value)}
+                       className="w-16 h-10 p-1 border rounded"
+                     />
+                     <Input
+                       type="text"
+                       value={cornerDotColor}
+                       onChange={(e) => setCornerDotColor(e.target.value)}
+                       className="flex-1"
+                     />
+                   </div>
+                 </div>
+               )}
+             </CardContent>
+           </Card>
 
           {/* QR Preview and Actions */}
           <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
@@ -397,11 +693,11 @@ const QRGenerator = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* QR Code Display */}
+              {/* QR Code Display with Logo Overlay */}
               <div className="flex justify-center">
                 <div
                   ref={qrRef}
-                  className="p-6 bg-white rounded-2xl shadow-lg border-2 border-gray-100"
+                  className="p-6 bg-white rounded-2xl shadow-lg border-2 border-gray-100 relative"
                   style={{ backgroundColor: bgColor }}
                 >
                   <img
@@ -410,6 +706,68 @@ const QRGenerator = () => {
                     className="max-w-full h-auto"
                     style={{ width: qrSize, height: qrSize }}
                   />
+                                     {/* Logo Overlay in Center */}
+                                       {showLogo && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                 <img
+                           src={logoUrl || "/Images/100logo.jpg"}
+                           alt="100Acress Logo"
+                           className={`object-contain ${
+                             logoSize === 'small' ? 'w-12 h-12' :
+                             logoSize === 'medium' ? 'w-16 h-16' :
+                             'w-20 h-20'
+                           }`}
+                           onError={(e) => {
+                             // If custom logo fails, fallback to default
+                             if (logoUrl && e.target.src !== "/Images/100logo.jpg") {
+                               e.target.src = "/Images/100logo.jpg";
+                             }
+                           }}
+                         />
+                      </div>
+                    )}
+
+                    {/* Corner Dots Overlay */}
+                    {showCornerDots && (
+                      <div className="absolute inset-0 pointer-events-none">
+                        {/* Top Left Corner */}
+                        <div 
+                          className="absolute w-3 h-3 rounded-full"
+                          style={{ 
+                            backgroundColor: cornerDotColor,
+                            top: '10%',
+                            left: '10%'
+                          }}
+                        />
+                        {/* Top Right Corner */}
+                        <div 
+                          className="absolute w-3 h-3 rounded-full"
+                          style={{ 
+                            backgroundColor: cornerDotColor,
+                            top: '10%',
+                            right: '10%'
+                          }}
+                        />
+                        {/* Bottom Left Corner */}
+                        <div 
+                          className="absolute w-3 h-3 rounded-full"
+                          style={{ 
+                            backgroundColor: cornerDotColor,
+                            bottom: '10%',
+                            left: '10%'
+                          }}
+                        />
+                        {/* Bottom Right Corner */}
+                        <div 
+                          className="absolute w-3 h-3 rounded-full"
+                          style={{ 
+                            backgroundColor: cornerDotColor,
+                            bottom: '10%',
+                            right: '10%'
+                          }}
+                        />
+                      </div>
+                    )}
                 </div>
               </div>
 
@@ -443,12 +801,15 @@ const QRGenerator = () => {
               {/* Usage Tips */}
               <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
                 <h4 className="font-medium text-blue-900 mb-2">Usage Tips:</h4>
-                <ul className="text-sm text-blue-700 space-y-1">
-                  <li>• Use high contrast colors for better scanning</li>
-                  <li>• Test QR codes before printing</li>
-                  <li>• Larger sizes work better for print materials</li>
-                  <li>• Include your brand logo for recognition</li>
-                </ul>
+                                 <ul className="text-sm text-blue-700 space-y-1">
+                   <li>• Use high contrast colors for better scanning</li>
+                   <li>• Test QR codes before printing</li>
+                   <li>• Larger sizes work better for print materials</li>
+                   <li>• Enable logo overlay for brand recognition</li>
+                   <li>• Logo automatically centers on QR code</li>
+                   <li>• Use custom logo URL or default logo</li>
+                   <li>• Add corner dots for visual appeal</li>
+                 </ul>
               </div>
             </CardContent>
           </Card>

@@ -51,7 +51,7 @@ function BlogManagementSidebar() {
         <MenuIcon className="w-6 h-6" />
       </button>
 
-    <div className='flex'>
+<div className='flex'>
       {/* Sidebar */}
       <div className='w-64 flex-shrink-0'>
         <aside 
@@ -84,7 +84,7 @@ function BlogManagementSidebar() {
 
             {/* Navigation Menu */}
             <ul className="space-y-1 font-medium">
-              <li>
+               <li>
                 <Link 
                   to="/seo/blogs" 
                   className={`flex items-center p-3 text-gray-700 rounded-xl hover:bg-blue-50 group transition-all duration-200 ${
@@ -99,10 +99,10 @@ function BlogManagementSidebar() {
                       : 'text-gray-500 group-hover:text-blue-600'
                   }`} />
                   <span className="ms-3 font-medium">Dashboard</span>
-                </Link>
-              </li>
+                  </Link>
+               </li>
               
-              <li>
+               <li>
                 <Link 
                   to="/seo/blogs/manage" 
                   className={`flex items-center p-3 text-gray-700 rounded-xl hover:bg-green-50 group transition-all duration-200 ${
@@ -117,10 +117,10 @@ function BlogManagementSidebar() {
                       : 'text-gray-500 group-hover:text-green-600'
                   }`} />
                   <span className="ms-3 font-medium">All Blogs</span>
-                </Link>
-              </li>
+                     </Link>
+               </li>
               
-              <li>
+               <li>
                 <Link 
                   to="/seo/blogs/write" 
                   className={`flex items-center p-3 text-gray-700 rounded-xl hover:bg-purple-50 group transition-all duration-200 ${
@@ -135,10 +135,10 @@ function BlogManagementSidebar() {
                       : 'text-gray-500 group-hover:text-purple-600'
                   }`} />
                   <span className="ms-3 font-medium">Add Blog</span>
-                </Link>
-              </li>
+                  </Link>
+               </li>
               
-              <li>
+               <li>
                 <Link 
                   to="/seo/blogs/drafts" 
                   className={`flex items-center p-3 text-gray-700 rounded-xl hover:bg-orange-50 group transition-all duration-200 ${
@@ -154,7 +154,7 @@ function BlogManagementSidebar() {
                   }`} />
                   <span className="ms-3 font-medium">All Drafts</span>
                 </Link>
-              </li>
+               </li>
             </ul>
 
             {/* Settings Section */}
@@ -194,14 +194,14 @@ function BlogManagementSidebar() {
               </div>
             </div>
          </div>
-        </aside>
-      </div>
+      </aside>
+   </div>
 
       {/* Main Content */}
       <div className='flex-1 bg-gray-50 min-h-screen'>
-        <Outlet />
-      </div>
-    </div>
+      <Outlet />
+   </div>
+</div>
     </>
   )
 }

@@ -203,12 +203,12 @@ const handleDeleteUser = async (id) => {
                   <p className="text-gray-600 mt-1">Manage your draft blog posts and unpublished content</p>
                 </div>
               </div>
-              <Link to="/seo/blogs/write">
+          <Link to="/seo/blogs/write">
                 <button className="px-6 py-3 text-white bg-gradient-to-r from-orange-500 to-red-600 rounded-xl hover:from-orange-600 hover:to-red-700 transition-all duration-200 font-medium flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                   <Plus className="w-4 h-4" />
                   <span>Create New Draft</span>
-                </button>
-              </Link>
+            </button>
+          </Link>
             </div>
           </div>
 
@@ -249,23 +249,23 @@ const handleDeleteUser = async (id) => {
                 </div>
               </div>
             </Card>
-          </div>
+        </div>
 
           {/* Enhanced Search Bar */}
           <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
-            <div className="relative">
+          <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
-              <input
-                type="text"
+            <input
+              type="text"
                 placeholder="Search drafts by title or author..."
                 className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-lg"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
+        </div>
 
           {/* Delete Modal */}
           {openModal && (
@@ -300,7 +300,7 @@ const handleDeleteUser = async (id) => {
                   <Skeleton active />
                 </Card>
               ))}
-            </div>
+                    </div>
           ) : filteredBlogs.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredBlogs.map((blog) => (
@@ -311,26 +311,36 @@ const handleDeleteUser = async (id) => {
                   {/* Blog Image */}
                   <div className="relative h-48 overflow-hidden rounded-t-xl">
                     <img
-                      src={blog.blog_Image?.url || "/placeholder.svg"}
-                      alt={blog.blog_Title}
+                      src={
+                        blog.blog_Image?.url && typeof blog.blog_Image.url === 'string' && !blog.blog_Image.url.includes('via.placeholder.com')
+                          ? blog.blog_Image.url
+                          : blog.blog_Image && typeof blog.blog_Image === 'string' && !blog.blog_Image.includes('via.placeholder.com')
+                          ? blog.blog_Image
+                          : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f3f4f6'/%3E%3Ctext x='200' y='160' font-family='Arial' font-size='14' text-anchor='middle' fill='%236b7280'%3EBlog Image%3C/text%3E%3C/svg%3E"
+                      }
+                              alt={blog.blog_Title}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        console.log('Image failed to load for blog:', blog._id, 'URL:', blog.blog_Image?.url);
+                        e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f3f4f6'/%3E%3Ctext x='200' y='160' font-family='Arial' font-size='14' text-anchor='middle' fill='%236b7280'%3EBlog Image%3C/text%3E%3C/svg%3E";
+                      }}
                     />
                     <div className="absolute top-3 right-3">
                       <Badge 
                         status={blog.isPublished ? "success" : "default"} 
                         text={blog.isPublished ? "Published" : "Draft"}
                         className="bg-white px-2 py-1 rounded-full text-xs font-medium"
-                      />
-                    </div>
-                  </div>
+                            />
+                          </div>
+                        </div>
 
                   {/* Blog Content */}
                   <div className="p-6">
                     <h3 
                       className="text-lg font-bold text-gray-900 mb-2 hover:text-orange-600 cursor-pointer transition-colors duration-200 line-clamp-2"
                       onClick={() => handleBlogView(blog.blog_Title, blog._id)}
-                    >
-                      {blog.blog_Title}
+                        >
+                          {blog.blog_Title}
                     </h3>
                     
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3">
@@ -363,13 +373,13 @@ const handleDeleteUser = async (id) => {
                           </button>
                         </Tooltip>
                         
-                        <Link to={`/seo/blogs/edit/${blog._id}`}>
+                          <Link to={`/seo/blogs/edit/${blog._id}`}>
                           <Tooltip title="Edit">
                             <button className="p-2 text-gray-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200">
                               <Edit className="w-4 h-4" />
                             </button>
                           </Tooltip>
-                        </Link>
+                          </Link>
 
                         <Tooltip title="Delete">
                           <button
@@ -394,8 +404,8 @@ const handleDeleteUser = async (id) => {
                   </div>
                 </Card>
               ))}
-            </div>
-          ) : (
+                        </div>
+                ) : (
             <Card className="bg-white shadow-lg rounded-xl border border-gray-100">
               <Empty
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -406,19 +416,19 @@ const handleDeleteUser = async (id) => {
                 }
               />
             </Card>
-          )}
+                )}
 
           {/* Pagination */}
           {totalPages >= 1 && filteredBlogs.length > 0 && (
             <div className="mt-8 flex justify-center">
               <Card className="bg-white shadow-lg rounded-xl border border-gray-100">
-                <PaginationControls
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                  totalPages={totalPages}
-                />
+                        <PaginationControls
+                          currentPage={currentPage}
+                          setCurrentPage={setCurrentPage}
+                          totalPages={totalPages}
+                        />
               </Card>
-            </div>
+          </div>
           )}
         </div>
       </div>
