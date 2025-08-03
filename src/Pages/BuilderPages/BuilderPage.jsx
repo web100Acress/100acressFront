@@ -1,10 +1,11 @@
-import React, {useEffect, useState } from "react";
+import React, {useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import Footer from "../../Components/Actual_Components/Footer";
 import { Helmet } from "react-helmet";
 import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../../Assets/icons";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
+import { orderProjects, hasCustomOrder, getCustomOrder, getRandomSeed } from "../../Utils/ProjectOrderUtils";
 // Removed unused imports as they are not used in this file
 
 const BuilderPage = React.memo(() => {
@@ -12,6 +13,8 @@ const BuilderPage = React.memo(() => {
     const [query, setQuery] = useState("");
     const [loading, setLoading] = useState(true);
     const {getProjectbyBuilder} = Api_Service();
+    
+    // Get builder projects from Redux store
     const SignatureBuilder = useSelector(store => store?.builder?.signatureglobal);
     const M3M = useSelector(store => store?.builder?.m3m);
     const dlfAllProjects= useSelector(store => store?.builder?.dlf);
@@ -32,6 +35,11 @@ const BuilderPage = React.memo(() => {
     const trump = useSelector(store => store?.builder?.trump);
     const puri = useSelector(store => store?.builder?.puri);
     const aarize = useSelector(store => store?.builder?.aarize);
+    
+    // Get project order state from Redux store
+    const customOrders = useSelector(store => store?.projectOrder?.customOrders);
+    const buildersWithCustomOrder = useSelector(store => store?.projectOrder?.buildersWithCustomOrder);
+    const randomSeeds = useSelector(store => store?.projectOrder?.randomSeeds);
 
   const buildersData = {
     'signature-global': SignatureBuilder,
@@ -64,10 +72,38 @@ const BuilderPage = React.memo(() => {
              (!p.project_Status || p.project_Status.toLowerCase() !== 'rental')
       )
     : builderProjects;
+
+  // Order projects based on custom order or random order
+  const orderedProjects = useMemo(() => {
+    const hasCustomOrderDefined = hasCustomOrder(builderName, buildersWithCustomOrder);
+    const customOrder = getCustomOrder(builderName, customOrders);
+    const randomSeed = getRandomSeed(builderName, randomSeeds);
+    
+    console.log('🔍 BuilderPage - hasCustomOrderDefined:', hasCustomOrderDefined);
+    console.log('🔍 BuilderPage - customOrder:', customOrder);
+    console.log('🔍 BuilderPage - randomSeed:', randomSeed);
+    console.log('🔍 BuilderPage - filteredBuilderProjects length:', filteredBuilderProjects.length);
+    
+    return orderProjects(
+      filteredBuilderProjects, 
+      builderName, 
+      customOrder, 
+      hasCustomOrderDefined, 
+      randomSeed
+    );
+  }, [filteredBuilderProjects, builderName, buildersWithCustomOrder, customOrders, randomSeeds]);
   console.log('🔍 builderProjects:', builderProjects);
   console.log('🔍 filteredBuilderProjects:', filteredBuilderProjects);
+  console.log('🔍 orderedProjects:', orderedProjects);
   console.log('🔍 builderName from URL:', builderName);
   console.log('🔍 query value:', query);
+  console.log('🔍 hasCustomOrder:', hasCustomOrder(builderName, buildersWithCustomOrder));
+  console.log('🔍 customOrder:', getCustomOrder(builderName, customOrders));
+  console.log('🔍 Redux customOrders:', customOrders);
+  console.log('🔍 Redux buildersWithCustomOrder:', buildersWithCustomOrder);
+  console.log('🔍 Builder name for Redux lookup:', builderName);
+  console.log('🔍 Available builder keys in customOrders:', Object.keys(customOrders));
+  console.log('🔍 Available builder keys in buildersWithCustomOrder:', Object.keys(buildersWithCustomOrder));
 
   const handleShare = (project) => {
     if (navigator.share) {
@@ -133,6 +169,11 @@ const BuilderPage = React.memo(() => {
     }
   }, [query, getProjectbyBuilder]);
 
+  // Force re-render when Redux state changes
+  useEffect(() => {
+    console.log('🔍 BuilderPage re-rendering due to Redux state change');
+  }, [customOrders, buildersWithCustomOrder, randomSeeds]);
+
   // Render loading state if data is not yet available
   if (loading) {
     return <div className="flex justify-center items-center min-h-[40vh] text-xl font-semibold text-red-600">Loading projects...</div>;
@@ -161,13 +202,12 @@ const BuilderPage = React.memo(() => {
               
       
               <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-                {filteredBuilderProjects?.map((item, index) => {
+                {orderedProjects?.map((item, index) => {
                   const pUrl = item.project_url;
                   return (
-                    <span >
+                    <span key={item._id || item.id || index}>
       
                       <article
-                        key={index}
                         className="mb-2 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
                       >
                         <div className="relative flex p-3">

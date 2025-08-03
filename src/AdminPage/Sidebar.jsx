@@ -130,6 +130,10 @@ const Sidebar = () => {
             <FaDiagramProject className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
             <span>Listed Projects</span>
           </Link>
+          <Link to="/Admin/project-order-manager" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/project-order-manager") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
+            <FaDiagramProject className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
+            <span>Project Order Manager</span>
+          </Link>
           <Link to="/Admin/resale-enquiries" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/resale-enquiries") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <FaHome className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
             <span>Resale Enquiries</span>
