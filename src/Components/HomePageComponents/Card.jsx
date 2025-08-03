@@ -122,6 +122,7 @@ const Wrapper=styled.section`
     border-radius: 15px;
     margin-left:10px;
     margin-right:5px;
+    background-color: #FFF8F0;
   }
   .sQoIH {
     margin-bottom:10px;
@@ -140,7 +141,7 @@ const Wrapper=styled.section`
     padding:0px 7px;
   }
   .w238N h2{
-    color:#3a3a3a;
+    color:#000000;
     font-size:1.3vw;
     font-weight:600;
     padding-left:8px;
@@ -152,12 +153,12 @@ const Wrapper=styled.section`
   .w238N p{
     font-size:1vw;
     font-weight:400;
-    color:#3a3a3a;
+    color:#000000;
     padding-left:8px;
     line-height:0;
   }
   .w238N p span{
-    color:#3a3a3a;
+    color:#000000;
     font-size:1.2vw;
     font-weight:600;
     padding-left:8px;

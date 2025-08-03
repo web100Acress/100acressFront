@@ -51,7 +51,7 @@ function WhyChoose() {
       <div className="flex flex-col md:flex-row items-center bg-white">
         {/* Left Section */}
         <div className="w-full md:w-1/2 p-4">
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-4">
+          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-4 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent">
             Why 100acress.com?
           </p>
           <div className="text-justify text-gray-700">
@@ -60,13 +60,13 @@ function WhyChoose() {
             </p>
             {isMobile && (
               <button
-                className="rounded-md mt-2 px-4 justify-center py-2 bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 text-white text-sm sm:text-base ml-auto mr-auto transition duration-200"
+                className="rounded-md mt-2 px-4 justify-center py-2 bg-gradient-to-r from-[#FF9933] to-[#138808] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-[#FF9933] dark:focus:ring-[#138808] text-white text-sm sm:text-base ml-auto mr-auto transition duration-200 shadow-lg hover:shadow-xl"
                 onClick={toggleParagraph}
               >
                 {expanded ? "Read less" : "Read more"}
               </button>
             )}
-            <p className="mt-4 text-red-500 font-medium">Rajesh Aggarwal, Founder</p>
+            <p className="mt-4 text-[#FF9933] font-medium">Rajesh Aggarwal, Founder</p>
           </div>
         </div>
 
@@ -77,7 +77,7 @@ function WhyChoose() {
               <div
                 data-aos="zoom-in" data-aos-delay="200"
                 key={index}
-                className="relative bg-white shadow rounded-lg pl-4 flex flex-col justify-center items-start"
+                className="relative bg-white shadow rounded-lg pl-4 flex flex-col justify-center items-start hover:shadow-[#FF9933]/20 hover:border-[#FF9933]/30 border border-transparent transition-all duration-300"
               >
                 <div className="absolute -top-5 left-4 ">{data.icon}</div>
                 <div className="mt-8 text-gray-800 font-bold text-xl">{data.count}</div>

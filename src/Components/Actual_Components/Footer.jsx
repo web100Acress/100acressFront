@@ -45,164 +45,164 @@ const Footer = () => {
   };
   return (
     <>
-      <div className="w-full divide-y divide-gray-200 bg-[#C13B44] ">
+      <div className="w-full divide-y divide-gray-200" style={{ background: 'linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)' }}>
         <div className="flex flex-wrap py-3">
-          <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-6 py-2 text-center text-sm">
-            <Link to="/" target="_top">
-              <img src={logoImage} className="mx-auto" alt="Logo" />
-            </Link>
-            <p className="text-md my-3 mt-2 text-justify font-normal">
-              100acress.com Real Estate Company specializes in providing premier
-              property solutions tailored to meet your needs.
-            </p>
+                     <div className="w-full sm:w-6/12 lg:w-3/12 text-black px-6 py-2 text-center text-sm">
+             <Link to="/" target="_top">
+               <img src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" className="mx-auto" alt="Logo" />
+             </Link>
+             <p className="text-md my-3 mt-2 text-justify font-normal text-black">
+               100acress.com Real Estate Company specializes in providing premier
+               property solutions tailored to meet your needs.
+             </p>
 
-            <div className="my-3 text-left">
-              <a href="tel:+918500900100" className="flex items-center hover:text-white">
-                <i className="fa-solid fa-phone"></i>
-                <span className="ml-6 text-md font-normal">
-                  +91 8500-900-100
-                </span>
-              </a>
-            </div>
-            <div className="my-2 text-left ">
-              <a
-                href="mailto:support@100acress.com"
-                className="flex items-center hover:text-white"
-              >
-                <i className="fa-solid fa-message"></i>
-                <span className="ml-6 font-normal">support@100acress.com</span>
-              </a>
+             <div className="my-3 text-left">
+               <a href="tel:+918500900100" className="flex items-center hover:text-black/80 transition-colors duration-200">
+                 <i className="fa-solid fa-phone text-black/80"></i>
+                 <span className="ml-6 text-md font-normal text-black">
+                   +91 8500-900-100
+                 </span>
+               </a>
+             </div>
+             <div className="my-2 text-left ">
+               <a
+                 href="mailto:support@100acress.com"
+                 className="flex items-center hover:text-black/80 transition-colors duration-200"
+               >
+                 <i className="fa-solid fa-message text-black/80"></i>
+                 <span className="ml-6 font-normal text-black">support@100acress.com</span>
+               </a>
+             </div>
+           </div>
+
+                     <div className="w-full sm:w-6/12 lg:w-2/12 text-black px-6 py-3 text-start text-2xl font-semibold">
+             100acress
+             <div className="mt-2">
+               <li className="list-none text-black text-sm my-1">
+                                 <Link
+                   to="/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   Home
+                 </Link>
+              </li>
+                             <li className="list-none text-black text-sm my-1 text-justify">
+                 <Link
+                   to="/contact-us/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   Contact
+                 </Link>
+               </li>
+
+               <li className="list-none text-black text-sm my-1 text-justify">
+                 <Link
+                   to="/blog/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   {" "}
+                   Blog
+                 </Link>
+               </li>
+                             <li className="list-none text-black text-sm my-1 text-justify">
+                 <Link
+                   to="/career-with-us/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   Career
+                 </Link>
+               </li>
+               <li className="list-none text-black text-sm my-1 text-justify">
+                 <Link
+                   to="/about-us/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   About
+                 </Link>
+               </li>
+                             <li className="list-none text-black text-sm my-1 ">
+                 <Link
+                   to="/terms-and-conditions/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   {" "}
+                   Terms & Conditions
+                 </Link>
+               </li>
+               <li className="list-none text-black text-sm my-1 text-justify">
+                 <Link
+                   to="/news-and-articals/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   News & Articles
+                 </Link>
+               </li>
+               <li className="list-none text-black text-sm my-1 text-justify">
+                 <Link
+                   to="/privacy-policy/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   Privacy & Policy
+                 </Link>
+               </li>
             </div>
           </div>
 
-          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-start text-2xl">
-            100acress
-            <div className="mt-2">
-              <li className="list-none text-white text-sm my-1">
-                <Link
-                  to="/"
-                  className=""
-                  target="_top"
-                  style={{ color: "white" }}
-                >
-                  Home
-                </Link>
-              </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
-                <Link
-                  to="/contact-us/"
-                  className=""
-                  target="_top"
-                  style={{ color: "white" }}
-                >
-                  Contact
-                </Link>
-              </li>
-
-              <li className="list-none text-white text-sm my-1 text-justify">
-                <Link
-                  to="/blog/"
-                  className=""
-                  target="_top"
-                  style={{ color: "white" }}
-                >
-                  {" "}
-                  Blog
-                </Link>
-              </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
-                <Link
-                  to="/career-with-us/"
-                  className=""
-                  target="_top"
-                  style={{ color: "white" }}
-                >
-                  Career
-                </Link>
-              </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
-                <Link
-                  to="/about-us/"
-                  className=""
-                  target="_top"
-                  style={{ color: "white" }}
-                >
-                  About
-                </Link>
-              </li>
-              <li className="list-none text-white text-sm my-1 ">
-                <Link
-                  to="/terms-and-conditions/"
-                  className=""
-                  target="_top"
-                  style={{ color: "white" }}
-                >
-                  {" "}
-                  Terms & Conditions
-                </Link>
-              </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
-                <Link
-                  to="/news-and-articals/"
-                  className=""
-                  target="_top"
-                  style={{ color: "white" }}
-                >
-                  News & Articles
-                </Link>
-              </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
-                <Link
-                  to="/privacy-policy/"
-                  className=""
-                  target="_top"
-                  style={{ color: "white" }}
-                >
-                  Privacy & Policy
-                </Link>
-              </li>
-            </div>
-          </div>
-
-          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-left text-2xl">
-            Popular Cities
-            <div className="mt-2 mr-0">
-              <li className="list-none text-white text-sm my-1">
+                     <div className="w-full sm:w-6/12 lg:w-2/12 text-[#1a1a1a] px-6 py-3 text-left text-2xl font-semibold">
+             Popular Cities
+             <div className="mt-2 mr-0">
+               <li className="list-none text-[#2d2d2d] text-sm my-1">
                 <Link
                   to={"/projects-in-gurugram/"}
-                  className=""
+                  className="hover:text-[#1a1a1a] transition-colors duration-200"
                   target="_top"
-                  style={{ color: "white" }}
+                  style={{ color: "#2d2d2d" }}
                 >
                   Project in Gurugram
                 </Link>
               </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
+              <li className="list-none text-[#2d2d2d] text-sm my-1 text-justify">
                 <Link
                   to={"/project-in-noida/"}
-                  className=""
+                  className="hover:text-[#1a1a1a] transition-colors duration-200"
                   target="_top"
-                  style={{ color: "white" }}
+                  style={{ color: "#2d2d2d" }}
                 >
                   Project in Noida{" "}
                 </Link>
               </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
+              <li className="list-none text-[#2d2d2d] text-sm my-1 text-justify">
                 <Link
                   to={"/project-in-delhi/"}
-                  className=""
+                  className="hover:text-[#1a1a1a] transition-colors duration-200"
                   target="_top"
-                  style={{ color: "white" }}
+                  style={{ color: "#2d2d2d" }}
                 >
                   Project in Delhi
                 </Link>
               </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
+              <li className="list-none text-[#2d2d2d] text-sm my-1 text-justify">
                 <Link
                   to={"/project-in-goa/"}
-                  className=""
+                  className="hover:text-[#1a1a1a] transition-colors duration-200"
                   target="_top"
-                  style={{ color: "white" }}
+                  style={{ color: "#2d2d2d" }}
                 >
                   Project in Goa
                 </Link>
@@ -217,22 +217,22 @@ const Footer = () => {
                   Project in Ayodhya
                 </Link>
               </li> */}
-              <li className="list-none text-white text-sm my-1 text-justify">
+              <li className="list-none text-[#2d2d2d] text-sm my-1 text-justify">
                 <Link
                   to={"/project-in-mumbai/"}
-                  className=""
+                  className="hover:text-[#1a1a1a] transition-colors duration-200"
                   target="_top"
-                  style={{ color: "white" }}
+                  style={{ color: "#2d2d2d" }}
                 >
                   Project in Mumbai
                 </Link>
               </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
+              <li className="list-none text-[#2d2d2d] text-sm my-1 text-justify">
                 <Link
                   to={"/project-in-panipat/"}
-                  className=""
+                  className="hover:text-[#1a1a1a] transition-colors duration-200"
                   target="_top"
-                  style={{ color: "white" }}
+                  style={{ color: "#2d2d2d" }}
                 >
                   Project in Panipat
                 </Link>
@@ -247,12 +247,12 @@ const Footer = () => {
                   Project in Panchkula
                 </Link>
               </li> */}
-              <li className="list-none text-white text-sm my-1 text-justify">
+              <li className="list-none text-[#2d2d2d] text-sm my-1 text-justify">
                 <Link
                   to={"/project-in-kasauli/"}
-                  className=""
+                  className="hover:text-[#1a1a1a] transition-colors duration-200"
                   target="_top"
-                  style={{ color: "white" }}
+                  style={{ color: "#2d2d2d" }}
                 >
                   Project in Kasauli
                 </Link>
@@ -277,12 +277,12 @@ const Footer = () => {
                   Project in Jalandher
                 </Link>
               </li> */}
-              <li className="list-none text-white font-bold text-sm my-1 text-justify">
+              <li className="list-none text-[#1a1a1a] font-bold text-sm my-1 text-justify">
                 <Link
                   to={"#"}
-                  className=""
+                  className="hover:text-[#000000] transition-colors duration-200"
                   target="_top"
-                  style={{ color: "white" }}
+                  style={{ color: "#1a1a1a" }}
                 >
                   Project in Dubai
                 </Link>
@@ -290,68 +290,68 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="w-full sm:w-6/12 lg:w-2/12 text-white px-6 py-3 text-left text-2xl">
-            Services
-            <div className="mt-2">
-              <li className="list-none text-white text-sm my-1 ">
-                <Link
-                  to="/contact-us/"
-                  className=""
-                  target="_top"
-                  style={{ color: "white" }}
-                >
-                  Real Estate Consulting
-                </Link>
-              </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
-                <Link
-                  to="/contact-us/"
-                  className=""
-                  target="_top"
-                  style={{ color: "white" }}
-                >
-                  Legal Advice
-                </Link>
-              </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
-                <Link
-                  to="/contact-us/"
-                  className=""
-                  target="_top"
-                  style={{ color: "white" }}
-                >
-                  Interior Design
-                </Link>
-              </li>
-              <li className="list-none text-white text-sm my-1 text-justify">
-                <Link
-                  to="/contact-us/"
-                  className=""
-                  target="_top"
-                  style={{ color: "white" }}
-                >
-                  Home Loan
-                </Link>
-              </li>
-              <li className="list-none text-white text-sm my-1 truncate">
-                <Link
-                  to="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/masterplan/gurgaon+master+plan.pdf"
-                  className=""
-                  target="_blank"
-                  style={{ color: "white" }}
-                >
-                  Gurgaon Master Plan
-                </Link>
-                </li>
-                 <li className="list-none text-white text-sm my-1 truncate">
+                     <div className="w-full sm:w-6/12 lg:w-2/12 text-black px-6 py-3 text-left text-2xl font-semibold">
+             Services
+             <div className="mt-2">
+               <li className="list-none text-black text-sm my-1 ">
+                                 <Link
+                   to="/contact-us/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   Real Estate Consulting
+                 </Link>
+               </li>
+               <li className="list-none text-black text-sm my-1 text-justify">
                  <Link
-                  to="/qr-generator"
-                  className=""
-                  target="_blank"
-                  style={{ color: "white" }}
-                >
-                  Generate Your QR
-                </Link>
+                   to="/contact-us/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   Legal Advice
+                 </Link>
+               </li>
+               <li className="list-none text-black text-sm my-1 text-justify">
+                 <Link
+                   to="/contact-us/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   Interior Design
+                 </Link>
+               </li>
+               <li className="list-none text-black text-sm my-1 text-justify">
+                 <Link
+                   to="/contact-us/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   Home Loan
+                 </Link>
+               </li>
+                             <li className="list-none text-black text-sm my-1 truncate">
+                 <Link
+                   to="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/masterplan/gurgaon+master+plan.pdf"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_blank"
+                   style={{ color: "#000000" }}
+                 >
+                   Gurgaon Master Plan
+                 </Link>
+                 </li>
+                  <li className="list-none text-black text-sm my-1 truncate">
+                  <Link
+                   to="/qr-generator"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_blank"
+                   style={{ color: "#000000" }}
+                 >
+                   Generate Your QR
+                 </Link>
                 {/*  <Link
                                               to="/qr-generator"
                                               className="block text-sm px-4 hover:text-red-600"
@@ -362,40 +362,40 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="w-full sm:w-6/12 lg:w-3/12 text-white px-0 py-3 text-center text-xl">
-            Instant Callback
+                     <div className="w-full sm:w-6/12 lg:w-3/12 text-black px-0 py-3 text-center text-xl font-semibold">
+             Instant Callback
             <div className="flex flex-col mx-4 my-2 items-center">
-              <div className="relative w-full my-2">
-                <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm"></i>
-                <input
-                  type="name"
-                  name="name"
-                  className="w-full pl-10 pr-5 py-2 text-sm border border-white placeholder-white text-white transition-all ease-in duration-75 bg-transparent dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-white"
-                  placeholder="Full Name"
-                  value={data.name}
-                  onChange={handleSubmitData}
-                  required
-                />
-              </div>
+                             <div className="relative w-full my-2">
+                 <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-black/80 text-sm"></i>
+                 <input
+                   type="name"
+                   name="name"
+                   className="w-full pl-10 pr-5 py-2 text-sm border-2 border-[#FF9933] placeholder-black/70 text-black transition-all ease-in duration-200 bg-white/90 rounded-md focus:outline-none focus:ring-2 focus:ring-[#138808] focus:border-[#138808] hover:border-[#FF9933] hover:shadow-[0_4px_8px_rgba(255,153,51,0.2)]"
+                   placeholder="Full Name"
+                   value={data.name}
+                   onChange={handleSubmitData}
+                   required
+                 />
+               </div>
 
-              <div className="relative w-full my-2">
-                <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 textwhitek text-sm"></i>
-                <input
-                  type="number"
-                  name="mobile"
-                  className="w-full pl-10 pr-5 py-2 text-sm border border-white placeholder-white text-white transition-all ease-in duration-75 bg-transparent dark:bg-gray-900 rounded-md dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-white"
-                  placeholder="Mobile Number"
-                  value={data.mobile}
-                  onChange={handleSubmitData}
-                  required
-                />
-              </div>
-              <button
-                className="w-full text-white bg-white font-normal py-1 mt-1 rounded-lg"
-                onClick={handleSubmit}
-              >
-                <SendIcon/>
-              </button>
+               <div className="relative w-full my-2">
+                 <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black/80 text-sm"></i>
+                 <input
+                   type="number"
+                   name="mobile"
+                   className="w-full pl-10 pr-5 py-2 text-sm border-2 border-[#FF9933] placeholder-black/70 text-black transition-all ease-in duration-200 bg-white/90 rounded-md focus:outline-none focus:ring-2 focus:ring-[#138808] focus:border-[#138808] hover:border-[#FF9933] hover:shadow-[0_4px_8px_rgba(255,153,51,0.2)]"
+                   placeholder="Mobile Number"
+                   value={data.mobile}
+                   onChange={handleSubmitData}
+                   required
+                 />
+               </div>
+                             <button
+                 className="w-full text-[#138808] bg-white font-medium py-2 mt-1 rounded-lg hover:bg-white/90 transition-all duration-200 shadow-sm hover:shadow-md"
+                 onClick={handleSubmit}
+               >
+                 <SendIcon/>
+               </button>
             </div>
             <nav
               aria-label="Footer Navigation"
@@ -453,15 +453,15 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="w-full px-2 py-3 bg-[#C13B44]">
-          <p className="text-center text-sm text-white mb-0">
-            Copyright © 2025,{" "}
-            <Link className="text-reset" to="https://100acress.com/">
-              100acress.com.
-            </Link>{" "}
-            All Rights Reserved
-          </p>
-        </div>
+                 <div className="w-full px-2 py-3" style={{ background: 'linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)' }}>
+           <p className="text-center text-sm text-black mb-0 font-medium">
+             Copyright © 2025,{" "}
+             <Link className="text-black hover:text-black/80 transition-colors duration-200" to="https://100acress.com/">
+               100acress.com.
+             </Link>{" "}
+             All Rights Reserved
+           </p>
+         </div>
       </div>
     </>
   );

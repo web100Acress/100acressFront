@@ -29,8 +29,6 @@ import { useJwt } from "react-jwt";
 
 const SpacerComponent = () => <Box width="60px" />;
 
-
-
 export default function Navbar() {
   const history = useNavigate();
   const usertoken = JSON.parse(localStorage.getItem("myToken"));
@@ -114,7 +112,6 @@ export default function Navbar() {
     setMenuOpen1(false);
   };
 
-
   const checkUserAuth = () => {
     const storedToken = localStorage.getItem("myToken");
     setToken(storedToken);
@@ -128,11 +125,16 @@ export default function Navbar() {
     <Wrapper className="section">
       <Box>
         <Box
-          bg={colorChange ? "#EE1C25" : "white"}
+          bg={colorChange ? "linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)" : "white"}
           className={`top-0 z-50 pt-1 pb-1 shadow-md  ${colorChange ? 'w-100 rounded-b-3xl' : 'w-full'} `}
-          style={{ position: "fixed", scrollBehavior: "smooth" }}
+          style={{ 
+            position: "fixed", 
+            scrollBehavior: "smooth",
+            background: colorChange ? "linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)" : "white"
+          }}
           px={{ base: 0, md: 4, lg: 7 }}
         >
+          
           <Flex h={12} alignItems="center" justifyContent="space-between">
             <IconButton
               size={"md"}
@@ -154,54 +156,85 @@ export default function Navbar() {
               justifyContent={isSmallerThan768 ? "space-x-0" : "space-x-0"}
               flex="1"
             >
-              {!isSmallerThan768 && (<Box marginLeft={"-18px"}>
-                {" "}
-                {/* Adjust values as needed */}
-                {colorChange ? (<><Link to={"/"}>
-                  <Image
-                    maxW={["160px", "200px"]}
-                    minW={["50px", "70px"]}
-                    width={["xs", "sm", "md", "lg"]}
-                    src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/lg.webp"
-                    alt="100acress"
-                    marginBottom={2}
-                  />
-                </Link></>) : (<><Link to={"/"}>
-                  <Image
-                    maxW={["160px", "200px"]}
-                    minW={["50px", "70px"]}
-                    width={["xs", "sm", "md", "lg"]}
-                    src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
-                    alt="100acress"
-                    marginBottom={2}
-                  />
-                </Link></>)}
-
-              </Box>)}
-              {isSmallerThan768 && !colorChange && (<Box marginLeft={"-18px"}>
-                {" "}
-                {/* Adjust values as needed */}
-                {colorChange ? (<><Link to={"/"}>
-                  <Image
-                    maxW={["160px", "200px"]}
-                    minW={["50px", "70px"]}
-                    width={["xs", "sm", "md", "lg"]}
-                    src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/lg.webp"
-                    alt="100acress"
-                    marginBottom={2}
-                  />
-                </Link></>) : (<><Link to={"/"}>
-                  <Image
-                    maxW={["140px", "200px"]}
-                    minW={["50px", "70px"]}
-                    width={["xs", "sm", "md", "lg"]}
-                    src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
-                    alt="100acress"
-                    marginBottom={2}
-                  />
-                </Link></>)}
-
-              </Box>)}
+              {!isSmallerThan768 && (
+                <Box marginLeft={"-18px"}>
+                  <Flex alignItems="center" gap={0}>
+                    {colorChange ? (
+                      <Link to={"/"}>
+                        <Image
+                          maxW={["160px", "200px"]}
+                          minW={["50px", "70px"]}
+                          width={["xs", "sm", "md", "lg"]}
+                          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/lg.webp"
+                          alt="100acress"
+                          marginBottom={2}
+                        />
+                      </Link>
+                    ) : (
+                      <Link to={"/"}>
+                        <Image
+                          maxW={["160px", "200px"]}
+                          minW={["50px", "70px"]}
+                          width={["xs", "sm", "md", "lg"]}
+                          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
+                          alt="100acress"
+                          marginBottom={2}
+                        />
+                      </Link>
+                    )}
+                    
+                    {/* Tri-color independence day logo next to main logo */}
+                    <Image
+                      width="100px"
+                      height="75px"
+                      src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/independencedaylogo.png"
+                      alt="Independence Day"
+                      marginBottom={2}
+                      objectFit="contain"
+                    />
+                  </Flex>
+                </Box>
+              )}
+              
+              {isSmallerThan768 && !colorChange && (
+                <Box marginLeft={"-18px"}>
+                  <Flex alignItems="center" gap={0}>
+                    {colorChange ? (
+                      <Link to={"/"}>
+                        <Image
+                          maxW={["160px", "200px"]}
+                          minW={["50px", "70px"]}
+                          width={["xs", "sm", "md", "lg"]}
+                          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/lg.webp"
+                          alt="100acress"
+                          marginBottom={2}
+                        />
+                      </Link>
+                    ) : (
+                      <Link to={"/"}>
+                        <Image
+                          maxW={["140px", "200px"]}
+                          minW={["50px", "70px"]}
+                          width={["xs", "sm", "md", "lg"]}
+                          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
+                          alt="100acress"
+                          marginBottom={2}
+                        />
+                      </Link>
+                    )}
+                    
+                    {/* Tri-color independence day logo for mobile */}
+                    <Image
+                      width="75px"
+                      height="55px"
+                      src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/independencedaylogo.png"
+                      alt="Independence Day"
+                      marginBottom={2}
+                      objectFit="contain"
+                    />
+                  </Flex>
+                </Box>
+              )}
 
               {!isSmallerThan768 && (
                 <HStack spacing={10} justify="center" flex="1">
@@ -989,13 +1022,38 @@ export default function Navbar() {
 
                             <Link
                               to={`/project-in-kasauli/`}
-                              className="block text-sm px-4    hover:text-red-600"
+                              className="block text-sm px-4   hover:text-red-600"
                             >
                               Projects in Kasauli
                             </Link>
+                            <Link
+                              to={`/projects-in-sonipat/`}
+                              className="block text-sm px-4 py-1 hover:text-red-600"
+                            >
+                              Projects in Sonipat
+                            </Link>
+                            <Link
+                              to={`/projects-in-karnal/`}
+                              className="block text-sm px-4 hover:text-red-600"
+                            >
+                              Projects in Karnal
+                            </Link>
+                            <Link
+                              to={`/projects-in-jalandhar/`}
+                              className="block text-sm px-4 py-1  hover:text-red-600"
+                            >
+                              Projects in Jalandhar
+                            </Link>
 
                             <Link
-                              to=""
+                              to={"/projects-in-pushkar/"}
+                              className="block text-sm px-4   hover:text-red-600"
+                            >
+                              Projects in Pushkar
+                            </Link>
+
+                            <Link
+                              to={`/projects-in-dubai/`}
                               className="block text-sm px-4 py-1 font-semibold text-red-600 hover:text-red-600 hover:underline"
                             >
                               Projects in Dubai{" "}
@@ -1004,8 +1062,7 @@ export default function Navbar() {
                               </span>
                             </Link>
                           </div>
-
-                          <div className="w-40">
+                          <div className="flex flex-col w-48">
                             <Link
                               to="#"
                               className="block text-black text-lg px-4 py-1 hover:text-red-600"
@@ -1022,7 +1079,7 @@ export default function Navbar() {
                             </Link>
                             <Link
                               to={`/budget-properties/`}
-                              className="block text-sm px-4 py-1 hover:text-red-600"
+                              className="block text-sm px-4 hover:text-red-600"
                               onClick={() => handlePriceClick(1, 5)}
                             >
                               ₹1 Cr - ₹5 Cr
@@ -1036,7 +1093,7 @@ export default function Navbar() {
                             </Link>
                             <Link
                               to={`/budget-properties/`}
-                              className="block text-sm px-4 py-1 hover:text-red-600"
+                              className="block text-sm px-4 hover:text-red-600"
                               onClick={() => handlePriceClick(10, 20)}
                             >
                               ₹10 Cr - ₹20 Cr
@@ -1050,12 +1107,13 @@ export default function Navbar() {
                             </Link>
                             <Link
                               to={`/budget-properties/`}
-                              className="block text-sm px-4 py-1 hover:text-red-600"
+                              className="block text-sm px-4 hover:text-red-600"
                               onClick={() => handlePriceClick(50, Infinity)}
                             >
                               Above ₹50 Cr
                             </Link>
                           </div>
+
                           {/* aman work here */}
                           <div className="mt-4">
                             <Link

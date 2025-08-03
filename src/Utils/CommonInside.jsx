@@ -109,7 +109,7 @@ const CommonInside = ({
             return (
               <article
                 key={index}
-                className="mb-2 overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+                className="mb-2 overflow-hidden rounded-md border text-black shadow-md duration-500 ease-in-out hover:shadow-xl bg-[#FFF8F0]"
               >
                 <div className="relative w-[95%] mt-1 align-center aspect-[4/3]" style={{ marginLeft: "7px", marginBottom: "10px" }}>
                   <Link to={propertyUrl} target="_top">
@@ -146,7 +146,7 @@ const CommonInside = ({
                         : propertyName || ""}
                     </span>
                     <br />
-                    <span className="text-sm text-gray-400 hover:text-red-600 duration-500 ease-in-out">
+                    <span className="text-sm text-black hover:text-red-600 duration-500 ease-in-out">
                       {location}
                     </span>
                   </div>
@@ -160,7 +160,7 @@ const CommonInside = ({
                             {item.type || item.postProperty?.propertyType || item.postProperty?.type}
                           </span>
                         </div>
-                        <span className="text-[10px] text-gray-600 block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
+                        <span className="text-[10px] text-black block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
                           <LocationRedIcon />{" "}
                           {item.projectAddress || item?.postProperty?.address}
                         </span>

@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { spotlight, trending ,featured,upcoming,affordable,luxury,scoplots,commercial,budget,projectindelhi} from "../slice/projectSlice";
 import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, dubai, pushkar} from "../slice/StateProject";  
-import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026} from "../slice/AllSectionData";
+import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026,plotsingurugram} from "../slice/AllSectionData";
 import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize} from "../slice/BuilderSlice";
 import {Possessionin2025,Possessionin2026} from "../slice/PossessionSlice";
 import {bptpplots,orrisplots} from "../slice/ProjectOverviewSlice";
@@ -226,6 +226,9 @@ const Api_service = () => {
       }else
       if(query === "dlfsco"){
         dispatch(dlfsco(AllProjectbyQuery))
+      }else
+      if(query === "plotsingurugram"){
+        dispatch(plotsingurugram(AllProjectbyQuery))
       }
     }catch(error){
       console.error("Error fetching ",error);

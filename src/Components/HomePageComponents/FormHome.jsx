@@ -69,7 +69,7 @@ const FormHome = () => {
   return (
     <div className="max-w-[1250px] mx-auto" >
     <div className="text-start ml-10">
-          <p className=" text-xl lg:text-2xl md:text-2xl sm:text-xl xs:text-xl text-gray-700 mb-4 mt-2">
+          <p className=" text-xl lg:text-2xl md:text-2xl sm:text-xl xs:text-xl text-gray-700 mb-4 mt-2 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
           Consult a Property Expert Now
           </p>
     </div>

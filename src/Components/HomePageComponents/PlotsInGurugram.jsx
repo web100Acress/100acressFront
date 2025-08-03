@@ -8,10 +8,10 @@ import { Link } from "react-router-dom";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { PaginationControls } from "../Blog_Components/BlogManagement";
 
-const BuilderIndependentFloor = () => {
-  let query = "builderindepedentfloor";
+const PlotsInGurugram = () => {
+  let query = "plotsingurugram";
   const { getAllProjects } = Api_Service();
-  const BuilderIndependentFloor = useSelector(store => store?.allsectiondata?.builderindependentfloor);
+  const PlotsInGurugram = useSelector(store => store?.allsectiondata?.plotsingurugram);
 
   // State management
   const [filteredData, setFilteredData] = useState([]);
@@ -62,16 +62,26 @@ const BuilderIndependentFloor = () => {
   }, []);
 
   useEffect(() => {
-    if (BuilderIndependentFloor) {
-      setFilteredData(BuilderIndependentFloor);
+    if (PlotsInGurugram) {
+      setFilteredData(PlotsInGurugram);
     }
-  }, [BuilderIndependentFloor]);
+  }, [PlotsInGurugram]);
 
   // Filtering logic
   const applyFilters = () => {
-    if (!BuilderIndependentFloor) return;
+    if (!PlotsInGurugram) return;
 
-    let filtered = BuilderIndependentFloor.filter(project => {
+    let filtered = PlotsInGurugram.filter(project => {
+      // Plot type filter - ensure only plots are shown
+      const isPlot = project.type?.toLowerCase().includes('plot') ||
+                    project.projectType?.toLowerCase().includes('plot') ||
+                    project.category?.toLowerCase().includes('plot') ||
+                    project.propertyType?.toLowerCase().includes('plot') ||
+                    project.projectName?.toLowerCase().includes('plot') ||
+                    project.description?.toLowerCase().includes('plot');
+
+      if (!isPlot) return false;
+
       // Search term filter
       const matchesSearch = !searchTerm || 
         project.projectName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -109,7 +119,7 @@ const BuilderIndependentFloor = () => {
 
   useEffect(() => {
     applyFilters();
-  }, [searchTerm, selectedCities, selectedProjectStatus, minPrice, maxPrice, BuilderIndependentFloor]);
+  }, [searchTerm, selectedCities, selectedProjectStatus, minPrice, maxPrice, PlotsInGurugram]);
 
   // Handlers
   const handleCheckboxChange = (e, setSelectedState) => {
@@ -162,10 +172,10 @@ const BuilderIndependentFloor = () => {
   return (
     <>
       <Helmet>
-        <title>Independent & Builder Floors | 100Acress</title>
-        <meta name="description" content="Discover premium independent and builder floors in Gurugram. Find your dream property with detailed information, pricing, and location details. Your trusted partner for property investment." />
-        <meta name="keywords" content="independent floors, builder floors, property in gurugram, real estate, property investment, buy property, residential properties" />
-        <link rel="canonical" href="https://www.100acress.com/projects/independentfloors/" />
+        <title>Plots in Gurugram | 100Acress</title>
+        <meta name="description" content="Discover premium plots in Gurugram. Find your dream plot with detailed information, pricing, and location details. Your trusted partner for plot investment." />
+        <meta name="keywords" content="plots in gurugram, residential plots, commercial plots, property investment, buy plots, real estate gurugram" />
+        <link rel="canonical" href="https://www.100acress.com/projects/plots-in-gurugram/" />
       </Helmet>
 
       {/* Filter Modal */}
@@ -318,15 +328,15 @@ const BuilderIndependentFloor = () => {
             <div className="relative z-10 max-w-5xl mx-auto pt-4">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 tracking-wide leading-tight" style={{ fontFamily: 'DM Sans, sans-serif' }}>
                 <span className="bg-gradient-to-r from-red-600 via-red-500 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
-                  Independent & Builder
+                  Plots in
                 </span>
-                <span className="text-gray-900 drop-shadow-sm"> Floors</span>
+                <span className="text-gray-900 drop-shadow-sm"> Gurugram</span>
               </h1>
               
               <div className="w-32 h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-orange-500 mx-auto mb-3 rounded-full shadow-lg"></div>
               
               <p className="text-base md:text-lg text-slate-600 max-w-4xl mx-auto leading-relaxed font-medium tracking-wide" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-              Discover Premium Independent & Builder Floors – Curated Living Spaces in Top Cities.
+              Discover Premium Plots in Gurugram – Your Gateway to Prime Real Estate Investment.
               </p>
             </div>
             
@@ -427,7 +437,7 @@ const BuilderIndependentFloor = () => {
                   </div>
                   <input
                     type="text"
-                    placeholder="Search projects by name or city..."
+                    placeholder="Search plots by name or city..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 shadow-sm hover:shadow-md"
@@ -463,7 +473,7 @@ const BuilderIndependentFloor = () => {
 
               {/* Filter Tags */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
-                <div className="text-gray-700 font-semibold flex-shrink-0">Showing Projects</div>
+                <div className="text-gray-700 font-semibold flex-shrink-0">Showing Plots</div>
                 <div className="flex flex-wrap gap-2">
                   {selectedCities.map(city => (
                     <span key={city} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
@@ -486,45 +496,45 @@ const BuilderIndependentFloor = () => {
                 </div>
               </div>
 
-              {/* Projects Grid */}
+              {/* Plots Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {!BuilderIndependentFloor || BuilderIndependentFloor.length === 0 ? (
+                {!PlotsInGurugram || PlotsInGurugram.length === 0 ? (
                   <div className="col-span-full"><CustomSkeleton /></div>
                 ) : (
-                  paginatedData.map((project, idx) => {
-                    const propertyUrl = project.project_url ? `/${project.project_url}/` : "#";
-                    const imageUrl = project.frontImage?.cdn_url || project.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
-                    const location = (project.city && project.state) ? `${project.city}, ${project.state}` : "Gurugram, Haryana";
+                  paginatedData.map((plot, idx) => {
+                    const plotUrl = plot.project_url ? `/${plot.project_url}/` : "#";
+                    const imageUrl = plot.frontImage?.cdn_url || plot.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
+                    const location = (plot.city && plot.state) ? `${plot.city}, ${plot.state}` : "Gurugram, Haryana";
                     
                     return (
                       <Link
-                        key={project._id || idx}
-                        to={propertyUrl}
+                        key={plot._id || idx}
+                        to={plotUrl}
                         target="_top"
                         className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-400"
                         style={{ animationDelay: `${idx * 50}ms` }}
                         tabIndex={0}
                       >
-                        {/* Project Image */}
+                        {/* Plot Image */}
                         <div className="relative overflow-hidden">
                           <img
                             src={imageUrl}
-                            alt={project.projectName}
+                            alt={plot.projectName}
                             className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                             loading="lazy"
                           />
                           <div className="absolute top-3 right-3">
-                            <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                              Independent Floor
+                            <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                              Plot
                             </span>
                           </div>
                         </div>
 
-                        {/* Project Details */}
+                        {/* Plot Details */}
                         <div className="flex flex-col flex-1 p-4">
-                          {/* Project Name */}
+                          {/* Plot Name */}
                           <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight">
-                            {project.projectName}
+                            {plot.projectName}
                           </h3>
 
                           {/* Location */}
@@ -536,31 +546,32 @@ const BuilderIndependentFloor = () => {
                             <span className="truncate">{location}</span>
                           </div>
 
-                          {/* Project Type */}
+                          {/* Plot Type */}
                           <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
                             <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
                             </svg>
-                            <span className="truncate">{project.type || 'Independent Floor'}</span>
+                            <span className="truncate">{plot.type || 'Residential Plot'}</span>
                           </div>
 
                           {/* Price and CTA */}
                           <div className="mt-auto">
                             <div className="text-red-500 font-bold text-xl mb-3 flex items-center gap-1">
                               ₹
-                              {!project.minPrice && !project.maxPrice ? (
-                                project.price ? formatPrice(project.price) : "Reveal Soon"
-                              ) : !project.minPrice || !project.maxPrice ? (
+                              {!plot.minPrice && !plot.maxPrice ? (
+                                plot.price ? formatPrice(plot.price) : "Reveal Soon"
+                              ) : !plot.minPrice || !plot.maxPrice ? (
                                 "Reveal Soon"
                               ) : (
                                 <>
-                                  {project.minPrice < 1 ? (
-                                    <>{(project.minPrice * 100).toFixed()} L</>
+                                  {plot.minPrice < 1 ? (
+                                    <>{(plot.minPrice * 100).toFixed()} L</>
                                   ) : (
-                                    <>{formatPrice(project.minPrice)}</>
+                                    <>{formatPrice(plot.minPrice)}</>
                                   )}
                                   {" - "}
-                                  {formatPrice(project.maxPrice)} Cr
+                                  {formatPrice(plot.maxPrice)} Cr
                                 </>
                               )}
                             </div>
@@ -592,4 +603,4 @@ const BuilderIndependentFloor = () => {
   );
 };
 
-export default BuilderIndependentFloor; 
+export default PlotsInGurugram; 
