@@ -1,14 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "./Sidebar";
 import { message } from "antd"; // Import Ant Design message for modern notifications
-import { MdInfo, MdLocationOn, MdAttachMoney, MdApartment, MdTitle, MdDescription, MdPerson, MdImage, MdBusiness, MdDateRange, MdOutlineNumbers, MdOutlinePhone, MdOutlineAttachMoney, MdOutlineInsertDriveFile, MdOutlineCloudUpload, MdOutlineCategory, MdStar, MdSchool, MdMovie } from "react-icons/md";
+import { MdInfo, MdLocationOn, MdAttachMoney, MdApartment, MdTitle, MdDescription, MdPerson, MdImage, MdBusiness, MdDateRange, MdOutlineNumbers, MdOutlinePhone, MdOutlineAttachMoney, MdOutlineInsertDriveFile, MdOutlineCloudUpload, MdOutlineCategory, MdStar, MdSchool, MdMovie, MdSearch, MdKeyboardArrowDown } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 import { useDropzone } from 'react-dropzone';
 
 const InsertProject = () => {
+  // Builder list for dropdown
+  const buildersList = [
+    "Signature Global",
+    "M3M India", 
+    "DLF Homes",
+    "Experion Developers",
+    "Elan Group",
+    "BPTP LTD",
+    "Adani Realty",
+    "Smartworld",
+    "Trevoc Group",
+    "Indiabulls",
+    "Central Park",
+    "Emaar India",
+    "Godrej Properties",
+    "Whiteland Corporation",
+    "AIPL",
+    "Birla Estates",
+    "Sobha",
+    "Trump Towers",
+    "Puri Constructions",
+    "Aarize Group"
+  ];
+
+  // State for builder dropdown
+  const [isBuilderDropdownOpen, setIsBuilderDropdownOpen] = useState(false);
+  const [builderSearchTerm, setBuilderSearchTerm] = useState("");
+  const [filteredBuilders, setFilteredBuilders] = useState(buildersList);
+
   const [editFromData, setEditFromData] = useState({
     projectName: "",
     state: "",
@@ -58,6 +87,38 @@ const InsertProject = () => {
 
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
+
+  // Filter builders based on search term
+  useEffect(() => {
+    const filtered = buildersList.filter(builder =>
+      builder.toLowerCase().includes(builderSearchTerm.toLowerCase())
+    );
+    setFilteredBuilders(filtered);
+  }, [builderSearchTerm]);
+
+  // Handle builder selection
+  const handleBuilderSelect = (builderName) => {
+    setEditFromData(prev => ({
+      ...prev,
+      builderName: builderName
+    }));
+    setBuilderSearchTerm(builderName);
+    setIsBuilderDropdownOpen(false);
+  };
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isBuilderDropdownOpen && !event.target.closest('.builder-dropdown')) {
+        setIsBuilderDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isBuilderDropdownOpen]);
 
   const resetData = () => {
     setEditFromData({
@@ -693,19 +754,67 @@ const InsertProject = () => {
                 onChange={handleChangeProjectData}
               />
             </div>
-            <div>
-                  <Tippy content={<span>Builder Name</span>} animation="scale" theme="light-border">
-                    <label htmlFor="builderName" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdPerson /> Builder Name</label>
-                  </Tippy>
-              <input
-                type="text"
-                id="builderName"
-                name="builderName"
-                placeholder="Enter builder's name"
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
-                value={editFromData.builderName}
-                onChange={handleChangeProjectData}
-              />
+            <div className="relative builder-dropdown">
+              <Tippy content={<span>Builder Name</span>} animation="scale" theme="light-border">
+                <label htmlFor="builderName" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1"><MdPerson /> Builder Name</label>
+              </Tippy>
+              <div className="relative">
+                <input
+                  type="text"
+                  id="builderName"
+                  name="builderName"
+                  placeholder="Search and select builder..."
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 pr-10"
+                  value={builderSearchTerm}
+                  onChange={(e) => {
+                    setBuilderSearchTerm(e.target.value);
+                    setIsBuilderDropdownOpen(true);
+                  }}
+                  onFocus={() => setIsBuilderDropdownOpen(true)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsBuilderDropdownOpen(!isBuilderDropdownOpen)}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <MdKeyboardArrowDown className={`transition-transform ${isBuilderDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+              </div>
+              
+              {/* Dropdown */}
+              {isBuilderDropdownOpen && (
+                <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                  <div className="p-2 border-b border-gray-200">
+                    <div className="relative">
+                      <MdSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Search builders..."
+                        className="w-full pl-8 pr-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-red-500"
+                        value={builderSearchTerm}
+                        onChange={(e) => setBuilderSearchTerm(e.target.value)}
+                        autoFocus
+                      />
+                    </div>
+                  </div>
+                  <div className="max-h-48 overflow-y-auto">
+                    {filteredBuilders.length > 0 ? (
+                      filteredBuilders.map((builder, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                          onClick={() => handleBuilderSelect(builder)}
+                        >
+                          {builder}
+                        </button>
+                      ))
+                    ) : (
+                      <div className="px-3 py-2 text-sm text-gray-500">No builders found</div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
             <div>
                   <Tippy content={<span>Connectivity (e.g., Metro Station, Highway)</span>} animation="scale" theme="light-border">
