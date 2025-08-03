@@ -27,8 +27,10 @@ import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
+import ConfettiAllCorners from "../Components/ConfettiAllCorners";
 
 const Home = () => {
+  const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -268,6 +270,9 @@ const Home = () => {
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
+      
+      {/* Confetti Animation */}
+      {showConfetti && <ConfettiAllCorners />}
       
   {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} />  */}
 

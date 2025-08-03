@@ -50,3 +50,28 @@ module.exports = {
     },
   ],
 };
+
+
+// tailwind.config.js
+module.exports = {
+  content: ['./src/**/*.{js,jsx}'],
+  theme: {
+    extend: {
+      animation: {
+        'popper-left': 'popper-left 1.5s ease-out forwards',
+        'popper-right': 'popper-right 1.5s ease-out forwards',
+      },
+      keyframes: {
+        'popper-left': {
+          '0%': { transform: 'translate(0, 0) rotate(0deg)', opacity: '1' },
+          '100%': { transform: 'translate(-200px, -150px) rotate(720deg)', opacity: '0' },
+        },
+        'popper-right': {
+          '0%': { transform: 'translate(0, 0) rotate(0deg)', opacity: '1' },
+          '100%': { transform: 'translate(200px, -150px) rotate(720deg)', opacity: '0' },
+        },
+      },
+    },
+  },
+  plugins: [],
+};

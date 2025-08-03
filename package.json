@@ -21,6 +21,7 @@
     "antd": "^5.26.6",
     "aos": "^2.3.4",
     "axios": "^1.5.1",
+    "canvas-confetti": "^1.9.3",
     "chart.js": "^4.4.0",
     "country-state-city": "^3.2.1",
     "date-fns": "^3.6.0",
