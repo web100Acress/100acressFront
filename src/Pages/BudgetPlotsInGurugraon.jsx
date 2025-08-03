@@ -14,12 +14,12 @@ const BudgetPlotsInGurugraon = () => {
     <Wrapper className="section">
     <div data-aos="zoom-in-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
       <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
-        <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
+        <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
         Budget Plots in Gurugram
         </h2>
         <div className=" ml-2 hidden sm:block">
         <Link to="/plots-in-gurugram/" target="_top">
-        <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
+        <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] hover:from-[#E6891E] hover:via-[#2d2d2d] hover:to-[#0F6B05] transition-all duration-300">
           <EyeIcon />
           <span className="ml-2">View All</span>
         </span>
@@ -30,7 +30,7 @@ const BudgetPlotsInGurugraon = () => {
         {budgetPlots.map((project, index) => (
           <Link to={project.link} key={index} className="card">
             <img src={project.image} alt={project.title} className="card-image" />
-            <button className="card-button bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">{project.title}</button>
+            <button className="card-button bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] hover:from-[#E6891E] hover:via-[#2d2d2d] hover:to-[#0F6B05] focus:ring-4 focus:outline-none focus:ring-[#FF9933]/30 dark:focus:ring-[#138808]/30 transition-all duration-300">{project.title}</button>
           </Link>
         ))}
       </div>
@@ -91,6 +91,8 @@ const Wrapper = styled.section`
 
   .card:hover {
     transform: translateY(-5px);
+    border-color: #FF9933;
+    box-shadow: 0px 8px 16px rgba(255, 153, 51, 0.2);
   }
 
   .card-image {
@@ -105,18 +107,18 @@ const Wrapper = styled.section`
     margin-top: 10px;
     border-radius:10px;
     padding: 10px 0px;
-    background-color: #C13B44;
     color: white;
     font-size: 1rem;
     font-weight: bold;
     border: none;
     cursor: pointer;
     text-transform: capitalize;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .card-button:hover {
-    background-color: #7C1920;
+    transform: translateY(-2px);
+    box-shadow: 0px 4px 12px rgba(255, 153, 51, 0.3);
   }
 
   @media (max-width: 768px) {

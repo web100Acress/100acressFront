@@ -305,7 +305,7 @@ const Home = () => {
       <div className="relative">
         {/* <div className="absolute inset-0 bg-[#f17777]"></div> */}
         <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to right top, #f17777, #541D13)',
+          background: 'linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)',
         }}></div>
 
 
@@ -322,7 +322,7 @@ const Home = () => {
           data-aos-duration="1000" className="py-0 mt-3 max-w-[1250px] mx-auto">
             <br />
           <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 ">
-            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl">
+            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
               {`${activeFilter}`} Properties in Gurugram
             </h2>
           </div>
@@ -334,51 +334,51 @@ const Home = () => {
             
               <button
                 onClick={() => setActiveFilter("Trending")}
-                className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Trending" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:shadow-lg hover:scale-110 duration-500 ease-in-out "}`}
+                className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Trending" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:shadow-lg hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
               >
                 Trending
               </button>
             <button
               onClick={() => setActiveFilter("Featured")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Featured" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-110 duration-500 ease-in-out"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Featured" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
             >
               Featured
             </button>
             <button
               onClick={() => setActiveFilter("Upcoming")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Upcoming" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-110 duration-500 ease-in-out"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Upcoming" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
             >
               Upcoming
             </button>
             <button
               onClick={() => setActiveFilter("Commercial")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Commercial" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-110 duration-500 ease-in-out"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Commercial" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
             >
               Commercial
             </button>
             <button
               onClick={() => setActiveFilter("Affordable")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Affordable" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-110 duration-500 ease-in-out"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Affordable" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
             >
               Affordable
             </button>
             <button
               onClick={() => setActiveFilter("SCO")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "SCO" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-110 duration-500 ease-in-out"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "SCO" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
             >
               SCO
             </button>
             <button
               onClick={() => setActiveFilter("Budget")}
-              className={`px-4 py-2 rounded-full text-xs ${activeFilter === "Budget" ? "bg-[#C13B44] text-white" : "border border-[#333333] shadow-sm hover:scale-110 duration-500 ease-in-out"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Budget" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
             >
               Budget 🏠
             </button>
             <button
               onClick={() => setActiveFilter("Luxury")}
               className={`px-4 py-2 rounded-full text-sm font-semibold ${activeFilter === "Luxury"
-                ? "bg-gradient-to-r from-[#da737a] to-[#5f050b] text-white shadow-lg transform hover:scale-105 duration-300 ease-in-out"
-                : "border-2 border-[#D4AF37] text-[#D4AF37] shadow-md hover:scale-105 duration-300 ease-in-out"}`}
+                ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg transform hover:scale-105 duration-300 ease-in-out"
+                : "border-2 border-[#FF9933] text-[#FF9933] shadow-md hover:scale-105 duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
             >
               Luxury
             </button>
@@ -386,7 +386,7 @@ const Home = () => {
             {path && (
               <div className="ml-auto hidden sm:block">
                 <Link to={path} target="_top">
-                  <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-red-600">
+                  <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-gradient-to-r from-[#FF9933] to-[#138808] shadow-lg hover:shadow-xl transition-all duration-300">
                     <EyeIcon />
                     <span className="ml-2">View All</span>
                   </span>
@@ -494,8 +494,8 @@ const Home = () => {
         <Link to="/auth/signin/" target="_top">
           <div className="sticky-quote-cta">
             <a
-              className="text-white"
-              style={{ backgroundColor: "#C13B44", padding: '12px' }}
+              className="text-white font-semibold"
+              style={{ background: 'linear-gradient(135deg, #FF9933 0%, #138808 100%)', padding: '12px' }}
             >
               LIST{" "}PROPERTY
             </a>
@@ -538,62 +538,65 @@ const Home = () => {
 export default Home;
 
 const Wrapper = styled.section`
+  /* Tricolor theme for the entire home page */
+  background: linear-gradient(135deg, rgba(255, 153, 51, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(19, 136, 8, 0.05) 100%);
 
   .dd-m-phone {
     position: fixed;
     z-index: 999;
     bottom: 10px;
-    right: 10px; /* Changed from right to left */
+    right: 10px;
     width: 45px;
     height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: #007bff; /* Blue color for the icon background */
+    background: linear-gradient(135deg, #FF9933 0%, #138808 100%);
     transition: 0.3s all ease;
     cursor: pointer;
     text-decoration: none;
-    color: #fff; /* Icon color */
-    font-size: 24px; /* Adjust icon size as needed */
+    color: #fff;
+    font-size: 24px;
   }
 
   .dd-m-phone:hover {
     transform: rotate(0.3turn);
-    box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
+    box-shadow: 0 5px 15px 2px rgba(255, 153, 51, 0.4);
   }
 
   .dd-m-phone i {
-    font-size: 24px; /* Adjust icon size as needed */
+    font-size: 24px;
   }
 
   .dd-m-whatsapp {
     position: fixed;
     z-index: 999;
     bottom: 70px;
-    right: 10px; /* Changed from right to left */
+    right: 10px;
     width: 45px;
     height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: #4ac557; /* Blue color for the icon background */
+    background: linear-gradient(135deg, #138808 0%, #FF9933 100%);
     transition: 0.3s all ease;
     cursor: pointer;
     text-decoration: none;
-    color: #fff; /* Icon color */
-    font-size: 24px; /* Adjust icon size as needed */
+    color: #fff;
+    font-size: 24px;
   }
 
   .dd-m-whatsapp:hover {
-    transform:rotate(1turn);
-    box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
+    transform: rotate(1turn);
+    box-shadow: 0 5px 15px 2px rgba(19, 136, 8, 0.4);
   }
 
   .dd-m-whatsapp i {
-    font-size: 24px; /* Adjust icon size as needed */
+    font-size: 24px;
   }
+  
   .sticky-quote-cta {
     height: auto;
     position: fixed;

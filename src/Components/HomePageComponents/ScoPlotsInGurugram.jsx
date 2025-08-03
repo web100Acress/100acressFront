@@ -8,16 +8,15 @@ import { Link } from "react-router-dom";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { PaginationControls } from "../Blog_Components/BlogManagement";
 
-const BuilderIndependentFloor = () => {
-  let query = "builderindepedentfloor";
+const ScoPlotsInGurugram = () => {
+  let query = "scoplots";
   const { getAllProjects } = Api_Service();
-  const BuilderIndependentFloor = useSelector(store => store?.allsectiondata?.builderindependentfloor);
+  const ScoPlots = useSelector(store => store?.allsectiondata?.scoplotsall);
 
   // State management
   const [filteredData, setFilteredData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCities, setSelectedCities] = useState([]);
   const [selectedProjectStatus, setSelectedProjectStatus] = useState([]);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -27,16 +26,11 @@ const BuilderIndependentFloor = () => {
   // Accordion state for modal
   const [accordion, setAccordion] = useState({
     projectStatus: true,
-    city: false,
     price: false,
   });
   const toggleAccordion = (key) => setAccordion((prev) => ({ ...prev, [key]: !prev[key] }));
 
   // Data arrays
-  const cities = [
-    "Gurugram", "Delhi", "Noida", "Goa", "Ayodhya", "Mumbai", "Panipat", 
-    "Panchkula", "Kasauli", "Sonipat", "Karnal", "Jalandhar", "Pushkar"
-  ];
   
   const projectStatusOptions = [
     "Upcoming Projects",
@@ -46,7 +40,7 @@ const BuilderIndependentFloor = () => {
   ];
 
   const priceOptions = [
-    "1Cr", "2Cr", "3Cr", "4Cr", "5Cr", "6Cr", "7Cr", "8Cr", "9Cr", "10Cr"
+    "1Cr", "2Cr", "3Cr", "4Cr", "5Cr", "6Cr", "7Cr", "8Cr", "9Cr", "10Cr", "15Cr", "20Cr", "25Cr", "30Cr"
   ];
 
   // Status mapping for flexible matching
@@ -58,58 +52,75 @@ const BuilderIndependentFloor = () => {
   };
 
   useEffect(() => {
+    console.log('Fetching SCO plots with query:', query);
     getAllProjects(query, 0);
   }, []);
 
   useEffect(() => {
-    if (BuilderIndependentFloor) {
-      setFilteredData(BuilderIndependentFloor);
+    if (ScoPlots) {
+      console.log('SCO Plots Data:', ScoPlots);
+      setFilteredData(ScoPlots);
     }
-  }, [BuilderIndependentFloor]);
+  }, [ScoPlots]);
 
   // Filtering logic
   const applyFilters = () => {
-    if (!BuilderIndependentFloor) return;
+    if (!ScoPlots) return;
 
-    let filtered = BuilderIndependentFloor.filter(project => {
-      // Search term filter
-      const matchesSearch = !searchTerm || 
-        project.projectName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.city?.toLowerCase().includes(searchTerm.toLowerCase());
+    let filtered = ScoPlots.filter(plot => {
+      // SCO plot type filter - ensure only SCO plots are shown
+      // More flexible filtering to catch all SCO-related properties
+      const isScoPlot = plot.type?.toLowerCase().includes('sco') ||
+                       plot.projectType?.toLowerCase().includes('sco') ||
+                       plot.category?.toLowerCase().includes('sco') ||
+                       plot.propertyType?.toLowerCase().includes('sco') ||
+                       plot.projectName?.toLowerCase().includes('sco') ||
+                       plot.description?.toLowerCase().includes('sco') ||
+                       plot.projectName?.toLowerCase().includes('shop-cum-office') ||
+                       plot.description?.toLowerCase().includes('shop-cum-office') ||
+                       plot.projectName?.toLowerCase().includes('shop cum office') ||
+                       plot.description?.toLowerCase().includes('shop cum office') ||
+                       plot.projectName?.toLowerCase().includes('commercial') ||
+                       plot.description?.toLowerCase().includes('commercial') ||
+                       // If no specific SCO filter matches, show all properties from SCO query
+                       true; // Temporarily show all properties to debug
 
-      // City filter
-      const matchesCity = selectedCities.length === 0 ||
-        selectedCities.some(city => 
-          project.city?.toLowerCase().includes(city.toLowerCase())
-        );
+      // For now, let's show all properties to see what data we have
+      // Temporarily disable SCO filtering to debug
+      // if (!isScoPlot) return false;
 
-      // Project status filter
+             // Search term filter
+       const matchesSearch = !searchTerm || 
+         plot.projectName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+         plot.city?.toLowerCase().includes(searchTerm.toLowerCase());
+
+       // Project status filter
       const matchesStatus = selectedProjectStatus.length === 0 ||
         selectedProjectStatus.some(status => {
           const statusValues = statusMapping[status] || [status];
           return statusValues.some(value => 
-            project.projectStatus?.toLowerCase().includes(value.toLowerCase()) ||
-            project.status?.toLowerCase().includes(value.toLowerCase()) ||
-            project.project_Status?.toLowerCase().includes(value.toLowerCase()) ||
-            project.project_status?.toLowerCase().includes(value.toLowerCase())
+            plot.projectStatus?.toLowerCase().includes(value.toLowerCase()) ||
+            plot.status?.toLowerCase().includes(value.toLowerCase()) ||
+            plot.project_Status?.toLowerCase().includes(value.toLowerCase()) ||
+            plot.project_status?.toLowerCase().includes(value.toLowerCase())
           );
         });
 
       // Price filter
-      const projectPrice = parseFloat(project.minPrice || project.price || 0);
-      const matchesPrice = (!minPrice || projectPrice >= parseFloat(minPrice)) &&
-                          (!maxPrice || projectPrice <= parseFloat(maxPrice));
+      const plotPrice = parseFloat(plot.minPrice || plot.price || 0);
+      const matchesPrice = (!minPrice || plotPrice >= parseFloat(minPrice)) &&
+                          (!maxPrice || plotPrice <= parseFloat(maxPrice));
 
-      return matchesSearch && matchesCity && matchesStatus && matchesPrice;
+             return matchesSearch && matchesStatus && matchesPrice;
     });
 
     setFilteredData(filtered);
     setCurrentPage(1);
   };
 
-  useEffect(() => {
-    applyFilters();
-  }, [searchTerm, selectedCities, selectedProjectStatus, minPrice, maxPrice, BuilderIndependentFloor]);
+     useEffect(() => {
+     applyFilters();
+   }, [searchTerm, selectedProjectStatus, minPrice, maxPrice, ScoPlots]);
 
   // Handlers
   const handleCheckboxChange = (e, setSelectedState) => {
@@ -119,30 +130,26 @@ const BuilderIndependentFloor = () => {
     );
   };
 
-  const handleClearFilters = () => {
-    setSearchTerm("");
-    setSelectedCities([]);
-    setSelectedProjectStatus([]);
-    setMinPrice("");
-    setMaxPrice("");
-  };
+     const handleClearFilters = () => {
+     setSearchTerm("");
+     setSelectedProjectStatus([]);
+     setMinPrice("");
+     setMaxPrice("");
+   };
 
-  const removeFilter = (type, value) => {
-    switch (type) {
-      case 'city':
-        setSelectedCities(prev => prev.filter(c => c !== value));
-        break;
-      case 'status':
-        setSelectedProjectStatus(prev => prev.filter(s => s !== value));
-        break;
-      case 'price':
-        setMinPrice("");
-        setMaxPrice("");
-        break;
-      default:
-        break;
-    }
-  };
+     const removeFilter = (type, value) => {
+     switch (type) {
+       case 'status':
+         setSelectedProjectStatus(prev => prev.filter(s => s !== value));
+         break;
+       case 'price':
+         setMinPrice("");
+         setMaxPrice("");
+         break;
+       default:
+         break;
+     }
+   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -162,10 +169,10 @@ const BuilderIndependentFloor = () => {
   return (
     <>
       <Helmet>
-        <title>Independent & Builder Floors | 100Acress</title>
-        <meta name="description" content="Discover premium independent and builder floors in Gurugram. Find your dream property with detailed information, pricing, and location details. Your trusted partner for property investment." />
-        <meta name="keywords" content="independent floors, builder floors, property in gurugram, real estate, property investment, buy property, residential properties" />
-        <link rel="canonical" href="https://www.100acress.com/projects/independentfloors/" />
+        <title>SCO Plots in Gurugram | 100Acress</title>
+        <meta name="description" content="Discover premium SCO plots in Gurugram. Find your dream Shop-Cum-Office plot with detailed information, pricing, and location details. Your trusted partner for SCO plot investment." />
+        <meta name="keywords" content="sco plots gurugram, shop cum office plots, commercial plots gurugram, sco investment, business plots, commercial real estate" />
+        <link rel="canonical" href="https://www.100acress.com/sco/plots/" />
       </Helmet>
 
       {/* Filter Modal */}
@@ -216,34 +223,7 @@ const BuilderIndependentFloor = () => {
                 )}
               </div>
 
-              {/* City */}
-              <div className="border border-gray-200 rounded-xl overflow-hidden">
-                <button className="w-full flex justify-between items-center py-4 px-4 font-semibold text-left bg-gray-50" onClick={() => toggleAccordion('city')}>
-                  <span className="flex items-center gap-2">
-                    <span className="text-lg">📍</span>
-                    City
-                  </span>
-                  <span className="text-gray-500">{accordion.city ? '−' : '+'}</span>
-                </button>
-                {accordion.city && (
-                  <div className="p-4 bg-white max-h-60 overflow-y-auto">
-                    <div className="grid grid-cols-1 gap-3">
-                      {cities.map((city) => (
-                        <label key={city} className="flex items-center gap-3 text-sm cursor-pointer p-2 rounded-lg hover:bg-gray-50">
-                          <input
-                            type="checkbox"
-                            className="accent-red-500 w-4 h-4"
-                            value={city}
-                            checked={selectedCities.includes(city)}
-                            onChange={e => handleCheckboxChange(e, setSelectedCities)}
-                          />
-                          <span className="text-gray-700">{city}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+              
 
               {/* Price Range */}
               <div className="border border-gray-200 rounded-xl overflow-hidden">
@@ -318,15 +298,15 @@ const BuilderIndependentFloor = () => {
             <div className="relative z-10 max-w-5xl mx-auto pt-4">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 tracking-wide leading-tight" style={{ fontFamily: 'DM Sans, sans-serif' }}>
                 <span className="bg-gradient-to-r from-red-600 via-red-500 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
-                  Independent & Builder
+                  SCO Plots in
                 </span>
-                <span className="text-gray-900 drop-shadow-sm"> Floors</span>
+                <span className="text-gray-900 drop-shadow-sm"> Gurugram</span>
               </h1>
               
               <div className="w-32 h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-orange-500 mx-auto mb-3 rounded-full shadow-lg"></div>
               
               <p className="text-base md:text-lg text-slate-600 max-w-4xl mx-auto leading-relaxed font-medium tracking-wide" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-              Discover Premium Independent & Builder Floors – Curated Living Spaces in Top Cities.
+              Discover Premium SCO Plots in Gurugram – Your Gateway to Shop-Cum-Office Investment and Business Growth.
               </p>
             </div>
             
@@ -359,27 +339,7 @@ const BuilderIndependentFloor = () => {
                 </div>
               </div>
               
-              {/* City */}
-              <div className="mb-3">
-                <div className="font-semibold text-gray-800 mb-3">City</div>
-                <div className="flex flex-wrap gap-2 items-start">
-                  {cities.map(city => (
-                    <label
-                      key={city}
-                      className="flex items-start gap-2 text-sm min-w-0 whitespace-nowrap"
-                    >
-                      <input
-                        type="checkbox"
-                        className="accent-red-500 w-4 h-4 mt-0.5 flex-shrink-0"
-                        value={city}
-                        checked={selectedCities.includes(city)}
-                        onChange={e => handleCheckboxChange(e, setSelectedCities)}
-                      />
-                      <span className="whitespace-nowrap">{city}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
+              
               
               {/* Price Range */}
               <div>
@@ -427,7 +387,7 @@ const BuilderIndependentFloor = () => {
                   </div>
                   <input
                     type="text"
-                    placeholder="Search projects by name or city..."
+                    placeholder="Search SCO plots by name or city..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 shadow-sm hover:shadow-md"
@@ -463,15 +423,9 @@ const BuilderIndependentFloor = () => {
 
               {/* Filter Tags */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
-                <div className="text-gray-700 font-semibold flex-shrink-0">Showing Projects</div>
-                <div className="flex flex-wrap gap-2">
-                  {selectedCities.map(city => (
-                    <span key={city} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-                      {city}
-                      <button className="ml-1 hover:text-green-900" onClick={() => removeFilter('city', city)}>×</button>
-                    </span>
-                  ))}
-                  {selectedProjectStatus.map(status => (
+                <div className="text-gray-700 font-semibold flex-shrink-0">Showing SCO Plots</div>
+                                 <div className="flex flex-wrap gap-2">
+                   {selectedProjectStatus.map(status => (
                     <span key={status} className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                       {status}
                       <button className="ml-1 hover:text-red-900" onClick={() => removeFilter('status', status)}>×</button>
@@ -486,45 +440,51 @@ const BuilderIndependentFloor = () => {
                 </div>
               </div>
 
-              {/* Projects Grid */}
+              {/* SCO Plots Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {!BuilderIndependentFloor || BuilderIndependentFloor.length === 0 ? (
-                  <div className="col-span-full"><CustomSkeleton /></div>
+                {!ScoPlots || ScoPlots.length === 0 ? (
+                  <div className="col-span-full">
+                    <div className="text-center py-12">
+                      <div className="text-gray-500 text-lg mb-4">No SCO plots found</div>
+                      <div className="text-gray-400 text-sm">Please check back later or try different filters</div>
+                      <div className="mt-4 text-xs text-gray-300">Debug: ScoPlots data length: {ScoPlots?.length || 0}</div>
+                    </div>
+                  </div>
                 ) : (
-                  paginatedData.map((project, idx) => {
-                    const propertyUrl = project.project_url ? `/${project.project_url}/` : "#";
-                    const imageUrl = project.frontImage?.cdn_url || project.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
-                    const location = (project.city && project.state) ? `${project.city}, ${project.state}` : "Gurugram, Haryana";
+                  paginatedData.map((plot, idx) => {
+                    const plotUrl = plot.project_url ? `/${plot.project_url}/` : "#";
+                    const imageUrl = plot.frontImage?.cdn_url || plot.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
+                    const location = (plot.city && plot.state) ? `${plot.city}, ${plot.state}` : "Gurugram, Haryana";
                     
                     return (
                       <Link
-                        key={project._id || idx}
-                        to={propertyUrl}
+                        key={plot._id || idx}
+                        to={plotUrl}
                         target="_top"
                         className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-400"
                         style={{ animationDelay: `${idx * 50}ms` }}
                         tabIndex={0}
                       >
-                        {/* Project Image */}
+                        {/* SCO Plot Image */}
                         <div className="relative overflow-hidden">
                           <img
                             src={imageUrl}
-                            alt={project.projectName}
+                            alt={plot.projectName}
                             className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                             loading="lazy"
                           />
                           <div className="absolute top-3 right-3">
-                            <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                              Independent Floor
+                            <span className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                              SCO Plot
                             </span>
                           </div>
                         </div>
 
-                        {/* Project Details */}
+                        {/* SCO Plot Details */}
                         <div className="flex flex-col flex-1 p-4">
-                          {/* Project Name */}
+                          {/* Plot Name */}
                           <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight">
-                            {project.projectName}
+                            {plot.projectName}
                           </h3>
 
                           {/* Location */}
@@ -536,31 +496,31 @@ const BuilderIndependentFloor = () => {
                             <span className="truncate">{location}</span>
                           </div>
 
-                          {/* Project Type */}
+                          {/* Plot Type */}
                           <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
                             <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                             </svg>
-                            <span className="truncate">{project.type || 'Independent Floor'}</span>
+                            <span className="truncate">{plot.type || 'SCO Plot'}</span>
                           </div>
 
                           {/* Price and CTA */}
                           <div className="mt-auto">
                             <div className="text-red-500 font-bold text-xl mb-3 flex items-center gap-1">
                               ₹
-                              {!project.minPrice && !project.maxPrice ? (
-                                project.price ? formatPrice(project.price) : "Reveal Soon"
-                              ) : !project.minPrice || !project.maxPrice ? (
+                              {!plot.minPrice && !plot.maxPrice ? (
+                                plot.price ? formatPrice(plot.price) : "Reveal Soon"
+                              ) : !plot.minPrice || !plot.maxPrice ? (
                                 "Reveal Soon"
                               ) : (
                                 <>
-                                  {project.minPrice < 1 ? (
-                                    <>{(project.minPrice * 100).toFixed()} L</>
+                                  {plot.minPrice < 1 ? (
+                                    <>{(plot.minPrice * 100).toFixed()} L</>
                                   ) : (
-                                    <>{formatPrice(project.minPrice)}</>
+                                    <>{formatPrice(plot.minPrice)}</>
                                   )}
                                   {" - "}
-                                  {formatPrice(project.maxPrice)} Cr
+                                  {formatPrice(plot.maxPrice)} Cr
                                 </>
                               )}
                             </div>
@@ -592,4 +552,4 @@ const BuilderIndependentFloor = () => {
   );
 };
 
-export default BuilderIndependentFloor; 
+export default ScoPlotsInGurugram; 

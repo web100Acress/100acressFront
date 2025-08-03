@@ -46,7 +46,7 @@ const Cities =() => {
     <Wrapper className="section ">
       <div className="container">
       <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
-      <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
+      <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
         Gurugram Prime Locations
         </h2>
       </div>
@@ -54,7 +54,7 @@ const Cities =() => {
                 {cities.map((project, index) => (
                   <Link data-aos="flip-up" to={project.link} key={index} className="card">
                     <img src={project.image} alt={project.title} className="card-image" loading="lazy"/>
-                    <button className="card-button bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">{project.title}</button>
+                    <button className="card-button bg-gradient-to-r from-[#FF9933] to-[#138808] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-[#FF9933] dark:focus:ring-[#138808] shadow-lg hover:shadow-xl transition-all duration-300">{project.title}</button>
                   </Link>
                 ))}
               </div>

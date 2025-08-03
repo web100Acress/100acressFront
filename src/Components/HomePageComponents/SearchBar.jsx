@@ -161,7 +161,7 @@ function SearchBar() {
     <Wrapper className="section" >
       <div className="qsbWrapper pt-0 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto lg:pb-0 md:pb-0 md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-2 lg:h-14 md:h-14 sm:h-8 md:-mt-32 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-0 " style={{ maxWidth: '860px' }}>
       <div
-      className="sjdmkls w-80 md:w-auto lg:w-auto h-20 lg:h-8 md:h-8 text-center text-white text-3xl mb-4 bg-gradient-to-r from-slate-800 via-slate-600 to-slate-400 bg-clip-text text-transparent animate-gradient bg-[length:200%] bg-[0%_center] flex items-center justify-center"
+      className="sjdmkls w-80 md:w-auto lg:w-auto h-20 lg:h-8 md:h-8 text-center text-white text-3xl mb-4 bg-gradient-to-r from-[#FF9933] via-white to-[#138808] bg-clip-text text-transparent animate-gradient bg-[length:200%] bg-[0%_center] flex items-center justify-center"
     >
       <Typewriter
         options={{
@@ -329,12 +329,13 @@ const Wrapper = styled.section`
 
   .SJDMls {
     display: flex;
-    box-shadow: 0 25px 60px rgba(113, 106, 147, 0.2);
+    box-shadow: 0 25px 60px rgba(255, 153, 51, 0.3);
     width: auto;
     border-radius: 20px 20px 0px 0px;
-    background: rgba(111, 110, 110, 0.31);
+    background: linear-gradient(135deg, rgba(255, 153, 51, 0.1) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(19, 136, 8, 0.1) 100%);
     margin-left: 30px;
     margin-right: 30px;
+    border: 1px solid rgba(255, 153, 51, 0.2);
   }
   
   .sjdmkls{
@@ -347,7 +348,8 @@ const Wrapper = styled.section`
   }
 
   .SDFEDVx {
-    background: rgba(111, 110, 110, 0.31);
+    background: linear-gradient(135deg, rgba(255, 153, 51, 0.1) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(19, 136, 8, 0.1) 100%);
+    border: 1px solid rgba(255, 153, 51, 0.3);
   }
 
   .options {
@@ -357,12 +359,14 @@ const Wrapper = styled.section`
   }
 
   .options:hover {
-    color: red;
+    color: #FF9933;
+    background: linear-gradient(135deg, rgba(255, 153, 51, 0.1) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(19, 136, 8, 0.1) 100%);
   }
 
   .options.active {
     font-size: 18px;
-    color: red;
+    color: #FF9933;
+    background: linear-gradient(135deg, rgba(255, 153, 51, 0.2) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(19, 136, 8, 0.2) 100%);
   }
 
   .suggestor-wrapper {

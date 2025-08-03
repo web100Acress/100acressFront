@@ -52,7 +52,7 @@ const Builderaction = () => {
     <Wrapper className="section ">
           <div className="container">
           <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
-          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
+          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 text-[#FF9933]">
             Best For You 
             </h2>
           </div>
@@ -60,7 +60,7 @@ const Builderaction = () => {
                     {projects.map((project, index) => (
                       <Link data-aos="flip-up" to={project.link} key={index} className="card">
                         <img src={project.backgroungURL} alt={project.title} className="card-image" loading="lazy"/>
-                        <button className="card-button bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">{project.title}
+                        <button className="card-button bg-[#FF9933] hover:bg-[#E6891E] focus:ring-4 focus:outline-none focus:ring-orange-300">{project.title}
 
                           <div>
                             View All Projects
@@ -148,7 +148,7 @@ const Wrapper = styled.section`
     margin-top: 10px;
     border-radius:10px;
     padding: 10px 0px;
-    background-color: #C13B44;
+    background-color: #FF9933;
     color: white;
     font-size: 1rem;
     font-weight: bold;
@@ -159,7 +159,7 @@ const Wrapper = styled.section`
   }
 
   .card-button:hover {
-    background-color: #7C1920;
+    background-color: #E6891E;
     transform: scale(1.06);
   }
 

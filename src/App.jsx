@@ -44,6 +44,7 @@ const CommercialProject = lazy(() => import("./Components/HomePageComponents/Com
 const ScoPlots = lazy(() => import("./Components/HomePageComponents/ScoPlots"));
 const BuilderIndependentFloor = lazy(() => import("./Components/HomePageComponents/BuilderIndependentFloor"));
 const DeenDayalPlots = lazy(() => import("./Components/HomePageComponents/DeenDayalPlots"));
+const PlotsInGurugramPage = lazy(() => import("./Pages/PlotsInGurugramPage"));
 const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
 const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
 const UserEdit = lazy(() => import("./Components/HomePageComponents/UserEdit"));
@@ -58,6 +59,8 @@ const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
 const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
 const ReadyToMoveProject = lazy(() => import("./Pages/ReadyToMoveProject"));
 const VillasProjects = lazy(() => import("./Components/HomePageComponents/VillasProjects"));
+const LuxuryVillasForSalePage = lazy(() => import("./Pages/LuxuryVillasForSalePage"));
+const ScoPlotsInGurugramPage = lazy(() => import("./Pages/ScoPlotsInGurugramPage"));
 const Panchkula = lazy(() => import("./Pages/ProjectCities/Panchkula"));
 const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
 const Bptp = lazy(() => import("./Pages/Bptp"));
@@ -250,7 +253,7 @@ function App() {
                 path="/projects/commercial/"
                 element={<CommercialProject />}
               />
-              <Route path="/sco/plots/" element={<ScoPlots />} />
+              <Route path="/sco/plots/" element={<ScoPlotsInGurugramPage />} />
               <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} />
               <Route
                 path="/projects/independentfloors/"
@@ -275,8 +278,8 @@ function App() {
               />
               <Route path="/projects-in-newlaunch/" element={<NewLaunch />} />
               <Route path="/project-in-goa/" element={<GoaProject />} />
-              <Route path="/plots-in-gurugram/" element={<DeenDayalPlots />} />
-              <Route path="/projects/villas/" element={<VillasProjects />} />
+              <Route path="/plots-in-gurugram/" element={<PlotsInGurugramPage />} />
+              <Route path="/projects/villas/" element={<LuxuryVillasForSalePage />} />
               <Route path="/news-and-articals/" element={<NewsandArtical />} />
               <Route
                 path="/userdashboard/"

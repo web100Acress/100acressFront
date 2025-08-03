@@ -45,7 +45,7 @@ const SpotlightBanner = () => {
     data-aos-anchor-placement="top-bottom"
     className="rounded-tl-3xl rounded-tr-3xl bg-white">
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-3" >
-        <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-3xl sm:text-xl">
+        <h1 className="text-2xl xl:text-4xl lg:text-3xl md:text-3xl sm:text-xl text-[#FF9933]">
         100acress - Recommended 
         </h1>
       </div>
@@ -84,8 +84,8 @@ const SpotlightBanner = () => {
               className="grid grid-cols-3 md:grid-cols-4 gap-2 mt-3 mb-3">
             {/* Location Section */}
             <div className="text-center">
-              <div className="w-10 h-8 mx-auto flex items-center justify-center bg-gray-200 rounded-full">
-                <span className="text-red-500 text-lg">
+              <div className="w-10 h-8 mx-auto flex items-center justify-center bg-[#FF9933] rounded-full shadow-lg">
+                <span className="text-white text-lg">
                   <SpotlightLocationIcon />
                 </span>
               </div>
@@ -95,8 +95,8 @@ const SpotlightBanner = () => {
 
             {/* Size Section */}
             <div className="text-center">
-              <div className="w-10 h-8 mx-auto flex items-center justify-center bg-gray-200 rounded-full">
-                <span className="text-red-500 text-lg">
+              <div className="w-10 h-8 mx-auto flex items-center justify-center bg-[#FF9933] rounded-full shadow-lg">
+                <span className="text-white text-lg">
                   <SpotlightHomeIcon />
                 </span>
               </div>
@@ -110,8 +110,8 @@ const SpotlightBanner = () => {
 
             {/* Price Section */}
             <div className="text-center">
-              <div className="w-10 h-8 mx-auto flex items-center justify-center bg-gray-200 rounded-full">
-                <span className="text-red-500 text-lg">
+              <div className="w-10 h-8 mx-auto flex items-center justify-center bg-[#FF9933] rounded-full shadow-lg">
+                <span className="text-white text-lg">
                   <SpotlightPriceIcon />
                 </span>
               </div>
@@ -124,7 +124,7 @@ const SpotlightBanner = () => {
             {/* Explore Now Section */}
             <div className="text-center flex flex-col justify-center col-span-3 md:col-span-1">
               <Link to={`/${pUrl}/`} target="blank">
-                <button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect w-full md:w-auto ">
+                <button className="text-white bg-[#FF9933] hover:bg-[#E6891E] focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect w-full md:w-auto shadow-lg">
                   Explore Now
                 </button>
               </Link>

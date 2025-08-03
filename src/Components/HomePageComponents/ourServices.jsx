@@ -27,12 +27,12 @@ function OurServices() {
   return (
     <div className="section font-poppins font-light">
       <div className="max-w-screen-xl mx-auto px-6 py-6">
-      <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left">
+      <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
         Explore Our Services
       </h2>
         <div className="md:hidden h-64">
           <Slider {...sliderSettings} >
-            <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
+            <div className="flex flex-col items-center bg-white p-4 rounded-lg hover:shadow-[#FF9933]/20 hover:border-[#FF9933]/30 border border-transparent transition-all duration-300">
               <Link to={`/contact-us/`} target="_top" className="text-center">
               <div className="mb-4">
                   <RealestateIcon/>
@@ -45,7 +45,7 @@ function OurServices() {
                 </div>
               </Link>
             </div>
-            <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
+            <div className="flex flex-col items-center bg-white p-4 rounded-lg hover:shadow-[#FF9933]/20 hover:border-[#FF9933]/30 border border-transparent transition-all duration-300">
               <Link to={`/contact-us/`} target="_top" className="text-center">
               <div className="mb-4">
                   <LegalIcon/>
@@ -58,7 +58,7 @@ function OurServices() {
                 </div>
               </Link>
             </div>
-            <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
+            <div className="flex flex-col items-center bg-white p-4 rounded-lg hover:shadow-[#FF9933]/20 hover:border-[#FF9933]/30 border border-transparent transition-all duration-300">
               <Link to={`/contact-us/`} target="_top" className="text-center">
               <div className="mb-4">
                   <InteriorIcon/>

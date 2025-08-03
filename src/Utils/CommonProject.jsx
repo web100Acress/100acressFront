@@ -36,13 +36,13 @@ const CommonProject = ({ data, title, path ,animation }) => {
             {" "}
             <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 py-2">
               {title && <div className="flex items-center">
-                <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl  text-center sm:text-left">
+                <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
                   {title}
                 </h2>
               </div>}
               {path && <div className="ml-2 hidden sm:block">
                 <Link to={path} target="_top">
-                  <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-red-600">
+                  <span className="flex items-center text-white text-sm px-3 py-0 rounded-full bg-gradient-to-r from-[#FF9933] to-[#138808] shadow-lg hover:shadow-xl transition-all duration-300">
                     <EyeIcon />
                     <span className="ml-2">View All</span>
                   </span>
@@ -61,7 +61,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
 
                         <article
                           key={index}
-                          className="mb-1 overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl h-full flex flex-col"
+                          className="mb-1 overflow-hidden rounded-md border text-black shadow-md duration-500 ease-in-out hover:shadow-xl h-full flex flex-col hover:border-[#FF9933] hover:shadow-[#FF9933]/20 bg-[#FFF8F0]"
                         >
                           <div className="relative flex p-0">
                             <Link to={`/${pUrl}/`} target="_top">
@@ -83,13 +83,13 @@ const CommonProject = ({ data, title, path ,animation }) => {
                             <div className="pb-2">
                               {item && item.projectName && (
                                 <>
-                                  <span className="text-[15px] font-semibold hover:text-red-600 duration-500 ease-in-out">
+                                  <span className="text-[15px] font-semibold hover:text-[#FF9933] duration-500 ease-in-out">
                                     {item.projectName}
                                   </span>
                                   <br />
                                 </>
                               )}
-                              <span className="text-sm text-gray-400 hover:text-red-600 duration-500 ease-in-out">
+                              <span className="text-sm text-black hover:text-[#FF9933] duration-500 ease-in-out">
                                 {item.city}, {item.state}
                               </span>
                             </div>
@@ -99,7 +99,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                   <p className="m-0 text-sm font-medium flex items-center gap-1">
                                     <PropertyIcon /> {item.type}
                                   </p>
-                                  <span className="text-[10px] text-sm text-gray-400 flex items-center truncate hover:overflow-visible hover:whitespace-normal hover:bg-white">
+                                  <span className="text-[10px] text-sm text-black flex items-center truncate hover:overflow-visible hover:whitespace-normal hover:bg-white">
                                     <span className="inline-block w-4 h-4 align-middle mr-1">
                                       <LocationRedIcon style={{ width: '16px', height: '16px' }} />
                                     </span>
@@ -110,7 +110,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                             </ul>
                             {/* Button row: price and button always in the same row */}
                             <div className="flex flex-row items-center justify-between mt-0 w-full">
-                              <span className="m-0 flex list-none items-center justify-between px-0 pb-0" style={{color: 'red', fontWeight: 'bold'}}>
+                              <span className="m-0 flex list-none items-center justify-between px-0 pb-0" style={{color: '#FF9933', fontWeight: 'bold'}}>
                                 <RupeeIcon style={{marginRight: 4}} />
                                 {item.minPrice && item.maxPrice
                                   ? (
@@ -120,7 +120,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                     ) + " - " + `${item.maxPrice} Cr`
                                   : "Reveal Soon"}
                               </span>
-                              <Link to={`/${pUrl}/`} target="_top" className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-md text-[12px] px-3 py-2 text-center me-2 whitespace-nowrap ml-2">
+                              <Link to={`/${pUrl}/`} target="_top" className="text-white bg-gradient-to-r from-[#FF9933] to-[#138808] hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-[#FF9933] dark:focus:ring-[#138808] font-medium rounded-md text-[12px] px-3 py-2 text-center me-2 whitespace-nowrap ml-2 shadow-lg hover:shadow-xl transition-all duration-300">
                                 Explore
                               </Link>
                             </div>

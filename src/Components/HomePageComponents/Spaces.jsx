@@ -22,7 +22,7 @@ function SpacesAvailable() {
     <Wrapper className="section">
       <div data-aos="flip-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
         <div className="flex items-center mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
-          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 ">
+          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
             Dream Property In The Heart of Gurugram
           </h2>
         </div> 
@@ -30,7 +30,7 @@ function SpacesAvailable() {
           {projects.slice(0, 3).map((project, index) => (
             <Link data-aos="flip-right" to={project.link} key={index} className="card">
               <img src={project.image} alt={project.title} className="card-image" loading="lazy" />
-              <button className="card-button bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">
+              <button className="card-button bg-gradient-to-r from-[#FF9933] to-[#138808] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-[#FF9933] dark:focus:ring-[#138808] shadow-lg hover:shadow-xl transition-all duration-300">
                 {project.title}
               </button>
             </Link>
@@ -41,7 +41,7 @@ function SpacesAvailable() {
           {projects.slice(3).map((project, index) => (
             <Link data-aos="flip-right" to={project.link} key={index + 3} className="card">
               <img src={project.image} alt={project.title} className="card-image" loading="lazy" />
-              <button className="card-button bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800">
+              <button className="card-button bg-gradient-to-r from-[#FF9933] to-[#138808] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-[#FF9933] dark:focus:ring-[#138808] shadow-lg hover:shadow-xl transition-all duration-300">
                 {project.title}
               </button>
             </Link>

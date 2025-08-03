@@ -36,6 +36,7 @@ const ImageWrapper = styled.div`
   overflow: hidden;
   transition: transform 0.5s ease-in-out;
   cursor: pointer;
+  background-color: #FFF8F0;
 
   &:hover img {
     opacity: 0.7;
@@ -182,7 +183,7 @@ const ImageGallery = React.memo(() => {
   return (
     <div className="rounded-tl-3xl rounded-tr-3xl bg-white">
       <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 pt-3">
-        <h2 className="text-lg  xl:text-4xl lg:text-3xl md:text-3xl sm:text-xl">
+        <h2 className="text-lg  xl:text-4xl lg:text-3xl md:text-3xl sm:text-xl text-black ">
           100acress - Recommended
         </h2>
         <div>
@@ -223,11 +224,11 @@ const ImageGallery = React.memo(() => {
                   </p>
 
                   <p className="font-semibold mt-2 mb-0 text-gray-800"></p>
-                  <button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect w-full md:w-auto   flex justify-center items-center" >View Details</button>
+                                     <button className="text-white bg-[#FF9933] hover:bg-[#E6891E] focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-xs px-4 py-1.5 drip-effect w-full md:w-auto   flex justify-center items-center shadow-lg" >View Details</button>
                 </InfoContainer>
                 <CityText className="py-2 px-auto text-xl visible font-Sans text-center">{image.projectName}</CityText>
                 <CityText className="">{truncateText(image.projectAddress, 4)}</CityText>
-                <CityText className="py-2 px-auto"><button className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-6 py-2 drip-effect w-full md:w-auto   flex justify-center items-center md:auto sm:w-1/2 max-[600px]:w-2/4 " >View Details</button>
+                <CityText className="py-2 px-auto"><button className="text-white bg-[#FF9933] hover:bg-[#E6891E] focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-xs px-6 py-2 drip-effect w-full md:w-auto   flex justify-center items-center md:auto sm:w-1/2 max-[600px]:w-2/4 shadow-lg" >View Details</button>
                 </CityText>
                 {/* <CityText>{image.city}</CityText> */}
               </ImageWrapper>

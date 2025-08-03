@@ -8,10 +8,10 @@ import { Link } from "react-router-dom";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { PaginationControls } from "../Blog_Components/BlogManagement";
 
-const BuilderIndependentFloor = () => {
-  let query = "builderindepedentfloor";
+const LuxuryVillasForSale = () => {
+  let query = "villas";
   const { getAllProjects } = Api_Service();
-  const BuilderIndependentFloor = useSelector(store => store?.allsectiondata?.builderindependentfloor);
+  const LuxuryVillas = useSelector(store => store?.allsectiondata?.luxuryvillas);
 
   // State management
   const [filteredData, setFilteredData] = useState([]);
@@ -46,7 +46,7 @@ const BuilderIndependentFloor = () => {
   ];
 
   const priceOptions = [
-    "1Cr", "2Cr", "3Cr", "4Cr", "5Cr", "6Cr", "7Cr", "8Cr", "9Cr", "10Cr"
+    "1Cr", "2Cr", "3Cr", "4Cr", "5Cr", "6Cr", "7Cr", "8Cr", "9Cr", "10Cr", "15Cr", "20Cr", "25Cr", "30Cr"
   ];
 
   // Status mapping for flexible matching
@@ -62,25 +62,35 @@ const BuilderIndependentFloor = () => {
   }, []);
 
   useEffect(() => {
-    if (BuilderIndependentFloor) {
-      setFilteredData(BuilderIndependentFloor);
+    if (LuxuryVillas) {
+      setFilteredData(LuxuryVillas);
     }
-  }, [BuilderIndependentFloor]);
+  }, [LuxuryVillas]);
 
   // Filtering logic
   const applyFilters = () => {
-    if (!BuilderIndependentFloor) return;
+    if (!LuxuryVillas) return;
 
-    let filtered = BuilderIndependentFloor.filter(project => {
+    let filtered = LuxuryVillas.filter(villa => {
+      // Villa type filter - ensure only villas are shown
+      const isVilla = villa.type?.toLowerCase().includes('villa') ||
+                     villa.projectType?.toLowerCase().includes('villa') ||
+                     villa.category?.toLowerCase().includes('villa') ||
+                     villa.propertyType?.toLowerCase().includes('villa') ||
+                     villa.projectName?.toLowerCase().includes('villa') ||
+                     villa.description?.toLowerCase().includes('villa');
+
+      if (!isVilla) return false;
+
       // Search term filter
       const matchesSearch = !searchTerm || 
-        project.projectName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.city?.toLowerCase().includes(searchTerm.toLowerCase());
+        villa.projectName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        villa.city?.toLowerCase().includes(searchTerm.toLowerCase());
 
       // City filter
       const matchesCity = selectedCities.length === 0 ||
         selectedCities.some(city => 
-          project.city?.toLowerCase().includes(city.toLowerCase())
+          villa.city?.toLowerCase().includes(city.toLowerCase())
         );
 
       // Project status filter
@@ -88,17 +98,17 @@ const BuilderIndependentFloor = () => {
         selectedProjectStatus.some(status => {
           const statusValues = statusMapping[status] || [status];
           return statusValues.some(value => 
-            project.projectStatus?.toLowerCase().includes(value.toLowerCase()) ||
-            project.status?.toLowerCase().includes(value.toLowerCase()) ||
-            project.project_Status?.toLowerCase().includes(value.toLowerCase()) ||
-            project.project_status?.toLowerCase().includes(value.toLowerCase())
+            villa.projectStatus?.toLowerCase().includes(value.toLowerCase()) ||
+            villa.status?.toLowerCase().includes(value.toLowerCase()) ||
+            villa.project_Status?.toLowerCase().includes(value.toLowerCase()) ||
+            villa.project_status?.toLowerCase().includes(value.toLowerCase())
           );
         });
 
       // Price filter
-      const projectPrice = parseFloat(project.minPrice || project.price || 0);
-      const matchesPrice = (!minPrice || projectPrice >= parseFloat(minPrice)) &&
-                          (!maxPrice || projectPrice <= parseFloat(maxPrice));
+      const villaPrice = parseFloat(villa.minPrice || villa.price || 0);
+      const matchesPrice = (!minPrice || villaPrice >= parseFloat(minPrice)) &&
+                          (!maxPrice || villaPrice <= parseFloat(maxPrice));
 
       return matchesSearch && matchesCity && matchesStatus && matchesPrice;
     });
@@ -109,7 +119,7 @@ const BuilderIndependentFloor = () => {
 
   useEffect(() => {
     applyFilters();
-  }, [searchTerm, selectedCities, selectedProjectStatus, minPrice, maxPrice, BuilderIndependentFloor]);
+  }, [searchTerm, selectedCities, selectedProjectStatus, minPrice, maxPrice, LuxuryVillas]);
 
   // Handlers
   const handleCheckboxChange = (e, setSelectedState) => {
@@ -162,10 +172,10 @@ const BuilderIndependentFloor = () => {
   return (
     <>
       <Helmet>
-        <title>Independent & Builder Floors | 100Acress</title>
-        <meta name="description" content="Discover premium independent and builder floors in Gurugram. Find your dream property with detailed information, pricing, and location details. Your trusted partner for property investment." />
-        <meta name="keywords" content="independent floors, builder floors, property in gurugram, real estate, property investment, buy property, residential properties" />
-        <link rel="canonical" href="https://www.100acress.com/projects/independentfloors/" />
+        <title>India's Luxury Villas for Sale | 100Acress</title>
+        <meta name="description" content="Discover premium luxury villas across India. Find your dream villa with detailed information, pricing, and location details. Your trusted partner for luxury villa investment." />
+        <meta name="keywords" content="luxury villas india, premium villas, villa for sale, luxury real estate, villa investment, buy villa, residential villas" />
+        <link rel="canonical" href="https://www.100acress.com/projects/luxury-villas/" />
       </Helmet>
 
       {/* Filter Modal */}
@@ -318,15 +328,15 @@ const BuilderIndependentFloor = () => {
             <div className="relative z-10 max-w-5xl mx-auto pt-4">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 tracking-wide leading-tight" style={{ fontFamily: 'DM Sans, sans-serif' }}>
                 <span className="bg-gradient-to-r from-red-600 via-red-500 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
-                  Independent & Builder
+                  India's Luxury Villas
                 </span>
-                <span className="text-gray-900 drop-shadow-sm"> Floors</span>
+                <span className="text-gray-900 drop-shadow-sm"> for Sale</span>
               </h1>
               
               <div className="w-32 h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-orange-500 mx-auto mb-3 rounded-full shadow-lg"></div>
               
               <p className="text-base md:text-lg text-slate-600 max-w-4xl mx-auto leading-relaxed font-medium tracking-wide" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-              Discover Premium Independent & Builder Floors – Curated Living Spaces in Top Cities.
+              Discover Premium Luxury Villas Across India – Your Gateway to Exquisite Living and Prime Real Estate Investment.
               </p>
             </div>
             
@@ -427,7 +437,7 @@ const BuilderIndependentFloor = () => {
                   </div>
                   <input
                     type="text"
-                    placeholder="Search projects by name or city..."
+                    placeholder="Search luxury villas by name or city..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 shadow-sm hover:shadow-md"
@@ -463,7 +473,7 @@ const BuilderIndependentFloor = () => {
 
               {/* Filter Tags */}
               <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
-                <div className="text-gray-700 font-semibold flex-shrink-0">Showing Projects</div>
+                <div className="text-gray-700 font-semibold flex-shrink-0">Showing Luxury Villas</div>
                 <div className="flex flex-wrap gap-2">
                   {selectedCities.map(city => (
                     <span key={city} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
@@ -486,45 +496,45 @@ const BuilderIndependentFloor = () => {
                 </div>
               </div>
 
-              {/* Projects Grid */}
+              {/* Villas Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {!BuilderIndependentFloor || BuilderIndependentFloor.length === 0 ? (
+                {!LuxuryVillas || LuxuryVillas.length === 0 ? (
                   <div className="col-span-full"><CustomSkeleton /></div>
                 ) : (
-                  paginatedData.map((project, idx) => {
-                    const propertyUrl = project.project_url ? `/${project.project_url}/` : "#";
-                    const imageUrl = project.frontImage?.cdn_url || project.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
-                    const location = (project.city && project.state) ? `${project.city}, ${project.state}` : "Gurugram, Haryana";
+                  paginatedData.map((villa, idx) => {
+                    const villaUrl = villa.project_url ? `/${villa.project_url}/` : "#";
+                    const imageUrl = villa.frontImage?.cdn_url || villa.frontImage?.url || "https://d16gdc5rm7f21b.cloudfront.net/100acre/no-image.jpg";
+                    const location = (villa.city && villa.state) ? `${villa.city}, ${villa.state}` : "Gurugram, Haryana";
                     
                     return (
                       <Link
-                        key={project._id || idx}
-                        to={propertyUrl}
+                        key={villa._id || idx}
+                        to={villaUrl}
                         target="_top"
                         className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-400"
                         style={{ animationDelay: `${idx * 50}ms` }}
                         tabIndex={0}
                       >
-                        {/* Project Image */}
+                        {/* Villa Image */}
                         <div className="relative overflow-hidden">
                           <img
                             src={imageUrl}
-                            alt={project.projectName}
+                            alt={villa.projectName}
                             className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                             loading="lazy"
                           />
                           <div className="absolute top-3 right-3">
-                            <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                              Independent Floor
+                            <span className="bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                              Luxury Villa
                             </span>
                           </div>
                         </div>
 
-                        {/* Project Details */}
+                        {/* Villa Details */}
                         <div className="flex flex-col flex-1 p-4">
-                          {/* Project Name */}
+                          {/* Villa Name */}
                           <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight">
-                            {project.projectName}
+                            {villa.projectName}
                           </h3>
 
                           {/* Location */}
@@ -536,31 +546,31 @@ const BuilderIndependentFloor = () => {
                             <span className="truncate">{location}</span>
                           </div>
 
-                          {/* Project Type */}
+                          {/* Villa Type */}
                           <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
                             <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                             </svg>
-                            <span className="truncate">{project.type || 'Independent Floor'}</span>
+                            <span className="truncate">{villa.type || 'Luxury Villa'}</span>
                           </div>
 
                           {/* Price and CTA */}
                           <div className="mt-auto">
                             <div className="text-red-500 font-bold text-xl mb-3 flex items-center gap-1">
                               ₹
-                              {!project.minPrice && !project.maxPrice ? (
-                                project.price ? formatPrice(project.price) : "Reveal Soon"
-                              ) : !project.minPrice || !project.maxPrice ? (
+                              {!villa.minPrice && !villa.maxPrice ? (
+                                villa.price ? formatPrice(villa.price) : "Reveal Soon"
+                              ) : !villa.minPrice || !villa.maxPrice ? (
                                 "Reveal Soon"
                               ) : (
                                 <>
-                                  {project.minPrice < 1 ? (
-                                    <>{(project.minPrice * 100).toFixed()} L</>
+                                  {villa.minPrice < 1 ? (
+                                    <>{(villa.minPrice * 100).toFixed()} L</>
                                   ) : (
-                                    <>{formatPrice(project.minPrice)}</>
+                                    <>{formatPrice(villa.minPrice)}</>
                                   )}
                                   {" - "}
-                                  {formatPrice(project.maxPrice)} Cr
+                                  {formatPrice(villa.maxPrice)} Cr
                                 </>
                               )}
                             </div>
@@ -592,4 +602,4 @@ const BuilderIndependentFloor = () => {
   );
 };
 
-export default BuilderIndependentFloor; 
+export default LuxuryVillasForSale; 
