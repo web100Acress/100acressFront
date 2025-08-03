@@ -40,9 +40,11 @@ const Sidebar = () => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('adminDarkMode', 'true');
+      console.log('Dark mode enabled');
     } else {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('adminDarkMode', 'false');
+      console.log('Dark mode disabled');
     }
   }, [darkMode]);
 
@@ -100,10 +102,6 @@ const Sidebar = () => {
       `}</style>
       <div
         className={`sidebar-wrapper fixed top-0 left-0 h-screen w-[250px] bg-gradient-to-br from-[#232526]/90 to-[#414345]/90 backdrop-blur-xl shadow-2xl border-r border-gray-200/20 flex flex-col justify-between z-50 transition-all duration-300 dark:bg-gradient-to-br dark:from-[#181a1b]/95 dark:to-[#232526]/95`}
-        style={{
-          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
-          background: 'rgba(44, 62, 80, 0.85)',
-        }}
       >
         {/* Brand/Logo Section */}
         <div className="sidebar-brand flex items-center gap-2 px-6 py-6 border-b border-gray-200/10 dark:border-gray-700/30">
@@ -172,7 +170,10 @@ const Sidebar = () => {
         {/* Dark Mode Toggle Button */}
         <div className="px-2 pb-2 flex flex-col gap-2">
           <button
-            onClick={() => setDarkMode((prev) => !prev)}
+            onClick={() => {
+              console.log('Dark mode toggle clicked, current state:', darkMode);
+              setDarkMode((prev) => !prev);
+            }}
             className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-gray-200/80 to-gray-400/80 text-gray-800 font-semibold text-base shadow hover:from-gray-300 hover:to-gray-500 transition-all duration-200 dark:bg-gradient-to-r dark:from-gray-700/80 dark:to-gray-900/80 dark:text-gray-100 dark:hover:from-gray-800 dark:hover:to-gray-950"
             aria-label="Toggle dark mode"
           >
