@@ -31,7 +31,7 @@ const ConfettiAllCorners = () => {
       scalar: 2,
       startVelocity: 45, // Slightly increased velocity
       gravity: 0.9,
-      ticks: 250,
+      ticks: 100,
     });
 
     // Top-right burst
@@ -44,7 +44,7 @@ const ConfettiAllCorners = () => {
       scalar: 2,
       startVelocity: 45, // Slightly increased velocity
       gravity: 0.9,
-      ticks: 250,
+      ticks: 100,
     });
 
     // Bottom-left burst
@@ -57,7 +57,7 @@ const ConfettiAllCorners = () => {
       scalar: 2,
       startVelocity: 45,
       gravity: 0.9,
-      ticks: 250,
+      ticks: 100,
     });
 
     // Bottom-right burst
@@ -70,11 +70,11 @@ const ConfettiAllCorners = () => {
       scalar: 2,
       startVelocity: 45,
       gravity: 0.9,
-      ticks: 250,
+      ticks: 100,
     });
 
     // Center top burst - massive explosion
-    const centerBurstDelay = 800 + Math.random() * 400; // Random delay between 800ms and 1200ms
+    const centerBurstDelay = 300 + Math.random() * 200; // Random delay between 300ms and 500ms
     const timer = setTimeout(() => {
       myConfetti({
         particleCount: 1000, // Significantly increased particles
@@ -85,13 +85,13 @@ const ConfettiAllCorners = () => {
         scalar: 2.5, // Slightly larger particles
         startVelocity: 60, // Increased velocity for a more powerful burst
         gravity: 1.1, // Slightly more gravity for faster fall
-        ticks: 400, // Longer duration for the central burst
+                 ticks: 100, // Further reduced duration for faster cleanup
         drift: 0,
       });
     }, centerBurstDelay);
 
-    // Clean up
-    const hideDelay = 5000 + Math.random() * 1000; // Random hide delay between 5s and 6s
+    // Clean up - further reduced duration
+    const hideDelay = 2000 + Math.random() * 300; // Random hide delay between 2s and 2.3s
     const hideTimer = setTimeout(() => setVisible(false), hideDelay);
 
     return () => {

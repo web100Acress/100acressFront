@@ -155,7 +155,7 @@ function App() {
     // Auto-hide after animation completes
     const timer = setTimeout(() => {
       setShowConfetti(false);
-    }, 6000);
+    }, 2300);
     
     return () => clearTimeout(timer);
   }, []);
