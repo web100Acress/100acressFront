@@ -121,6 +121,7 @@ const ProjectsAddBhk = lazy(() => import("./AdminPage/ProjectAddBhk"));
 const ProjectEditBHK = lazy(() => import("./AdminPage/ProjectEditBHK"));
 const ProjectAddHighligths = lazy(() => import("./AdminPage/ProjectAddHighligths"));
 const ProjectEditHighlight = lazy(() => import("./AdminPage/ProjectEditHighlight"));
+const ProjectOrderManager = lazy(() => import("./AdminPage/ProjectOrderManager"));
 const BlogEdit = lazy(() => import("./AdminPage/BlogEdit"));
 const BlogWrite = lazy(() => import("./AdminPage/BlogWrite"));
 const Career = lazy(() => import("./AdminPage/Career"));
@@ -409,6 +410,10 @@ function App() {
               <Route
                 path="ProjectAddHighlights/:id"
                 element={<LazyLoad> <ProjectAddHighligths /></LazyLoad>}
+              />
+              <Route
+                path="project-order-manager"
+                element={<LazyLoad><ProjectOrderManager /></LazyLoad>}
               />
               <Route
                 path="dashboard"
