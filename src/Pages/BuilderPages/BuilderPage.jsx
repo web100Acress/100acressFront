@@ -1,18 +1,26 @@
-import React, {useEffect, useState, useMemo } from "react";
+import React, {useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import Footer from "../../Components/Actual_Components/Footer";
 import { Helmet } from "react-helmet";
 import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from "../../Assets/icons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import { orderProjects, hasCustomOrder, getCustomOrder, getRandomSeed } from "../../Utils/ProjectOrderUtils";
+import { syncProjectOrdersFromServer } from "../../Redux/slice/ProjectOrderSlice";
 // Removed unused imports as they are not used in this file
 
 const BuilderPage = React.memo(() => {
     const { builderName } = useParams(); 
+    const dispatch = useDispatch();
     const [query, setQuery] = useState("");
     const [loading, setLoading] = useState(true);
+    const [isSynced, setIsSynced] = useState(false);
     const {getProjectbyBuilder} = Api_Service();
+    
+    // Memoize sync function to prevent infinite re-renders
+    const memoizedSyncProjectOrders = useCallback(() => {
+      return dispatch(syncProjectOrdersFromServer());
+    }, [dispatch]);
     
     // Get builder projects from Redux store
     const SignatureBuilder = useSelector(store => store?.builder?.signatureglobal);
@@ -169,6 +177,41 @@ const BuilderPage = React.memo(() => {
     }
   }, [query, getProjectbyBuilder]);
 
+  // Sync project orders from server on component mount
+  useEffect(() => {
+    console.log('🔍 BuilderPage - Syncing project orders from server...');
+    setIsSynced(false);
+    
+    memoizedSyncProjectOrders()
+      .then((result) => {
+        console.log('🔍 BuilderPage - Sync result:', result);
+        setIsSynced(true);
+        console.log('🔍 BuilderPage - Project orders synced successfully');
+      })
+      .catch((error) => {
+        console.error('🔍 BuilderPage - Error syncing project orders:', error);
+        setIsSynced(false);
+      });
+  }, [memoizedSyncProjectOrders]);
+
+  // Auto-sync every 30 seconds to keep updated
+  useEffect(() => {
+    const syncInterval = setInterval(() => {
+      console.log('🔍 BuilderPage - Auto-syncing project orders...');
+      memoizedSyncProjectOrders()
+        .then((result) => {
+          console.log('🔍 BuilderPage - Auto-sync result:', result);
+          setIsSynced(true);
+        })
+        .catch((error) => {
+          console.error('🔍 BuilderPage - Auto-sync failed:', error);
+          setIsSynced(false);
+        });
+    }, 30000); // Sync every 30 seconds
+
+    return () => clearInterval(syncInterval);
+  }, [memoizedSyncProjectOrders]);
+
   // Force re-render when Redux state changes
   useEffect(() => {
     console.log('🔍 BuilderPage re-rendering due to Redux state change');
@@ -199,6 +242,20 @@ const BuilderPage = React.memo(() => {
               <h1 className="mb-3 p-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
               {formattedBuilderName} Projects in Gurugram
               </h1>
+              
+              {/* Sync Status Indicator */}
+              <div className="mb-4 text-center">
+                <span className={`text-xs px-2 py-1 rounded-full ${
+                  isSynced 
+                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
+                    : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
+                }`}>
+                  {isSynced ? '✅ Live Order' : '🔄 Syncing...'}
+                </span>
+                <p className="text-xs text-gray-500 mt-1">
+                  {isSynced ? 'Project order synced with admin panel' : 'Updating project order...'}
+                </p>
+              </div>
               
       
               <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
