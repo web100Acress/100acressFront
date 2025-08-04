@@ -83,7 +83,7 @@ const CommonInside = ({
           </h2>
         )}
 
-        <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full mb-4">
+        <div className="grid max-w-md grid-cols-1 px-4 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full mb-4 gap-3 md:gap-4">
           {validData.map((item, index) => {
             const pUrl = item.project_url;
             const propertyName = item.projectName || item.postProperty?.propertyName;
@@ -109,19 +109,19 @@ const CommonInside = ({
             return (
               <article
                 key={index}
-                className="mb-2 overflow-hidden rounded-md border text-black shadow-md duration-500 ease-in-out hover:shadow-xl bg-[#FFF8F0]"
+                className="overflow-hidden rounded-lg border text-black shadow-lg duration-500 ease-in-out hover:shadow-xl bg-[#FFF8F0] mb-3 md:mb-0 transition-all duration-300"
               >
-                <div className="relative w-[95%] mt-1 align-center aspect-[4/3]" style={{ marginLeft: "7px", marginBottom: "10px" }}>
-                  <Link to={propertyUrl} target="_top">
+                <div className="relative w-full">
+                  <Link to={propertyUrl} target="_top" className="block">
                     <img
                       src={imageUrl}
                       alt={propertyName || "Property In Gurugram"}
-                      className="inset-0 w-full h-full object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-105"
+                      className="w-full h-[200px] md:h-48 object-cover transition-transform duration-500 ease-in-out hover:scale-105"
                       loading="lazy"
                     />  
                   </Link>
                   <div
-                    className="absolute top-2 right-2 cursor-pointer"
+                    className="absolute top-3 right-3 md:top-5 md:right-5 cursor-pointer"
                     onClick={() => handleShare(item)}
                   >
                     <ShareFrameIcon />

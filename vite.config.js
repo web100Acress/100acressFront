@@ -6,6 +6,7 @@ export default defineConfig(() => {
   return {
     server: {
       port: 3000,
+      allowedHosts: ['30eb0c089ea5.ngrok-free.app', '.ngrok-free.app'],
       proxy: {
         '/api': {
           target: 'https://api.100acress.com',
