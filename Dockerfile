@@ -1,44 +1,22 @@
-# Build stage
-FROM node:18-alpine as build
 
-# Set working directory
+FROM node:alpine3.18 as build
+# Build App
 WORKDIR /app
-
-# Copy package files
 COPY package.json package-lock.json* ./
-
-# Install dependencies with legacy peer deps and force
-RUN npm ci --legacy-peer-deps --force
-
-# Copy source code
+RUN npm ci
 COPY . .
 
-# Set environment to skip optional dependencies
-ENV SKIP_OPTIONAL_DEPENDENCIES=true
-
-# Build the application
 RUN npm run build
-
-# Production stage
+# Serve with Nginx
 FROM nginx:1.23-alpine
-
 # Remove default Nginx configuration
 RUN rm /etc/nginx/conf.d/default.conf
 
 # Copy Nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/
 
-# Set working directory
 WORKDIR /usr/share/nginx/html
-
-# Remove default content
 RUN rm -rf *
-
-# Copy built files from build stage
-COPY --from=build /app/dist .
-
-# Expose port
+COPY --from=build /app/build .
 EXPOSE 80
-
-# Start Nginx
 ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
