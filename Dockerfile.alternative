@@ -1,5 +1,5 @@
 # Build stage
-FROM node:18-alpine as build
+FROM node:18-slim as build
 
 # Set working directory
 WORKDIR /app
@@ -7,14 +7,11 @@ WORKDIR /app
 # Copy package files
 COPY package.json package-lock.json* ./
 
-# Install dependencies with legacy peer deps and force
-RUN npm ci --legacy-peer-deps --force
+# Install dependencies
+RUN npm ci --legacy-peer-deps
 
 # Copy source code
 COPY . .
-
-# Set environment to skip optional dependencies
-ENV SKIP_OPTIONAL_DEPENDENCIES=true
 
 # Build the application
 RUN npm run build
@@ -41,4 +38,4 @@ COPY --from=build /app/dist .
 EXPOSE 80
 
 # Start Nginx
-ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
+ENTRYPOINT [ "nginx", "-g", "daemon off;" ] 
