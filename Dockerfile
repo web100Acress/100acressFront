@@ -1,22 +1,31 @@
+# Build Stage
+FROM node:18-alpine AS build
 
-FROM node:alpine3.18 as build
-# Build App
 WORKDIR /app
-COPY package.json package-lock.json* ./
-RUN npm ci
+
+COPY package*.json ./
+
+RUN npm install
+
 COPY . .
 
 RUN npm run build
-# Serve with Nginx
+
+# Production Stage
 FROM nginx:1.23-alpine
-# Remove default Nginx configuration
+
+# Clean default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Copy Nginx configuration
+# Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/
 
 WORKDIR /usr/share/nginx/html
+
 RUN rm -rf *
+
 COPY --from=build /app/build .
+
 EXPOSE 80
-ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
