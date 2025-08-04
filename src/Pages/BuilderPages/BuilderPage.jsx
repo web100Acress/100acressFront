@@ -244,19 +244,19 @@ const BuilderPage = React.memo(() => {
               </h1>
               
               {/* Sync Status Indicator */}
-              <div className="mb-4 text-center">
+              {/* <div className="mb-4 text-center">
                 <span className={`text-xs px-2 py-1 rounded-full ${
                   isSynced 
                     ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
                     : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
                 }`}>
-                  {isSynced ? '✅ Live Order' : '🔄 Syncing...'}
+                  {isSynced ? '✅ Live Order  ' : '🔄 Syncing...'}
                 </span>
                 <p className="text-xs text-gray-500 mt-1">
                   {isSynced ? 'Project order synced with admin panel' : 'Updating project order...'}
                 </p>
-              </div>
-              
+              </div>  
+               */}
       
               <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
                 {orderedProjects?.map((item, index) => {
