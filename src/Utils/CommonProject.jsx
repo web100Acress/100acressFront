@@ -53,29 +53,29 @@ const CommonProject = ({ data, title, path ,animation }) => {
 
             { response && 
               <section className="flex flex-col items-center bg-white mt-3 ">
-                <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full mb-4">
+                <div className="grid max-w-md grid-cols-1 px-4 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full mb-4 gap-3 md:gap-4">
                   {response?.map((item, index) => {
                     const pUrl = item.project_url;
                     return (
-                      <span key={index}>
+                      <span key={index} className="mb-3 md:mb-0">
 
                         <article
                           key={index}
-                          className="mb-1 overflow-hidden rounded-md border text-black shadow-md duration-500 ease-in-out hover:shadow-xl h-full flex flex-col hover:border-[#FF9933] hover:shadow-[#FF9933]/20 bg-[#FFF8F0]"
+                          className="overflow-hidden rounded-lg border text-black shadow-lg duration-500 ease-in-out hover:shadow-xl h-full flex flex-col hover:border-[#FF9933] hover:shadow-[#FF9933]/20 bg-[#FFF8F0] transition-all duration-300"
                         >
                           <div className="relative flex p-0">
-                            <Link to={`/${pUrl}/`} target="_top">
+                            <Link to={`/${pUrl}/`} target="_top" className="w-full">
                               <img
                                 src={`https://d16gdc5rm7f21b.cloudfront.net/${item?.thumbnailImage?.public_id}`}
                                 alt="property In Gurugram"
-                                className="w-full h-48 object-cover rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
+                                className="w-full h-[200px] md:h-48 object-cover transition-transform duration-500 ease-in-out hover:scale-110"
                                 loading="lazy"
                                 onError={(e) => {
                                   e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f3f4f6'/%3E%3Ctext x='200' y='100' font-family='Arial' font-size='14' text-anchor='middle' fill='%236b7280'%3EProject Image%3C/text%3E%3C/svg%3E";
                                 }}
                               />
                             </Link>
-                            <div className="absolute top-5 right-5" onClick={() => handleShare(item)}>
+                            <div className="absolute top-3 right-3 md:top-5 md:right-5" onClick={() => handleShare(item)}>
                               <ShareFrameIcon />
                             </div>
                           </div>

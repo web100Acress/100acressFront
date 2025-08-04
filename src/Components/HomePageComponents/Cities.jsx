@@ -1,321 +1,331 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-const Cities =() => {
-
+const Cities = () => {
   useEffect(() => { AOS.init(); }, []);
-  
 
-  const cities =[
+  const cities = [
     {
-      title:"Sohna Road",link:"/property-in-gurugram/sohna-road/",image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/sohnaroad.jpg"
+      title: "Gurugram",
+      link: "/projects-in-gurugram/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/GURGAON.webp",
+      state: "Haryana"
     },
     {
-      title:"Golf Course Road",link:"/property-in-gurugram/golf-course/",image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/golfcourse.webp"
+      title: "Delhi",
+      link: "/project-in-delhi/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/DELHI.webp",
+      state: "Delhi"
     },
     {
-      title:"MG Road",link:"/property-in-gurugram/mg-road/",image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/mgroad.jpg"
+      title: "Noida",
+      link: "/project-in-noida/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/NOIDA.webp",
+      state: "Uttar Pradesh"
     },
     {
-      title:"NPR Road",link:"/property-in-gurugram/northern-peripheral-road/",image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/sikanderpur.webp"
+      title: "Goa",
+      link: "/project-in-goa/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/GOA.webp",
+      state: "Goa"
     },
     {
-      title:"Dwarka Expressway",link:"/property-in-gurugram/dwarka-expressway/",image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/capture1.jpg"
+      title: "Ayodhya",
+      link: "/project-in-ayodhya/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/AYODHYA.webp",
+      state: "Uttar Pradesh"
     },
     {
-      title:"New Gurgaon",link:"/property-in-gurugram/new-gurgaon/",image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/capture2.jpg"
+      title: "Mumbai",
+      link: "/project-in-mumbai/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/MUMBAI.webp",
+      state: "Maharashtra"
     },
     {
-      title:"Sohna",link:"/property-in-gurugram/sohna/",image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/capture3 (2).jpg"
+      title: "Panipat",
+      link: "/project-in-panipat/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/panipat.webp",
+      state: "Haryana"
     },
     {
-      title:"SPR Road",link:"/property-in-gurugram/southern-peripheral-road/",image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/bgseven.jpg"
+      title: "Panchkula",
+      link: "/project-in-panchkula/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/PANCHKULA.webp",
+      state: "Haryana"
     },
     {
-      title:"NH-48",link:"/property-in-gurugram/nh-48/",image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/capture5.jpg"
+      title: "Kasauli",
+      link: "/project-in-kasauli/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/KASULI.webp",
+      state: "Himachal Pradesh"
     },
     {
-      title:"Golf Course Extn Road",link:"/property-in-gurugram/golf-course-extn-road/",image:"https://d16gdc5rm7f21b.cloudfront.net/100acre/dream+property/capture6.jpg"
+      title: "Sonipat",
+      link: "/projects-in-sonipat/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/sonipat-final.webp",
+      state: "Haryana"
     },
-  ]
-  
+    {
+      title: "Karnal",
+      link: "/projects-in-karnal/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/KARNAL.webp",
+      state: "Haryana"
+    },
+    {
+      title: "Jalandhar",
+      link: "/projects-in-jalandhar/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/JALANDHAR.webp",
+      state: "Punjab"
+    },
+    {
+      title: "Pushkar",
+      link: "/projects-in-pushkar/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/PUSHKAR.webp",
+      state: "Rajasthan"
+    },
+    {
+      title: "Dubai",
+      link: "/projects-in-dubai/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/DUBAI.webp",
+      state: "UAE"
+    },
+    {
+      title: "See All",
+      link: "/all-cities/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/DUBAI.webp",
+      state: "Explore More"
+    }
+  ];
+
   return (
-    <Wrapper className="section ">
+    <Wrapper className="section">
       <div className="container">
-      <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
-      <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
-        Gurugram Prime Locations
-        </h2>
-      </div>
-        <div className="grid lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 pb-2 pt-3">
-                {cities.map((project, index) => (
-                  <Link data-aos="flip-up" to={project.link} key={index} className="card">
-                    <img src={project.image} alt={project.title} className="card-image" loading="lazy"/>
-                    <button className="card-button bg-gradient-to-r from-[#FF9933] to-[#138808] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-[#FF9933] dark:focus:ring-[#138808] shadow-lg hover:shadow-xl transition-all duration-300">{project.title}</button>
-                  </Link>
-                ))}
-              </div>
+        <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
+          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
+            Prime Cities
+          </h2>
+        </div>
+
+        {/* City Cards Grid */}
+        <div className="city-cards-grid">
+          {cities.map((city, index) => (
+            <div key={index} className={`city-card ${city.title === "See All" ? "see-all-card" : ""}`}>
+              <Link to={city.link} className="card-link">
+                <div className="card-image-container">
+                  {city.title === "See All" ? (
+                    <div className="see-all-content">
+                      <div className="see-all-icon">→</div>
+                      <h3 className="see-all-title">{city.title}</h3>
+                      <p className="see-all-subtitle">{city.state}</p>
+                    </div>
+                  ) : (
+                    <>
+                      <img 
+                        src={city.image} 
+                        alt={city.title} 
+                        className="card-image" 
+                        loading="lazy"
+                      />
+                      <div className="card-overlay">
+                        <div className="city-info">
+                          <h3 className="city-name">{city.title}</h3>
+                          <p className="city-state">{city.state}</p>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
       </div>
     </Wrapper>
   );
-}
+};
 
 export default Cities;
 
 const Wrapper = styled.section`
-  .dffasPL {
-    padding-top: 10px;
-    padding-bottom: 20px;
-  }
-      .container {
+  .container {
     max-width: 1250px;
     margin: auto;
-    padding: 10px;
+    padding: 20px;
   }
 
-  .header {
+  .city-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    max-width: 1200px;
+    margin: 30px auto 0;
+    padding: 20px;
+  }
+
+  .city-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    aspect-ratio: 1;
+    height: 200px;
+  }
+
+  .city-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(19, 136, 8, 0.3);
+    border-color: #FF9933;
+  }
+
+  .see-all-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+  }
+
+  .see-all-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(19, 136, 8, 0.2);
+    border-color: #138808;
+    background: #ffffff;
+  }
+
+  .see-all-content {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    justify-content: center;
+    height: 100%;
+    color: #333;
+    text-align: center;
+    padding: 20px;
   }
 
-  .title {
-    font-size: 1.5rem;
+  .see-all-icon {
+    font-size: 48px;
     font-weight: bold;
+    margin-bottom: 10px;
+    color: #138808;
+  }
+
+  .see-all-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 0 5px 0;
     color: #333;
   }
 
-  .view-all {
+  .see-all-subtitle {
+    font-size: 14px;
+    margin: 0;
+    color: #666;
+    font-weight: 500;
+  }
+
+  .card-link {
     text-decoration: none;
-    font-size: 1rem;
-    color: #ff0000;
-    font-weight: 600;
+    color: inherit;
+    display: block;
+    height: 100%;
   }
 
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-  }
-
-  .card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
+  .card-image-container {
+    position: relative;
+    height: 100%;
     overflow: hidden;
-    text-decoration: none;
-    background: #fff;
-    padding: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-  }
-
-  .card:hover {
-    transform: translateY(-5px);
   }
 
   .card-image {
     width: 100%;
-    height: 180px;
+    height: 100%;
     object-fit: cover;
-    border-radius: 8px;
+    transition: transform 0.3s ease;
   }
 
-  .card-image:hover{
-    transform: scale(1.06);
+  .city-card:hover .card-image {
+    transform: scale(1.1);
   }
 
-  .card-button {
-    width: 100%;
-    margin-top: 10px;
-    border-radius:10px;
-    padding: 10px 0px;
-    background-color: #C13B44;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    text-transform: capitalize;
-    transition: background-color 0.3s ease;
+  .card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 20px 15px 15px;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
   }
 
-  .card-button:hover {
-    background-color: #7C1920;
-    transform: scale(1.06);
+  .city-card:hover .card-overlay {
+    transform: translateY(0);
   }
 
-  @media (max-width: 768px) {
-    .title {
-      font-size: 1.25rem;
-    }
-
-    .card-image {
-      height: 150px;
-    }
-
-    .card-button {
-      font-size: 0.9rem;
-    }
-  }
-
-  .bc-rd-23 {
-    border-radius: 23px;
-  }
-
-  .bc-rd-15 {
-    border-radius: 15px;
-  }
-
-  .ft-sz-15 {
-    font-size: 15px;
-  }
-
-  .ft-sz-30 {
-    font-size: 30px;
-  }
-
-  .ft-sz-25 {
-    font-size: 25px;
-  }
-
-  .gdmJO {
-    flex-wrap: wrap;
-    max-width: 1500px;
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: space-between;
-  }
-
-  .cvBMLN {
-    width: calc(20% - 20px); /* Adjusted width and margin */
-    margin: 10px;
-    height: 200px;
-    border: 3px solid #eee;
-    overflow: hidden;
-    position: relative;
-    float: left;
-    display: inline-block;
-    cursor: pointer;
-    border-radius: 13px;
+  .city-info {
     text-align: center;
   }
 
-  .asdDRsfVN {
-    height: 100%;
-    width: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    -webkit-transition: all 0.5s;
-    -moz-transition: all 0.5s;
-    -o-transition: all 0.5s;
-    transition: all 0.5s;
-  }
-
-  .bg-one {
-    background-image: url(../../OtherImages/sohnaroad.webp);
-    background-position: center;
-  }
-
-  .bg-two {
-    background-image: url(../../OtherImages/golfcourse.webp);
-    background-position: center;
-  }
-
-  .bg-three {
-    background-image: url(../../OtherImages/mgroad.webp);
-    background-position: center;
-  }
-
-  .bg-four {
-    background-image: url(../../OtherImages/sikanderpur.webp);
-    background-position: center;
-  }
-
-  .bg-five {
-    background-image: url(../../OtherImages/capture1.webp);
-    background-position: center;
-  }
-
-  .bg-six {
-    background-image: url(../../OtherImages/capture2.webp);
-    background-position: center;
-  }
-
-  .bg-seven {
-    background-image: url(../../OtherImages/capture3.webp);
-    background-position: center;
-  }
-
-  .bg-eight {
-    background-image: url(../../OtherImages/bgseven.webp);
-    background-position: center;
-  }
-
-  .bg-nine {
-    background-image: url(../../OtherImages/capture5.webp);
-    background-position: center;
-  }
-
-  .bg-ten {
-    background-image: url(../../OtherImages/capture6.webp);
-    background-position: center;
-  }
-  .bg-one:hover,
-  .bg-two:hover,
-  .bg-three:hover,
-  .bg-four:hover,
-  .bg-five:hover,
-  .bg-six:hover,
-  .bg-seven:hover,
-  .bg-eight:hover,
-  .bg-nine:hover,
-  .bg-ten:hover {
-    // filter: grayscale(0.80);
-    opacity: 1;
-    // filter: brightness(90%);
-    filter: gray saturate(0%) brightness(70%) contrast(1000%);
-  }
-
-  .cvBMLN:hover .asdDRsfVN,
-  .cvBMLN:focus .asdDRsfVN {
-    -ms-transform: scale(1.2);
-    -moz-transform: scale(1.2);
-    -webkit-transform: scale(1.2);
-    -o-transform: scale(1.2);
-    transform: scale(1.2);
-  }
-
-  .cvBMLN p {
-    position: absolute;
-    bottom: 0px;
-    left: 10%;
-    right: 10%;
-    font-weight: bold;
+  .city-name {
     color: white;
-    transition: 0.5s;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 5px 0;
   }
 
-  .cvBMLN:hover p {
-    bottom: 35%;
+  .city-state {
+    color: #FF9933;
+    font-size: 12px;
+    margin: 0;
+    font-weight: 500;
   }
 
-  @media screen and (max-width: 900px) {
-    .cvBMLN {
-      width: calc(45% - 10px); /* Adjusted width for tablet screens */
+  /* Mobile Responsive */
+  @media (max-width: 1024px) {
+    .city-cards-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 15px;
+    }
+
+    .city-card {
+      height: 180px;
     }
   }
 
-  @media screen and (max-width: 425px) {
-    .cvBMLN {
-      width: 100%;
+  @media (max-width: 768px) {
+    .city-cards-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .city-card {
+      height: 150px;
+    }
+
+    .city-name {
+      font-size: 14px;
+    }
+
+    .city-state {
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .city-cards-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .city-card {
+      height: 140px;
     }
   }
 `;
+

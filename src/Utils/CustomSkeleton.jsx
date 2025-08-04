@@ -18,15 +18,15 @@ const ProjectsSkeleton = () => {
         </div>
       </div>
       <section className="flex flex-col items-center bg-white mt-3  ">
-        <div className="grid max-w-md grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
+        <div className="grid max-w-md grid-cols-1 px-4 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full gap-3 md:gap-4">
           {[...Array(4)].map((_, index) => (
             <article
               key={index}
-              className="mb-2 overflow-hidden rounded-md border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
+              className="overflow-hidden rounded-lg border text-gray-700 shadow-lg duration-500 ease-in-out hover:shadow-xl mb-3 md:mb-0"
             >
-              <div className="relative flex p-3 align-center justify-center">
-                <Skeleton.Image style={{ width: '270px', height: '200px' }} active className="w-[200%] h-[100%] rounded-lg object-fill" />
-                <div className="absolute top-5 right-5">
+              <div className="relative flex p-0">
+                <Skeleton.Image style={{ width: '100%', height: '200px' }} active className="w-full h-[200px] md:h-48 rounded-lg object-cover" />
+                <div className="absolute top-3 right-3 md:top-5 md:right-5">
                   <Skeleton.Avatar active size="small" shape="circle" />
                 </div>
               </div>
