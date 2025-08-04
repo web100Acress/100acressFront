@@ -41,32 +41,32 @@ const ProjectOrderManager = () => {
     return dispatch(deleteProjectOrderFromServer(data));
   }, [dispatch]);
 
-  // Get project order state from Redux
-  const customOrders = useSelector(store => store?.projectOrder?.customOrders);
-  const buildersWithCustomOrder = useSelector(store => store?.projectOrder?.buildersWithCustomOrder);
-  const randomSeeds = useSelector(store => store?.projectOrder?.randomSeeds);
+  // Get project order state from Redux with server sync only
+  const customOrders = useSelector(store => store?.projectOrder?.customOrders || {});
+  const buildersWithCustomOrder = useSelector(store => store?.projectOrder?.buildersWithCustomOrder || {});
+  const randomSeeds = useSelector(store => store?.projectOrder?.randomSeeds || {});
 
-  // Get all builder projects from Redux
-  const SignatureBuilder = useSelector(store => store?.builder?.signatureglobal);
-  const M3M = useSelector(store => store?.builder?.m3m);
-  const dlfAllProjects = useSelector(store => store?.builder?.dlf);
-  const Experion = useSelector(store => store?.builder?.experion);
-  const Elan = useSelector(store => store?.builder?.elan);
-  const BPTP = useSelector(store => store?.builder?.bptp);
-  const Adani = useSelector(store => store?.builder?.adani);
-  const SmartWorld = useSelector(store => store?.builder?.smartworld);
-  const Trevoc = useSelector(store => store?.builder?.trevoc);
-  const IndiaBulls = useSelector(store => store?.builder?.indiabulls);
-  const centralpark = useSelector(store => store?.builder?.centralpark);
-  const emaarindia = useSelector(store => store?.builder?.emaarindia);
-  const godrej = useSelector(store => store?.builder?.godrej);
-  const whiteland = useSelector(store => store?.builder?.whiteland);
-  const aipl = useSelector(store => store?.builder?.aipl);
-  const birla = useSelector(store => store?.builder?.birla);
-  const sobha = useSelector(store => store?.builder?.sobha);
-  const trump = useSelector(store => store?.builder?.trump);
-  const puri = useSelector(store => store?.builder?.puri);
-  const aarize = useSelector(store => store?.builder?.aarize);
+  // Get all builder projects from Redux with server sync only
+  const SignatureBuilder = useSelector(store => store?.builder?.signatureglobal || []);
+  const M3M = useSelector(store => store?.builder?.m3m || []);
+  const dlfAllProjects = useSelector(store => store?.builder?.dlf || []);
+  const Experion = useSelector(store => store?.builder?.experion || []);
+  const Elan = useSelector(store => store?.builder?.elan || []);
+  const BPTP = useSelector(store => store?.builder?.bptp || []);
+  const Adani = useSelector(store => store?.builder?.adani || []);
+  const SmartWorld = useSelector(store => store?.builder?.smartworld || []);
+  const Trevoc = useSelector(store => store?.builder?.trevoc || []);
+  const IndiaBulls = useSelector(store => store?.builder?.indiabulls || []);
+  const centralpark = useSelector(store => store?.builder?.centralpark || []);
+  const emaarindia = useSelector(store => store?.builder?.emaarindia || []);
+  const godrej = useSelector(store => store?.builder?.godrej || []);
+  const whiteland = useSelector(store => store?.builder?.whiteland || []);
+  const aipl = useSelector(store => store?.builder?.aipl || []);
+  const birla = useSelector(store => store?.builder?.birla || []);
+  const sobha = useSelector(store => store?.builder?.sobha || []);
+  const trump = useSelector(store => store?.builder?.trump || []);
+  const puri = useSelector(store => store?.builder?.puri || []);
+  const aarize = useSelector(store => store?.builder?.aarize || []);
 
   const buildersData = {
     'signature-global': { name: 'Signature Global', projects: SignatureBuilder, query: 'Signature Global' },
@@ -152,7 +152,8 @@ const ProjectOrderManager = () => {
     // Use setTimeout to prevent blocking the UI
     setTimeout(() => {
       memoizedSyncProjectOrders()
-        .then(() => {
+        .then((result) => {
+          console.log('🔍 Sync result:', result);
           setIsSynced(true);
           console.log('🔍 Project orders synced successfully');
         })
@@ -163,6 +164,27 @@ const ProjectOrderManager = () => {
         });
     }, 100);
   }, [memoizedSyncProjectOrders]);
+
+  // Real-time sync every 10 seconds to keep all devices updated
+  useEffect(() => {
+    const syncInterval = setInterval(() => {
+      if (selectedBuilder) {
+        console.log('🔍 Auto-syncing project orders...');
+        memoizedSyncProjectOrders()
+          .then((result) => {
+            console.log('🔍 Auto-sync result:', result);
+            setIsSynced(true);
+            console.log('🔍 Auto-sync completed');
+          })
+          .catch((error) => {
+            console.error('🔍 Auto-sync failed:', error);
+            setIsSynced(false);
+          });
+      }
+    }, 10000); // Sync every 10 seconds
+
+    return () => clearInterval(syncInterval);
+  }, [memoizedSyncProjectOrders, selectedBuilder]);
 
   useEffect(() => {
     if (selectedBuilder) {
@@ -424,6 +446,9 @@ const ProjectOrderManager = () => {
                 <p className={`text-sm ${isSynced ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400'}`}>
                   {isSynced ? "✅ Synced with server" : "🔄 Syncing with server..."}
                 </p>
+                <p className="text-xs text-blue-600 dark:text-blue-400">
+                  🌐 Changes sync globally to all devices in real-time
+                </p>
                <p className="text-blue-600 dark:text-blue-400">
                  {isLoadingProjects ? (
                    "🔄 Loading projects..."
@@ -450,7 +475,8 @@ const ProjectOrderManager = () => {
                     hasSyncedRef.current = false; // Reset to allow manual sync
                     setIsSynced(false);
                     memoizedSyncProjectOrders()
-                      .then(() => {
+                      .then((result) => {
+                        console.log('🔍 Manual sync result:', result);
                         setIsSynced(true);
                         alert('Project orders synced successfully!');
                       })
@@ -463,6 +489,25 @@ const ProjectOrderManager = () => {
                   className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
                 >
                   Sync with Server
+                </button>
+                
+                <button
+                  onClick={() => {
+                    // Show current server data
+                    fetch('https://api.100acress.com/projectOrder/sync')
+                      .then(response => response.json())
+                      .then(data => {
+                        console.log('🔍 Current server data:', data);
+                        alert(`Server data: ${JSON.stringify(data.data, null, 2)}`);
+                      })
+                      .catch(error => {
+                        console.error('Error fetching server data:', error);
+                        alert('Error fetching server data');
+                      });
+                  }}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                >
+                  Show Server Data
                 </button>
               
                              {hasCustomOrderDefined && (
