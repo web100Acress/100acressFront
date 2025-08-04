@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { 
   setCustomOrder, 
   removeCustomOrder, 
   setRandomSeed, 
-  clearAllCustomOrders 
+  clearAllCustomOrders,
+  syncProjectOrdersFromServer,
+  saveProjectOrderToServer,
+  deleteProjectOrderFromServer
 } from "../Redux/slice/ProjectOrderSlice";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Helmet } from "react-helmet";
@@ -20,7 +23,23 @@ const ProjectOrderManager = () => {
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [targetPosition, setTargetPosition] = useState("");
+  const [isSynced, setIsSynced] = useState(true);
+  const hasSyncedRef = useRef(false);
+
   const { getProjectbyBuilder } = Api_Service();
+
+  // Memoize dispatch functions to prevent infinite re-renders
+  const memoizedSyncProjectOrders = useCallback(() => {
+    return dispatch(syncProjectOrdersFromServer());
+  }, [dispatch]);
+
+  const memoizedSaveProjectOrder = useCallback((data) => {
+    return dispatch(saveProjectOrderToServer(data));
+  }, [dispatch]);
+
+  const memoizedDeleteProjectOrder = useCallback((data) => {
+    return dispatch(deleteProjectOrderFromServer(data));
+  }, [dispatch]);
 
   // Get project order state from Redux
   const customOrders = useSelector(store => store?.projectOrder?.customOrders);
@@ -39,7 +58,7 @@ const ProjectOrderManager = () => {
   const Trevoc = useSelector(store => store?.builder?.trevoc);
   const IndiaBulls = useSelector(store => store?.builder?.indiabulls);
   const centralpark = useSelector(store => store?.builder?.centralpark);
-  const emaarindia = useSelector(store => store => store?.builder?.emaarindia);
+  const emaarindia = useSelector(store => store?.builder?.emaarindia);
   const godrej = useSelector(store => store?.builder?.godrej);
   const whiteland = useSelector(store => store?.builder?.whiteland);
   const aipl = useSelector(store => store?.builder?.aipl);
@@ -122,6 +141,29 @@ const ProjectOrderManager = () => {
   console.log('🔍 M3M projects from Redux:', M3M);
   console.log('🔍 orderedProjects:', orderedProjects);
 
+  // Sync with server on component mount (only once)
+  useEffect(() => {
+    if (hasSyncedRef.current) return; // Prevent multiple syncs
+    
+    console.log('🔍 Syncing project orders from server...');
+    hasSyncedRef.current = true;
+    setIsSynced(false);
+    
+    // Use setTimeout to prevent blocking the UI
+    setTimeout(() => {
+      memoizedSyncProjectOrders()
+        .then(() => {
+          setIsSynced(true);
+          console.log('🔍 Project orders synced successfully');
+        })
+        .catch((error) => {
+          console.error('🔍 Error syncing project orders:', error);
+          setIsSynced(false);
+          hasSyncedRef.current = false; // Reset on error to allow retry
+        });
+    }, 100);
+  }, [memoizedSyncProjectOrders]);
+
   useEffect(() => {
     if (selectedBuilder) {
       setIsRandomOrder(!hasCustomOrderDefined);
@@ -165,7 +207,7 @@ const ProjectOrderManager = () => {
     }
   };
 
-  const handleDragEnd = (result) => {
+  const handleDragEnd = async (result) => {
     console.log('🔍 Drag ended:', result);
     if (!result.destination || !selectedBuilder) return;
 
@@ -185,25 +227,67 @@ const ProjectOrderManager = () => {
     }));
     
     setIsRandomOrder(false);
+
+    // Save to server
+    try {
+      await memoizedSaveProjectOrder({
+        builderName: selectedBuilder,
+        customOrder: projectIds,
+        hasCustomOrder: true,
+        randomSeed: randomSeeds[selectedBuilder] || null
+      }).unwrap();
+      
+      console.log('🔍 Project order saved to server after drag');
+    } catch (error) {
+      console.error('Error saving project order to server:', error);
+      alert('Error saving project order to server. Please try again.');
+    }
   };
 
-  const handleSaveOrder = () => {
+  const handleSaveOrder = async () => {
     if (!selectedBuilder) return;
     
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Get current state for the selected builder
+      const customOrder = customOrders[selectedBuilder] || [];
+      const hasCustomOrder = buildersWithCustomOrder[selectedBuilder] === true;
+      const randomSeed = randomSeeds[selectedBuilder] || null;
+      
+      // Save to server
+      await memoizedSaveProjectOrder({
+        builderName: selectedBuilder,
+        customOrder,
+        hasCustomOrder,
+        randomSeed
+      }).unwrap();
+      
+      alert('Project order saved successfully to server!');
+    } catch (error) {
+      console.error('Error saving project order:', error);
+      alert('Error saving project order. Please try again.');
+    } finally {
       setIsLoading(false);
-      alert('Project order saved successfully!');
-    }, 1000);
+    }
   };
 
-  const handleResetToRandom = () => {
+  const handleResetToRandom = async () => {
     if (!selectedBuilder) return;
     
-    dispatch(removeCustomOrder({ builderName: selectedBuilder }));
-    setIsRandomOrder(true);
+    try {
+      // Remove from server
+      await memoizedDeleteProjectOrder({ builderName: selectedBuilder }).unwrap();
+      
+      // Remove from local state
+      dispatch(removeCustomOrder({ builderName: selectedBuilder }));
+      setIsRandomOrder(true);
+      
+      alert('Project order reset to random successfully!');
+    } catch (error) {
+      console.error('Error resetting project order:', error);
+      alert('Error resetting project order. Please try again.');
+    }
   };
 
   const handleLoadProjects = () => {
@@ -219,7 +303,7 @@ const ProjectOrderManager = () => {
     }
   };
 
-  const handleMoveProject = () => {
+  const handleMoveProject = async () => {
     if (!selectedProject || !targetPosition || !selectedBuilder) return;
     
     const targetIndex = parseInt(targetPosition) - 1; // Convert to 0-based index
@@ -257,7 +341,20 @@ const ProjectOrderManager = () => {
     setSelectedProject(null);
     setTargetPosition("");
     
-    alert(`Project "${movedProject.projectName}" moved to position ${targetPosition}`);
+    // Save to server
+    try {
+      await memoizedSaveProjectOrder({
+        builderName: selectedBuilder,
+        customOrder: projectIds,
+        hasCustomOrder: true,
+        randomSeed: randomSeeds[selectedBuilder] || null
+      }).unwrap();
+      
+      alert(`Project "${movedProject.projectName}" moved to position ${targetPosition} and saved to server!`);
+    } catch (error) {
+      console.error('Error saving project order to server:', error);
+      alert(`Project moved locally but failed to save to server. Please try again.`);
+    }
   };
 
   return (
@@ -317,12 +414,16 @@ const ProjectOrderManager = () => {
                <h3 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">
                  Current Status: {selectedBuilderData.name}
                </h3>
-               <p className="text-blue-600 dark:text-blue-400">
-                 {hasCustomOrderDefined 
-                   ? "✅ Custom order is defined and active" 
-                   : "🔄 Using random order (default for new builders)"
-                 }
-               </p>
+               <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {hasCustomOrderDefined ? (
+                    <>Custom order defined with {customOrders[selectedBuilder]?.length || 0} projects</>
+                  ) : (
+                    <>Using random order with seed: {randomSeeds[selectedBuilder] || 'default'}</>
+                  )}
+                </p>
+                <p className={`text-sm ${isSynced ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400'}`}>
+                  {isSynced ? "✅ Synced with server" : "🔄 Syncing with server..."}
+                </p>
                <p className="text-blue-600 dark:text-blue-400">
                  {isLoadingProjects ? (
                    "🔄 Loading projects..."
@@ -336,13 +437,33 @@ const ProjectOrderManager = () => {
           {/* Action Buttons */}
           {selectedBuilder && (
             <div className="flex gap-4 mb-6">
-              <button
-                onClick={handleSaveOrder}
-                disabled={isLoading}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
-              >
-                {isLoading ? 'Saving...' : 'Save Order'}
-              </button>
+                <button
+                  onClick={handleSaveOrder}
+                  disabled={isLoading || !selectedBuilder}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400"
+                >
+                  {isLoading ? 'Saving...' : 'Save Order'}
+                </button>
+                
+                <button
+                  onClick={() => {
+                    hasSyncedRef.current = false; // Reset to allow manual sync
+                    setIsSynced(false);
+                    memoizedSyncProjectOrders()
+                      .then(() => {
+                        setIsSynced(true);
+                        alert('Project orders synced successfully!');
+                      })
+                      .catch((error) => {
+                        console.error('Error syncing project orders:', error);
+                        setIsSynced(false);
+                        alert('Error syncing project orders. Please try again.');
+                      });
+                  }}
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                >
+                  Sync with Server
+                </button>
               
                              {hasCustomOrderDefined && (
                  <button
@@ -567,7 +688,7 @@ const ProjectOrderManager = () => {
                          ))}
                          {provided.placeholder}
                        </div>
-                     )}
+                     )} 
                    </Droppable>
                  </DragDropContext>
                </div>
