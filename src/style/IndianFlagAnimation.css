@@ -1,0 +1,30 @@
+@keyframes popper-left {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-200px, -150px) rotate(720deg);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes popper-right {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(200px, -150px) rotate(720deg);
+      opacity: 0;
+    }
+  }
+  
+  .animate-popper-left {
+    animation: popper-left 1.5s ease-out forwards;
+  }
+  
+  .animate-popper-right {
+    animation: popper-right 1.5s ease-out forwards;
+  }
+  

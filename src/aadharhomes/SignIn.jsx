@@ -100,7 +100,7 @@ export default function SignIn() {
                   <div className="text-primaryRed underline text-end cursor-pointer" onClick={handleForgetUserPassword}>Forgot Password ?</div>
                   <button
                     type="submit"
-                    className="bg-primaryRed text-white text-center w-full rounded px-4 py-2 hover:bg-red-500"
+                    className="bg-primaryRed text-white bg-red-500 text-center w-full rounded px-4 py-2 hover:bg-red-500"
                     onClick={handleClick}
                   >
                     Login
