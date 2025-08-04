@@ -326,7 +326,21 @@ const ProjectOrderManager = () => {
   };
 
   const handleMoveProject = async () => {
-    if (!selectedProject || !targetPosition || !selectedBuilder) return;
+    if (!selectedProject || !targetPosition || !selectedBuilder) {
+      alert('Please select a project and enter a target position.');
+      return;
+    }
+    
+    // Validate that selected project still exists in orderedProjects
+    const selectedProjectId = selectedProject._id || selectedProject.id;
+    const projectExists = orderedProjects.some(p => (p._id || p.id) === selectedProjectId);
+    
+    if (!projectExists) {
+      alert('Selected project is no longer available. Please select a project again.');
+      setSelectedProject(null);
+      setTargetPosition("");
+      return;
+    }
     
     const targetIndex = parseInt(targetPosition) - 1; // Convert to 0-based index
     if (targetIndex < 0 || targetIndex >= orderedProjects.length) {
@@ -334,9 +348,17 @@ const ProjectOrderManager = () => {
       return;
     }
 
-    const currentIndex = orderedProjects.findIndex(p => (p._id || p.id) === selectedProject);
+    // Find current position of the project
+    const currentIndex = orderedProjects.findIndex(p => {
+      const projectId = p._id || p.id;
+      return projectId === selectedProjectId;
+    });
+    
     if (currentIndex === -1) {
-      alert('Selected project not found!');
+      console.error('🔍 Debug - selectedProject:', selectedProject);
+      console.error('🔍 Debug - selectedProjectId:', selectedProjectId);
+      console.error('🔍 Debug - orderedProjects IDs:', orderedProjects.map(p => p._id || p.id));
+      alert('Selected project not found! Please try selecting the project again.');
       return;
     }
 
@@ -628,8 +650,24 @@ const ProjectOrderManager = () => {
                            <select
                              value={selectedProject ? (selectedProject._id || selectedProject.id) : ""}
                              onChange={(e) => {
-                               const project = orderedProjects.find(p => (p._id || p.id) === e.target.value);
-                               setSelectedProject(project || null);
+                               const selectedValue = e.target.value;
+                               if (!selectedValue) {
+                                 setSelectedProject(null);
+                                 return;
+                               }
+                               
+                               const project = orderedProjects.find(p => {
+                                 const projectId = p._id || p.id;
+                                 return projectId === selectedValue;
+                               });
+                               
+                               if (project) {
+                                 setSelectedProject(project);
+                                 console.log('🔍 Selected project:', project);
+                               } else {
+                                 console.error('🔍 Project not found for value:', selectedValue);
+                                 setSelectedProject(null);
+                               }
                              }}
                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                            >
@@ -680,6 +718,11 @@ const ProjectOrderManager = () => {
                    {selectedProject && (
                      <p className="text-sm text-yellow-700 dark:text-yellow-400 mt-2">
                        Moving: <strong>{selectedProject.projectName}</strong> (Current Position: {orderedProjects.findIndex(p => (p._id || p.id) === (selectedProject._id || selectedProject.id)) + 1})
+                     </p>
+                   )}
+                   {!selectedProject && orderedProjects.length > 0 && (
+                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                       Available projects: {orderedProjects.length} | Select a project to move
                      </p>
                    )}
                  </div>
