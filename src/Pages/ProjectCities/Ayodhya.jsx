@@ -1,35 +1,40 @@
-import React, {useEffect } from "react";
+import React, { useEffect } from "react";
 import Footer from "../../Components/Actual_Components/Footer";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { LocationRedIcon,PropertyIcon,RupeeIcon,ShareFrameIcon } from "../../Assets/icons";
+import {
+  LocationRedIcon,
+  PropertyIcon,
+  RupeeIcon,
+  ShareFrameIcon,
+} from "../../Assets/icons";
 import { useSelector } from "react-redux";
 import Api_service from "../../Redux/utils/Api_Service";
 
 const Ayodhya = () => {
   let city = "Ayodhya";
-  const {getProjectbyState} = Api_service();
-  const ayodhya = useSelector(store => store?.stateproject?.ayodhya);
+  const { getProjectbyState } = Api_service();
+  const ayodhya = useSelector((store) => store?.stateproject?.ayodhya);
 
   useEffect(() => {
     if (ayodhya.length === 0) {
-      getProjectbyState(city, 0)
+      getProjectbyState(city, 0);
     }
   }, []);
   const handleShare = (project) => {
     if (navigator.share) {
-        navigator
-            .share({
-                title: project?.projectName,
-                text: `Check out this project: ${project.projectName}`,
-                url: `${window.location.origin}/${project.project_url}`,
-            })
-            .then(() => console.success("Shared successfully"))
-            .catch((error) => console.log("Error sharing:", error));
+      navigator
+        .share({
+          title: project?.projectName,
+          text: `Check out this project: ${project.projectName}`,
+          url: `${window.location.origin}/${project.project_url}`,
+        })
+        .then(() => console.success("Shared successfully"))
+        .catch((error) => console.log("Error sharing:", error));
     } else {
-        alert("Share functionality is not supported on this device/browser.");
+      alert("Share functionality is not supported on this device/browser.");
     }
-};
+  };
   return (
     <div>
       <Helmet>
@@ -40,6 +45,7 @@ const Ayodhya = () => {
           name="description"
           content="Real Estate Properties in New Ayodhya- Get Details for Residential &amp; Commercial Properties"
         />
+        <link rel="canonical" href="https://www.100acress.com/project-in-ayodhya/" />
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-16">
@@ -65,14 +71,14 @@ const Ayodhya = () => {
                 >
                   <div className="relative flex p-3">
                     <Link to={`/${pUrl}/`} target="_top">
-
                       <img
                         src={item.frontImage.url}
                         alt="property In Gurugram"
                         className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                       />
                     </Link>
-                    <div className="absolute top-5 right-5"
+                    <div
+                      className="absolute top-5 right-5"
                       onClick={() => handleShare(item)}
                     >
                       <ShareFrameIcon />
@@ -99,9 +105,8 @@ const Ayodhya = () => {
                             </div>
                           </p>
                           <span className="text-[10px] text-gray-600 block truncate text-sm text-gray-400 block truncate hover:overflow-visible hover:white-space-normal hover:bg-white">
-                            <LocationRedIcon />{" "}{item.projectAddress}
+                            <LocationRedIcon /> {item.projectAddress}
                           </span>
-
                         </li>
                       </li>
                     </ul>
@@ -109,7 +114,9 @@ const Ayodhya = () => {
                       <li className="text-left">
                         <span className="text-sm font-extrabold text-red-600">
                           <div className="flex items-center gap-1">
-                            <span className="text-xl"><RupeeIcon /></span>
+                            <span className="text-xl">
+                              <RupeeIcon />
+                            </span>
                             {!item.minPrice || !item.maxPrice ? (
                               "Reveal Soon"
                             ) : (

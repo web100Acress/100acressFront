@@ -10,6 +10,8 @@ import OurServices from "../Components/HomePageComponents/ourServices";
 import Free from "../../src/Pages/Free";
 import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
+// import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
+
 import { Link } from "react-router-dom";
 import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
@@ -535,6 +537,7 @@ const Home = () => {
       <PossessionProperty />
       <BackToTopButton />
       <Footer />
+      {/* <LuxuryFooter /> */}
       </div>
     </Wrapper>
   );

@@ -41,6 +41,7 @@ const Jalandhar = () => {
           name="description"
           content="Real Estate Properties in New Jalandhar- Get Details for Residential &amp; Commercial Properties"
         />
+        <link rel="canonical" href="https://www.100acress.com/project-in-jalandhar/" />
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-16">

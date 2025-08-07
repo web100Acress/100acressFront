@@ -102,18 +102,18 @@ const PossessionProperty = () => {
       gradient: "from-green-400 to-emerald-500"
     },
     {
-      to: "/projects-in-gurugram/property-ready-to-move/",
+      to: "/projects-in-gurugram/property-possession-in-2025/",
       imgSrc: "../../Images/p2.webp",
-      title: "Possession by 2024",
+      title: "Possession by 2025",
       propertiesCount: "600+ Properties",
       badge: "This Year",
       features: ["Quick Handover", "Pre-booking", "Early Bird Offers"],
       gradient: "from-blue-400 to-indigo-500"
     },
     {
-      to: "/projects-in-gurugram/property-possession-in-2025/",
+      to: "/projects-in-gurugram/property-possession-in-2026/",
       imgSrc: "../../Images/p5.webp",
-      title: "Possession by 2025",
+      title: "Possession by 2026",
       propertiesCount: "500+ Properties",
       badge: "Next Year",
       features: ["Under Construction", "Payment Plans", "Investment Ready"],

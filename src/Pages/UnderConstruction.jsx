@@ -49,6 +49,7 @@ const UnderConstruction = () => {
           name="description"
           content="Real Estate Properties in New Panipat- Get Details for Residential &amp; Commercial Properties"
         />
+        <link rel="canonical" href="https://www.100acress.com/under-construction-projects-in-gurgaon/" />
       </Helmet>
       <div className="mt-auto">
         <ProjectSearching searchdata={underConstruction} sendDatatoparent={handleDatafromSearch}/>
