@@ -16,6 +16,7 @@ const About = () => {
           content="Discover the story behind 100acress.com, a trusted real estate company in Gurgaon. Learn about our values and commitment to excellence in property services."
         />
         <title>About Us | Real Estate Company in Gurgaon - 100acress.com</title>
+        <link rel="canonical" href="https://www.100acress.com/about-us/" />
       </Helmet>
 
       <div className="overflow-x-hidden block w-11/12 mx-auto mt-20 ">

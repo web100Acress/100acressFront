@@ -42,6 +42,7 @@ const Karnal = () => {
           name="description"
           content="Real Estate Properties in New karnal- Get Details for Residential &amp; Commercial Properties"
         />
+        <link rel="canonical" href="https://www.100acress.com/project-in-karnal/" />
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-16">

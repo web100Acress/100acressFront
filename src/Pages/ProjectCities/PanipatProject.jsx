@@ -55,6 +55,8 @@ const PanipatProject = () => {
         <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
         <meta name="twitter:card" content="summary" />
 
+        <link rel="canonical" href="https://www.100acress.com/project-in-panipat/" />
+
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-16">

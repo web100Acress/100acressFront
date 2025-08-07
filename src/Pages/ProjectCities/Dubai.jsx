@@ -42,6 +42,7 @@ const Dubai = () => {
           name="description"
           content="Buy luxury properties in Dubai and across the UAE with 100acress. Explore premium homes, apartments, and villas designed by 100acress."
         />
+        <link rel="canonical" href="https://www.100acress.com/projects-in-dubai/" />
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-16">
