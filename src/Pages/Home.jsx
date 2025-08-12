@@ -31,6 +31,7 @@ import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
 import RotatingCardCarousel from "../Components/HomePageComponents/RotatingCardCarousel";
 import ConfettiAllCorners from "../Components/ConfettiAllCorners";
+import HotProject from "./HomePages/hotproject";
 
 const Home = () => {
   const [showConfetti, setShowConfetti] = useState(true);
@@ -278,58 +279,22 @@ const Home = () => {
       {/* Confetti Animation */}
       {showConfetti && <ConfettiAllCorners />}
 
-    {/* This is the div whose background you want to blur more */}
-    <div className={`transition-filter duration-300 ease-in-out ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}`}>
-      {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
+      {/* This is the div whose background you want to blur more */}
+      <div className={`transition-filter duration-300 ease-in-out ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}`}>
+        {/* Modern Hero Section */}
+        <ModernHeroSection />
 
-      {/* Modern Hero Section */}
-      <ModernHeroSection />
-
-      {/* Temporarily commented out HotProject as it's not found in the codebase
-      <div className="relative">
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)',
-        }}></div>
+        {/* HotProject Section */}
         <div className="relative">
-          <HotProject />
+          <div className="absolute inset-0" style={{
+            background: 'linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)',
+          }}></div>
+          <div className="relative">
+            <HotProject />
+          </div>
         </div>
-      </div>
-      */}
 
-  {/* Premium Properties with Rotating Carousel */}
-  <div className="py-8 md:py-12 bg-gradient-to-b from-white to-gray-50">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent">
-        Premium Properties
-      </h2>
-      {TrendingProjects?.length > 0 && (
-        <RotatingCardCarousel 
-          cards={TrendingProjects.slice(0, 8).map(project => ({
-            id: project._id,
-            title: project.projectName,
-            location: project.area || 'Gurugram',
-            price: project.startingPrice ? `₹${project.startingPrice} Cr*` : 'Price on Request',
-            image: project.frontImage?.url || 'https://via.placeholder.com/600x400?text=Property+Image',
-            link: project.slug ? `/property/${project.slug}` : '/properties'
-          }))}
-          interval={4000}
-        />
-      )}
-    </div>
-  </div>
-
-  {/* 100acres Recommended Properties */}
-  <div className="py-8 md:py-12 bg-gradient-to-b from-white to-gray-50">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent">
-        100acres Recommended
-      </h2>
-      <EnhancedRecommendedSection />
-    </div>
-  </div>
-
-      {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
-
+        {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
         <div data-aos="fade-up"
 
           data-aos-duration="1000" className="py-0 mt-3 max-w-[1250px] mx-auto">
@@ -503,46 +468,43 @@ const Home = () => {
 
       </div>
 
-      {colorChange && isSmallerThan768 && <div>
-        <Link to="/auth/signin/" target="_top">
-          <div className="sticky-quote-cta">
-            <a
-              className="text-white font-semibold"
-              style={{ background: 'linear-gradient(135deg, #FF9933 0%, #138808 100%)', padding: '12px' }}
-            >
-              LIST{" "}PROPERTY
-            </a>
-          </div>
-        </Link>
-      </div>}
-
-      {/* <HomeBuilderCarousel /> */}
-      <Free />
-      {/* <div>
-        <div>
-          <a href="tel:8500900100" class="dd-m-phone">
-            <i class="fa-solid fa-phone"></i>
-          </a>
+      {colorChange && isSmallerThan768 && (
+        <div className="sticky-quote-cta">
+          <Link 
+            to="/auth/signin/" 
+            target="_top"
+            className="text-white font-semibold block"
+            style={{ background: 'linear-gradient(135deg, #FF9933 0%, #138808 100%)', padding: '12px' }}
+          >
+            LIST PROPERTY
+          </Link>
         </div>
-      </div>
-      <div>
-        <a
-          href="https://wa.me/918500900100"
-          class="dd-m-whatsapp"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <i class="fa-brands fa-whatsapp"></i>
-        </a>
-      </div> */}
-      <div>
-        <Chatbot />
-      </div>
+      )}
 
+      <Free />
+      
+      {/* Phone and WhatsApp buttons */}
+      <div className="dd-m-phone">
+        <a href="tel:8500900100">
+          <i className="fa-solid fa-phone"></i>
+        </a>
+      </div>
+      
+      <a
+        href="https://wa.me/918500900100"
+        className="dd-m-whatsapp"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <i className="fa-brands fa-whatsapp"></i>
+      </a>
+      
+      <Chatbot />
       <PossessionProperty />
       <BackToTopButton />
       <Footer />
-      </div>
+      
+      </div> {/* Closing div for the blur container */}
     </Wrapper>
   );
 }
