@@ -17,7 +17,9 @@ import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon } from "lucide-react";
-import HotProject from "./HomePages/hotproject";
+import ModernRecommendedSection from "../Components/HomePageComponents/ModernRecommendedSection";
+import EnhancedRecommendedSection from "../Components/HomePageComponents/EnhancedRecommendedSection";
+import ModernHeroSection from "../Components/HomePageComponents/ModernHeroSection";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Builder from "./BuilderPages/Builder";
@@ -27,6 +29,7 @@ import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
+import RotatingCardCarousel from "../Components/HomePageComponents/RotatingCardCarousel";
 
 const Home = () => {
 
@@ -252,68 +255,73 @@ const Home = () => {
     };
   }, [UpcomingProjects, LuxuryProjects, BudgetHomesProjects, SCOProjects, ProjectinDelhi]);
 
-  // console.log(resalesectionvisible,"section")
+// console.log(resalesectionvisible,"section")
 
-  
 
-  return (
-    <Wrapper className="section" style={{ overflowX: "hidden" }}>
-      <Helmet>
-        <meta
-          name="description"
-          content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential &amp; Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon"
-        />
-        <title>
-          Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India
-        </title>
-        <link rel="canonical" href="https://www.100acress.com/" />
-      </Helmet>
-      
-  {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} />  */}
+return (
+  <Wrapper>
+    <Helmet>
+      <meta
+        name="description"
+        content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential &amp; Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon"
+      />
+      <title>
+        Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India
+      </title>
+      <link rel="canonical" href="https://www.100acress.com/" />
+    </Helmet>
+    
+    {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} /> */}
 
-   {/* This is the div whose background you want to blur more */}
-    <div
-  className={`
-    transition-filter duration-300 ease-in-out
-    ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
-`}
->
-  {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
+    {/* This is the div whose background you want to blur more */}
+    <div className={`transition-filter duration-300 ease-in-out ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}`}>
+      {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
-      <div className="relative w-full">
-        <img
-          // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/summer+banner.png"
-          //  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/monsoon-banner.webp"
-           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp"
-          alt="Banner"
-          className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
-        />
-        <img
-          // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/mobilebanner.webp"
-          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-mobile.webp"
-          alt="Mobile Banner"
-          className="mt-14 block md:hidden w-full h-[38rem]"
-        />
+      {/* Modern Hero Section */}
+      <ModernHeroSection />
 
-        {/* Center the SearchBar */}
-        <div className="absolute inset-0 flex items-center justify-center mt-16 md:mt-0 lg:mt-24">
-          <SearchBar />
-        </div>
-
-      </div>
-
+      {/* Temporarily commented out HotProject as it's not found in the codebase
       <div className="relative">
-        {/* <div className="absolute inset-0 bg-[#f17777]"></div> */}
         <div className="absolute inset-0" style={{
           background: 'linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)',
         }}></div>
-
-
         <div className="relative">
-          {/* <SpotlightBanner /> */}
           <HotProject />
         </div>
       </div>
+      */}
+
+  {/* Premium Properties with Rotating Carousel */}
+  <div className="py-8 md:py-12 bg-gradient-to-b from-white to-gray-50">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent">
+        Premium Properties
+      </h2>
+      {TrendingProjects?.length > 0 && (
+        <RotatingCardCarousel 
+          cards={TrendingProjects.slice(0, 8).map(project => ({
+            id: project._id,
+            title: project.projectName,
+            location: project.area || 'Gurugram',
+            price: project.startingPrice ? `₹${project.startingPrice} Cr*` : 'Price on Request',
+            image: project.frontImage?.url || 'https://via.placeholder.com/600x400?text=Property+Image',
+            link: project.slug ? `/property/${project.slug}` : '/properties'
+          }))}
+          interval={4000}
+        />
+      )}
+    </div>
+  </div>
+
+  {/* 100acres Recommended Properties */}
+  <div className="py-8 md:py-12 bg-gradient-to-b from-white to-gray-50">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent">
+        100acres Recommended
+      </h2>
+      <EnhancedRecommendedSection />
+    </div>
+  </div>
 
       {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
 
@@ -418,7 +426,7 @@ const Home = () => {
         <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
         <div>
           {LuxuryAllProject.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Luxury For You" animation="fade-up" path={"/top-luxury-projects/"} />
+            <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Luxury Apartments For You" animation="fade-up" path={"/top-luxury-projects/"} />
           )}
         </div>
 
@@ -512,7 +520,7 @@ const Home = () => {
           </a>
         </div>
       </div>
-        <div>
+      <div>
         <a
           href="https://wa.me/918500900100"
           class="dd-m-whatsapp"
@@ -525,7 +533,6 @@ const Home = () => {
       <div>
         <Chatbot />
       </div>
-   
 
       <PossessionProperty />
       <BackToTopButton />

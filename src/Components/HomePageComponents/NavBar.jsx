@@ -317,7 +317,7 @@ export default FinalNavBar;
 const Wrapper = styled.section`
 position:sticky;
 top:0px;
-z-index:999;
+z-index:9999;
   .ieuNB {
     display: flex;
   }

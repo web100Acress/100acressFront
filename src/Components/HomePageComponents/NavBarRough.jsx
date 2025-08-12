@@ -6,133 +6,79 @@ import { ABOUT, BLOG, ROOT, PROPERTIES } from "../../lib/route";
 import { Link, Navigate } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import { BsTelephone } from "react-icons/bs"
-import { FiPhoneCall } from "react-icons/fi"
+import { FiPhoneCall, FiChevronDown } from "react-icons/fi"
 
 function CurrentNavBar() {
   const [showNav, setShowNav] = useState(false);
   const URL="/projects"
   return (
     <Wrapper className='section'>
-      <div className='Mflx'>
-      
-        <div className='1euNB' style={{cursor:"pointer"}}>
-        <Link to={ROOT}>
-          <img src="../../Images/mainLogo.png" alt='' className="imgMustLgogo" />
-        </Link>
-        </div>
+      <div className='navbar-container'>
         
-        <div
-          className='barDotMenu'
-          style={{ width: "fit-content", marginBottom: "5px",marginTop: "5px" }}>
-          <span style={{paddingRight:"5px"}} className="phoneIconAnimation"><FiPhoneCall strokeWidth={3} color="white" size={18}/></span>
-          <span>
-          <a href="tel:+4733378901"  className="p-1" style={{color:"white",fontSize:"18px"}}>9811750130</a>
+        {/* Left Section - Search Projects */}
+        <div className='left-section'>
+          <span className='search-projects-trigger' onClick={() => setShowNav(!showNav)}>
+            <HiBars3 size={20} className='menu-icon' />
+            <span className='search-text'>SEARCH PROJECTS</span>
           </span>
-          <HiBars3 size={35} color='white' onClick={() => setShowNav(!showNav)} />
         </div>
 
-        {showNav && (
-          <div
-            className='position-absolute h-100 '
-            style={{
-              background: "red",
-              zIndex: "999",
-              width: "100%",
-            }}>
-            <div className='d-flex align-items-center justify-content-between  pr-3'>
-              <div className='1euNB'>
-                <img src="../../Images/mainLogo.png" alt='' width='200' />
-              </div>
-              <div
-                className='barDotMenu'
-                style={{ width: "fit-content", marginBottom: "10px" }}>
-                <RxCross2
-                  size={30}
-                  color='white'
-                  onClick={() => setShowNav(!showNav)}
-                />
-              </div>
-            </div>
-            <div className='MBflx' style={{background:"red"}}>
-          <ul className='ulfx _1grx flex-column'>
-            <li>
-              <Link to={ROOT} className='linkEl' onClick={() => setShowNav(!showNav)}>
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to={ABOUT} className='linkEl' onClick={() => setShowNav(!showNav)}>
-                About
-              </Link>
-            </li>
-            
-            <li className='_3px49x'>
-               <Link to={URL} className='linkEl' onClick={() => setShowNav(!showNav)}>
-                Projects
-               </Link>
-            </li>
-
-            <li>
-              <Link to={BLOG} className='linkEl' onClick={() => setShowNav(!showNav)}>
-                Blog
-              </Link>
-            </li>
-            
-          </ul>
-          
+        {/* Center Section - Logo */}
+        <div className='center-section'>
+          <Link to={ROOT} className='logo-link'>
+            <span className='logo-text'>100acress</span>
+          </Link>
         </div>
+
+        {/* Right Section - Profile & List Property */}
+        <div className='right-section'>
+          <div className='profile-circle'>
+            <span className='profile-icon'>👤</span>
           </div>
-        )}
-        <div className='NBflx'>
-          <ul className='ulfx _1grx' style={{marginTop:"8px"}}>
+          <button className='list-property-btn'>
+            LIST PROPERTY
+          </button>
+        </div>
 
-            <li>
-              <Link to={ROOT} className='linkEl'>
-                Home
+        {/* Mobile Menu Overlay */}
+        {showNav && (
+          <div className='mobile-menu-overlay'>
+            <div className='mobile-menu-header'>
+              <Link to={ROOT}>
+                <span className='logo-text'>100acress</span>
               </Link>
-            </li>
-            <li>
-              <Link to={ABOUT} className='linkEl'>
-                About
-              </Link>
-            </li>
-            
-            <li className='_3px49x'>
-              <span className='pxrETXT'>
-                <a>Projects</a>
-              </span>
-              <ul className='_2emBLM _nEXRT'>
-                <li className='_3emBLMe'>
-                  <ul className='_3euEM _1uef'>
-                    <li className='_lmxE pplf'>
-                      <div className='amidd'>
-                        <GiVillage size='40' />
-                      </div>
-                      <Link to={URL} relative="path">
-                      <div className='exori'>
-                        <p className='_2hduom'>View All Projects</p>
-                        <span className='_2hskbj'>
-                          Glimpse of All Listed ones
-                        </span>
-                      </div>
-                      </Link>
-                    </li>
-                  </ul>
+              <RxCross2
+                size={30}
+                className='close-icon'
+                onClick={() => setShowNav(!showNav)}
+              />
+            </div>
+            <div className='mobile-menu-content'>
+              <ul className='mobile-menu-list'>
+                <li>
+                  <Link to={ROOT} className='mobile-link' onClick={() => setShowNav(!showNav)}>
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link to={ABOUT} className='mobile-link' onClick={() => setShowNav(!showNav)}>
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link to={URL} className='mobile-link' onClick={() => setShowNav(!showNav)}>
+                    Projects
+                  </Link>
+                </li>
+                <li>
+                  <Link to={BLOG} className='mobile-link' onClick={() => setShowNav(!showNav)}>
+                    Blog
+                  </Link>
                 </li>
               </ul>
-            </li>
-
-            <li>
-              <Link to={BLOG} className='linkEl'>
-                Blog
-              </Link>
-            </li>
-          </ul>
-          <ul className='ulfx _2grx'>
-            <span style={{paddingRight:"5px"}} className="phoneIconAnimation"><FiPhoneCall strokeWidth={3}/></span>
-            <span style={{fontWeight:"bold"}}>9811750130</span>
-          </ul>
-        </div>
+            </div>
+          </div>
+        )}
       </div>
     </Wrapper>
   );
@@ -140,269 +86,207 @@ function CurrentNavBar() {
 
 export default CurrentNavBar;
 const Wrapper = styled.section`
-position:sticky;
-top:0px;
-.imgMustLgogo{
-  width:200px;
-}
-z-index:999;
-  .ieuNB {
-    display: flex;
-  }
-  
-  ._2hskbj{
-    color:black !important;
-  }
-  ._2hskbj:hover{
-    color:red !important;
-  }
-  .ulfx {
-    list-style: none;
+  position: sticky;
+  top: 0px;
+  z-index: 9999;
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+
+  .navbar-container {
     display: flex;
     align-items: center;
-    font-size: large;
-    height: 100%;
-    margin-bottom: 5px;
-    margin-top: 0px;
-    color:white;
-  }
-  .NBflx {
-    display: flex;
-    color: red;
+    justify-content: space-between;
     width: 100%;
-  }
-  .Mflx {
-    display: flex;
-    align-items: center;
-    background:red;
-  }
-  hr{
-    color:black !important;
-  }
-  ._1grx > li,
-  ._2grx > li {
-    position: relative;
-    padding: 0px 12px;
-  }
-  ._2grx {
-    justify-content: flex-end;
-    flex-grow: 1;
-    padding-right: 20px;
-    margin-top: 8px;
-  }
-  .linkEl {
-    color: inherit;
-    display: inherit;
-    align-items: inherit;
-  }
-  ._1grx > li > ul {
-    opacity: 0;
-    visibility: hidden;
-    transition-timing-function: ease-in-out;
-    transition-duration: 0.15s;
-    transition-property: visibility;
-    transition-delay: 0s;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: row;
-    font-weight: 500;
-    height: auto;
-    left: -12px;
-    padding: 8px;
-    position: absolute;
-    top: 140%;
-    z-index: 20;
-  }
-  .phoneIconAnimation{
-    animation:shake 0.8s linear infinite;
-  }
-  @-webkit-keyframes shake{
-    0% {-webkit-transform: none;transform: none;}
-    15% {-webkit-transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);}
-    30% {-webkit-transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);}
-    45% {-webkit-transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);}
-    60% {-webkit-transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);}
-    75% {-webkit-transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);}
-    100% {-webkit-transform: none;transform: none;}
-  }
-  ._2emBLM li {
-    align-items: inherit;
-    min-width: 220px;
-    width: auto;
-  }
-  ._2emBLM {
+    padding: 12px 20px;
     background-color: white;
-    box-shadow: 0 4px 16px 0 rgba(11, 17, 52, 0.2);
   }
-  ._2kdSPM {
-    font-size: small;
-    font-weight: 600;
-    color: red;
-    padding: 8px 10px;
-  }
-  ._3euEM {
-    display: block;
-    padding-left: 0px;
-  }
-  ._3emBLMe li {
-    list-style-type: none;
-  }
-  ._3euEM > li {
-    padding: 10px;
-    color: black;
-    font-size: 15px;
-    margin-right: 10px;
-  }
-  ._3euEM > li:hover {
-    background-color: pink;
-    color: red;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  ._2uef {
-    padding-left: 10px;
-  }
-  ._2emBLM {
-    list-style-type: none;
-  }
-  .ulfx {
-    position: relative;
-  }
-  .pxrE {
-    height: 100%;
-  }
-  .ulfx > li:after {
-    content: "";
-    height: 3px;
-    width: 50%;
-    background-color: red;
-    position: absolute;
-    left: 25%;
-    right: 25%;
-    bottom: -10px;
-    opacity: 0;
-    border-radius: 40px;
-  }
-  .ulfx > li:hover:after {
-    opacity: 1;
-    cursor: pointer;
-  }
-   
-  .MBflx .pxrETXT,.MBflx .linkEl{
-    font-size:25px;
-  }
-  
-  .pxrETXT:hover + ._2emBLM,
-  ._2emBLM:hover {
-    opacity: 1;
-    cursor: pointer;
-    visibility: visible;
-  }
-  .ulfx:hover {
-    cursor: pointer;
-  }
-  ._exJRE {
-    border-right: 1px solid white;
-  }
-  .MBflx{
-    display:flex;
-    flex-direction:column;
-  }
-  ._elm {
-    color: red;
-    font-size: small;
-  }
-  ._lmxE {
+
+  /* Left Section - Search Projects */
+  .left-section {
     display: flex;
     align-items: center;
   }
-  ._2hduom {
-    margin-bottom: 0px;
-    color:black;
+
+  .search-projects-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
   }
-  ._2hduom:hover{
-    color:red;
+
+  .search-projects-trigger:hover {
+    background-color: #f5f5f5;
   }
-  .amidd {
-    padding-top: 5px;
-    padding-right: 10px;
+
+  .menu-icon {
+    color: #333;
   }
-  ul {
-    padding-left: 5px !important;
+
+  .search-text {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+    letter-spacing: 0.5px;
   }
-  ._2hduom {
-    font-size: large;
-  }
-  .main1 {
-    width: 100%;
-    height: auto;
-  }
-  
-  .pxiArt {
-    width: 100%;
-    position: center;
-    height: 700px;
-    position: relative;
-  }
-  .dbcsjn {
-    position: absolute;
-    left: 17%;
-    bottom: 20px;
-  }
-  .main5 {
-    margin-top: 8%;
-    width: 100%;
+
+  /* Center Section - Logo */
+  .center-section {
+    flex: 1;
     display: flex;
     justify-content: center;
   }
-  ._nEXRT li {
-    align-items: inherit;
-    min-width: 340px;
-    width: auto;
+
+  .logo-link {
+    text-decoration: none;
   }
-  ._6bnYTum {
-    display: inline;
-    background-color: white;
-    color: red;
-    border-radius: 8px;
+
+  .logo-text {
+    font-size: 28px;
+    font-weight: bold;
+    color: #e53e3e;
+    text-decoration: none;
   }
-  ._73exMP {
-    background-color: red;
+
+  /* Right Section - Profile & List Property */
+  .right-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .profile-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .profile-circle:hover {
+    background-color: #e0e0e0;
+  }
+
+  .profile-icon {
+    font-size: 18px;
+    color: #666;
+  }
+
+  .list-property-btn {
+    background-color: transparent;
+    border: 2px solid #e53e3e;
+    color: #e53e3e;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .list-property-btn:hover {
+    background-color: #e53e3e;
     color: white;
-    padding: 1px 3px;
-    font-size: small;
-    border-radius: 5px;
   }
-  .barDotMenu {
-    display: none;
+
+  /* Mobile Menu Overlay */
+  .mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #e53e3e;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
   }
-  .mob_view_sde {
-    display: none;
+
+  .mobile-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
-  @media screen and (max-width: 1100px) and (min-width: 400px) {
-    .NBflx {
-      display: none !important;
+
+  .mobile-menu-header .logo-text {
+    color: white;
+  }
+
+  .close-icon {
+    color: white;
+    cursor: pointer;
+  }
+
+  .mobile-menu-content {
+    flex: 1;
+    padding: 20px;
+  }
+
+  .mobile-menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .mobile-menu-list li {
+    margin-bottom: 20px;
+  }
+
+  .mobile-link {
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: 500;
+    display: block;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mobile-link:hover {
+    color: #ffcccc;
+  }
+
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .navbar-container {
+      padding: 10px 15px;
     }
-    .barDotMenu {
-      display: block;
+
+    .search-text {
+      display: none;
     }
-    .Mflx {
-      justify-content: space-between;
+
+    .logo-text {
+      font-size: 24px;
+    }
+
+    .list-property-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .profile-circle {
+      width: 35px;
+      height: 35px;
     }
   }
-  @media screen and (max-width: 400px) {
-    .imgMustLgogo{
-      width:150px !important;
+
+  @media screen and (max-width: 480px) {
+    .right-section {
+      gap: 10px;
     }
-    .NBflx {
-      display: none !important;
+
+    .list-property-btn {
+      display: none;
     }
-    .barDotMenu {
-      display: block;
-    }
-    .Mflx {
-      justify-content: space-between;
-    }
-    
   }
 `;
