@@ -144,6 +144,9 @@ const RotatingCardCarousel = ({ cards = [], interval = 3000 }) => {
   }, [currentIndex, cards.length]);
 
   const rotateCards = useCallback(() => {
+    // Only rotate if we have enough cards
+    if (cards.length <= 1) return;
+    
     // Set animation states
     setAnimation({
       large: 'left',
@@ -153,26 +156,49 @@ const RotatingCardCarousel = ({ cards = [], interval = 3000 }) => {
       smallNext: 'down'
     });
 
-    // After animation completes, update index and reset animation states
-    setTimeout(() => {
+    // After animation completes, update index
+    const animationTimeout = setTimeout(() => {
       setCurrentIndex(prev => (prev + 1) % cards.length);
-      setAnimation({});
+      
+      // Reset animation states after a short delay to allow for smooth transition
+      const resetTimeout = setTimeout(() => {
+        setAnimation({});
+      }, 50);
+      
+      return () => clearTimeout(resetTimeout);
     }, 500);
+    
+    return () => clearTimeout(animationTimeout);
   }, [cards.length]);
+
+  const [isPaused, setIsPaused] = useState(false);
 
   // Auto-rotation effect
   useEffect(() => {
     if (cards.length <= 1) return;
     
-    const timer = setInterval(rotateCards, interval);
+    let timer;
+    
+    const startRotation = () => {
+      timer = setInterval(() => {
+        if (!isPaused) {
+          rotateCards();
+        }
+      }, interval);
+    };
+    
+    startRotation();
     return () => clearInterval(timer);
-  }, [cards.length, interval, rotateCards]);
+  }, [cards.length, interval, isPaused, rotateCards]);
 
   // Pause on hover
-  const [isPaused, setIsPaused] = useState(false);
+  const handleMouseEnter = useCallback(() => {
+    setIsPaused(true);
+  }, []);
   
-  const handleMouseEnter = () => setIsPaused(true);
-  const handleMouseLeave = () => setIsPaused(false);
+  const handleMouseLeave = useCallback(() => {
+    setIsPaused(false);
+  }, []);
 
   // Handle card click
   const handleCardClick = (card) => {
