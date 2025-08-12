@@ -30,8 +30,10 @@ import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
 import RotatingCardCarousel from "../Components/HomePageComponents/RotatingCardCarousel";
+import ConfettiAllCorners from "../Components/ConfettiAllCorners";
 
 const Home = () => {
+  const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -258,20 +260,23 @@ const Home = () => {
 // console.log(resalesectionvisible,"section")
 
 
-return (
-  <Wrapper>
-    <Helmet>
-      <meta
-        name="description"
-        content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential &amp; Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon"
-      />
-      <title>
-        Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India
-      </title>
-      <link rel="canonical" href="https://www.100acress.com/" />
-    </Helmet>
-    
-    {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} /> */}
+  return (
+    <Wrapper className="section" style={{ overflowX: "hidden" }}>
+      <Helmet>
+        <meta
+          name="description"
+          content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential &amp; Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon"
+        />
+        <title>
+          Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India
+        </title>
+        <link rel="canonical" href="https://www.100acress.com/" />
+      </Helmet>
+      
+      {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} /> */}
+      
+      {/* Confetti Animation */}
+      {showConfetti && <ConfettiAllCorners />}
 
     {/* This is the div whose background you want to blur more */}
     <div className={`transition-filter duration-300 ease-in-out ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}`}>
