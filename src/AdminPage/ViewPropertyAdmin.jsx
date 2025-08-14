@@ -315,7 +315,7 @@ const ViewPropertyAdmin = () => {
                         {i + 1}
                       </button>
                     ))}
-                  </div>
+                  </div>  
                 </>
               )}
             </div>
