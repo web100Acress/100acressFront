@@ -13,7 +13,7 @@ function useCountUp(target, duration = 1000) {
     let start = 0;
     let startTime = null;
     function animateCountUp(timestamp) {
-      if (!startTime) startTime = timestamp;
+      if (!startTime) startTime = timestamp;  
       const progress = Math.min((timestamp - startTime) / duration, 1);
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
       setCount(Math.floor(easeOutQuart * (target - start) + start));
@@ -73,7 +73,7 @@ const sections = [
   },
   {
     name: 'Blog',
-    api: 'https://api.100acress.com/blog/view?page=1&limit=1000',
+    api: 'https://api.100acress.com/blog/admin/view?page=1&limit=1000',
     link: '/Admin/blog',
     gradientClass: 'bg-light-neutral-gradient',
     icon: <MdLibraryBooks size={32} className="card-icon" />,
