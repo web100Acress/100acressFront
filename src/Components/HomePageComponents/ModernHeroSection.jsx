@@ -51,7 +51,25 @@ const ModernHeroSection = () => {
   const [budgetRange, setBudgetRange] = useState([1, 10]);
   const [propertyType, setPropertyType] = useState("All");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const searchRef = useRef(null);
+
+  // Animated placeholder texts
+  const placeholderTexts = [
+    "Search luxury apartments in Gurgaon...",
+    "Find your dream villa in Delhi NCR...",
+    "Discover premium plots in Noida...",
+    "Explore commercial spaces in Mumbai...",
+    "Browse ready-to-move flats in Bangalore..."
+  ];
+
+  // Cycle through placeholder texts
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % placeholderTexts.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Trending locations data
   const trendingLocations = [
@@ -125,114 +143,8 @@ const ModernHeroSection = () => {
 
   return (
     <HeroWrapper>
-      {/* Background simplified to white (video removed) */}
-      <div className="hero-background" />
-
       <div className="hero-content">
-        <div className="container mx-auto px-4">
-          {/* Header Section */}
-          <div className="hero-header fade-up-enter">
-            <div className="brand-text">
-              <h1 className="main-headline">
-                <Typewriter
-                  options={{
-                    strings: [
-                      'Welcome to Your Perfect Home',
-                      'Welcome to Your Perfect Haven',
-                      'Welcome to Your Perfect Sanctuary',      
-                    ],
-                    autoStart: true,
-                    loop: true,
-                    deleteSpeed: 50,
-                    pauseFor: 3000,
-                    cursor: "|",
-                  }}
-                />
-              </h1>
-              <p className="sub-headline">
-                India's fastest-growing property platform with 50,000+ verified properties
-              </p>
-            </div>
-            {/* Trust Metrics */}
-            {/* Removed trust-metrics section as per user request */}
-          </div>
-
-          {/* Main Search Section */}
-          <div className="search-section modern-search-section">
-            <div className="modern-search-tabs">
-              {categories.map((cat) => {
-                const Icon = cat.icon;
-                return (
-                  <button
-                    key={cat.id}
-                    className={`modern-tab-button ${activeTab === cat.id ? 'active' : ''}`}
-                    onClick={() => setActiveTab(cat.id)}
-                    type="button"
-                  >
-                    <span className="pill-inner">
-                      <Icon className="pill-icon" />
-                      <span className="pill-label">{cat.label}</span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            <form className="modern-search-bar floating-pill" onSubmit={e => { e.preventDefault(); handleSearch(); }}>
-              <input
-                type="text"
-                className="modern-search-input"
-                placeholder='Search "3 BHK Ready To Move Flat For Sale In Gurgaon"'
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                onKeyPress={handleKeyPress}
-              />
-              <button type="submit" className="modern-search-btn gradient-anim">
-                <MdSearch />
-                <span>Search</span>
-              </button>
-            </form>
-            {/* Removed modern-search-stats section as per user request */}
-          </div>
-
-          {/* Trending Locations */}
-          <div className="trending-section">
-            <div className="trending-header">
-              <MdTrendingUp className="trending-icon" />
-              <h3>Trending Locations</h3>
-            </div>
-            <div className="trending-locations">
-              {trendingLocations.map((location, index) => (
-                <div key={index} className="location-chip">
-                  {location.name}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Banner Slider Section */}
-          <div className="banner-slider-section" style={{ margin: '2rem 0' }}>
-            <Swiper
-              modules={[Autoplay, Pagination]}
-              autoplay={{ delay: 3500, disableOnInteraction: false }}
-              pagination={{ clickable: true }}
-              loop={true}
-              slidesPerView={1}
-              className="banner-swiper"
-            >
-              {(window.innerWidth < 768 ? phoneSrc : imageSrc).map((item, idx) => (
-                <SwiperSlide key={idx}>
-                  <a href={item.link} style={{ display: 'block', width: '100%' }}>
-                    <img
-                      src={item.image}
-                      alt={`Banner ${idx + 1}`}
-                      style={{ width: '100%', height: 'auto', borderRadius: '16px', objectFit: 'cover', maxHeight: '340px', margin: '0 auto' }}
-                    />
-                  </a>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
-        </div>
+        {/* Empty hero — ready to rebuild */}
       </div>
     </HeroWrapper>
   );
@@ -241,30 +153,13 @@ const ModernHeroSection = () => {
 // Styled Components
 const HeroWrapper = styled.section`
   position: relative;
-  min-height: 100vh;
-  background: #ffffff;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .hero-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-    background:
-      linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.45) 35%, rgba(0,0,0,0.2) 65%, rgba(0,0,0,0) 100%),
-      url('/Images/Gemini_Generated_Image_l0bbg6l0bbg6l0bb.png') center/cover no-repeat;
-  }
-
+  background: transparent;
+  min-height: 0;
+  padding: 0;
   .hero-content {
-    position: relative;
-    z-index: 10;
     width: 100%;
-    padding: 2rem 0;
+    padding: 0;
+    min-height: 0;
   }
 
   .hero-header {
@@ -359,46 +254,499 @@ const HeroWrapper = styled.section`
     }
   }
 
-  .search-section {
-    margin-bottom: 0;
+  /* Premium Search Section Styles */
+  .premium-search-section {
+    position: relative;
+    z-index: 20;
+    max-width: 1000px;
+    margin: 0 auto 4rem;
+    padding: 0 1rem;
+    /* Debugging: Ensure visibility */
+    min-height: 200px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+  }
 
-    .search-container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(255, 81, 47, 0.10);
-      overflow: hidden;
+  /* Category Pills Container */
+  .category-pills-container {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  /* Premium Pill Buttons */
+  .premium-pill-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
-    .search-tabs {
+    .pill-glow {
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(45deg, #ff416c, #ff4b2b, #ff6b35, #f7931e);
+      background-size: 400% 400%;
+      border-radius: 50px;
+      opacity: 0;
+      z-index: -1;
+      animation: gradientShift 3s ease infinite;
+      transition: opacity 0.3s ease;
+    }
+
+    .pill-icon {
+      font-size: 1.1rem;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .pill-text {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      letter-spacing: 0.02em;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+
+      &::before {
+        opacity: 1;
+      }
+    }
+
+    &.active {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+      color: #fff;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
+      .pill-glow {
+        opacity: 1;
+      }
+
+      &::before {
+        opacity: 1;
+      }
+    }
+  }
+
+  /* Glassmorphism Search Container */
+  .glass-search-container {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Premium Search Form */
+  .premium-search-form {
+    display: grid;
+    grid-template-columns: 2fr auto auto auto;
+    gap: 1rem;
+    align-items: center;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  /* Search Input Wrapper */
+  .search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 0 1rem;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+
+    .search-location-icon {
+      color: #ff512f;
+      font-size: 1.3rem;
+      margin-right: 0.75rem;
+      filter: drop-shadow(0 2px 4px rgba(255, 81, 47, 0.3));
+    }
+
+    .input-shimmer {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      animation: shimmer 2s infinite;
+    }
+  }
+
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+
+  /* Premium Search Input */
+  .premium-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 1.2rem 0;
+    font-size: 1.1rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #333;
+    font-weight: 500;
+
+    &::placeholder {
+      color: #666;
+      transition: color 0.3s ease;
+    }
+
+    &:focus::placeholder {
+      color: #999;
+    }
+  }
+
+  /* Premium Select Dropdowns */
+  .premium-select {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(255, 81, 47, 0.3);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #ff512f;
+      box-shadow: 0 0 0 3px rgba(255, 81, 47, 0.1);
+    }
+  }
+
+  /* Premium Search Button */
+  .premium-search-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.2rem 2rem;
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+    border: none;
+    border-radius: 16px;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 12px 32px rgba(255, 65, 108, 0.4);
+    overflow: hidden;
+
+    .button-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .search-btn-icon {
+      font-size: 1.2rem;
+      z-index: 1;
+    }
+
+    span {
+      z-index: 1;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      letter-spacing: 0.02em;
+    }
+
+    .button-shine {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.6s ease;
+    }
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(255, 65, 108, 0.5);
+
+      .button-gradient {
+        opacity: 1;
+      }
+
+      .button-shine {
+        left: 100%;
+      }
+    }
+
+    &:active {
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Search Stats Container */
+  .search-stats-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1rem;
+
+    @media (max-width: 768px) {
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
       display: flex;
-      background: #fff5f5;
-      border-bottom: 1px solid #ffe0e0;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+      font-weight: 500;
 
-      .tab-button {
-        flex: 1;
-        padding: 1rem;
-        border: none;
-        background: none;
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: #ff512f;
-        cursor: pointer;
-        transition: all 0.3s ease;
+      .stat-icon {
+        font-size: 1.1rem;
+        color: #4ade80;
+        filter: drop-shadow(0 2px 4px rgba(74, 222, 128, 0.3));
+      }
+    }
 
-        &:hover {
-          background: #fff0e0;
-          color: #dd2476;
+    .stat-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  /* Premium Trending Locations */
+  .premium-trending-section {
+    position: relative;
+    z-index: 20;
+    max-width: 1000px;
+    margin: 0 auto 3rem;
+    padding: 0 1rem;
+
+    .trending-header {
+      text-align: center;
+      margin-bottom: 2rem;
+
+      .trending-title-wrapper {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 50px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+        .trending-icon {
+          font-size: 1.5rem;
+          color: #4ade80;
+          filter: drop-shadow(0 2px 4px rgba(74, 222, 128, 0.3));
         }
 
-        &.active {
-          background: white;
-          color: #ff512f;
-          border-bottom: 3px solid #ff512f;
+        .trending-title {
+          color: #fff;
+          font-size: 1.3rem;
+          font-weight: 700;
+          margin: 0;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          letter-spacing: 0.02em;
+        }
+
+        .trending-pulse {
+          position: absolute;
+          inset: -2px;
+          background: linear-gradient(45deg, #4ade80, #22c55e, #16a34a);
+          background-size: 400% 400%;
+          border-radius: 50px;
+          opacity: 0.3;
+          z-index: -1;
+          animation: gradientShift 3s ease infinite;
         }
       }
     }
+
+    .premium-trending-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      
+      @media (max-width: 768px) {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 0.75rem;
+      }
+    }
+
+    .premium-location-chip {
+      position: relative;
+      display: block;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+      transform: translateY(20px);
+
+      .chip-gradient-border {
+        position: absolute;
+        inset: -1px;
+        background: linear-gradient(135deg, #ff416c, #ff4b2b, #ff6b35, #f7931e);
+        background-size: 400% 400%;
+        border-radius: 16px;
+        opacity: 0;
+        z-index: -1;
+        animation: gradientShift 4s ease infinite;
+        transition: opacity 0.3s ease;
+      }
+
+      .chip-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+
+        .location-info {
+          flex: 1;
+
+          .location-name {
+            display: block;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          }
+
+          .location-count {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            font-weight: 500;
+          }
+        }
+
+        .location-trend-badge {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          background: rgba(74, 222, 128, 0.2);
+          border: 1px solid rgba(74, 222, 128, 0.3);
+          border-radius: 20px;
+          padding: 0.5rem 0.75rem;
+          backdrop-filter: blur(10px);
+
+          .trend-icon {
+            font-size: 0.9rem;
+            color: #4ade80;
+          }
+
+          .trend-value {
+            color: #4ade80;
+            font-size: 0.85rem;
+            font-weight: 700;
+          }
+        }
+      }
+
+      .chip-hover-glow {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent 70%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 16px;
+      }
+
+      &:hover {
+        transform: translateY(-4px);
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+
+        .chip-gradient-border {
+          opacity: 1;
+        }
+
+        .chip-hover-glow {
+          opacity: 1;
+        }
+
+        .location-trend-badge {
+          background: rgba(74, 222, 128, 0.3);
+          border-color: rgba(74, 222, 128, 0.5);
+        }
+      }
+    }
+  }
+
+  /* Essential Keyframe Animations */
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
     .search-form {
       padding: 2rem;

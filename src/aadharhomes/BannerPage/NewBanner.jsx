@@ -333,20 +333,7 @@ const NewBanner = () => {
     fetchData();
   }, [pUrl, navigate]);
 
-  // Hide main navbar on this page
-  useEffect(() => {
-    const mainNavbar = document.querySelector('.css-coijep');
-    if (mainNavbar) {
-      mainNavbar.style.display = 'none';
-    }
-
-    // Cleanup function to restore navbar when component unmounts
-    return () => {
-      if (mainNavbar) {
-        mainNavbar.style.display = '';
-      }
-    };
-  }, []);
+  // Ensure main navbar stays visible on this page (no hiding here)
 
   useEffect(() => {
     const setVW = () => setIsMobile(window.innerWidth < 640);
@@ -722,7 +709,7 @@ const NewBanner = () => {
     },
     {
       title: `What types of BHK units are available in  ${projectViewDetails?.projectName} ${projectViewDetails?.projectAddress}`,
-      content: ` ${projectViewDetails?.projectName} offers thoughtfully designed ${projectViewDetails.BhK_Details?.map((data) => (` ${data.bhk_type}`))} ${projectViewDetails?.projectOverview !== "none" ? ` ${projectViewDetails.projectOverview} floors` : ""} units, catering to moder lifestyle needs.`,
+      content: ` ${projectViewDetails?.projectName} offers thoughtfully designed ${projectViewDetails.BhK_Details?.map((data) => (` ${data.bhk_type}`))} ${projectViewDetails?.projectOverview !== "none" ? ` ${projectViewDetails.projectOverview} floors` : ""} units, catering to mder lifestyle needs.`,
     },
 
   ]
@@ -758,6 +745,13 @@ const NewBanner = () => {
           <link
             rel="canonical"
             href={`https://www.100acress.com/${projectViewDetails.project_url}/`}
+          />
+          {/* Load Jost font for hero title */}
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,200..900;1,200..900&display=swap"
+            rel="stylesheet"
           />
           <script type="application/ld+json">
             {`
@@ -795,12 +789,14 @@ const NewBanner = () => {
             {/* High-Resolution Background with Enhanced Gradient */}
              <div
                ref={heroBgRef}
-               className="absolute inset-0 min-h-[100dvh] bg-no-repeat bg-[length:100%_100%] sm:bg-cover bg-center hero-background"
+               className="absolute inset-0 min-h-[100dvh] bg-no-repeat bg-cover bg-center hero-background"
                style={{
                  minHeight: '100dvh',
+                 height: '100dvh',
+                 width: '100%',
                  // Inline background to guarantee visibility even if <img> fails
                  backgroundImage: `url(${projectViewDetails?.frontImage?.url || projectViewDetails?.projectGallery?.[0]?.url || ''})`,
-                 backgroundSize: isMobile ? '100% 100%' : 'cover',
+                 backgroundSize: 'cover',
                  backgroundPosition: 'center',
                  backgroundRepeat: 'no-repeat',
                  backgroundColor: '#0b1c26',
@@ -808,11 +804,11 @@ const NewBanner = () => {
                  willChange: 'transform'
                }}
              >
-              {/* Force image to fill viewport on mobile */}
+              {/* Force image to fill viewport consistently */}
               <img
                 src={projectViewDetails?.frontImage?.url || projectViewDetails?.projectGallery?.[0]?.url || ''}
                 alt={projectViewDetails?.projectName || 'Project Hero'}
-                className="absolute inset-0 w-full h-full object-fill sm:object-cover pointer-events-none select-none"
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
                 loading="eager"
               />
               {/* Enhanced Multi-layer Gradient Overlay */}
@@ -867,11 +863,9 @@ const NewBanner = () => {
               id="project-nav"
               className="fixed top-0 left-0 right-0 z-[9999] w-full h-14 sm:h-16 flex items-center justify-between px-4 sm:px-6 backdrop-blur-md"
               style={{
-                // Transparent on mobile to let hero image reach the top; gradient on larger screens
-                background: isMobile
-                  ? 'transparent'
-                  : 'linear-gradient(to right, rgba(255,255,255,1) 0, rgba(255,255,255,1) 320px, rgba(255,255,255,0.9) 480px, rgba(255,255,255,0.7) 65%, rgba(255,255,255,0.35) 85%, rgba(255,255,255,0.15) 100%)',
-                boxShadow: isMobile ? 'none' : '0 4px 24px 0 rgba(0,0,0,0.10)'
+                // Force solid white background on all devices
+                background: '#ffffff',
+                boxShadow: '0 4px 24px 0 rgba(0,0,0,0.10)'
               }}
             >
               {/* Logo */}
@@ -915,33 +909,32 @@ const NewBanner = () => {
             {/* Spacer to prevent content hidden under fixed navbar (desktop only) */}
             <div className="hidden sm:block sm:h-16"></div>
 
+            {/* Semi-transparent gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 z-5"></div>
+
             {/* Hero Content */}
             <div
               className="relative z-10 flex items-center justify-center min-h-screen pt-20"
             >
-              <div className="text-center text-white px-6 max-w-4xl mx-auto mt-20">
-                <h1
-                  className="premium-heading mb-6 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-[#F1DFA8] via-[#E5C78A] to-[#FAEEC6]"
-                  style={{ WebkitTextStroke: '0.3px rgba(255,255,255,0.35)', filter: 'drop-shadow(0 2px 6px rgba(255,255,255,0.28)) drop-shadow(0 0 24px rgba(229,199,138,0.35))' }}
-                >
+              <div className="text-center text-white px-6 max-w-5xl mx-auto mt-20">
+                {/* SEO-optimized H1 with modern sans-serif font */}
+                <h1 className="hero-main-title mb-6 leading-tight">
                   {projectViewDetails.projectName}
                 </h1>
-                <h2 className="text-xl md:text-2xl mb-8 text-gray-200 flex items-center justify-center">
-                  <LocationSmallIcon className="mr-3 w-6 h-6" />
-                  {projectViewDetails?.projectAddress}, {projectViewDetails?.city}
-                </h2>
+                
+                {/* Keyword-rich subtitle - Hidden */}
+                {/* <p className="hero-subtitle mb-8 text-gray-100 max-w-3xl mx-auto">
+                  Premium residential project featuring world-class amenities, modern architecture, and strategic location on {projectViewDetails?.projectAddress}. Experience luxury living with 24/7 security, landscaped gardens, and excellent connectivity.
+                </p> */}
 
-
-
-
-
-                {/* Enhanced CTAs */}
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+                {/* Enhanced CTAs with accessibility */}
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8">
                   <button
                     onClick={handleShowInstantcallBack}
-                    className="bg-gradient-to-r from-[#CFAF6E] to-[#E5C78A] text-white font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:from-[#B8985A] hover:to-[#D4B373] transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/30 min-w-[200px]"
+                    className="hero-cta-primary"
+                    aria-label="Schedule a site visit for the property"
                   >
-                    <i className="fas fa-calendar-alt mr-2"></i>
+                    <i className="fas fa-calendar-alt mr-3" aria-hidden="true"></i>
                     Schedule Site Visit
                   </button>
                   <button
@@ -953,16 +946,19 @@ const NewBanner = () => {
                         handleShowInstantcallBack();
                       }
                     }}
-                    className="bg-transparent border-2 border-white text-white font-bold px-8 py-4 rounded-full hover:bg-white hover:text-gray-900 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/30 min-w-[200px]"
+                    className="hero-cta-secondary"
+                    aria-label="Download property brochure instantly"
                   >
-                    <i className="fas fa-download mr-2"></i>
+                    <i className="fas fa-download mr-3" aria-hidden="true"></i>
                     Get Brochure Instantly
                   </button>
                 </div>
 
-
-
-
+                {/* Location highlight */}
+                <div className="flex items-center justify-center text-gray-200 text-lg">
+                  <LocationSmallIcon className="mr-2 w-5 h-5" aria-hidden="true" />
+                  <span>{projectViewDetails?.projectAddress}, {projectViewDetails?.city}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -2224,22 +2220,46 @@ const NewBanner = () => {
           </div>
         </div>
       )}
+      
+      {/* Footer thin black line */}
+      <div className="w-full h-[1px] border-t border-black mt-8"></div>
     </div>
-
   );
 };
 
 export default NewBanner;
 
 const Wrapper = styled.section`
+  /* Base styles */
+  box-sizing: border-box;
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+
   .sticky-quote-cta {
     height: auto;
     position: fixed;
-    border-radius: 15px 0 15px 0;
+    border-radius: 15px 0 0 15px;
     right: 0;
-    top: 400px;
-    top: 40vh;
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 10000;
+    transition: all 0.3s ease;
+    
+    @media (max-width: 768px) {
+      top: auto;
+      bottom: 20px;
+      right: 20px;
+      transform: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   /* Gallery Slider Styles */
@@ -2384,9 +2404,33 @@ const Wrapper = styled.section`
     font-weight: 800;
     color: #1f2937;
     line-height: 1.2;
-    margin-bottom: 0;
+    margin: 0 0 16px;
     position: relative;
     font-family: 'Playfair Display', serif;
+    transition: all 0.3s ease;
+    
+    @media (max-width: 1200px) {
+      font-size: 2.25rem;
+    }
+    
+    @media (max-width: 992px) {
+      font-size: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+      font-size: 1.75rem;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    
+    @media (max-width: 480px) {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    
+    @media (max-width: 360px) {
+      font-size: 1.35rem;
+    }
   }
 
   .premium-title-underline {
@@ -2471,13 +2515,34 @@ const Wrapper = styled.section`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     background: linear-gradient(180deg, #FAF3D1, #F3E7B3);
     border: 1px solid rgba(212,175,55,0.35);
-    border-radius: 22px;
-    padding: 18px 16px;
-    min-height: 120px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    border-radius: 16px;
+    padding: 16px 12px;
+    min-height: 110px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    
+    @media (max-width: 992px) {
+      padding: 14px 10px;
+      min-height: 100px;
+    }
+    
+    @media (max-width: 768px) {
+      border-radius: 14px;
+      min-height: 90px;
+    }
+    
+    @media (max-width: 480px) {
+      padding: 12px 8px;
+      min-height: 80px;
+    }
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
   }
   .premium-stats-icon-wrapper {
     display: flex;
@@ -2746,15 +2811,115 @@ const Wrapper = styled.section`
 
   .premium-heading {
     font-family: 'Playfair Display', 'Georgia', serif;
-    font-size: clamp(2.5rem, 8vw, 4.5rem);
-    font-weight: 700;
-    background: linear-gradient(135deg, #fff 0%, #c8a45c 50%, #deb853 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    letter-spacing: -0.02em;
+    font-size: clamp(2.5rem, 18vw, 4.5rem);
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.05em;
     line-height: 1.1;
-    animation: titleGlow 3s ease-in-out infinite alternate;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* New Hero Section Styles */
+  .hero-main-title {
+    font-family: "Jost", sans-serif;
+    font-optical-sizing: auto;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    font-style: normal;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1.5rem;
+    word-wrap: break-word;
+    max-width: 90vw;
+    width: 100%;
+  }
+
+  .hero-subtitle {
+    font-family: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-weight: 400;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .hero-cta-primary {
+    background: linear-gradient(135deg, #c8a45c 0%, #deb853 100%);
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 16px 32px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(200, 164, 92, 0.3);
+    min-width: 220px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-cta-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .hero-cta-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(200, 164, 92, 0.4);
+  }
+
+  .hero-cta-primary:hover::before {
+    left: 100%;
+  }
+
+  .hero-cta-primary:focus {
+    outline: none;
+    box-shadow: 0 15px 35px rgba(200, 164, 92, 0.4), 0 0 0 3px rgba(200, 164, 92, 0.3);
+  }
+
+  .hero-cta-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 16px 32px;
+    border-radius: 50px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 220px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+  }
+
+  .hero-cta-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .hero-cta-secondary:focus {
+    outline: none;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.3);
   }
 
   @keyframes titleGlow {
@@ -2832,9 +2997,11 @@ const Wrapper = styled.section`
   }
 
   .Carousel {
-    max-height: 80vh;
+    height: 100vh;
+    min-height: 100vh;
     position: relative;
     overflow: hidden;
+    width: 100%;
   }
 
   .Carousel::after {
@@ -2855,6 +3022,13 @@ const Wrapper = styled.section`
   }
 
   .Carousel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
     transform: scale(1);
     transition: transform 6s ease-in-out;
     animation: slowZoom 20s infinite alternate;
@@ -2870,11 +3044,44 @@ const Wrapper = styled.section`
     .Carousel {
       height: 100vh;
       max-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
     }
+
     .Carousel img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .hero-main-title {
+      font-size: clamp(2rem, 8vw, 3rem);
+      margin-bottom: 1rem;
+      padding: 0 1rem;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 4vw, 1.2rem);
+      padding: 0 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-cta-primary, .hero-cta-secondary {
+      width: 100%;
+      max-width: 280px;
+      margin: 0.5rem 0;
+      padding: 14px 24px;
+      font-size: 1rem;
+      min-width: auto;
+    }
+
+    .hero-cta-primary:hover, .hero-cta-secondary:hover {
+      transform: translateY(-2px) scale(1.01);
     }
 
     .premium-heading {
@@ -3011,67 +3218,203 @@ const Wrapper = styled.section`
     margin-top: 0;
   }
 
+  /* Responsive breakpoints */
+  @media screen and (max-width: 1200px) {
+    .premium-project-title {
+      font-size: 2.75rem;
+    }
+    .premium-content-text {
+      font-size: 1.05rem;
+    }
+  }
+
+  @media screen and (max-width: 992px) {
+    .premium-project-title {
+      font-size: 2.5rem;
+    }
+    .premium-stats-card {
+      padding: 1.25rem 1rem;
+    }
+  }
+
   @media screen and (max-width: 768px) {
     .about-stats-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
-      padding-left: 0;
-      padding-right: 0;
+      padding: 0 8px;
     }
+    
     .about-image {
       height: 38vh !important;
+      max-height: 300px;
+      object-fit: cover;
+      width: 100%;
     }
+    
     .gold-text-panel {
-      padding: 12px 16px 16px 16px;
-      margin-top: 0;
-      border-radius: 16px;
+      padding: 12px 16px;
+      margin: 0 auto 20px;
+      border-radius: 12px;
+      width: 95%;
     }
+    
     .premium-project-title {
-      font-size: 1.875rem; /* ~30px */
-      margin-top: 0;
+      font-size: 1.75rem;
+      line-height: 1.2;
+      margin: 16px 0;
+      text-align: center;
     }
+    
     .premium-content-text {
       font-size: 1rem;
       max-height: none;
       overflow: visible;
-      padding-right: 0;
+      padding: 0 8px;
+      text-align: justify;
     }
+    
     .premium-stats-value {
       font-size: 1.25rem;
     }
+    
     .premium-stats-label {
       font-size: 0.75rem;
+      text-align: center;
+    }
+    
+    .premium-section-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    
+    .premium-section-subtitle {
+      justify-content: center;
     }
   }
 
+  @media screen and (max-width: 576px) {
+    .premium-project-title {
+      font-size: 1.75rem;
+    }
+    
+    .about-stats-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding: 0 4px;
+    }
+    
+    .premium-stats-card {
+      min-height: 100px;
+      padding: 1rem;
+    }
+    
+    .premium-stats-value {
+      font-size: 1.1rem;
+    }
+    
+    .premium-stats-label {
+      font-size: 0.7rem;
+    }
+    
+    .cta-primary, .cta-secondary {
+      width: 100%;
+      margin: 8px 0;
+      padding: 14px 20px;
+      font-size: 1rem;
+    }
+    
+    .cta-secondary {
+      margin-left: 0;
+    }
+  }
+  
   @media screen and (max-width: 480px) {
     .about-image {
-      height: 32vh !important;
+      height: 30vh !important;
+      max-height: 250px;
     }
+    
     .premium-project-title {
       font-size: 1.5rem;
+      margin: 12px 0;
+    }
+    
+    .premium-content-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    
+    .premium-stats-card {
+      padding: 0.75rem;
+    }
+    
+    .premium-stats-icon-wrapper {
+      width: 36px;
+      height: 36px;
+    }
+    
+    .floating-actions {
+      bottom: 20px;
+      right: 12px;
+    }
+    
+    .dd-m-whatsapp {
+      width: 44px;
+      height: 44px;
+      font-size: 22px;
+    }
+  }
+  
+  @media screen and (max-width: 360px) {
+    .premium-project-title {
+      font-size: 1.35rem;
+    }
+    
+    .premium-content-text {
+      font-size: 0.9rem;
+    }
+    
+    .premium-stats-value {
+      font-size: 1rem;
+    }
+    
+    .premium-stats-label {
+      font-size: 0.65rem;
     }
   }
 
   .cta-primary {
     background: linear-gradient(135deg, #c8a45c 0%, #deb853 50%, #c8a45c 100%);
     color: #fff;
-    padding: 18px 36px;
+    padding: 16px 32px;
     border-radius: 50px;
     font-weight: 700;
     font-size: 1.1rem;
     text-decoration: none;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 220px;
+    min-width: 200px;
+    max-width: 100%;
     border: none;
     box-shadow: 0 8px 25px rgba(200, 164, 92, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
     cursor: pointer;
     letter-spacing: 0.5px;
+    
+    @media (max-width: 768px) {
+      padding: 14px 28px;
+      font-size: 1rem;
+      min-width: 180px;
+    }
+    
+    @media (max-width: 480px) {
+      width: 100%;
+      margin: 8px 0;
+      padding: 14px 20px;
+    }
   }
 
   .cta-primary::after {
@@ -3103,16 +3446,29 @@ const Wrapper = styled.section`
     font-weight: 600;
     font-size: 1.05rem;
     text-decoration: none;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid rgba(255, 255, 255, 0.15);
     margin-left: 16px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 200px;
+    min-width: 180px;
+    max-width: 100%;
     cursor: pointer;
     letter-spacing: 0.3px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    
+    @media (max-width: 768px) {
+      padding: 14px 28px;
+      font-size: 1rem;
+      min-width: 160px;
+    }
+    
+    @media (max-width: 576px) {
+      margin-left: 0;
+      width: 100%;
+      margin-top: 8px;
+    }
   }
 
   .cta-secondary:hover {
@@ -3325,6 +3681,19 @@ const Wrapper = styled.section`
     display: flex;
     flex-direction: column;
     gap: 16px;
+    transition: all 0.3s ease;
+    
+    @media (max-width: 768px) {
+      bottom: 20px;
+      right: 12px;
+      gap: 12px;
+    }
+    
+    @media (max-width: 480px) {
+      bottom: 16px;
+      right: 10px;
+      gap: 10px;
+    }
   }
 
   .dd-m-whatsapp {
@@ -3342,6 +3711,23 @@ const Wrapper = styled.section`
     font-size: 24px;
     box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
     position: relative;
+    
+    @media (max-width: 768px) {
+      width: 48px;
+      height: 48px;
+      font-size: 22px;
+    }
+    
+    @media (max-width: 480px) {
+      width: 44px;
+      height: 44px;
+      font-size: 20px;
+    }
+    
+    &:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
+    }
   }
 
   .dd-m-whatsapp::before {

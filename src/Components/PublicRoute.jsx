@@ -6,11 +6,8 @@ const PublicRoute = () => {
     const location = useLocation();
     const path = location.pathname || "";
 
-    // Hide navbar on Projects pages (e.g., /project-in-*, /projects-in-*, /projects/*, /project/*)
-    let hideNavbar =
-      /^\/(project|projects)-in-/i.test(path) ||
-      /^\/projects\//i.test(path) ||
-      /^\/project\//i.test(path);
+    // Default: show navbar on all pages
+    let hideNavbar = false;
 
     // Additionally, hide on dynamic project detail route: "/:pUrl/" (single slug at root)
     // We whitelist known top-level routes to avoid hiding on non-project pages like /about-us/, /blog/, etc.
@@ -73,3 +70,4 @@ const PublicRoute = () => {
 };
 
 export default PublicRoute;
+

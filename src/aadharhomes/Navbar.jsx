@@ -31,7 +31,7 @@ export default function Navbar() {
   const [token, setToken] = useState();
   const [colorChange, setColorchange] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
 
@@ -114,19 +114,29 @@ export default function Navbar() {
     checkUserAuth();
   }, []);
 
+  // Close mega menu on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, onClose]);
+
   return (
     <Wrapper className="section">
       <Box>
         <Box
-          bg="transparent"
+          bg="#ffffff"
           className="top-0 z-[9999] w-full"
           style={{ 
             position: "fixed", 
             scrollBehavior: "smooth",
-            background: "transparent",
+            background: "#ffffff",
             boxShadow: "none",
             zIndex: 9999,
-            borderBottom: "1px solid rgba(255,255,255,0.25)"
+            borderBottom: "1px solid rgba(0,0,0,0.08)"
           }}
           px={{ base: 4, md: 4, lg: 7 }}
           py={1}
@@ -141,18 +151,18 @@ export default function Navbar() {
                 icon={<HamburgerIcon />}
                 aria-label="Search Projects"
                 variant="ghost"
-                color="#fff"
-                onClick={onOpen}
+                color="#111"
+                onClick={onToggle}
                 mr={2}
               />
               <Box 
                 display={{ base: "none", md: "block" }}
                 fontSize="14px"
                 fontWeight="500"
-                color="#fff"
+                color="#111"
                 letterSpacing="0.5px"
                 cursor="pointer"
-                onClick={onOpen}
+                onClick={onToggle}
               >
                 SEARCH PROJECTS
               </Box>
@@ -186,7 +196,7 @@ export default function Navbar() {
                   <Flex align="center" gap={2}>
                     <Box
                       as="span"
-                      border="1px solid rgba(255,255,255,0.7)"
+                      border="1px solid rgba(0,0,0,0.35)"
                       borderRadius="full"
                       w="32px"
                       h="32px"
@@ -196,13 +206,13 @@ export default function Navbar() {
                     >
                       <Box as="span" lineHeight={0}>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
-                          <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
+                          <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                          <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
                         </svg>
                       </Box>
                     </Box>
                     {!token && (
-                      <Box as="span" color="#fff" fontSize="14px">Log in</Box>
+                      <Box as="span" color="#111" fontSize="14px" display={{ base: "none", sm: "inline" }}>Log in</Box>
                     )}
                   </Flex>
                 </MenuButton>
@@ -294,14 +304,14 @@ export default function Navbar() {
             <Box
               pb={4}
               display={{
-                base: "flex",
+                base: "none",
                 md: "none",
               }}
               flexDirection="column"
               alignItems="center"
             >
               <Box
-                display={{ base: "flex", md: "none" }}
+                display={{ base: "none", md: "none" }}
                 flexDirection="column"
                 alignItems="center"
                 pb={4}
@@ -366,24 +376,48 @@ export default function Navbar() {
 
           {/* Desktop Mega Menu for SEARCH PROJECTS */}
           {isOpen && (
-            <Box display={{ base: "none", md: "block" }}>
+            <>
+              {/* Outside-click overlay (doesn't cover the fixed navbar) */}
               <Box
-                position="absolute"
+                position="fixed"
                 left={0}
                 right={0}
-                top="56px"
-                bg="white"
-                boxShadow="0 10px 25px rgba(0,0,0,0.12)"
-                borderRadius="md"
+                top={{ base: "56px", md: "64px" }}
+                bottom={0}
+                bg="transparent"
+                zIndex={9997}
+                onClick={onClose}
+              />
+            <Box display={{ base: "block", md: "block" }}>
+              {/* Full-width positioning wrapper, background kept transparent to avoid visible extra space */}
+              <Box
+                position="absolute"
+                left={{ base: 0, md: 4, lg: 7 }}
+                right={{ base: 0, md: "auto" }}
+                top={{ base: "56px", md: "64px" }}
+                bg="transparent"
+                boxShadow="none"
                 zIndex={9998}
                 onMouseLeave={onClose}
+                overflowX="hidden"
+                maxH={{ base: "calc(100vh - 56px)", md: "auto" }}
+                overflowY={{ base: "auto", md: "visible" }}
               >
-                <Flex px={8} py={6} gap={12} wrap="nowrap">
+                {/* Centered content container with constrained width */}
+                <Box
+                  bg="white"
+                  boxShadow="0 10px 25px rgba(0,0,0,0.12)"
+                  borderRadius="md"
+                  maxW={{ base: "calc(100vw - 2rem)", lg: "calc(100vw - 4rem)" }}
+                  w="fit-content"
+                  mx={0}
+                >
+                  <Flex px={{ base: 4, md: 6 }} py={5} gap={{ base: 3, md: 6 }} wrap="wrap">
                   {/* Popular Cities */}
-                  <Box minW="220px">
+                  <Box minW="200px">
                     <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Popular Cities</Box>
                     <Box h="1px" bg="#eaeaea" mb={3} />
-                    <Flex direction="column" gap={2} fontSize="14px">
+                    <Flex direction="column" gap={1} fontSize="14px">
                       <Link to="/projects-in-gurugram/">Projects in Gurugram</Link>
                       <Link to="/project-in-delhi/">Projects in Delhi</Link>
                       <Link to="/project-in-noida/">Projects in Noida</Link>
@@ -402,10 +436,10 @@ export default function Navbar() {
                   </Box>
 
                   {/* Budget */}
-                  <Box minW="220px">
+                  <Box minW="200px">
                     <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Budget</Box>
                     <Box h="1px" bg="#eaeaea" mb={3} />
-                    <Flex direction="column" gap={2} fontSize="14px">
+                    <Flex direction="column" gap={1} fontSize="14px">
                       <Link to="/budget-properties/" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</Link>
                       <Link to="/budget-properties/" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</Link>
                       <Link to="/budget-properties/" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</Link>
@@ -416,10 +450,10 @@ export default function Navbar() {
                   </Box>
 
                   {/* Project Status */}
-                  <Box minW="220px">
+                  <Box minW="200px">
                     <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Project Status</Box>
                     <Box h="1px" bg="#eaeaea" mb={3} />
-                    <Flex direction="column" gap={2} fontSize="14px">
+                    <Flex direction="column" gap={1} fontSize="14px">
                       <Link to="/projects/upcoming-projects-in-gurgaon/">Upcoming Projects</Link>
                       <Link to="/projects-in-newlaunch/">New Launch Projects</Link>
                       <Link to="/project-in-underconstruction/">Under Construction</Link>
@@ -428,21 +462,33 @@ export default function Navbar() {
                   </Box>
 
                   {/* Project Type */}
-                  <Box minW="220px">
+                  <Box minW="200px">
                     <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Project Type</Box>
                     <Box h="1px" bg="#eaeaea" mb={3} />
-                    <Flex direction="column" gap={2} fontSize="14px">
-                      <Link to="#">SCO Plots</Link>
-                      <Link to="#">Luxury Villas</Link>
-                      <Link to="#">Plots In Gurugram</Link>
-                      <Link to="#">Residential Projects</Link>
-                      <Link to="#">Independent Floors</Link>
-                      <Link to="#">Commercial Projects</Link>
+                    <Flex direction="column" gap={1} fontSize="14px">
+                      <Link to="/sco/plots/">SCO Plots</Link>
+                      <Link to="/projects/villas/">Luxury Villas</Link>
+                      <Link to="/plots-in-gurugram/">Plots In Gurugram</Link>
+                      <Link to="/property/residential/">Residential Projects</Link>
+                      <Link to="/projects/independentfloors/">Independent Floors</Link>
+                      <Link to="/projects/commercial/">Commercial Projects</Link>
                     </Flex>
                   </Box>
-                </Flex>
+                  
+                  {/* Resale & Rental */}
+                  <Box minW="200px">
+                    <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Resale & Rental</Box>
+                    <Box h="1px" bg="#eaeaea" mb={3} />
+                    <Flex direction="column" gap={1} fontSize="14px">
+                      <Link to="/buy-properties/best-resale-property-in-gurugram/">Resale Properties</Link>
+                      <Link to="/rental-properties/best-rental-property-in-gurugram/">Rental Properties</Link>
+                    </Flex>
+                  </Box>
+                  </Flex>
+                </Box>
               </Box>
             </Box>
+            </>
           )}
         </Box>
       </Box>

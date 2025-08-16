@@ -17,7 +17,7 @@ import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon } from "lucide-react";
-import ModernRecommendedSection from "../Components/HomePageComponents/ModernRecommendedSection";
+import PropertyShowcase from "../Components/PropertyShowcase/PropertyShowcase";
 import EnhancedRecommendedSection from "../Components/HomePageComponents/EnhancedRecommendedSection";
 import ModernHeroSection from "../Components/HomePageComponents/ModernHeroSection";
 import AOS from 'aos';
@@ -66,8 +66,28 @@ const Home = () => {
   const LuxuryProjects = useSelector(store => store?.project?.luxury);
   const BudgetHomesProjects = useSelector(store => store?.project?.budget);
   const ProjectinDelhi = useSelector(store => store?.project?.projectindelhi);
+  const spotlight = useSelector(store => store?.project?.spotlight);
   const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll);
-  const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getAllProjects } = Api_Service();
+  const { 
+    getTrending, 
+    getFeatured, 
+    getUpcoming, 
+    getCommercial, 
+    getAffordable, 
+    getLuxury, 
+    getScoplots, 
+    getBudgetHomes, 
+    getProjectIndelhi, 
+    getAllProjects,
+    getSpotlight 
+  } = Api_Service();
+  
+  // Fetch spotlight data on component mount
+  useEffect(() => {
+    if (!spotlight || spotlight.length === 0) {
+      getSpotlight();
+    }
+  }, [getSpotlight, spotlight]);
   const [dataLoaded, setDataLoaded] = useState({
     trending: false,
     featured: false,
@@ -283,6 +303,9 @@ const Home = () => {
       <div className={`transition-filter duration-300 ease-in-out ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}`}>
         {/* Modern Hero Section */}
         <ModernHeroSection />
+        
+        {/* Property Showcase */}
+        <PropertyShowcase properties={spotlight || []} />
 
         {/* HotProject Section */}
         <div className="relative">
@@ -482,23 +505,6 @@ const Home = () => {
       )}
 
       <Free />
-      
-      {/* Phone and WhatsApp buttons */}
-      <div className="dd-m-phone">
-        <a href="tel:8500900100">
-          <i className="fa-solid fa-phone"></i>
-        </a>
-      </div>
-      
-      <a
-        href="https://wa.me/918500900100"
-        className="dd-m-whatsapp"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        <i className="fa-brands fa-whatsapp"></i>
-      </a>
-      
       <Chatbot />
       <PossessionProperty />
       <BackToTopButton />
@@ -515,61 +521,7 @@ const Wrapper = styled.section`
   /* Tricolor theme for the entire home page */
   background: linear-gradient(135deg, rgba(255, 153, 51, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(19, 136, 8, 0.05) 100%);
 
-  .dd-m-phone {
-    position: fixed;
-    z-index: 999;
-    bottom: 10px;
-    right: 10px;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #FF9933 0%, #138808 100%);
-    transition: 0.3s all ease;
-    cursor: pointer;
-    text-decoration: none;
-    color: #fff;
-    font-size: 24px;
-  }
 
-  .dd-m-phone:hover {
-    transform: rotate(0.3turn);
-    box-shadow: 0 5px 15px 2px rgba(255, 153, 51, 0.4);
-  }
-
-  .dd-m-phone i {
-    font-size: 24px;
-  }
-
-  .dd-m-whatsapp {
-    position: fixed;
-    z-index: 999;
-    bottom: 70px;
-    right: 10px;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #138808 0%, #FF9933 100%);
-    transition: 0.3s all ease;
-    cursor: pointer;
-    text-decoration: none;
-    color: #fff;
-    font-size: 24px;
-  }
-
-  .dd-m-whatsapp:hover {
-    transform: rotate(1turn);
-    box-shadow: 0 5px 15px 2px rgba(19, 136, 8, 0.4);
-  }
-
-  .dd-m-whatsapp i {
-    font-size: 24px;
-  }
   
   .sticky-quote-cta {
     height: auto;
