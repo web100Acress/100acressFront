@@ -29,10 +29,10 @@ import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
-import ConfettiAllCorners from "../Components/ConfettiAllCorners";
+// import ConfettiAllCorners from "../Components/ConfettiAllCorners";
 
 const Home = () => {
-  const [showConfetti, setShowConfetti] = useState(true);
+  // const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -274,17 +274,17 @@ const Home = () => {
       </Helmet>
       
       {/* Confetti Animation */}
-      {showConfetti && <ConfettiAllCorners />}
+      {/* {showConfetti && <ConfettiAllCorners /> */}
       
   {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} />  */}
 
    {/* This is the div whose background you want to blur more */}
     <div
-  className={`
-    transition-filter duration-300 ease-in-out
-    ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
-`}
->
+      className={`
+        transition-filter duration-300 ease-in-out
+        ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
+      `}
+    >
   {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
       <div className="relative w-full">
