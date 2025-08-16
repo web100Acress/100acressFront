@@ -40,7 +40,7 @@ const BlogViewAdmin = () => {
       <Sidebar />
       <div className="flex bg-gray-50 min-h-screen">
         <div className="flex-1 p-8 ml-64 overflow-auto font-sans">
-          <div className="max-w-2xl mx-auto space-y-10">
+          <div className="w-full space-y-10">
             {/* Header */}
             <div className="flex items-center gap-2 mb-8">
               <MdArticle className="text-3xl text-blue-500 animate-pulse" />
@@ -89,3 +89,4 @@ const BlogViewAdmin = () => {
 
 export default BlogViewAdmin;
 
+  
