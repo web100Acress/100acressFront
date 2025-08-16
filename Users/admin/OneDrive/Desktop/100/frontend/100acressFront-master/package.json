@@ -1,0 +1,118 @@
+{
+  "name": "100acress",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "canvas-confetti": "^1.6.0",
+    "@ant-design/icons": "^6.0.0",
+    "@chakra-ui/icons": "^2.1.1",
+    "@chakra-ui/react": "^2.8.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@fortawesome/fontawesome-free": "^6.4.2",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-select": "^2.2.5",
+    "@radix-ui/react-toast": "^1.2.14",
+    "@radix-ui/react-tooltip": "^1.2.7",
+    "@reduxjs/toolkit": "^2.6.0",
+    "@tanstack/react-query": "^5.81.2",
+    "@tippyjs/react": "^4.2.6",
+    "@trendyol-js/react-carousel": "^3.0.2",
+    "animate.css": "^4.1.1",
+    "antd": "^5.26.6",
+    "aos": "^2.3.4",
+    "axios": "^1.5.1",
+    "chart.js": "^4.4.0",
+    "country-state-city": "^3.2.1",
+    "d3-geo": "^3.1.1",
+    "date-fns": "^3.6.0",
+    "dompurify": "^3.2.4",
+    "jodit-react": "^5.2.15",
+    "jquery": "^3.7.1",
+    "less": "^4.2.0",
+    "lucide-react": "^0.307.0",
+    "mdb-react-ui-kit": "^6.2.0",
+    "next-themes": "^0.4.6",
+    "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-bootstrap": "^2.8.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.3.8",
+    "react-helmet": "^6.1.0",
+    "react-icons": "^4.12.0",
+    "react-image-gallery": "^1.3.0",
+    "react-jwt": "^1.2.2",
+    "react-loader-spinner": "^5.4.5",
+    "react-modal": "^3.16.1",
+    "react-multi-carousel": "^2.8.4",
+    "react-quill": "^2.0.0",
+    "react-redux": "^9.2.0",
+    "react-responsive-carousel": "^3.2.23",
+    "react-router-dom": "^6.30.1",
+    "react-simple-maps": "^3.0.0",
+    "react-slick": "^0.29.0",
+    "react-spinners": "^0.13.8",
+    "react-toastify": "^9.1.3",
+    "react-tooltip": "^5.29.1",
+    "redux": "^5.0.1",
+    "slick-carousel": "^1.8.1",
+    "sonner": "^2.0.5",
+    "styled-components": "^6.1.1",
+    "sweetalert2": "^11.10.3",
+    "swiper": "^11.0.6",
+    "tailwind-merge": "^3.3.1",
+    "tippy.js": "^6.3.7",
+    "typewriter-effect": "^2.21.0",
+    "vite-plugin-compression": "^0.5.1"
+  },
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
+    "serve": "vite preview",
+    "host": "vite --host",
+    "preview": "vite preview"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "depcheck": "^1.4.7",
+    "eslint": "^9.31.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "postcss": "^8.5.3",
+    "react-lazyload": "^3.2.1",
+    "tailwindcss": "^3.4.17",
+    "terser": "^5.43.1",
+    "vite": "^6.1.1",
+    "vite-plugin-svgr": "^4.3.0"
+  },
+  "sideEffects": [
+    "*.css",
+    "*.scss",
+    "**/*.svg"
+  ],
+  "overrides": {
+    "styled-components": "^6.1.1"
+  }
+}
