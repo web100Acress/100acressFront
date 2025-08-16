@@ -425,7 +425,7 @@ const Home = () => {
         <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
         <div>
           {LuxuryAllProject.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Luxury For You" animation="fade-up" path={"/top-luxury-projects/"} />
+            <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Luxury Apartments For You" animation="fade-up" path={"/top-luxury-projects/"} />
           )}
         </div>
 
