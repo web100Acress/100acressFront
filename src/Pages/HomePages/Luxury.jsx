@@ -120,7 +120,9 @@ const Luxury = () => {
             <div className="flex items-center justify-between mx-6 lg:mx-6 xl:mx-14 md:mx-6 py-2">
                 <div className="flex items-center">
                     <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
-                        Luxury for You
+                        
+                        
+                        
                     </h2>
                 </div>
                 <div className="ml-2 hidden sm:block">
