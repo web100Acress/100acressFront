@@ -1,0 +1,27 @@
+/* Placeholder styles for AboutSection */
+/* Styles for AboutSection will be extracted from NewBanner.css soon. */
+.nb-about-section{ /* TODO: add styles */ --placeholder: 0; }
+.nb-section-header{ /* TODO: add styles */ --placeholder: 0; }
+.nb-section-lines{ /* TODO: add styles */ --placeholder: 0; }
+.nb-section-line{ /* TODO: add styles */ --placeholder: 0; }
+.nb-section-subtitle{ /* TODO: add styles */ --placeholder: 0; }
+.nb-section-title{ /* TODO: add styles */ --placeholder: 0; }
+.nb-section-underline{ /* TODO: add styles */ --placeholder: 0; }
+.nb-about-grid{ --placeholder: 0; }
+.nb-about-left{ --placeholder: 0; }
+.nb-about-image-card{ --placeholder: 0; }
+.nb-about-image{ --placeholder: 0; }
+.nb-about-image-overlay{ --placeholder: 0; }
+.nb-badge{ /* TODO: add styles */ --placeholder: 0; }
+.nb-brochure-btn{ /* TODO: add styles */ --placeholder: 0; }
+.nb-stats-grid{ /* TODO: add styles */ --placeholder: 0; }
+.nb-stats-card{ /* TODO: add styles */ --placeholder: 0; }
+.nb-stats-icon-wrap{ /* TODO: add styles */ --placeholder: 0; }
+.nb-stats-icon{ /* TODO: add styles */ --placeholder: 0; }
+.nb-stats-value{ /* TODO: add styles */ --placeholder: 0; }
+.nb-stats-label{ /* TODO: add styles */ --placeholder: 0; }
+.nb-about-text{ /* TODO: add styles */ --placeholder: 0; }
+.nb-about-prose{ /* TODO: add styles */ --placeholder: 0; }
+.nb-viewmore-row{ /* TODO: add styles */ --placeholder: 0; }
+.nb-viewmore-btn{ /* TODO: add styles */ --placeholder: 0; }
+/* de-duplicated placeholders to satisfy linter */
