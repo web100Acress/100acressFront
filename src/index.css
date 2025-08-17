@@ -102,14 +102,11 @@ html {
   background-color: #ef4444 !important;
 }
 
-/* ===== Global No-Transition/No-Animation Mode ===== */
-/* Force-disable all CSS transitions and animations across the app */
 *, *::before, *::after {
   transition: none !important;
   animation: none !important;
 }
 
-/* Disable smooth scrolling globally */
 html {
   scroll-behavior: auto !important;
 }
