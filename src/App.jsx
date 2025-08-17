@@ -14,7 +14,7 @@ import LazyLoad from "react-lazyload";
 import "animate.css";
 import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
-import ConfettiAllCorners from "./Components/ConfettiAllCorners";
+// import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
 // Lazy load all main page components
 const Home = lazy(() => import("./Pages/Home"));
@@ -149,26 +149,26 @@ const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
 
 function App() {
   const token = localStorage.getItem("myToken");
-  const [showConfetti, setShowConfetti] = useState(true);
+  // const [showConfetti, setShowConfetti] = useState(true);
 
-  useEffect(() => {
-    // Show confetti animation on every page load/refresh
-    setShowConfetti(true);
+  // useEffect(() => {
+  //   // Show confetti animation on every page load/refresh
+  //   setShowConfetti(true);
     
-    // Auto-hide after animation completes
-    const timer = setTimeout(() => {
-      setShowConfetti(false);
-    }, 2300);
+  //   // Auto-hide after animation completes
+  //   const timer = setTimeout(() => {
+  //     setShowConfetti(false);
+  //   }, 2300);
     
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   return (
     <ErrorBoundary>
     <DataProvider>
       <AuthProvider>
         <Wrapper className="section">
-          {showConfetti && <ConfettiAllCorners />}
+          {/* {showConfetti && <ConfettiAllCorners />} */}
             <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route element={<PublicRoute />}>

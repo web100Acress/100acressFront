@@ -10,6 +10,8 @@ import OurServices from "../Components/HomePageComponents/ourServices";
 import Free from "../../src/Pages/Free";
 import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
+// import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
+
 import { Link } from "react-router-dom";
 import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
@@ -29,12 +31,16 @@ import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
+
 import RotatingCardCarousel from "../Components/HomePageComponents/RotatingCardCarousel";
 import ConfettiAllCorners from "../Components/ConfettiAllCorners";
 import HotProject from "./HomePages/hotproject";
 
+// import ConfettiAllCorners from "../Components/ConfettiAllCorners";
+
+
 const Home = () => {
-  const [showConfetti, setShowConfetti] = useState(true);
+  // const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -297,7 +303,49 @@ const Home = () => {
       {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} /> */}
       
       {/* Confetti Animation */}
-      {showConfetti && <ConfettiAllCorners />}
+
+
+      {/* {showConfetti && <ConfettiAllCorners /> */}
+      
+  {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} />  */}
+
+   {/* This is the div whose background you want to blur more */}
+    <div
+      className={`
+        transition-filter duration-300 ease-in-out
+        ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
+      `}
+    >
+  {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
+
+      <div className="relative w-full">
+        <img
+          // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/summer+banner.png"
+          //  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/monsoon-banner.webp"
+           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp"
+          alt="Banner"
+          className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
+        />
+        <img
+          // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/mobilebanner.webp"
+          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-mobile.webp"
+          alt="Mobile Banner"
+          className="mt-14 block md:hidden w-full h-[38rem]"
+        />
+
+        {/* Center the SearchBar */}
+        <div className="absolute inset-0 flex items-center justify-center mt-16 md:mt-0 lg:mt-24">
+          <SearchBar />
+        </div>
+
+      </div>
+
+      <div className="relative">
+        {/* <div className="absolute inset-0 bg-[#f17777]"></div> */}
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)',
+        }}></div>
+
 
       {/* This is the div whose background you want to blur more */}
       <div className={`transition-filter duration-300 ease-in-out ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}`}>
@@ -509,8 +557,13 @@ const Home = () => {
       <PossessionProperty />
       <BackToTopButton />
       <Footer />
+
       
       </div> {/* Closing div for the blur container */}
+
+      {/* <LuxuryFooter /> */}
+      </div>
+
     </Wrapper>
   );
 }

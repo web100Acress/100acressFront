@@ -9,8 +9,8 @@ import 'tippy.js/animations/scale.css';
 import { useDropzone } from 'react-dropzone';
 
 const InsertProject = () => {
-  // Builder list for dropdown
-  const buildersList = [
+  // Default builder list for dropdown
+  const defaultBuildersList = [
     "Signature Global",
     "M3M India", 
     "DLF Homes",
@@ -36,7 +36,10 @@ const InsertProject = () => {
   // State for builder dropdown
   const [isBuilderDropdownOpen, setIsBuilderDropdownOpen] = useState(false);
   const [builderSearchTerm, setBuilderSearchTerm] = useState("");
-  const [filteredBuilders, setFilteredBuilders] = useState(buildersList);
+  const [buildersList, setBuildersList] = useState(defaultBuildersList);
+  const [filteredBuilders, setFilteredBuilders] = useState(defaultBuildersList);
+  const [showCustomBuilderInput, setShowCustomBuilderInput] = useState(false);
+  const [customBuilderName, setCustomBuilderName] = useState("");
 
   const [editFromData, setEditFromData] = useState({
     projectName: "",
@@ -88,22 +91,155 @@ const InsertProject = () => {
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
 
+  // Fetch builders from backend
+  const fetchBuildersFromBackend = async () => {
+    try {
+      const response = await fetch("https://api.100acress.com/builder/viewAll");
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success && result.data) {
+          // Extract builder names from backend response
+          const backendBuilders = result.data.map(builder => builder.builderName);
+          // Combine default builders with backend builders (remove duplicates)
+          const combinedBuilders = [...new Set([...defaultBuildersList, ...backendBuilders])];
+          setBuildersList(combinedBuilders);
+          return combinedBuilders;
+        }
+      }
+    } catch (error) {
+      console.log('Could not fetch builders from backend, using default list');
+    }
+    return buildersList;
+  };
+
+  // Load builders on component mount
+  useEffect(() => {
+    fetchBuildersFromBackend();
+  }, []);
+
   // Filter builders based on search term
   useEffect(() => {
     const filtered = buildersList.filter(builder =>
       builder.toLowerCase().includes(builderSearchTerm.toLowerCase())
     );
     setFilteredBuilders(filtered);
-  }, [builderSearchTerm]);
+  }, [builderSearchTerm, buildersList]);
 
   // Handle builder selection
   const handleBuilderSelect = (builderName) => {
-    setEditFromData(prev => ({
-      ...prev,
-      builderName: builderName
-    }));
-    setBuilderSearchTerm(builderName);
-    setIsBuilderDropdownOpen(false);
+    if (builderName === "Other") {
+      setShowCustomBuilderInput(true);
+      setBuilderSearchTerm("");
+      setIsBuilderDropdownOpen(false);
+    } else {
+      setEditFromData(prev => ({
+        ...prev,
+        builderName: builderName
+      }));
+      setBuilderSearchTerm(builderName);
+      setIsBuilderDropdownOpen(false);
+      setShowCustomBuilderInput(false);
+      setCustomBuilderName("");
+    }
+  };
+
+  // Handle custom builder name input
+  const handleCustomBuilderSubmit = async () => {
+    if (customBuilderName.trim()) {
+      try {
+        // Show loading message
+        messageApi.open({
+          key: "addBuilder",
+          type: 'loading',
+          content: 'Adding new builder...',
+        });
+
+        // API call to save new builder to backend
+        const builderApiEndpoint = "https://api.100acress.com/builder/Insert";
+        const builderData = {
+          builderName: customBuilderName.trim(),
+          createdAt: new Date().toISOString(),
+          status: 'active'
+        };
+
+        const response = await fetch(builderApiEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(builderData)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          
+          // Success - update local state
+          setEditFromData(prev => ({
+            ...prev,
+            builderName: customBuilderName.trim()
+          }));
+          setBuilderSearchTerm(customBuilderName.trim());
+          setShowCustomBuilderInput(false);
+
+          // Refresh builders list from backend to get real-time updates
+          const updatedBuilders = await fetchBuildersFromBackend();
+          
+          // Update filtered builders to include the new builder
+          const filtered = updatedBuilders.filter(builder =>
+            builder.toLowerCase().includes(builderSearchTerm.toLowerCase())
+          );
+          setFilteredBuilders(filtered);
+
+          // Clear input
+          setCustomBuilderName("");
+
+          // Success message
+          messageApi.open({
+            key: "addBuilder",
+            type: 'success',
+            content: 'Builder added successfully and saved to database!',
+            duration: 3,
+          });
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      } catch (error) {
+        console.error('Error adding builder:', error);
+        
+        // Fallback: still update local state even if API fails
+        setEditFromData(prev => ({
+          ...prev,
+          builderName: customBuilderName.trim()
+        }));
+        setBuilderSearchTerm(customBuilderName.trim());
+        setShowCustomBuilderInput(false);
+
+        // Add to local builders list for immediate availability
+        const newBuilder = customBuilderName.trim();
+        if (!buildersList.includes(newBuilder)) {
+          buildersList.push(newBuilder);
+          setFilteredBuilders([...buildersList]);
+        }
+
+        // Clear input
+        setCustomBuilderName("");
+
+        // Warning message
+        messageApi.open({
+          key: "addBuilder",
+          type: 'warning',
+          content: 'Builder added locally, but failed to save to database. Please restart your backend server.',
+          duration: 5,
+        });
+      }
+    }
+  };
+
+  // Handle custom builder cancel
+  const handleCustomBuilderCancel = () => {
+    setShowCustomBuilderInput(false);
+    setCustomBuilderName("");
+    setBuilderSearchTerm("");
   };
 
   // Handle click outside to close dropdown
@@ -812,9 +948,56 @@ const InsertProject = () => {
                     ) : (
                       <div className="px-3 py-2 text-sm text-gray-500">No builders found</div>
                     )}
+                    {/* Other option */}
+                    <div className="border-t border-gray-200 mt-1">
+                      <button
+                        type="button"
+                        className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 focus:bg-blue-50 focus:outline-none text-blue-600 font-medium"
+                        onClick={() => handleBuilderSelect("Other")}
+                      >
+                        + Add New Builder
+                      </button>
+                    </div>
                   </div>
                 </div>
-              )}
+               )}
+               
+               {/* Custom Builder Input */}
+               {showCustomBuilderInput && (
+                 <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                   <label className="block text-sm font-medium text-blue-800 mb-2">Enter New Builder Name:</label>
+                   <div className="flex gap-2">
+                     <input
+                       type="text"
+                       placeholder="Enter builder name..."
+                       className="flex-1 p-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                       value={customBuilderName}
+                       onChange={(e) => setCustomBuilderName(e.target.value)}
+                       onKeyPress={(e) => {
+                         if (e.key === 'Enter') {
+                           handleCustomBuilderSubmit();
+                         }
+                       }}
+                       autoFocus
+                     />
+                     <button
+                       type="button"
+                       onClick={handleCustomBuilderSubmit}
+                       className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium"
+                       disabled={!customBuilderName.trim()}
+                     >
+                       Add
+                     </button>
+                     <button
+                       type="button"
+                       onClick={() => setShowCustomBuilderInput(false)}
+                       className="px-3 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm font-medium"
+                     >
+                       Cancel
+                     </button>
+                   </div>
+                 </div>
+               )}
             </div>
             <div>
                   <Tippy content={<span>Connectivity (e.g., Metro Station, Highway)</span>} animation="scale" theme="light-border">

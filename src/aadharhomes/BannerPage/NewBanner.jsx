@@ -708,8 +708,12 @@ const NewBanner = () => {
       content: `${projectViewDetails?.projectName} is developed by ${projectViewDetails?.builderName}, a renowned real estate developer known for delivering premium residential and commercial projects across India.`,
     },
     {
-      title: `What types of BHK units are available in  ${projectViewDetails?.projectName} ${projectViewDetails?.projectAddress}`,
-      content: ` ${projectViewDetails?.projectName} offers thoughtfully designed ${projectViewDetails.BhK_Details?.map((data) => (` ${data.bhk_type}`))} ${projectViewDetails?.projectOverview !== "none" ? ` ${projectViewDetails.projectOverview} floors` : ""} units, catering to mder lifestyle needs.`,
+
+     
+
+      title: `What types of BHK units are available in  ${projectViewDetails?.projectName} ${projectViewDetails?.projectAddress}`,
+      content: ` ${projectViewDetails?.projectName} offers thoughtfully designed ${projectViewDetails.BhK_Details?.map((data)=>(` ${data.bhk_type}`))} ${projectViewDetails?.projectOverview !== "none" ? ` ${projectViewDetails.projectOverview} floors` : ""} units, catering to modern lifestyle needs.`,  
+
     },
 
   ]

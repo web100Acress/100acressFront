@@ -43,6 +43,7 @@ const Sonipat = () => {
           name="description"
           content="Real Estate Properties in Soni- Get Details for Residential &amp; Commercial Properties"
         />
+        <link rel="canonical" href="https://www.100acress.com/project-in-sonipat/" />
       </Helmet>
 
       <section className="flex pt-2 flex-col items-center mt-16">
