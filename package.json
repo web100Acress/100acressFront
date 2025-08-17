@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "canvas-confetti": "^1.6.0",
     "@ant-design/icons": "^6.0.0",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.0",
@@ -23,12 +22,12 @@
     "antd": "^5.26.6",
     "aos": "^2.3.4",
     "axios": "^1.5.1",
+    "canvas-confetti": "^1.6.0",
     "chart.js": "^4.4.0",
     "country-state-city": "^3.2.1",
     "d3-geo": "^3.1.1",
     "date-fns": "^3.6.0",
     "dompurify": "^3.2.4",
-
     "jodit-react": "^5.2.15",
     "jquery": "^3.7.1",
     "less": "^4.2.0",

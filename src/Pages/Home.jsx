@@ -560,7 +560,7 @@ const Home = () => {
 
       
       </div> {/* Closing div for the blur container */}
-
+      </div>
       {/* <LuxuryFooter /> */}
       </div>
 
