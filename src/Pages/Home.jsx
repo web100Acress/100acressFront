@@ -536,6 +536,12 @@ const Home = () => {
       <PossessionProperty />
       <BackToTopButton />
       <Footer />
+
+
+      
+      </div> {/* Closing div for the blur container */}
+      </div>
+
       {/* <LuxuryFooter /> */}
       </div>
     </Wrapper>
