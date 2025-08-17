@@ -113,7 +113,7 @@ const AddNew = () => {
     handleInputChange(event, "projectRedefine_Connectivity");
   };
 
-  // Education
+  // Education in dbdb
   const handleChangeValueprojectRedefine_Education = (event) => {
     handleInputChange(event, "projectRedefine_Education");
   };
