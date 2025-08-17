@@ -18,6 +18,7 @@ import ConfettiAllCorners from "./Components/ConfettiAllCorners";
 
 // Lazy load all main page components
 const Home = lazy(() => import("./Pages/Home"));
+const EMICalculatorPage = lazy(() => import("./Pages/EMICalculatorPage"));
 const Properties = lazy(() => import("./Pages/ProjectCities/Properties"));
 const PropertyKnow = lazy(() => import("./Components/KnowAbouts/PropertyKnow"));
 const PageNotFound = lazy(() => import("./Pages/PageNotFound"));
@@ -288,6 +289,7 @@ function App() {
               <Route path="/projects-in-dubai/" element={<Dubai />} />
               <Route path="/projects-in-pushkar/" element={<Pushkar />} />
           <Route path="/qr-generator" element={<QRGeneratorPage />} />
+              <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
               <Route
                 path="/project-in-underconstruction/"
                 element={<UnderConstruction />}

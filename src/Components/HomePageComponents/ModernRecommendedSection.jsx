@@ -630,30 +630,23 @@ const CardWrapper = styled.div`
       position: absolute;
       bottom: 16px;
       left: 16px;
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
+      padding: 6px 10px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #FF9933, #FFFFFF, #138808);
-      background-image: url('https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/independencekjshdvjkvl-removebg-preview.webp');
-      background-position: center;
-      background-size: cover;
-      background-repeat: no-repeat;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.2);
+      background: transparent;
       border: none;
       z-index: 10;
-      overflow: hidden;
-      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+      overflow: visible;
 
       .price-text {
         color: white;
         font-weight: 700;
-        font-size: 22px;
+        font-size: 28px;
         text-align: center;
         line-height: 1.2;
-        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9), 1px 1px 3px rgba(0, 0, 0, 0.7);
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7), 1px 1px 2px rgba(0, 0, 0, 0.4);
         position: relative;
         z-index: 2;
       }
@@ -780,14 +773,12 @@ const CardWrapper = styled.div`
     }
 
     .price-badge {
-      width: 160px;
-      height: 160px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+      width: auto;
+      height: auto;
 
       .price-text {
-        font-size: 20px;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9), 1px 1px 2px rgba(0, 0, 0, 0.7);
+        font-size: 24px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.4);
       }
     }
 
@@ -824,14 +815,12 @@ const CardWrapper = styled.div`
     }
 
     .price-badge {
-      width: 140px;
-      height: 140px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+      width: auto;
+      height: auto;
 
       .price-text {
-        font-size: 18px;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9), 1px 1px 2px rgba(0, 0, 0, 0.7);
+        font-size: 22px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.4);
       }
     }
 

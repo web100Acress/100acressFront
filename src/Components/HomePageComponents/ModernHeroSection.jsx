@@ -16,6 +16,7 @@ import {
 } from 'react-icons/md';
 import { FaBed, FaBath, FaRulerCombined } from 'react-icons/fa';
 import Typewriter from "typewriter-effect";
+import { imageSrc as bannerDesktop, phoneSrc as bannerPhone } from "../../Pages/datafeed/Desiredorder";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -53,6 +54,9 @@ const ModernHeroSection = () => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const searchRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [swiperReady, setSwiperReady] = useState(false);
+  const [bannerLoaded, setBannerLoaded] = useState(false);
 
   // Animated placeholder texts
   const placeholderTexts = [
@@ -70,6 +74,26 @@ const ModernHeroSection = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  // Detect mobile width for selecting phone vs desktop banners
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    onResize();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  // Debug: log banner availability
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('ModernHeroSection banners', {
+      isMobile,
+      desktopLen: (bannerDesktop || []).length,
+      phoneLen: (bannerPhone || []).length,
+      firstDesktop: (bannerDesktop || [])[0]?.image,
+      firstPhone: (bannerPhone || [])[0]?.image,
+    });
+  }, [isMobile]);
 
   // Trending locations data
   const trendingLocations = [
@@ -144,7 +168,132 @@ const ModernHeroSection = () => {
   return (
     <HeroWrapper>
       <div className="hero-content">
-        {/* Empty hero — ready to rebuild */}
+        <div className="skyline-overlay" />
+        <div className="clouds">
+          <span className="cloud c1" />
+          <span className="cloud c2" />
+          <span className="cloud c3" />
+        </div>
+        <div className="raindrops" />
+
+        <div className="hero-inner container">
+          {/* Left: Headline, tabs, search, localities, featured banners */}
+          <div className="left">
+            <h1 className="headline">Discover Your Ideal Property in Gurugram</h1>
+            <p className="subtitle">Explore curated homes, commercial spaces, and plots across premium localities.</p>
+
+            <div className="tabs" role="tablist">
+              {[
+                { id: "Buy", label: "Buy" },
+                { id: "Rent", label: "Rent" },
+                { id: "New Launch", label: "New Launch" },
+                { id: "Commercial", label: "Commercial" },
+                { id: "Plots", label: "Plots" },
+                { id: "SCO", label: "SCO" },
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  className={`tab ${activeTab === tab.id ? 'active' : ''}`}
+                  onClick={() => setActiveTab(tab.id)}
+                  type="button"
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="searchbar">
+              <MdLocationPin className="s-icon" />
+              <input
+                type="text"
+                placeholder={`Search \"3 BHK Flats in Gurugram\"`}
+                value={searchQuery}
+                onChange={(e)=>setSearchQuery(e.target.value)}
+                onKeyPress={handleKeyPress}
+              />
+              <button className="search-btn" onClick={handleSearch} type="button">
+                <MdSearch />
+                <span>Search</span>
+              </button>
+            </div>
+
+            <div className="localities">
+              <span className="loc-title">Top Localities:</span>
+              <div className="loc-scroll">
+                {trendingLocations.map((l, i)=> (
+                  <Link key={i} to={`/projects-in-${l.name.toLowerCase().replace(/\s+/g,'-')}/`} className="pill">
+                    {l.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Featured banners below search */}
+            <div
+              className="featured-wide-card"
+              style={{
+                backgroundImage: ((isMobile ? bannerPhone : bannerDesktop) && (isMobile ? bannerPhone : bannerDesktop)[0]) ? `url(${(isMobile ? bannerPhone : bannerDesktop)[0].image})` : undefined,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
+            >
+              <div className="banner-debug-badge">
+                {(isMobile ? bannerPhone : bannerDesktop)?.length ? `Banners: ${(isMobile ? bannerPhone : bannerDesktop).length}` : 'No banners'}
+              </div>
+              {(isMobile ? bannerPhone : bannerDesktop) && (isMobile ? bannerPhone : bannerDesktop)[0] && (
+                <a
+                  href={(isMobile ? bannerPhone : bannerDesktop)[0].image}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ position:'absolute', right:6, top:6, fontSize:10, background:'rgba(34,197,94,0.85)', color:'#fff', padding:'2px 6px', borderRadius:8, zIndex:3, textDecoration:'none' }}
+                >open 1st</a>
+              )}
+              {/* TEMP: static test image to verify visibility */}
+              {(isMobile ? bannerPhone : bannerDesktop) && (isMobile ? bannerPhone : bannerDesktop)[0] && (
+                <img
+                  src={(isMobile ? bannerPhone : bannerDesktop)[0].image}
+                  alt="Banner test"
+                  style={{ display:'block', width:'100%', height:'170px', objectFit:'cover', border:'2px solid #22c55e', marginBottom: 8 }}
+                />
+              )}
+              <Swiper
+                className="featured-swiper"
+                modules={[Autoplay, Pagination]}
+                autoplay={{ delay: 3500, disableOnInteraction: false }}
+                pagination={{ clickable: true }}
+                loop
+                onSwiper={() => setSwiperReady(true)}
+              >
+                {((isMobile ? bannerPhone : bannerDesktop) || []).map((b, idx) => (
+                  <SwiperSlide key={idx}>
+                    <Link to={b.link} aria-label={`Banner ${idx + 1}`}>
+                      <img
+                        src={b.image}
+                        alt={`Banner ${idx + 1}`}
+                        onLoad={() => idx === 0 && setBannerLoaded(true)}
+                        onError={(e)=>{ try{console.error('Hero banner img failed', { idx, url:b.image });}catch(_){} }}
+                      />
+                    </Link>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+              {(isMobile ? bannerPhone : bannerDesktop) && (isMobile ? bannerPhone : bannerDesktop)[0] && (
+                <img
+                  className="fallback-img"
+                  src={(isMobile ? bannerPhone : bannerDesktop)[0].image}
+                  alt="Featured banner"
+                  style={{ opacity: swiperReady && bannerLoaded ? 0 : 1, transition: 'opacity 300ms ease' }}
+                />
+              )}
+              {(!isMobile && (!bannerDesktop || bannerDesktop.length === 0)) && (
+                <img className="fallback-img" src="https://via.placeholder.com/1200x400?text=No+desktop+banners" alt="No banners" />
+              )}
+              {(isMobile && (!bannerPhone || bannerPhone.length === 0)) && (
+                <img className="fallback-img" src="https://via.placeholder.com/800x300?text=No+mobile+banners" alt="No banners" />
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </HeroWrapper>
   );
@@ -153,14 +302,114 @@ const ModernHeroSection = () => {
 // Styled Components
 const HeroWrapper = styled.section`
   position: relative;
-  background: transparent;
-  min-height: 0;
-  padding: 0;
-  .hero-content {
-    width: 100%;
-    padding: 0;
-    min-height: 0;
+  background: linear-gradient(180deg, #e9f1ff 0%, #f5f7ff 60%, #ffffff 100%);
+  min-height: 56vh; /* half-ish page */
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  .hero-content { width: 100%; position: relative; }
+
+  /* Subtle skyline abstract overlay (soft shapes) */
+  .skyline-overlay {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0.28;
+    background: linear-gradient( to top, rgba(120,150,200,0.20), rgba(120,150,200,0) 60% ),
+      repeating-linear-gradient(
+        to right,
+        rgba(100,130,180,0.18) 0 2px,
+        transparent 2px 80px
+      );
+    mix-blend-mode: multiply;
+    z-index: 0;
   }
+
+  /* Floating clouds */
+  .clouds { position:absolute; inset:0; pointer-events:none; z-index:0; }
+  .cloud {
+    position:absolute; width:220px; height:68px; border-radius:999px; filter: blur(6px);
+    background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.95), rgba(255,255,255,0.6) 60%, transparent 61%),
+                radial-gradient(circle at 60% 50%, rgba(255,255,255,0.95), rgba(255,255,255,0.6) 60%, transparent 61%),
+                radial-gradient(circle at 45% 60%, rgba(255,255,255,0.95), rgba(255,255,255,0.6) 60%, transparent 61%);
+    animation: float 28s linear infinite;
+  }
+  .c1 { top: 10%; left: -10%; animation-delay: 0s; }
+  .c2 { top: 18%; left: 20%; animation-delay: 6s; transform: scale(1.1); }
+  .c3 { top: 8%; left: 60%; animation-delay: 12s; transform: scale(0.9); }
+
+  @keyframes float { 0% { transform: translateX(0); } 100% { transform: translateX(40vw); } }
+
+  /* Light raindrop effect */
+  .raindrops { position:absolute; inset:0; pointer-events:none; opacity:0.18; z-index:0; }
+  .raindrops::before {
+    content:""; position:absolute; inset: -20% 0 0 0;
+    background-image: linear-gradient(180deg, rgba(130,150,180,0.35) 20%, rgba(130,150,180,0) 70%);
+    -webkit-mask-image: radial-gradient(2px 16px at 50% 0, #000 49%, transparent 50%);
+    mask-image: radial-gradient(2px 16px at 50% 0, #000 49%, transparent 50%);
+    background-size: 2px 40px; /* streak */
+    animation: rain 7s linear infinite;
+  }
+  @keyframes rain { 0% { transform: translateY(-10%); } 100% { transform: translateY(28%); } }
+
+  /* Layout */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+  .hero-inner { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 992px) { .hero-inner { grid-template-columns: 1fr; gap: 16px; padding: 24px 0; } }
+
+  /* Left side */
+  .left { position: relative; z-index: 20; }
+  .headline { font-size: 42px; line-height: 1.15; font-weight: 800; color: #0f172a; margin: 0 0 8px; }
+  .subtitle { font-size: 16px; color: #475569; margin: 0 0 18px; }
+
+  .tabs { display:flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 16px; }
+  .tab { 
+    border: 1px solid rgba(15,23,42,0.08);
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(8px);
+    color: #0f172a; font-weight: 600; font-size: 14px;
+    border-radius: 999px; padding: 9px 14px; cursor: pointer;
+    transition: all .25s ease; box-shadow: 0 6px 20px rgba(2,6,23,0.06);
+  }
+  .tab:hover { background:#ffffff; transform: translateY(-1px); box-shadow: 0 10px 24px rgba(2,6,23,0.10); }
+  .tab.active { border-color: rgba(239,68,68,0.45); background: rgba(239,68,68,0.08); color: #b91c1c; }
+
+  .searchbar { display:flex; align-items:center; gap: 10px; background:#fff; border:1px solid #e2e8f0; border-radius: 999px; padding: 10px 12px; box-shadow: 0 10px 28px rgba(15,23,42,0.08); }
+  .s-icon { color:#ef4444; font-size: 20px; }
+  .searchbar input { border:none; outline:none; flex:1; font-size:16px; padding: 6px 6px; background: transparent; color:#0f172a; }
+  .search-btn { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg, #ef4444, #dc2626); color:#fff; border:none; border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; box-shadow: 0 12px 30px rgba(239,68,68,0.35); transition: transform .15s ease, box-shadow .2s ease; }
+  .search-btn:hover { transform: translateY(-1px); box-shadow: 0 16px 34px rgba(239,68,68,0.45); }
+
+  .localities { margin-top: 14px; }
+  .loc-title { display:block; font-size:12px; color:#64748b; margin-bottom:6px; font-weight:700; letter-spacing: .04em; text-transform: uppercase; }
+  .loc-scroll { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; }
+  .loc-scroll::-webkit-scrollbar { height:6px; }
+  .loc-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 999px; }
+  .pill { background:#fff; border:1px solid #e2e8f0; color:#0f172a; padding:8px 12px; border-radius:999px; text-decoration:none; font-size:13px; box-shadow: 0 6px 16px rgba(2,6,23,0.06); white-space: nowrap; }
+  .pill:hover { background:#f8fafc; }
+
+  /* Featured wide banner below search */
+  .featured-wide-card {
+    margin-top: 14px;
+    background: #ffffffee;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(2,6,23,0.12);
+    position: relative;
+    z-index: 10; /* above skyline and raindrops */
+    min-height: 170px;
+  }
+  .featured-wide-card .featured-swiper { width: 100%; height: 170px; }
+  .featured-wide-card .featured-swiper { position: relative; z-index: 1; }
+  .featured-wide-card .featured-swiper .swiper-wrapper { height: 100%; }
+  .featured-wide-card .featured-swiper .swiper-slide { height: 100%; }
+  .featured-wide-card .featured-swiper .swiper-slide a { display:block; height:100%; }
+  /* Only Swiper images should stretch to container height */
+  .featured-wide-card .featured-swiper img { width: 100%; height: 100%; object-fit: cover; display: block; position: relative; z-index: 2; }
+  /* Non-swiper images (like debug test) should size naturally */
+  .featured-wide-card > img { width: 100%; height: auto; display: block; position: relative; z-index: 2; }
+  .featured-wide-card .fallback-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index: 0; }
+  .featured-wide-card .banner-debug-badge { position:absolute; top:6px; left:6px; padding:2px 6px; font-size:10px; background:rgba(15,23,42,0.7); color:#fff; border-radius:8px; z-index:3; }
+  @media (min-width: 768px) { .featured-wide-card .featured-swiper { height: 200px; } }
 
   .hero-header {
     text-align: center;
