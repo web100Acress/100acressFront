@@ -8,19 +8,13 @@ import {
   Menu,
   MenuButton,
   MenuItem,
-  Image,
-  HStack,
   Stack,
-  useMediaQuery,
+  Image,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { WhiteHambergerIcon, WhiteCloseIcon, WhiteFillIcon } from "../Assets/icons";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-// import logoImage from "../Images/100acress.png";
 import axios from "axios";
 import styled from "styled-components";
-import { FillIcon, PeopleIcon } from "../Assets/icons";
-import ScrollSearch from "./ScollSearch";
 import { message } from "antd";
 import { useDispatch } from "react-redux";
 import { maxprice, minprice } from "../Redux/slice/PriceBasedSlice";
@@ -37,10 +31,9 @@ export default function Navbar() {
   const [token, setToken] = useState();
   const [colorChange, setColorchange] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
-  const [isSmallerThan368] = useMediaQuery("(max-width: 368px)");
+  
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isMenuOpen1, setMenuOpen1] = useState(false);
@@ -121,1457 +114,381 @@ export default function Navbar() {
     checkUserAuth();
   }, []);
 
+  // Close mega menu on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, onClose]);
+
   return (
     <Wrapper className="section">
       <Box>
         <Box
-          bg={colorChange ? "linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)" : "white"}
-          className={`top-0 z-50 pt-1 pb-1 shadow-md  ${colorChange ? 'w-100 rounded-b-3xl' : 'w-full'} `}
+          bg="#ffffff"
+          className="top-0 z-[9999] w-full"
           style={{ 
             position: "fixed", 
             scrollBehavior: "smooth",
-            background: colorChange ? "linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)" : "white"
+            background: "#ffffff",
+            boxShadow: "none",
+            zIndex: 9999,
+            borderBottom: "1px solid rgba(0,0,0,0.08)"
           }}
-          px={{ base: 0, md: 4, lg: 7 }}
+          px={{ base: 4, md: 4, lg: 7 }}
+          py={1}
         >
           
-          <Flex h={12} alignItems="center" justifyContent="space-between">
-            <IconButton
-              size={"md"}
-              marginRight={colorChange ? '0' : '2'}
-              icon={isOpen ? (colorChange ? <WhiteCloseIcon /> : <CloseIcon />) : (colorChange ? <WhiteHambergerIcon /> : <HamburgerIcon />)}
-              aria-label={"Open Menu"}
-              display={{ md: "none" }}
-              onClick={isOpen ? onClose : onOpen}
-              variant="unstyled"
-              _hover={{ bg: "none" }}
-              _active={{ bg: "none" }}
-              _focus={{ boxShadow: "none" }}
-              color="red"
-            />
+          <Flex h={{ base: 14, md: 16 }} alignItems="center" justifyContent="space-between">
+            
+            {/* Left Section - Search Projects */}
+            <Flex alignItems="center">
+              <IconButton
+                size="sm"
+                icon={<HamburgerIcon />}
+                aria-label="Search Projects"
+                variant="ghost"
+                color="#111"
+                onClick={onToggle}
+                mr={2}
+              />
+              <Box 
+                display={{ base: "none", md: "block" }}
+                fontSize="14px"
+                fontWeight="500"
+                color="#111"
+                letterSpacing="0.5px"
+                cursor="pointer"
+                onClick={onToggle}
+              >
+                SEARCH PROJECTS
+              </Box>
+            </Flex>
 
-            <HStack
-              spacing={isSmallerThan768 ? 0 : 8}
-              alignItems="center"
-              justifyContent={isSmallerThan768 ? "space-x-0" : "space-x-0"}
-              flex="1"
-            >
-              {!isSmallerThan768 && (
-                <Box marginLeft={"-18px"}>
-                  <Flex alignItems="center" gap={0}>
-                    {colorChange ? (
-                      <Link to={"/"}>
-                        <Image
-                          maxW={["160px", "200px"]}
-                          minW={["50px", "70px"]}
-                          width={["xs", "sm", "md", "lg"]}
-                          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/lg.webp"
-                          alt="100acress"
-                          marginBottom={2}
-                        />
-                      </Link>
-                    ) : (
-                      <Link to={"/"}>
-                        <Image
-                          maxW={["160px", "200px"]}
-                          minW={["50px", "70px"]}
-                          width={["xs", "sm", "md", "lg"]}
-                          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
-                          alt="100acress"
-                          marginBottom={2}
-                        />
-                      </Link>
+            {/* Center Section - Logo */}
+            <Flex flex={1} justifyContent="center">
+              <Link to="/">
+                <Image
+                  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
+                  alt="100acress logo"
+                  height={{ base: "44px", md: "52px", lg: "60px" }}
+                  objectFit="contain"
+                  draggable={false}
+                />
+              </Link>
+            </Flex>
+
+            {/* Right Section - Profile & List Property */}
+            <Flex alignItems="center" gap={3}>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  onClick={showModal}
+                  aria-label="Profile"
+                  variant="ghost"
+                  bg="transparent"
+                  _hover={{ bg: "transparent" }}
+                  px={2}
+                >
+                  <Flex align="center" gap={2}>
+                    <Box
+                      as="span"
+                      border="1px solid rgba(0,0,0,0.35)"
+                      borderRadius="full"
+                      w="32px"
+                      h="32px"
+                      display="inline-flex"
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      <Box as="span" lineHeight={0}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                          <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
+                      </Box>
+                    </Box>
+                    {!token && (
+                      <Box as="span" color="#111" fontSize="14px" display={{ base: "none", sm: "inline" }}>Log in</Box>
                     )}
-                    
-                    {/* Tri-color independence day logo next to main logo */}
-                    <Image
-                      width="100px"
-                      height="75px"
-                      src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/independencedaylogo.png"
-                      alt="Independence Day"
-                      marginBottom={2}
-                      objectFit="contain"
-                    />
                   </Flex>
-                </Box>
-              )}
+                </MenuButton>
+                <Modal
+                  title="User Menu"
+                  open={isModalOpen}
+                  onCancel={handleCancel}
+                  footer={null}
+                  centered
+                >
+                  {token ? (
+                    <section style={{ margin: "-15px -15px -15px -15px" }}>
+                      <MenuItem fontSize="sm">
+                        <NavLink className="" onClick={handleCancel} to="/userdashboard/">Dashboard</NavLink>
+                      </MenuItem>
+                      <MenuItem fontSize="sm">
+                        <NavLink className="" onClick={handleCancel} to="/useredit/">Edit Profile</NavLink>
+                      </MenuItem>
+                      <MenuItem fontSize="sm">
+                        <NavLink className="" onClick={handleCancel} to="/viewallproperty/">View All Property</NavLink>
+                      </MenuItem>
+                      <MenuItem fontSize="sm">
+                        <NavLink className=" text-red-500" onClick={ShowLogOutMessage}>LogOut</NavLink>
+                      </MenuItem>
+                    </section>
+                  ) : (
+                    <section style={{ margin: "-15px -15px -15px -15px" }}>
+                      <MenuItem fontSize="sm" color={"red"}>
+                        <NavLink className="" onClick={handleCancel} to="/auth/signin/">Login/</NavLink>
+                        <NavLink className="" onClick={handleCancel} to="/auth/signup/">Register</NavLink>
+                      </MenuItem>
+                      <MenuItem fontSize="sm">
+                        <NavLink className="" onClick={handleCancel}>Recently Searched</NavLink>
+                      </MenuItem>
+                      <MenuItem fontSize="sm">
+                        <NavLink className="" onClick={handleCancel}>Shortlisted</NavLink>
+                      </MenuItem>
+                      <MenuItem fontSize="sm">
+                        <NavLink className="" onClick={handleCancel}>Contacted</NavLink>
+                      </MenuItem>
+                    </section>
+                  )}
+                </Modal>
+              </Menu>
               
-              {isSmallerThan768 && !colorChange && (
-                <Box marginLeft={"-18px"}>
-                  <Flex alignItems="center" gap={0}>
-                    {colorChange ? (
-                      <Link to={"/"}>
-                        <Image
-                          maxW={["160px", "200px"]}
-                          minW={["50px", "70px"]}
-                          width={["xs", "sm", "md", "lg"]}
-                          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/lg.webp"
-                          alt="100acress"
-                          marginBottom={2}
-                        />
-                      </Link>
-                    ) : (
-                      <Link to={"/"}>
-                        <Image
-                          maxW={["140px", "200px"]}
-                          minW={["50px", "70px"]}
-                          width={["xs", "sm", "md", "lg"]}
-                          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
-                          alt="100acress"
-                          marginBottom={2}
-                        />
-                      </Link>
-                    )}
-                    
-                    {/* Tri-color independence day logo for mobile */}
-                    <Image
-                      width="75px"
-                      height="55px"
-                      src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/independencedaylogo.png"
-                      alt="Independence Day"
-                      marginBottom={2}
-                      objectFit="contain"
-                    />
-                  </Flex>
-                </Box>
-              )}
-
-              {!isSmallerThan768 && (
-                <HStack spacing={10} justify="center" flex="1">
-
-                  {colorChange ? (<ScrollSearch data1={"testing"} />) : (<><div
-                    className="relative group"
-                    onMouseEnter={handleHover1}
-                    onMouseLeave={handleLeave1}
-                  >
-                    <Link to="/buy-properties/best-resale-property-in-gurugram/">
-                      <button className=" text-red-600 pt-1  text-sm  uppercase font-bold text-center tracking-[0.1em]">
-                        Resale
-                      </button>
-                    </Link>
-                    <div
-                      className={`absolute bg-white py-2 text-gray-800 w-90 rounded-md shadow-lg z-10 ${isMenuOpen1 ? "block" : "hidden"
-                        }`}
-                    >
-                      {false && <div className="flex">
-                        <div className="w-48">
-                          <Link
-                            to="#"
-                            className="block px-4 py-1 text-black  text-lg "
-                          >
-                            Popular Choices
-                            <hr className="mt-1" />
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Owner Properties
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Verified Properties
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Furnished Homes
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Bachelor Friendly Homes
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Immediately Available
-                          </Link>
-                        </div>
-
-                        <div className="w-52">
-                          <Link
-                            to="#"
-                            className="block text-black  text-lg px-2 py-1 "
-                          >
-                            Property Types
-                            <hr className="mt-1" />
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2   hover:text-red-600"
-                          >
-                            Flats for Rent in Gurugram
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
-                          >
-                            House for Rent in Gurugram
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2   hover:text-red-600"
-                          >
-                            Villa for Rent in Gurugram
-                          </Link>
-
-                          <Link
-                            to="#"
-                            className="block text-sm px-2 py-1  hover:text-red-600"
-                          >
-                            Office Space in Gurugram
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-2  hover:text-red-600"
-                          >
-                            Commercial Space in Gurugram
-                          </Link>
-                        </div>
-
-                        <div className="w-40">
-                          <Link
-                            to="#"
-                            className="block text-black  text-lg px-4 py-1  hover:text-red-600"
-                          >
-                            Budget
-                            <hr className="mt-1" />
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Under ₹50 Lac
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            ₹50 Lac - ₹1 Cr
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4  hover:text-red-600"
-                          >
-                            ₹1 Cr - ₹2.5 Cr
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            ₹2.5 Cr - ₹5 Cr
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Above ₹5 Cr
-                          </Link>
-                        </div>
-                        <div className="w-48">
-                          <Link
-                            to="#"
-                            className="block text-black text-lg px-4 py-1 "
-                          >
-                            Explore
-                            <hr className="mt-1" />
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4  hover:text-red-600"
-                          >
-                            Localities
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Buy vs Rent
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Find an Agent
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Share Requirement
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4   hover:text-red-600"
-                          >
-                            Property Services
-                          </Link>
-                          <Link
-                            to="#"
-                            className="block text-sm px-4 py-1  hover:text-red-600"
-                          >
-                            Rent Agreement
-                          </Link>
-                        </div>
-                      </div>}
-
-                    </div>
-                  </div>
-
-                    <div
-                      className="relative group "
-                      onMouseEnter={handleHover}
-                      onMouseLeave={handleLeave}
-                    >
-                      <Link to="/rental-properties/best-rental-property-in-gurugram/">
-                        <button className="text-red-600 pt-1 text-sm font-bold uppercase tracking-[0.1em]">
-                          Rental
-                        </button>
-                      </Link>
-                      <div
-                        className={`absolute  bg-white py-2 text-gray-800 w-90  rounded-md shadow-lg z-10 ${isMenuOpen ? "block" : "hidden"
-                          }`}
-                      >
-                        {false && <div className="flex ">
-                          <div className="w-48">
-                            <Link
-                              to="#"
-                              className="block px-4 py-1  text-black text-lg "
-                            >
-                              Popular Choices
-                              <hr className="mt-1" />
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Ready to Move
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              Owner Choices
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Budget Homes
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              Premium homes
-                            </Link>
-                            <Link
-                              to="#"
-                              className=" text-sm px-4  hover:text-red-600 flex items-center"
-                            >
-                              NewlyLaunched
-                              <span className="flex border rounded-md text-white bg-red-600 py-0 px-1 ">
-                                Free
-                              </span>
-                            </Link>
-                          </div>
-
-                          <div className="w-52 mb-4">
-                            <Link
-                              to="#"
-                              className="block text-black  text-lg px-2 py-1 "
-                            >
-                              Property Types <hr className="mt-1" />
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-2   hover:text-red-600"
-                            >
-                              Flats in Gurugram
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-2 py-1  hover:text-red-600"
-                            >
-                              House For Sale in Gurugram
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-2   hover:text-red-600"
-                            >
-                              Villa in Gurugram
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-2 py-1  hover:text-red-600"
-                            >
-                              Plots in Gurugram
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-2   hover:text-red-600"
-                            >
-                              Office Place in Gurugram
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-2 py-1  hover:text-red-600"
-                            >
-                              Retail Space in Gurugram
-                            </Link>
-                          </div>
-                          <div className="w-40">
-                            <Link
-                              to="#"
-                              className="block text-black  text-lg px-4 py-1  hover:text-red-600"
-                            >
-                              Budget
-                              <hr className="mt-1" />
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              under ₹50 Lac
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              ₹50 Lac - ₹1 Cr
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              ₹1 Cr - ₹2.5 Cr
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              ₹2.5 Cr - ₹5 Cr
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Above ₹5 Cr
-                            </Link>
-                          </div>
-                          <div className="w-48">
-                            <Link
-                              to="#"
-                              className="block text-black  text-lg px-2 py-1 "
-                            >
-                              Explore
-                              <hr className="mt-1" />
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-2  hover:text-red-600"
-                            >
-                              Localities in Gurugram
-                            </Link>
-                            <Link
-                              to="/projects-in-gurugram/"
-                              className="block text-sm px-2 py-1  hover:text-red-600"
-                            >
-                              Projects in Gurugram
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-2   hover:text-red-600"
-                            >
-                              Investment Hotspot
-                            </Link>
-                            <Link
-                              to="#"
-                              className="block text-sm px-2  py-1  hover:text-red-600"
-                            >
-                              Find an Agent
-                            </Link>
-                          </div>
-                        </div>}
-                      </div>
-                    </div>
-
-                    <div
-                      className="relative group "
-                      onMouseEnter={handleHover2}
-                      onMouseLeave={handleLeave2}
-                      style={{ padding: "15px" }}
-                    >
-                      <Link
-                      // to={"/projects-in-gurugram/"}
-                      >
-                        <button className="text-red-600 uppercase font-bold pt-1  text-sm tracking-[0.1em]">
-                          Projects
-                        </button>
-                      </Link>
-                      <div
-                        className={`absolute bg-white py-2 mt-3 text-gray-800 w-90  rounded-md shadow-lg z-10 ${isMenuOpen2 ? "block" : "hidden"
-                          }`}
-                      >
-                        <div className="flex mb-3">
-                          <div className="w-48">
-                            <Link
-                              to="#"
-                              className="block px-4 py-1 text-black  text-lg "
-                            >
-                              Popular Cities
-                              <hr className="mt-1" />
-                            </Link>
-
-                            <Link
-                              to={"/projects-in-gurugram/"}
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Gurugram
-                            </Link>
-
-                            <Link
-                              to={"/project-in-delhi/"}
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              Projects in Delhi
-                            </Link>
-
-                            <Link
-                              to={`/project-in-noida/`}
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Noida
-                            </Link>
-
-                            <Link
-                              to={`/project-in-goa/`}
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              Projects in Goa
-                            </Link>
-
-                            <Link
-                              to="/project-in-ayodhya/"
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Ayodhya
-                            </Link>
-
-                            <Link
-                              to={`/project-in-mumbai/`}
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              Projects in Mumbai
-                            </Link>
-
-                            <Link
-                              to={`/project-in-panipat/`}
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Panipat
-                            </Link>
-
-                            <Link
-                              to={`/project-in-panchkula/`}
-                              className="block text-sm px-4 py-1   hover:text-red-600"
-                            >
-                              Projects in Panchkula
-                            </Link>
-
-                            <Link
-                              to={`/project-in-kasauli/`}
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Kasauli
-                            </Link>
-                            <Link
-                              to={`/projects-in-sonipat/`}
-                              className="block text-sm px-4 py-1 hover:text-red-600"
-                            >
-                              Projects in Sonipat
-                            </Link>
-                            <Link
-                              to={`/projects-in-karnal/`}
-                              className="block text-sm px-4 hover:text-red-600"
-                            >
-                              Projects in Karnal
-                            </Link>
-                            <Link
-                              to={`/projects-in-jalandhar/`}
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              Projects in Jalandhar
-                            </Link>
-                            {/* <Link
-                              to="#"
-                              className="block px-4 py-1 text-black text-lg"
-                            >
-                              Indian State
-                              <hr className="mt-1" />
-                            </Link> */}
-                            <Link
-                              to={"/projects-in-pushkar/"}
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Pushkar
-                            </Link>
-
-                            <Link
-                              to={`/projects-in-dubai/`}
-                              className="block text-sm px-4 py-1 font-semibold text-red-600 hover:text-red-600 hover:underline"
-                            >
-                              Projects in Dubai{" "}
-                              <span className="font-bold text-sm text-red-600">
-                                *
-                              </span>
-                            </Link>
-                          </div>
-                          <div className="flex flex-col w-48">
-                            <Link
-                              to="#"
-                              className="block text-black text-lg px-4 py-1 hover:text-red-600"
-                            >
-                              Budget
-                              <hr className="mt-1" />
-                            </Link>
-                            <Link
-                              to={`/budget-properties/`}
-                              className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(0, 1)}
-                            >
-                              Under ₹1 Cr
-                            </Link>
-                            <Link
-                              to={`/budget-properties/`}
-                              className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(1, 5)}
-                            >
-                              ₹1 Cr - ₹5 Cr
-                            </Link>
-                            <Link
-                              to={`/budget-properties/`}
-                              className="block text-sm px-4  hover:text-red-600"
-                              onClick={() => handlePriceClick(5, 10)}
-                            >
-                              ₹5 Cr - ₹10 Cr
-                            </Link>
-                            <Link
-                              to={`/budget-properties/`}
-                              className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(10, 20)}
-                            >
-                              ₹10 Cr - ₹20 Cr
-                            </Link>
-                            <Link
-                              to={`/budget-properties/`}
-                              className="block text-sm px-4  hover:text-red-600"
-                              onClick={() => handlePriceClick(20, 50)}
-                            >
-                              ₹20 Cr - ₹50 Cr
-                            </Link>
-                            <Link
-                              to={`/budget-properties/`}
-                              className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(50, Infinity)}
-                            >
-                              Above ₹50 Cr
-                            </Link>
-                            {/* </div> */}
-                            {/* aman start working here */}
-                            {/* <div className="w-48 mt-1"> */}
-                            {/* <Link
-                              to="#"
-                              className="block px-4 py-1 text-black text-lg"
-                            >
-                              Indian State
-                              <hr className="mt-1" />
-                            </Link>
-                            <Link
-                              to={"/projects-in-Pushkar/"}
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Rajasthan
-                            </Link> */}
-
-                            {/* <Link
-                              to="/qr-generator"
-                              className="block text-sm px-4 hover:text-red-600"
-                            >
-                              Generate Your QR
-                            </Link> */}
-                          </div>
-
-
-                          {/* /////////////////////// */}
-                          {/* I am Working here */}
-                          <div className="w-48">
-                            <div >
-                              <Link className="block text-black text-lg px-4 py-1 hover:text-red-600">
-                                Project Status
-                                <hr className="mt-1" />
-                              </Link>
-
-                              <Link
-                                to={"/projects/upcoming-projects-in-gurgaon/"}
-                                className="block text-sm px-4  hover:text-red-600"
-                              >
-                                Upcoming Projects
-                              </Link>
-
-                              <Link
-                                to={"/projects-in-newlaunch/"}
-                                className="block text-sm px-4 hover:text-red-600"
-                              >
-                                New Launch Projects   
-                              </Link>
-
-                              <Link
-                                to={"/project-in-underconstruction/"}
-                                className="block text-sm px-4  hover:text-red-600"
-                              >
-                                Under Construction
-                              </Link>
-
-                              <Link
-                                to={"/projects-in-gurugram/property-ready-to-move/"}
-                                className="block text-sm px-4 hover:text-red-600"
-                              >
-                                Ready To Move
-                              </Link>
-                            </div>
-
-
-                            <div className="mt-2">
-
-                              <Link className="block text-black text-lg px-4 hover:text-red-600">
-                                Project Type
-                                <hr className="mt-1" />
-                              </Link>
-                              <Link
-                                to={"/sco/plots/"}
-                                className="block text-sm px-4  hover:text-red-600"
-                              >
-                                SCO Plots
-                              </Link>
-                              <Link
-                                to={"/projects/villas/"}
-                                className="block text-sm px-4 hover:text-red-600"
-                              >
-                                Luxury Villas
-                              </Link>
-                              <Link
-                                to={"/plots-in-gurugram/"}
-                                className="block text-sm px-4 hover:text-red-600"
-                              >
-                                Plots In Gurugram
-                              </Link>
-                              <Link
-                                to={"/property/residential/"}
-                                className="block text-sm px-4  hover:text-red-600"
-                              >
-                                Residential Projects
-                              </Link>
-                              <Link
-                                to={"/projects/independentfloors/"}
-                                className="block text-sm px-4 hover:text-red-600"
-                              >
-                                Independent Floors
-                              </Link>
-
-                              <Link
-                                to={"/projects/commercial/"}
-                                className="block text-sm px-4 hover:text-red-600"
-                              >
-                                Commercial Projects
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div></>)}
-
-                </HStack>
-              )}
-              {isSmallerThan768 && colorChange && (
-                <HStack spacing={10} justify="center" flex="1">
-
-                  {colorChange ? (<ScrollSearch data1={"testing"} />) : (<><div
-                    className="relative group"
-                    onMouseEnter={handleHover1}
-                    onMouseLeave={handleLeave1}
-                  >
-                    <Link to="/buy-properties/best-resale-property-in-gurugram/">
-                      <button className=" text-red-600 pt-1  text-sm  uppercase font-bold text-center">
-                        Resale
-                      </button>
-                    </Link>
-                    <div
-                      className={`absolute bg-white py-2 text-gray-800 w-90 rounded-md shadow-lg z-10 ${isMenuOpen1 ? "block" : "hidden"
-                        }`}
-                    >
-
-                    </div>
-                  </div>
-
-                    <div
-                      className="relative group "
-                      onMouseEnter={handleHover}
-                      onMouseLeave={handleLeave}
-                    >
-                      <Link to="/rental-properties/best-rental-property-in-gurugram/">
-                        <button className="text-red-600 pt-1 text-sm font-bold uppercase ">
-                          Rental
-                        </button>
-                      </Link>
-                      <div
-                        className={`absolute  bg-white py-2 text-gray-800 w-90  rounded-md shadow-lg z-10 ${isMenuOpen ? "block" : "hidden"
-                          }`}
-                      >
-                      </div>
-                    </div>
-
-                    <div
-                      className="relative group "
-                      onMouseEnter={handleHover2}
-                      onMouseLeave={handleLeave2}
-                    >
-                      <Link
-                      // to={"/projects-in-gurugram/"}
-                      >
-                        <button className="text-red-600 uppercase font-bold pt-1  text-sm ">
-                          Projects
-                        </button>
-                      </Link>
-                      <div
-                        className={`absolute  bg-white py-2 text-gray-800 w-90  rounded-md shadow-lg z-10 ${isMenuOpen2 ? "block" : "hidden"
-                          }`}
-                      >
-                        <div className="flex mb-3">
-                          <div className="w-48">
-                            <Link
-                              to="#"
-                              className="block px-4 py-1 text-black  text-lg "
-                            >
-                              Popular Cities
-                              <hr className="mt-1" />
-                            </Link>
-
-                            <Link
-                              to={"/projects-in-gurugram/"}
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Gurugram
-                            </Link>
-
-                            <Link
-                              to={"/project-in-delhi/"}
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              Projects in Delhi
-                            </Link>
-
-                            <Link
-                              to={`/project-in-noida/`}
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Noida
-                            </Link>
-
-                            <Link
-                              to={`/project-in-goa/`}
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              Projects in Goa
-                            </Link>
-
-                            <Link
-                              to="/project-in-ayodhya/"
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Ayodhya
-                            </Link>
-
-                            <Link
-                              to={`/project-in-mumbai/`}
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              Projects in Mumbai
-                            </Link>
-
-                            <Link
-                              to={`/project-in-panipat/`}
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Panipat
-                            </Link>
-
-                            <Link
-                              to={`/project-in-panchkula/`}
-                              className="block text-sm px-4 py-1   hover:text-red-600"
-                            >
-                              Projects in Panchkula
-                            </Link>
-
-                            <Link
-                              to={`/project-in-kasauli/`}
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Kasauli
-                            </Link>
-                            <Link
-                              to={`/projects-in-sonipat/`}
-                              className="block text-sm px-4 py-1 hover:text-red-600"
-                            >
-                              Projects in Sonipat
-                            </Link>
-                            <Link
-                              to={`/projects-in-karnal/`}
-                              className="block text-sm px-4 hover:text-red-600"
-                            >
-                              Projects in Karnal
-                            </Link>
-                            <Link
-                              to={`/projects-in-jalandhar/`}
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              Projects in Jalandhar
-                            </Link>
-
-                            <Link
-                              to={"/projects-in-pushkar/"}
-                              className="block text-sm px-4   hover:text-red-600"
-                            >
-                              Projects in Pushkar
-                            </Link>
-
-                            <Link
-                              to={`/projects-in-dubai/`}
-                              className="block text-sm px-4 py-1 font-semibold text-red-600 hover:text-red-600 hover:underline"
-                            >
-                              Projects in Dubai{" "}
-                              <span className="font-bold text-sm text-red-600">
-                                *
-                              </span>
-                            </Link>
-                          </div>
-                          <div className="flex flex-col w-48">
-                            <Link
-                              to="#"
-                              className="block text-black text-lg px-4 py-1 hover:text-red-600"
-                            >
-                              Budget
-                              <hr className="mt-1" />
-                            </Link>
-                            <Link
-                              to={`/budget-properties/`}
-                              className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(0, 1)}
-                            >
-                              Under ₹1 Cr
-                            </Link>
-                            <Link
-                              to={`/budget-properties/`}
-                              className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(1, 5)}
-                            >
-                              ₹1 Cr - ₹5 Cr
-                            </Link>
-                            <Link
-                              to={`/budget-properties/`}
-                              className="block text-sm px-4  hover:text-red-600"
-                              onClick={() => handlePriceClick(5, 10)}
-                            >
-                              ₹5 Cr - ₹10 Cr
-                            </Link>
-                            <Link
-                              to={`/budget-properties/`}
-                              className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(10, 20)}
-                            >
-                              ₹10 Cr - ₹20 Cr
-                            </Link>
-                            <Link
-                              to={`/budget-properties/`}
-                              className="block text-sm px-4  hover:text-red-600"
-                              onClick={() => handlePriceClick(20, 50)}
-                            >
-                              ₹20 Cr - ₹50 Cr
-                            </Link>
-                            <Link
-                              to={`/budget-properties/`}
-                              className="block text-sm px-4 hover:text-red-600"
-                              onClick={() => handlePriceClick(50, Infinity)}
-                            >
-                              Above ₹50 Cr
-                            </Link>
-                          </div>
-
-                          {/* aman work here */}
-                          <div className="mt-4">
-                            <Link
-                              to="#"
-                              className="block px-4 py-1 text-black text-lg"
-                            >
-                              Popular State
-                              <hr className="mt-1" />
-                            </Link>
-                            <Link to="/projects-in/maharashtra" className="block text-sm px-4 py-1 hover:text-red-600">
-                              Maharashtra
-                            </Link>
-                          </div>
-                          {/* aman work end */}
-                          {/* I am Working here */}
-                          <div className="">
-                            <Link className="block text-black text-lg px-4 py-1 hover:text-red-600">
-                              Project Status
-                              <hr className="mt-1" />
-                            </Link>
-
-                            <Link
-                              to={"/projects/upcoming-projects-in-gurgaon/"}
-                              className="block text-sm px-4  hover:text-red-600"
-                            >
-                              Upcoming Projects
-                            </Link>
-
-                            <Link
-                              to={"/projects-in-newlaunch/"}
-                              className="block text-sm px-4 py-1  hover:text-red-600"
-                            >
-                              New Launch Projects
-                            </Link>
-
-                            <Link
-                              to={"/project-in-underconstruction/"}
-                              className="block text-sm px-4  hover:text-red-600"
-                            >
-                              Under Construction
-                            </Link>
-
-                            <Link
-                              to={"/projects-in-gurugram/property-ready-to-move/"}
-                              className="block  py-1 text-sm px-4 hover:text-red-600"
-                            >
-                              Ready To Move
-                            </Link>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div></>)}
-
-                </HStack>
-              )}
-            </HStack>
-
-            {!isSmallerThan768 && (<Flex alignItems="center">
-              <div
-                className="bg-[#C13B44] py-0.5 lg:p-1 md:p-1 rounded-3xl lg:px-5 sm:px-0 shine-button"
-                style={{
-                  marginRight: window.innerWidth <= 768 ? "-50px" : "-50px",
-                }}
-              >
-                {token ? (
-                  <Link to="/postproperty/">
-                    <button className="flex pt-0 items-center justify-center sm:text-sm">
-                      <strong
-                        onClick={checkUserAuth}
-                        className="text-[#FFFFFF]  md:mr-2 lg:mr-2"
-                      >
-                        List Property
-                      </strong>
-                      <Link className="d-inline">
-                        {
-                          !isSmallerThan368 ?
-                            <button
-                              className="bg-[#FFFFFF] text-red-600 rounded-lg text-[10px] flex items-center justify-center"
-                              style={{
-                                position: "relative",
-                                overflow: "hidden",
-                                width: "50px",
-                                height: "20px",
-                              }}
-                            >
-                              FREE
-                            </button> : " "
-                        }
-                      </Link>
-                    </button>
-                  </Link>
-                ) : (
-                  <Link to="/auth/signin/">
-                    <button className="flex p-1 text-xs  items-center justify-center sm:text-sm">
-                      <strong
-                        onClick={checkUserAuth}
-                        className="text-[#FFFFFF] md:mr-2 lg:mr-2"
-                      >
-                        List Property
-                      </strong>
-                      <Link className="d-inline">
-                        <button
-                          className="bg-[#FFFFFF] text-red-600 rounded-lg text-[10px] flex items-center justify-center "
-                          style={{
-                            position: "relative",
-                            overflow: "hidden",
-                            width: "50px",
-                            height: "15px",
-                          }}
-                        >
-                          FREE
-                        </button>
-                      </Link>
-                    </button>
-                  </Link>
-                )}
-              </div>
-
-              <SpacerComponent />
-
-              <div className="flex justify-center">
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    borderRadius="l"
-                    variant="unstyled"
-                    aria-label="Profile"
-                    onClick={showModal}
-                    style={{ backgroundColor: "transparent", border: "none" }} // Transparent background
-                  >
-                    {token ? (
-                      <button
-                        className="font-bold w-23 flex items-center space-x-1 outline-offset-2 underline border border-sky-500 rounded-2xl"
-                        style={{
-                          color: "#DC4C64",
-                          backgroundColor: "transparent",
-                          border: "none",
-                        }}
-                      >
-                        <PeopleIcon />{colorChange ? <WhiteFillIcon /> : <FillIcon />}
-                      </button>
-                    ) : (
-                      <button
-                        className="outline-offset-2 p-0.5 flex items-center space-x-1 font-bold w-23 border border-sky-500 rounded-2xl"
-                        style={{
-                          color: "#DC4C64",
-                          backgroundColor: "transparent",
-                          border: "none",
-                        }} // Ensure button is transparent
-                      >
-                        <PeopleIcon />{colorChange ? <WhiteFillIcon /> : <FillIcon />}
-                      </button>
-                    )}
-                  </MenuButton>
-
-                  {/* <MenuListContainer
-                    isOpen={isDropdownOpen}
-                    onClose={onClose}
-                  /> */}
-                  <Modal
-                    open={isModalOpen}
-                    onCancel={handleCancel}
-                    footer={null}
-                    closable={false}
-                    mask={false}
-                    style={{
-                      padding: 0,
-                      margin: 0,
-                      position: 'fixed',
-                      top: 0,
-                      right: 0,
+              {token ? (
+                <Link to="/postproperty/">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    borderColor="#e53e3e"
+                    color="#e53e3e"
+                    _hover={{
+                      bg: "#e53e3e",
+                      color: "white"
                     }}
-                    modalRender={modal => (
-                      <div style={{
-                        position: 'fixed',
-                        top: 45,
-                        right: 15,
-                        zIndex: 1050,
-                        margin: '10px',
-                        background: 'white',
-                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-                        borderRadius: '4px',
-                        padding: '0px 0px !important',
-                        borderCollapse: 'collapse'
-                      }}>
-                        {modal}
-                      </div>
-                    )}
+                    fontWeight="600"
+                    fontSize="14px"
+                    letterSpacing="0.5px"
+                    display={{ base: "none", sm: "block" }}
                   >
-                    {token ? (<section style={{ margin: "-15px -15px -15px -15px" }}>
-                      <MenuItem>
-                        <NavLink className="" onClick={handleCancel} to={`/userdashboard/`}>View Profile</NavLink>
-                      </MenuItem><MenuItem fontSize="sm">
-                        {decodedToken?.role === "Admin" && <NavLink className="" onClick={handleCancel} to={`/Admin/dashboard`}>Admin</NavLink>}
-                        {decodedToken?.role === "ContentWriter" && <NavLink className="" to={`/seo/blogs`}>Blog Management</NavLink>}
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm">
-                        <NavLink className=" " to={`/userdashboard/`} onClick={handleCancel}>Edit Profile</NavLink>
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm">
-                        <NavLink className="" onClick={handleCancel}>Change Password</NavLink>
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm">
-                        <NavLink className="" onClick={handleCancel}>Delete account</NavLink>
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm" onClick={() => HandleUserLogout({})} refresh="true">
-                        <NavLink className=" text-red-500" onClick={ShowLogOutMessage}>LogOut</NavLink>
-                      </MenuItem>
-                    </section>) : (<section style={{ margin: "-15px -15px -15px -15px" }}>
-                      <MenuItem fontSize="sm" color={"red"}>
-                        <NavLink className="" onClick={handleCancel} to="/auth/signin/">Login/</NavLink>
-                        <NavLink className="" onClick={handleCancel} to="/auth/signup/">Register</NavLink>
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm">
-                        <NavLink className="" onClick={handleCancel}>Recently Searched</NavLink>
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm">
-                        <NavLink className="" onClick={handleCancel}>Shortlisted</NavLink>
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm">
-                        <NavLink className="" onClick={handleCancel}>Contacted</NavLink>
-                      </MenuItem>
-                    </section>)}
-                  </Modal>
-                </Menu>
-              </div>
-            </Flex>)}
-            {isSmallerThan768 && !colorChange && (<Flex alignItems="center">
-              <div
-                className="bg-[#C13B44] py-0.5 lg:p-1 md:p-1 rounded-3xl lg:px-5 sm:px-0 shine-button"
-                style={{
-                  marginRight: window.innerWidth <= 768 ? "-50px" : "-50px",
-                }}
-              >
-                {token ? (
-                  <Link to="/postproperty/">
-                    <button className="flex p-1 text-xs items-center justify-center sm:text-sm">
-                      <strong
-                        onClick={checkUserAuth}
-                        className="text-[#FFFFFF]  md:mr-2 lg:mr-2"
-                      >
-                        List Property
-                      </strong>
-                      <Link className="d-inline">
-                        {!isSmallerThan368 ?
-                          <button
-                            className="bg-[#FFFFFF] text-red-600 rounded-lg text-[10px] flex items-center justify-center"
-                            style={{
-                              position: "relative",
-                              overflow: "hidden",
-                              width: "50px",
-                              height: "15px",
-                            }}
-                          >
-                            FREE
-                          </button> : ""}
-                      </Link>
-                    </button>
-                  </Link>
-                ) : (
-                  <Link to="/auth/signin/">
-                    <button className="flex p-1 text-xs items-center justify-center sm:text-sm">
-                      <strong
-                        onClick={checkUserAuth}
-                        className="text-[#FFFFFF] md:mr-2 lg:mr-2"
-                      >
-                        List Property
-                      </strong>
-                      <Link className="d-inline">
-                        {!isSmallerThan368 ?
-                          <button
-                            className="bg-[#FFFFFF] text-red-600 rounded-lg text-[10px] flex items-center justify-center "
-                            style={{
-                              position: "relative",
-                              overflow: "hidden",
-                              width: "50px",
-                              height: "15px",
-                            }}
-                          >
-                            FREE
-                          </button> : ""}
-                      </Link>
-                    </button>
-                  </Link>
-                )}
-              </div>
-
-              <SpacerComponent />
-
-              <div className="flex justify-center">
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    borderRadius="l"
-                    variant="unstyled"
-                    aria-label="Profile"
-                    onClick={showModal}
-                    style={{ backgroundColor: "transparent", border: "none" }} // Transparent background
-                  >
-                    {token ? (
-                      <button
-                        className="font-bold w-23 flex items-center space-x-1 outline-offset-2 underline border border-sky-500 rounded-2xl"
-                        style={{
-                          color: "#DC4C64",
-                          backgroundColor: "transparent",
-                          border: "none",
-                        }}
-                      >
-                        <PeopleIcon /><FillIcon />
-                      </button>
-                    ) : (
-                      <button
-                        className="outline-offset-2 p-0.5 flex items-center space-x-1 font-bold w-23 border border-sky-500 rounded-2xl"
-                        style={{
-                          color: "#DC4C64",
-                          backgroundColor: "transparent",
-                          border: "none",
-                        }} // Ensure button is transparent
-                      >
-                        <PeopleIcon /><FillIcon />
-                      </button>
-                    )}
-                  </MenuButton>
-                  <Modal
-                    open={isModalOpen}
-                    onCancel={handleCancel}
-                    footer={null}
-                    closable={false}
-                    mask={false}
-                    style={{
-                      padding: 0,
-                      margin: 0,
-                      position: 'fixed',
-                      top: 0,
-                      right: 0,
+                    LIST PROPERTY
+                  </Button>
+                </Link>
+              ) : (
+                <Link to="/auth/signin/">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    borderColor="#e53e3e"
+                    color="#e53e3e"
+                    _hover={{
+                      bg: "#e53e3e",
+                      color: "white"
                     }}
-                    modalRender={modal => (
-                      <div style={{
-                        position: 'fixed',
-                        top: 45,
-                        right: 15,
-                        zIndex: 1050,
-                        margin: '10px',
-                        background: 'white',
-                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-                        borderRadius: '4px',
-                        padding: '0px 0px !important',
-                        borderCollapse: 'collapse'
-                      }}>
-                        {modal}
-                      </div>
-                    )}
+                    fontWeight="600"
+                    fontSize="14px"
+                    letterSpacing="0.5px"
+                    display={{ base: "none", sm: "block" }}
                   >
-                    {token ? (<section style={{ margin: "-15px -15px -15px -15px" }}>
-                      <MenuItem>
-                        <NavLink className="" onClick={handleCancel} to={`/userdashboard/`}>View Profile</NavLink>
-                      </MenuItem><MenuItem fontSize="sm">
-                        {decodedToken?.role === "Admin" && <NavLink className="" onClick={handleCancel} to={`/Admin/user`}>Admin</NavLink>}
-                        {decodedToken?.role === "ContentWriter" && <NavLink className="" to={`/seo/blogs`}>Blog Management</NavLink>}
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm">
-                        <NavLink className=" " to={`/userdashboard/`} onClick={handleCancel}>Edit Profile</NavLink>
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm">
-                        <NavLink className="" onClick={handleCancel}>Change Password</NavLink>
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm">
-                        <NavLink className="" onClick={handleCancel}>Delete account</NavLink>
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm" onClick={() => HandleUserLogout({})} refresh="true">
-                        <NavLink className=" text-red-500" onClick={ShowLogOutMessage}>LogOut</NavLink>
-                      </MenuItem>
-                    </section>) : (<section style={{ margin: "-15px -15px -15px -15px" }}>
-                      <MenuItem fontSize="sm" color={"red"}>
-                        <NavLink className="" onClick={handleCancel} to="/auth/signin/">Login/</NavLink>
-                        <NavLink className="" onClick={handleCancel} to="/auth/signup/">Register</NavLink>
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm">
-                        <NavLink className="" onClick={handleCancel}>Recently Searched</NavLink>
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm">
-                        <NavLink className="" onClick={handleCancel}>Shortlisted</NavLink>
-                      </MenuItem>
-
-                      <MenuItem fontSize="sm">
-                        <NavLink className="" onClick={handleCancel}>Contacted</NavLink>
-                      </MenuItem>
-                    </section>)}
-                  </Modal>
-                </Menu>
-              </div>
-            </Flex>)}
+                    LIST PROPERTY
+                  </Button>
+                </Link>
+              )}
+            </Flex>
           </Flex>
 
           {isOpen && (
             <Box
               pb={4}
               display={{
-                base: "0em",
-                sm: "30em",
-                md: "48em",
-                lg: "62em",
-                xl: "80em",
+                base: "none",
+                md: "none",
               }}
+              flexDirection="column"
+              alignItems="center"
             >
-              <Stack color="white" as="nav" spacing={4}>
-                <Link
-                  to={"/rental-properties/best-rental-property-in-gurugram/"}
-                  className={`${colorChange ? 'text-[#FFFFFF]' : 'text-red-600'}  mx-3 text-sm pt-1 font-bold uppercase`}
-                >
-                  Rental Property
-                </Link>
-
-                <Link
-                  to={"/buy-properties/best-resale-property-in-gurugram/"}
-                  className={`${colorChange ? 'text-[#FFFFFF]' : 'text-red-600'}  mx-3 text-sm pt-1 font-bold uppercase`}
-                >
-                  Resale Property
-                </Link>
-
-                {token ? (
-                  <Link
-                    to={"/postproperty/"}
-                    className={`${colorChange ? 'text-[#FFFFFF]' : 'text-red-600'}  mx-3 text-sm pt-1 font-bold uppercase hover:bg-red-600 hover:opacity-80`}
+              <Box
+                display={{ base: "none", md: "none" }}
+                flexDirection="column"
+                alignItems="center"
+                pb={4}
+              >
+                <Link to="/buy-properties/best-resale-property-in-gurugram/">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    borderColor="#e53e3e"
+                    color="#e53e3e"
+                    _hover={{
+                      bg: "#e53e3e",
+                      color: "white",
+                    }}
+                    fontWeight="600"
+                    fontSize="14px"
+                    letterSpacing="0.5px"
+                    mb={2}
                   >
-                    <span onClick={checkUserAuth}>List Property</span>
-                  </Link>
-                ) : (
-                  <Link
-                    to={"/auth/signin/"}
-                    className={`${colorChange ? 'text-[#FFFFFF]' : 'text-red-600'}  mx-3 text-sm pt-1 font-bold uppercase hover:bg-red-600 hover:opacity-80`}
-                  >
-                    List Property
-                  </Link>
-                )}
-
-                <Link
-                  to={"/projects-in-gurugram/"}
-                  className={`${colorChange ? 'text-[#FFFFFF]' : 'text-red-600'}  mx-3 text-sm pt-1 font-bold uppercase`}
-                >
-                  Projects
+                    Resale
+                  </Button>
                 </Link>
-              </Stack>
+                <Link to="/rental-properties/best-rental-property-in-gurugram/">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    borderColor="#e53e3e"
+                    color="#e53e3e"
+                    _hover={{
+                      bg: "#e53e3e",
+                      color: "white",
+                    }}
+                    fontWeight="600"
+                    fontSize="14px"
+                    letterSpacing="0.5px"
+                    mb={2}
+                  >
+                    Rental
+                  </Button>
+                </Link>
+                <Link to="/projects-in-gurugram/">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    borderColor="#e53e3e"
+                    color="#e53e3e"
+                    _hover={{
+                      bg: "#e53e3e",
+                      color: "white",
+                    }}
+                    fontWeight="600"
+                    fontSize="14px"
+                    letterSpacing="0.5px"
+                    mb={2}
+                  >
+                    Projects
+                  </Button>
+                </Link>
+              </Box>
             </Box>
+          )}
+
+          {/* Desktop Mega Menu for SEARCH PROJECTS */}
+          {isOpen && (
+            <>
+              {/* Outside-click overlay (doesn't cover the fixed navbar) */}
+              <Box
+                position="fixed"
+                left={0}
+                right={0}
+                top={{ base: "56px", md: "64px" }}
+                bottom={0}
+                bg="transparent"
+                zIndex={9997}
+                onClick={onClose}
+              />
+            <Box display={{ base: "block", md: "block" }}>
+              {/* Full-width positioning wrapper, background kept transparent to avoid visible extra space */}
+              <Box
+                position="absolute"
+                left={{ base: 0, md: 4, lg: 7 }}
+                right={{ base: 0, md: "auto" }}
+                top={{ base: "56px", md: "64px" }}
+                bg="transparent"
+                boxShadow="none"
+                zIndex={9998}
+                onMouseLeave={onClose}
+                overflowX="hidden"
+                maxH={{ base: "calc(100vh - 56px)", md: "auto" }}
+                overflowY={{ base: "auto", md: "visible" }}
+              >
+                {/* Centered content container with constrained width */}
+                <Box
+                  bg="white"
+                  boxShadow="0 10px 25px rgba(0,0,0,0.12)"
+                  borderRadius="md"
+                  maxW={{ base: "calc(100vw - 2rem)", lg: "calc(100vw - 4rem)" }}
+                  w="fit-content"
+                  mx={0}
+                >
+                  <Flex px={{ base: 4, md: 6 }} py={5} gap={{ base: 3, md: 6 }} wrap="wrap">
+                  {/* Popular Cities */}
+                  <Box minW="200px">
+                    <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Popular Cities</Box>
+                    <Box h="1px" bg="#eaeaea" mb={3} />
+                    <Flex direction="column" gap={1} fontSize="14px">
+                      <Link to="/projects-in-gurugram/">Projects in Gurugram</Link>
+                      <Link to="/project-in-delhi/">Projects in Delhi</Link>
+                      <Link to="/project-in-noida/">Projects in Noida</Link>
+                      <Link to="/project-in-goa/">Projects in Goa</Link>
+                      <Link to="/project-in-ayodhya/">Projects in Ayodhya</Link>
+                      <Link to="/project-in-mumbai/">Projects in Mumbai</Link>
+                      <Link to="/project-in-panipat/">Projects in Panipat</Link>
+                      <Link to="/project-in-panchkula/">Projects in Panchkula</Link>
+                      <Link to="/project-in-kasauli/">Projects in Kasauli</Link>
+                      <Link to="/projects-in-sonipat/">Projects in Sonipat</Link>
+                      <Link to="/projects-in-karnal/">Projects in Karnal</Link>
+                      <Link to="/projects-in-jalandhar/">Projects in Jalandhar</Link>
+                      <Link to="/projects-in-pushkar/">Projects in Pushkar</Link>
+                      <Link to="/projects-in-dubai/" style={{ color: "#e53e3e", fontWeight: 600 }}>Projects in Dubai *</Link>
+                    </Flex>
+                  </Box>
+
+                  {/* Budget */}
+                  <Box minW="200px">
+                    <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Budget</Box>
+                    <Box h="1px" bg="#eaeaea" mb={3} />
+                    <Flex direction="column" gap={1} fontSize="14px">
+                      <Link to="/budget-properties/" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</Link>
+                      <Link to="/budget-properties/" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</Link>
+                      <Link to="/budget-properties/" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</Link>
+                      <Link to="/budget-properties/" onClick={() => handlePriceClick(10, 20)}>₹10 Cr - ₹20 Cr</Link>
+                      <Link to="/budget-properties/" onClick={() => handlePriceClick(20, 50)}>₹20 Cr - ₹50 Cr</Link>
+                      <Link to="/budget-properties/" onClick={() => handlePriceClick(50, Infinity)}>Above ₹50 Cr</Link>
+                    </Flex>
+                  </Box>
+
+                  {/* Project Status */}
+                  <Box minW="200px">
+                    <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Project Status</Box>
+                    <Box h="1px" bg="#eaeaea" mb={3} />
+                    <Flex direction="column" gap={1} fontSize="14px">
+                      <Link to="/projects/upcoming-projects-in-gurgaon/">Upcoming Projects</Link>
+                      <Link to="/projects-in-newlaunch/">New Launch Projects</Link>
+                      <Link to="/project-in-underconstruction/">Under Construction</Link>
+                      <Link to="/projects-in-gurugram/property-ready-to-move/">Ready To Move</Link>
+                    </Flex>
+                  </Box>
+
+                  {/* Project Type */}
+                  <Box minW="200px">
+                    <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Project Type</Box>
+                    <Box h="1px" bg="#eaeaea" mb={3} />
+                    <Flex direction="column" gap={1} fontSize="14px">
+                      <Link to="/sco/plots/">SCO Plots</Link>
+                      <Link to="/projects/villas/">Luxury Villas</Link>
+                      <Link to="/plots-in-gurugram/">Plots In Gurugram</Link>
+                      <Link to="/property/residential/">Residential Projects</Link>
+                      <Link to="/projects/independentfloors/">Independent Floors</Link>
+                      <Link to="/projects/commercial/">Commercial Projects</Link>
+                    </Flex>
+                  </Box>
+                  
+                  {/* Resale & Rental */}
+                  <Box minW="200px">
+                    <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Resale & Rental</Box>
+                    <Box h="1px" bg="#eaeaea" mb={3} />
+                    <Flex direction="column" gap={1} fontSize="14px">
+                      <Link to="/buy-properties/best-resale-property-in-gurugram/">Resale Properties</Link>
+                      <Link to="/rental-properties/best-rental-property-in-gurugram/">Rental Properties</Link>
+                    </Flex>
+                  </Box>
+                  </Flex>
+                </Box>
+              </Box>
+            </Box>
+            </>
           )}
         </Box>
       </Box>

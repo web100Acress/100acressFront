@@ -101,3 +101,26 @@ html {
 .custom-step-red .ant-steps-item-tail::after {
   background-color: #ef4444 !important;
 }
+
+/* ===== Global No-Transition/No-Animation Mode ===== */
+/* Force-disable all CSS transitions and animations across the app */
+*, *::before, *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Disable smooth scrolling globally */
+html {
+  scroll-behavior: auto !important;
+}
+
+/* Common libraries/components */
+.slick-slider *, .ant-modal *, .ant-drawer *, .ant-message *, .ant-notification * {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Disable CSS View Transitions API if present */
+::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) {
+  animation-duration: 0s !important;
+}

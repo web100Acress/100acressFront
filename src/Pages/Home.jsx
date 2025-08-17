@@ -19,7 +19,9 @@ import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon } from "lucide-react";
-import HotProject from "./HomePages/hotproject";
+import PropertyShowcase from "../Components/PropertyShowcase/PropertyShowcase";
+import EnhancedRecommendedSection from "../Components/HomePageComponents/EnhancedRecommendedSection";
+import ModernHeroSection from "../Components/HomePageComponents/ModernHeroSection";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Builder from "./BuilderPages/Builder";
@@ -29,7 +31,13 @@ import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
+
+import RotatingCardCarousel from "../Components/HomePageComponents/RotatingCardCarousel";
+import ConfettiAllCorners from "../Components/ConfettiAllCorners";
+import HotProject from "./HomePages/hotproject";
+
 // import ConfettiAllCorners from "../Components/ConfettiAllCorners";
+
 
 const Home = () => {
   // const [showConfetti, setShowConfetti] = useState(true);
@@ -64,8 +72,28 @@ const Home = () => {
   const LuxuryProjects = useSelector(store => store?.project?.luxury);
   const BudgetHomesProjects = useSelector(store => store?.project?.budget);
   const ProjectinDelhi = useSelector(store => store?.project?.projectindelhi);
+  const spotlight = useSelector(store => store?.project?.spotlight);
   const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll);
-  const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getAllProjects } = Api_Service();
+  const { 
+    getTrending, 
+    getFeatured, 
+    getUpcoming, 
+    getCommercial, 
+    getAffordable, 
+    getLuxury, 
+    getScoplots, 
+    getBudgetHomes, 
+    getProjectIndelhi, 
+    getAllProjects,
+    getSpotlight 
+  } = Api_Service();
+  
+  // Fetch spotlight data on component mount
+  useEffect(() => {
+    if (!spotlight || spotlight.length === 0) {
+      getSpotlight();
+    }
+  }, [getSpotlight, spotlight]);
   const [dataLoaded, setDataLoaded] = useState({
     trending: false,
     featured: false,
@@ -256,9 +284,8 @@ const Home = () => {
     };
   }, [UpcomingProjects, LuxuryProjects, BudgetHomesProjects, SCOProjects, ProjectinDelhi]);
 
-  // console.log(resalesectionvisible,"section")
+// console.log(resalesectionvisible,"section")
 
-  
 
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
@@ -273,7 +300,11 @@ const Home = () => {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
       
+      {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} /> */}
+      
       {/* Confetti Animation */}
+
+
       {/* {showConfetti && <ConfettiAllCorners /> */}
       
   {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} />  */}
@@ -316,14 +347,25 @@ const Home = () => {
         }}></div>
 
 
+      {/* This is the div whose background you want to blur more */}
+      <div className={`transition-filter duration-300 ease-in-out ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}`}>
+        {/* Modern Hero Section */}
+        <ModernHeroSection />
+        
+        {/* Property Showcase */}
+        <PropertyShowcase properties={spotlight || []} />
+
+        {/* HotProject Section */}
         <div className="relative">
-          {/* <SpotlightBanner /> */}
-          <HotProject />
+          <div className="absolute inset-0" style={{
+            background: 'linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)',
+          }}></div>
+          <div className="relative">
+            <HotProject />
+          </div>
         </div>
-      </div>
 
-      {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
-
+        {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
         <div data-aos="fade-up"
 
           data-aos-duration="1000" className="py-0 mt-3 max-w-[1250px] mx-auto">
@@ -497,48 +539,31 @@ const Home = () => {
 
       </div>
 
-      {colorChange && isSmallerThan768 && <div>
-        <Link to="/auth/signin/" target="_top">
-          <div className="sticky-quote-cta">
-            <a
-              className="text-white font-semibold"
-              style={{ background: 'linear-gradient(135deg, #FF9933 0%, #138808 100%)', padding: '12px' }}
-            >
-              LIST{" "}PROPERTY
-            </a>
-          </div>
-        </Link>
-      </div>}
-
-      {/* <HomeBuilderCarousel /> */}
-      <Free />
-      {/* <div>
-        <div>
-          <a href="tel:8500900100" class="dd-m-phone">
-            <i class="fa-solid fa-phone"></i>
-          </a>
+      {colorChange && isSmallerThan768 && (
+        <div className="sticky-quote-cta">
+          <Link 
+            to="/auth/signin/" 
+            target="_top"
+            className="text-white font-semibold block"
+            style={{ background: 'linear-gradient(135deg, #FF9933 0%, #138808 100%)', padding: '12px' }}
+          >
+            LIST PROPERTY
+          </Link>
         </div>
-      </div>
-        <div>
-        <a
-          href="https://wa.me/918500900100"
-          class="dd-m-whatsapp"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <i class="fa-brands fa-whatsapp"></i>
-        </a>
-      </div> */}
-      <div>
-        <Chatbot />
-      </div>
-   
+      )}
 
+      <Free />
+      <Chatbot />
       <PossessionProperty />
       <BackToTopButton />
       <Footer />
+
+      
+      </div> {/* Closing div for the blur container */}
+
       {/* <LuxuryFooter /> */}
       </div>
+
     </Wrapper>
   );
 }
@@ -549,61 +574,7 @@ const Wrapper = styled.section`
   /* Tricolor theme for the entire home page */
   background: linear-gradient(135deg, rgba(255, 153, 51, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(19, 136, 8, 0.05) 100%);
 
-  .dd-m-phone {
-    position: fixed;
-    z-index: 999;
-    bottom: 10px;
-    right: 10px;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #FF9933 0%, #138808 100%);
-    transition: 0.3s all ease;
-    cursor: pointer;
-    text-decoration: none;
-    color: #fff;
-    font-size: 24px;
-  }
 
-  .dd-m-phone:hover {
-    transform: rotate(0.3turn);
-    box-shadow: 0 5px 15px 2px rgba(255, 153, 51, 0.4);
-  }
-
-  .dd-m-phone i {
-    font-size: 24px;
-  }
-
-  .dd-m-whatsapp {
-    position: fixed;
-    z-index: 999;
-    bottom: 70px;
-    right: 10px;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #138808 0%, #FF9933 100%);
-    transition: 0.3s all ease;
-    cursor: pointer;
-    text-decoration: none;
-    color: #fff;
-    font-size: 24px;
-  }
-
-  .dd-m-whatsapp:hover {
-    transform: rotate(1turn);
-    box-shadow: 0 5px 15px 2px rgba(19, 136, 8, 0.4);
-  }
-
-  .dd-m-whatsapp i {
-    font-size: 24px;
-  }
   
   .sticky-quote-cta {
     height: auto;
