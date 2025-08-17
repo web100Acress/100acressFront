@@ -39,7 +39,7 @@ const Footer = () => {
     }
   };
 
-  const handleSubmitData = (e) => {
+  const handleSubmitData = (e) => { 
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
   };

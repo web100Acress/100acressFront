@@ -59,9 +59,12 @@ const UserAdmin = () => {
     return timestampB - timestampA; // Newest first
   });
   
-  const filteredProjects = sortedUsers.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter out deleted users (frontend simulation)
+  const deletedUsers = JSON.parse(localStorage.getItem('deletedUsers') || '[]');
+  
+  const filteredProjects = sortedUsers
+    .filter((item) => !deletedUsers.includes(item._id)) // Hide deleted users
+    .filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;

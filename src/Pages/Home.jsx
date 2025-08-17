@@ -12,6 +12,8 @@ import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
 // import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
 
+// import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
+
 import { Link } from "react-router-dom";
 import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
@@ -32,6 +34,7 @@ import Chatbot from "../Components/HomePageComponents/Chatbot";
 // import ConfettiAllCorners from "../Components/ConfettiAllCorners";
 
 const Home = () => {
+  // const [showConfetti, setShowConfetti] = useState(true);
   // const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {

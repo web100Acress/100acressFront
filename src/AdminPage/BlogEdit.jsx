@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { message, Modal, notification } from "antd";
 import Sidebar from "./Sidebar";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MdEdit, MdImage, MdTitle, MdDescription, MdCategory, MdPerson } from "react-icons/md";
 import Tippy from '@tippyjs/react';
@@ -24,6 +25,7 @@ const BlogEdit = () => {
     author: "",
   });
   const { id } = useParams();
+  const navigate = useNavigate();
   const token = localStorage.getItem("myToken");
 
   // Theme state
@@ -35,13 +37,21 @@ const BlogEdit = () => {
 
   const handleUpdateUser = async () => {
     try {
+      const toastKey = 'blogUpdate';
+      message.loading({ content: 'Updating blog...', key: toastKey, duration: 0 });
       const formData = new FormData();
-
-      for (const key in viewDetails) {
-        formData.append(key, viewDetails[key]);
+      // Append only scalar fields (avoid sending objects like blog_Image)
+      formData.append("blog_Title", viewDetails.blog_Title || "");
+      formData.append("blog_Description", viewDetails.blog_Description || "");
+      formData.append("author", viewDetails.author || "");
+      formData.append("blog_Category", viewDetails.blog_Category || "");
+      // Preserve current publish status if available to avoid unintended changes on backend
+      if (typeof viewDetails.isPublished !== 'undefined') {
+        formData.append("isPublished", String(viewDetails.isPublished));
       }
-      if (viewDetails.frontImage) {
-        formData.append("frontImage", viewDetails.frontImage.file);
+      // If a new image is chosen, send under the correct field name expected by backend: blog_Image
+      if (viewDetails.frontImage && viewDetails.frontImage.file) {
+        formData.append("blog_Image", viewDetails.frontImage.file);
       }
       
       const response = await axios.put(
@@ -49,19 +59,62 @@ const BlogEdit = () => {
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${token}`,
           }
         }
       );
       if (response.status === 200) {
-        alert("Data updated successfully");
+        message.destroy(toastKey);
+        notification.success({
+          message: 'Blog updated',
+          description: 'Your changes have been saved successfully.',
+          placement: 'topRight',
+        });
+        // Re-fetch latest blog data to reflect updates in real-time
+        try {
+          const refreshed = await axios.get(
+            `https://api.100acress.com/blog/edit/${id}`,
+            {
+              headers: { 'Authorization': `Bearer ${token}` }
+            }
+          );
+          setViewDetails(refreshed.data.data);
+        } catch (refetchErr) {
+          console.error('Refetch failed:', refetchErr);
+        }
+        // Navigate to Admin blog list after applying updates
+        navigate('/Admin/blog');
       } else {
         console.error("Failed to update user");
+        message.destroy(toastKey);
+        notification.error({
+          message: 'Update failed',
+          description: 'Could not update the blog. Please try again.',
+          placement: 'topRight',
+        });
       }
     } catch (error) {
       console.error("Error updating user:", error);
+      message.destroy('blogUpdate');
+      notification.error({
+        message: 'Error',
+        description: 'An unexpected error occurred while updating the blog.',
+        placement: 'topRight',
+      });
     }
+  };
+
+  const handleConfirmAndUpdate = () => {
+    Modal.confirm({
+      title: 'Confirm Update',
+      content: 'Are you sure you want to save these changes to the blog?',
+      okText: 'Yes, Update',
+      cancelText: 'Cancel',
+      okButtonProps: { className: 'bg-red-500' },
+      onOk: async () => {
+        await handleUpdateUser();
+      },
+    });
   };
 
   // const handleUpdateUser = async () => {
@@ -159,23 +212,23 @@ const BlogEdit = () => {
       <Sidebar />
       <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
         <div className="flex-1 p-8 ml-64 overflow-auto font-sans">
-          <div className="max-w-2xl mx-auto space-y-10">
+          <div className="w-full space-y-10">
             {/* Header */}
             <div className="flex items-center gap-2 mb-8 justify-between">
               <div className="flex items-center gap-2">
                 <MdEdit className="text-3xl text-blue-500 animate-pulse" />
                 <h1 className={`text-3xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>Edit Blog</h1>
               </div>
-              <button
+              {/* <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                 className={`px-4 py-2 rounded-lg shadow-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${theme === 'dark' ? 'bg-gray-800 text-gray-100 hover:bg-gray-700' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}
                 aria-label="Toggle theme"
               >
                 {theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
-              </button>
+              </button> */}
             </div>
             {/* Card Form */}
-            <section className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-2xl overflow-hidden border p-8`}> 
+            <section className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-xl shadow-2xl overflow-hidden border p-8 w-full`}> 
               {/* Blog Image */}
               <div className="mb-6">
                 <Tippy content={<span>Blog Image</span>} animation="scale" theme="light-border">
@@ -183,7 +236,9 @@ const BlogEdit = () => {
                 </Tippy>
                 <div className="flex items-center gap-4">
                   <div className={`flex items-center justify-center h-32 w-32 overflow-hidden rounded-lg ${theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border`}>
-                    {viewDetails.blog_Image && viewDetails.blog_Image.url ? (
+                    {viewDetails.frontImage && viewDetails.frontImage.url ? (
+                      <img src={viewDetails.frontImage.url} alt="blog_Image_preview" className="max-h-full max-w-full object-contain" id="previewImage" />
+                    ) : viewDetails.blog_Image && viewDetails.blog_Image.url ? (
                       <img src={viewDetails.blog_Image.url} alt="blog_Image" className="max-h-full max-w-full object-contain" id="previewImage" />
                     ) : (
                       <span className="text-gray-500 text-sm italic">No Blog Image</span>
@@ -255,8 +310,8 @@ const BlogEdit = () => {
               <div className="flex justify-end mt-8">
           <button
             type="button"
-            onClick={handleUpdateUser}
-                  className={`flex items-center gap-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-lg px-8 py-3 shadow-lg transition-all ${theme === 'dark' ? 'bg-gradient-to-r from-blue-700 via-blue-800 to-gray-900' : ''}`}
+            onClick={handleConfirmAndUpdate}
+            className={`flex items-center gap-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-lg px-8 py-3 shadow-lg transition-all ${theme === 'dark' ? 'bg-gradient-to-r from-blue-700 via-blue-800 to-gray-900' : ''}`}
           >
                   <MdEdit className="text-xl" /> Update
           </button>
