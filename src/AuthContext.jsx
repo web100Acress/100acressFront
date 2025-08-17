@@ -72,6 +72,18 @@ export const AuthProvider = ({ children }) => {
               "agentData",
               JSON.stringify(roleResponse.data.User)
             );
+            // Persist user's first name for Navbar display
+            try {
+              const userName = roleResponse?.data?.User?.name || "";
+              const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
+              if (first) {
+                localStorage.setItem("firstName", first);
+              } else {
+                localStorage.removeItem("firstName");
+              }
+            } catch (_) {
+              // no-op: best-effort only
+            }
             if (roleResponse.status === 200) {
               localStorage.setItem(
                 "userRole",
@@ -120,6 +132,16 @@ export const AuthProvider = ({ children }) => {
                   "agentData",
                   JSON.stringify(User)
               );
+              // Store first name best-effort even in unverified state
+              try {
+                const userName = User?.name || "";
+                const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
+                if (first) {
+                  localStorage.setItem("firstName", first);
+                } else {
+                  localStorage.removeItem("firstName");
+                }
+              } catch (_) {}
               history("/auth/signup/email-verification"); // Redirect to verification page
             } else if (status === 401) {
               // Invalid credentials
@@ -208,6 +230,16 @@ export const AuthProvider = ({ children }) => {
               "agentData",
               JSON.stringify(registrationResponse.data.User)
             );
+            // Persist first name after signup
+            try {
+              const userName = registrationResponse?.data?.User?.name || "";
+              const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
+              if (first) {
+                localStorage.setItem("firstName", first);
+              } else {
+                localStorage.removeItem("firstName");
+              }
+            } catch (_) {}
 
             //generate otp for the user to to verify the email
             return axios.post("https://api.100acress.com/postPerson/verifyEmail", { 

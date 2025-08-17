@@ -92,14 +92,15 @@ export default function WithAction() {
 
           <Flex alignItems={"center"} paddingTop={1}>
             <Button
-              textColor={"white"}
-              bg={"red"}
+              textColor={"#e53e3e"}
+              bg={"white"}
               size={"sm"}
-              _hover={{ bg: "red", opacity: 0.8 }} // Customize the hover state if needed
+              border="2px solid #e53e3e"
+              _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }}
               mr={{ base: 2, md: 4 }}
               ml={{ base: 2, md: 0 }}
             >
-              <Link textDecoration="none" _hover={{ color: "red" }}>
+              <Link textDecoration="none" _hover={{ color: "#e53e3e" }}>
                 FREE
               </Link>
               <Text as="span" />

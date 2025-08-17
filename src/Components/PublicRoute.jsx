@@ -18,6 +18,7 @@ const PublicRoute = () => {
       const whitelist = new Set([
         "", // home
         "auth",
+        "postproperty",
         "privacy-policy",
         "terms-and-conditions",
         "projects-in-gurugram",

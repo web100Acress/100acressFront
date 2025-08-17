@@ -12,6 +12,8 @@ import { Helmet } from "react-helmet";
 import Footer from "../Components/Actual_Components/Footer";
 // import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
 
+// import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
+
 import { Link } from "react-router-dom";
 import BackToTopButton from "./BackToTopButton";
 import PossessionProperty from "../Components/PossessionProperty";
@@ -19,9 +21,7 @@ import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon } from "lucide-react";
-import PropertyShowcase from "../Components/PropertyShowcase/PropertyShowcase";
-import EnhancedRecommendedSection from "../Components/HomePageComponents/EnhancedRecommendedSection";
-import ModernHeroSection from "../Components/HomePageComponents/ModernHeroSection";
+import ModernRecommendedSection from "../Components/HomePageComponents/ModernRecommendedSection";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Builder from "./BuilderPages/Builder";
@@ -31,15 +31,10 @@ import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
-
-import RotatingCardCarousel from "../Components/HomePageComponents/RotatingCardCarousel";
-import ConfettiAllCorners from "../Components/ConfettiAllCorners";
-import HotProject from "./HomePages/hotproject";
-
 // import ConfettiAllCorners from "../Components/ConfettiAllCorners";
 
-
 const Home = () => {
+  // const [showConfetti, setShowConfetti] = useState(true);
   // const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
@@ -72,28 +67,8 @@ const Home = () => {
   const LuxuryProjects = useSelector(store => store?.project?.luxury);
   const BudgetHomesProjects = useSelector(store => store?.project?.budget);
   const ProjectinDelhi = useSelector(store => store?.project?.projectindelhi);
-  const spotlight = useSelector(store => store?.project?.spotlight);
   const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll);
-  const { 
-    getTrending, 
-    getFeatured, 
-    getUpcoming, 
-    getCommercial, 
-    getAffordable, 
-    getLuxury, 
-    getScoplots, 
-    getBudgetHomes, 
-    getProjectIndelhi, 
-    getAllProjects,
-    getSpotlight 
-  } = Api_Service();
-  
-  // Fetch spotlight data on component mount
-  useEffect(() => {
-    if (!spotlight || spotlight.length === 0) {
-      getSpotlight();
-    }
-  }, [getSpotlight, spotlight]);
+  const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getAllProjects } = Api_Service();
   const [dataLoaded, setDataLoaded] = useState({
     trending: false,
     featured: false,
@@ -284,8 +259,9 @@ const Home = () => {
     };
   }, [UpcomingProjects, LuxuryProjects, BudgetHomesProjects, SCOProjects, ProjectinDelhi]);
 
-// console.log(resalesectionvisible,"section")
+  // console.log(resalesectionvisible,"section")
 
+  
 
   return (
     <Wrapper className="section" style={{ overflowX: "hidden" }}>
@@ -300,11 +276,7 @@ const Home = () => {
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
       
-      {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} /> */}
-      
       {/* Confetti Animation */}
-
-
       {/* {showConfetti && <ConfettiAllCorners /> */}
       
   {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} />  */}
@@ -341,37 +313,22 @@ const Home = () => {
       </div>
 
       <div className="relative">
-        {/* <div className="absolute inset-0 bg-[#f17777]"></div> */}
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)',
-        }}></div>
+        {/* Removed themed overlay */}
 
-
-      {/* This is the div whose background you want to blur more */}
-      <div className={`transition-filter duration-300 ease-in-out ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}`}>
-        {/* Modern Hero Section */}
-        <ModernHeroSection />
-        
-        {/* Property Showcase */}
-        <PropertyShowcase properties={spotlight || []} />
-
-        {/* HotProject Section */}
         <div className="relative">
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)',
-          }}></div>
-          <div className="relative">
-            <HotProject />
-          </div>
+          {/* <SpotlightBanner /> */}
+          <ModernRecommendedSection />
         </div>
+      </div>
 
-        {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
+      {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
+
         <div data-aos="fade-up"
 
           data-aos-duration="1000" className="py-0 mt-3 max-w-[1250px] mx-auto">
             <br />
           <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 ">
-            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
+            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold">
               {`${activeFilter}`} Properties in Gurugram
             </h2>
           </div>
@@ -383,51 +340,51 @@ const Home = () => {
             
               <button
                 onClick={() => setActiveFilter("Trending")}
-                className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Trending" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:shadow-lg hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+                className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Trending" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:shadow-lg hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
               >
                 Trending
               </button>
             <button
               onClick={() => setActiveFilter("Featured")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Featured" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Featured" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               Featured
             </button>
             <button
               onClick={() => setActiveFilter("Upcoming")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Upcoming" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Upcoming" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               Upcoming
             </button>
             <button
               onClick={() => setActiveFilter("Commercial")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Commercial" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Commercial" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               Commercial
             </button>
             <button
               onClick={() => setActiveFilter("Affordable")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Affordable" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Affordable" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               Affordable
             </button>
             <button
               onClick={() => setActiveFilter("SCO")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "SCO" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "SCO" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               SCO
             </button>
             <button
               onClick={() => setActiveFilter("Budget")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Budget" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Budget" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               Budget 🏠
             </button>
             <button
               onClick={() => setActiveFilter("Luxury")}
               className={`px-4 py-2 rounded-full text-sm font-semibold ${activeFilter === "Luxury"
-                ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg transform hover:scale-105 duration-300 ease-in-out"
-                : "border-2 border-[#FF9933] text-[#FF9933] shadow-md hover:scale-105 duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+                ? "bg-red-600 text-white shadow-lg transform hover:scale-105 duration-300 ease-in-out"
+                : "border-2 border-red-600 text-red-600 shadow-md hover:scale-105 duration-300 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               Luxury
             </button>
@@ -435,7 +392,7 @@ const Home = () => {
             {path && (
               <div className="ml-auto hidden sm:block">
                 <Link to={path} target="_top">
-                  <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-gradient-to-r from-[#FF9933] to-[#138808] shadow-lg hover:shadow-xl transition-all duration-300">
+                  <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-red-600 shadow-lg hover:shadow-xl transition-all duration-300">
                     <EyeIcon />
                     <span className="ml-2">View All</span>
                   </span>
@@ -539,31 +496,54 @@ const Home = () => {
 
       </div>
 
-      {colorChange && isSmallerThan768 && (
-        <div className="sticky-quote-cta">
-          <Link 
-            to="/auth/signin/" 
-            target="_top"
-            className="text-white font-semibold block"
-            style={{ background: 'linear-gradient(135deg, #FF9933 0%, #138808 100%)', padding: '12px' }}
-          >
-            LIST PROPERTY
-          </Link>
-        </div>
-      )}
+      {colorChange && isSmallerThan768 && <div>
+        <Link to="/auth/signin/" target="_top">
+          <div className="sticky-quote-cta">
+            <a
+              className="text-white font-semibold"
+              style={{ background: 'red', padding: '12px' }}
+            >
+              LIST{" "}PROPERTY
+            </a>
+          </div>
+        </Link>
+      </div>}
 
+      {/* <HomeBuilderCarousel /> */}
       <Free />
-      <Chatbot />
+      {/* <div>
+        <div>
+          <a href="tel:8500900100" class="dd-m-phone">
+            <i class="fa-solid fa-phone"></i>
+          </a>
+        </div>
+      </div>
+        <div>
+        <a
+          href="https://wa.me/918500900100"
+          class="dd-m-whatsapp"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+      </div> */}
+      <div>
+        <Chatbot />
+      </div>
+   
+
       <PossessionProperty />
       <BackToTopButton />
       <Footer />
 
+
       
       </div> {/* Closing div for the blur container */}
       </div>
+
       {/* <LuxuryFooter /> */}
       </div>
-
     </Wrapper>
   );
 }
@@ -571,10 +551,64 @@ const Home = () => {
 export default Home;
 
 const Wrapper = styled.section`
-  /* Tricolor theme for the entire home page */
-  background: linear-gradient(135deg, rgba(255, 153, 51, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(19, 136, 8, 0.05) 100%);
+  /* Neutral background */
+  background: #ffffff;
 
+  .dd-m-phone {
+    position: fixed;
+    z-index: 999;
+    bottom: 10px;
+    right: 10px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FF9933 0%, #138808 100%);
+    transition: 0.3s all ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+    font-size: 24px;
+  }
 
+  .dd-m-phone:hover {
+    transform: rotate(0.3turn);
+    box-shadow: 0 5px 15px 2px rgba(255, 153, 51, 0.4);
+  }
+
+  .dd-m-phone i {
+    font-size: 24px;
+  }
+
+  .dd-m-whatsapp {
+    position: fixed;
+    z-index: 999;
+    bottom: 70px;
+    right: 10px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #138808 0%, #FF9933 100%);
+    transition: 0.3s all ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+    font-size: 24px;
+  }
+
+  .dd-m-whatsapp:hover {
+    transform: rotate(1turn);
+    box-shadow: 0 5px 15px 2px rgba(19, 136, 8, 0.4);
+  }
+
+  .dd-m-whatsapp i {
+    font-size: 24px;
+  }
   
   .sticky-quote-cta {
     height: auto;

@@ -45,7 +45,7 @@ const Footer = () => {
   };
   return (
     <>
-      <div className="w-full divide-y divide-gray-200" style={{ background: 'linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)' }}>
+      <div className="w-full divide-y divide-gray-200" style={{ background: '#f8fafc' }}>
         <div className="flex flex-wrap py-3">
                      <div className="w-full sm:w-6/12 lg:w-3/12 text-black px-6 py-2 text-center text-sm">
              <Link to="/" target="_top">
@@ -333,7 +333,17 @@ const Footer = () => {
                    Home Loan
                  </Link>
                </li>
-                             <li className="list-none text-black text-sm my-1 truncate">
+               <li className="list-none text-black text-sm my-1 text-justify">
+                 <Link
+                   to="/emi-calculator/"
+                   className="hover:text-black transition-colors duration-200"
+                   target="_top"
+                   style={{ color: "#000000" }}
+                 >
+                   EMI Calculator
+                 </Link>
+               </li>
+               <li className="list-none text-black text-sm my-1 truncate">
                  <Link
                    to="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/masterplan/gurgaon+master+plan.pdf"
                    className="hover:text-black transition-colors duration-200"
@@ -363,108 +373,95 @@ const Footer = () => {
           </div>
 
                      <div className="w-full sm:w-6/12 lg:w-3/12 text-black px-0 py-3 text-center text-xl font-semibold">
-             Instant Callback
-            <div className="flex flex-col mx-4 my-2 items-center">
-                             <div className="relative w-full my-2">
-                 <i className="fa-solid fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-black/80 text-sm"></i>
-                 <input
-                   type="name"
-                   name="name"
-                   className="w-full pl-10 pr-5 py-2 text-sm border-2 border-[#FF9933] placeholder-black/70 text-black transition-all ease-in duration-200 bg-white/90 rounded-md focus:outline-none focus:ring-2 focus:ring-[#138808] focus:border-[#138808] hover:border-[#FF9933] hover:shadow-[0_4px_8px_rgba(255,153,51,0.2)]"
-                   placeholder="Full Name"
-                   value={data.name}
-                   onChange={handleSubmitData}
-                   required
-                 />
-               </div>
 
-               <div className="relative w-full my-2">
-                 <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black/80 text-sm"></i>
-                 <input
-                   type="number"
-                   name="mobile"
-                   className="w-full pl-10 pr-5 py-2 text-sm border-2 border-[#FF9933] placeholder-black/70 text-black transition-all ease-in duration-200 bg-white/90 rounded-md focus:outline-none focus:ring-2 focus:ring-[#138808] focus:border-[#138808] hover:border-[#FF9933] hover:shadow-[0_4px_8px_rgba(255,153,51,0.2)]"
-                   placeholder="Mobile Number"
-                   value={data.mobile}
-                   onChange={handleSubmitData}
-                   required
-                 />
-               </div>
-                             <button
-                 className="w-full text-[#138808] bg-white font-medium py-2 mt-1 rounded-lg hover:bg-white/90 transition-all duration-200 shadow-sm hover:shadow-md"
-                 onClick={handleSubmit}
-               >
-                 <SendIcon/>
-               </button>
-            </div>
-            <nav
-              aria-label="Footer Navigation"
-              className="flex justify-center space-x-3 mt-4 text-start"
-            >
-              <Link
-                to="https://www.facebook.com/100Acress"
-                target="_blank"
-                className="flex items-center justify-center text-white bg-blue-400 w-7 h-7 rounded-full"
-              >
-                <FacebookIcon size={20} />
-              </Link>
-              <Link
-                to="https://twitter.com/100acressdotcom"
-                target="_blank"
-                className="flex items-center justify-center text-white bg-black w-7 h-7 rounded-full"
-              >
-                <i className="fa-brands fa-x-twitter text-sm"></i>
-              </Link>
-              <Link
-                to="https://www.instagram.com/official100acress/"
-                target="_blank"
-                className="flex items-center justify-center text-white w-7 h-7 rounded-full bg-[#c32aa3]"
-              >
-                <InstagramIcon size={20} />
-              </Link>
-              <Link
-                to="https://www.linkedin.com/company/100acress/"
-                target="_blank"
-                className="flex items-center justify-center text-white bg-blue-700 w-7 h-7 rounded-full"
-              >
-                <LinkedinIcon size={20} />
-              </Link>
-              <Link
-                to="https://www.youtube.com/@100acress"
-                target="_blank"
-                className="flex items-center justify-center text-red-600 rounded-full bg-white w-7 h-7"
-              >
-                <FaYoutube size={20} />
-              </Link>
-              <Link
-                to="https://wa.me/918500900100"
-                target="_blank"
-                className="flex items-center justify-center text-white rounded-full bg-green-500 w-7 h-7"
-              >
-                <FaWhatsapp size={20} />
-              </Link>
-              <a
-                href="tel:+918500900100"
-                className="flex items-center justify-center text-white rounded-full bg-blue-500 w-7 h-7"
-              >
-                <IoCall size={20} className="text-white" />
-              </a>
-            </nav>
-          </div>
-        </div>
+    <div className="relative w-full my-2">
+      <i className="fa-solid fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-black/80 text-sm"></i>
+      <input
+        type="number"
+        name="mobile"
+        className="w-full pl-10 pr-5 py-2 text-sm border-2 border-red-600 placeholder-black/70 text-black transition-all ease-in duration-200 bg-white/90 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 hover:border-red-600 hover:shadow-[0_4px_8px_rgba(229,62,62,0.2)]"
+        placeholder="Mobile Number"
+        value={data.mobile}
+        onChange={handleSubmitData}
+        required
+      />
+    </div>
+    <button
+      className="w-full text-red-600 bg-white font-medium py-2 mt-1 rounded-lg hover:bg-white/90 transition-all duration-200 shadow-sm hover:shadow-md"
+      onClick={handleSubmit}
+    >
+      <SendIcon/>
+    </button>
+  </div>
+  <nav
+    aria-label="Footer Navigation"
+    className="flex justify-center space-x-3 mt-4 text-start"
+  >
+    <Link
+      to="https://www.facebook.com/100Acress"
+      target="_blank"
+      className="flex items-center justify-center text-white bg-blue-400 w-7 h-7 rounded-full"
+    >
+      <FacebookIcon size={20} />
+    </Link>
+    <Link
+      to="https://twitter.com/100acressdotcom"
+      target="_blank"
+      className="flex items-center justify-center text-white bg-black w-7 h-7 rounded-full"
+    >
+      <i className="fa-brands fa-x-twitter text-sm"></i>
+    </Link>
+    <Link
+      to="https://www.instagram.com/official100acress/"
+      target="_blank"
+      className="flex items-center justify-center text-white w-7 h-7 rounded-full bg-[#c32aa3]"
+    >
+      <InstagramIcon size={20} />
+    </Link>
+    <Link
+      to="https://www.linkedin.com/company/100acress/"
+      target="_blank"
+      className="flex items-center justify-center text-white bg-blue-700 w-7 h-7 rounded-full"
+    >
+      <LinkedinIcon size={20} />
+    </Link>
+    <Link
+      to="https://www.youtube.com/@100acress"
+      target="_blank"
+      className="flex items-center justify-center text-red-600 rounded-full bg-white w-7 h-7"
+    >
+      <FaYoutube size={20} />
+    </Link>
+    <Link
+      to="https://wa.me/918500900100"
+      target="_blank"
+      className="flex items-center justify-center text-white rounded-full bg-green-500 w-7 h-7"
+    >
+      <FaWhatsapp size={20} />
+    </Link>
+    <a
+      href="tel:+918500900100"
+      className="flex items-center justify-center text-white rounded-full bg-blue-500 w-7 h-7"
+    >
+      <IoCall size={20} className="text-white" />
+    </a>
+  </nav>
+</div>
+</div>
 
-                 <div className="w-full px-2 py-3" style={{ background: 'linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)' }}>
-           <p className="text-center text-sm text-black mb-0 font-medium">
-             Copyright © 2025,{" "}
-             <Link className="text-black hover:text-black/80 transition-colors duration-200" to="https://100acress.com/">
-               100acress.com.
-             </Link>{" "}
-             All Rights Reserved
-           </p>
-         </div>
-      </div>
-    </>
-  );
+<div className="w-full px-2 py-3" style={{ background: '#f1f5f9' }}>
+  <p className="text-center text-sm text-black mb-0 font-medium">
+    Copyright 2025,{" "}
+    <Link className="text-black hover:text-black/80 transition-colors duration-200" to="https://100acress.com/">
+      100acress.com.
+    </Link>{" "}
+    All Rights Reserved
+  </p>
+</div>
+
+</>
+
+);
 };
 
 export default Footer;

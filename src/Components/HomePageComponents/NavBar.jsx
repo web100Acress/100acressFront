@@ -10,10 +10,12 @@ import { GiVillage } from "react-icons/gi";
 import { HiBars3 } from "react-icons/hi2";
 import { ABOUT, BLOG, KNOWABOUT, LOGIN, ROOT } from "../../lib/route";
 import { Link, Navigate } from "react-router-dom";
+import AuthModal from "../AuthModal";
 import { RxCross2 } from "react-icons/rx";
 
 function FinalNavBar() {
   const [showNav, setShowNav] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
   const URL="/projects"
   return (
     <Wrapper className='section'>
@@ -38,7 +40,7 @@ function FinalNavBar() {
           <div
             className='position-absolute h-100 '
             style={{
-              background: "linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)",
+              background: "#e53e3e",
               zIndex: "999",
               width: "97%",
             }}>
@@ -57,7 +59,7 @@ function FinalNavBar() {
                 />
               </div>
             </div>
-            <div className='MBflx' style={{background:"linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)"}}>
+            <div className='MBflx' style={{background:"#e53e3e"}}>
           <ul className='ulfx _1grx flex-column'>
             <li className='pxrE el1'>
               <span className='pxrETXT'>
@@ -98,6 +100,14 @@ function FinalNavBar() {
               </span>
             </li>
 
+            {/* Inserted primary nav links */}
+            <li>
+              <Link to="/rental" className='linkEl'>Rental</Link>
+            </li>
+            <li>
+              <Link to="/resale" className='linkEl'>Resale</Link>
+            </li>
+
             <li>
               <Link to={BLOG} className='linkEl'>
                 Blog
@@ -105,14 +115,18 @@ function FinalNavBar() {
             </li>
           </ul>
           <ul className='ulfx _2grx flex-column'>
-            <li className='_6bnYTum'>
-              <span>Post Properties </span>
+            <li className='_6bnYTum' role="button" aria-label="List Property">
+              <span className='_lpText'>LIST PROPERTY</span>
               <span className='_73exMP'>FREE</span>
             </li>
             <li>
-              <Link to={LOGIN} className='linkEl'>
-                Login
-              </Link>
+              <Link to="/rental" className='linkEl'>Rental</Link>
+            </li>
+            <li>
+              <Link to="/resale" className='linkEl'>Resale</Link>
+            </li>
+            <li>
+              <a className='linkEl' onClick={() => setShowAuth(true)} role="button">Login</a>
             </li>
           </ul>
         </div>
@@ -297,18 +311,24 @@ function FinalNavBar() {
             <li>
               <BsFolder />
             </li>
-            <li className='_6bnYTum'>
-              <span>Post Properties </span>
+            <li className='_6bnYTum' role="button" aria-label="List Property">
+              <span className='_lpText'>LIST PROPERTY</span>
               <span className='_73exMP'>FREE</span>
             </li>
             <li>
-              <Link to={LOGIN} className='linkEl'>
-                Login
-              </Link>
+              <Link to="/rental" className='linkEl'>Rental</Link>
+            </li>
+            <li>
+              <Link to="/resale" className='linkEl'>Resale</Link>
+            </li>
+            <li>
+              <a className='linkEl' onClick={() => setShowAuth(true)} role="button">Login</a>
             </li>
           </ul>
         </div>
       </div>
+      {/* Auth Modal */}
+      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="register" />
     </Wrapper>
   );
 }
@@ -342,6 +362,18 @@ z-index:9999;
     display: flex;
     color: red;
     width: 100%;
+  }
+  /* Ensure right action links are visible on desktop (white header bg) */
+  .NBflx ._2grx .linkEl {
+    color: #e53e3e !important;
+    font-weight: 600;
+  }
+  .NBflx ._2grx .linkEl:hover {
+    color: #b91c1c !important;
+  }
+  /* Keep mobile drawer links white on red background */
+  .MBflx ._2grx.flex-column .linkEl {
+    color: #ffffff !important;
   }
   .Mflx {
     display: flex;
@@ -522,18 +554,50 @@ z-index:9999;
     min-width: 340px;
     width: auto;
   }
+  /* List Property pill */
   ._6bnYTum {
-    display: inline;
-    background-color: white;
-    color: red;
-    border-radius: 8px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 22px 6px 14px; /* extra right space for badge */
+    color: #e53e3e;
+    border: 1.6px solid #e53e3e;
+    background: #ffffff; /* ensure contrast on red navbar */
+    border-radius: 9999px;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    overflow: visible; /* allow badge to show */
+    z-index: 3;
   }
+  ._6bnYTum:hover {
+    box-shadow: 0 6px 16px rgba(229, 62, 62, 0.15);
+    background: #ffffff;
+  }
+  ._lpText {
+    letter-spacing: 0.4px;
+    font-size: 12px;
+  }
+  /* FREE badge */
   ._73exMP {
-    background-color: red;
-    color: white;
-    padding: 1px 3px;
-    font-size: small;
-    border-radius: 5px;
+    position: static; /* inline inside pill */
+    background-color: #facc15; /* yellow-400 */
+    color: #111827; /* gray-900 */
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 800;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    line-height: 1;
+    margin-left: 6px;
+    pointer-events: none; /* do not block clicks */
+  }
+  /* Ensure nav items don't clip the badge */
+  .ulfx._2grx li,
+  .ulfx._2grx.flex-column li {
+    overflow: visible;
+    position: relative;
   }
   .barDotMenu {
     display: none;
@@ -561,158 +625,6 @@ z-index:9999;
     }
     .Mflx {
       justify-content: space-between;
-    }
-  }
-
-  /* Independence Day Theme Styles */
-  .independence-day-banner {
-    background: linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%);
-    padding: 8px 0;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  }
-
-  .independence-day-banner::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    animation: shimmer 3s infinite;
-  }
-
-  @keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-  }
-
-  .tricolor-strip {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 5px;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    max-width: 300px;
-    margin: 0 auto 5px auto;
-  }
-
-  .saffron {
-    width: 33.33%;
-    height: 8px;
-    background: #FF9933;
-  }
-
-  .white {
-    width: 33.33%;
-    height: 8px;
-    background: #FFFFFF;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .green {
-    width: 33.33%;
-    height: 8px;
-    background: #138808;
-  }
-
-  .chakra {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: #000080;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: rotate 4s linear infinite;
-  }
-
-  @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .chakra-text {
-    font-size: 8px;
-    color: white;
-  }
-
-  .independence-text {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-  }
-
-  .jai-hind {
-    font-weight: bold;
-    font-size: 14px;
-    color: #000080;
-    text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-  }
-
-  .independence-message {
-    font-size: 11px;
-    color: #333;
-    font-weight: 500;
-  }
-
-  /* Modify existing navbar background to have tricolor gradient */
-  .Mflx {
-    background: linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #138808 100%);
-    border-radius: 0px 0px 10px 10px;
-    position: relative;
-  }
-
-  .Mflx::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, 
-      rgba(255, 153, 51, 0.1) 0%, 
-      rgba(255, 255, 255, 0.1) 50%, 
-      rgba(19, 136, 8, 0.1) 100%);
-    pointer-events: none;
-  }
-
-  /* Add patriotic hover effects */
-  .ulfx > li:hover {
-    transform: translateY(-2px);
-    transition: transform 0.3s ease;
-  }
-
-  .ulfx > li:hover:after {
-    background: linear-gradient(90deg, #FF9933, #FFFFFF, #138808);
-  }
-
-  /* Mobile responsive for Independence Day banner */
-  @media screen and (max-width: 768px) {
-    .independence-day-banner {
-      padding: 6px 0;
-    }
-    
-    .jai-hind {
-      font-size: 12px;
-    }
-    
-    .independence-message {
-      font-size: 10px;
-    }
-    
-    .tricolor-strip {
-      max-width: 250px;
     }
   }
 `;
