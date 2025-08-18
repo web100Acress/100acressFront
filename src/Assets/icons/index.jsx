@@ -1,5 +1,4 @@
 import Icon from '@ant-design/icons';
-import { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
 
 import PHONEICONSVG from '../../../src/Assets/icons/svg/phone.svg';
 import CALENDERICONSVG from '../../../src/Assets/icons/svg/calender.svg';

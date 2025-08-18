@@ -1,0 +1,22 @@
+/* --- Master Plan Section --- */
+.nb-master-section { height: fit-content; }
+.nb-master-inner { display: flex; justify-content: center; align-items: stretch; border-radius: 8px; height: auto; }
+.nb-master-wrap { width: 100%; display: flex; flex-direction: column; }
+.nb-master-container { padding: 64px 16px; max-width: 1120px; margin: 0 auto; width: 100%; }
+@media (min-width: 1024px) { .nb-master-container { padding: 96px 32px; } }
+.nb-master-header { margin-bottom: 32px; text-align: center; }
+.nb-master-title { margin: 0; font-size: 1.875rem; line-height: 2.25rem; font-weight: 700; color: #111827; font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; }
+@media (min-width: 768px) { .nb-master-title { font-size: 2.25rem; line-height: 2.5rem; } }
+@media (min-width: 1280px) { .nb-master-title { font-size: 3rem; line-height: 1.1; } }
+
+.nb-master-card { background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border-radius: 16px; overflow: hidden; box-shadow: 0 25px 45px rgba(0,0,0,0.15); border: 1px solid rgba(217, 180, 85, 0.5); }
+.nb-master-image { width: 100%; height: auto; object-fit: contain; cursor: zoom-in; display: block; }
+
+/* Master Plan Modal */
+.nb-master-modal-overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; padding: 16px; }
+.nb-master-modal-box { position: relative; max-width: 95vw; max-height: 90vh; }
+.nb-master-modal-close { position: absolute; top: -48px; right: 0; background: linear-gradient(to right, #CFAF6E, #E5C78A); color: #fff; padding: 12px; border-radius: 9999px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transition: transform .3s ease, box-shadow .3s ease, background .3s ease; z-index: 10; border: none; cursor: pointer; }
+.nb-master-modal-close:hover { transform: scale(1.05); box-shadow: 0 15px 28px rgba(0,0,0,0.35); background: linear-gradient(to right, #B8985A, #D4B373); }
+.nb-master-modal-closeicon { font-size: 1.125rem; }
+.nb-master-modal-content { background: #ffffff; border-radius: 16px; padding: 16px; box-shadow: 0 25px 45px rgba(0,0,0,0.25); }
+.nb-master-modal-img { max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 12px; display: block; }

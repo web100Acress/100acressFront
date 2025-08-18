@@ -1,0 +1,14 @@
+/* --- Builder Section --- */
+.nb-builder-section { height: fit-content; }
+.nb-builder-container { padding: 64px 16px; max-width: 1120px; margin: 0 auto; width: 100%; }
+@media (min-width: 1024px) { .nb-builder-container { padding: 96px 32px; } }
+
+.nb-builder-header { margin-bottom: 24px; text-align: center; }
+.nb-builder-title { margin: 0; font-size: 1.5rem; line-height: 2rem; font-weight: 700; color: #111827; font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; }
+@media (min-width: 768px) { .nb-builder-title { font-size: 2rem; line-height: 2.25rem; } }
+@media (min-width: 1280px) { .nb-builder-title { font-size: 2.25rem; line-height: 1.2; } }
+
+.nb-builder-card { background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border-radius: 16px; overflow: hidden; box-shadow: 0 25px 45px rgba(0,0,0,0.15); border: 1px solid rgba(217, 180, 85, 0.5); }
+.nb-builder-prose { padding: 24px; color: #111827; font-size: 1rem; line-height: 1.75rem; }
+.nb-builder-prose p { margin: 0 0 1rem 0; }
+.nb-builder-prose h1, .nb-builder-prose h2, .nb-builder-prose h3, .nb-builder-prose h4 { margin: 1.25rem 0 0.75rem; font-weight: 700; }
