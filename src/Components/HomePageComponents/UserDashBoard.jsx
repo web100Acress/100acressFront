@@ -101,13 +101,13 @@ const UserDashBoard = () => {
       </div>
       <hr className="mx-10" />
 
-      <div>
+      {/* <div>
         <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl">
           All Your Listing Property on 100acress Are Up-To-Date
         </h2>
-      </div>
+      </div> */}
 
-      <div className="flex flex-wrap justify-center px-4 py-4">
+      {/* <div className="flex flex-wrap justify-center px-4 py-4">
         {agentData.postProperty &&
           agentData.postProperty.map((item, index) => {
             const userId = item._id;
@@ -161,7 +161,7 @@ const UserDashBoard = () => {
               </div>
             );
           })}
-      </div>
+      </div> */}
 
       <Footer />
     </div>
