@@ -541,7 +541,7 @@ const Home = () => {
 
 
 
-      </div>
+      {/* </div> */}
 
     {/* <LuxuryFooter /> */}
 

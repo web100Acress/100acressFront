@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
           const newToken = loginResponse.data.token;
           // Check if user's email is verified or not
 
-          localStorage.setItem("myToken", JSON.stringify(newToken));
+          localStorage.setItem("myToken", newToken);
           setToken(newToken);
   
           if (loginResponse.status === 200) {
@@ -92,6 +92,8 @@ export const AuthProvider = ({ children }) => {
               const sellerId = roleResponse.data.User._id;
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
               if (roleResponse.data.User.role === "Admin" || roleResponse.data.User.role === admin) {
+                // Immediately reflect admin status for route guards
+                setIsAdmin(true);
                 history("/Admin/user");
               } else {
                 history("/userdashboard/");
@@ -125,7 +127,7 @@ export const AuthProvider = ({ children }) => {
               })
               const newToken = data.token;
               const User = data.User;
-              localStorage.setItem("myToken", JSON.stringify(newToken));
+              localStorage.setItem("myToken", newToken);
               setToken(newToken);
                 setAgentData(User);
                 localStorage.setItem(
@@ -223,7 +225,7 @@ export const AuthProvider = ({ children }) => {
 
             //Create token for user to login
             const newToken = registrationResponse.data.token;
-            localStorage.setItem("myToken", JSON.stringify(newToken));
+            localStorage.setItem("myToken", newToken);
             setToken(newToken);
             setAgentData(registrationResponse.data.User);
             localStorage.setItem(
