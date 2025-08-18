@@ -167,7 +167,7 @@ const ModernRecommendedSection = () => {
 
   return (
     <SectionWrapper>
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 pt-0 pb-4">
         {/* Header Section */}
         <div className="text-center mb-4">
           <div className="inline-flex items-center gap-3 mb-0">
@@ -394,8 +394,6 @@ const PropertyCard = ({
 
 // Styled Components
 const SectionWrapper = styled.section`
-  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-  
   background: transparent; /* Seamless with hero below */
   position: relative;
   overflow: hidden;

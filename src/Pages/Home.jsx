@@ -295,14 +295,14 @@ const Home = () => {
         <div
           className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
           style={{
-            background: "linear-gradient(180deg, #b91c1c 0%, #ef4444 40%, #fca5a5 70%, #f3f4f6 90%, #ffffff 100%)",
+            background: "linear-gradient(180deg, #b91c1c 0%, #ef4444 42%, #ffdddd 70%, #ffffff 100%)",
           }}
         />
         {/* Mobile gradient background */}
         <div
           className="mt-14 block md:hidden w-full h-[38rem]"
           style={{
-            background: "linear-gradient(180deg, #b91c1c 0%, #ef4444 45%, #fca5a5 72%, #f3f4f6 90%, #ffffff 100%)",
+            background: "linear-gradient(180deg, #b91c1c 0%, #ef4444 47%, #ffdddd 72%, #ffffff 100%)",
           }}
         />
 
@@ -537,14 +537,9 @@ const Home = () => {
       <PossessionProperty />
       <BackToTopButton />
       <Footer />
+    </div> {/* Closing div for the blur container */}
 
-
-      
-      </div> {/* Closing div for the blur container */}
-      </div>
-
-      {/* <LuxuryFooter /> */}
-      </div>
+    {/* <LuxuryFooter /> */}
     </Wrapper>
   );
 }
