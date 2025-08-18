@@ -110,6 +110,14 @@ import { BlogPaginationControls } from "./BlogManagement";
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
 
+// Prefer slug-based blog link with fallback to legacy title/id route
+const getSlugFromTitle = (title) =>
+  (title || "").replace(/\s+/g, '-').replace(/[?!,\.;:\{\}\(\)\$\@]+/g, '').toLowerCase();
+const blogLink = (blog) => {
+  if (blog?.slug) return `/blog/${blog.slug}?id=${blog?._id}`;
+  return `/blog/${getSlugFromTitle(blog?.blog_Title)}/${blog?._id}`;
+};
+
 export default function BlogDashboard() {
   const token = localStorage.getItem("myToken");
   const history = useNavigate();
@@ -585,10 +593,11 @@ export default function BlogDashboard() {
             <Button
               type="text"
               icon={<Eye size={18} />}
-              onClick={() => history(`/blog/${record.blog_Title?.replace(/\s+/g, '-').replace(/[?!,\.;:\{\}\(\)\$\@]+/g, '')}/${record._id}`)}
+              onClick={() => history(blogLink(record))}
               className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-full"
             />
           </Tooltip>
+
           <Tooltip title="Edit Blog">
             <Link to={`/seo/blogs/edit/${record._id}`}>
               <Button

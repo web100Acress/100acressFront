@@ -310,6 +310,7 @@ function App() {
               <Route path="/contact-us/" element={<ContactUs />} />
               <Route path="/career-with-us/" element={<CareerWithUs />} />
               <Route path="/blog/" element={<Blogging />} />
+              <Route path="/blog/:slug" element={<BlogView />} />
               <Route path="/blog/:blogTitle/:id" element={<BlogView />} />
               <Route path="/blog/write" element={<BlogWrite />} />
               <Route

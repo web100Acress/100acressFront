@@ -208,10 +208,14 @@ export default function BlogManagement() {
       .replace(/\s+/g, "-")
       .replace(/[?!,\.;:\{\}\(\)\$\@]+/g, "");
   }
+  // Prefer slug-based blog link with fallback to legacy title/id route
+  const blogLink = (blog) => {
+    if (blog?.slug) return `/blog/${blog.slug}?id=${blog?._id}`;
+    return `/blog/${cleanString(blog?.blog_Title)}/${blog?._id}`;
+  };
 
-  const handleBlogView = (Title, id) => {
-    const blogTitle = cleanString(Title);
-    history(`/blog/${blogTitle}/${id}`);
+  const handleBlogView = (blog) => {
+    history(blogLink(blog));
   };
 
   return (
@@ -384,9 +388,9 @@ export default function BlogManagement() {
 
                     <h3
                       className="text-xl font-bold text-gray-800 mb-3 line-clamp-2 hover:text-blue-600 cursor-pointer transition-colors duration-200"
-                      onClick={() => handleBlogView(blog.blog_Title, blog._id)}
-                          >
-                            {blog.blog_Title}
+                      onClick={() => handleBlogView(blog)}
+                    >
+                      {blog.blog_Title}
                     </h3>
 
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3">
@@ -398,7 +402,7 @@ export default function BlogManagement() {
                       <div className="flex items-center gap-2">
                             <button
                           className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                          onClick={() => handleBlogView(blog.blog_Title, blog._id)}
+                          onClick={() => handleBlogView(blog)}
                               title="View Blog"
                             >
                           <Eye size={18} />

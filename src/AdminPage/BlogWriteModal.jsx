@@ -65,6 +65,9 @@ const BlogWriteModal = () => {
   const [metaDescription, setMetaDescription] = useState('');
   const [slug, setSlug] = useState('');
   const [slugTouched, setSlugTouched] = useState(false); // if user edits slug manually
+  const [slugChecking, setSlugChecking] = useState(false);
+  const [slugAvailable, setSlugAvailable] = useState(null); // null=unknown, true=ok, false=taken
+  const [slugCheckMsg, setSlugCheckMsg] = useState('');
 
   // Other state
   const [author, setAuthor] = useState('');
@@ -88,6 +91,54 @@ const BlogWriteModal = () => {
       setSlug(slugify(title));
     }
   }, [title, slugTouched]);
+
+  // Debounced slug uniqueness check
+  useEffect(() => {
+    if (!slug || !slug.trim()) {
+      setSlugAvailable(null);
+      setSlugCheckMsg('');
+      return;
+    }
+    let timer = setTimeout(async () => {
+      try {
+        setSlugChecking(true);
+        setSlugCheckMsg('Checking slug...');
+        // Try to fetch by slug; 200 => exists, 404 => available
+        const res = await axios.get(`${API_BASE}/blog/slug/${encodeURIComponent(slug)}`);
+        const found = res?.data?.data;
+        if (found) {
+          // If editing and the found blog is the same, then available
+          if (blogToEdit && found._id === blogId) {
+            setSlugAvailable(true);
+            setSlugCheckMsg('This slug belongs to this post.');
+          } else {
+            setSlugAvailable(false);
+            setSlugCheckMsg('Slug is already taken.');
+          }
+        } else {
+          // Unexpected shape; treat as unknown
+          setSlugAvailable(null);
+          setSlugCheckMsg('');
+        }
+      } catch (err) {
+        // If 404, available
+        const status = err?.response?.status;
+        if (status === 404) {
+          setSlugAvailable(true);
+          setSlugCheckMsg('Slug is available.');
+        } else if (status === 400) {
+          setSlugAvailable(null);
+          setSlugCheckMsg('Invalid slug.');
+        } else {
+          setSlugAvailable(null);
+          setSlugCheckMsg('Could not verify slug.');
+        }
+      } finally {
+        setSlugChecking(false);
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [slug, API_BASE, blogToEdit, blogId]);
 
   // Load blog for edit / set default author for create
   useEffect(() => {
@@ -379,6 +430,15 @@ const BlogWriteModal = () => {
     if (!categories || categories === '__other__') {
       return messageApi.error('Please select or create a category');
     }
+    if (!slug || !slug.trim()) {
+      return messageApi.error('Please enter a slug');
+    }
+    if (slugChecking) {
+      return messageApi.warning('Please wait, checking slug...');
+    }
+    if (slugAvailable === false) {
+      return messageApi.error('Slug is already taken. Choose another.');
+    }
     if (!frontImage && !frontImagePreview && !blogToEdit) {
       return messageApi.error('Please select a featured image');
     }
@@ -653,8 +713,34 @@ const BlogWriteModal = () => {
                     className="w-full px-3 py-3 focus:outline-none"
                     placeholder="my-custom-slug"
                   />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSlugTouched(false);
+                      const auto = slugify(title);
+                      setSlug(auto);
+                    }}
+                    className="px-3 text-sm bg-gray-100 hover:bg-gray-200 border-l border-gray-200"
+                    title="Reset slug to match title"
+                  >
+                    Reset
+                  </button>
                 </div>
                 <p className="text-xs text-gray-500">Auto-generates from title; you can edit it.</p>
+                {slug && (
+                  <div className="text-xs mt-1">
+                    {slugChecking && <span className="text-gray-500">{slugCheckMsg}</span>}
+                    {!slugChecking && slugAvailable === true && (
+                      <span className="text-green-600">{slugCheckMsg || 'Slug is available.'}</span>
+                    )}
+                    {!slugChecking && slugAvailable === false && (
+                      <span className="text-red-600">{slugCheckMsg || 'Slug is already taken.'}</span>
+                    )}
+                    {!slugChecking && slugAvailable === null && slugCheckMsg && (
+                      <span className="text-gray-500">{slugCheckMsg}</span>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">
