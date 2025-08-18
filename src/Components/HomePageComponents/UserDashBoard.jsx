@@ -6,6 +6,10 @@ import { Link } from "react-router-dom";
 
 const UserDashBoard = () => {
   const { agentData, handleDeleteUser } = useContext(AuthContext);
+  const canManageBlogs =
+    agentData &&
+    typeof agentData.role === "string" &&
+    ["contentwriter", "blog"].includes(agentData.role.toLowerCase());
   let filteredRentProperties = [];
   let filteredSellProperties = [];
 
@@ -86,6 +90,14 @@ const UserDashBoard = () => {
               </div>
             </div>
             <div className="d-flex flex-col md:flex-row w-full mt-3">
+              {canManageBlogs && (
+                <Link
+                  to={"/seo/blogs"}
+                  className="bg-blue-600 md:w-1/2 w-full text-white text-md py-2 rounded-md md:mr-2 mb-2 md:mb-0"
+                >
+                  Go to Blog Panel
+                </Link>
+              )}
               <Link
                 to={"/postproperty/"}
                 className="bg-red-600 md:w-1/2 w-full text-white text-md py-2 rounded-md md:mr-2 mb-2 md:mb-0"

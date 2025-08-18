@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
@@ -8,12 +8,13 @@ import DOMPurify from 'dompurify';
 import "./BlogView.css";
 import useIsMobile from '../hooks/useIsMobile';
 
-
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
   const [data, setData] = useState([]);
   const [recentBlogs,setRecentBlogs]=useState([]);
-  const { id } = useParams();
+  const { id, slug } = useParams();
+  const location = useLocation();
+
   const [buttonText, setButtonText] = useState("Submit");
   const [responseMessage, setResponseMessage] = useState("");
   const [blogQuery, setBlogQuery] = useState({
@@ -24,9 +25,9 @@ const BlogView = () => {
     status: "",
   });
 
-   const history = useNavigate();
-   const isMobile = useIsMobile ? useIsMobile() : false;
-   const [showMobileEnquiry, setShowMobileEnquiry] = useState(false);
+  const history = useNavigate();
+  const isMobile = useIsMobile ? useIsMobile() : false;
+  const [showMobileEnquiry, setShowMobileEnquiry] = useState(false);
 
   const resetData = () => {
     setBlogQuery({
@@ -74,8 +75,33 @@ const BlogView = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(`/blog/view/${id}`);
-      setData(res.data.data);
+      let res;
+      if (slug) {
+        try {
+          res = await axios.get(`/blog/slug/${slug}`);
+          setData(res.data.data);
+        } catch (err) {
+          const status = err?.response?.status;
+          if (status === 404) {
+            // slug not found: try fallback by id from query string if provided
+            const params = new URLSearchParams(location.search);
+            const qid = params.get('id');
+            if (qid) {
+              const byId = await axios.get(`/blog/view/${qid}`);
+              setData(byId.data.data);
+            } else {
+              throw err; // rethrow to be caught below
+            }
+          } else {
+            throw err;
+          }
+        }
+      } else if (id) {
+        res = await axios.get(`/blog/view/${id}`);
+        setData(res.data.data);
+      } else {
+        return;
+      }
     } catch (error) {
       console.log(error || error.message);
     }
@@ -84,27 +110,36 @@ const BlogView = () => {
   const fetchRecentsBlog = async () =>{
     try{
       const recent = await axios.get('/blog/view?page=1&limit=6');
-      setRecentBlogs(recent.data.data.filter((blog)=>blog._id !== id));
+      setRecentBlogs(
+        recent.data.data.filter((blog)=> {
+          if (slug && blog.slug) return blog.slug !== slug;
+          return blog._id !== id;
+        })
+      );
     }
     catch (error) {
       console.log(error || error.message);
     }
   }
+
   function cleanString(str) {
     return str
         .replace(/\s+/g, '-')        // Replace all spaces with hyphen
         .replace(/[?!,\.;:\{\}\(\)\$\@]+/g, ''); // Replace punctuation with empty string
   }
-  const handleBlogView = (Title,id) => {
-    console.log("BLog TItle", Title)
+  const handleBlogView = (Title, id, s) => {
     const blogTitle = cleanString(Title);
-    history(`/blog/${blogTitle}/${id}`);
+    if (s) {
+      history(`/blog/${s}?id=${id}`);
+    } else if (id) {
+      history(`/blog/${blogTitle}/${id}`);
+    }
   };
 
   useEffect(() => {
     fetchData();
     fetchRecentsBlog();
-  }, [id]);
+  }, [id, slug]);
 
   const createSanitizedHTML = (dirtyHTML) => ({
     __html: DOMPurify.sanitize(dirtyHTML, {
@@ -112,7 +147,6 @@ const BlogView = () => {
       ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style']
     })
   });
-
 
   const {
     blog_Title,
@@ -127,7 +161,6 @@ const BlogView = () => {
   const BRAND_RED = '#b8333a';
   const DARK_TEXT = '#333';
   const TAGLINE = "Insights, Updates, and Stories from Gurgaon’s Real Estate World";
-
 
   return (
     <>
@@ -190,7 +223,7 @@ const BlogView = () => {
               {recentBlogs.length > 0 && recentBlogs.map((blog, index) => (
                 <div
                   key={index}
-                  onClick={() => handleBlogView(blog.blog_Title, blog._id)}
+                  onClick={() => handleBlogView(blog.blog_Title, blog._id, blog.slug)}
                   className="group cursor-pointer p-2 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200 flex items-center gap-2"
                 >
                   <img 

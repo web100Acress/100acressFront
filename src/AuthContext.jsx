@@ -91,10 +91,18 @@ export const AuthProvider = ({ children }) => {
               );
               const sellerId = roleResponse.data.User._id;
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
-              if (roleResponse.data.User.role === "Admin" || roleResponse.data.User.role === admin) {
+              const roleRaw = (roleResponse?.data?.User?.role || "").toString();
+              const roleNormalized = roleRaw.replace(/\s+/g, "").toLowerCase();
+              // Debug navigation decision
+              try { console.debug("[login redirect] role:", roleRaw, "normalized:", roleNormalized); } catch {}
+              if (roleRaw === "Admin" || roleRaw === admin) {
                 // Immediately reflect admin status for route guards
                 setIsAdmin(true);
-                history("/Admin/user");
+                history("/admin/user");
+              } else if (roleNormalized === "contentwriter" || roleNormalized === "blog") {
+                // Mark Content Writer in context and navigate to SEO dashboard
+                setIsContentWriter(true);
+                history("/seo/blogs");
               } else {
                 history("/userdashboard/");
                 window.location.reload()

@@ -22,6 +22,13 @@ const getMeta = (blog) => {
 const getSlug = (title) =>
   title.replace(/\s+/g, "-").replace(/[?!,\.;:\{\}\(\)\$\@]+/g, "").toLowerCase();
 
+// Prefer slug-based blog link with fallback to legacy title/id route
+// When using slug, also append ?id for robust fallback in BlogView
+const blogLink = (blog) => {
+  if (blog?.slug) return `/blog/${blog.slug}?id=${blog._id}`;
+  return `/blog/${getSlug(blog.blog_Title)}/${blog._id}`;
+};
+
 // Funnel SVG icon
 const FunnelIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -224,7 +231,7 @@ const Blogging = () => {
         <div className="max-w-7xl mx-auto px-4 mb-8">
           <div className="bg-white rounded-2xl shadow-xl flex flex-col md:flex-row overflow-hidden group hover:shadow-2xl transition">
             <Link
-              to={`/blog/${getSlug(featuredBlog.blog_Title)}/${featuredBlog._id}`}
+              to={blogLink(featuredBlog)}
               className="md:w-1/2 w-full h-64 md:h-80 overflow-hidden"
             >
               <img
@@ -260,7 +267,7 @@ const Blogging = () => {
                 </p>
               </div>
               <Link
-                to={`/blog/${getSlug(featuredBlog.blog_Title)}/${featuredBlog._id}`}
+                to={blogLink(featuredBlog)}
               >
                 <button className="bg-primaryRed text-white px-6 py-2 rounded-lg font-semibold shadow hover:bg-red-700 transition">
                   Read More
@@ -284,7 +291,7 @@ const Blogging = () => {
                 className="bg-white rounded-2xl shadow-lg flex flex-col overflow-hidden hover:shadow-2xl hover:scale-[1.03] transition"
               >
                 <Link
-                  to={`/blog/${getSlug(blog.blog_Title)}/${blog._id}`}
+                  to={blogLink(blog)}
                   className="block w-full aspect-video overflow-hidden"
                 >
                   <img
@@ -315,7 +322,7 @@ const Blogging = () => {
                     {blog.blog_Description?.length > 120 ? "..." : ""}
                   </p>
                   <Link
-                    to={`/blog/${getSlug(blog.blog_Title)}/${blog._id}`}
+                    to={blogLink(blog)}
                     className="mt-auto"
                   >
                     <button className="w-full bg-primaryRed text-white py-2 rounded-lg font-semibold shadow hover:bg-red-700 transition">

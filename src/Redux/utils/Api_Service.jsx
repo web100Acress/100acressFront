@@ -29,7 +29,7 @@ const Api_service = () => {
     }
   };
 
-  const getSpotlight = async () => {
+  const getSpotlight = useCallback(async () => {
     try {
       const response = await axios.get(`${API_ROUTES_PROJECTS}/spotlight`);
       const Spotlightprojects = response.data.data;
@@ -37,7 +37,7 @@ const Api_service = () => {
     } catch (error) {
       console.error("Error fetching spotlight data:", error);
     }
-  };
+  }, [dispatch]);
 
   const getFeatured = async() =>{
     try {

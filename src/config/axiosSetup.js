@@ -38,19 +38,22 @@ export function initAxios() {
 
     const base = getApiBase();
 
-    // Rewrite hardcoded full URLs that point to the old live domain
+    // Only ensure baseURL for relative URLs. Do not rewrite absolute URLs.
     const full = typeof config.url === 'string' ? config.url : '';
-    if (full.startsWith('http')) {
-      // If it's pointing to api.100acress.com, rewrite to current base
-      if (full.startsWith('')) {
-        const path = extractPath(full);
-        config.url = path.startsWith('/') ? path : `/${path}`;
-        config.baseURL = base;
-      }
-    } else {
+    if (full && !/^https?:\/\//i.test(full)) {
       // Relative URL: ensure baseURL is current
       config.baseURL = base;
     }
+
+    // Dev-only diagnostics: show final resolved URL
+    try {
+      const env = (process.env.NODE_ENV || '').toLowerCase();
+      if (env !== 'production') {
+        const finalUrl = `${config.baseURL || ''}${typeof config.url === 'string' ? config.url : ''}`;
+        // eslint-disable-next-line no-console
+        console.debug('[axios request]', { method: (config.method || 'GET').toUpperCase(), base: config.baseURL, url: config.url, finalUrl });
+      }
+    } catch {}
 
     return config;
   });
