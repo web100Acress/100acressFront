@@ -22,7 +22,12 @@ export function initAxios() {
   // Attach token automatically
   axios.interceptors.request.use((config) => {
     try {
-      const token = window.localStorage.getItem('myToken');
+      const stored = window.localStorage.getItem('myToken');
+      // Support both raw token and JSON-stringified token
+      let token = stored;
+      if (stored && stored.startsWith('"') && stored.endsWith('"')) {
+        try { token = JSON.parse(stored); } catch {}
+      }
       if (token) {
         config.headers = config.headers || {};
         if (!config.headers.Authorization) {
