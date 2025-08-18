@@ -211,7 +211,7 @@ export default function Navbar() {
       const confirmed = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
       if (!confirmed) return;
       // TODO: hook actual API when ready
-      // await axios.delete("https://api.100acress.com/account/delete");
+      // await axios.delete("/account/delete");
       message.info("Account deletion flow is not enabled yet.");
     } catch (e) {
       message.error("Failed to process account deletion.");
@@ -263,7 +263,7 @@ export default function Navbar() {
 
   const HandleUserLogout = async () => {
     try {
-      await axios.get("https://api.100acress.com/postPerson/logout");
+      await axios.get("/postPerson/logout");
       history("/");
       localStorage.removeItem("myToken");
       localStorage.removeItem("mySellerId");

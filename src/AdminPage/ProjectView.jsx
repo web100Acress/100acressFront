@@ -54,7 +54,7 @@ const ProjectView = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://api.100acress.com/project/View/${pUrl}`
+          `/project/View/${pUrl}`
         );
         setViewDetails(res.data.dataview[0] || {});
       } catch (error) {

@@ -38,7 +38,7 @@ const BlogWriteModal = () => {
     const fetchBlog = async () => {    
       if (id) {
         try {
-          const res = await axios.get(`https://api.100acress.com/blog/view/${id}`);
+          const res = await axios.get(`/blog/view/${id}`);
           if(res.data?.data){
             setTitle(res.data.data.blog_Title);
             setDescription(res.data.data.blog_Description);
@@ -153,7 +153,7 @@ const BlogWriteModal = () => {
       formDataAPI.append('isPublished', false);
     }
     
-    const apiEndpoint = blogToEdit? `https://api.100acress.com/blog/update/${blogId}` : 'https://api.100acress.com/blog/insert';
+    const apiEndpoint = blogToEdit? `/blog/update/${blogId}` : '/blog/insert';
     if (blogToEdit) {
       try {
 
@@ -216,7 +216,7 @@ const BlogWriteModal = () => {
           isPublished: isPublished
         });
         
-        const res = await axios.post('https://api.100acress.com/blog/insert', formDataAPI,
+        const res = await axios.post('/blog/insert', formDataAPI,
           {
             headers: {
               'Content-Type': 'multipart/form-data',

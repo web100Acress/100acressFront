@@ -10,7 +10,7 @@ const UserViewProperty = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        `https://api.100acress.com/postPerson/propertyView/${userId}`
+        `/postPerson/propertyView/${userId}`
       );
       setUserViewProperty(res.data.data.postProperty);
     } catch (error) {

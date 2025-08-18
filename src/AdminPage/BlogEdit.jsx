@@ -55,7 +55,7 @@ const BlogEdit = () => {
       }
       
       const response = await axios.put(
-        `https://api.100acress.com/blog/update/${id}`,
+        `/blog/update/${id}`,
         formData,
         {
           headers: {
@@ -73,7 +73,7 @@ const BlogEdit = () => {
         // Re-fetch latest blog data to reflect updates in real-time
         try {
           const refreshed = await axios.get(
-            `https://api.100acress.com/blog/edit/${id}`,
+            `/blog/edit/${id}`,
             {
               headers: { 'Authorization': `Bearer ${token}` }
             }
@@ -128,7 +128,7 @@ const BlogEdit = () => {
   //     formData.append("frontImage", values.frontImage.file);
 
   //     const response = await axios.post(
-  //       `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
+  //       `/postPerson/propertyoneUpdate/${id}`,
   //       formData,
   //       {
   //         headers: {
@@ -181,7 +181,7 @@ const BlogEdit = () => {
       try {
         console.log('Fetching blog data for ID:', id);
         const res = await axios.get(
-          `https://api.100acress.com/blog/edit/${id}`,
+          `/blog/edit/${id}`,
           {
             headers: {
               'Authorization': `Bearer ${token}`,

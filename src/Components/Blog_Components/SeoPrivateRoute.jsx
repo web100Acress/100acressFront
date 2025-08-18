@@ -14,7 +14,7 @@ const SeoPrivateRoute = () => {
       if (!token) return navigate("/");
 
       try {
-        const response = await fetch("https://api.100acress.com/auth/isContentWriter", {
+        const response = await fetch("/auth/isContentWriter", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

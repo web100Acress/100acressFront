@@ -45,7 +45,7 @@ const EditDetails = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://api.100acress.com/postPerson/propertyoneEdit/${id}`
+          `/postPerson/propertyoneEdit/${id}`
         );
         console.log("Property Details",res.data.data.postProperty[0]);
         setValues(res.data.data.postProperty[0]);
@@ -126,7 +126,7 @@ const EditDetails = () => {
       }
       const myToken = localStorage.getItem("myToken");
       const response = await axios.post(
-        `https://api.100acress.com/postPerson/propertyoneUpdate/${id}`,
+        `/postPerson/propertyoneUpdate/${id}`,
         formData,
         {
           headers: {

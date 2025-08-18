@@ -58,10 +58,10 @@ const ViewPropertyAdmin = () => {
         
         // Try multiple endpoints to find the working one
         const endpoints = [
-          `https://api.100acress.com/postPerson/propertyView/${id}`,
-          `https://api.100acress.com/postPerson/view/${id}`,
-          `https://api.100acress.com/user/view/${id}`,
-          `https://api.100acress.com/admin/user/${id}`
+          `/postPerson/propertyView/${id}`,
+          `/postPerson/view/${id}`,
+          `/user/view/${id}`,
+          `/admin/user/${id}`
         ];
         
         let success = false;
@@ -118,7 +118,7 @@ const ViewPropertyAdmin = () => {
   const handleDeleteProperty = async (propertyId) => {
     messageApi.open({ key: 'deleteProp', type: 'loading', content: 'Deleting property...' });
     try {
-      const res = await axios.delete(`https://api.100acress.com/postPerson/propertyDelete/${propertyId}`);
+      const res = await axios.delete(`/postPerson/propertyDelete/${propertyId}`);
       if (res.status >= 200 && res.status < 300) {
         messageApi.destroy('deleteProp');
         messageApi.success('Property deleted');
@@ -162,7 +162,7 @@ const ViewPropertyAdmin = () => {
           // Call the primary backend endpoint that performs real DB deletion
           let deleteSuccess = false;
           try {
-            const res = await axios.delete(`https://api.100acress.com/postPerson/deleteUser/${id}` , {
+            const res = await axios.delete(`/postPerson/deleteUser/${id}` , {
               headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
               timeout: 15000,
             });

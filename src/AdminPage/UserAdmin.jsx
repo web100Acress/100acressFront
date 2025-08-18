@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { MdPeople, MdSearch, MdVisibility } from "react-icons/md";
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://api.100acress.com';
+import { API_ROUTES } from "../Redux/utils/Constant_Service";
 
 const UserAdmin = () => {
   const [viewAll, setViewAll] = useState([]);
@@ -30,7 +30,7 @@ const UserAdmin = () => {
       try {
         const myToken = localStorage.getItem("myToken");
         const res = await axios.get(
-          `${API_BASE}/postPerson/view/allusers`,
+          `${API_ROUTES}postPerson/view/allusers`,
           {
             headers: {
               Authorization: `Bearer ${myToken}`,
@@ -115,7 +115,7 @@ const UserAdmin = () => {
       // NOTE: Adjust the endpoint/body to match your backend.
       // Example PATCH: /postPerson/users/:id/role { role }
       await axios.patch(
-        `${API_BASE}/postPerson/users/${userId}/role`,
+        `${API_ROUTES}postPerson/users/${userId}/role`,
         { role: nextRole },
         {
           headers: {

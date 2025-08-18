@@ -31,7 +31,7 @@
 //   useEffect(() => {
 //     const fetchData = async () => {
 //       try {
-//         const res = await axios.get("https://api.100acress.com/snapShot");
+//         const res = await axios.get("/snapShot");
 //         // console.log(res,"yugyugygyg")
 //         setRent(res.data.totalRentposted);
 //         setSell(res.data.totalSellposted);

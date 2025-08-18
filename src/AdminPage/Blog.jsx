@@ -20,7 +20,7 @@ const Blog = () => {
   const fetchBlogData = async (search = "") => {
     try {
       // Use the new admin endpoint to get ALL blogs (published + drafts)
-      const url = `https://api.100acress.com/blog/admin/view?page=1&limit=1000`;
+      const url = `/blog/admin/view?page=1&limit=1000`;
       
       const res = await axios.get(url, {
         headers: {
@@ -84,7 +84,7 @@ const Blog = () => {
 
     try {
       const response = await axios.delete(
-        `https://api.100acress.com/blog/Delete/${id}`,
+        `/blog/Delete/${id}`,
         {
           headers: {
             'Content-Type': 'multipart/form-data', // This might be incorrect for DELETE, usually not needed
