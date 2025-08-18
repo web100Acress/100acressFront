@@ -1,18 +1,25 @@
 import { getApiBase, setApiBase, clearApiBaseOverride } from "../../config/apiBase";
 
-// Compute base once per import; consumers can call switchApiBase to change it at runtime
-let BASE = getApiBase();
+// Centralized API routes. Use RELATIVE paths so global axios baseURL applies.
+// This avoids hardcoding host/port in components.
+export const API_ROUTES = {
+  // Base helpers (if a component needs absolute URL for any reason)
+  base: () => getApiBase(),
+  projectsBase: () => `${getApiBase()}/project`,
 
-export const API_ROUTES = `${BASE}/`;
-export const API_ROUTES_PROJECTS = `${BASE}/project`;
+  // Users
+  getAllUsers: "/postPerson/view/allusers",
+  updateUserRole: (id) => `/postPerson/users/${id}/role`,
+};
+
+// Backward-compat named exports (avoid breaking older code paths)
+export const API_ROUTES_PROJECTS = `${getApiBase()}/project`;
 
 // Helpers to manage base at runtime for the whole app
 export const switchApiBase = (url) => {
   setApiBase(url);
-  BASE = getApiBase();
 };
 
 export const resetApiBaseToDefault = () => {
   clearApiBaseOverride();
-  BASE = getApiBase();
 };

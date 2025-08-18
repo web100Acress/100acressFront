@@ -32,10 +32,15 @@ const SpacerComponent = () => <Box width="60px" />;
 
 export default function Navbar() {
   const history = useNavigate();
-  const usertoken = JSON.parse(localStorage.getItem("myToken"));
+  // Safely read JWT from localStorage (may be raw string or JSON-quoted)
+  let usertoken = (typeof window !== 'undefined' && localStorage.getItem("myToken")) || "";
+  if (usertoken && usertoken.startsWith('"') && usertoken.endsWith('"')) {
+    try { usertoken = JSON.parse(usertoken); } catch { /* ignore */ }
+  }
   const { decodedToken } = useJwt(usertoken || "");
   const dispatch = useDispatch();
-  const [token, setToken] = useState();
+  // Initialize token synchronously to avoid brief logged-out UI state
+  const [token, setToken] = useState(() => (typeof window !== 'undefined' && localStorage.getItem("myToken")) || "");
   const [colorChange, setColorchange] = useState(false);
   // const [isModalOpen, setIsModalOpen] = useState(false); // removed old user menu modal state
   const [showAuth, setShowAuth] = useState(false);
@@ -712,8 +717,8 @@ export default function Navbar() {
                     {userRole === "admin" && (
                       <MenuItem as={Link} to="/admin/" fontSize="14px">Admin</MenuItem>
                     )}
-                    {userRole === "blog" && (
-                      <MenuItem as={Link} to="/blog/dashboard/" fontSize="14px">Blog</MenuItem>
+                    {(userRole === "blog" || userRole === "contentwriter") && (
+                      <MenuItem as={Link} to="/seo/blogs" fontSize="14px">Blog</MenuItem>
                     )}
                     <Box h="1px" bg="#eee" />
                     <MenuItem onClick={handleDeleteAccount} fontSize="14px" color="#e53e3e">Delete Account</MenuItem>
