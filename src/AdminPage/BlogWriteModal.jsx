@@ -1,7 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Quill from 'quill';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import 'quill-emoji/dist/quill-emoji.css';
+import 'quill-emoji';
 import { useParams, useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import { getApiBase } from '../config/apiBase';
@@ -67,6 +72,13 @@ const BlogWriteModal = () => {
   const [blogToEdit, setBlogToEdit] = useState(false);
   const [newBlog, setNewBlog] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Cropper state for inline content images
+  const [showCropper, setShowCropper] = useState(false);
+  const [rawImageUrl, setRawImageUrl] = useState('');
+  const [rawImageFile, setRawImageFile] = useState(null);
+  const [crop, setCrop] = useState({ unit: '%', width: 80, aspect: 4 / 3 });
+  const [completedCrop, setCompletedCrop] = useState(null);
+  const cropImgRef = useRef(null);
 
   const quillRef = useRef(null);
 
@@ -126,6 +138,117 @@ const BlogWriteModal = () => {
     fetchBlog();
   }, [id]);
 
+  // Helper: insert image URL into Quill with trailing newline
+  const insertImageIntoQuill = (imageUrl) => {
+    const quill = quillRef.current?.getEditor?.();
+    if (!quill) return;
+    const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
+    const insertAt = sel.index;
+    quill.insertEmbed(insertAt, 'image', imageUrl, 'user');
+    quill.insertText(insertAt + 1, '\n', 'user');
+    quill.setSelection(insertAt + 2, 0);
+  };
+
+  // Build cropped blob from image + completedCrop
+  const getCroppedBlob = async () => {
+    return new Promise((resolve, reject) => {
+      const image = cropImgRef.current;
+      if (!image || !completedCrop?.width || !completedCrop?.height) {
+        return reject(new Error('Invalid crop'));
+      }
+      const canvas = document.createElement('canvas');
+      const scaleX = image.naturalWidth / image.width;
+      const scaleY = image.naturalHeight / image.height;
+      canvas.width = Math.round(completedCrop.width * scaleX);
+      canvas.height = Math.round(completedCrop.height * scaleY);
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return reject(new Error('Canvas not supported'));
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(
+        image,
+        Math.round(completedCrop.x * scaleX),
+        Math.round(completedCrop.y * scaleY),
+        Math.round(completedCrop.width * scaleX),
+        Math.round(completedCrop.height * scaleY),
+        0,
+        0,
+        Math.round(completedCrop.width * scaleX),
+        Math.round(completedCrop.height * scaleY)
+      );
+      canvas.toBlob((blob) => {
+        if (!blob) return reject(new Error('Failed to create blob'));
+        resolve(blob);
+      }, 'image/png', 1);
+    });
+  };
+
+  const closeCropper = () => {
+    setShowCropper(false);
+    if (rawImageUrl) URL.revokeObjectURL(rawImageUrl);
+    setRawImageUrl('');
+    setRawImageFile(null);
+    setCompletedCrop(null);
+  };
+
+  // Confirm crop: upload cropped image then insert into Quill
+  const confirmCropAndInsert = async () => {
+    try {
+      if (!completedCrop?.width || !completedCrop?.height) {
+        return messageApi.warning('Please select a crop area');
+      }
+      messageApi.open({ key: 'cropUpload', type: 'loading', content: 'Uploading cropped image...', duration: 0 });
+      const blob = await getCroppedBlob();
+      const filename = (rawImageFile?.name || 'image.png').replace(/\.[^.]+$/, '') + '-cropped.png';
+      const file = new File([blob], filename, { type: 'image/png' });
+
+      const fd = new FormData();
+      fd.append('image', file);
+
+      const res = await axios.post(`${API_BASE}/blog/upload-image`, fd, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const imageUrl = res?.data?.url || res?.data?.data?.url || res?.data?.imageUrl || '';
+      if (!imageUrl) throw new Error('Upload succeeded but no URL returned');
+
+      insertImageIntoQuill(imageUrl);
+      messageApi.destroy('cropUpload');
+      messageApi.success('Cropped image inserted');
+      closeCropper();
+    } catch (err) {
+      console.error('Crop upload failed', err);
+      messageApi.destroy('cropUpload');
+      messageApi.error('Failed to upload cropped image');
+    }
+  };
+
+  // Load categories from backend (merge with initial list, unique)
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/blog/categories`);
+        const apiCats = (res?.data?.data || []).map((c) => c.name).filter(Boolean);
+        // merge with initial and unique (case-sensitive keep first)
+        const merged = [...initialCategories];
+        for (const name of apiCats) {
+          if (!merged.includes(name)) merged.push(name);
+        }
+        setCategoryList(merged);
+        // ensure current selected category is preserved if present
+        if (categories && !merged.includes(categories)) {
+          setCategoryList((prev) => [...prev, categories]);
+        }
+      } catch (e) {
+        // silent fail, keep initial list
+        // console.warn('Failed to load categories', e);
+      }
+    };
+    loadCategories();
+  }, [API_BASE]);
+
   /** Featured image change */
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -145,9 +268,12 @@ const BlogWriteModal = () => {
     if (!url) return;
     const quill = quillRef.current?.getEditor?.();
     if (quill) {
-      const range = quill.getSelection(true);
-      quill.insertEmbed(range ? range.index : 0, 'image', url, 'user');
-      quill.setSelection((range ? range.index : 0) + 1, 0);
+      const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
+      const insertAt = sel.index;
+      // insert image and a trailing newline so user can type below
+      quill.insertEmbed(insertAt, 'image', url, 'user');
+      quill.insertText(insertAt + 1, '\n', 'user');
+      quill.setSelection(insertAt + 2, 0);
     }
   };
 
@@ -159,50 +285,41 @@ const BlogWriteModal = () => {
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
-
+      // If SVG, bypass cropper to preserve vector quality
+      if (file.type === 'image/svg+xml') {
+        try {
+          messageApi.open({ key: 'svgUpload', type: 'loading', content: 'Uploading SVG...', duration: 0 });
+          const fd = new FormData();
+          fd.append('image', file);
+          const res = await axios.post(`${API_BASE}/blog/upload-image`, fd, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const imageUrl = res?.data?.url || res?.data?.data?.url || res?.data?.imageUrl || '';
+          if (!imageUrl) throw new Error('Upload succeeded but no URL returned');
+          insertImageIntoQuill(imageUrl);
+          messageApi.destroy('svgUpload');
+          messageApi.success('SVG inserted');
+          return;
+        } catch (err) {
+          console.error('SVG upload failed', err);
+          messageApi.destroy('svgUpload');
+          messageApi.error('SVG upload failed');
+          return;
+        }
+      }
+      // Otherwise open cropper modal with selected file
       try {
-        messageApi.open({
-          key: 'uploadInline',
-          type: 'loading',
-          content: 'Uploading image...',
-          duration: 0,
-        });
-
-        // Adjust this to match your backend upload route
-        const fd = new FormData();
-        fd.append('image', file);
-
-        // Example: POST to /blog/upload-image => { url: "https://..." }
-        const res = await axios.post(`${API_BASE}/blog/upload-image`, fd, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const imageUrl =
-          res?.data?.url ||
-          res?.data?.data?.url ||
-          res?.data?.imageUrl ||
-          '';
-
-        if (!imageUrl) {
-          throw new Error('Upload succeeded but no URL returned');
-        }
-
-        const quill = quillRef.current?.getEditor?.();
-        if (quill) {
-          const range = quill.getSelection(true);
-          quill.insertEmbed(range ? range.index : 0, 'image', imageUrl, 'user');
-          quill.setSelection((range ? range.index : 0) + 1, 0);
-        }
-
-        messageApi.destroy('uploadInline');
-        messageApi.success('Image inserted');
+        setCompletedCrop(null);
+        setRawImageFile(file);
+        const objUrl = URL.createObjectURL(file);
+        setRawImageUrl(objUrl);
+        setShowCropper(true);
       } catch (err) {
-        console.error('Inline image upload failed', err);
-        messageApi.destroy('uploadInline');
-        messageApi.error('Inline image upload failed');
+        console.error('Failed to open cropper', err);
+        messageApi.error('Failed to open image cropper');
       }
     };
     input.click();
@@ -220,14 +337,31 @@ const BlogWriteModal = () => {
   };
 
   /** Add new category and select it */
-  const addNewCategory = () => {
+  const addNewCategory = async () => {
     const name = (addedCategory || '').trim();
     if (!name) return;
-    if (!categoryList.includes(name)) {
-      setCategoryList((prev) => [...prev, name]);
+    try {
+      const res = await axios.post(
+        `${API_BASE}/blog/categories`,
+        { name },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const createdName = res?.data?.data?.name || name;
+      if (!categoryList.includes(createdName)) {
+        setCategoryList((prev) => [...prev, createdName]);
+      }
+      setCategories(createdName);
+      setAddedCategory('');
+      messageApi.success('Category added');
+    } catch (e) {
+      // If already exists, still select it
+      if (!categoryList.includes(name)) {
+        setCategoryList((prev) => [...prev, name]);
+      }
+      setCategories(name);
+      setAddedCategory('');
+      messageApi.info('Category already exists or saved');
     }
-    setCategories(name);
-    setAddedCategory('');
   };
 
   /** Submit (draft/publish) */
@@ -354,13 +488,46 @@ const BlogWriteModal = () => {
         ['bold', 'italic', 'underline', 'strike'],
         [{ list: 'ordered' }, { list: 'bullet' }],
         ['blockquote', 'code-block'],
-        ['link'],
+        ['link', 'emoji'],
         [{ align: [] }],
         ['clean'],
       ],
     },
     clipboard: { matchVisual: false },
+    'emoji-toolbar': true,
+    'emoji-textarea': false,
+    'emoji-shortname': true,
   };
+
+  // Handle paste images (e.g., screenshots) -> open cropper
+  useEffect(() => {
+    const quill = quillRef.current?.getEditor?.();
+    if (!quill) return;
+    const root = quill.root;
+    const onPaste = (e) => {
+      if (!e?.clipboardData) return;
+      const items = Array.from(e.clipboardData.items || []);
+      const fileItem = items.find((it) => it.kind === 'file' && it.type.startsWith('image/'));
+      if (fileItem) {
+        const file = fileItem.getAsFile();
+        if (file) {
+          e.preventDefault();
+          try {
+            setCompletedCrop(null);
+            setRawImageFile(file);
+            const objUrl = URL.createObjectURL(file);
+            setRawImageUrl(objUrl);
+            setShowCropper(true);
+          } catch (err) {
+            console.error('Failed to open cropper from paste', err);
+            messageApi.error('Failed to open image cropper');
+          }
+        }
+      }
+    };
+    root.addEventListener('paste', onPaste);
+    return () => root.removeEventListener('paste', onPaste);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-2 sm:p-4 lg:p-6">
@@ -396,6 +563,54 @@ const BlogWriteModal = () => {
             </button>
           </div>
         </div>
+
+        {/* Cropper Modal */}
+        {showCropper && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.55)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 2000,
+            }}
+          >
+            <div style={{ background: '#fff', padding: 16, borderRadius: 8, width: 'min(95vw, 900px)' }}>
+              <h3 style={{ margin: '0 0 8px' }}>Crop Image</h3>
+              <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
+                {rawImageUrl && (
+                  <ReactCrop crop={crop} onChange={(c) => setCrop(c)} onComplete={(c) => setCompletedCrop(c)} aspect={crop.aspect}>
+                    {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                    <img
+                      ref={cropImgRef}
+                      src={rawImageUrl}
+                      onLoad={() => {
+                        if (!completedCrop) {
+                          setCrop((prev) => ({ ...prev }));
+                        }
+                      }}
+                      style={{ maxWidth: '100%' }}
+                    />
+                  </ReactCrop>
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 12 }}>
+                <button type="button" onClick={closeCropper} style={{ padding: '6px 12px' }}>
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmCropAndInsert}
+                  style={{ padding: '6px 12px', background: '#1677ff', color: '#fff', border: 'none', borderRadius: 4 }}
+                >
+                  Crop & Insert
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Form */}
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
