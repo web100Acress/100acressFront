@@ -538,19 +538,15 @@ const Home = () => {
       <Footer />
 
 
-      
-      </div> {/* Closing div for the blur container */}
-      </div>
-
-      {/* <LuxuryFooter /> */}
       </div>
     </Wrapper>
+
   );
 }
 
 export default Home;
 
-const Wrapper = styled.section`
+const Wrapper = styled.div`
   /* Neutral background */
   background: #ffffff;
 

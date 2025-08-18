@@ -6,19 +6,31 @@ import { Link } from "react-router-dom";
 import { MdPeople, MdSearch, MdVisibility } from "react-icons/md";
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
+const API_BASE = import.meta.env.VITE_API_BASE || 'https://api.100acress.com';
 
 const UserAdmin = () => {
   const [viewAll, setViewAll] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(25);
   const [searchTerm, setSearchTerm] = useState("");
+  const [updatingRole, setUpdatingRole] = useState({}); // { [userId]: boolean }
+
+  // Available roles
+  const ROLE_OPTIONS = [
+    { label: 'User', value: 'user' },
+    { label: 'BlogManagement', value: 'blog' },
+    { label: 'Admin', value: 'admin' },
+    { label: 'Agent', value: 'agent' },
+    { label: 'Owner', value: 'owner' },
+    { label: 'Builder', value: 'builder' },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const myToken = localStorage.getItem("myToken");
         const res = await axios.get(
-          "https://api.100acress.com/postPerson/view/allusers",
+          `${API_BASE}/postPerson/view/allusers`,
           {
             headers: {
               Authorization: `Bearer ${myToken}`,
@@ -91,6 +103,37 @@ const UserAdmin = () => {
     });
   };
 
+  // Update role (optimistic UI)
+  const handleRoleChange = async (userId, nextRole) => {
+    const prev = viewAll;
+    // optimistic update
+    setViewAll((list) => list.map(u => u._id === userId ? { ...u, role: nextRole } : u));
+    setUpdatingRole((m) => ({ ...m, [userId]: true }));
+
+    try {
+      const myToken = localStorage.getItem("myToken");
+      // NOTE: Adjust the endpoint/body to match your backend.
+      // Example PATCH: /postPerson/users/:id/role { role }
+      await axios.patch(
+        `${API_BASE}/postPerson/users/${userId}/role`,
+        { role: nextRole },
+        {
+          headers: {
+            Authorization: `Bearer ${myToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (err) {
+      console.error('Failed to update role', err);
+      // revert on error
+      setViewAll(prev);
+      alert('Failed to update role. Please try again.');
+    } finally {
+      setUpdatingRole((m) => ({ ...m, [userId]: false }));
+    }
+  };
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
@@ -127,6 +170,7 @@ const UserAdmin = () => {
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Email</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Mobile Number</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Role</th>
                     <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
                   </tr>
                 </thead>
@@ -145,6 +189,24 @@ const UserAdmin = () => {
                           <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full shadow-sm">{item.mobile}</span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{formatLastModified(item.createdAt)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                          <div className="flex items-center gap-2">
+                            <select
+                              className={`px-3 py-2 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-red-500 ${updatingRole[userId] ? 'opacity-60 cursor-not-allowed' : ''}`}
+                              disabled={!!updatingRole[userId]}
+                              value={(item.role || 'user')}
+                              onChange={(e) => handleRoleChange(userId, e.target.value)}
+                              title="Change user role"
+                            >
+                              {ROLE_OPTIONS.map((opt) => (
+                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                              ))}
+                            </select>
+                            {updatingRole[userId] && (
+                              <span className="text-xs text-gray-500">Saving...</span>
+                            )}
+                          </div>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                           <Tippy content={<span>View Property</span>} animation="scale" theme="light-border">
                             <Link to={`/Admin/viewproperty/${userId}`}>
