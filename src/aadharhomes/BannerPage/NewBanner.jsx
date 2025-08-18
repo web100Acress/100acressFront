@@ -30,6 +30,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Api_Service from "../../Redux/utils/Api_Service";
 import { Link, useNavigate, useParams } from "react-router-dom";
+
 const NewBanner = () => {
   const { pUrl } = useParams();
   const [projectViewDetails, setProjectViewDetails] = useState([]);
@@ -351,62 +352,16 @@ const NewBanner = () => {
   const [nextY, setNextY] = useState(30); // px translateY for next section
   const [navShown, setNavShown] = useState(true);
 
+  // Disabled scroll/parallax for hero: keep static values and no listeners
   useEffect(() => {
-    const easeInOut = (t) =>
-      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    let ticking = false;
+    // Ensure navbar is shown
+    if (!navShown) setNavShown(true);
 
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      window.requestAnimationFrame(() => {
-        const hero = heroStickyRef.current;
-        if (!hero) {
-          ticking = false;
-          return;
-        }
-        const rect = hero.getBoundingClientRect();
-        const vh = window.innerHeight || 1;
-        // progress: 0 when hero top at viewport top, 1 when hero bottom reaches viewport top
-        const progressRaw = Math.min(
-          Math.max(-rect.top / Math.max(rect.height, 1), 0),
-          1
-        );
-        // Fade between 0.2 and 0.8
-        let fade = 1;
-        if (progressRaw <= 0.2) fade = 1;
-        else if (progressRaw >= 0.8) fade = 0;
-        else {
-          const t = (progressRaw - 0.2) / 0.6; // 0..1
-          fade = 1 - t;
-        }
-        const e = easeInOut(progressRaw);
-        // Background slides up to -20vh
-        const bgY = -e * (vh * 0.2);
-        // Next section parallax: from 30px down to 0px by 80%
-        let nY = 30;
-        if (progressRaw <= 0.2) nY = 30;
-        else if (progressRaw >= 0.8) nY = 0;
-        else {
-          const t = (progressRaw - 0.2) / 0.6;
-          nY = 30 * (1 - easeInOut(t));
-        }
-
-        // Navbar should be visible across hero and beyond
-        if (!navShown) setNavShown(true);
-
-        setHeroOpacity(fade);
-        // Disable background parallax on mobile to prevent visual gaps
-        setHeroBgY(isMobile ? 0 : bgY);
-        setNextY(nY);
-        ticking = false;
-      });
-    };
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    // Fixed hero state (no fade/parallax)
+    setHeroOpacity(1);
+    setHeroBgY(0);
+    setNextY(0);
+  }, [navShown]);
 
   let description = projectViewDetails?.project_discripation || "";
 

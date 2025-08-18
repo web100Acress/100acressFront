@@ -31,6 +31,7 @@ import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
+import FloatingShorts from "../Components/FloatingShorts";
 // import ConfettiAllCorners from "../Components/ConfettiAllCorners";
 
 const Home = () => {
@@ -536,6 +537,8 @@ const Home = () => {
 
       <PossessionProperty />
       <BackToTopButton />
+      {/* Floating YouTube Shorts (desktop only) */}
+      <FloatingShorts videoId="ouBwbuoqnU8" />
       <Footer />
     </div> {/* Closing div for the blur container */}
 

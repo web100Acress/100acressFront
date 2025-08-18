@@ -26,22 +26,24 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 14px;
+    padding: 12px 16px;
     border-radius: 9999px;
     text-decoration: none;
     font-weight: 600;
-    font-size: 14px;
-    border: 1px solid rgba(0,0,0,0.10);
+    font-size: 16px;
+    border: none; /* remove border on both buttons */
     color: #111827;
     background: #fff;
     transition: box-shadow .2s ease, transform .2s ease;
   }
   .nb-nav-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
 
-  .nb-whatsapp-btn { border-color: rgba(16,185,129,0.35); color: #065f46; }
-  .nb-whatsapp-icon { color: #10b981; font-size: 18px; }
-  .nb-phone-btn { border-color: rgba(59,130,246,0.35); color: #1f2937; }
-  .nb-phone-icon { width: 18px; height: 18px; }
+  .nb-whatsapp-btn { border: none; color: #065f46; }
+  .nb-whatsapp-icon { color: #10b981; font-size: 22px; }
+  .nb-phone-btn { border: none; }
+  .nb-phone-icon { width: 22px; height: 22px; color: #2563eb; }
+  .nb-phone-label { color: #2563eb; font-size: 16px; }
+  .nb-whatsapp-label { font-size: 16px; }
 
   /* Spacer equal to navbar height; JS sets --nav-h dynamically */
   .nb-nav-spacer { height: var(--nav-h, 64px); width: 100%; }
@@ -79,10 +81,35 @@
   /* About modal basic styles */
   /* moved to src/styles/newbanner/AboutSection.css */
 
+  /* Ensure the fixed project navbar is above page sections */
+  #project-nav.nb-fixed-nav {
+    z-index: 1002 !important; /* do not change its positioning from JSX */
+  }
+
+  /* All content sections on NewBanner page should sit below navbar */
+  .section > *:not(#project-nav) {
+    position: relative;
+    z-index: 0;
+  }
+
   @media (max-width: 640px) {
     .nb-fixed-nav { padding: 8px 12px; }
     .nb-nav-btn { padding: 8px 12px; font-size: 13px; }
     .nb-hero-center { width: 94%; gap: 12px; }
+    /* Hide ALL slider arrows on mobile (default Slick + custom buttons) */
+    .slick-prev,
+    .slick-next,
+    .slick-arrow,
+    .nb-floor-prev,
+    .nb-floor-next,
+    .nb-gallery-prev,
+    .nb-gallery-next { display: none !important; }
+    /* Hide "Let's Talk" label on WhatsApp button in mobile */
+    .nb-whatsapp-label { display: none !important; }
+    /* Make icons and phone number comfortably tappable */
+    .nb-whatsapp-icon { font-size: 24px; }
+    .nb-phone-icon { width: 24px; height: 24px; }
+    .nb-phone-label { font-size: 18px; }
   }
 
   /* --- About Section (replaces Tailwind utilities in NewBanner.jsx) --- */
@@ -249,6 +276,7 @@
     min-width: 220px;
     display: inline-flex;
     align-items: center;
+    gap: 10px;
     justify-content: center;
     text-decoration: none;
     position: relative;
@@ -295,6 +323,7 @@
     min-width: 220px;
     display: inline-flex;
     align-items: center;
+    gap: 10px;
     justify-content: center;
     text-decoration: none;
   }
