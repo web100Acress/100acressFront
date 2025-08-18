@@ -291,18 +291,19 @@ const Home = () => {
   {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
       <div className="relative w-full">
-        <img
-          // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/summer+banner.png"
-          //  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/monsoon-banner.webp"
-           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp"
-          alt="Banner"
+        {/* Desktop/Tablet gradient background */}
+        <div
           className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
+          style={{
+            background: "linear-gradient(180deg, #b91c1c 0%, #ef4444 40%, #fca5a5 70%, #f3f4f6 90%, #ffffff 100%)",
+          }}
         />
-        <img
-          // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/mobilebanner.webp"
-          src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-mobile.webp"
-          alt="Mobile Banner"
+        {/* Mobile gradient background */}
+        <div
           className="mt-14 block md:hidden w-full h-[38rem]"
+          style={{
+            background: "linear-gradient(180deg, #b91c1c 0%, #ef4444 45%, #fca5a5 72%, #f3f4f6 90%, #ffffff 100%)",
+          }}
         />
 
         {/* Center the SearchBar */}

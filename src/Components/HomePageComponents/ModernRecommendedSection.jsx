@@ -395,8 +395,12 @@ const PropertyCard = ({
 // Styled Components
 const SectionWrapper = styled.section`
   background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  
+  background: transparent; /* Seamless with hero below */
   position: relative;
   overflow: hidden;
+  margin-top: 0;
+  padding-top: 0;
 
   .carousel-container {
     position: relative;
