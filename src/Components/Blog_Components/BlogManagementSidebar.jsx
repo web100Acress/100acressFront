@@ -24,7 +24,7 @@ function BlogManagementSidebar() {
    const HandleUserLogout = async () => {
       console.log("User trying to logout..")
       try {
-        await axios.get("https://api.100acress.com/postPerson/logout");
+        await axios.get("/postPerson/logout");
         localStorage.removeItem("myToken");
         localStorage.removeItem("mySellerId");
         localStorage.removeItem("userRole");

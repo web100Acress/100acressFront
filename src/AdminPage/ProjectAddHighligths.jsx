@@ -60,7 +60,7 @@ const ProjectAddHighligths = () => {
   const ViewHighLights = async () => {
     try {
       const fetchData = await axios.get(
-        `https://api.100acress.com/highlight/view/${id}`
+        `/highlight/view/${id}`
       );
       setViewAll(fetchData.data.data);
     } catch (error) {
@@ -88,7 +88,7 @@ const ProjectAddHighligths = () => {
 
     try {
       const res = await axios.post(
-        `https://api.100acress.com/highlight/${id}`,
+        `/highlight/${id}`,
         highlights
       );
       if (res.status >= 200 && res.status < 300) {
@@ -138,7 +138,7 @@ const ProjectAddHighligths = () => {
 
     try {
       const response = await axios.delete(
-        `https://api.100acress.com/highlight/delete/${_id}`
+        `/highlight/delete/${_id}`
       );
       if (response.status >= 200 && response.status < 300) {
         messageApi.destroy('deletingHighlight');

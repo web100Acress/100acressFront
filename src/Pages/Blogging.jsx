@@ -44,7 +44,7 @@ const Blogging = () => {
     const fetchAllBlogs = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`https://api.100acress.com/blog/view?page=1&limit=1000`);
+        const res = await axios.get(`/blog/view?page=1&limit=1000`);
         setAllBlogs(res.data.data || []);
       } catch (error) {
         setAllBlogs([]);

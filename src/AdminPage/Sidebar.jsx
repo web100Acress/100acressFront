@@ -73,7 +73,7 @@ const Sidebar = () => {
   const HandleUserLogout = async () => {
     try {
       showLogoutToast(); // Show toast immediately
-      await axios.get("https://api.100acress.com/postPerson/logout");
+      await axios.get("/postPerson/logout");
       localStorage.removeItem("myToken");
       localStorage.removeItem("mySellerId");
       localStorage.removeItem("userRole");

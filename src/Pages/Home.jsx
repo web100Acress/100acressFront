@@ -58,16 +58,16 @@ const Home = () => {
   }, []);
 
 
-  const TrendingProjects = useSelector(store => store?.project?.trending);
-  const FeaturedProjects = useSelector(store => store?.project?.featured);
-  const UpcomingProjects = useSelector(store => store?.project?.upcoming);
-  const CommercialProjects = useSelector(store => store?.project?.commercial);
-  const SCOProjects = useSelector(store => store?.project?.scoplots);
-  const AffordableProjects = useSelector(store => store?.project?.affordable);
-  const LuxuryProjects = useSelector(store => store?.project?.luxury);
-  const BudgetHomesProjects = useSelector(store => store?.project?.budget);
-  const ProjectinDelhi = useSelector(store => store?.project?.projectindelhi);
-  const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll);
+  const TrendingProjects = useSelector(store => store?.project?.trending) || [];
+  const FeaturedProjects = useSelector(store => store?.project?.featured) || [];
+  const UpcomingProjects = useSelector(store => store?.project?.upcoming) || [];
+  const CommercialProjects = useSelector(store => store?.project?.commercial) || [];
+  const SCOProjects = useSelector(store => store?.project?.scoplots) || [];
+  const AffordableProjects = useSelector(store => store?.project?.affordable) || [];
+  const LuxuryProjects = useSelector(store => store?.project?.luxury) || [];
+  const BudgetHomesProjects = useSelector(store => store?.project?.budget) || [];
+  const ProjectinDelhi = useSelector(store => store?.project?.projectindelhi) || [];
+  const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll) || [];
   const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getAllProjects } = Api_Service();
   const [dataLoaded, setDataLoaded] = useState({
     trending: false,
@@ -539,14 +539,20 @@ const Home = () => {
       <Footer />
     </div> {/* Closing div for the blur container */}
 
+
+
+      </div>
+
     {/* <LuxuryFooter /> */}
+
     </Wrapper>
+
   );
 }
 
 export default Home;
 
-const Wrapper = styled.section`
+const Wrapper = styled.div`
   /* Neutral background */
   background: #ffffff;
 

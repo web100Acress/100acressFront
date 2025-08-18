@@ -54,7 +54,7 @@ const BlogView = () => {
     setButtonText("Submitting...");
     try {
       await axios.post(
-        "https://api.100acress.com/contact_Insert",
+        "/contact_Insert",
         blogQuery
       );
       setResponseMessage("Data submitted successfully");
@@ -74,7 +74,7 @@ const BlogView = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(`https://api.100acress.com/blog/view/${id}`);
+      const res = await axios.get(`/blog/view/${id}`);
       setData(res.data.data);
     } catch (error) {
       console.log(error || error.message);
@@ -83,7 +83,7 @@ const BlogView = () => {
 
   const fetchRecentsBlog = async () =>{
     try{
-      const recent = await axios.get('https://api.100acress.com/blog/view?page=1&limit=6');
+      const recent = await axios.get('/blog/view?page=1&limit=6');
       setRecentBlogs(recent.data.data.filter((blog)=>blog._id !== id));
     }
     catch (error) {

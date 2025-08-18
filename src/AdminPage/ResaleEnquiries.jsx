@@ -28,7 +28,7 @@ const ResaleEnquiries = () => {
   const fetchEnquiriesData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("https://api.100acress.com/postEnq_view");
+      const res = await axios.get("/postEnq_view");
       // Sort by createdAt descending (newest first)
       const sorted = [...res.data.data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setEnquiries(sorted);
@@ -88,7 +88,7 @@ const ResaleEnquiries = () => {
     setDownloadProgress(1);
     try {
       const token = localStorage.getItem("myToken");
-      const response = await fetch("https://api.100acress.com/postEnq_download",
+      const response = await fetch("/postEnq_download",
         {
           headers: {
             "Content-Type": "application/json",

@@ -58,6 +58,7 @@
     "react-tooltip": "^5.29.1",
     "redux": "^5.0.1",
     "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.8.1",
     "sonner": "^2.0.5",
     "styled-components": "^6.1.1",
     "sweetalert2": "^11.10.3",
@@ -74,13 +75,25 @@
     "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "serve": "vite preview",
     "host": "vite --host",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src --ext .js,.jsx --max-warnings=0",
+    "check:api-domain": "node scripts/checkApiDomain.js",
+    "verify:api": "npm run lint && npm run check:api-domain"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-restricted-syntax": [
+        "error",
+        {
+          "selector": "Literal[value=\"https://api.100acress.com\"]",
+          "message": "Do not hardcode API domain. Use relative paths or the centralized API base (axios baseURL)."
+        }
+      ]
+    }
   },
   "browserslist": {
     "production": [

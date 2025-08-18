@@ -85,7 +85,7 @@ export default function BlogManagement() {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://api.100acress.com/blog/view?page=${currentPage}&limit=${pageSize}`
+          `/blog/view?page=${currentPage}&limit=${pageSize}`
         );
         setBlogs(res.data.data);
         setTotalPages(res.data.totalPages);
@@ -136,7 +136,7 @@ export default function BlogManagement() {
 
     try {
       const res = await axios.patch(
-        `https://api.100acress.com/blog/update/${id}`,
+        `/blog/update/${id}`,
         {
           isPublished: checked,
         },
@@ -178,7 +178,7 @@ export default function BlogManagement() {
   const handleDeleteUser = async (id) => {
     try {
       const response = await axios.delete(
-        `https://api.100acress.com/blog/Delete/${id}`,
+        `/blog/Delete/${id}`,
         {
           headers: {
             "Content-Type": "multipart/form-data",

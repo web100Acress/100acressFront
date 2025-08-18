@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
       if (email && password) {
         try {
           const loginResponse = await axios.post(
-            "https://api.100acress.com/postPerson/verify_Login",
+            "/postPerson/verify_Login",
             { email, password }
           );
           const newToken = loginResponse.data.token;
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
   
           if (loginResponse.status === 200) {
             const roleResponse = await axios.get(
-              `https://api.100acress.com/postPerson/Role/${email}`
+              `/postPerson/Role/${email}`
             );
             setAgentData(roleResponse.data.User);
             localStorage.setItem(
@@ -208,7 +208,7 @@ export const AuthProvider = ({ children }) => {
 
       if (name && mobile && email && password && password === cpassword) {
         axios
-          .post("https://api.100acress.com/postPerson/register", userSignUp)
+          .post("/postPerson/register", userSignUp)
           .then((registrationResponse) => {
 
             // if error 409 User already Exist
@@ -242,7 +242,7 @@ export const AuthProvider = ({ children }) => {
             } catch (_) {}
 
             //generate otp for the user to to verify the email
-            return axios.post("https://api.100acress.com/postPerson/verifyEmail", { 
+            return axios.post("/postPerson/verifyEmail", { 
               email: email // Pass relevant data for OTP
             })
           })
@@ -289,7 +289,7 @@ export const AuthProvider = ({ children }) => {
       );
       if (confirmDelete) {
         const res = await axios.delete(
-          `https://api.100acress.com/postPerson/propertyDelete/${id}`
+          `/postPerson/propertyDelete/${id}`
         );
         if (res.status >= 200 && res.status < 300) {
 
