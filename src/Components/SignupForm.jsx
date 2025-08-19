@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import "antd/dist/reset.css";
 import { AuthContext } from "../AuthContext";
-import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { Eye, EyeOff } from "lucide-react";
 
 const roles = ["Agent", "Owner", "Builder"];
 
-function SignupForm() {
+function SignupForm({ inModal = false, onSwitchToLogin }) {
   const history = useNavigate();
   const [emailError, setEmailError] = useState("");
   const [mobileError, setMobileError] = useState("");
@@ -82,6 +82,10 @@ function SignupForm() {
   };
 
   const handleUserSignIn = () => {
+    if (typeof onSwitchToLogin === "function") {
+      onSwitchToLogin();
+      return;
+    }
     history("/auth/signin/");
   };
 
@@ -117,121 +121,135 @@ function SignupForm() {
   return (
     <>
       {contextHolder}
-      <div className="bg-white space-y-2 shadow-xl rounded-2xl mt-14 p-4 my-8 max-sm:w-[90vw]">
-        <div className="text-primaryRed text-3xl font-Gluten text-center font-semibold">Register your Account</div>
-        <div className="my-2 flex items-center max-sm:flex-col">
-          <p className=" mr-4 my-2">Are you a:</p>
-          <div className="flex flex-row gap-2 ">
+      <div className={`bg-white/95 shadow-[0_12px_32px_rgba(239,68,68,0.15)] rounded-2xl mt-8 p-6 md:p-8 my-6 ${inModal ? "w-full" : "max-sm:w-[90vw]"}`}>
+        {/* Heading */}
+        <div className="text-center mb-4">
+          <h2 className="text-[28px] md:text-[32px] font-extrabold text-[#e53935] font-sans tracking-tight">
+            Create Your Account
+          </h2>
+          <div className="mt-2 flex justify-center">
+            <span className="h-1 w-16 rounded-full bg-[#e53935]" />
+          </div>
+        </div>
+
+        {/* Role Selector */}
+        <div className="my-4">
+          <p className="text-sm text-slate-600 mb-2">I am a</p>
+          <div className="flex flex-wrap gap-2">
             {roles.map((role) => (
-              <div
+              <button
+                type="button"
                 key={role}
-                className={`w-full px-3 py-2  border rounded-3xl cursor-pointer hover:bg-primaryRed hover:text-white ${
-                  userSignUp.role === role && "bg-primaryRed text-white"
+                className={`px-4 py-2 rounded-full border transition-all duration-150 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none ${
+                  userSignUp.role === role
+                    ? "bg-[#e53935] text-white border-[#e53935]"
+                    : "bg-white text-slate-700 border-slate-300 hover:border-[#e53935]/60 hover:text-[#e53935]"
                 }`}
                 onClick={() => handleSelectRole(role)}
               >
                 {role}
-              </div>
+              </button>
             ))}
           </div>
         </div>
-        <form className="space-y-2" onSubmit={handleClick}>
-          <div className="flex space-x-1 max-sm:grid">
+
+        {/* Form */}
+        <form className="space-y-3" onSubmit={handleClick}>
+          <div className="flex gap-3 max-sm:flex-col">
+            {/* Name */}
             <div className="basis-1/2 flex flex-col">
-              <label htmlFor="name">Full Name</label>
+              <label htmlFor="name" className="text-sm font-medium text-slate-700 mb-1">Full Name</label>
               <input
                 type="text"
                 name="name"
                 id="name"
                 placeholder="John Doe"
-                className="border px-1 py-2 rounded"
+                className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
                 onChange={handleRegisterChange}
-                />
+              />
             </div>
-            <div className="basis-1/2 flex flex-col max-sm:mt-3">
-              <label htmlFor="mobile">Mobile Number</label>
+            {/* Mobile */}
+            <div className="basis-1/2 flex flex-col">
+              <label htmlFor="mobile" className="text-sm font-medium text-slate-700 mb-1">Mobile Number</label>
               <input
-                type="number"
+                type="tel"
                 name="mobile"
                 id="mobile"
                 placeholder="+91 9876543210"
-                className="border px-1 py-2 rounded"
+                className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
                 onChange={handleRegisterChange}
-                />
+              />
             </div>
           </div>
+
+          {/* Email */}
           <div className="flex flex-col">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email" className="text-sm font-medium text-slate-700 mb-1">Email</label>
             <input
               type="email"
               name="email"
               id="email"
               placeholder="username@email.com"
-              className="border px-1 py-2 rounded"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
               onChange={handleRegisterChange}
             />
           </div>
-          <div className="flex flex-col">
-            
+
+          {/* Passwords */}
+          <div className="flex gap-3 max-sm:flex-col">
+            <div className="basis-1/2 flex flex-col">
+              <label htmlFor="password" className="text-sm font-medium text-slate-700 mb-1">Password</label>
+              <div className="relative">
+                <input
+                  type={passwordHide ? "password" : "text"}
+                  name="password"
+                  id="password"
+                  placeholder="********"
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
+                  onChange={handleRegisterChange}
+                />
+                {passwordHide ? (
+                  <EyeOff size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 cursor-pointer" onClick={handleHideUnHide} />
+                ) : (
+                  <Eye size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-700 cursor-pointer" onClick={handleHideUnHide} />
+                )}
+              </div>
+            </div>
+            <div className="basis-1/2 flex flex-col">
+              <label htmlFor="cpassword" className="text-sm font-medium text-slate-700 mb-1">Confirm Password</label>
+              <div className="relative">
+                <input
+                  type={passwordHide ? "password" : "text"}
+                  name="cpassword"
+                  id="cpassword"
+                  placeholder="********"
+                  className="w-full border border-slate-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#e53935] focus:border-[#e53935] transition"
+                  onChange={handleRegisterChange}
+                />
+                {passwordHide ? (
+                  <EyeOff size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 cursor-pointer" onClick={handleHideUnHide} />
+                ) : (
+                  <Eye size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-700 cursor-pointer" onClick={handleHideUnHide} />
+                )}
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col relative">
-            <label htmlFor="password">Enter Password</label>
-            <input
-              type={`${passwordHide ? "password" : "text"}`}
-              name="password"
-              id="password"
-              placeholder="**********"
-              className="border px-1 py-2 rounded"
-              onChange={handleRegisterChange}
-            />
-            {passwordHide ? (
-              <FaEyeSlash
-                className="absolute top-1/2 right-2"
-                onClick={handleHideUnHide}
-              />
-            ) : (
-              <FaEye
-                className="absolute top-1/2 right-2"
-                onClick={handleHideUnHide}
-              />
-            )}
-          </div>
-          <div className="flex flex-col relative">
-            <label htmlFor="cpassword">Re-Enter Password</label>
-            <input
-              type={`${passwordHide ? "password" : "text"}`}
-              name="cpassword"
-              id="cpassword"
-              placeholder="**********"
-              className="border px-1 py-2 rounded"
-              onChange={handleRegisterChange}
-            />
-            {passwordHide ? (
-              <FaEyeSlash
-                className="absolute top-1/2 right-2"
-                onClick={handleHideUnHide}
-              />
-            ) : (
-              <FaEye
-                className="absolute top-1/2 right-2"
-                onClick={handleHideUnHide}
-              />
-            )}
-          </div>
+
+          {/* Submit */}
           <button
             type="submit"
-            className="bg-primaryRed text-white bg-red-500 text-center w-full rounded px-4 py-2 hover:bg-red-500"
+            className="w-full bg-[#e53935] hover:bg-[#c62828] text-white font-bold rounded-lg py-2.5 mt-1 shadow-sm hover:shadow-md transition"
             onClick={handleClick}
           >
             Register
           </button>
         </form>
-        <p className="text-center">
-          Already Have a account?{" "}
-          <p onClick={handleUserSignIn} className="text-primaryRed underline inline-block cursor-pointer">
-            Login
-          </p>
-        </p>
+
+        {/* Footer */}
+        <div className="text-center mt-3 text-sm text-slate-600">
+          Already have an account?{" "}
+          <button onClick={handleUserSignIn} className="text-[#e53935] font-semibold hover:underline">Login</button>
+        </div>
       </div>
     </>
   );

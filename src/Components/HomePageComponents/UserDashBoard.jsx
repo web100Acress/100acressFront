@@ -6,6 +6,10 @@ import { Link } from "react-router-dom";
 
 const UserDashBoard = () => {
   const { agentData, handleDeleteUser } = useContext(AuthContext);
+  const canManageBlogs =
+    agentData &&
+    typeof agentData.role === "string" &&
+    ["contentwriter", "blog"].includes(agentData.role.toLowerCase());
   let filteredRentProperties = [];
   let filteredSellProperties = [];
 
@@ -86,6 +90,14 @@ const UserDashBoard = () => {
               </div>
             </div>
             <div className="d-flex flex-col md:flex-row w-full mt-3">
+              {canManageBlogs && (
+                <Link
+                  to={"/seo/blogs"}
+                  className="bg-blue-600 md:w-1/2 w-full text-white text-md py-2 rounded-md md:mr-2 mb-2 md:mb-0"
+                >
+                  Go to Blog Panel
+                </Link>
+              )}
               <Link
                 to={"/postproperty/"}
                 className="bg-red-600 md:w-1/2 w-full text-white text-md py-2 rounded-md md:mr-2 mb-2 md:mb-0"
@@ -100,68 +112,6 @@ const UserDashBoard = () => {
         </div>
       </div>
       <hr className="mx-10" />
-
-      <div>
-        <h2 className="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl">
-          All Your Listing Property on 100acress Are Up-To-Date
-        </h2>
-      </div>
-
-      <div className="flex flex-wrap justify-center px-4 py-4">
-        {agentData.postProperty &&
-          agentData.postProperty.map((item, index) => {
-            const userId = item._id;
-            const id =item._id;
-            return (
-              <div className="w-full md:w-1/3 mb-4" key={index}>
-                {" "}
-                <div className="flex w-full px-2">
-                  <div className="w-full max-w-full md:max-w-3xl overflow-hidden rounded-lg shadow-lg md:flex">
-                    <div
-                      className="w-full h-32  xl:h-50 lg:h-36 md:h-30 sm:h-32 md:w-2/5 rounded-l-lg bg-cover bg-center text-white"
-                      style={{
-                        backgroundImage:
-                          item.frontImage && item.frontImage.url
-                            ? `url(${item.frontImage.url})`
-                            : null,
-                      }}
-                    />
-                    <div className="w-full md:w-3/5 ml-0 md:ml-4">
-                      <div className="py-3 md:py-5 px-2">
-                        <p className="text-md font-medium text-gray-800 mb-0">
-                          {item.propertyName}
-                        </p>
-                        <p className="mb-0  text-gray-500 text-sm">
-                          {item.city}, {item.state}
-                        </p>
-                        <div className="flex pt-5">
-                          <div className="d-flex mt-1 ">
-                            <Link to={`/useredit/${id}`}>
-                              <button className="bg-green-600 px-3 text-white py-1 rounded-md mr-2">
-                              Edit
-                            </button>
-                            </Link>
-                            
-                            <button
-                              onClick={() => {
-                                handleDeleteUser(userId);
-                                localStorage.setItem("user", userId);
-                              }}
-                              className="bg-red-600 text-white px-2 py-1 rounded-md mr-2"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-      </div>
 
       <Footer />
     </div>

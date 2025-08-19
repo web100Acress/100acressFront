@@ -516,7 +516,7 @@ const ProjectOrderManager = () => {
                 <button
                   onClick={() => {
                     // Show current server data
-                    fetch('https://api.100acress.com/projectOrder/sync')
+                    fetch('/projectOrder/sync')
                       .then(response => response.json())
                       .then(data => {
                         console.log('🔍 Current server data:', data);

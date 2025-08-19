@@ -78,7 +78,7 @@ const ShowPropertyDetails = ({ id, type }) => {
       try {
         setLoading(true);
         const res = await axios.get(
-          `https://api.100acress.com/property/view/${id}`
+          `/property/view/${id}`
         );
         if (res.data.data) {
           console.log("Property details loaded successfully");
@@ -89,8 +89,8 @@ const ShowPropertyDetails = ({ id, type }) => {
           const checkPropertyInCategory = async () => {
             try {
               const endpoint = type === "rental" 
-                ? "https://api.100acress.com/property/rent/viewAll"
-                : "https://api.100acress.com/property/buy/ViewAll";
+                ? "/property/rent/viewAll"
+                : "/property/buy/ViewAll";
               
               const categoryRes = await axios.get(endpoint);
               const categoryData = type === "rental" 
@@ -102,8 +102,8 @@ const ShowPropertyDetails = ({ id, type }) => {
               if (!propertyExists) {
                 // Property doesn't exist in this category, check the other category
                 const otherEndpoint = type === "rental" 
-                  ? "https://api.100acress.com/property/buy/ViewAll"
-                  : "https://api.100acress.com/property/rent/viewAll";
+                  ? "/property/buy/ViewAll"
+                  : "/property/rent/viewAll";
                 
                 const otherRes = await axios.get(otherEndpoint);
                 const otherData = type === "rental" 
@@ -205,7 +205,7 @@ const ShowPropertyDetails = ({ id, type }) => {
 
     if (custNumber && custName) {
       try {
-        const response = await axios.post("https://api.100acress.com/postEnquiry", {
+        const response = await axios.post("/postEnquiry", {
           ...userForm,
           ...agentDetails,
           propertyAddress: rentViewDetails.address,
@@ -238,8 +238,8 @@ const ShowPropertyDetails = ({ id, type }) => {
   const fetchData = async () => {
     try {
       const endpoint = propertyType === "rental" 
-        ? "https://api.100acress.com/property/rent/viewAll"
-        : "https://api.100acress.com/property/buy/ViewAll";
+        ? "/property/rent/viewAll"
+        : "/property/buy/ViewAll";
       
       const res = await axios.get(endpoint);
       

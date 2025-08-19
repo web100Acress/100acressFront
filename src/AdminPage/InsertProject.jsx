@@ -94,7 +94,7 @@ const InsertProject = () => {
   // Fetch builders from backend
   const fetchBuildersFromBackend = async () => {
     try {
-      const response = await fetch("https://api.100acress.com/builder/viewAll");
+      const response = await fetch("/builder/viewAll");
       if (response.ok) {
         const result = await response.json();
         if (result.success && result.data) {
@@ -155,7 +155,7 @@ const InsertProject = () => {
         });
 
         // API call to save new builder to backend
-        const builderApiEndpoint = "https://api.100acress.com/builder/Insert";
+        const builderApiEndpoint = "/builder/Insert";
         const builderData = {
           builderName: customBuilderName.trim(),
           createdAt: new Date().toISOString(),
@@ -342,7 +342,7 @@ const InsertProject = () => {
       content: 'Adding new project...',
     });
 
-    const apiEndpoint = "https://api.100acress.com/project/Insert";
+    const apiEndpoint = "/project/Insert";
     const formDataAPI = new FormData();
 
     // Append all text/select data from editFromData

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://api.100acress.com';
+const API_BASE_URL = '';
 
 class ProjectOrderApi {
   // Get all project orders for sync

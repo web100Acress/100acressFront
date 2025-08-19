@@ -8,13 +8,57 @@
     <loc>https://www.100acress.com/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>1.0</priority>
-  </url> 
+  </url>
+  <url>
+    <loc>https://www.100acress.com/top-luxury-projects/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/budget-properties/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/indiabulls-heights/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/m3m-mansion/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/trevoc-plots-sonipat/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/subh-housing-seggovias/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/smart-world-orchard-street/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/trident-realty-sector-104-gurgaon/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/satya-group-sector-104-gurgaon/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
 <url>
     <loc>https://www.100acress.com/godrej-sora/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
-  <!-- j -->
   <url>
     <loc>https://www.100acress.com/jacob-m3m-sector-97-noida/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
@@ -30,14 +74,11 @@
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
-
-
   <url>
     <loc>https://www.100acress.com/godrej-majesty/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
-
 <url>
     <loc>https://www.100acress.com/godrej-skyshore/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
@@ -83,8 +124,6 @@
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
-
-
   <url>
     <loc>https://www.100acress.com/godrej-horizon/  </loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
@@ -100,7 +139,6 @@
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.100acress.com/arttech-the-story-house/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
@@ -261,11 +299,7 @@
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://www.100acress.com/samyak-group-sco-plots/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url>
+  
   <url>
     <loc>https://www.100acress.com/spiti-homes/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
@@ -367,6 +401,21 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.100acress.com/projects/commerial/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/projects-in-newlaunch/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/project-in-underconstruction/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.100acress.com/projects/independentfloors/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
@@ -393,6 +442,11 @@
   </url>
   <url>
     <loc>https://www.100acress.com/rof-plots-gurugram/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/dlf-homes-sco-plots/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
@@ -427,7 +481,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.100acress.com/projects-in-gurugram/property-possession-after-2025/</loc>
+    <loc>https://www.100acress.com/projects-in-gurugram/property-possession-in-2026/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/projects-in-gurugram/property-possession-after-2026/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
@@ -486,11 +545,7 @@
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://www.100acress.com/aarize-sector-49-gurgaon/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url>
+  
   <url>
     <loc>https://www.100acress.com/ss-group-camasa/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
@@ -541,11 +596,7 @@
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://www.100acress.com/signature-farukhnagar-plots/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url>
+  
   <url>
     <loc>https://www.100acress.com/antriksh-central-avenue/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
@@ -606,11 +657,7 @@
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://www.100acress.com/bptp-lutyens-102/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url>
+  
   <url>
     <loc>https://www.100acress.com/trump-tower-sector-69-gurgaon/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
@@ -1960,57 +2007,7 @@
     <loc>https://www.100acress.com/godrejashokvihar/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
-  </url> 
-  <url>
-    <loc>https://www.100acress.com/developers/signature-global/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.100acress.com/developers/m3m-india/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.100acress.com/developers/dlf-homes/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.100acress.com/developers/experion-developers/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.100acress.com/developers/elan-group/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url> 
-  <url>
-    <loc>https://www.100acress.com/developers/bptp-limited/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url> 
-  <url>
-    <loc>https://www.100acress.com/developers/adani-realty/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url> 
-  <url>
-    <loc>https://www.100acress.com/developers/trevoc-group/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url> 
-  <url>
-    <loc>https://www.100acress.com/developers/indiabulls-real-estate/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.100acress.com/developers/smartWorld-developers/</loc>
-    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url>
+  </url>   
     <url>
     <loc>https://www.100acress.com/shapoorji-pallonji-sector-46-gurgaon/</loc>
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
@@ -2116,5 +2113,145 @@
     <lastmod>2025-01-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
+<url>
+    <loc>https://www.100acress.com/developers/godrej-properties/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/developers/dlf-homes/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/developers/emaar-india/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/developers/experion-developers/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/developers/signature-global/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url> 
+  <url>
+    <loc>https://www.100acress.com/developers/adani-realty/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url> 
+  <url>
+    <loc>https://www.100acress.com/developers/birla-estate/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url> 
+  <url>
+    <loc>https://www.100acress.com/developers/sobha-developers/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url> 
+  <url>
+    <loc>https://www.100acress.com/developers/trump-towers/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/developers/elan-group/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+<url>
+    <loc>https://www.100acress.com/developers/central-park/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+<url>
+    <loc>https://www.100acress.com/developers/puri-developers/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+<url>
+    <loc>https://www.100acress.com/developers/m3m-india/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+<url>
+    <loc>https://www.100acress.com/developers/smartworld-developers/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+<url>
+    <loc>https://www.100acress.com/developers/bptp-limited/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+<url>
+    <loc>https://www.100acress.com/developers/whiteland/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+<url>
+    <loc>https://www.100acress.com/developers/indiabulls-real-estate/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+<url>
+    <loc>https://www.100acress.com/developers/aipl/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+<url>
+    <loc>https://www.100acress.com/developers/trevoc-group/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+<url>
+    <loc>https://www.100acress.com/developers/aarize-developers/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
 
+  <url>
+    <loc>https://www.100acress.com/projects-in-dubai/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/projects-in-pushkar/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/projects-in-jalandhar/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/projects-in-karnal/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/project-in-kasauli/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/project-in-panchkula/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/project-in-mumbai/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/project-in-ayodhya/</loc>
+    <lastmod>2025-01-16T09:04:16+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
 </urlset>

@@ -26,7 +26,7 @@ const JobPostingEdit = () => {
   const fetchJobPostingData = async () => {
     try {
       const res = await axios.get(
-        `https://api.100acress.com/career/opening/View/${id}`
+        `/career/opening/View/${id}`
       );
       setValue(res.data.data);
     } catch (error) {
@@ -41,7 +41,7 @@ const JobPostingEdit = () => {
   const handleUpdate = async () => {
     try {
       const res = await axios.put(
-        `https://api.100acress.com/career/opening/update/${id}`,
+        `/career/opening/update/${id}`,
         value
       );
       if (res.status === 200) {

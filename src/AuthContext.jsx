@@ -54,24 +54,36 @@ export const AuthProvider = ({ children }) => {
       if (email && password) {
         try {
           const loginResponse = await axios.post(
-            "https://api.100acress.com/postPerson/verify_Login",
+            "/postPerson/verify_Login",
             { email, password }
           );
           const newToken = loginResponse.data.token;
           // Check if user's email is verified or not
 
-          localStorage.setItem("myToken", JSON.stringify(newToken));
+          localStorage.setItem("myToken", newToken);
           setToken(newToken);
   
           if (loginResponse.status === 200) {
             const roleResponse = await axios.get(
-              `https://api.100acress.com/postPerson/Role/${email}`
+              `/postPerson/Role/${email}`
             );
             setAgentData(roleResponse.data.User);
             localStorage.setItem(
               "agentData",
               JSON.stringify(roleResponse.data.User)
             );
+            // Persist user's first name for Navbar display
+            try {
+              const userName = roleResponse?.data?.User?.name || "";
+              const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
+              if (first) {
+                localStorage.setItem("firstName", first);
+              } else {
+                localStorage.removeItem("firstName");
+              }
+            } catch (_) {
+              // no-op: best-effort only
+            }
             if (roleResponse.status === 200) {
               localStorage.setItem(
                 "userRole",
@@ -79,8 +91,18 @@ export const AuthProvider = ({ children }) => {
               );
               const sellerId = roleResponse.data.User._id;
               localStorage.setItem("mySellerId", JSON.stringify(sellerId));
-              if (roleResponse.data.User.role === "Admin" || roleResponse.data.User.role === admin) {
-                history("/Admin/user");
+              const roleRaw = (roleResponse?.data?.User?.role || "").toString();
+              const roleNormalized = roleRaw.replace(/\s+/g, "").toLowerCase();
+              // Debug navigation decision
+              try { console.debug("[login redirect] role:", roleRaw, "normalized:", roleNormalized); } catch {}
+              if (roleRaw === "Admin" || roleRaw === admin) {
+                // Immediately reflect admin status for route guards
+                setIsAdmin(true);
+                history("/admin/user");
+              } else if (roleNormalized === "contentwriter" || roleNormalized === "blog") {
+                // Mark Content Writer in context and navigate to SEO dashboard
+                setIsContentWriter(true);
+                history("/seo/blogs");
               } else {
                 history("/userdashboard/");
                 window.location.reload()
@@ -113,13 +135,23 @@ export const AuthProvider = ({ children }) => {
               })
               const newToken = data.token;
               const User = data.User;
-              localStorage.setItem("myToken", JSON.stringify(newToken));
+              localStorage.setItem("myToken", newToken);
               setToken(newToken);
                 setAgentData(User);
                 localStorage.setItem(
                   "agentData",
                   JSON.stringify(User)
               );
+              // Store first name best-effort even in unverified state
+              try {
+                const userName = User?.name || "";
+                const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
+                if (first) {
+                  localStorage.setItem("firstName", first);
+                } else {
+                  localStorage.removeItem("firstName");
+                }
+              } catch (_) {}
               history("/auth/signup/email-verification"); // Redirect to verification page
             } else if (status === 401) {
               // Invalid credentials
@@ -186,7 +218,7 @@ export const AuthProvider = ({ children }) => {
 
       if (name && mobile && email && password && password === cpassword) {
         axios
-          .post("https://api.100acress.com/postPerson/register", userSignUp)
+          .post("/postPerson/register", userSignUp)
           .then((registrationResponse) => {
 
             // if error 409 User already Exist
@@ -201,16 +233,26 @@ export const AuthProvider = ({ children }) => {
 
             //Create token for user to login
             const newToken = registrationResponse.data.token;
-            localStorage.setItem("myToken", JSON.stringify(newToken));
+            localStorage.setItem("myToken", newToken);
             setToken(newToken);
             setAgentData(registrationResponse.data.User);
             localStorage.setItem(
               "agentData",
               JSON.stringify(registrationResponse.data.User)
             );
+            // Persist first name after signup
+            try {
+              const userName = registrationResponse?.data?.User?.name || "";
+              const first = (userName || "").toString().trim().split(/\s+/)[0] || "";
+              if (first) {
+                localStorage.setItem("firstName", first);
+              } else {
+                localStorage.removeItem("firstName");
+              }
+            } catch (_) {}
 
             //generate otp for the user to to verify the email
-            return axios.post("https://api.100acress.com/postPerson/verifyEmail", { 
+            return axios.post("/postPerson/verifyEmail", { 
               email: email // Pass relevant data for OTP
             })
           })
@@ -257,7 +299,7 @@ export const AuthProvider = ({ children }) => {
       );
       if (confirmDelete) {
         const res = await axios.delete(
-          `https://api.100acress.com/postPerson/propertyDelete/${id}`
+          `/postPerson/propertyDelete/${id}`
         );
         if (res.status >= 200 && res.status < 300) {
 

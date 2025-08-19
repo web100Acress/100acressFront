@@ -101,3 +101,62 @@ html {
 .custom-step-red .ant-steps-item-tail::after {
   background-color: #ef4444 !important;
 }
+
+*, *::before, *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+html {
+  scroll-behavior: auto !important;
+}
+
+/* Common libraries/components */
+.slick-slider *, .ant-modal *, .ant-drawer *, .ant-message *, .ant-notification * {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Disable CSS View Transitions API if present */
+::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) {
+  animation-duration: 0s !important;
+}
+
+/* LuxuryFooter animation keyframes and utilities */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(3deg); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(220, 38, 38, 0.2); }
+  50% { box-shadow: 0 0 25px rgba(220, 38, 38, 0.4); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear !important;
+}
+
+.animate-float-subtle {
+  animation: float 4s ease-in-out infinite !important;
+}
+
+.animate-glow-subtle {
+  animation: glow 3s ease-in-out infinite !important;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite !important;
+}

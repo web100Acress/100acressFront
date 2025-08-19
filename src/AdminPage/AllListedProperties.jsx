@@ -40,7 +40,7 @@ const AllListedProperties = () => {
     try {
       setIsLoading(true);
       const res = await axios.get(
-        `https://api.100acress.com/postPerson/view/allListedProperty/?page=${currentPage}&limit=${pageLimit}&verify=${isVerified}`,
+        `/postPerson/view/allListedProperty/?page=${currentPage}&limit=${pageLimit}&verify=${isVerified}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -99,7 +99,7 @@ const AllListedProperties = () => {
     try {
       console.log("Attempting to delete property with ID:", id);
       const res = await axios.delete(
-        `https://api.100acress.com/postPerson/propertyDelete/${id}`,
+        `/postPerson/propertyDelete/${id}`,
         {
             headers: {
                 "Content-Type": "application/json",

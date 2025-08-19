@@ -41,7 +41,7 @@ const FormHome = () => {
     setIsSubmitting(true); 
     try {
       await axios.post(
-        "https://api.100acress.com/contact_Insert",
+        "/contact_Insert",
         formDataInquiry
       );
       alert("Data submitted successfully");

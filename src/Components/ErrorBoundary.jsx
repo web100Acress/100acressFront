@@ -6,7 +6,7 @@ const ErrorContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 50vh;
   background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
   color: white;
   font-family: 'Rubik', sans-serif;
