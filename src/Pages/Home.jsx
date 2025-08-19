@@ -290,34 +290,28 @@ const Home = () => {
     >
   {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
-      <div className="relative w-full">
-        {/* Desktop/Tablet gradient background */}
-        <div
-          className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
-          style={{
-            backgroundImage: "url('https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        />
-        {/* Mobile gradient background */}
-        <div
-          className="mt-14 block md:hidden w-full h-[38rem]"
-          style={{
-            backgroundImage: "url('https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        />
+        <div className="relative w-full">
+          <img
+            // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/summer+banner.png"
+            //  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/monsoon-banner.webp"
+            src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp"
+            alt="Banner"
+            className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
+          />
+          <img
+            // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/mobilebanner.webp"
+            src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-mobile.webp"
+            alt="Mobile Banner"
+            className="mt-14 block md:hidden w-full h-[38rem]"
+          />
 
-        {/* Center the SearchBar */}
-        <div className="absolute inset-0 flex items-center justify-center mt-16 md:mt-0 lg:mt-24">
-          <SearchBar />
+
+          {/* Center the SearchBar */}
+          <div className="absolute inset-0 flex items-center justify-center mt-16 md:mt-0 lg:mt-24">
+            <SearchBar />
+          </div>
+
         </div>
-
-      </div>
 
       <div className="relative">
         {/* Removed themed overlay */}
