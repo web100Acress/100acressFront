@@ -110,7 +110,7 @@ const AboutSection = ({
           </div>
 
           {showViewMoreBtn && (
-            <div className="nb-viewmore-row">
+            <div className="nb-viewmore-row nb-only-mobile">
               <button
                 type="button"
                 onClick={() => setIsAboutModalOpen(true)}

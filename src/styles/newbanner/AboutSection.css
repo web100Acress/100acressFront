@@ -57,6 +57,10 @@
   .nb-viewmore-btn { display: inline-flex; align-items: center; gap: 8px; color: #ca8a04; font-weight: 500; background: transparent; border: none; cursor: pointer; transition: color .2s ease; }
   .nb-viewmore-btn:hover { color: #a16207; }
 
+  /* Utility: only show on mobile */
+  .nb-only-mobile { display: none; }
+  @media (max-width: 768px) { .nb-only-mobile { display: block; } }
+
   /* ---- Moved from NewBanner.css (About-specific styles) ---- */
   /* .premium-section-header intentionally omitted (no base styles) */
   .premium-section-subtitle { display: flex; align-items: center; font-size: 1rem; color: #5a4a1f; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
