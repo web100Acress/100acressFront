@@ -92,6 +92,9 @@ const BlogWriteModal = () => {
   const gridSizeToPx = { small: 120, medium: 160, large: 220 };
   const [bwMode, setBwMode] = useState(false);
   const [fontQuery, setFontQuery] = useState('');
+  const [gridLayout, setGridLayout] = useState('equal'); // equal | lastLarge
+  const [gridWithTitles, setGridWithTitles] = useState(true);
+  const [gridUseFrameTitle, setGridUseFrameTitle] = useState(true);
 
   // Register extra fonts in Quill
   const fontWhitelist = [
@@ -202,6 +205,66 @@ const BlogWriteModal = () => {
         resetForm();
       }
     };
+
+  // Convert the next 4 standalone images (from cursor) into a grid with inline styles
+  const convertNextImagesToGrid = () => {
+    const quill = quillRef.current?.getEditor?.();
+    if (!quill) return;
+    const root = quill.root;
+    const sel = quill.getSelection(true) || { index: 0 };
+    const leaf = quill.getLeaf(sel.index)?.[0];
+    const fromNode = leaf?.domNode || root.firstChild;
+
+    // Gather next 4 images not already inside a grid
+    const allImgs = Array.from(root.querySelectorAll('img'));
+    const startIdx = allImgs.findIndex((n) => n === fromNode || n.compareDocumentPosition(fromNode) & Node.DOCUMENT_POSITION_FOLLOWING || fromNode.contains?.(n));
+    const imgs = [];
+    for (let i = Math.max(0, startIdx); i < allImgs.length; i++) {
+      const img = allImgs[i];
+      if (img.closest('.img-grid-4')) continue;
+      imgs.push(img);
+      if (imgs.length === 4) break;
+    }
+    if (imgs.length < 2) {
+      messageApi.info('Need at least 2 images after the cursor to convert to a grid');
+      return;
+    }
+
+    const urls = imgs.map((img) => img.getAttribute('src')).filter(Boolean);
+    const cardStyle = 'background:#fff;border:2px solid #222;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;';
+    const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
+    const capStyle = 'padding:8px 10px;font-size:14px;color:#111;text-align:center;';
+    const cards = urls.map((u, idx) => gridWithTitles
+      ? `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /><figcaption style=\"${capStyle}\" contenteditable=\"true\">Title ${idx+1}</figcaption></figure>`
+      : `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /></figure>`
+    ).join('');
+    const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
+    const inner = `<div class=\"img-grid-4 layout-${gridLayout}\" style=\"display:flex;flex-wrap:nowrap;align-items:stretch;gap:12px;display:grid;grid-template-columns:${gridCols};--grid-img-height:${gridSizeToPx[gridImgSize]}px;\">${cards}</div>`;
+    const frameStyle = 'border:3px solid #111;border-radius:18px;padding:14px;background:#fff;';
+    const titleStyle = 'text-align:center;font-weight:700;margin:4px 0 12px;font-size:16px;';
+    const html = gridUseFrameTitle
+      ? `<section class=\"img-grid-4-frame\" style=\"${frameStyle}\"><div class=\"grid-title\" style=\"${titleStyle}\" contenteditable=\"true\">Grid Title</div>${inner}</section>`
+      : inner;
+
+    // Insert before the first image block
+    const firstImg = imgs[0];
+    const container = document.createElement('div');
+    container.innerHTML = html;
+    const nodeToInsert = container.firstChild;
+    const insertBefore = firstImg.closest('p') || firstImg;
+    insertBefore.parentNode.insertBefore(nodeToInsert, insertBefore);
+
+    // Remove the original images and empty paragraphs
+    imgs.forEach((img) => {
+      const p = img.closest('p');
+      img.remove();
+      if (p && !p.textContent.trim() && p.querySelectorAll('img').length === 0) {
+        p.remove();
+      }
+    });
+
+    messageApi.success('Converted 4 images into a grid');
+  };
     fetchBlog();
   }, [id]);
 
@@ -649,59 +712,99 @@ const BlogWriteModal = () => {
     quill.format('font', fontName);
   };
 
-  // Normalize: group sequences of 4 standalone images into a horizontal grid
-  const normalizeGrids = () => {
+  // Apply current grid controls to the grid at the cursor (also set inline styles + flex fallback for publish)
+  const applyGridSettingsToSelection = () => {
     const quill = quillRef.current?.getEditor?.();
     if (!quill) return;
-    const root = quill.root;
-    // Find groups of 2-4 images, allowing empty paragraphs between them
-    const blocks = Array.from(root.children || []);
-    let i = 0;
-    while (i < blocks.length) {
-      const imgs = [];
-      let j = i;
-      let first = i;
-      let last = i - 1;
-      while (j < blocks.length && imgs.length < 4) {
-        const el = blocks[j];
-        const img = el?.querySelector && el.querySelector('img');
-        const text = (el?.innerText || '').replace(/[\u200B\s\n]+/g, '');
-        const hasText = text.length > 0;
-        const isEmpty = !img && !hasText; // allow empty line
-        if (img && !hasText) {
-          imgs.push(img);
-          last = j;
-          j++;
-          continue;
-        }
-        if (isEmpty) { last = j; j++; continue; }
-        break;
-      }
-      if (imgs.length >= 2) {
-        // Build grid wrapper from 2 to 4 images
-        const wrapper = document.createElement('div');
-        wrapper.className = 'img-grid-4';
-        wrapper.setAttribute('contenteditable', 'false');
-        imgs.forEach((img) => {
-          const cell = document.createElement('div');
-          cell.className = 'img-cell';
-          cell.appendChild(img.cloneNode(true));
-          wrapper.appendChild(cell);
-        });
-        // Insert wrapper before first block in the range
-        const refNode = blocks[first];
-        root.insertBefore(wrapper, refNode);
-        // Remove all blocks from first..last
-        for (let k = first; k <= last; k++) {
-          if (blocks[k] && blocks[k].parentNode === root) root.removeChild(blocks[k]);
-        }
-        // Add spacer paragraph
-        const spacer = document.createElement('p'); spacer.innerHTML = '<br />';
-        root.insertBefore(spacer, wrapper.nextSibling);
-        return normalizeGrids();
-      }
-      i = (last >= i) ? last + 1 : i + 1;
+    const sel = quill.getSelection(true);
+    if (!sel) return;
+    const leaf = quill.getLeaf(sel.index)?.[0];
+    if (!leaf || !leaf.domNode) return;
+    let node = leaf.domNode;
+    // If cursor is inside frame, step into inner grid
+    let frameNode = null;
+    while (node && node !== quill.root && !(node.classList && (node.classList.contains('img-grid-4') || node.classList.contains('img-grid-4-frame')))) {
+      node = node.parentNode;
     }
+    if (node && node.classList.contains('img-grid-4-frame')) {
+      frameNode = node;
+      node = node.querySelector('.img-grid-4') || node;
+    }
+    if (!node || node === quill.root || !node.classList.contains('img-grid-4')) {
+      messageApi.info('Place the cursor inside a 4-image grid to apply settings');
+      return;
+    }
+    // Update height and layout
+    node.style.setProperty('--grid-img-height', `${gridSizeToPx[gridImgSize]}px`);
+    node.classList.remove('layout-equal', 'layout-lastLarge');
+    node.classList.add(`layout-${gridLayout}`);
+    // Inline styles for publish rendering (flex fallback + grid)
+    node.style.display = 'flex';
+    node.style.flexWrap = 'nowrap';
+    node.style.alignItems = 'stretch';
+    node.style.gap = '12px';
+    // Grid (if supported / not stripped)
+    node.style.display = 'grid';
+    node.style.gridTemplateColumns = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
+    if (frameNode) {
+      frameNode.style.border = '3px solid #111';
+      frameNode.style.borderRadius = '18px';
+      frameNode.style.padding = '14px';
+      frameNode.style.background = '#fff';
+    }
+    // Ensure each child is a figure.grid-card
+    const ensureFigure = (child) => {
+      if (child.tagName === 'FIGURE' && child.classList.contains('grid-card')) return child;
+      if (child.tagName === 'IMG') {
+        const fig = document.createElement('figure');
+        fig.className = 'grid-card';
+        child.replaceWith(fig);
+        fig.appendChild(child);
+        return fig;
+      }
+      return child;
+    };
+    const kids = Array.from(node.children);
+    kids.forEach((k, idx) => {
+      const fig = ensureFigure(k);
+      const img = fig.querySelector('img');
+      if (!img) return;
+      // Inline styles for card and image
+      fig.style.background = '#fff';
+      fig.style.border = '2px solid #222';
+      fig.style.borderRadius = '16px';
+      fig.style.overflow = 'hidden';
+      fig.style.display = 'flex';
+      fig.style.flexDirection = 'column';
+      // Flex fallback widths
+      if (gridLayout === 'lastLarge') {
+        fig.style.flex = idx === kids.length - 1 ? '0 0 40%' : '0 0 calc((60% - 36px)/3)';
+        fig.style.width = idx === kids.length - 1 ? '40%' : 'calc((60% - 36px)/3)';
+      } else {
+        fig.style.flex = '0 0 calc((100% - 36px)/4)';
+        fig.style.width = 'calc((100% - 36px)/4)';
+      }
+      img.style.width = '100%';
+      img.style.height = `${gridSizeToPx[gridImgSize]}px`;
+      img.style.objectFit = 'cover';
+      img.style.display = 'block';
+      const cap = fig.querySelector('figcaption');
+      if (gridWithTitles) {
+        if (!cap) {
+          const c = document.createElement('figcaption');
+          c.setAttribute('contenteditable', 'true');
+          c.textContent = 'Title';
+          c.style.padding = '8px 10px';
+          c.style.fontSize = '14px';
+          c.style.color = '#111';
+          c.style.textAlign = 'center';
+          fig.appendChild(c);
+        }
+      } else if (cap) {
+        cap.remove();
+      }
+    });
+    messageApi.success('Applied grid settings');
   };
 
   return (
@@ -714,11 +817,17 @@ const BlogWriteModal = () => {
           .featured-preview { background:#f8fafc; object-fit: contain; }
           /* Quill content images small by default, click to zoom */
           .ql-editor img { max-width: 100%; height: auto; max-height: 260px; display: block; margin: 8px auto; cursor: zoom-in; border-radius: 8px; }
+          /* Grid frame with title (outer border like your mockup) */
+          .img-grid-4-frame{ border:3px solid #111; border-radius:18px; padding:14px; background:#fff; }
+          .img-grid-4-frame > .grid-title{ text-align:center; font-weight:700; margin:4px 0 12px; font-size:16px; outline:none; }
           /* Four image grid block */
-          .ql-editor .img-grid-4 { display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; }
-          .ql-editor .img-grid-4 > .img-cell { width:100%; }
-          .ql-editor .img-grid-4 img { width:100%; height: var(--grid-img-height, 160px); object-fit: cover; border-radius:8px; cursor: zoom-in; margin:0; display:block; }
-          @media (max-width: 768px){ .ql-editor .img-grid-4{ grid-template-columns: repeat(2, 1fr);} }
+          .img-grid-4 { display:grid; gap:12px; }
+          .img-grid-4.layout-equal{ grid-template-columns: repeat(4, 1fr); }
+          .img-grid-4.layout-lastLarge{ grid-template-columns: 1fr 1fr 1fr 1.6fr; }
+          .img-grid-4 .grid-card{ background:#fff; border:2px solid #222; border-radius:16px; overflow:hidden; display:flex; flex-direction:column; }
+          .img-grid-4 .grid-card img { width:100%; height: var(--grid-img-height, 160px); object-fit: cover; cursor: zoom-in; display:block; }
+          .img-grid-4 .grid-card figcaption{ padding:8px 10px; font-size:14px; color:#111; text-align:center; outline:none; }
+          @media (max-width: 768px){ .img-grid-4{ grid-template-columns: repeat(2, 1fr);} }
           /* Black & White toggle */
           .ql-editor.bw-mode img { filter: grayscale(1); }
           /* Font mappings for editor */
@@ -1027,7 +1136,7 @@ const BlogWriteModal = () => {
                 <ImageIcon className="w-4 h-4" />
                 Insert Image (URL)
               </button>
-              {/* Grid image size selector */}
+              {/* Grid controls */}
               <div className="flex items-center gap-2">
                 <label className="text-sm text-gray-600">Grid size:</label>
                 <select
@@ -1040,6 +1149,25 @@ const BlogWriteModal = () => {
                   <option value="large">Large</option>
                 </select>
               </div>
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-gray-600">Layout:</label>
+                <select
+                  value={gridLayout}
+                  onChange={(e)=>setGridLayout(e.target.value)}
+                  className="px-2 py-1 border rounded"
+                >
+                  <option value="equal">Equal (1:1:1:1)</option>
+                  <option value="lastLarge">Last Larger</option>
+                </select>
+              </div>
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input type="checkbox" checked={gridWithTitles} onChange={(e)=>setGridWithTitles(e.target.checked)} />
+                Titles under images
+              </label>
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input type="checkbox" checked={gridUseFrameTitle} onChange={(e)=>setGridUseFrameTitle(e.target.checked)} />
+                Outer frame & grid title
+              </label>
               <button
                 type="button"
                 onClick={async () => {
@@ -1063,16 +1191,26 @@ const BlogWriteModal = () => {
                         const u = r?.data?.url || r?.data?.data?.url || r?.data?.imageUrl || '';
                         if (u) urls.push(u);
                       }
-                      const html = `<div class="img-grid-4" contenteditable="false" style="--grid-img-height: ${gridSizeToPx[gridImgSize]}px;">${urls
-                        .map((u) => `<div class="img-cell"><img src="${u}" alt="" /></div>`)
-                        .join('')}</div><p><br/></p>`;
+                      // Build cards with inline styles so it renders after publish without external CSS
+                      const cardStyle = 'background:#fff;border:2px solid #222;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;';
+                      const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
+                      const capStyle = 'padding:8px 10px;font-size:14px;color:#111;text-align:center;';
+                      const cards = urls.map((u, idx) => gridWithTitles
+                        ? `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /><figcaption style=\"${capStyle}\" contenteditable=\"true\">Title ${idx+1}</figcaption></figure>`
+                        : `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /></figure>`
+                      ).join('');
+                      const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
+                      const inner = `<div class=\"img-grid-4 layout-${gridLayout}\" style=\"display:flex;flex-wrap:nowrap;align-items:stretch;gap:12px;display:grid;grid-template-columns:${gridCols};--grid-img-height:${gridSizeToPx[gridImgSize]}px;\">${cards}</div>`;
+                      const frameStyle = 'border:3px solid #111;border-radius:18px;padding:14px;background:#fff;';
+                      const titleStyle = 'text-align:center;font-weight:700;margin:4px 0 12px;font-size:16px;';
+                      const html = gridUseFrameTitle
+                        ? `<section class=\"img-grid-4-frame\" style=\"${frameStyle}\"><div class=\"grid-title\" style=\"${titleStyle}\" contenteditable=\"true\">Grid Title</div>${inner}</section><p><br/></p>`
+                        : `${inner}<p><br/></p>`;
                       const quill = quillRef.current?.getEditor?.();
                       if (quill) {
                         const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
                         quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');
                         quill.setSelection(sel.index + 1, 0);
-                        // Normalize to ensure a horizontal grid even if Quill rewraps nodes
-                        setTimeout(() => normalizeGrids(), 0);
                       }
                       messageApi.success('Inserted 4-image grid');
                     } catch (err) {
@@ -1089,14 +1227,13 @@ const BlogWriteModal = () => {
               >
                 Insert 4-Image Grid
               </button>
-              {/* Fix layout button in case images rendered vertically */}
               <button
                 type="button"
-                onClick={normalizeGrids}
-                className="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100"
-                title="Convert vertical image stacks into a 4-image horizontal grid"
+                onClick={applyGridSettingsToSelection}
+                className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
+                title="Apply selected grid settings to the grid at the cursor"
               >
-                Fix 4-Image Layout
+                Apply Grid Settings
               </button>
               {/* Black & White toggle */}
               <button
