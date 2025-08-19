@@ -84,6 +84,25 @@ const BlogWriteModal = () => {
   const cropImgRef = useRef(null);
 
   const quillRef = useRef(null);
+  // Lightbox & preview helpers
+  const [lightboxUrl, setLightboxUrl] = useState('');
+  const [frontPreviewObjUrl, setFrontPreviewObjUrl] = useState('');
+  // Grid and theme controls
+  const [gridImgSize, setGridImgSize] = useState('medium'); // small|medium|large
+  const gridSizeToPx = { small: 120, medium: 160, large: 220 };
+  const [bwMode, setBwMode] = useState(false);
+  const [fontQuery, setFontQuery] = useState('');
+  const [gridLayout, setGridLayout] = useState('equal'); // equal | lastLarge
+  const [gridWithTitles, setGridWithTitles] = useState(true);
+  const [gridUseFrameTitle, setGridUseFrameTitle] = useState(true);
+
+  // Register extra fonts in Quill
+  const fontWhitelist = [
+    'inter','roboto','poppins','montserrat','lato','open-sans','raleway','nunito','merriweather','playfair','source-sans','ubuntu','work-sans','rubik','mulish','josefin','quicksand','dm-sans','pt-serif','arimo'
+  ];
+  const Font = Quill.import('formats/font');
+  Font.whitelist = fontWhitelist;
+  Quill.register(Font, true);
 
   // Auto-slug when title changes (unless user already touched slug)
   useEffect(() => {
@@ -186,6 +205,66 @@ const BlogWriteModal = () => {
         resetForm();
       }
     };
+
+  // Convert the next 4 standalone images (from cursor) into a grid with inline styles
+  const convertNextImagesToGrid = () => {
+    const quill = quillRef.current?.getEditor?.();
+    if (!quill) return;
+    const root = quill.root;
+    const sel = quill.getSelection(true) || { index: 0 };
+    const leaf = quill.getLeaf(sel.index)?.[0];
+    const fromNode = leaf?.domNode || root.firstChild;
+
+    // Gather next 4 images not already inside a grid
+    const allImgs = Array.from(root.querySelectorAll('img'));
+    const startIdx = allImgs.findIndex((n) => n === fromNode || n.compareDocumentPosition(fromNode) & Node.DOCUMENT_POSITION_FOLLOWING || fromNode.contains?.(n));
+    const imgs = [];
+    for (let i = Math.max(0, startIdx); i < allImgs.length; i++) {
+      const img = allImgs[i];
+      if (img.closest('.img-grid-4')) continue;
+      imgs.push(img);
+      if (imgs.length === 4) break;
+    }
+    if (imgs.length < 2) {
+      messageApi.info('Need at least 2 images after the cursor to convert to a grid');
+      return;
+    }
+
+    const urls = imgs.map((img) => img.getAttribute('src')).filter(Boolean);
+    const cardStyle = 'background:#fff;border:2px solid #222;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;';
+    const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
+    const capStyle = 'padding:8px 10px;font-size:14px;color:#111;text-align:center;';
+    const cards = urls.map((u, idx) => gridWithTitles
+      ? `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /><figcaption style=\"${capStyle}\" contenteditable=\"true\">Title ${idx+1}</figcaption></figure>`
+      : `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /></figure>`
+    ).join('');
+    const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
+    const inner = `<div class=\"img-grid-4 layout-${gridLayout}\" style=\"display:flex;flex-wrap:nowrap;align-items:stretch;gap:12px;display:grid;grid-template-columns:${gridCols};--grid-img-height:${gridSizeToPx[gridImgSize]}px;\">${cards}</div>`;
+    const frameStyle = 'border:3px solid #111;border-radius:18px;padding:14px;background:#fff;';
+    const titleStyle = 'text-align:center;font-weight:700;margin:4px 0 12px;font-size:16px;';
+    const html = gridUseFrameTitle
+      ? `<section class=\"img-grid-4-frame\" style=\"${frameStyle}\"><div class=\"grid-title\" style=\"${titleStyle}\" contenteditable=\"true\">Grid Title</div>${inner}</section>`
+      : inner;
+
+    // Insert before the first image block
+    const firstImg = imgs[0];
+    const container = document.createElement('div');
+    container.innerHTML = html;
+    const nodeToInsert = container.firstChild;
+    const insertBefore = firstImg.closest('p') || firstImg;
+    insertBefore.parentNode.insertBefore(nodeToInsert, insertBefore);
+
+    // Remove the original images and empty paragraphs
+    imgs.forEach((img) => {
+      const p = img.closest('p');
+      img.remove();
+      if (p && !p.textContent.trim() && p.querySelectorAll('img').length === 0) {
+        p.remove();
+      }
+    });
+
+    messageApi.success('Converted 4 images into a grid');
+  };
     fetchBlog();
   }, [id]);
 
@@ -196,8 +275,9 @@ const BlogWriteModal = () => {
     const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
     const insertAt = sel.index;
     quill.insertEmbed(insertAt, 'image', imageUrl, 'user');
-    quill.insertText(insertAt + 1, '\n', 'user');
-    quill.setSelection(insertAt + 2, 0);
+    // add extra blank line so user can type easily after image
+    quill.insertText(insertAt + 1, '\n\n', 'user');
+    quill.setSelection(insertAt + 3, 0);
   };
 
   // Build cropped blob from image + completedCrop
@@ -305,11 +385,15 @@ const BlogWriteModal = () => {
     const file = e.target.files?.[0];
     setFrontImage(file || null);
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => setFrontImagePreview(ev.target.result);
-      reader.readAsDataURL(file);
+      // Revoke previous object URL
+      if (frontPreviewObjUrl) URL.revokeObjectURL(frontPreviewObjUrl);
+      const objUrl = URL.createObjectURL(file);
+      setFrontPreviewObjUrl(objUrl);
+      setFrontImagePreview(objUrl);
     } else {
       setFrontImagePreview('');
+      if (frontPreviewObjUrl) URL.revokeObjectURL(frontPreviewObjUrl);
+      setFrontPreviewObjUrl('');
     }
   };
 
@@ -545,7 +629,10 @@ const BlogWriteModal = () => {
     toolbar: {
       container: [
         [{ header: [1, 2, 3, 4, false] }],
+        [{ font: fontWhitelist }],
+        [{ size: ['small', false, 'large', 'huge'] }],
         ['bold', 'italic', 'underline', 'strike'],
+        [{ color: [] }, { background: [] }],
         [{ list: 'ordered' }, { list: 'bullet' }],
         ['blockquote', 'code-block'],
         ['link', 'emoji'],
@@ -586,13 +673,187 @@ const BlogWriteModal = () => {
       }
     };
     root.addEventListener('paste', onPaste);
-    return () => root.removeEventListener('paste', onPaste);
+    // Image click -> open lightbox
+    const onClick = (e) => {
+      const t = e.target;
+      if (t && t.tagName === 'IMG') {
+        const src = t.getAttribute('src');
+        if (src) setLightboxUrl(src);
+      }
+    };
+    root.addEventListener('click', onClick);
+    return () => {
+      root.removeEventListener('paste', onPaste);
+      root.removeEventListener('click', onClick);
+    };
   }, []);
+
+  // Cleanup featured preview object URL
+  useEffect(() => {
+    return () => {
+      if (frontPreviewObjUrl) URL.revokeObjectURL(frontPreviewObjUrl);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Apply B/W mode to editor root
+  useEffect(() => {
+    const quill = quillRef.current?.getEditor?.();
+    if (!quill) return;
+    const root = quill.root;
+    if (bwMode) root.classList.add('bw-mode');
+    else root.classList.remove('bw-mode');
+  }, [bwMode]);
+
+  // Helper to apply selected font to current selection
+  const applyFontToSelection = (fontName) => {
+    const quill = quillRef.current?.getEditor?.();
+    if (!quill) return;
+    quill.format('font', fontName);
+  };
+
+  // Apply current grid controls to the grid at the cursor (also set inline styles + flex fallback for publish)
+  const applyGridSettingsToSelection = () => {
+    const quill = quillRef.current?.getEditor?.();
+    if (!quill) return;
+    const sel = quill.getSelection(true);
+    if (!sel) return;
+    const leaf = quill.getLeaf(sel.index)?.[0];
+    if (!leaf || !leaf.domNode) return;
+    let node = leaf.domNode;
+    // If cursor is inside frame, step into inner grid
+    let frameNode = null;
+    while (node && node !== quill.root && !(node.classList && (node.classList.contains('img-grid-4') || node.classList.contains('img-grid-4-frame')))) {
+      node = node.parentNode;
+    }
+    if (node && node.classList.contains('img-grid-4-frame')) {
+      frameNode = node;
+      node = node.querySelector('.img-grid-4') || node;
+    }
+    if (!node || node === quill.root || !node.classList.contains('img-grid-4')) {
+      messageApi.info('Place the cursor inside a 4-image grid to apply settings');
+      return;
+    }
+    // Update height and layout
+    node.style.setProperty('--grid-img-height', `${gridSizeToPx[gridImgSize]}px`);
+    node.classList.remove('layout-equal', 'layout-lastLarge');
+    node.classList.add(`layout-${gridLayout}`);
+    // Inline styles for publish rendering (flex fallback + grid)
+    node.style.display = 'flex';
+    node.style.flexWrap = 'nowrap';
+    node.style.alignItems = 'stretch';
+    node.style.gap = '12px';
+    // Grid (if supported / not stripped)
+    node.style.display = 'grid';
+    node.style.gridTemplateColumns = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
+    if (frameNode) {
+      frameNode.style.border = '3px solid #111';
+      frameNode.style.borderRadius = '18px';
+      frameNode.style.padding = '14px';
+      frameNode.style.background = '#fff';
+    }
+    // Ensure each child is a figure.grid-card
+    const ensureFigure = (child) => {
+      if (child.tagName === 'FIGURE' && child.classList.contains('grid-card')) return child;
+      if (child.tagName === 'IMG') {
+        const fig = document.createElement('figure');
+        fig.className = 'grid-card';
+        child.replaceWith(fig);
+        fig.appendChild(child);
+        return fig;
+      }
+      return child;
+    };
+    const kids = Array.from(node.children);
+    kids.forEach((k, idx) => {
+      const fig = ensureFigure(k);
+      const img = fig.querySelector('img');
+      if (!img) return;
+      // Inline styles for card and image
+      fig.style.background = '#fff';
+      fig.style.border = '2px solid #222';
+      fig.style.borderRadius = '16px';
+      fig.style.overflow = 'hidden';
+      fig.style.display = 'flex';
+      fig.style.flexDirection = 'column';
+      // Flex fallback widths
+      if (gridLayout === 'lastLarge') {
+        fig.style.flex = idx === kids.length - 1 ? '0 0 40%' : '0 0 calc((60% - 36px)/3)';
+        fig.style.width = idx === kids.length - 1 ? '40%' : 'calc((60% - 36px)/3)';
+      } else {
+        fig.style.flex = '0 0 calc((100% - 36px)/4)';
+        fig.style.width = 'calc((100% - 36px)/4)';
+      }
+      img.style.width = '100%';
+      img.style.height = `${gridSizeToPx[gridImgSize]}px`;
+      img.style.objectFit = 'cover';
+      img.style.display = 'block';
+      const cap = fig.querySelector('figcaption');
+      if (gridWithTitles) {
+        if (!cap) {
+          const c = document.createElement('figcaption');
+          c.setAttribute('contenteditable', 'true');
+          c.textContent = 'Title';
+          c.style.padding = '8px 10px';
+          c.style.fontSize = '14px';
+          c.style.color = '#111';
+          c.style.textAlign = 'center';
+          fig.appendChild(c);
+        }
+      } else if (cap) {
+        cap.remove();
+      }
+    });
+    messageApi.success('Applied grid settings');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-2 sm:p-4 lg:p-6">
       {contextHolder}
       <div className="w-full">
+        {/* Inline styles to improve image UX */}
+        <style>{`
+          /* Featured preview should never render black due to cover; use contain */
+          .featured-preview { background:#f8fafc; object-fit: contain; }
+          /* Quill content images small by default, click to zoom */
+          .ql-editor img { max-width: 100%; height: auto; max-height: 260px; display: block; margin: 8px auto; cursor: zoom-in; border-radius: 8px; }
+          /* Grid frame with title (outer border like your mockup) */
+          .img-grid-4-frame{ border:3px solid #111; border-radius:18px; padding:14px; background:#fff; }
+          .img-grid-4-frame > .grid-title{ text-align:center; font-weight:700; margin:4px 0 12px; font-size:16px; outline:none; }
+          /* Four image grid block */
+          .img-grid-4 { display:grid; gap:12px; }
+          .img-grid-4.layout-equal{ grid-template-columns: repeat(4, 1fr); }
+          .img-grid-4.layout-lastLarge{ grid-template-columns: 1fr 1fr 1fr 1.6fr; }
+          .img-grid-4 .grid-card{ background:#fff; border:2px solid #222; border-radius:16px; overflow:hidden; display:flex; flex-direction:column; }
+          .img-grid-4 .grid-card img { width:100%; height: var(--grid-img-height, 160px); object-fit: cover; cursor: zoom-in; display:block; }
+          .img-grid-4 .grid-card figcaption{ padding:8px 10px; font-size:14px; color:#111; text-align:center; outline:none; }
+          @media (max-width: 768px){ .img-grid-4{ grid-template-columns: repeat(2, 1fr);} }
+          /* Black & White toggle */
+          .ql-editor.bw-mode img { filter: grayscale(1); }
+          /* Font mappings for editor */
+          .ql-font-inter{font-family:'Inter',sans-serif}
+          .ql-font-roboto{font-family:'Roboto',sans-serif}
+          .ql-font-poppins{font-family:'Poppins',sans-serif}
+          .ql-font-montserrat{font-family:'Montserrat',sans-serif}
+          .ql-font-lato{font-family:'Lato',sans-serif}
+          .ql-font-open-sans{font-family:'Open Sans',sans-serif}
+          .ql-font-raleway{font-family:'Raleway',sans-serif}
+          .ql-font-nunito{font-family:'Nunito',sans-serif}
+          .ql-font-merriweather{font-family:'Merriweather',serif}
+          .ql-font-playfair{font-family:'Playfair Display',serif}
+          .ql-font-source-sans{font-family:'Source Sans Pro',sans-serif}
+          .ql-font-ubuntu{font-family:'Ubuntu',sans-serif}
+          .ql-font-work-sans{font-family:'Work Sans',sans-serif}
+          .ql-font-rubik{font-family:'Rubik',sans-serif}
+          .ql-font-mulich, .ql-font-mulish{font-family:'Mulish',sans-serif}
+          .ql-font-josefin{font-family:'Josefin Sans',sans-serif}
+          .ql-font-quicksand{font-family:'Quicksand',sans-serif}
+          .ql-font-dm-sans{font-family:'DM Sans',sans-serif}
+          .ql-font-pt-serif{font-family:'PT Serif',serif}
+          .ql-font-arimo{font-family:'Arimo',sans-serif}
+        `}</style>
+        {/* Load fonts */}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@300;400;700&family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&family=Raleway:wght@300;400;700&family=Nunito:wght@300;400;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;700&family=Ubuntu:wght@300;400;700&family=Work+Sans:wght@300;400;700&family=Rubik:wght@300;400;700&family=Mulish:wght@300;400;700&family=Josefin+Sans:wght@300;400;700&family=Quicksand:wght@300;400;700&family=DM+Sans:wght@300;400;700&family=PT+Serif:wght@400;700&family=Arimo:wght@400;700&display=swap" />
         {/* Header */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
           <div className="flex items-center justify-between">
@@ -781,7 +1042,9 @@ const BlogWriteModal = () => {
                   <img
                     src={frontImagePreview}
                     alt="Front"
-                    className="w-full h-64 object-cover rounded-xl shadow-lg"
+                    className="featured-preview w-full h-64 rounded-xl shadow-lg"
+                    onClick={() => setLightboxUrl(frontImagePreview)}
+                    title="Click to view full size"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-xl flex items-center justify-center">
                     <div className="opacity-0 group-hover:opacity-100 transition-all duration-200">
@@ -854,7 +1117,7 @@ const BlogWriteModal = () => {
             </div>
 
             {/* Editor Controls */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
                 onClick={uploadInlineImage}
@@ -873,6 +1136,130 @@ const BlogWriteModal = () => {
                 <ImageIcon className="w-4 h-4" />
                 Insert Image (URL)
               </button>
+              {/* Grid controls */}
+              {/* <div className="flex items-center gap-2">
+                <label className="text-sm text-gray-600">Grid size:</label>
+                <select
+                  value={gridImgSize}
+                  onChange={(e)=>setGridImgSize(e.target.value)}
+                  className="px-2 py-1 border rounded"
+                >
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                </select>
+              </div> */}
+              {/* <div className="flex items-center gap-2">
+                <label className="text-sm text-gray-600">Layout:</label>
+                <select
+                  value={gridLayout}
+                  onChange={(e)=>setGridLayout(e.target.value)}
+                  className="px-2 py-1 border rounded"
+                >
+                  <option value="equal">Equal (1:1:1:1)</option>
+                  <option value="lastLarge">Last Larger</option>
+                </select>
+              </div> */}
+              {/* <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input type="checkbox" checked={gridWithTitles} onChange={(e)=>setGridWithTitles(e.target.checked)} />
+                Titles under images
+              </label>
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input type="checkbox" checked={gridUseFrameTitle} onChange={(e)=>setGridUseFrameTitle(e.target.checked)} />
+                Outer frame & grid title
+              </label> */}
+              <button
+                type="button"
+                onClick={async () => {
+                  // Select up to 4 images, upload, then insert grid
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = 'image/*';
+                  input.multiple = true;
+                  input.onchange = async () => {
+                    const files = Array.from(input.files || []).slice(0, 4);
+                    if (!files.length) return;
+                    messageApi.open({ key: 'gridUpload', type: 'loading', content: 'Uploading images...', duration: 0 });
+                    try {
+                      const urls = [];
+                      for (const f of files) {
+                        const fd = new FormData();
+                        fd.append('image', f);
+                        const r = await axios.post(`${API_BASE}/blog/upload-image`, fd, {
+                          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
+                        });
+                        const u = r?.data?.url || r?.data?.data?.url || r?.data?.imageUrl || '';
+                        if (u) urls.push(u);
+                      }
+                      // Build cards with inline styles so it renders after publish without external CSS
+                      const cardStyle = 'background:#fff;border:2px solid #222;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;';
+                      const imgStyle = `width:100%;height:${gridSizeToPx[gridImgSize]}px;object-fit:cover;display:block;`;
+                      const capStyle = 'padding:8px 10px;font-size:14px;color:#111;text-align:center;';
+                      const cards = urls.map((u, idx) => gridWithTitles
+                        ? `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /><figcaption style=\"${capStyle}\" contenteditable=\"true\">Title ${idx+1}</figcaption></figure>`
+                        : `<figure class=\"grid-card\" style=\"${cardStyle}\"><img style=\"${imgStyle}\" src=\"${u}\" alt=\"\" /></figure>`
+                      ).join('');
+                      const gridCols = gridLayout === 'lastLarge' ? '1fr 1fr 1fr 1.6fr' : 'repeat(4, 1fr)';
+                      const inner = `<div class=\"img-grid-4 layout-${gridLayout}\" style=\"display:flex;flex-wrap:nowrap;align-items:stretch;gap:12px;display:grid;grid-template-columns:${gridCols};--grid-img-height:${gridSizeToPx[gridImgSize]}px;\">${cards}</div>`;
+                      const frameStyle = 'border:3px solid #111;border-radius:18px;padding:14px;background:#fff;';
+                      const titleStyle = 'text-align:center;font-weight:700;margin:4px 0 12px;font-size:16px;';
+                      const html = gridUseFrameTitle
+                        ? `<section class=\"img-grid-4-frame\" style=\"${frameStyle}\"><div class=\"grid-title\" style=\"${titleStyle}\" contenteditable=\"true\">Grid Title</div>${inner}</section><p><br/></p>`
+                        : `${inner}<p><br/></p>`;
+                      const quill = quillRef.current?.getEditor?.();
+                      if (quill) {
+                        const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
+                        quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');
+                        quill.setSelection(sel.index + 1, 0);
+                      }
+                      messageApi.success('Inserted 4-image grid');
+                    } catch (err) {
+                      console.error(err);
+                      messageApi.error('Failed to insert grid');
+                    } finally {
+                      messageApi.destroy('gridUpload');
+                    }
+                  };
+                  input.click();
+                }}
+                className="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition"
+                title="Insert 4 images as a grid"
+              >
+                Insert 4-Image Grid
+              </button>
+              <button
+                type="button"
+                onClick={applyGridSettingsToSelection}
+                className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
+                title="Apply selected grid settings to the grid at the cursor"
+              >
+                Apply Grid Settings
+              </button>
+              {/* Black & White toggle */}
+              <button
+                type="button"
+                onClick={()=>setBwMode(v=>!v)}
+                className="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100"
+                title="Toggle Black & White mode for images"
+              >
+                {bwMode ? 'Color Mode' : 'B/W Mode'}
+              </button>
+              {/* Font search/apply */}
+              <div className="flex items-center gap-2">
+                <input
+                  list="ql-font-list"
+                  value={fontQuery}
+                  onChange={(e)=>setFontQuery(e.target.value)}
+                  onKeyDown={(e)=>{ if(e.key==='Enter'){ applyFontToSelection(fontQuery); } }}
+                  placeholder="Search fonts"
+                  className="px-2 py-1 border rounded"
+                  style={{minWidth:180}}
+                />
+                <datalist id="ql-font-list">
+                  {fontWhitelist.map(f=> (<option key={f} value={f} />))}
+                </datalist>
+                <button type="button" className="px-3 py-1 rounded bg-gray-800 text-white" onClick={()=>applyFontToSelection(fontQuery)}>Apply Font</button>
+              </div>
             </div>
 
             {/* Content Editor */}
@@ -934,6 +1321,16 @@ const BlogWriteModal = () => {
             </div>
           </form>
         </div>
+        {/* Lightbox Overlay */}
+        {lightboxUrl && (
+          <div
+            onClick={() => setLightboxUrl('')}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 3000, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out' }}
+          >
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+            <img src={lightboxUrl} style={{ maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain', borderRadius: 8 }} />
+          </div>
+        )}
       </div>
     </div>
   );
