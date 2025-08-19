@@ -6,6 +6,8 @@ import { IoCall } from "react-icons/io5";
 import logoImage from "../../Images/100acress.png";
 import axios from "axios";
 import { YouTubeIcon ,FacebookIcon , LinkedinIcon , InstagramIcon ,TwitterIcon, SendIcon } from "../../Assets/icons";
+import LuxuryFooter from "./LuxuryFooter";
+
 const Footer = () => {
   const [data, setData] = useState({
     name: "",
@@ -464,4 +466,4 @@ const Footer = () => {
 );
 };
 
-export default Footer;
+export default LuxuryFooter;
