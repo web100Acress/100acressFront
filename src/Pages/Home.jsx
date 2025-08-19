@@ -264,7 +264,7 @@ const Home = () => {
   
 
   return (
-    <Wrapper className="section" style={{ overflowX: "hidden" }}>
+    <Wrapper className="section" style={{ overflow: "hidden" }}>
       <Helmet>
         <meta
           name="description"
