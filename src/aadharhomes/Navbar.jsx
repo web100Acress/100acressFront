@@ -232,6 +232,15 @@ export default function Navbar() {
     setColorchange(window.scrollY >= 150);
   };
 
+  // Auto-open navbar search when sticky (on scroll), hide when at top
+  useEffect(() => {
+    if (colorChange) {
+      setIsSearchOpen(true);
+    } else {
+      setIsSearchOpen(false);
+    }
+  }, [colorChange]);
+
   // Sticky detection using IntersectionObserver with scroll fallback
   useEffect(() => {
     const hero = document.querySelector('#hero, .hero, [data-hero]');
@@ -389,6 +398,7 @@ export default function Navbar() {
               opacity={{ base: 1, md: isSearchOpen ? 0 : 1 }}
               transition="opacity 250ms ease"
               pointerEvents={{ base: "auto", md: isSearchOpen ? 'none' : 'auto' }}
+              display={{ base: 'flex', md: isSearchOpen ? 'none' : 'flex' }}
             >
               <IconButton
                 size="sm"
@@ -591,7 +601,7 @@ export default function Navbar() {
               {/* Divider between filters and quick links */}
               <Box
                 as="span"
-                display={{ base: "none", md: "inline-block" }}
+                display={{ base: "none", md: colorChange ? "none" : "inline-block" }}
                 w="1px"
                 h="18px"
                 bg="#eaeaea"
@@ -846,6 +856,8 @@ export default function Navbar() {
               </Box>
             </Flex>
 
+            {/* Removed overlay so logo and right section remain visible while search is open */}
+
             {/* Centered Animated Search Bar */}
             <Box
               position="absolute"
@@ -856,7 +868,7 @@ export default function Navbar() {
               transition="transform 300ms ease, opacity 250ms ease"
               pointerEvents={isSearchOpen ? "auto" : "none"}
               w={{ base: "72vw", md: "min(680px, 70vw)" }}
-              zIndex={10002}
+              zIndex={10003}
             >
               <InputGroup bg="white" borderRadius="9999px" boxShadow="0 8px 24px rgba(0,0,0,0.18)">
                 <InputLeftElement pointerEvents="none" h="42px">
