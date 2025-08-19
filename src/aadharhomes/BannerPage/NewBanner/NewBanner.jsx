@@ -87,8 +87,12 @@ const NewBanner = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (!query || (typeof query === 'string' && query.trim() === '')) {
+          setBuilderProject([]);
+          return;
+        }
         const fetchedResult = await getProjectbyBuilder(query, 0);
-        setBuilderProject(fetchedResult);
+        setBuilderProject(Array.isArray(fetchedResult) ? fetchedResult : []);
       } catch (err) {
         setError(err);
       }
@@ -109,6 +113,7 @@ const NewBanner = () => {
     window.addEventListener("resize", updateNavHeight);
     return () => window.removeEventListener("resize", updateNavHeight);
   }, []);
+
   useEffect(() => {
     const checkTextHeight = () => {
       if (aboutTextRef.current && aboutImageRef.current) {
@@ -646,9 +651,10 @@ const NewBanner = () => {
   };
 
   const filteredProjects = filterProjectsByBuilder();
+  const safeBuilderProjects = Array.isArray(builderProject) ? builderProject : [];
   const projectsToShow = showAllProjects
-    ? builderProject
-    : builderProject.slice(0, 4);
+    ? safeBuilderProjects
+    : safeBuilderProjects.slice(0, 4);
 
   useEffect(() => {
     const timeOutId = setTimeout(() => {
