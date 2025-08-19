@@ -1137,7 +1137,7 @@ const BlogWriteModal = () => {
                 Insert Image (URL)
               </button>
               {/* Grid controls */}
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2">
                 <label className="text-sm text-gray-600">Grid size:</label>
                 <select
                   value={gridImgSize}
@@ -1148,8 +1148,8 @@ const BlogWriteModal = () => {
                   <option value="medium">Medium</option>
                   <option value="large">Large</option>
                 </select>
-              </div>
-              <div className="flex items-center gap-2">
+              </div> */}
+              {/* <div className="flex items-center gap-2">
                 <label className="text-sm text-gray-600">Layout:</label>
                 <select
                   value={gridLayout}
@@ -1159,15 +1159,15 @@ const BlogWriteModal = () => {
                   <option value="equal">Equal (1:1:1:1)</option>
                   <option value="lastLarge">Last Larger</option>
                 </select>
-              </div>
-              <label className="flex items-center gap-2 text-sm text-gray-700">
+              </div> */}
+              {/* <label className="flex items-center gap-2 text-sm text-gray-700">
                 <input type="checkbox" checked={gridWithTitles} onChange={(e)=>setGridWithTitles(e.target.checked)} />
                 Titles under images
               </label>
               <label className="flex items-center gap-2 text-sm text-gray-700">
                 <input type="checkbox" checked={gridUseFrameTitle} onChange={(e)=>setGridUseFrameTitle(e.target.checked)} />
                 Outer frame & grid title
-              </label>
+              </label> */}
               <button
                 type="button"
                 onClick={async () => {
