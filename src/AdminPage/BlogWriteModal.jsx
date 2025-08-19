@@ -206,6 +206,10 @@ const BlogWriteModal = () => {
       }
     };
 
+  
+    fetchBlog();
+  }, [id]);
+
   // Convert the next 4 standalone images (from cursor) into a grid with inline styles
   const convertNextImagesToGrid = () => {
     const quill = quillRef.current?.getEditor?.();
@@ -265,8 +269,6 @@ const BlogWriteModal = () => {
 
     messageApi.success('Converted 4 images into a grid');
   };
-    fetchBlog();
-  }, [id]);
 
   // Helper: insert image URL into Quill with trailing newline
   const insertImageIntoQuill = (imageUrl) => {
@@ -646,6 +648,21 @@ const BlogWriteModal = () => {
     'emoji-shortname': true,
   };
 
+  // Explicit formats so custom fonts and toolbar options are honored
+  const quillFormats = [
+    'header',
+    'font',
+    'size',
+    'bold', 'italic', 'underline', 'strike',
+    'color', 'background',
+    'list', 'bullet',
+    'blockquote', 'code-block',
+    'link',
+    'align',
+    'clean',
+    'image',
+  ];
+
   // Handle paste images (e.g., screenshots) -> open cropper
   useEffect(() => {
     const quill = quillRef.current?.getEditor?.();
@@ -841,7 +858,7 @@ const BlogWriteModal = () => {
           .ql-font-nunito{font-family:'Nunito',sans-serif}
           .ql-font-merriweather{font-family:'Merriweather',serif}
           .ql-font-playfair{font-family:'Playfair Display',serif}
-          .ql-font-source-sans{font-family:'Source Sans Pro',sans-serif}
+          .ql-font-source-sans{font-family:'Source Sans 3',sans-serif}
           .ql-font-ubuntu{font-family:'Ubuntu',sans-serif}
           .ql-font-work-sans{font-family:'Work Sans',sans-serif}
           .ql-font-rubik{font-family:'Rubik',sans-serif}
@@ -851,6 +868,50 @@ const BlogWriteModal = () => {
           .ql-font-dm-sans{font-family:'DM Sans',sans-serif}
           .ql-font-pt-serif{font-family:'PT Serif',serif}
           .ql-font-arimo{font-family:'Arimo',sans-serif}
+
+          /* Show font names in the toolbar dropdown */
+          .ql-snow .ql-picker.ql-font .ql-picker-label::before { content: 'Sans Serif'; }
+          .ql-snow .ql-picker.ql-font .ql-picker-item::before { content: attr(data-label); }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="inter"]::before { content: 'Inter'; font-family:'Inter',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="inter"]{ font-family:'Inter',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="roboto"]::before { content: 'Roboto'; font-family:'Roboto',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="roboto"]{ font-family:'Roboto',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="poppins"]::before { content: 'Poppins'; font-family:'Poppins',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="poppins"]{ font-family:'Poppins',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="montserrat"]::before { content: 'Montserrat'; font-family:'Montserrat',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="montserrat"]{ font-family:'Montserrat',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="lato"]::before { content: 'Lato'; font-family:'Lato',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="lato"]{ font-family:'Lato',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="open-sans"]::before { content: 'Open Sans'; font-family:'Open Sans',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="open-sans"]{ font-family:'Open Sans',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="raleway"]::before { content: 'Raleway'; font-family:'Raleway',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="raleway"]{ font-family:'Raleway',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nunito"]::before { content: 'Nunito'; font-family:'Nunito',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nunito"]{ font-family:'Nunito',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="merriweather"]::before { content: 'Merriweather'; font-family:'Merriweather',serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="merriweather"]{ font-family:'Merriweather',serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="playfair"]::before { content: 'Playfair'; font-family:'Playfair Display',serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="playfair"]{ font-family:'Playfair Display',serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="source-sans"]::before { content: 'Source Sans'; font-family:'Source Sans 3',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="source-sans"]{ font-family:'Source Sans 3',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="ubuntu"]::before { content: 'Ubuntu'; font-family:'Ubuntu',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="ubuntu"]{ font-family:'Ubuntu',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="work-sans"]::before { content: 'Work Sans'; font-family:'Work Sans',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="work-sans"]{ font-family:'Work Sans',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="rubik"]::before { content: 'Rubik'; font-family:'Rubik',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="rubik"]{ font-family:'Rubik',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="mulish"]::before { content: 'Mulish'; font-family:'Mulish',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="mulish"]{ font-family:'Mulish',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="josefin"]::before { content: 'Josefin Sans'; font-family:'Josefin Sans',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="josefin"]{ font-family:'Josefin Sans',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="quicksand"]::before { content: 'Quicksand'; font-family:'Quicksand',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="quicksand"]{ font-family:'Quicksand',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="dm-sans"]::before { content: 'DM Sans'; font-family:'DM Sans',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="dm-sans"]{ font-family:'DM Sans',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="pt-serif"]::before { content: 'PT Serif'; font-family:'PT Serif',serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="pt-serif"]{ font-family:'PT Serif',serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="arimo"]::before { content: 'Arimo'; font-family:'Arimo',sans-serif }
+          .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="arimo"]{ font-family:'Arimo',sans-serif }
         `}</style>
         {/* Load fonts */}
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@300;400;700&family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&family=Raleway:wght@300;400;700&family=Nunito:wght@300;400;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;700&family=Ubuntu:wght@300;400;700&family=Work+Sans:wght@300;400;700&family=Rubik:wght@300;400;700&family=Mulish:wght@300;400;700&family=Josefin+Sans:wght@300;400;700&family=Quicksand:wght@300;400;700&family=DM+Sans:wght@300;400;700&family=PT+Serif:wght@400;700&family=Arimo:wght@400;700&display=swap" />
@@ -1227,14 +1288,22 @@ const BlogWriteModal = () => {
               >
                 Insert 4-Image Grid
               </button>
-              <button
+              {/* <button
                 type="button"
                 onClick={applyGridSettingsToSelection}
                 className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
                 title="Apply selected grid settings to the grid at the cursor"
               >
                 Apply Grid Settings
-              </button>
+              </button> */}
+              {/* <button
+                type="button"
+                onClick={convertNextImagesToGrid}
+                className="px-4 py-2 rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition"
+                title="Convert the next 4 images after the cursor into a grid"
+              >
+                Convert Next 4 Images → Grid
+              </button> */}
               {/* Black & White toggle */}
               <button
                 type="button"
@@ -1245,7 +1314,7 @@ const BlogWriteModal = () => {
                 {bwMode ? 'Color Mode' : 'B/W Mode'}
               </button>
               {/* Font search/apply */}
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2">
                 <input
                   list="ql-font-list"
                   value={fontQuery}
@@ -1259,7 +1328,7 @@ const BlogWriteModal = () => {
                   {fontWhitelist.map(f=> (<option key={f} value={f} />))}
                 </datalist>
                 <button type="button" className="px-3 py-1 rounded bg-gray-800 text-white" onClick={()=>applyFontToSelection(fontQuery)}>Apply Font</button>
-              </div>
+              </div> */}
             </div>
 
             {/* Content Editor */}
@@ -1273,13 +1342,14 @@ const BlogWriteModal = () => {
 
               <div className="border border-gray-200 rounded-xl overflow-hidden">
                 <ReactQuill
-                  ref={quillRef}
-                  theme="snow"
-                  value={description}
-                  onChange={setDescription}
-                  className="h-64"
-                  modules={quillModules}
-                />
+                ref={quillRef}
+                theme="snow"
+                value={description}
+                onChange={setDescription}
+                className="h-64"
+                modules={quillModules}
+                formats={quillFormats}
+              />
               </div>
               <p className="text-xs text-gray-500">
                 Tip: Use the buttons above to insert images anywhere inside the content.
