@@ -3,14 +3,13 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Skeleton } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Pagination, Autoplay } from 'swiper/modules';
 import { 
   MdLocationPin, 
   MdAttachMoney, 
   MdStar, 
   MdShare,
-  MdArrowForward,
-  MdArrowBack
+  MdArrowForward
 } from 'react-icons/md';
 import { FaBed } from 'react-icons/fa';
 import styled from 'styled-components';
@@ -18,7 +17,6 @@ import Api_Service from "../../Redux/utils/Api_Service";
 
 // Import Swiper styles
 import 'swiper/css';
-import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 const ModernRecommendedSection = () => {
@@ -169,25 +167,30 @@ const ModernRecommendedSection = () => {
     <SectionWrapper>
       <div className="container mx-auto px-4 pt-0 pb-4">
         {/* Header Section */}
-        <div className="text-center mb-4">
-          <div className="inline-flex items-center gap-3 mb-0">
-            <div className="w-12 h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full"></div>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
-              100acress
-              <span className="text-orange-500 ml-2">Recommended</span>
+        <div className="text-center mb-2 sm:mb-4 px-2 pt-2">
+          <div className="inline-flex sm:inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-1 sm:mb-0">
+            <div className="w-12 h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full hidden sm:block"></div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight tracking-tight">
+              <span className="block sm:inline">100acress</span>
+              <span className="text-orange-500 sm:ml-2 block sm:inline">Recommended</span>
             </h2>
-            <div className="w-12 h-1 bg-gradient-to-r from-orange-600 to-orange-400 rounded-full"></div>
+            <div className="w-12 h-1 bg-gradient-to-r from-orange-600 to-orange-400 rounded-full hidden sm:block"></div>
           </div>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-0">
+          <p className="hidden sm:block text-gray-600 text-lg max-w-2xl mx-auto mb-0 px-1">
             Discover premium properties with luxury, location, and investment potential.
           </p>
+        </div>
+
+        {/* Mobile swipe hint */}
+        <div className="sm:hidden text-center text-gray-500 text-sm mb-1 swipe-hint" aria-hidden="true">
+          Swipe to see more <MdArrowForward className="inline-block align-middle swipe-hint-icon" />
         </div>
 
         {/* Carousel Container */}
         <div className="carousel-container">
           <Swiper
             ref={swiperRef}
-            modules={[Navigation, Pagination, Autoplay]}
+            modules={[Pagination, Autoplay]}
             grabCursor={true}
             centeredSlides={false}
             slidesPerView={2}
@@ -201,10 +204,6 @@ const ModernRecommendedSection = () => {
               clickable: true,
               dynamicBullets: true,
               el: '.swiper-pagination',
-            }}
-            navigation={{
-              nextEl: '.swiper-button-next',
-              prevEl: '.swiper-button-prev',
             }}
             breakpoints={{
               320: {
@@ -250,13 +249,7 @@ const ModernRecommendedSection = () => {
             ))}
           </Swiper>
 
-          {/* Custom Navigation Buttons */}
-          <div className="swiper-button-prev custom-nav-btn">
-            <MdArrowBack />
-          </div>
-          <div className="swiper-button-next custom-nav-btn">
-            <MdArrowForward />
-          </div>
+          {/* Navigation arrows removed intentionally */}
 
           {/* Custom Pagination */}
           <div className="swiper-pagination custom-pagination"></div>
@@ -394,11 +387,16 @@ const PropertyCard = ({
 
 // Styled Components
 const SectionWrapper = styled.section`
-  background: transparent; /* Seamless with hero below */
+  background: #ffffff; /* Solid white background on all viewports */
   position: relative;
   overflow: hidden;
   margin-top: 0;
-  padding-top: 0;
+  padding-top: 36px; /* desktop/tablet: visible gap from hero */
+
+  /* Ensure inner container also renders on white */
+  .container {
+    background: #ffffff;
+  }
 
   .carousel-container {
     position: relative;
@@ -407,6 +405,8 @@ const SectionWrapper = styled.section`
     max-width: 1200px;
     height: 450px;
     margin: 0 auto;
+    background: #ffffff; /* Ensure container remains white as well */
+    border-radius: 0; /* avoid showing page bg at rounded edges */
   }
 
   .modern-swiper {
@@ -483,15 +483,39 @@ const SectionWrapper = styled.section`
   }
 
   @media (max-width: 768px) {
+    padding-top: 8px; /* add a bit of breathing space above section on mobile */
+
+    /* Swipe hint styles */
+    .swipe-hint {
+      color: #6b7280; /* gray-500 */
+      font-size: 0.875rem; /* text-sm */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      .swipe-hint-icon {
+        animation: swipeRight 1.2s ease-in-out infinite;
+      }
+    }
+
+    @keyframes swipeRight {
+      0% { transform: translateX(0); opacity: 0.6; }
+      50% { transform: translateX(6px); opacity: 1; }
+      100% { transform: translateX(0); opacity: 0.6; }
+    }
+
     .carousel-container {
-      padding: 20px 0 60px 0;
+      padding: 8px 0 52px 0; /* reduce top padding to bring cards closer to heading */
       min-height: 400px;
       max-width: 900px;
       overflow: visible;
+      position: relative;
     }
 
+    /* Edge fade indicators removed to keep solid white background */
+
     .modern-swiper {
-      padding: 10px 0 40px 0;
+      padding: 4px 0 32px 0; /* tighten internal spacing */
     }
 
     .custom-nav-btn {
@@ -511,14 +535,14 @@ const SectionWrapper = styled.section`
 
   @media (max-width: 480px) {
     .carousel-container {
-      padding: 15px 0 50px 0;
+      padding: 6px 0 44px 0; /* further reduce gap on small phones */
       min-height: 350px;
       max-width: 700px;
       overflow: visible;
     }
 
     .modern-swiper {
-      padding: 5px 0 30px 0;
+      padding: 2px 0 24px 0;
     }
 
     .custom-nav-btn {
@@ -534,6 +558,11 @@ const SectionWrapper = styled.section`
         right: -60px;
       }
     }
+  }
+
+  /* Extra breathing room on large desktops */
+  @media (min-width: 1280px) {
+    padding-top: 48px;
   }
 `;
 
