@@ -82,7 +82,7 @@ const NewLaunch = lazy(() => import("./Pages/NewLaunch"));
 const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
 const SignatureGlobal = lazy(() => import("./Pages/SignatureGlobal"));
 const DlfSco = lazy(() => import("./Pages/DlfSco"));
-const NewBanner = lazy(() => import("./aadharhomes/BannerPage/NewBanner"));
+const NewBanner = lazy(() => import("./aadharhomes/BannerPage/NewBanner/NewBanner"));
 const Possessionin2026 = lazy(() => import("./Pages/Possessionin2026"));
 const BuilderPage = lazy(() => import("./Pages/BuilderPages/BuilderPage"));
 const OTPVerification = lazy(() => import("./Components/OTPVerification"));

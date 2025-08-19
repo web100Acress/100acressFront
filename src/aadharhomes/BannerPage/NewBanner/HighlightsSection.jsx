@@ -45,7 +45,7 @@ const HighlightsSection = ({ projectViewDetails, highlight = [], handleShowInsta
               )}
             </div>
             <div className="nb-highlight-cta-mobile">
-              <button
+              {/* <button
                 onClick={() => {
                   const url = projectViewDetails?.projectBrochure?.url;
                   if (url) window.open(url, '_blank'); else handleShowInstantcallBack?.();
@@ -54,7 +54,7 @@ const HighlightsSection = ({ projectViewDetails, highlight = [], handleShowInsta
               >
                 <i className="fas fa-download"></i>
                 <span>Download Brochure</span>
-              </button>
+              </button> */}
             </div>
           </div>
 
