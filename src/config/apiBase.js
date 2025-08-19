@@ -1,8 +1,3 @@
-// Centralized API base URL configuration
-// How to switch:
-// - Option A: Set a persistent override in localStorage key 'apiBase'
-// - Option B: Edit DEFAULT_BASE below and rebuild
-
 const DEFAULT_BASE = 'http://localhost:3500'; // local backend during development
 
 export const getApiBase = () => {

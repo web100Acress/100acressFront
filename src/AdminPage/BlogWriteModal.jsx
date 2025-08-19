@@ -84,6 +84,22 @@ const BlogWriteModal = () => {
   const cropImgRef = useRef(null);
 
   const quillRef = useRef(null);
+  // Lightbox & preview helpers
+  const [lightboxUrl, setLightboxUrl] = useState('');
+  const [frontPreviewObjUrl, setFrontPreviewObjUrl] = useState('');
+  // Grid and theme controls
+  const [gridImgSize, setGridImgSize] = useState('medium'); // small|medium|large
+  const gridSizeToPx = { small: 120, medium: 160, large: 220 };
+  const [bwMode, setBwMode] = useState(false);
+  const [fontQuery, setFontQuery] = useState('');
+
+  // Register extra fonts in Quill
+  const fontWhitelist = [
+    'inter','roboto','poppins','montserrat','lato','open-sans','raleway','nunito','merriweather','playfair','source-sans','ubuntu','work-sans','rubik','mulish','josefin','quicksand','dm-sans','pt-serif','arimo'
+  ];
+  const Font = Quill.import('formats/font');
+  Font.whitelist = fontWhitelist;
+  Quill.register(Font, true);
 
   // Auto-slug when title changes (unless user already touched slug)
   useEffect(() => {
@@ -196,8 +212,9 @@ const BlogWriteModal = () => {
     const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
     const insertAt = sel.index;
     quill.insertEmbed(insertAt, 'image', imageUrl, 'user');
-    quill.insertText(insertAt + 1, '\n', 'user');
-    quill.setSelection(insertAt + 2, 0);
+    // add extra blank line so user can type easily after image
+    quill.insertText(insertAt + 1, '\n\n', 'user');
+    quill.setSelection(insertAt + 3, 0);
   };
 
   // Build cropped blob from image + completedCrop
@@ -305,11 +322,15 @@ const BlogWriteModal = () => {
     const file = e.target.files?.[0];
     setFrontImage(file || null);
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => setFrontImagePreview(ev.target.result);
-      reader.readAsDataURL(file);
+      // Revoke previous object URL
+      if (frontPreviewObjUrl) URL.revokeObjectURL(frontPreviewObjUrl);
+      const objUrl = URL.createObjectURL(file);
+      setFrontPreviewObjUrl(objUrl);
+      setFrontImagePreview(objUrl);
     } else {
       setFrontImagePreview('');
+      if (frontPreviewObjUrl) URL.revokeObjectURL(frontPreviewObjUrl);
+      setFrontPreviewObjUrl('');
     }
   };
 
@@ -545,7 +566,10 @@ const BlogWriteModal = () => {
     toolbar: {
       container: [
         [{ header: [1, 2, 3, 4, false] }],
+        [{ font: fontWhitelist }],
+        [{ size: ['small', false, 'large', 'huge'] }],
         ['bold', 'italic', 'underline', 'strike'],
+        [{ color: [] }, { background: [] }],
         [{ list: 'ordered' }, { list: 'bullet' }],
         ['blockquote', 'code-block'],
         ['link', 'emoji'],
@@ -586,13 +610,141 @@ const BlogWriteModal = () => {
       }
     };
     root.addEventListener('paste', onPaste);
-    return () => root.removeEventListener('paste', onPaste);
+    // Image click -> open lightbox
+    const onClick = (e) => {
+      const t = e.target;
+      if (t && t.tagName === 'IMG') {
+        const src = t.getAttribute('src');
+        if (src) setLightboxUrl(src);
+      }
+    };
+    root.addEventListener('click', onClick);
+    return () => {
+      root.removeEventListener('paste', onPaste);
+      root.removeEventListener('click', onClick);
+    };
   }, []);
+
+  // Cleanup featured preview object URL
+  useEffect(() => {
+    return () => {
+      if (frontPreviewObjUrl) URL.revokeObjectURL(frontPreviewObjUrl);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Apply B/W mode to editor root
+  useEffect(() => {
+    const quill = quillRef.current?.getEditor?.();
+    if (!quill) return;
+    const root = quill.root;
+    if (bwMode) root.classList.add('bw-mode');
+    else root.classList.remove('bw-mode');
+  }, [bwMode]);
+
+  // Helper to apply selected font to current selection
+  const applyFontToSelection = (fontName) => {
+    const quill = quillRef.current?.getEditor?.();
+    if (!quill) return;
+    quill.format('font', fontName);
+  };
+
+  // Normalize: group sequences of 4 standalone images into a horizontal grid
+  const normalizeGrids = () => {
+    const quill = quillRef.current?.getEditor?.();
+    if (!quill) return;
+    const root = quill.root;
+    // Find groups of 2-4 images, allowing empty paragraphs between them
+    const blocks = Array.from(root.children || []);
+    let i = 0;
+    while (i < blocks.length) {
+      const imgs = [];
+      let j = i;
+      let first = i;
+      let last = i - 1;
+      while (j < blocks.length && imgs.length < 4) {
+        const el = blocks[j];
+        const img = el?.querySelector && el.querySelector('img');
+        const text = (el?.innerText || '').replace(/[\u200B\s\n]+/g, '');
+        const hasText = text.length > 0;
+        const isEmpty = !img && !hasText; // allow empty line
+        if (img && !hasText) {
+          imgs.push(img);
+          last = j;
+          j++;
+          continue;
+        }
+        if (isEmpty) { last = j; j++; continue; }
+        break;
+      }
+      if (imgs.length >= 2) {
+        // Build grid wrapper from 2 to 4 images
+        const wrapper = document.createElement('div');
+        wrapper.className = 'img-grid-4';
+        wrapper.setAttribute('contenteditable', 'false');
+        imgs.forEach((img) => {
+          const cell = document.createElement('div');
+          cell.className = 'img-cell';
+          cell.appendChild(img.cloneNode(true));
+          wrapper.appendChild(cell);
+        });
+        // Insert wrapper before first block in the range
+        const refNode = blocks[first];
+        root.insertBefore(wrapper, refNode);
+        // Remove all blocks from first..last
+        for (let k = first; k <= last; k++) {
+          if (blocks[k] && blocks[k].parentNode === root) root.removeChild(blocks[k]);
+        }
+        // Add spacer paragraph
+        const spacer = document.createElement('p'); spacer.innerHTML = '<br />';
+        root.insertBefore(spacer, wrapper.nextSibling);
+        return normalizeGrids();
+      }
+      i = (last >= i) ? last + 1 : i + 1;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-2 sm:p-4 lg:p-6">
       {contextHolder}
       <div className="w-full">
+        {/* Inline styles to improve image UX */}
+        <style>{`
+          /* Featured preview should never render black due to cover; use contain */
+          .featured-preview { background:#f8fafc; object-fit: contain; }
+          /* Quill content images small by default, click to zoom */
+          .ql-editor img { max-width: 100%; height: auto; max-height: 260px; display: block; margin: 8px auto; cursor: zoom-in; border-radius: 8px; }
+          /* Four image grid block */
+          .ql-editor .img-grid-4 { display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; }
+          .ql-editor .img-grid-4 > .img-cell { width:100%; }
+          .ql-editor .img-grid-4 img { width:100%; height: var(--grid-img-height, 160px); object-fit: cover; border-radius:8px; cursor: zoom-in; margin:0; display:block; }
+          @media (max-width: 768px){ .ql-editor .img-grid-4{ grid-template-columns: repeat(2, 1fr);} }
+          /* Black & White toggle */
+          .ql-editor.bw-mode img { filter: grayscale(1); }
+          /* Font mappings for editor */
+          .ql-font-inter{font-family:'Inter',sans-serif}
+          .ql-font-roboto{font-family:'Roboto',sans-serif}
+          .ql-font-poppins{font-family:'Poppins',sans-serif}
+          .ql-font-montserrat{font-family:'Montserrat',sans-serif}
+          .ql-font-lato{font-family:'Lato',sans-serif}
+          .ql-font-open-sans{font-family:'Open Sans',sans-serif}
+          .ql-font-raleway{font-family:'Raleway',sans-serif}
+          .ql-font-nunito{font-family:'Nunito',sans-serif}
+          .ql-font-merriweather{font-family:'Merriweather',serif}
+          .ql-font-playfair{font-family:'Playfair Display',serif}
+          .ql-font-source-sans{font-family:'Source Sans Pro',sans-serif}
+          .ql-font-ubuntu{font-family:'Ubuntu',sans-serif}
+          .ql-font-work-sans{font-family:'Work Sans',sans-serif}
+          .ql-font-rubik{font-family:'Rubik',sans-serif}
+          .ql-font-mulich, .ql-font-mulish{font-family:'Mulish',sans-serif}
+          .ql-font-josefin{font-family:'Josefin Sans',sans-serif}
+          .ql-font-quicksand{font-family:'Quicksand',sans-serif}
+          .ql-font-dm-sans{font-family:'DM Sans',sans-serif}
+          .ql-font-pt-serif{font-family:'PT Serif',serif}
+          .ql-font-arimo{font-family:'Arimo',sans-serif}
+        `}</style>
+        {/* Load fonts */}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@300;400;700&family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&family=Raleway:wght@300;400;700&family=Nunito:wght@300;400;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;700&family=Ubuntu:wght@300;400;700&family=Work+Sans:wght@300;400;700&family=Rubik:wght@300;400;700&family=Mulish:wght@300;400;700&family=Josefin+Sans:wght@300;400;700&family=Quicksand:wght@300;400;700&family=DM+Sans:wght@300;400;700&family=PT+Serif:wght@400;700&family=Arimo:wght@400;700&display=swap" />
         {/* Header */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
           <div className="flex items-center justify-between">
@@ -781,7 +933,9 @@ const BlogWriteModal = () => {
                   <img
                     src={frontImagePreview}
                     alt="Front"
-                    className="w-full h-64 object-cover rounded-xl shadow-lg"
+                    className="featured-preview w-full h-64 rounded-xl shadow-lg"
+                    onClick={() => setLightboxUrl(frontImagePreview)}
+                    title="Click to view full size"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-xl flex items-center justify-center">
                     <div className="opacity-0 group-hover:opacity-100 transition-all duration-200">
@@ -854,7 +1008,7 @@ const BlogWriteModal = () => {
             </div>
 
             {/* Editor Controls */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
                 onClick={uploadInlineImage}
@@ -873,6 +1027,102 @@ const BlogWriteModal = () => {
                 <ImageIcon className="w-4 h-4" />
                 Insert Image (URL)
               </button>
+              {/* Grid image size selector */}
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-gray-600">Grid size:</label>
+                <select
+                  value={gridImgSize}
+                  onChange={(e)=>setGridImgSize(e.target.value)}
+                  className="px-2 py-1 border rounded"
+                >
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                </select>
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  // Select up to 4 images, upload, then insert grid
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = 'image/*';
+                  input.multiple = true;
+                  input.onchange = async () => {
+                    const files = Array.from(input.files || []).slice(0, 4);
+                    if (!files.length) return;
+                    messageApi.open({ key: 'gridUpload', type: 'loading', content: 'Uploading images...', duration: 0 });
+                    try {
+                      const urls = [];
+                      for (const f of files) {
+                        const fd = new FormData();
+                        fd.append('image', f);
+                        const r = await axios.post(`${API_BASE}/blog/upload-image`, fd, {
+                          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
+                        });
+                        const u = r?.data?.url || r?.data?.data?.url || r?.data?.imageUrl || '';
+                        if (u) urls.push(u);
+                      }
+                      const html = `<div class="img-grid-4" contenteditable="false" style="--grid-img-height: ${gridSizeToPx[gridImgSize]}px;">${urls
+                        .map((u) => `<div class="img-cell"><img src="${u}" alt="" /></div>`)
+                        .join('')}</div><p><br/></p>`;
+                      const quill = quillRef.current?.getEditor?.();
+                      if (quill) {
+                        const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
+                        quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');
+                        quill.setSelection(sel.index + 1, 0);
+                        // Normalize to ensure a horizontal grid even if Quill rewraps nodes
+                        setTimeout(() => normalizeGrids(), 0);
+                      }
+                      messageApi.success('Inserted 4-image grid');
+                    } catch (err) {
+                      console.error(err);
+                      messageApi.error('Failed to insert grid');
+                    } finally {
+                      messageApi.destroy('gridUpload');
+                    }
+                  };
+                  input.click();
+                }}
+                className="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition"
+                title="Insert 4 images as a grid"
+              >
+                Insert 4-Image Grid
+              </button>
+              {/* Fix layout button in case images rendered vertically */}
+              <button
+                type="button"
+                onClick={normalizeGrids}
+                className="px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100"
+                title="Convert vertical image stacks into a 4-image horizontal grid"
+              >
+                Fix 4-Image Layout
+              </button>
+              {/* Black & White toggle */}
+              <button
+                type="button"
+                onClick={()=>setBwMode(v=>!v)}
+                className="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100"
+                title="Toggle Black & White mode for images"
+              >
+                {bwMode ? 'Color Mode' : 'B/W Mode'}
+              </button>
+              {/* Font search/apply */}
+              <div className="flex items-center gap-2">
+                <input
+                  list="ql-font-list"
+                  value={fontQuery}
+                  onChange={(e)=>setFontQuery(e.target.value)}
+                  onKeyDown={(e)=>{ if(e.key==='Enter'){ applyFontToSelection(fontQuery); } }}
+                  placeholder="Search fonts"
+                  className="px-2 py-1 border rounded"
+                  style={{minWidth:180}}
+                />
+                <datalist id="ql-font-list">
+                  {fontWhitelist.map(f=> (<option key={f} value={f} />))}
+                </datalist>
+                <button type="button" className="px-3 py-1 rounded bg-gray-800 text-white" onClick={()=>applyFontToSelection(fontQuery)}>Apply Font</button>
+              </div>
             </div>
 
             {/* Content Editor */}
@@ -934,6 +1184,16 @@ const BlogWriteModal = () => {
             </div>
           </form>
         </div>
+        {/* Lightbox Overlay */}
+        {lightboxUrl && (
+          <div
+            onClick={() => setLightboxUrl('')}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 3000, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out' }}
+          >
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+            <img src={lightboxUrl} style={{ maxWidth: '95vw', maxHeight: '95vh', objectFit: 'contain', borderRadius: 8 }} />
+          </div>
+        )}
       </div>
     </div>
   );
