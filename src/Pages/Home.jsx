@@ -7,9 +7,10 @@ import SpacesAvailable from "../Components/HomePageComponents/Spaces";
 import SearchBar from "../Components/HomePageComponents/SearchBar";
 import styled from "styled-components";
 import OurServices from "../Components/HomePageComponents/ourServices";
-import Free from "../../src/Pages/Free";
 import { Helmet } from "react-helmet";
-import Footer from "../Components/Actual_Components/Footer";
+// import Footer from "../Components/Actual_Components/Footer";
+import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
+
 // import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
 
 import { Link } from "react-router-dom";
@@ -19,7 +20,7 @@ import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
 import { useMediaQuery } from "@chakra-ui/react";
 import { EyeIcon } from "lucide-react";
-import HotProject from "./HomePages/hotproject";
+import ModernRecommendedSection from "../Components/HomePageComponents/ModernRecommendedSection";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Builder from "./BuilderPages/Builder";
@@ -29,9 +30,11 @@ import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
+import FloatingShorts from "../Components/FloatingShorts";
 // import ConfettiAllCorners from "../Components/ConfettiAllCorners";
 
 const Home = () => {
+  // const [showConfetti, setShowConfetti] = useState(true);
   // const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
@@ -55,16 +58,16 @@ const Home = () => {
   }, []);
 
 
-  const TrendingProjects = useSelector(store => store?.project?.trending);
-  const FeaturedProjects = useSelector(store => store?.project?.featured);
-  const UpcomingProjects = useSelector(store => store?.project?.upcoming);
-  const CommercialProjects = useSelector(store => store?.project?.commercial);
-  const SCOProjects = useSelector(store => store?.project?.scoplots);
-  const AffordableProjects = useSelector(store => store?.project?.affordable);
-  const LuxuryProjects = useSelector(store => store?.project?.luxury);
-  const BudgetHomesProjects = useSelector(store => store?.project?.budget);
-  const ProjectinDelhi = useSelector(store => store?.project?.projectindelhi);
-  const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll);
+  const TrendingProjects = useSelector(store => store?.project?.trending) || [];
+  const FeaturedProjects = useSelector(store => store?.project?.featured) || [];
+  const UpcomingProjects = useSelector(store => store?.project?.upcoming) || [];
+  const CommercialProjects = useSelector(store => store?.project?.commercial) || [];
+  const SCOProjects = useSelector(store => store?.project?.scoplots) || [];
+  const AffordableProjects = useSelector(store => store?.project?.affordable) || [];
+  const LuxuryProjects = useSelector(store => store?.project?.luxury) || [];
+  const BudgetHomesProjects = useSelector(store => store?.project?.budget) || [];
+  const ProjectinDelhi = useSelector(store => store?.project?.projectindelhi) || [];
+  const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll) || [];
   const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getAllProjects } = Api_Service();
   const [dataLoaded, setDataLoaded] = useState({
     trending: false,
@@ -261,7 +264,7 @@ const Home = () => {
   
 
   return (
-    <Wrapper className="section" style={{ overflowX: "hidden" }}>
+    <Wrapper className="section" style={{ overflow: "hidden" }}>
       <Helmet>
         <meta
           name="description"
@@ -302,6 +305,7 @@ const Home = () => {
             className="mt-14 block md:hidden w-full h-[38rem]"
           />
 
+
           {/* Center the SearchBar */}
           <div className="absolute inset-0 flex items-center justify-center mt-16 md:mt-0 lg:mt-24">
             <SearchBar />
@@ -310,15 +314,11 @@ const Home = () => {
         </div>
 
       <div className="relative">
-        {/* <div className="absolute inset-0 bg-[#f17777]"></div> */}
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)',
-        }}></div>
-
+        {/* Removed themed overlay */}
 
         <div className="relative">
           {/* <SpotlightBanner /> */}
-          <HotProject />
+          <ModernRecommendedSection />
         </div>
       </div>
 
@@ -329,7 +329,7 @@ const Home = () => {
           data-aos-duration="1000" className="py-0 mt-3 max-w-[1250px] mx-auto">
             <br />
           <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 ">
-            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
+            <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold">
               {`${activeFilter}`} Properties in Gurugram
             </h2>
           </div>
@@ -341,51 +341,51 @@ const Home = () => {
             
               <button
                 onClick={() => setActiveFilter("Trending")}
-                className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Trending" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:shadow-lg hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+                className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Trending" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:shadow-lg hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
               >
                 Trending
               </button>
             <button
               onClick={() => setActiveFilter("Featured")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Featured" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Featured" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               Featured
             </button>
             <button
               onClick={() => setActiveFilter("Upcoming")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Upcoming" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Upcoming" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               Upcoming
             </button>
             <button
               onClick={() => setActiveFilter("Commercial")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Commercial" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Commercial" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               Commercial
             </button>
             <button
               onClick={() => setActiveFilter("Affordable")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Affordable" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Affordable" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               Affordable
             </button>
             <button
               onClick={() => setActiveFilter("SCO")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "SCO" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "SCO" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               SCO
             </button>
             <button
               onClick={() => setActiveFilter("Budget")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Budget" ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg" : "border-2 border-[#FF9933] text-[#FF9933] shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Budget" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               Budget 🏠
             </button>
             <button
               onClick={() => setActiveFilter("Luxury")}
               className={`px-4 py-2 rounded-full text-sm font-semibold ${activeFilter === "Luxury"
-                ? "bg-gradient-to-r from-[#FF9933] to-[#138808] text-white shadow-lg transform hover:scale-105 duration-300 ease-in-out"
-                : "border-2 border-[#FF9933] text-[#FF9933] shadow-md hover:scale-105 duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#FF9933] hover:to-[#138808] hover:text-white"}`}
+                ? "bg-red-600 text-white shadow-lg transform hover:scale-105 duration-300 ease-in-out"
+                : "border-2 border-red-600 text-red-600 shadow-md hover:scale-105 duration-300 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
               Luxury
             </button>
@@ -393,7 +393,7 @@ const Home = () => {
             {path && (
               <div className="ml-auto hidden sm:block">
                 <Link to={path} target="_top">
-                  <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-gradient-to-r from-[#FF9933] to-[#138808] shadow-lg hover:shadow-xl transition-all duration-300">
+                  <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-red-600 shadow-lg hover:shadow-xl transition-all duration-300">
                     <EyeIcon />
                     <span className="ml-2">View All</span>
                   </span>
@@ -502,7 +502,7 @@ const Home = () => {
           <div className="sticky-quote-cta">
             <a
               className="text-white font-semibold"
-              style={{ background: 'linear-gradient(135deg, #FF9933 0%, #138808 100%)', padding: '12px' }}
+              style={{ background: 'red', padding: '12px' }}
             >
               LIST{" "}PROPERTY
             </a>
@@ -511,7 +511,6 @@ const Home = () => {
       </div>}
 
       {/* <HomeBuilderCarousel /> */}
-      <Free />
       {/* <div>
         <div>
           <a href="tel:8500900100" class="dd-m-phone">
@@ -536,18 +535,27 @@ const Home = () => {
 
       <PossessionProperty />
       <BackToTopButton />
-      <Footer />
-      {/* <LuxuryFooter /> */}
-      </div>
+      {/* Floating YouTube Shorts (desktop only) */}
+      <FloatingShorts videoId="ouBwbuoqnU8" />
+      {/* <Footer /> */}
+    </div> {/* Closing div for the blur container */}
+
+
+
+      {/* </div> */}
+
+    <LuxuryFooter />
+
     </Wrapper>
+
   );
 }
 
 export default Home;
 
-const Wrapper = styled.section`
-  /* Tricolor theme for the entire home page */
-  background: linear-gradient(135deg, rgba(255, 153, 51, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(19, 136, 8, 0.05) 100%);
+const Wrapper = styled.div`
+  /* Neutral background */
+  background: #ffffff;
 
   .dd-m-phone {
     position: fixed;

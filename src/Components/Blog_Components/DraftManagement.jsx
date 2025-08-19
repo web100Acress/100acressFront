@@ -36,7 +36,7 @@ export default function DraftBlogManagement() {
     setIsPublishedLoading(true);
 
     try {
-      const res = await axios.patch(`https://api.100acress.com/blog/update/${id}`,
+      const res = await axios.patch(`/blog/update/${id}`,
       {
         isPublished: checked,
       },
@@ -112,7 +112,7 @@ export default function DraftBlogManagement() {
         const fetchData = async () => {
           try {
             setLoading(true);
-            const res = await axios.get(`https://api.100acress.com/blog/draft/view?page=${currentPage}&limit=${pageSize}`);
+            const res = await axios.get(`/blog/draft/view?page=${currentPage}&limit=${pageSize}`);
             console.log("Response",res.data);
             setBlogs(res.data.data);
             setTotalPages(res.data.totalPages);
@@ -149,7 +149,7 @@ export default function DraftBlogManagement() {
 const handleDeleteUser = async (id) => {
     try {
       const response = await axios.delete(
-        `https://api.100acress.com/blog/Delete/${id}`,
+        `/blog/Delete/${id}`,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -177,9 +177,13 @@ const handleDeleteUser = async (id) => {
         .replace(/\s+/g, '-')        // Replace all spaces with hyphen
         .replace(/[?!,\.;:\{\}\(\)\$\@]+/g, ''); // Replace punctuation with empty string
   }
-  const handleBlogView = (Title,id) => {
-    const blogTitle = cleanString(Title);
-    history(`/blog/${blogTitle}/${id}`);
+  // Prefer slug-based blog link with fallback to legacy title/id route
+  const blogLink = (blog) => {
+    if (blog?.slug) return `/blog/${blog.slug}?id=${blog?._id}`;
+    return `/blog/${cleanString(blog?.blog_Title)}/${blog?._id}`;
+  };
+  const handleBlogView = (blog) => {
+    history(blogLink(blog));
   };
 
   // Calculate statistics
@@ -338,7 +342,7 @@ const handleDeleteUser = async (id) => {
                   <div className="p-6">
                     <h3 
                       className="text-lg font-bold text-gray-900 mb-2 hover:text-orange-600 cursor-pointer transition-colors duration-200 line-clamp-2"
-                      onClick={() => handleBlogView(blog.blog_Title, blog._id)}
+                      onClick={() => handleBlogView(blog)}
                         >
                           {blog.blog_Title}
                     </h3>
@@ -367,7 +371,7 @@ const handleDeleteUser = async (id) => {
                         <Tooltip title="View">
                           <button
                             className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                            onClick={() => handleBlogView(blog.blog_Title, blog._id)}
+                            onClick={() => handleBlogView(blog)}
                           >
                             <Eye className="w-4 h-4" />
                           </button>

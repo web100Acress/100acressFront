@@ -1,0 +1,7 @@
+/* Sticky mobile schedule visit button */
+.nb-sticky-visit { position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; display: block; width: 100%; }
+@media (min-width: 768px) { .nb-sticky-visit { display: none; } }
+.nb-sticky-visit-btn { width: 100%; background: linear-gradient(to right, #CFAF6E, #E5C78A); color: #fff; font-size: 1rem; font-weight: 600; padding: 8px 0; box-shadow: 0 20px 35px rgba(0,0,0,0.18); border-top-left-radius: 16px; border-top-right-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; outline: none; transition: all 200ms ease; }
+.nb-sticky-visit-btn:active { transform: scale(0.98); }
+.nb-sticky-visit-btn:focus { box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.25); }
+.nb-sticky-visit-icon { height: 20px; width: 20px; margin-right: 4px; }

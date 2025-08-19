@@ -18,6 +18,7 @@ import ErrorBoundary from "./Components/ErrorBoundary";
 
 // Lazy load all main page components
 const Home = lazy(() => import("./Pages/Home"));
+const EMICalculatorPage = lazy(() => import("./Pages/EMICalculatorPage"));
 const Properties = lazy(() => import("./Pages/ProjectCities/Properties"));
 const PropertyKnow = lazy(() => import("./Components/KnowAbouts/PropertyKnow"));
 const PageNotFound = lazy(() => import("./Pages/PageNotFound"));
@@ -81,7 +82,7 @@ const NewLaunch = lazy(() => import("./Pages/NewLaunch"));
 const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
 const SignatureGlobal = lazy(() => import("./Pages/SignatureGlobal"));
 const DlfSco = lazy(() => import("./Pages/DlfSco"));
-const NewBanner = lazy(() => import("./aadharhomes/BannerPage/NewBanner"));
+const NewBanner = lazy(() => import("./aadharhomes/BannerPage/NewBanner/NewBanner"));
 const Possessionin2026 = lazy(() => import("./Pages/Possessionin2026"));
 const BuilderPage = lazy(() => import("./Pages/BuilderPages/BuilderPage"));
 const OTPVerification = lazy(() => import("./Components/OTPVerification"));
@@ -288,6 +289,7 @@ function App() {
               <Route path="/projects-in-dubai/" element={<Dubai />} />
               <Route path="/projects-in-pushkar/" element={<Pushkar />} />
           <Route path="/qr-generator" element={<QRGeneratorPage />} />
+              <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
               <Route
                 path="/project-in-underconstruction/"
                 element={<UnderConstruction />}
@@ -308,6 +310,7 @@ function App() {
               <Route path="/contact-us/" element={<ContactUs />} />
               <Route path="/career-with-us/" element={<CareerWithUs />} />
               <Route path="/blog/" element={<Blogging />} />
+              <Route path="/blog/:slug" element={<BlogView />} />
               <Route path="/blog/:blogTitle/:id" element={<BlogView />} />
               <Route path="/blog/write" element={<BlogWrite />} />
               <Route

@@ -1,0 +1,37 @@
+.nb-pricing-section { padding: 8px 0 0; }
+  .nb-pricing-inner { display: flex; justify-content: center; align-items: stretch; border-radius: 12px; }
+  .nb-pricing-content { margin-top: 32px; margin-left: 16px; margin-right: 16px; }
+
+  /* Desktop table */
+  .nb-hide-mobile { display: none; }
+  @media (min-width: 768px) { .nb-hide-mobile { display: block; } }
+  .nb-pricing-table { border-radius: 16px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.25); border: 1px solid #D4AF37; background: #fff; }
+  .nb-pricing-header { display: flex; flex-shrink: 0; background: linear-gradient(to right, #CFAF6E, #E5C78A); color: #fff; box-shadow: 0 10px 15px rgba(0,0,0,0.15); }
+  .nb-pricing-cell { display: flex; align-items: center; justify-content: center; flex-grow: 1; min-width: 0; height: 64px; padding: 16px; }
+  .nb-cell-head span { font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; font-size: 1.125rem; font-weight: 700; letter-spacing: .02em; }
+  .nb-cell-divider { border-right: 1px solid rgba(212, 175, 55, 0.3); }
+
+  .nb-pricing-body { overflow: hidden; }
+  .nb-pricing-row { display: flex; flex-shrink: 0; transition: box-shadow .3s ease, background-color .3s ease; }
+  .nb-pricing-row:hover { box-shadow: 0 6px 12px rgba(0,0,0,0.08); background: rgba(255,249,241,0.7); }
+  .nb-row-alt { background: #FFF9F1; }
+  .nb-pricing-text-strong { font-family: ui-sans-serif, system-ui; color: #1f2937; font-weight: 600; font-size: 1.125rem; }
+  .nb-pricing-text { color: #374151; font-size: 1rem; }
+  .nb-get-details-btn { background: linear-gradient(to right, #CFAF6E, #E5C78A); color: #fff; font-weight: 700; padding: 12px 24px; border-radius: 9999px; box-shadow: 0 10px 15px rgba(0,0,0,0.15); transition: transform .2s ease, box-shadow .2s ease, filter .2s ease; border: none; }
+  .nb-get-details-btn:hover { transform: scale(1.05); box-shadow: 0 20px 25px rgba(0,0,0,0.2); filter: brightness(1.02); }
+
+  /* Mobile cards */
+  .nb-hide-desktop { display: block; }
+  @media (min-width: 768px) { .nb-hide-desktop { display: none; } }
+  .nb-pricing-mobile-card { background: #fff; border-radius: 16px; box-shadow: 0 10px 15px rgba(0,0,0,0.12); border: 1px solid rgba(212, 175, 55, 0.3); padding: 24px; transition: box-shadow .3s ease, border-color .3s ease; }
+  .nb-pricing-mobile-card:hover { box-shadow: 0 20px 30px rgba(0,0,0,0.18); border-color: rgba(212, 175, 55, 0.5); }
+  .nb-pricing-mobile-head { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(212, 175, 55, 0.2); }
+  .nb-pricing-mobile-title { font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; font-size: 1.5rem; font-weight: 700; color: #111827; text-align: center; margin: 0; }
+  .nb-pricing-mobile-size { margin-bottom: 24px; text-align: center; }
+  .nb-pricing-mobile-sizechip { display: inline-flex; align-items: center; padding: 8px 16px; background: linear-gradient(to right, #FFF9F1, #F7F3E9); border-radius: 9999px; border: 1px solid rgba(212, 175, 55, 0.2); }
+  .nb-pricing-size-label { font-size: 0.875rem; font-weight: 600; color: #8B7355; text-transform: uppercase; letter-spacing: .08em; margin-right: 8px; }
+  .nb-pricing-size-value { font-family: ui-sans-serif, system-ui; font-size: 1.125rem; font-weight: 600; color: #1f2937; }
+  .nb-pricing-mobile-cta { text-align: center; }
+  .nb-pricing-mobile-btn { background: linear-gradient(to right, #CFAF6E, #E5C78A); color: #fff; font-weight: 700; padding: 16px 32px; border-radius: 9999px; box-shadow: 0 10px 15px rgba(0,0,0,0.15); transition: transform .2s ease, box-shadow .2s ease; border: none; width: 100%; max-width: 20rem; }
+  .nb-pricing-mobile-btn:hover { transform: scale(1.05); box-shadow: 0 20px 25px rgba(0,0,0,0.2); }
+  .nb-pricing-mobile-btntext { display: flex; align-items: center; justify-content: center; gap: 8px; }

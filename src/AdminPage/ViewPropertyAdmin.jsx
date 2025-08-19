@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { message } from "antd";
+import { message, Modal, notification } from "antd";
 import { MdSearch, MdVisibility, MdEdit, MdDelete, MdExpandMore, MdExpandLess } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -16,6 +16,7 @@ const ViewPropertyAdmin = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
   const [tableOpen, setTableOpen] = useState(true);
+  const [deletingUser, setDeletingUser] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -57,10 +58,10 @@ const ViewPropertyAdmin = () => {
         
         // Try multiple endpoints to find the working one
         const endpoints = [
-          `https://api.100acress.com/postPerson/propertyView/${id}`,
-          `https://api.100acress.com/postPerson/view/${id}`,
-          `https://api.100acress.com/user/view/${id}`,
-          `https://api.100acress.com/admin/user/${id}`
+          `/postPerson/propertyView/${id}`,
+          `/postPerson/view/${id}`,
+          `/user/view/${id}`,
+          `/admin/user/${id}`
         ];
         
         let success = false;
@@ -117,7 +118,7 @@ const ViewPropertyAdmin = () => {
   const handleDeleteProperty = async (propertyId) => {
     messageApi.open({ key: 'deleteProp', type: 'loading', content: 'Deleting property...' });
     try {
-      const res = await axios.delete(`https://api.100acress.com/postPerson/propertyDelete/${propertyId}`);
+      const res = await axios.delete(`/postPerson/propertyDelete/${propertyId}`);
       if (res.status >= 200 && res.status < 300) {
         messageApi.destroy('deleteProp');
         messageApi.success('Property deleted');
@@ -131,89 +132,61 @@ const ViewPropertyAdmin = () => {
     }
   };
 
-  const handleDeleteUser = async () => {
-    const confirmed = window.confirm(
-      `🗑️ DELETE USER CONFIRMATION\n\n` +
-      `Are you sure you want to delete this user?\n` +
-      `This action cannot be undone.\n\n` +
-      `User: ${userDetails.name}\n` +
-      `Email: ${userDetails.email}\n\n` +
-      `Note: If deletion fails, it means the backend doesn't support this feature yet.`
-    );
-    
-    if (!confirmed) return;
-    
-    messageApi.open({ 
-      key: 'deleteUser', 
-      type: 'loading', 
-      content: 'Deleting user...' 
-    });
-    
-    try {
-      const token = localStorage.getItem("myToken");
-      
-      if (!token) {
-        messageApi.destroy('deleteUser');
-        messageApi.error('Authentication token not found. Please login again.');
-        return;
-      }
-      
-      console.log('🗑️ Attempting to delete user:', userDetails.name, 'ID:', id);
-      
-      // Try the most likely working endpoint first (implement this in backend)
-      const deleteEndpoints = [
-        `https://api.100acress.com/postPerson/deleteUser/${id}`,  // Recommended backend endpoint
-        `https://api.100acress.com/postPerson/userDelete/${id}`,
-        `https://api.100acress.com/admin/user/delete/${id}`,
-        `https://api.100acress.com/user/delete/${id}`
-      ];
-      
-      let deleteSuccess = false;
-      
-      for (const endpoint of deleteEndpoints) {
+  const handleDeleteUser = () => {
+    if (deletingUser) return; // guard against double-clicks
+    Modal.confirm({
+      title: 'Delete User',
+      content: (
+        <div>
+          <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+          <p><b>User:</b> {userDetails.name}</p>
+          <p><b>Email:</b> {userDetails.email}</p>
+        </div>
+      ),
+      okText: 'Yes, Delete',
+      cancelText: 'Cancel',
+      okButtonProps: { danger: true },
+      onOk: async () => {
+        if (deletingUser) return;
+        setDeletingUser(true);
+        messageApi.open({ key: 'deleteUser', type: 'loading', content: 'Deleting user...', duration: 0 });
         try {
-          console.log(`🌐 Trying delete endpoint: ${endpoint}`);
-          const res = await axios.delete(endpoint, {
-            headers: { 
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
-          });
-          
-          if (res.status >= 200 && res.status < 300) {
+          const token = localStorage.getItem('myToken');
+          if (!token) {
             messageApi.destroy('deleteUser');
-            messageApi.success('✅ User deleted successfully!');
-            navigate("/Admin/user");
-            deleteSuccess = true;
-            break;
+            notification.error({ message: 'Auth error', description: 'Authentication token not found. Please login again.', placement: 'topRight' });
+            setDeletingUser(false);
+            return;
           }
-        } catch (endpointError) {
-          console.log(`❌ Delete endpoint ${endpoint} failed:`, endpointError.response?.status);
-          continue;
+
+          // Call the primary backend endpoint that performs real DB deletion
+          let deleteSuccess = false;
+          try {
+            const res = await axios.delete(`/postPerson/deleteUser/${id}` , {
+              headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+              timeout: 15000,
+            });
+            deleteSuccess = res.status >= 200 && res.status < 300;
+          } catch (endpointError) {
+            console.log('❌ Delete failed:', endpointError.response?.status || endpointError.message);
+          }
+
+          messageApi.destroy('deleteUser');
+          if (deleteSuccess) {
+            notification.success({ message: 'User deleted', description: 'The user was deleted successfully.', placement: 'topRight' });
+            navigate('/Admin/user');
+          } else {
+            notification.error({ message: 'Delete failed', description: 'Backend did not confirm deletion. Please try again or check server logs.', placement: 'topRight' });
+          }
+        } catch (err) {
+          console.error('❌ Critical delete error:', err);
+          messageApi.destroy('deleteUser');
+          notification.error({ message: 'Delete failed', description: 'Critical error during deletion. Please try again.', placement: 'topRight' });
+        } finally {
+          setDeletingUser(false);
         }
-      }
-      
-      if (!deleteSuccess) {
-        // Backend doesn't support deletion, so simulate it directly
-        messageApi.destroy('deleteUser');
-        messageApi.success('✅ User deleted successfully!');
-        
-        // Store deleted user IDs in localStorage to hide them from lists
-        const deletedUsers = JSON.parse(localStorage.getItem('deletedUsers') || '[]');
-        deletedUsers.push(id);
-        localStorage.setItem('deletedUsers', JSON.stringify(deletedUsers));
-        
-        // Navigate back to user list
-        setTimeout(() => {
-          navigate("/Admin/user");
-        }, 1500);
-      }
-      
-    } catch (err) {
-      console.error('❌ Critical delete error:', err);
-      messageApi.destroy('deleteUser');
-      messageApi.error('Critical error during deletion. Please try again.');
-    }
+      },
+    });
   };
 
   return (
@@ -249,7 +222,8 @@ const ViewPropertyAdmin = () => {
               </div>
               <button
                 onClick={handleDeleteUser}
-                className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full shadow transition-colors duration-200"
+                disabled={deletingUser}
+                className={`px-5 py-2 ${deletingUser ? 'bg-red-300 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'} text-white rounded-full shadow transition-colors duration-200`}
                 title="Delete user (backend support may be limited)"
               >
                 <MdDelete className="inline mr-1" /> Delete User

@@ -110,6 +110,14 @@ import { BlogPaginationControls } from "./BlogManagement";
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
 
+// Prefer slug-based blog link with fallback to legacy title/id route
+const getSlugFromTitle = (title) =>
+  (title || "").replace(/\s+/g, '-').replace(/[?!,\.;:\{\}\(\)\$\@]+/g, '').toLowerCase();
+const blogLink = (blog) => {
+  if (blog?.slug) return `/blog/${blog.slug}?id=${blog?._id}`;
+  return `/blog/${getSlugFromTitle(blog?.blog_Title)}/${blog?._id}`;
+};
+
 export default function BlogDashboard() {
   const token = localStorage.getItem("myToken");
   const history = useNavigate();
@@ -175,7 +183,7 @@ export default function BlogDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`https://api.100acress.com/blog/view?page=${currentPage}&limit=${pageSize}`);
+      const res = await axios.get(`/blog/view?page=${currentPage}&limit=${pageSize}`);
       const fetchedBlogs = res.data.data || [];
       
       // Debug: Log the first blog to see the image structure
@@ -247,7 +255,7 @@ export default function BlogDashboard() {
     setPublishLoading(true);
     try {
       const res = await axios.patch(
-        `https://api.100acress.com/blog/update/${blogId}`,
+        `/blog/update/${blogId}`,
         { isPublished: checked },
         {
           headers: {
@@ -275,7 +283,7 @@ export default function BlogDashboard() {
       console.log('Attempting to delete blog with ID:', blogId);
       
       const response = await axios.delete(
-        `https://api.100acress.com/blog/delete/${blogId}`,
+        `/blog/delete/${blogId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -585,10 +593,11 @@ export default function BlogDashboard() {
             <Button
               type="text"
               icon={<Eye size={18} />}
-              onClick={() => history(`/blog/${record.blog_Title?.replace(/\s+/g, '-').replace(/[?!,\.;:\{\}\(\)\$\@]+/g, '')}/${record._id}`)}
+              onClick={() => history(blogLink(record))}
               className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-full"
             />
           </Tooltip>
+
           <Tooltip title="Edit Blog">
             <Link to={`/seo/blogs/edit/${record._id}`}>
               <Button

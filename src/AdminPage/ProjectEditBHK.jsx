@@ -23,7 +23,7 @@ const ProjectEditBHK = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`https://api.100acress.com/bhk_edit/${id}`);
+        const res = await axios.get(`/bhk_edit/${id}`);
         // Ensure data exists before setting state
         if (res.data.data.BhK_Details && res.data.data.BhK_Details.length > 0) {
           setViewBHK(res.data.data.BhK_Details[0]);
@@ -65,7 +65,7 @@ const ProjectEditBHK = () => {
 
     try {
       const res = await axios.post(
-        `https://api.100acress.com/bhk_update/${id}`,
+        `/bhk_update/${id}`,
         viewBHK
       );
 

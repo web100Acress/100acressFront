@@ -41,7 +41,7 @@ const Enquiries = () => {
     }
     try {
       const response = await axios.get(
-        `https://api.100acress.com/userViewAll?limit=${pageSize}&page=${page}`,
+        `/userViewAll?limit=${pageSize}&page=${page}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -97,7 +97,7 @@ const Enquiries = () => {
 
   const downloadExelFile = async () => {
     try {
-      const response = await fetch("https://api.100acress.com/userViewAll/dowloadData",
+      const response = await fetch("/userViewAll/dowloadData",
         {
           headers: {
             "Content-Type": "application/json",

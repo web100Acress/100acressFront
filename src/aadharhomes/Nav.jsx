@@ -33,7 +33,7 @@ const MenuListContainer = ({ isOpen }) => {
 
   const HandleUserLogout = async () => {
     try {
-      await axios.get("https://api.100acress.com/postPerson/logout");
+      await axios.get("/postPerson/logout");
       history("/");
       localStorage.removeItem("myToken");
       localStorage.removeItem("mySellerId");

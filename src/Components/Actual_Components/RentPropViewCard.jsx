@@ -141,7 +141,7 @@ const RentPropViewCard = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get("https://api.100acress.com/property/rent/viewAll");
+      const res = await axios.get("/property/rent/viewAll");
       
       setBuyData(res.data.rentaldata);
       setFilterData(res.data.rentaldata);

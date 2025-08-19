@@ -29,7 +29,7 @@ const Api_service = () => {
     }
   };
 
-  const getSpotlight = async () => {
+  const getSpotlight = useCallback(async () => {
     try {
       const response = await axios.get(`${API_ROUTES_PROJECTS}/spotlight`);
       const Spotlightprojects = response.data.data;
@@ -37,7 +37,7 @@ const Api_service = () => {
     } catch (error) {
       console.error("Error fetching spotlight data:", error);
     }
-  };
+  }, [dispatch]);
 
   const getFeatured = async() =>{
     try {
@@ -309,10 +309,15 @@ const Api_service = () => {
 
   const getProjectbyBuilder = useCallback(async (query ,limit ) => {
     try {
+      if (!query || (typeof query === 'string' && query.trim() === '')) {
+        console.warn('getProjectbyBuilder: missing builder name');
+        return [];
+      }
       console.log('🔍 API Call - builderName:', query);
       const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?builderName=${query}&limit=${limit}`);
       console.log('🔍 API Response:', response.data);
       const BuilderbyQuery = response.data.data;
+
       switch (query) {
         case 'Signature Global':
           dispatch(signatureglobal(BuilderbyQuery));
@@ -391,6 +396,7 @@ const Api_service = () => {
       return BuilderbyQuery;
     } catch (error) {
       console.error("Error fetching project data:", error);
+      return [];
     }
   }, [dispatch]);
 

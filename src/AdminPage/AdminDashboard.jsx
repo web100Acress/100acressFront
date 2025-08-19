@@ -13,7 +13,7 @@ function useCountUp(target, duration = 1000) {
     let start = 0;
     let startTime = null;
     function animateCountUp(timestamp) {
-      if (!startTime) startTime = timestamp;
+      if (!startTime) startTime = timestamp;  
       const progress = Math.min((timestamp - startTime) / duration, 1);
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
       setCount(Math.floor(easeOutQuart * (target - start) + start));
@@ -37,7 +37,7 @@ function useCountUp(target, duration = 1000) {
 const sections = [
   {
     name: 'User',
-    api: 'https://api.100acress.com/postPerson/view/allusers',
+    api: '/postPerson/view/allusers',
     link: '/Admin/user',
     gradientClass: 'bg-medium-slate-gradient',
     icon: <MdAccountCircle size={32} className="card-icon" />,
@@ -46,7 +46,7 @@ const sections = [
   },
   {
     name: 'Project Enquiries',
-    api: 'https://api.100acress.com/userViewAll?limit=1&page=1', // Only fetch 1, but get the total count
+    api: '/userViewAll?limit=1&page=1', // Only fetch 1, but get the total count
     link: '/Admin/enquiries',
     gradientClass: 'bg-slate-gradient',
     icon: <MdAssignment size={32} className="card-icon" />,
@@ -55,7 +55,7 @@ const sections = [
   },
   {
     name: 'Projects',
-    api: 'https://api.100acress.com/project/viewAll/data',
+    api: '/project/viewAll/data',
     link: '/Admin/Projects/property',
     gradientClass: 'bg-gray-gradient',
     icon: <MdBarChart size={32} className="card-icon" />,
@@ -64,7 +64,7 @@ const sections = [
   },
   {
     name: 'Resale Enquiries',
-    api: 'https://api.100acress.com/postEnq_view',
+    api: '/postEnq_view',
     link: '/Admin/resale-enquiries',
     gradientClass: 'bg-zinc-gradient',
     icon: <MdHome size={32} className="card-icon" />,
@@ -73,7 +73,7 @@ const sections = [
   },
   {
     name: 'Blog',
-    api: 'https://api.100acress.com/blog/view?page=1&limit=1000',
+    api: '/blog/admin/view?page=1&limit=1000',
     link: '/Admin/blog',
     gradientClass: 'bg-light-neutral-gradient',
     icon: <MdLibraryBooks size={32} className="card-icon" />,
@@ -86,7 +86,7 @@ const sections = [
     // The API string below uses template literals, but as a string, variables like ${currentPage} won't be replaced.
     // To display data, use a static endpoint that returns the total count, or fetch all and count length.
     // For dashboard counts, use a high limit to get all items, then count them.
-    api: 'https://api.100acress.com/postPerson/view/allListedProperty/?page=1&limit=10000&verify=verified',
+    api: '/postPerson/view/allListedProperty/?page=1&limit=10000&verify=verified',
     link: '/Admin/all-listed-properties',
     gradientClass: 'bg-stone-gradient',
     icon: <MdBusiness size={32} className="card-icon" />,

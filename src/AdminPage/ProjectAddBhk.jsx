@@ -60,7 +60,7 @@ const ProjectsAddBhk = () => {
   // Function to fetch BHK data (can be called on initial load and after mutations)
   const fetchBhkData = async () => {
     try {
-      const res = await axios.get(`https://api.100acress.com/bhk_view/${id}`);
+      const res = await axios.get(`/bhk_view/${id}`);
       setViewAll(res.data.data);
     } catch (error) {
       console.error("Error fetching BHK details:", error);
@@ -89,7 +89,7 @@ const ProjectsAddBhk = () => {
       content: 'Inserting...',
     });
     try {
-      const response = await axios.post(`https://api.100acress.com/bhk_insert/${id}`, editFromData);
+      const response = await axios.post(`/bhk_insert/${id}`, editFromData);
       if (response.status >= 200 && response.status < 300) {
         messageApi.destroy('insertingBHK');
         messageApi.open({
@@ -135,7 +135,7 @@ const ProjectsAddBhk = () => {
         type: 'loading',
         content: 'Deleting...',
       });
-      const response = await axios.delete(`https://api.100acress.com/bhk_delete/${_id}`);
+      const response = await axios.delete(`/bhk_delete/${_id}`);
       if (response.status >= 200 && response.status < 300) {
         messageApi.destroy('deletingBHK');
         messageApi.open({

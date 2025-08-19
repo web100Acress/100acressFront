@@ -11,22 +11,44 @@ import 'tippy.js/animations/scale.css';
 
 const Blog = () => {
   const [viewAll, setViewAll] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(12);
-  const [totalPages, setTotalPages] = useState(0);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
 
   const token = localStorage.getItem("myToken");
 
-  // Function to fetch blog data
-  const fetchBlogData = async () => {
+  // Function to fetch all blog data
+  const fetchBlogData = async (search = "") => {
     try {
-      const res = await axios.get(
-        `https://api.100acress.com/blog/view?page=${currentPage}&limit=${postsPerPage}`
-      );
-      setViewAll(res.data.data);
-      setTotalPages(res.data.totalPages);
+      // Use the new admin endpoint to get ALL blogs (published + drafts)
+      const url = `/blog/admin/view?page=1&limit=1000`;
+      
+      const res = await axios.get(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+      
+      console.log("Admin API Response:", res.data);
+      console.log("Total blogs from admin API:", res.data.data?.length || 0);
+      console.log("Published blogs:", res.data.publishedBlogs || 0);
+      console.log("Draft blogs:", res.data.draftBlogs || 0);
+      
+      let allBlogs = res.data.data || [];
+      
+      if (search) {
+        // Filter the data based on search term
+        const filtered = allBlogs.filter(item =>
+          (item.blog_Title && item.blog_Title.toLowerCase().includes(search.toLowerCase())) ||
+          (item.blog_Category && item.blog_Category.toLowerCase().includes(search.toLowerCase())) ||
+          (item.author && item.author.toLowerCase().includes(search.toLowerCase()))
+        );
+        
+        console.log("Filtered results:", filtered.length);
+        setViewAll(filtered);
+      } else {
+        // Display all blogs
+        setViewAll(allBlogs);
+      }
     } catch (error) {
       console.error("Error fetching blog data:", error);
       messageApi.open({
@@ -37,17 +59,21 @@ const Blog = () => {
     }
   };
 
+  // Debounced search effect
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchBlogData(searchTerm);
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm]);
+
   useEffect(() => {
     fetchBlogData();
-  }, [currentPage, postsPerPage]); // Re-fetch when page or posts per page changes
+  }, []); // Fetch all data on component mount
 
-  // Filter `viewAll` based on `searchTerm`
-  const filteredBlogs = viewAll.filter(item =>
-    item.blog_Title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.blog_Category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.author.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  // No need for frontend filtering anymore since it's handled in fetchBlogData
+  const filteredBlogs = viewAll;
 
   const handleDeleteUser = async (id) => {
     messageApi.open({
@@ -58,7 +84,7 @@ const Blog = () => {
 
     try {
       const response = await axios.delete(
-        `https://api.100acress.com/blog/Delete/${id}`,
+        `/blog/Delete/${id}`,
         {
           headers: {
             'Content-Type': 'multipart/form-data', // This might be incorrect for DELETE, usually not needed
@@ -115,6 +141,11 @@ const Blog = () => {
             <MdArticle className="text-3xl text-blue-500 animate-pulse" />
             <h1 className="text-3xl font-bold text-gray-800">Blog Management</h1>
           </div>
+          
+          {/* Debug Info */}
+          <div className="text-sm text-gray-600 mb-2">
+            Total Posts: {viewAll.length}
+          </div>
           <div className="flex space-x-4 w-full sm:w-auto">
             <div className="relative flex-grow">
               <Tippy content={<span>Search blogs by title, category, or author</span>} animation="scale" theme="light-border">
@@ -149,13 +180,14 @@ const Blog = () => {
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Author</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                   <th scope="col" className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredBlogs.length > 0 ? (
                   filteredBlogs.map((item, index) => {
-                    const serialNumber = (postsPerPage * (currentPage - 1)) + index + 1;
+                    const serialNumber = index + 1;
                     const id = item._id; // Use item._id for unique key and actions
                     return (
                       <tr
@@ -168,6 +200,15 @@ const Blog = () => {
                           <span className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full shadow-sm">{item.blog_Category}</span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{item.author}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${
+                            item.isPublished 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {item.isPublished ? 'Published' : 'Draft'}
+                          </span>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
                           <Tippy content={<span>View blog post</span>} animation="scale" theme="light-border">
                             <Link to={`/Admin/blog/view/${id}`}>
@@ -204,7 +245,7 @@ const Blog = () => {
                   })
                 ) : (
                   <tr>
-                    <td colSpan="5" className="px-6 py-12 text-center text-gray-500 italic">
+                    <td colSpan="6" className="px-6 py-12 text-center text-gray-500 italic">
                       <div className="flex flex-col items-center justify-center gap-2">
                         <MdArticle className="text-4xl text-gray-300 mb-2 animate-pulse" />
                         No blog posts found.
@@ -214,14 +255,6 @@ const Blog = () => {
                 )}
               </tbody>
             </table>
-          </div>
-          {/* Pagination Controls */}
-          <div className="py-4 px-6 bg-white border-t border-gray-200 flex justify-center items-center">
-            <PaginationControls
-              currentPage={currentPage}
-              totalPages={totalPages}
-              setCurrentPage={setCurrentPage}
-            />
           </div>
         </div>
       </div>

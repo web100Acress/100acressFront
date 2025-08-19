@@ -40,7 +40,7 @@ const SearchData = () => {
       try {
         if (isEmptySearch) {
           const allProjectsRes = await axios.get(
-            "https://api.100acress.com/project/viewAll/data"
+            "/project/viewAll/data"
           );
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
             projectName: item.projectName,
@@ -64,7 +64,7 @@ const SearchData = () => {
         }
 
         const res = await axios.get(
-          `https://api.100acress.com/property/search/${key}`
+          `/property/search/${key}`
         );
         const searchArr = (res.data.searchdata || []).map((item) => ({
           ...item,
@@ -73,7 +73,7 @@ const SearchData = () => {
         setSearchData(searchArr);
 
         const rentRes = await axios.get(
-          `https://api.100acress.com/rentproperty/search/${key}`
+          `/rentproperty/search/${key}`
         );
         const rentArr = (rentRes.data.data || []).map((item) => ({
           ...item,
@@ -82,7 +82,7 @@ const SearchData = () => {
         setRentSearchData(rentArr);
 
         const buyRes = await axios.get(
-          `https://api.100acress.com/buyproperty/search/${key}`
+          `/buyproperty/search/${key}`
         );
         const buyArr = (buyRes.data.data || []).map((item) => ({
           ...item,
@@ -96,7 +96,7 @@ const SearchData = () => {
           buyArr.length === 0
         ) {
           const allProjectsRes = await axios.get(
-            "https://api.100acress.com/project/viewAll/data"
+            "/project/viewAll/data"
           );
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
             projectName: item.projectName,
@@ -122,7 +122,7 @@ const SearchData = () => {
       } catch (error) {
         if (error.response && error.response.status === 404) {
           const allProjectsRes = await axios.get(
-            "https://api.100acress.com/project/viewAll/data"
+            "/project/viewAll/data"
           );
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
             projectName: item.projectName,

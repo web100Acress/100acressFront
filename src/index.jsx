@@ -12,6 +12,10 @@ import AppStore from "./Redux/store/AppStore";
 import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter, useLocation } from "react-router-dom";
 import CustomSkeleton from "../src/Utils/CustomSkeleton";
+import { initAxios } from "./config/axiosSetup";
+
+// Initialize global axios config (base URL + interceptors)
+initAxios();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

@@ -104,7 +104,7 @@ const Cities = () => {
     <Wrapper className="section">
       <div className="container">
         <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4">
-          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
+          <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left pt-4 text-[#111] font-bold">
             Prime Cities
           </h2>
         </div>
@@ -180,8 +180,8 @@ const Wrapper = styled.section`
 
   .city-card:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 15px 35px rgba(19, 136, 8, 0.3);
-    border-color: #FF9933;
+    box-shadow: 0 15px 35px rgba(229, 62, 62, 0.3);
+    border-color: #e53e3e;
   }
 
   .see-all-card {
@@ -191,8 +191,8 @@ const Wrapper = styled.section`
 
   .see-all-card:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 15px 35px rgba(19, 136, 8, 0.2);
-    border-color: #138808;
+    box-shadow: 0 15px 35px rgba(229, 62, 62, 0.2);
+    border-color: #e53e3e;
     background: #ffffff;
   }
 
@@ -211,7 +211,7 @@ const Wrapper = styled.section`
     font-size: 48px;
     font-weight: bold;
     margin-bottom: 10px;
-    color: #138808;
+    color: #e53e3e;
   }
 
   .see-all-title {
@@ -279,7 +279,7 @@ const Wrapper = styled.section`
   }
 
   .city-state {
-    color: #FF9933;
+    color: #e53e3e;
     font-size: 12px;
     margin: 0;
     font-weight: 500;
