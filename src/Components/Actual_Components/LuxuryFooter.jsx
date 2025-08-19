@@ -93,9 +93,9 @@ const LuxuryFooter = () => {
                   <div>
                     <div className="flex items-baseline space-x-1">
                       <span className="text-4xl font-bold bg-gradient-to-r from-red-700 to-red-500 bg-clip-text text-transparent tracking-wide drop-shadow-sm">
-                        100
+                        100acress
                       </span>
-                      <span className="text-3xl font-light text-gray-700 tracking-wider">ACRESS</span>
+            
                       <Star size={18} className="text-red-500 animate-float-subtle ml-1" />
                     </div>
 
@@ -304,24 +304,24 @@ const LuxuryFooter = () => {
 
         {/* Enhanced Bottom Section */}
         <motion.div
-          className="relative z-10 bg-white/80 backdrop-blur-sm border-t border-gray-200/60 w-full"
+          className="relative z-10 bg-red-600 w-full"
           variants={itemVariants}
         >
           <div className="py-6 w-full px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-3 items-center w-full text-sm whitespace-nowrap overflow-x-auto">
               {/* Left: Copyright */}
-              <div className="justify-self-start text-gray-600 flex items-center">
-                <p className="drop-shadow-sm">© 2025 100 Acress. All rights reserved.</p>
+              <div className="justify-self-start text-white flex items-center">
+                <p className="drop-shadow-sm">© 2000 - 2025 100acress. All rights reserved.</p>
               </div>
 
               {/* Center: Contact (single line) */}
-              <div className="justify-self-center text-gray-600">
+              <div className="justify-self-center text-white">
                 <div className="flex items-center gap-6">
-                  <a href="tel:+918500900100" className="flex items-center hover:text-red-600 transition-colors">
+                  <a href="tel:+918500900100" className="flex items-center hover:text-white/90 transition-colors">
                     <Phone size={16} className="mr-1" />
                     +91 8500-900-100
                   </a>
-                  <a href="mailto:support@100acress.com" className="flex items-center hover:text-red-600 transition-colors">
+                  <a href="mailto:support@100acress.com" className="flex items-center hover:text-white/90 transition-colors">
                     <Mail size={16} className="mr-1" />
                     support@100acress.com
                   </a>
@@ -331,16 +331,18 @@ const LuxuryFooter = () => {
               {/* Right: Policy Links */}
               <div className="justify-self-end flex items-center">
                 <div className="flex justify-end space-x-4 lg:space-x-6 text-sm">
-                  {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((link, index) => (
+                  {[
+                    "Privacy Policy", "Terms of Service", "Cookie Policy"
+                  ].map((link, index) => (
                     <motion.a
                       key={index}
                       href="#"
-                      className="text-gray-600 hover:text-red-600 transition-colors duration-300 relative group hover:underline underline-offset-4 decoration-red-500"
+                      className="text-white hover:text-white/90 transition-colors duration-300 relative group hover:underline underline-offset-4 decoration-white"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
                       {link}
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-500 transition-all duration-300 group-hover:w-full"></span>
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
                     </motion.a>
                   ))}
                 </div>
@@ -348,6 +350,7 @@ const LuxuryFooter = () => {
             </div>
           </div>
         </motion.div>
+
       </motion.footer>
     </>
   );

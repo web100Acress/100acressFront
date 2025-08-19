@@ -1,4 +1,4 @@
-const DEFAULT_BASE = 'http://localhost:3500'; // local backend during development
+const DEFAULT_BASE = 'https://api.100acress.com'; // production API default
 
 export const getApiBase = () => {
   try {
