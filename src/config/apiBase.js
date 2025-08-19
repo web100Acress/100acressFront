@@ -3,7 +3,12 @@
 // - Option A: Set a persistent override in localStorage key 'apiBase'
 // - Option B: Edit DEFAULT_BASE below and rebuild
 
-const DEFAULT_BASE = 'http://localhost:3500'; // local backend during development
+// Prefer Vite env variable if present, fallback to localhost during development
+const DEFAULT_BASE = (
+  typeof import.meta !== 'undefined' &&
+  import.meta.env &&
+  import.meta.env.VITE_API_BASE
+) || 'http://localhost:3500'; // local backend during development
 
 export const getApiBase = () => {
   try {

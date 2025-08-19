@@ -7,10 +7,9 @@ import SpacesAvailable from "../Components/HomePageComponents/Spaces";
 import SearchBar from "../Components/HomePageComponents/SearchBar";
 import styled from "styled-components";
 import OurServices from "../Components/HomePageComponents/ourServices";
-import Free from "../../src/Pages/Free";
 import { Helmet } from "react-helmet";
-import Footer from "../Components/Actual_Components/Footer";
-// import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
+// import Footer from "../Components/Actual_Components/Footer";
+import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
 
 // import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
 
@@ -296,14 +295,20 @@ const Home = () => {
         <div
           className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
           style={{
-            background: "linear-gradient(180deg, #b91c1c 0%, #ef4444 42%, #ffdddd 70%, #ffffff 100%)",
+            backgroundImage: "url('https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
           }}
         />
         {/* Mobile gradient background */}
         <div
           className="mt-14 block md:hidden w-full h-[38rem]"
           style={{
-            background: "linear-gradient(180deg, #b91c1c 0%, #ef4444 47%, #ffdddd 72%, #ffffff 100%)",
+            backgroundImage: "url('https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
           }}
         />
 
@@ -512,7 +517,6 @@ const Home = () => {
       </div>}
 
       {/* <HomeBuilderCarousel /> */}
-      <Free />
       {/* <div>
         <div>
           <a href="tel:8500900100" class="dd-m-phone">
@@ -539,14 +543,14 @@ const Home = () => {
       <BackToTopButton />
       {/* Floating YouTube Shorts (desktop only) */}
       <FloatingShorts videoId="ouBwbuoqnU8" />
-      <Footer />
+      {/* <Footer /> */}
     </div> {/* Closing div for the blur container */}
 
 
 
       {/* </div> */}
 
-    {/* <LuxuryFooter /> */}
+    <LuxuryFooter />
 
     </Wrapper>
 
