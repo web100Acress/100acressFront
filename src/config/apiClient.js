@@ -6,7 +6,7 @@ const api = axios.create({
   baseURL: getApiBase(),
 });
 
-// Attach Authorization header automatically if token exists
+
 api.interceptors.request.use((config) => {
   try {
     // Always refresh baseURL so localStorage overrides apply without reload

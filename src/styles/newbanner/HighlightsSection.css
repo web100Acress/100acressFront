@@ -1,5 +1,5 @@
 /* --- Highlights Section --- */
-.nb-highlights-section { position: relative; width: 100%; background: linear-gradient(135deg, #fffaf0 0%, rgba(251, 191, 36, 0.12) 100%); }
+.nb-highlights-section { position: relative; width: 100%; background: #ffffff; }
 .nb-highlights-inner { padding: 48px 16px; max-width: 1120px; margin: 0 auto; }
 @media (min-width: 1024px) { .nb-highlights-inner { padding: 72px 32px; } }
 
@@ -16,7 +16,7 @@
 .nb-brochure-btn-alt { display: inline-flex; align-items: center; gap: 12px; background: linear-gradient(to right, #CFAF6E, #E5C78A); color: #fff; font-weight: 700; padding: 12px 24px; border-radius: 9999px; box-shadow: 0 10px 15px rgba(0,0,0,0.15); transition: transform .2s ease, box-shadow .2s ease, filter .2s ease; border: none; }
 .nb-brochure-btn-alt:hover { transform: scale(1.05); box-shadow: 0 20px 25px rgba(0,0,0,0.20); filter: brightness(1.02); }
 
-.nb-highlight-cta-desktop { display: none; position: absolute; right: 32px; bottom: 32px; }
+.nb-highlight-cta-desktop { display: none; position: absolute; left: 50%; bottom: 32px; transform: translateX(-50%); }
 @media (min-width: 1024px) { .nb-highlight-cta-desktop { display: flex; } }
 
 .nb-highlight-cta-mobile { margin-top: 24px; display: flex; justify-content: center; }
@@ -98,7 +98,8 @@
 .nb-floor-caption-sub { margin: 0; font-size: .95rem; opacity: .95; }
 
 /* Modal */
-.nb-floor-modal-overlay { position: fixed; inset: 0; z-index: 9998; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; padding: 16px; }
+  /* Overlay above sticky CTA (z-index: 10000) and headers */
+  .nb-floor-modal-overlay { position: fixed; inset: 0; z-index: 10002; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; padding: 16px; }
 .nb-floor-modal-container { position: relative; background: #fff; border-radius: 16px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); overflow: hidden; max-width: 64rem; width: 100%; }
 .nb-floor-modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: rgba(0,0,0,0.08); color: #111; border: none; border-radius: 9999px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .nb-floor-modal-close:hover { background: rgba(0,0,0,0.15); }
@@ -114,17 +115,56 @@
   transform: translateY(-50%);
   z-index: 10000;
   transition: all 0.3s ease;
-  
-  @media (max-width: 768px) {
+}
+
+/* Responsive adjustments for sticky CTA */
+@media (max-width: 768px) {
+  .sticky-quote-cta {
     top: auto;
-    bottom: 20px;
+    bottom: max(20px, env(safe-area-inset-bottom));
     right: 20px;
     transform: none;
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
+}
+
+/* Highlights: additional responsiveness */
+@media (max-width: 1024px) {
+  .nb-highlights-inner { padding: 56px 20px; }
+  .nb-highlights-grid { gap: 2.25rem; }
+}
+@media (max-width: 768px) {
+  .nb-highlights-inner { padding: 40px 12px; }
+  .nb-highlights-image-card { height: 42vh; }
+  .nb-highlights-text-card { padding: 24px; }
+  .nb-highlight-text { font-size: 1rem; line-height: 1.7; }
+}
+@media (max-width: 480px) {
+  .nb-highlights-image-card { height: 36vh; }
+  .nb-brochure-btn-mobile { padding: 14px 22px; }
+}
+
+/* Pricing table tweaks on tablets */
+@media (max-width: 1024px) {
+  .nb-pricing-cell { height: 56px; padding: 12px; }
+  .nb-cell-head span { font-size: 1.1rem; }
+  .nb-pricing-text-strong { font-size: 1.1rem; }
+}
+
+/* Floor section image height responsiveness */
+@media (max-width: 1024px) { .nb-floor-img { height: 360px; } }
+@media (max-width: 768px) { .nb-floor-img { height: 300px; } }
+@media (max-width: 480px) { .nb-floor-img { height: 240px; } }
+
+/* Prefer reduced motion: soften or disable heavy transitions */
+@media (prefers-reduced-motion: reduce) {
+  .nb-highlights-image, .nb-floor-img, .nb-floor-prev, .nb-floor-next, .nb-brochure-btn-alt, .nb-brochure-btn-mobile, .nb-get-details-btn, .sticky-quote-cta {
+    transition: none !important;
+  }
+  .nb-highlights-image-card:hover .nb-highlights-image, .nb-floor-card:hover .nb-floor-img { transform: none !important; }
 }
