@@ -631,7 +631,7 @@ const BlogWriteModal = () => {
     toolbar: {
       container: [
         [{ header: [1, 2, 3, 4, false] }],
-        [{ font: fontWhitelist }],
+        // [{ font: fontWhitelist }],
         [{ size: ['small', false, 'large', 'huge'] }],
         ['bold', 'italic', 'underline', 'strike'],
         [{ color: [] }, { background: [] }],
@@ -912,6 +912,28 @@ const BlogWriteModal = () => {
           .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="pt-serif"]{ font-family:'PT Serif',serif }
           .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="arimo"]::before { content: 'Arimo'; font-family:'Arimo',sans-serif }
           .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="arimo"]{ font-family:'Arimo',sans-serif }
+          /* Distinct item labels for Header picker */
+          .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="false"]::before { content: 'Normal'; }
+          .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before { content: 'H1'; }
+          .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before { content: 'H2'; }
+          .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before { content: 'H3'; }
+          .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="4"]::before { content: 'H4'; }
+          .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="false"]::before { content: 'Normal'; }
+          .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before { content: 'H1'; }
+          .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before { content: 'H2'; }
+          .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before { content: 'H3'; }
+          .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="4"]::before { content: 'H4'; }
+
+          /* Distinct item labels for Size picker */
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="small"]::before { content: 'Small'; }
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="false"]::before { content: 'Normal'; }
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="large"]::before { content: 'Large'; }
+          .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="huge"]::before { content: 'Huge'; }
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="small"]::before { content: 'Small'; }
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="false"]::before { content: 'Normal'; }
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="large"]::before { content: 'Large'; }
+          .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="huge"]::before { content: 'Huge'; }
+          /* Let labels reflect the currently selected value (default Quill behavior) */
         `}</style>
         {/* Load fonts */}
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@300;400;700&family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&family=Raleway:wght@300;400;700&family=Nunito:wght@300;400;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;700&family=Ubuntu:wght@300;400;700&family=Work+Sans:wght@300;400;700&family=Rubik:wght@300;400;700&family=Mulish:wght@300;400;700&family=Josefin+Sans:wght@300;400;700&family=Quicksand:wght@300;400;700&family=DM+Sans:wght@300;400;700&family=PT+Serif:wght@400;700&family=Arimo:wght@400;700&display=swap" />
