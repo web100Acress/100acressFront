@@ -3,7 +3,7 @@ import CommonInside from "../../Utils/CommonInside";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import Footer from "../../Components/Actual_Components/Footer";
-
+import Navbar from "../../aadharhomes/Navbar";
 
 const LuxuryProject = () => {
   let query = "luxury";
@@ -15,6 +15,7 @@ const LuxuryProject = () => {
   },[])
   return (
     <div>
+      <Navbar />
       <CommonInside
         title="Luxury Projects for You"
         Actualdata={LuxuryProjects}
