@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { message, Modal } from "antd";
 import LuxuryFooter from "../Actual_Components/LuxuryFooter";
+import { getApiBase as sharedGetApiBase } from "../../config/apiBase";
 
 
 const UserEdit = () => {
@@ -43,15 +44,8 @@ const UserEdit = () => {
     } catch { return null; }
   };
 
-  // ---- Helpers: API base + endpoint fallbacks ----
-  const getApiBase = () => {
-    try {
-      return (typeof window !== 'undefined' && window.__API_BASE__) ? window.__API_BASE__ : '';
-    } catch { return ''; }
-  };
-
   const withBase = (path) => {
-    const base = getApiBase();
+    const base = sharedGetApiBase();
     if (!base) return path; // use relative when no base configured
     // ensure single slash join
     if (path.startsWith('/')) return `${base}${path}`;
@@ -176,46 +170,46 @@ const UserEdit = () => {
   const goChangePassword = async () => {
     // Inline change password instead of navigating to forgot flow
     try {
+      console.log('[ChangePwd] handler invoked', { haveCurrent: !!pwd.current, haveNext: !!pwd.next, haveConfirm: !!pwd.confirm });
       if (!pwd.current || !pwd.next || !pwd.confirm) {
+        console.warn('[ChangePwd] missing fields', { current: !!pwd.current, next: !!pwd.next, confirm: !!pwd.confirm });
         message.warning("Please fill all password fields");
         return;
       }
       if (pwd.next !== pwd.confirm) {
+        console.warn('[ChangePwd] mismatch next vs confirm');
         message.error("New and confirm password do not match");
         return;
       }
-      // Ask for confirmation before proceeding
-      const ok = await new Promise((resolve) => {
-        Modal.confirm({
-          title: "Confirm Password Change",
-          content: "Are you sure you want to change your password?",
-          okText: "Change",
-          cancelText: "Cancel",
-          onOk: () => resolve(true),
-          onCancel: () => resolve(false),
-        });
-      });
+      // Ask for confirmation before proceeding (TEMP: bypass to debug)
+      console.log('[ChangePwd] skipping confirm modal for debug');
+      const ok = true;
+      console.log('[ChangePwd] user choice (forced)', ok);
       if (!ok) return; // user cancelled
-      const base = typeof window !== 'undefined' && window.__API_BASE__ ? window.__API_BASE__ : '';
       message.loading({ content: 'Updating password...', key: 'pwd', duration: 0 });
-      // Try common payload keys; backend route exists at /postPerson/changePassword
-      const payload = {
-        oldPassword: pwd.current,
-        currentPassword: pwd.current,
-        newPassword: pwd.next,
-        confirmPassword: pwd.confirm,
-        email: profile.email,
-      };
-      const url = base ? `${base}/postPerson/changePassword` : `/postPerson/changePassword`;
+      // Backend expects { email, password }
+      console.log('[ChangePwd] profile email', profile?.email);
+      const payload = { email: profile.email, password: pwd.next, currentPassword: pwd.current };
+      const url = withBase('/postPerson/changePassword');
+      console.log('[ChangePwd] POST', url, payload.email);
       const res = await axios.post(url, payload);
+      console.log('[ChangePwd] response', res?.status, res?.data);
       if (res && res.status >= 200 && res.status < 300) {
         message.success({ content: 'Password updated successfully', key: 'pwd', duration: 2 });
         setPwd({ current: "", next: "", confirm: "" });
       } else {
-        message.error({ content: 'Failed to update password', key: 'pwd', duration: 2 });
+        const msg = res?.data?.message || 'Failed to update password';
+        message.error({ content: msg, key: 'pwd', duration: 2 });
       }
     } catch (e) {
-      message.error({ content: (e?.response?.data?.message) || 'Failed to update password', key: 'pwd', duration: 3 });
+      const status = e?.response?.status;
+      const msg = e?.response?.data?.message || 'Failed to update password';
+      console.error('[ChangePwd] error', status, e?.response?.data || e);
+      if (status === 400 && /Current password is incorrect/i.test(msg)) {
+        message.error({ content: 'Current password is incorrect', key: 'pwd', duration: 3 });
+      } else {
+        message.error({ content: msg, key: 'pwd', duration: 3 });
+      }
     }
   };
   const [values, setValues] = useState({
