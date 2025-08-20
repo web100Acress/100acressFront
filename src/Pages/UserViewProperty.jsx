@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import { getApiBase } from "../config/apiBase";
 import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
+// import Nav from "../aadharhomes/Nav";
 
 const UserViewProperty = () => {
   const [userViewProperty, setUserViewProperty] = useState([]);
@@ -48,6 +49,29 @@ const UserViewProperty = () => {
     };
   }, []);
 
+  // Cross-tab real-time update via BroadcastChannel + storage fallback
+  useEffect(() => {
+    let channel;
+    const onStorage = (e) => {
+      if (e.key === 'property-updated') {
+        fetchData();
+      }
+    };
+    try {
+      channel = new BroadcastChannel('property-updates');
+      channel.onmessage = (ev) => {
+        if (ev && ev.data && String(ev.data).includes('property:updated')) {
+          fetchData();
+        }
+      };
+    } catch {}
+    window.addEventListener('storage', onStorage);
+    return () => {
+      try { if (channel) channel.close(); } catch {}
+      window.removeEventListener('storage', onStorage);
+    };
+  }, []);
+
   // Light polling for near real-time updates
   useEffect(() => {
     // Poll every 15s; cleared on unmount
@@ -58,6 +82,24 @@ const UserViewProperty = () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
   }, []);
+
+  // Optional backend-driven real-time via SSE
+  useEffect(() => {
+    // Support both Vite (import.meta.env.VITE_*) and CRA (process.env.REACT_APP_*) without throwing in the browser
+    const base = (
+      (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_PROPERTY_UPDATES_URL) ||
+      (typeof process !== 'undefined' && process.env && process.env.REACT_APP_PROPERTY_UPDATES_URL) ||
+      ''
+    ); // e.g. https://api.example.com/sse/property-updates
+    if (!base || !userId) return;
+    let es;
+    try {
+      es = new EventSource(`${base}?userId=${encodeURIComponent(userId)}`);
+      es.onmessage = () => fetchData();
+      es.onerror = () => { /* silently ignore and let polling/focus handle */ };
+    } catch {}
+    return () => { try { if (es) es.close(); } catch {} };
+  }, [userId]);
 
   return (
     <div style={{ overflowX: "hidden" }}>
@@ -85,9 +127,20 @@ const UserViewProperty = () => {
         </div>
 
         {/* Grid */}
-        <div className="grid max-w-md grid-cols-1 p-4 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 sm:gap-3 lg:gap-5">
+        <div className="grid max-w-md grid-cols-1 p-4 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-10 lg:grid-cols-4 sm:gap-3 lg:gap-5 mx-auto">
           {loading && (
-            <div className="col-span-full text-center py-6 text-gray-500">Loading properties...</div>
+            <>
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="animate-pulse bg-white rounded-xl shadow-sm border overflow-hidden">
+                  <div className="h-40 bg-gray-200" />
+                  <div className="p-4 space-y-2">
+                    <div className="h-4 bg-gray-200 rounded w-3/4" />
+                    <div className="h-3 bg-gray-200 rounded w-1/2" />
+                    <div className="h-8 bg-gray-200 rounded w-2/3 mt-3" />
+                  </div>
+                </div>
+              ))}
+            </>
           )}
           {!!error && (
             <div className="col-span-full text-center py-4 text-red-600">{error}</div>
@@ -145,7 +198,7 @@ const UserViewProperty = () => {
                         </button>
                         <button
                           type="button"
-                          onClick={() => navigate('/usereditproperty', { state: { property: item } })}
+                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate('/usereditproperty', { state: { property: item } }); }}
                           className="text-white bg-gray-800 hover:bg-gray-900 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-xs md:text-sm px-3 py-2"
                         >
                           Edit
