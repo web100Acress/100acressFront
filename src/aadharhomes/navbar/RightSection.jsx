@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import AuthModal from "../../Components/AuthModal";
@@ -19,6 +19,8 @@ export default function RightSection({
   showAuth,
   setShowAuth,
 }) {
+  const { isOpen: isAcctOpen, onOpen: onAcctOpen, onClose: onAcctClose } = useDisclosure();
+  const isMobile = useBreakpointValue({ base: true, md: false });
   return (
     <Flex
       alignItems="center"
@@ -50,54 +52,94 @@ export default function RightSection({
 
       <Box>
         {token ? (
-          <Menu>
-            <MenuButton
-              as={Button}
-              aria-label="Profile"
-              variant="ghost"
-              bg="transparent"
-              _hover={{ bg: "transparent" }}
-              px={2}
-            >
-              <Flex align="center" gap={2}>
-                <Box
-                  as="span"
-                  border="1px solid rgba(0,0,0,0.35)"
-                  borderRadius="full"
-                  w="32px"
-                  h="32px"
-                  display="inline-flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Box as="span" lineHeight={0}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                      <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                    </svg>
+          // Authenticated user: Drawer on mobile, Menu on desktop
+          isMobile ? (
+            <>
+              <Button onClick={() => (isAcctOpen ? onAcctClose() : onAcctOpen())} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
+                <Flex align="center" gap={2}>
+                  <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center">
+                    <Box as="span" lineHeight={0}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                        <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                      </svg>
+                    </Box>
                   </Box>
-                </Box>
-                {firstName && (
-                  <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" fontWeight="600" display={{ base: "none", md: "inline" }}>
-                    {firstName}
+                </Flex>
+              </Button>
+              <Drawer isOpen={isAcctOpen} placement="right" onClose={onAcctClose} size="xs" zIndex={15000} closeOnOverlayClick={true} closeOnEsc={true}>
+                <DrawerOverlay />
+                <DrawerContent>
+                  <DrawerCloseButton />
+                  <DrawerHeader borderBottomWidth="1px">{firstName || 'Account'}</DrawerHeader>
+                  <DrawerBody p={0}>
+                    <Box px={4} py={3} color="#666" fontSize="12px">Signed in</Box>
+                    <Box h="1px" bg="#eee" />
+                    <Box as={Button} variant="ghost" w="100%" justifyContent="flex-start" borderRadius={0} onClick={() => { onAcctClose(); go('/userdashboard/'); }} fontSize="16px" py={6}>View Profile</Box>
+                    {isAdmin && (
+                      <Box as={Button} variant="ghost" w="100%" justifyContent="flex-start" borderRadius={0} onClick={() => { onAcctClose(); go('/admin/'); }} fontSize="16px" py={6}>Admin</Box>
+                    )}
+                    {isBlogger && (
+                      <Box as={Button} variant="ghost" w="100%" justifyContent="flex-start" borderRadius={0} onClick={() => { onAcctClose(); go('/seo/blogs'); }} fontSize="16px" py={6}>Blog</Box>
+                    )}
+                    <Box h="1px" bg="#eee" />
+                    <Box as={Button} colorScheme="red" variant="ghost" w="100%" justifyContent="flex-start" borderRadius={0} onClick={() => { onAcctClose(); HandleUserLogout(); ShowLogOutMessage(); }} fontSize="16px" py={6}>Log out</Box>
+                  </DrawerBody>
+                </DrawerContent>
+              </Drawer>
+            </>
+          ) : (
+            <Menu placement="bottom-end" isLazy strategy="fixed">
+              <MenuButton
+                as={Button}
+                aria-label="Profile"
+                variant="ghost"
+                bg="transparent"
+                _hover={{ bg: "transparent" }}
+                px={2}
+              >
+                <Flex align="center" gap={2}>
+                  <Box
+                    as="span"
+                    border="1px solid rgba(0,0,0,0.35)"
+                    borderRadius="full"
+                    w="32px"
+                    h="32px"
+                    display="inline-flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Box as="span" lineHeight={0}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                        <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                      </svg>
+                    </Box>
                   </Box>
-                )}
-              </Flex>
-            </MenuButton>
-            <MenuList p={0} minW="220px">
-              <Box px={3} pt={2} pb={2} color="#666" fontSize="12px">Signed in</Box>
-              <Box h="1px" bg="#eee" />
-              <MenuItem onClick={() => go('/userdashboard/')} fontSize="14px">View Profile</MenuItem>
-              {isAdmin && (
-                <MenuItem onClick={() => go('/admin/')} fontSize="14px">Admin</MenuItem>
-              )}
-              {isBlogger && (
-                <MenuItem onClick={() => go('/seo/blogs')} fontSize="14px">Blog</MenuItem>
-              )}
-              <Box h="1px" bg="#eee" />
-              <MenuItem onClick={() => { HandleUserLogout(); ShowLogOutMessage(); }} fontSize="14px">Log out</MenuItem>
-            </MenuList>
-          </Menu>
+                  {firstName && (
+                    <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" fontWeight="600" display={{ base: "none", md: "inline" }}>
+                      {firstName}
+                    </Box>
+                  )}
+                </Flex>
+              </MenuButton>
+              <Portal>
+                <MenuList p={0} minW="220px" maxH="60vh" overflowY="auto" zIndex={14000}>
+                  <Box px={3} pt={2} pb={2} color="#666" fontSize="12px">Signed in</Box>
+                  <Box h="1px" bg="#eee" />
+                  <MenuItem onClick={() => go('/userdashboard/')} fontSize="14px">View Profile</MenuItem>
+                  {isAdmin && (
+                    <MenuItem onClick={() => go('/admin/')} fontSize="14px">Admin</MenuItem>
+                  )}
+                  {isBlogger && (
+                    <MenuItem onClick={() => go('/seo/blogs')} fontSize="14px">Blog</MenuItem>
+                  )}
+                  <Box h="1px" bg="#eee" />
+                  <MenuItem onClick={() => { HandleUserLogout(); ShowLogOutMessage(); }} fontSize="14px">Log out</MenuItem>
+                </MenuList>
+              </Portal>
+            </Menu>
+          )
         ) : (
           <>
             <Button onClick={showModal} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
@@ -141,3 +183,4 @@ export default function RightSection({
     </Flex>
   );
 }
+
