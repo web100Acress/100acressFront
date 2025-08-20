@@ -27,6 +27,9 @@ import { maxprice, minprice } from "../Redux/slice/PriceBasedSlice";
 // import { Modal } from "antd"; // removed old user menu modal
 import AuthModal from "../Components/AuthModal";
 import { useJwt } from "react-jwt";
+import LeftSection from "./navbar/LeftSection";
+import CenterLogo from "./navbar/CenterLogo";
+import RightSection from "./navbar/RightSection";
 
 const SpacerComponent = () => <Box width="60px" />;
 
@@ -163,6 +166,28 @@ export default function Navbar() {
       </svg>
     ),
   };
+
+  // Fast navigate helper for menu clicks
+  const go = (path) => {
+    try {
+      history(path);
+      // ensure top of page
+      if (typeof window !== 'undefined' && window.scrollTo) window.scrollTo({ top: 0, behavior: 'auto' });
+    } catch {}
+  };
+  // Resolve current user id for profile edit route `/useredit/:id`
+  const resolveUserId = () => {
+    try {
+      let id = (typeof window !== 'undefined' && localStorage.getItem('mySellerId')) || '';
+      if (id && id.startsWith('"') && id.endsWith('"')) {
+        try { id = JSON.parse(id); } catch {}
+      }
+      const dt = decodedToken || {};
+      const fallbacks = [dt.userId, dt.id, dt.uid, dt.sub];
+      return (id && String(id)) || fallbacks.find(v => v !== undefined && v !== null && String(v).trim() !== '') || '';
+    } catch { return ''; }
+  };
+  const userIdForEdit = resolveUserId();
   const CITY_OPTIONS = [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
     { name: "Delhi", path: "/project-in-delhi/" },
@@ -197,8 +222,27 @@ export default function Navbar() {
   };
 
   // Optional: derive user role for extra options (normalized)
-  const rawUserRole = (typeof window !== 'undefined' && localStorage.getItem("userRole")) || decodedToken?.role || "";
-  const userRole = (rawUserRole || "").toString().trim().toLowerCase();
+  // Collect possible sources: localStorage keys and token claims
+  const lsRole = (typeof window !== 'undefined' && (localStorage.getItem("userRole") || localStorage.getItem("role") || localStorage.getItem("UserRole"))) || "";
+  const tokenRolesRaw = decodedToken?.roles || decodedToken?.role || decodedToken?.authorities || decodedToken?.claims?.roles || "";
+  const normalizeToArray = (val) => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    if (typeof val === 'string') return val.split(/[\s,;]+/);
+    if (typeof val === 'object') {
+      // handle shapes like { role: 'admin' } or { authority: 'ROLE_ADMIN' }
+      if (val.role) return Array.isArray(val.role) ? val.role : [val.role];
+      if (val.authority) return Array.isArray(val.authority) ? val.authority : [val.authority];
+      try { return Object.values(val); } catch { return []; }
+    }
+    return [];
+  };
+  const roles = [...normalizeToArray(lsRole), ...normalizeToArray(tokenRolesRaw)]
+    .map((r) => (r || '').toString().trim().toLowerCase())
+    .filter(Boolean);
+  const userRole = roles[0] || "";
+  const isAdmin = roles.some((r) => r.includes('admin'));
+  const isBlogger = roles.some((r) => r.includes('blog') || r.includes('contentwriter') || r.includes('writer'));
 
   // Derive first name ONLY from localStorage 'firstName' (desktop only)
   const lsFirstName = (typeof window !== 'undefined' && localStorage.getItem("firstName")) || "";
@@ -388,475 +432,42 @@ export default function Navbar() {
             transition: "background-color 300ms ease, box-shadow 300ms ease"
           }}
           px={{ base: 4, md: 4, lg: 7 }}
-          py={1}
+          py={{ base: 1, md: 2 }}
         >
           
           <Flex minH={{ base: 14, md: 16 }} alignItems="center" justifyContent="space-between">
-            
             {/* Left Section - Search Projects + City Filter */}
-            <Flex alignItems="center" gap={3} order={{ base: 1, md: 2 }} flex={{ base: "initial", md: 1 }} justifyContent={{ base: "flex-start", md: "center" }}
-              opacity={{ base: 1, md: isSearchOpen ? 0 : 1 }}
-              transition="opacity 250ms ease"
-              pointerEvents={{ base: "auto", md: isSearchOpen ? 'none' : 'auto' }}
-              display={{ base: 'flex', md: isSearchOpen ? 'none' : 'flex' }}
-            >
-              <IconButton
-                size="sm"
-                icon={<HamburgerIcon />}
-                aria-label="Search Projects"
-                variant="ghost"
-                color="#111"
-                onClick={onToggle}
-                mr={2}
-                display={{ base: "inline-flex", md: "none" }}
-              />
-              <Box 
-                display={{ base: "none", md: "none" }}
-                fontSize="14px"
-                fontWeight="500"
-                color="#111"
-                letterSpacing="0.5px"
-                cursor="pointer"
-                onClick={onToggle}
-                lineHeight="1"
-              >
-                SEARCH PROJECTS
-              </Box>
-              {/* City selector (desktop primary, mobile hidden) */}
-              <Menu placement="bottom-start">
-                <MenuButton
-                  as={Button}
-                  size="sm"
-                  variant="ghost"
-                  bg="transparent"
-                  color={colorChange ? "white" : "#e53e3e"}
-                  _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }}
-                  _active={{ bg: "transparent" }}
-                  px={0}
-                  fontWeight="600"
-                  fontSize="16px"
-                  letterSpacing="0.5px"
-                  display={{ base: "none", md: "inline-flex" }}
-                  lineHeight="1"
-                  alignSelf="center"
-                  alignItems="center"
-                  height="auto"
-                  minH="unset"
-                  pr={2}
-                  mr={2}
-                  borderRight={{ base: 'none', md: 'none' }}
-                  borderRadius={0}
-                  py={0}
-                >
-                  <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
-                    <Text lineHeight="1" color={colorChange ? "white" : "#e53e3e"} fontSize="16px" m={0} p={0}>City</Text>
-                    <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
-                  </Flex>
-                </MenuButton>
-                <MenuList p={3} minW="320px">
-                  <Box fontWeight="700" fontSize="12px" color="#e53e3e" textTransform="uppercase" mb={2}>
-                    Top Cities
-                  </Box>
-                  <SimpleGrid columns={3} spacing={2}>
-                    {CITY_OPTIONS.map((c) => (
-                      <Button
-                        key={c.name}
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleCitySelect(c)}
-                        justifyContent="center"
-                        display="flex"
-                        flexDir="column"
-                        alignItems="center"
-                        gap={1}
-                        borderWidth="1px"
-                        borderColor="#eaeaea"
-                        _hover={{ bg: "gray.50" }}
-                        py={3}
-                      >
-                        <Box color="#666">{CityIcons[c.name] || CityIcons.Delhi}</Box>
-                        <Text fontSize="12px" color="#111">{c.name}</Text>
-                      </Button>
-                    ))}
-                  </SimpleGrid>
-                </MenuList>
-              </Menu>
+            <LeftSection
+              colorChange={colorChange}
+              isSearchOpen={isSearchOpen}
+              onToggle={onToggle}
+              CITY_OPTIONS={CITY_OPTIONS}
+              CityIcons={CityIcons}
+              handleCitySelect={handleCitySelect}
+              handlePriceClick={handlePriceClick}
+            />
 
-              {/* Budget dropdown */}
-              <Menu placement="bottom-start">
-                <MenuButton
-                  as={Button}
-                  size="sm"
-                  variant="ghost"
-                  bg="transparent"
-                  color={colorChange ? "white" : "#111"}
-                  _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
-                  _active={{ bg: "transparent" }}
-                  px={3}
-                  fontWeight="600"
-                  fontSize="16px"
-                  letterSpacing="0.5px"
-                  display={{ base: "none", md: "inline-flex" }}
-                  pr={2}
-                  mr={2}
-                  borderRight={{ base: 'none', md: 'none' }}
-                  borderRadius={0}
-                  lineHeight="1"
-                  alignSelf="center"
-                  alignItems="center"
-                  height="auto"
-                  minH="unset"
-                  py={0}
-                >
-                  <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
-                    <Text color={colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Budget</Text>
-                    <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
-                  </Flex>
-                </MenuButton>
-                <MenuList p={2} minW="220px">
-                  <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</MenuItem>
-                  <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</MenuItem>
-                  <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</MenuItem>
-                  <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(10, 20)}>₹10 Cr - ₹20 Cr</MenuItem>
-                  <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(20, 50)}>₹20 Cr - ₹50 Cr</MenuItem>
-                  <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(50, Infinity)}>Above ₹50 Cr</MenuItem>
-                </MenuList>
-              </Menu>
-
-              {/* Project Status dropdown */}
-              <Menu placement="bottom-start">
-                <MenuButton
-                  as={Button}
-                  size="sm"
-                  variant="ghost"
-                  bg="transparent"
-                  color={colorChange ? "white" : "#111"}
-                  _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
-                  _active={{ bg: "transparent" }}
-                  px={3}
-                  fontWeight="600"
-                  fontSize="16px"
-                  letterSpacing="0.5px"
-                  display={{ base: "none", md: "inline-flex" }}
-                  pr={2}
-                  mr={2}
-                  borderRight={{ base: 'none', md: 'none' }}
-                  borderRadius={0}
-                  lineHeight="1"
-                  alignSelf="center"
-                  alignItems="center"
-                  height="auto"
-                  minH="unset"
-                  py={0}
-                >
-                  <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
-                    <Text color={colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Project Status</Text>
-                    <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
-                  </Flex>
-                </MenuButton>
-                <MenuList p={2} minW="240px">
-                  <MenuItem as={Link} to="/projects/upcoming-projects-in-gurgaon/">Upcoming Projects</MenuItem>
-                  <MenuItem as={Link} to="/projects-in-newlaunch/">New Launch Projects</MenuItem>
-                  <MenuItem as={Link} to="/project-in-underconstruction/">Under Construction</MenuItem>
-                  <MenuItem as={Link} to="/projects-in-gurugram/property-ready-to-move/">Ready To Move</MenuItem>
-                </MenuList>
-              </Menu>
-
-              {/* Project Type dropdown */}
-              <Menu placement="bottom-start">
-                <MenuButton
-                  as={Button}
-                  size="sm"
-                  variant="ghost"
-                  bg="transparent"
-                  color={colorChange ? "white" : "#111"}
-                  _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
-                  _active={{ bg: "transparent" }}
-                  px={3}
-                  fontWeight="600"
-                  fontSize="16px"
-                  letterSpacing="0.5px"
-                  display={{ base: "none", md: "inline-flex" }}
-                  lineHeight="1"
-                  alignSelf="center"
-                  alignItems="center"
-                  height="auto"
-                  minH="unset"
-                  py={0}
-                >
-                  <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
-                    <Text color={colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Project Type</Text>
-                    <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
-                  </Flex>
-                </MenuButton>
-                <MenuList p={2} minW="240px">
-                  <MenuItem as={Link} to="/sco/plots/">SCO Plots</MenuItem>
-                  <MenuItem as={Link} to="/projects/villas/">Luxury Villas</MenuItem>
-                  <MenuItem as={Link} to="/plots-in-gurugram/">Plots In Gurugram</MenuItem>
-                  <MenuItem as={Link} to="/property/residential/">Residential Projects</MenuItem>
-                  <MenuItem as={Link} to="/projects/independentfloors/">Independent Floors</MenuItem>
-                  <MenuItem as={Link} to="/projects/commercial/">Commercial Projects</MenuItem>
-                </MenuList>
-              </Menu>
-              {/* Divider between filters and quick links */}
-              <Box
-                as="span"
-                display={{ base: "none", md: colorChange ? "none" : "inline-block" }}
-                w="1px"
-                h="18px"
-                bg="#eaeaea"
-                mx={2}
-              />
-              {/* Rental and Resale quick links (desktop only) */}
-              <Link to="/rental-properties/best-rental-property-in-gurugram/">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  bg="transparent"
-                  color={colorChange ? "white" : "#e53e3e"}
-                  _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }}
-                  px={3}
-                  fontWeight="600"
-                  fontSize="16px"
-                  display={{ base: "none", md: "inline-flex" }}
-                >
-                  Rental
-                </Button>
-              </Link>
-              <Link to="/buy-properties/best-resale-property-in-gurugram/">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  bg="transparent"
-                  color={colorChange ? "white" : "#e53e3e"}
-                  _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }}
-                  px={3}
-                  fontWeight="600"
-                  fontSize="16px"
-                  display={{ base: "none", md: "inline-flex" }}
-                >
-                  Resale
-                </Button>
-              </Link>
-            </Flex>
-
-            {/* Center Section - Logo (placed left on desktop via order) */}
-            <Flex order={{ base: 2, md: 1 }} justifyContent={{ base: "center", md: "flex-start" }} flex={{ base: "initial", md: 1 }} position="relative" zIndex={10001}
-              display={{ base: isSearchOpen ? 'none' : 'flex', md: 'flex' }}
-            >
-              <Link to="/">
-                <Image
-                  src={colorChange 
-                    ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/lg.webp" 
-                    : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"}
-                  alt="100acress logo"
-                  height={{ base: "44px", md: "52px", lg: "60px" }}
-                  objectFit="contain"
-                  draggable={false}
-                  transition="opacity 200ms ease"
-                />
-              </Link>
-            </Flex>
+            {/* Center Section - Logo */}
+            <CenterLogo colorChange={colorChange} isSearchOpen={isSearchOpen} />
 
             {/* Right Section - Search, Profile & List Property */}
-            <Flex alignItems="center" gap={2} order={{ base: 3, md: 3 }} justifyContent={{ base: "flex-end", md: "flex-end" }} flex={{ base: "initial", md: 1 }} position="relative" zIndex={10001} flexWrap="nowrap" whiteSpace="nowrap">
-              {/* Search icon appears on sticky */}
-              <IconButton
-                aria-label="Search"
-                icon={<SearchIcon />}
-                size="sm"
-                variant="ghost"
-                color={colorChange ? "white" : "#111"}
-                _hover={{ bg: "transparent", color: colorChange ? "whiteAlpha.800" : "#111" }}
-                opacity={{ base: !isSearchOpen ? 1 : 0, md: colorChange && !isSearchOpen ? 1 : 0 }}
-                transition="opacity 300ms ease"
-                pointerEvents={{ base: !isSearchOpen ? "auto" : "none", md: colorChange && !isSearchOpen ? "auto" : "none" }}
-                display={{ base: "inline-flex", sm: "inline-flex" }}
-                onClick={() => setIsSearchOpen(true)}
-              />
-              <Box>
-              {token ? (
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    aria-label="Profile"
-                    variant="ghost"
-                    bg="transparent"
-                    _hover={{ bg: "transparent" }}
-                    px={2}
-                  >
-                    <Flex align="center" gap={2}>
-                      <Box
-                        as="span"
-                        border="1px solid rgba(0,0,0,0.35)"
-                        borderRadius="full"
-                        w="32px"
-                        h="32px"
-                        display="inline-flex"
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        <Box as="span" lineHeight={0}>
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                            <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                          </svg>
-                        </Box>
-                      </Box>
-                      {firstName && (
-                        <Box
-                          as="span"
-                          color={colorChange ? "white" : "#111"}
-                          fontSize="14px"
-                          fontWeight="600"
-                          display={{ base: "none", md: "inline" }}
-                        >
-                          {firstName}
-                        </Box>
-                      )}
-                    </Flex>
-                  </MenuButton>
-                  <MenuList p={0} minW="220px">
-                    <Box px={3} pt={2} pb={2} color="#666" fontSize="12px">
-                      Signed in {userRole ? `as ${userRole}` : ""}
-                    </Box>
-                    <Box h="1px" bg="#eee" />
-                    <MenuItem as={Link} to="/userdashboard/" fontSize="14px">View Profile</MenuItem>
-                    <MenuItem as={Link} to="/useredit/" fontSize="14px">Edit Profile</MenuItem>
-                    <MenuItem as={Link} to="/change-password/" fontSize="14px">Change Password</MenuItem>
-                    {userRole === "admin" && (
-                      <MenuItem as={Link} to="/admin/" fontSize="14px">Admin</MenuItem>
-                    )}
-                    {(userRole === "blog" || userRole === "contentwriter") && (
-                      <MenuItem as={Link} to="/seo/blogs" fontSize="14px">Blog</MenuItem>
-                    )}
-                    <Box h="1px" bg="#eee" />
-                    <MenuItem onClick={handleDeleteAccount} fontSize="14px" color="#e53e3e">Delete Account</MenuItem>
-                    <MenuItem onClick={() => { HandleUserLogout(); ShowLogOutMessage(); }} fontSize="14px">Log out</MenuItem>
-                  </MenuList>
-                </Menu>
-              ) : (
-                <>
-                  <Button
-                    onClick={showModal}
-                    aria-label="Profile"
-                    variant="ghost"
-                    bg="transparent"
-                    _hover={{ bg: "transparent" }}
-                    px={2}
-                  >
-                    <Flex align="center" gap={2}>
-                      <Box
-                        as="span"
-                        border="1px solid rgba(0,0,0,0.35)"
-                        borderRadius="full"
-                        w="32px"
-                        h="32px"
-                        display="inline-flex"
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        <Box as="span" lineHeight={0}>
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                            <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                          </svg>
-                        </Box>
-                      </Box>
-                      <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" display={{ base: "none", sm: "inline" }}>Log in</Box>
-                  </Flex>
-                </Button>
-                {/* Auth modal for logged-out users */}
-                <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="register" />
-              </>
-              )}
-              
-              {/* EMI Calculator button (visible on sm and above) */}
-              {/* EMI Calculator button removed from Navbar; will be placed in Footer */}
-
-              {token ? (
-                <Link to="/postproperty/">
-                  <Button
-                    size="sm"
-                    variant="solid"
-                    bg="white"
-                    color="#111"
-                    border="2px solid #e53e3e"
-                    boxShadow="sm"
-                    _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }}
-                    fontWeight="700"
-                    fontSize="14px"
-                    letterSpacing="0.3px"
-                    display={{ base: "none", lg: "inline-flex" }}
-                    gap={3}
-                    alignItems="center"
-                    borderRadius="xl"
-                    px={4}
-                    py={2}
-                    ml={{ base: 2, md: 3 }}
-                  >
-                    <Box as="span">Post property</Box>
-                    <Box
-                      as="span"
-                      bg="#FACC15"
-                      color="#e53e3e"
-                      px={3}
-                      py={0.5}
-                      fontSize="11px"
-                      fontWeight="800"
-                      lineHeight={1}
-                      style={{
-                        clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)'
-                      }}
-                    >
-                      FREE
-                    </Box>
-                  </Button>
-                </Link>
-              ) : (
-                <Link to="/auth/signin/">
-                  <Button
-                    size="sm"
-                    variant="solid"
-                    bg="white"
-                    color="#111"
-                    border="2px solid #e53e3e"
-                    boxShadow="sm"
-                    _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }}
-                    fontWeight="700"
-                    fontSize="14px"
-                    letterSpacing="0.3px"
-                    display={{ base: "none", lg: "inline-flex" }}
-                    gap={3}
-                    alignItems="center"
-                    borderRadius="xl"
-                    px={4}
-                    py={2}
-                    ml={{ base: 2, md: 3 }}
-                  >
-                    <Box as="span">Post property</Box>
-                    <Box
-                      as="span"
-                      bg="#FACC15"
-                      color="#e53e3e"
-                      px={3}
-                      py={0.5}
-                      fontSize="11px"
-                      fontWeight="800"
-                      lineHeight={1}
-                      style={{
-                        clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)'
-                      }}
-                    >
-                      FREE
-                    </Box>
-                  </Button>
-                </Link>
-              )}
-              </Box>
-            </Flex>
-
-            {/* Removed overlay so logo and right section remain visible while search is open */}
+            <RightSection
+              colorChange={colorChange}
+              isSearchOpen={isSearchOpen}
+              setIsSearchOpen={setIsSearchOpen}
+              token={token}
+              firstName={firstName}
+              isAdmin={isAdmin}
+              isBlogger={isBlogger}
+              go={go}
+              HandleUserLogout={HandleUserLogout}
+              ShowLogOutMessage={ShowLogOutMessage}
+              showModal={showModal}
+              showAuth={showAuth}
+              setShowAuth={setShowAuth}
+            />
+          </Flex>
+   {/* Removed overlay so logo and right section remain visible while search is open */}
 
             {/* Centered Animated Search Bar */}
             <Box
@@ -912,7 +523,7 @@ export default function Navbar() {
                 </InputRightElement>
               </InputGroup>
             </Box>
-          </Flex>
+          {/* </Flex> */}
 
           {isOpen && (
             <Box

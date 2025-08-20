@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getApiBase } from "./config/apiBase";
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "./MyContext";
@@ -53,8 +54,9 @@ export const AuthProvider = ({ children }) => {
       })
       if (email && password) {
         try {
+          const base = getApiBase();
           const loginResponse = await axios.post(
-            "/postPerson/verify_Login",
+            `${base}/postPerson/verify_Login`,
             { email, password }
           );
           const newToken = loginResponse.data.token;
@@ -65,7 +67,7 @@ export const AuthProvider = ({ children }) => {
   
           if (loginResponse.status === 200) {
             const roleResponse = await axios.get(
-              `/postPerson/Role/${email}`
+              `${base}/postPerson/Role/${email}`
             );
             setAgentData(roleResponse.data.User);
             localStorage.setItem(
@@ -217,8 +219,9 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (name && mobile && email && password && password === cpassword) {
+        const base = getApiBase();
         axios
-          .post("/postPerson/register", userSignUp)
+          .post(`${base}/postPerson/register`, userSignUp)
           .then((registrationResponse) => {
 
             // if error 409 User already Exist
@@ -252,7 +255,7 @@ export const AuthProvider = ({ children }) => {
             } catch (_) {}
 
             //generate otp for the user to to verify the email
-            return axios.post("/postPerson/verifyEmail", { 
+            return axios.post(`${base}/postPerson/verifyEmail`, { 
               email: email // Pass relevant data for OTP
             })
           })
@@ -298,8 +301,9 @@ export const AuthProvider = ({ children }) => {
         "Are you sure you want to delete this user?"
       );
       if (confirmDelete) {
+        const base = getApiBase();
         const res = await axios.delete(
-          `/postPerson/propertyDelete/${id}`
+          `${base}/postPerson/propertyDelete/${id}`
         );
         if (res.status >= 200 && res.status < 300) {
 
