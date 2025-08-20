@@ -388,11 +388,11 @@ const UserEdit = () => {
 
   return (
     <>
-      <div className="pt-24 md:pt-28 pb-10 bg-white min-h-screen">
+      <div className="pt-20 md:pt-24 pb-2 bg-white">
         {contextHolder}
         <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
           {/* User Profile Section */}
-          <div className="card-body mb-8 border rounded-lg p-4">
+          <div className="card-body mb-4 border rounded-lg p-4">
             <h2 className="text-xl font-semibold mb-4">Edit Profile</h2>
             <div className="flex items-start gap-6">
               <div className="flex flex-col items-center">

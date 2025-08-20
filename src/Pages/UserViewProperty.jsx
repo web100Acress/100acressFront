@@ -190,12 +190,12 @@ const UserViewProperty = () => {
                     <div className="mt-4 flex items-center justify-between">
                       <span className="text-sm font-semibold text-gray-900 truncate pr-2">{item.state}</span>
                       <div className="flex items-center gap-2">
-                        <button
+                        {/* <button
                           type="button"
                           className="text-white bg-gradient-to-r from-red-500 to-rose-500 hover:opacity-95 focus:ring-2 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs md:text-sm px-3 py-2"
                         >
                           View Details
-                        </button>
+                        </button> */}
                         <button
                           type="button"
                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate('/usereditproperty', { state: { property: item } }); }}
