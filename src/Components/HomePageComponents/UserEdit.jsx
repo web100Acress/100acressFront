@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Footer from "../Actual_Components/Footer";
+// import Footer from "../Actual_Components/Footer";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { message, Modal } from "antd";
@@ -23,37 +23,154 @@ const UserEdit = () => {
   const [avatar, setAvatar] = useState(() => {
     try { return localStorage.getItem("agentAvatar") || ""; } catch { return ""; }
   });
+  const [avatarFile, setAvatarFile] = useState(null);
   const [pwd, setPwd] = useState({ current: "", next: "", confirm: "" });
+
+  // Extract a valid MongoDB ObjectId from localStorage mySellerId
+  const getUserId = () => {
+    try {
+      let raw = localStorage.getItem('mySellerId');
+      if (!raw) return null;
+      // If JSON-stringified object or string
+      try {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed === 'string') raw = parsed;
+        else if (parsed && typeof parsed === 'object' && parsed._id) raw = parsed._id;
+      } catch {}
+      // Remove wrapping quotes and pick a 24-hex sequence
+      const match = String(raw).match(/[a-fA-F0-9]{24}/);
+      return match ? match[0] : null;
+    } catch { return null; }
+  };
+
+  // ---- Helpers: API base + endpoint fallbacks ----
+  const getApiBase = () => {
+    try {
+      return (typeof window !== 'undefined' && window.__API_BASE__) ? window.__API_BASE__ : '';
+    } catch { return ''; }
+  };
+
+  const withBase = (path) => {
+    const base = getApiBase();
+    if (!base) return path; // use relative when no base configured
+    // ensure single slash join
+    if (path.startsWith('/')) return `${base}${path}`;
+    return `${base}/${path}`;
+  };
+
+  // Try a list of endpoints until one succeeds (2xx)
+  const tryEndpoints = async (method, endpoints, config = {}, body) => {
+    let lastErr;
+    for (const ep of endpoints) {
+      try {
+        const url = withBase(ep);
+        if (method === 'get') {
+          const res = await axios.get(url, config);
+          if (res && res.status >= 200 && res.status < 300) return res;
+        } else if (method === 'put') {
+          const res = await axios.put(url, body, config);
+          if (res && res.status >= 200 && res.status < 300) return res;
+        } else if (method === 'post') {
+          const res = await axios.post(url, body, config);
+          if (res && res.status >= 200 && res.status < 300) return res;
+        }
+      } catch (e) {
+        lastErr = e;
+        // continue to next
+      }
+    }
+    if (lastErr) throw lastErr;
+    throw new Error('All endpoints failed');
+  };
 
   const saveProfile = async () => {
     try {
-      // Update local cache immediately for real-time feel
-      const raw = localStorage.getItem("agentData");
-      const parsed = raw ? JSON.parse(raw) : {};
-      const updated = { ...parsed, ...profile };
-      localStorage.setItem("agentData", JSON.stringify(updated));
-      // Best-effort: update firstName used in Navbar
-      try {
-        const first = (profile.name || "").toString().trim().split(/\s+/)[0] || "";
-        if (first) localStorage.setItem("firstName", first);
-      } catch {}
-      message.success("Profile updated locally");
-      // TODO: Hook to real API when available, e.g. POST /user/profile
+      const token = localStorage.getItem('token') || localStorage.getItem('myToken');
+      const userId = getUserId();
+      if (!token) {
+        message.error('You are not logged in');
+        return;
+      }
+      if (!userId) {
+        message.error('Invalid user id. Please re-login.');
+        return;
+      }
+      const headers = { Authorization: `Bearer ${token}` };
+      let res;
+      const putEndpoints = [
+        `/postPerson/update/${userId}`,
+      ];
+      if (avatarFile) {
+        // Backend route doesn't declare upload middleware, so avoid multipart.
+        const body = { name: profile.name, email: profile.email, mobile: profile.mobile };
+        res = await tryEndpoints('post', putEndpoints, { headers }, body);
+        // Persist avatar locally so Nav shows it
+        try { localStorage.setItem('agentAvatar', avatar); } catch {}
+      } else {
+        const body = { name: profile.name, email: profile.email, mobile: profile.mobile };
+        res = await tryEndpoints('post', putEndpoints, { headers }, body);
+      }
+      if (res && res.status >= 200 && res.status < 300) {
+        message.success('Profile saved');
+        await fetchProfile();
+        // Broadcast profile update for navbar and other tabs
+        try {
+          const bc = new BroadcastChannel('profile-updates');
+          bc.postMessage({ type: 'profile-updated', at: Date.now() });
+          bc.close();
+        } catch {}
+      } else {
+        message.error('Failed to save profile');
+      }
     } catch (e) {
-      message.error("Failed to update profile");
+      message.error(e?.response?.data?.message || 'Failed to save profile');
     }
   };
 
   const onAvatarChange = (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
+    setAvatarFile(file);
     const reader = new FileReader();
     reader.onload = (ev) => {
       const url = ev.target?.result || "";
-      setAvatar(url);
-      try { localStorage.setItem("agentAvatar", url); } catch {}
+      setAvatar(url); // preview only; persist after successful save
     };
     reader.readAsDataURL(file);
+  };
+
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem('token') || localStorage.getItem('myToken');
+      const userId = getUserId();
+      if (!token) return;
+      const getEndpoints = userId ? [ `/postPerson/edit/${userId}` ] : [];
+      let res = null;
+      if (getEndpoints.length) {
+        res = await tryEndpoints('get', getEndpoints, { headers: { Authorization: `Bearer ${token}` } });
+      }
+      if (!res) return;
+      const data = res?.data?.data || res?.data || {};
+      const newProfile = {
+        name: data.name || data.fullName || data.username || '',
+        email: data.email || data.userEmail || '',
+        mobile: data.mobile || data.phone || data.contact || '',
+      };
+      setProfile(newProfile);
+      if (data.avatarUrl || data.avatar) {
+        setAvatar(data.avatarUrl || data.avatar);
+        try { localStorage.setItem('agentAvatar', data.avatarUrl || data.avatar); } catch {}
+      }
+      // Persist to localStorage for other parts of app (e.g., navbar)
+      try {
+        localStorage.setItem('agentData', JSON.stringify(newProfile));
+        const first = (newProfile.name || '').toString().trim().split(/\s+/)[0] || '';
+        if (first) localStorage.setItem('firstName', first);
+      } catch {}
+    } catch (e) {
+      // Silently ignore to avoid UX disruption
+      // console.error('Failed fetching profile', e);
+    }
   };
 
   const goChangePassword = async () => {
@@ -126,14 +243,36 @@ const UserEdit = () => {
   const [messageApi, contextHolder] = message.useMessage();
   
   useEffect(() => {
+    // Load profile details from backend at mount
+    fetchProfile();
+
     const fetchData = async () => {
       try {
         const res = await axios.get(
           `/postPerson/propertyoneEdit/${id}`
         );
-        setValues(res.data.data.postProperty[0]);
+        const data = res?.data?.data ?? res?.data;
+        // Try common shapes: { data: { postProperty: [item] }} or { data: item } or { postProperty: [item] }
+        const list = data?.postProperty ?? res?.data?.postProperty;
+        const item = Array.isArray(list) ? list[0] : (list || data);
+        if (item && typeof item === 'object') {
+          setValues((prev) => ({ ...prev, ...item }));
+        } else {
+          messageApi?.open?.({
+            key: "warnNoPropertyData",
+            type: "warning",
+            content: "No property data found for this ID",
+            duration: 2,
+          });
+        }
       } catch (error) {
-        console.log(error);
+        console.error("Failed to fetch property for edit: ", error);
+        messageApi?.open?.({
+          key: "errorFetchProperty",
+          type: "error",
+          content: "Unable to load property details",
+          duration: 2,
+        });
       }
     };
     fetchData();

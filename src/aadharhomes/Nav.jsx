@@ -166,14 +166,49 @@ export default function Nav() {
   };
 
   const [token, setToken] = useState();
+  const [displayName, setDisplayName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
 
   const checkUserAuth = () => {
-    const storedToken = localStorage.getItem("myToken");
+    const storedToken = localStorage.getItem("myToken") || localStorage.getItem("token");
     setToken(storedToken);
+  };
+
+  const loadProfileFromStorage = () => {
+    try {
+      const name = localStorage.getItem("firstName") || "";
+      const avatar = localStorage.getItem("agentAvatar") || "";
+      setDisplayName(name);
+      setAvatarUrl(avatar);
+    } catch {}
   };
 
   useEffect(() => {
     checkUserAuth();
+    loadProfileFromStorage();
+    // Listen for profile updates across tabs/components
+    let bc;
+    try {
+      bc = new BroadcastChannel('profile-updates');
+      bc.onmessage = (ev) => {
+        if (ev?.data?.type === 'profile-updated') {
+          loadProfileFromStorage();
+        }
+      };
+    } catch {}
+    const onStorage = (e) => {
+      if (e.key === 'agentData' || e.key === 'firstName' || e.key === 'agentAvatar') {
+        loadProfileFromStorage();
+      }
+      if (e.key === 'myToken' || e.key === 'token') {
+        checkUserAuth();
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      try { bc && bc.close(); } catch {}
+    };
   }, []);
 
   return (
