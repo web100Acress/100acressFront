@@ -1,5 +1,5 @@
 /* --- Highlights Section --- */
-.nb-highlights-section { position: relative; width: 100%; background: #ffffff; }
+.nb-highlights-section { position: relative; width: 100%; background: transparent; }
 .nb-highlights-inner { padding: 48px 16px; max-width: 1120px; margin: 0 auto; }
 @media (min-width: 1024px) { .nb-highlights-inner { padding: 72px 32px; } }
 
@@ -24,7 +24,7 @@
 .nb-brochure-btn-mobile:hover { transform: scale(1.05); box-shadow: 0 20px 25px rgba(0,0,0,0.20); }
 
 .nb-highlights-right { width: 100%; display: flex; flex-direction: column; justify-content: center; order: 2; }
-.nb-highlights-text-card { background: rgba(255,255,255,0.80); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: 24px; padding: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.12); border: 1px solid rgba(217, 180, 85, 0.5); }
+.nb-highlights-text-card { background: rgba(255,255,255,0.80); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: 24px; padding: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.12); border: 1px solid rgba(217, 180, 85, 0.5); display: flex; flex-direction: column; }
 @media (min-width: 1024px) { .nb-highlights-text-card { padding: 40px; } }
 
 .nb-highlight-points { display: flex; flex-direction: column; gap: 16px; }
@@ -32,6 +32,25 @@
 .nb-highlight-dot { width: 8px; height: 8px; border-radius: 9999px; background: linear-gradient(to right, #CFAF6E, #E5C78A); margin-top: 8px; flex-shrink: 0; transition: transform .3s ease; }
 .nb-highlight-item:hover .nb-highlight-dot { transform: scale(1.25); }
 .nb-highlight-text { color: #374151; font-size: 1.125rem; line-height: 1.75; }
+
+/* Clamp highlights when content exceeds image height */
+.nb-hl-card--clamped { position: relative; }
+.nb-highlight-points--clamped { max-height: var(--nb-hl-maxh, 240px); overflow: hidden; position: relative; flex: 1 1 auto; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) calc(100% - var(--nb-hl-fade, 72px)), rgba(0,0,0,0) 100%); mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) calc(100% - var(--nb-hl-fade, 72px)), rgba(0,0,0,0) 100%); }
+.nb-hl-card--clamped::after { content: none; }
+.nb-hl-viewmore-wrap { display: flex; justify-content: center; margin-top: auto; padding-top: 6px; }
+.nb-hl-viewmore-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 16px; border-radius: 9999px; border: 1px solid rgba(217,180,85,0.6); background: linear-gradient(to right, #FFF9F1, #F7F3E9); color: #8B7355; font-weight: 700; cursor: pointer; transition: box-shadow .2s ease, filter .2s ease; }
+.nb-hl-viewmore-btn:hover { box-shadow: 0 10px 16px rgba(0,0,0,0.12); filter: brightness(1.02); }
+
+/* Highlights modal for Show More */
+.nb-hl-modal-overlay { position: fixed; inset: 0; z-index: 10002; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.nb-hl-modal-container { position: relative; background: #fff; border-radius: 16px; width: min(92vw, 720px); max-height: 88vh; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.25); display: flex; flex-direction: column; }
+.nb-hl-modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: rgba(0,0,0,0.08); color: #111; border: none; border-radius: 9999px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1; }
+.nb-hl-modal-close:hover { background: rgba(0,0,0,0.15); }
+.nb-hl-modal-header { padding: 20px 24px 0; text-align: center; }
+.nb-hl-modal-title { margin: 8px 0 4px; font-size: 1.35rem; font-weight: 800; color: #111827; }
+.nb-hl-modal-sub { margin: 0 0 12px; color: #6b7280; }
+.nb-hl-modal-body { padding: 0 24px 20px; overflow: auto; }
+.nb-highlight-points--full { gap: 14px; padding: 8px 0 0; }
 
 /* --- Pricing & Dimensions --- */
 .nb-pricing-section { padding: 0; }
@@ -73,7 +92,7 @@
 .nb-pricing-mobile-btntext { display: flex; align-items: center; justify-content: center; gap: 8px; }
 
 /* --- Floor Plan Section --- */
-.nb-floor-section { padding: 48px 16px 16px; background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(250, 244, 227, 0.3)); }
+.nb-floor-section { padding: 48px 16px 16px; background: transparent; }
 @media (min-width: 1024px) { .nb-floor-section { padding: 64px 32px 24px; } }
 .nb-floor-inner { max-width: 1120px; margin: 0 auto; }
 

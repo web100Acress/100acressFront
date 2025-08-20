@@ -4,6 +4,7 @@ import "antd/dist/reset.css";
 const { Step } = Steps;
 import Footer from "../Components/Actual_Components/Footer";
 import axios from "axios";
+import { getApiBase } from "../config/apiBase";
 import { State, City } from "country-state-city";
 import { Helmet } from "react-helmet";
 
@@ -225,7 +226,12 @@ const NewSellProperty = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post(apiEndpoint, formDataAPI);
+      const base = getApiBase();
+      const response = await axios.post(`${base}${apiEndpoint}`, formDataAPI, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (response.status === 200) {
         modalInstance.destroy();
         message.success("Submitted Successfully, Under Review");
@@ -237,9 +243,13 @@ const NewSellProperty = () => {
         message.error("Unexpected response from server.");
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
+      const status = error?.response?.status;
+      const data = error?.response?.data;
+      console.error("Error submitting form:", { status, data, error });
       modalInstance.destroy();
-      message.error("There was an error submitting the form. Please try again.");
+      message.error(
+        data?.message || data?.error || `There was an error submitting the form (${status || "Network/Unknown"}).`
+      );
     } finally {
       setIsLoading(false);
     }

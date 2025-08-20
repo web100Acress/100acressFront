@@ -1,4 +1,3 @@
 User-agent: *
 Disallow:  /undefined/
-
 Sitemap: https://www.100acress.com/sitemap.xml

@@ -1,12 +1,61 @@
-import React,{useState} from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { getApiBase } from "../config/apiBase";
+import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
 
 const UserEditProperty = () => {
   const propertyTypes = ["Select Property Type", "Commercial", "Residential"];
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const selected = state && state.property ? state.property : null;
 
   const [sellProperty, setSellProperty] = useState({
     propertyLooking: "",
     selectoption: "Select Property Type",
+    propertyType: "",
+    subType: "",
+    propertyName: "",
+    address: "",
+    city: "",
+    state: "",
+    price: "",
+    area: "",
+    description: "",
+    landmark: "",
+    amenities: "",
+    builtyear: "",
+    furnishing: "",
+    type: "",
+    availabledate: "",
   });
+  const [frontImageFile, setFrontImageFile] = useState(null);
+  const [otherImageFiles, setOtherImageFiles] = useState([]);
+
+  useEffect(() => {
+    if (selected) {
+      setSellProperty((prev) => ({
+        ...prev,
+        propertyLooking: selected.propertyLooking || "",
+        selectoption: selected.selectoption || "Select Property Type",
+        propertyType: selected.propertyType || "",
+        subType: selected.subType || "",
+        propertyName: selected.projectName || selected.propertyName || "",
+        address: selected.address || "",
+        city: selected.city || "",
+        state: selected.state || "",
+        price: selected.price || "",
+        area: selected.area || "",
+        description: selected.description || selected.descripation || selected.projectDescription || "",
+        landmark: selected.landMark || selected.landmark || "",
+        amenities: Array.isArray(selected.amenities) ? selected.amenities.join(", ") : (selected.amenities || ""),
+        builtyear: selected.builtyear || selected.builtYear || "",
+        furnishing: selected.furnishing || "",
+        type: selected.type || "",
+        availabledate: selected.availabledate || selected.availableDate || "",
+      }));
+    }
+  }, [selected]);
 
   const subTypes = {
     Commercial: [
@@ -27,271 +76,321 @@ const UserEditProperty = () => {
       "Farmhouse",
       "Other",
     ],
-    // Add more subtypes as needed
-  };
-
-  const handleSelectChange = (e) => {
-    setSellProperty({
-      ...sellProperty,
-      selectoption: e.target.value,
-    });
   };
 
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
+    setSellProperty((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === "selectoption" && { propertyType: "", subType: "" }),
+      ...(name === "propertyType" && { subType: "" }),
+    }));
+  };
 
-    if (name === "selectoption") {
-      setSellProperty({
-        ...sellProperty,
-        [name]: value,
-        propertyType: "",
-        subType: "",
+  const handleFrontImageChange = (e) => {
+    const file = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+    setFrontImageFile(file);
+  };
+
+  const handleOtherImagesChange = (e) => {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    setOtherImageFiles(files);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selected || !selected._id) {
+      navigate(-1);
+      return;
+    }
+    try {
+      const base = getApiBase();
+      const form = new FormData();
+      // Text fields
+      form.append('propertyLooking', sellProperty.propertyLooking || '');
+      form.append('selectoption', sellProperty.selectoption || '');
+      form.append('propertyType', sellProperty.propertyType || '');
+      form.append('subType', sellProperty.subType || '');
+      form.append('projectName', sellProperty.propertyName || '');
+      form.append('propertyName', sellProperty.propertyName || '');
+      form.append('address', sellProperty.address || '');
+      form.append('city', sellProperty.city || '');
+      form.append('state', sellProperty.state || '');
+      form.append('price', sellProperty.price || '');
+      form.append('area', sellProperty.area || '');
+      // Description under multiple common keys
+      form.append('description', sellProperty.description || '');
+      form.append('descripation', sellProperty.description || '');
+      form.append('projectDescription', sellProperty.description || '');
+      form.append('landMark', sellProperty.landmark || '');
+      form.append('landmark', sellProperty.landmark || '');
+      // Amenities as string, array, and JSON for compatibility
+      const amenitiesStr = (sellProperty.amenities || '').trim();
+      const amenitiesArr = amenitiesStr ? amenitiesStr.split(',').map(s => s.trim()).filter(Boolean) : [];
+      form.append('amenities', amenitiesStr);
+      if (amenitiesArr.length) {
+        amenitiesArr.forEach(a => form.append('amenities[]', a));
+        form.append('amenitiesJson', JSON.stringify(amenitiesArr));
+      }
+      // Built year and available date with alternative keys
+      form.append('builtyear', sellProperty.builtyear || '');
+      form.append('builtYear', sellProperty.builtyear || '');
+      form.append('furnishing', sellProperty.furnishing || '');
+      form.append('type', sellProperty.type || '');
+      form.append('availabledate', sellProperty.availabledate || '');
+      form.append('availableDate', sellProperty.availabledate || '');
+      // Files
+      if (frontImageFile) {
+        form.append('frontImage', frontImageFile);
+      }
+      if (otherImageFiles && otherImageFiles.length) {
+        otherImageFiles.forEach((f) => form.append('otherImage', f));
+      }
+
+      await axios.post(`${base}/postPerson/propertyoneUserUpdate/${selected._id}`, form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-    } else if (name === "propertyType") {
-      setSellProperty({
-        ...sellProperty,
-        [name]: value,
-        subType: "", // Reset subType when propertyType changes
-      });
-    } else {
-      setSellProperty({
-        ...sellProperty,
-        [name]: value,
-      });
+
+      // Notify other tabs
+      try {
+        const channel = new BroadcastChannel('property-updates');
+        channel.postMessage('property:updated');
+        channel.close();
+      } catch {}
+      try { window.localStorage.setItem('property-updated', String(Date.now())); } catch {}
+
+      navigate(-1);
+    } catch (err) {
+      console.error('Update failed', err?.response || err);
+      // Still navigate back to keep flow, or stay?
+      navigate(-1);
     }
   };
+
   return (
-    <div>
-      <section className=" py-12 text-gray-800 ">
-        <div className="mx-auto flex max-w-md flex-col rounded-lg lg:max-w-screen-xl lg:flex-row">
-          <div className="max-w-xl px-4 lg:pr-24 lg:pt-20">
-            <h3 className="lg:text-5xl md:text-3xl  font-semibold">
-              Post your property
+    <div className="bg-gray-100 min-h-screen overflow-x-hidden">
+      {/* The main section container is responsive with padding and max-width for different screen sizes */}
+      <section className="pt-24 md:pt-28 pb-12">
+        <div className="mx-auto flex max-w-sm sm:max-w-md lg:max-w-screen-xl flex-col rounded-lg lg:flex-row gap-8 lg:gap-12 p-4 md:p-8">
+          {/* The left text and button section is hidden on small screens and shown on medium and larger ones */}
+          <div className="max-w-xl lg:pr-12 lg:pt-16 hidden md:block">
+            {/* Responsive text sizes with different font sizes for md and lg breakpoints */}
+            <h3 className="lg:text-5xl md:text-3xl font-semibold text-slate-800 leading-tight">
+              Edit your property,
+              <br />
+              <span className="text-red-500">update details anytime</span>
             </h3>
-            <h3 className=" mb-3 lg:text-5xl md:text-3xl font-semibold text-red-400 ">
-              get the best prices
-            </h3>
-            <p className="mb-3 text-lg text-gray-600 text-justify lg:w-3/4 hidden md:block">
-              100acress is the best place to sell your property, we are
-              dedicated to providing advisory and mediation services for all
-              your needs. you can expect us every time. All that is for you!
+            <p className="mt-4 text-lg text-gray-600 text-justify">
+              100acress is the best place to sell your property. We are dedicated to providing advisory and mediation services for all your needs. You can expect our help anytime. All that is for you!
             </p>
-            <div className="flex flex-col space-x-2 sm:flex-row space-y-4 sm:space-y-0 ml-[-10px] lg:pt-12">
-              <button className="rounded-full text-white text-md sm:text-lg md:text-md font-normal px-3 sm:px-6 py-2 sm:py-4 bg-red-400 hover:bg-red-500">
+            {/* Buttons are arranged responsively, stacking on mobile and side-by-side on small screens and up */}
+            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-8">
+              <button className="rounded-full text-white text-md sm:text-lg font-normal px-6 py-3 bg-red-500 hover:bg-red-600 transition-colors shadow-md">
                 Get started
               </button>
-              <button className="rounded-full text-md sm:text-lg md:text-md font-normal text-white px-3 sm:px-6 py-2 sm:py-4 bg-gray-400 hover:bg-gray-500">
+              <button className="rounded-full text-md sm:text-lg font-normal text-gray-700 px-6 py-3 bg-white hover:bg-gray-200 transition-colors border border-gray-300 shadow-md">
                 How It Works
               </button>
             </div>
           </div>
-
-          <div className="mt-8 mb-8 max-w-3/4  shadow-2xl sm:rounded-lg sm:shadow-lg lg:mt-0  bg-red-400 px-1">
-            <div className="m-2">
-              <p className="text-2xl mx-2 text-white">
-                Edit Property<span>....</span>
-              </p>
-
-              <p>
-                <span
-                  className={`mx-2 px-3 py-1 rounded-2xl text-white border-2 hover:bg-red-600 hover:text-white ${
-                    sellProperty.propertyLooking === "Sell"
-                      ? "bg-red-600 text-white"
-                      : ""
-                  }`}
-                  
-                >
-                  Sell
-                </span>{" "}
-                <span
-                  className={`px-3 text-white py-1 rounded-2xl border-2 hover:bg-red-600 hover:text-white ${
-                    sellProperty.propertyLooking === "rent"
-                      ? "bg-red-600 text-white"
-                      : ""
-                  }`}
-                  
-                >
-                  Rent/Lease
-                </span>{" "}
-              </p>
-
-
+          
+          {/* The main form container is responsive with a consistent look across devices */}
+          <div className="w-full flex-1 rounded-lg shadow-2xl lg:mt-0 bg-white p-6 md:p-8">
+            <h2 className="text-3xl font-bold text-slate-800 mb-4">Edit Property</h2>
+            
+            {/* The "Sell" and "Rent/Lease" buttons are responsive with dynamic styles */}
+            <div className="flex flex-wrap gap-3 sm:gap-4 mb-6">
+              <button
+                onClick={() => setSellProperty((p) => ({ ...p, propertyLooking: 'Sell' }))}
+                aria-pressed={sellProperty.propertyLooking === 'Sell'}
+                className={`w-full sm:w-auto text-center px-5 py-2 rounded-full font-medium transition-all duration-200 ${
+                  sellProperty.propertyLooking === "Sell" ? "bg-red-500 text-white shadow-md" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                Sell
+              </button>
+              <button
+                onClick={() => setSellProperty((p) => ({ ...p, propertyLooking: 'rent' }))}
+                aria-pressed={sellProperty.propertyLooking === 'rent'}
+                className={`w-full sm:w-auto text-center px-5 py-2 rounded-full font-medium transition-all duration-200 ${
+                  sellProperty.propertyLooking === "rent" ? "bg-red-500 text-white shadow-md" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                Rent/Lease
+              </button>
             </div>
 
-            <div className="p-1 sm:p-8">
-              <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <select
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none text-gray-500"
-                    name="selectoption"
-                    value={sellProperty.selectoption}
-                    onChange={handleChangeValue}
-                  >
-                    {propertyTypes.map((type, index) => (
-                      <option key={index} value={type}>
-                        {type}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              {/* Form fields are arranged in a responsive grid that stacks on mobile */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <select
+                  className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  name="selectoption"
+                  value={sellProperty.selectoption}
+                  onChange={handleChangeValue}
+                >
+                  {propertyTypes.map((type, index) => (
+                    <option key={index} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
 
                 {sellProperty.selectoption !== "Select Property Type" && (
                   <select
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none text-gray-500"
+                    className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                     name="propertyType"
                     value={sellProperty.propertyType}
                     onChange={handleChangeValue}
                   >
-                    {subTypes[sellProperty.selectoption].map(
-                      (subType, index) => (
-                        <option key={index} value={subType}>
-                          {subType}
-                        </option>
-                      )
-                    )}
+                    {subTypes[sellProperty.selectoption]?.map((subType, index) => (
+                      <option key={index} value={subType}>
+                        {subType}
+                      </option>
+                    ))}
                   </select>
                 )}
               </div>
 
-              <div>
+              <input
+                type="text"
+                placeholder="Property Name"
+                name="propertyName"
+                className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                value={sellProperty.propertyName}
+                onChange={handleChangeValue}
+              />
+
+              <input
+                type="text"
+                placeholder="Address"
+                name="address"
+                className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                value={sellProperty.address}
+                onChange={handleChangeValue}
+              />
+
+              <div className="grid gap-4 sm:grid-cols-2">
                 <input
                   type="text"
-                  placeholder="Property Name"
-                  name="propertyName"
-                  className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                  placeholder="City"
+                  name="city"
+                  className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  value={sellProperty.city}
+                  onChange={handleChangeValue}
+                />
+                <input
+                  type="text"
+                  placeholder="State"
+                  name="state"
+                  className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  value={sellProperty.state}
+                  onChange={handleChangeValue}
                 />
               </div>
 
-              <div>
+              <div className="grid gap-4 sm:grid-cols-2">
                 <input
                   type="text"
-                  placeholder="Address"
-                  name="address"
-                  className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                  placeholder="Price"
+                  name="price"
+                  className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  value={sellProperty.price}
+                  onChange={handleChangeValue}
+                />
+                <input
+                  type="text"
+                  placeholder="Area"
+                  name="area"
+                  className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  value={sellProperty.area}
+                  onChange={handleChangeValue}
                 />
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="City"
-                    name="city"
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="State"
-                    name="state"
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-              </div>
+              <textarea
+                placeholder="Description"
+                name="description"
+                className="h-28 w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+                value={sellProperty.description}
+                onChange={handleChangeValue}
+              />
 
-              <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Price"
-                    name="price"
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Area"
-                    name="area"
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-              </div>
-
-              <div>
+              <div className="grid gap-4 sm:grid-cols-2">
                 <input
                   type="text"
-                  placeholder="Description"
-                  name="description"
-                  className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                  placeholder="Landmark"
+                  name="landmark"
+                  className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  value={sellProperty.landmark}
+                  onChange={handleChangeValue}
+                />
+                <input
+                  type="text"
+                  placeholder="Amenities (comma-separated)"
+                  name="amenities"
+                  className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  value={sellProperty.amenities}
+                  onChange={handleChangeValue}
                 />
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Landmark"
-                    name="landmark"
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Amenities"
-                    multiple
-                    name="amenities"
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <input
+                  type="text"
+                  placeholder="Built year"
+                  name="builtyear"
+                  className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  value={sellProperty.builtyear}
+                  onChange={handleChangeValue}
+                />
+                <input
+                  type="text"
+                  placeholder="Furnishing"
+                  name="furnishing"
+                  className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  value={sellProperty.furnishing}
+                  onChange={handleChangeValue}
+                />
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Built year"
-                    name="builtyear"
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Furnishing"
-                    name="furnishing"
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <input
+                  type="text"
+                  placeholder="Type"
+                  name="type"
+                  className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  value={sellProperty.type}
+                  onChange={handleChangeValue}
+                />
+                <input
+                  type="text"
+                  placeholder="Available date"
+                  name="availabledate"
+                  className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  value={sellProperty.availabledate}
+                  onChange={handleChangeValue}
+                />
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <input
-                    type="text"
-                    placeholder="Type"
-                    name="type"
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Available date"
-                    name="availabledate"
-                    className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="grid gap-3 md:grid-cols-2 text-gray-500">
-                <div>
-                  <label htmlFor="frontImage" className=" text-white mx-3 ">
-                    Upload Front Images:
+                  <label htmlFor="frontImage" className="block text-gray-700 font-medium mb-1">
+                    Upload Front Image
                   </label>
                   <input
                     type="file"
                     name="frontImage"
                     accept="image/*"
-                    className="mt-2 h-10 w-full rounded-md bg-white border text-gray-500 px-3 outline-none pt-1"
+                    onChange={handleFrontImageChange}
+                    className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 pt-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="otherImage" className=" text-white mx-3 ">
-                    Upload Other Images:
+                  <label htmlFor="otherImage" className="block text-gray-700 font-medium mb-1">
+                    Upload Other Images
                   </label>
                   <input
                     type="file"
@@ -299,21 +398,25 @@ const UserEditProperty = () => {
                     name="otherImage"
                     accept="image/*"
                     id="otherImage"
-                    className="mt-2 h-10 w-full rounded-md bg-white border text-gray-500 px-3 outline-none pt-1 mb-3"
+                    onChange={handleOtherImagesChange}
+                    className="h-11 w-full rounded-md border border-gray-300 bg-gray-50 px-4 pt-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                   />
                 </div>
               </div>
               
-              <div className="flex justify-center items-center">
-                <button className="rounded-lg text-white text-md sm:text-lg md:text-md border-2 font-normal px-2 sm:px-6 py-1 sm:py-4 bg-red-400 hover:bg-red-500">
-                  Submit
+              <div className="flex justify-center mt-6">
+                <button 
+                  type="submit" 
+                  className="w-full rounded-lg bg-red-500 px-6 py-3 text-lg font-semibold text-white shadow-md transition-colors hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                >
+                  Save Changes
                 </button>
               </div>
-
-            </div>
+            </form>
           </div>
         </div>
       </section>
+      <LuxuryFooter />
     </div>
   );
 };
