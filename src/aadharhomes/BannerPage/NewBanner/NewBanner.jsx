@@ -690,8 +690,6 @@ const NewBanner = () => {
     ? builderProject
     : [];
 
-  const safeBuilderProjects = Array.isArray(builderProject) ? builderProject : [];
-
   const projectsToShow = showAllProjects
     ? safeBuilderProjects
     : safeBuilderProjects.slice(0, 4);
