@@ -13,7 +13,6 @@ export default function PricingSection({ projectViewDetails, BhK_Details, handle
           </div>
           <h2 className="prc-title">
             {projectViewDetails.projectName}
-            <span className="block font-serif">Size & Price</span>
             <div className="prc-underline"></div>
           </h2>
         </div>
