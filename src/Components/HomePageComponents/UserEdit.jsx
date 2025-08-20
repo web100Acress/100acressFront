@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../Actual_Components/Footer";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {message} from "antd";
+import { message, Modal } from "antd";
 import LuxuryFooter from "../Actual_Components/LuxuryFooter";
 
 
@@ -56,9 +56,50 @@ const UserEdit = () => {
     reader.readAsDataURL(file);
   };
 
-  const goChangePassword = () => {
-    // Route to existing reset email flow for now
-    navigate("/forgetpassword");
+  const goChangePassword = async () => {
+    // Inline change password instead of navigating to forgot flow
+    try {
+      if (!pwd.current || !pwd.next || !pwd.confirm) {
+        message.warning("Please fill all password fields");
+        return;
+      }
+      if (pwd.next !== pwd.confirm) {
+        message.error("New and confirm password do not match");
+        return;
+      }
+      // Ask for confirmation before proceeding
+      const ok = await new Promise((resolve) => {
+        Modal.confirm({
+          title: "Confirm Password Change",
+          content: "Are you sure you want to change your password?",
+          okText: "Change",
+          cancelText: "Cancel",
+          onOk: () => resolve(true),
+          onCancel: () => resolve(false),
+        });
+      });
+      if (!ok) return; // user cancelled
+      const base = typeof window !== 'undefined' && window.__API_BASE__ ? window.__API_BASE__ : '';
+      message.loading({ content: 'Updating password...', key: 'pwd', duration: 0 });
+      // Try common payload keys; backend route exists at /postPerson/changePassword
+      const payload = {
+        oldPassword: pwd.current,
+        currentPassword: pwd.current,
+        newPassword: pwd.next,
+        confirmPassword: pwd.confirm,
+        email: profile.email,
+      };
+      const url = base ? `${base}/postPerson/changePassword` : `/postPerson/changePassword`;
+      const res = await axios.post(url, payload);
+      if (res && res.status >= 200 && res.status < 300) {
+        message.success({ content: 'Password updated successfully', key: 'pwd', duration: 2 });
+        setPwd({ current: "", next: "", confirm: "" });
+      } else {
+        message.error({ content: 'Failed to update password', key: 'pwd', duration: 2 });
+      }
+    } catch (e) {
+      message.error({ content: (e?.response?.data?.message) || 'Failed to update password', key: 'pwd', duration: 3 });
+    }
   };
   const [values, setValues] = useState({
     propertyType: "",
@@ -207,7 +248,7 @@ const UserEdit = () => {
 
   return (
     <>
-      <div>
+      <div className="pt-24 md:pt-28 pb-10 bg-white min-h-screen">
         {contextHolder}
         <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
           {/* User Profile Section */}
