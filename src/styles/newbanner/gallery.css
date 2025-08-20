@@ -1,5 +1,5 @@
 /* --- Gallery Section Container & Header --- */
-.nb-gallery-section { padding: 24px 16px 40px; max-width: 1120px; margin: 0 auto; width: 100%; background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(245, 222, 179, 0.12)); border-radius: 24px; }
+.nb-gallery-section { padding: 24px 16px 40px; max-width: 1120px; margin: 0 auto; width: 100%; background: transparent; border-radius: 24px; }
 @media (min-width: 1024px) { .nb-gallery-section { padding: 32px 32px 56px; } }
 
 .nb-gallery-header { text-align: center; margin-bottom: 8px; }

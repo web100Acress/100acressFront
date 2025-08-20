@@ -68,6 +68,8 @@ const NewBanner = () => {
   const query = projectViewDetails?.builderName;
   const pUrlRef = useRef(pUrl);
   const navigate = useNavigate();
+  // Session key to ensure auto-open happens once per project per session
+  const modalShownKey = `nb_visit_shown_${pUrl || ""}`;
   function debouncedHandleSubmit(func, timeout = 500) {
     let timer;
     return function (...args) {
@@ -146,6 +148,34 @@ const NewBanner = () => {
       document.body.style.overflow = "unset";
     };
   }, [isAboutModalOpen]);
+
+  // Prevent background scroll when Instant Callback modal is open
+  useEffect(() => {
+    if (instantcallbackmodal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [instantcallbackmodal]);
+
+  // Auto-open enquiry form after 3 seconds on project page load (once per session per project)
+  useEffect(() => {
+    try {
+      if (typeof window === "undefined") return;
+      if (window.sessionStorage.getItem(modalShownKey) === "1") return;
+      const t = setTimeout(() => {
+        setInstantCallbackmodal(true);
+        try { window.sessionStorage.setItem(modalShownKey, "1"); } catch {}
+      }, 3000);
+      return () => clearTimeout(t);
+    } catch {
+      // no-op
+    }
+  }, [modalShownKey]);
 
   // About text: bold lines (paragraphs/items) on scroll into view
   useEffect(() => {
@@ -441,6 +471,11 @@ const NewBanner = () => {
 
   const handleShowInstantcallBack = () => {
     setInstantCallbackmodal(true);
+    try {
+      if (typeof window !== "undefined") {
+        window.sessionStorage.setItem(modalShownKey, "1");
+      }
+    } catch {}
   };
 
   const handleCloseInstantcallBack = () => {
@@ -545,37 +580,33 @@ const NewBanner = () => {
 
       const { mobile } = userDetails;
 
-      if (mobile) {
+      if (!mobile) {
+        message.error("Please fill in the details");
+        return;
+      }
+
+      if (/^([+]\d{2})?\d{10}$/.test(mobile)) {
         setIsLoading2(true);
         setUserButtonText("Submitting...");
-        if (/^([+]\d{2})?\d{10}$/.test(mobile)) {
-          message.success("Callback Requested Successfully");
-          resetData();
-          setUserButtonText("Submit");
-          setIsLoading2(false);
-          axios
-            .post("/userInsert", {
-              ...userDetails,
-              projectName: projectViewDetails.projectName,
-              address: projectViewDetails.projectAddress,
-            })
-            .then((res) => {
-              // setSideResponseMessage("Callback Requested Successfully");
-              message.success("Callback Requested Successfully");
-              resetData();
-            })
-            .catch((error) => {
-              alert(error.message);
-            })
-            .finally(() => {
-              setUserButtonText("Submit");
-            });
-        }
-        message.error("Please enter a valid mobile number");
-        setIsLoading2(false);
-        setUserButtonText("Submit");
+        axios
+          .post("/userInsert", {
+            ...userDetails,
+            projectName: projectViewDetails.projectName,
+            address: projectViewDetails.projectAddress,
+          })
+          .then(() => {
+            message.success("Callback Requested Successfully");
+            resetData();
+          })
+          .catch((error) => {
+            alert(error.message);
+          })
+          .finally(() => {
+            setIsLoading2(false);
+            setUserButtonText("Submit");
+          });
       } else {
-        message.error("Please fill in the details");
+        message.error("Please enter a valid mobile number");
       }
     },
     [
@@ -597,27 +628,21 @@ const NewBanner = () => {
       if (/^([+]\d{2})?\d{10}$/.test(mobile)) {
         setIsLoading2(true);
         setSideButtonText("Submitting...");
-        message.success("Callback Requested Successfully");
-        resetData2();
-        setIsLoading2(false);
-        setSideButtonText("Submit");
-
         try {
           await axios.post("/userInsert", {
             ...sideDetails,
             projectName: projectViewDetails.projectName,
             address: projectViewDetails.projectAddress,
           });
-          setInstantCallbackmodal(false);
           message.success("Callback Requested Successfully");
           resetData2();
-          setSideButtonText("Submit");
+          setInstantCallbackmodal(false);
         } catch (error) {
           console.error("Error:", error.message);
           setSideResponseMessage("Error: " + error.message);
-          setSideButtonText("Submit");
         } finally {
           setIsLoading2(false);
+          setSideButtonText("Submit");
         }
       } else {
         message.error("Please fill in the data");
@@ -1170,7 +1195,7 @@ const NewBanner = () => {
         open={instantcallbackmodal}
         sideDetails={sideDetails}
         handleChangeSide={handleChangeSide}
-        debouncedSideSubmit={debouncedSideSubmit}
+        debouncedSideSubmit={SideSubmitDetails}
         isLoading2={isLoading2}
         sideButtonText={sideButtonText}
         handleClose={handleCloseInstantcallBack}

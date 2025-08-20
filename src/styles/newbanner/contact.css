@@ -1,5 +1,5 @@
 /* Contact Section styles */
-.nb-contact-section { background: linear-gradient(135deg, #fff7ed, rgba(245, 158, 11, 0.1)); padding: 56px 16px; }
+.nb-contact-section { background: transparent; padding: 56px 16px; }
 .nb-contact-grid { max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 40px; }
 @media (min-width: 1024px) { .nb-contact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .nb-contact-left { display: flex; flex-direction: column; justify-content: center; gap: 16px; }

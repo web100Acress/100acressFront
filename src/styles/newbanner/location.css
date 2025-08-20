@@ -1,5 +1,5 @@
 /* --- Location & Connectivity Section --- */
-.nb-location-section { padding: 64px 16px; max-width: 1120px; margin: 0 auto; background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(255, 244, 214, 0.3)); }
+.nb-location-section { padding: 64px 16px; max-width: 1120px; margin: 0 auto; background: transparent; }
 @media (min-width: 1024px) { .nb-location-section { padding: 96px 32px; } }
 .nb-location-header { margin-bottom: 32px; text-align: center; }
 .nb-location-underline { width: 80px; height: 4px; margin: 12px auto 0; border-radius: 9999px; background: linear-gradient(to right, #CFAF6E, #E5C78A); }
