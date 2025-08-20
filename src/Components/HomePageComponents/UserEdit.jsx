@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 // import Footer from "../Actual_Components/Footer";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { message, Modal } from "antd";
+import { message, Modal, Alert } from "antd";
 import LuxuryFooter from "../Actual_Components/LuxuryFooter";
 import { getApiBase as sharedGetApiBase } from "../../config/apiBase";
 
@@ -26,6 +26,7 @@ const UserEdit = () => {
   });
   const [avatarFile, setAvatarFile] = useState(null);
   const [pwd, setPwd] = useState({ current: "", next: "", confirm: "" });
+  const [pwdAlert, setPwdAlert] = useState({ show: false, type: "info", msg: "" });
 
   // Extract a valid MongoDB ObjectId from localStorage mySellerId
   const getUserId = () => {
@@ -174,11 +175,13 @@ const UserEdit = () => {
       if (!pwd.current || !pwd.next || !pwd.confirm) {
         console.warn('[ChangePwd] missing fields', { current: !!pwd.current, next: !!pwd.next, confirm: !!pwd.confirm });
         message.warning("Please fill all password fields");
+        setPwdAlert({ show: true, type: "warning", msg: "Please fill all password fields" });
         return;
       }
       if (pwd.next !== pwd.confirm) {
         console.warn('[ChangePwd] mismatch next vs confirm');
         message.error("New and confirm password do not match");
+        setPwdAlert({ show: true, type: "error", msg: "New and confirm password do not match" });
         return;
       }
       // Ask for confirmation before proceeding (TEMP: bypass to debug)
@@ -196,10 +199,12 @@ const UserEdit = () => {
       console.log('[ChangePwd] response', res?.status, res?.data);
       if (res && res.status >= 200 && res.status < 300) {
         message.success({ content: 'Password updated successfully', key: 'pwd', duration: 2 });
+        setPwdAlert({ show: true, type: "success", msg: "Password updated successfully" });
         setPwd({ current: "", next: "", confirm: "" });
       } else {
         const msg = res?.data?.message || 'Failed to update password';
         message.error({ content: msg, key: 'pwd', duration: 2 });
+        setPwdAlert({ show: true, type: "error", msg });
       }
     } catch (e) {
       const status = e?.response?.status;
@@ -207,8 +212,10 @@ const UserEdit = () => {
       console.error('[ChangePwd] error', status, e?.response?.data || e);
       if (status === 400 && /Current password is incorrect/i.test(msg)) {
         message.error({ content: 'Current password is incorrect', key: 'pwd', duration: 3 });
+        setPwdAlert({ show: true, type: "error", msg: "Current password is incorrect" });
       } else {
         message.error({ content: msg, key: 'pwd', duration: 3 });
+        setPwdAlert({ show: true, type: "error", msg });
       }
     }
   };
@@ -444,6 +451,17 @@ const UserEdit = () => {
             {/* Change Password under Edit Profile */}
             <div className="mt-8">
               <h3 className="text-lg font-semibold mb-2">Change Password</h3>
+              {pwdAlert.show && (
+                <div className="mb-3">
+                  <Alert
+                    showIcon
+                    closable
+                    type={pwdAlert.type}
+                    message={pwdAlert.msg}
+                    onClose={() => setPwdAlert((s) => ({ ...s, show: false }))}
+                  />
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <input
                   type="password"
