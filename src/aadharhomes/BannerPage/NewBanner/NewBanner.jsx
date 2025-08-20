@@ -86,11 +86,18 @@ const NewBanner = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!query) {
+        // No builder name yet; ensure we keep an empty list to avoid undefined access
+        setBuilderProject([]);
+        return;
+      }
       try {
         const fetchedResult = await getProjectbyBuilder(query, 0);
-        setBuilderProject(fetchedResult);
+        // Ensure we always store an array to avoid runtime errors on slice/map
+        setBuilderProject(Array.isArray(fetchedResult) ? fetchedResult : []);
       } catch (err) {
         setError(err);
+        setBuilderProject([]);
       }
     };
 
@@ -646,9 +653,12 @@ const NewBanner = () => {
   };
 
   const filteredProjects = filterProjectsByBuilder();
-  const projectsToShow = showAllProjects
+  const safeBuilderProjects = Array.isArray(builderProject)
     ? builderProject
-    : builderProject.slice(0, 4);
+    : [];
+  const projectsToShow = showAllProjects
+    ? safeBuilderProjects
+    : safeBuilderProjects.slice(0, 4);
 
   useEffect(() => {
     const timeOutId = setTimeout(() => {

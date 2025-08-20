@@ -1,11 +1,31 @@
 import React, { useContext } from "react";
 
-import Footer from "../Actual_Components/Footer";
+// import Footer from "../Actual_Components/Footer";
 import { AuthContext } from "../../AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import LuxuryFooter from "../Actual_Components/LuxuryFooter";
+
 
 const UserDashBoard = () => {
+  const navigate = useNavigate();
   const { agentData, handleDeleteUser } = useContext(AuthContext);
+
+  const resolveUserId = () => {
+    try {
+      const raw = localStorage.getItem("mySellerId");
+      if (raw) {
+        try { return JSON.parse(raw); } catch { return raw; }
+      }
+      return (agentData && agentData._id) || "";
+    } catch {
+      return (agentData && agentData._id) || "";
+    }
+  };
+  const goUserEdit = () => {
+    const id = resolveUserId();
+    if (id) navigate(`/useredit/${id}`);
+    else navigate('/userdashboard/');
+  };
   const canManageBlogs =
     agentData &&
     typeof agentData.role === "string" &&
@@ -54,6 +74,15 @@ const UserDashBoard = () => {
                 value={agentData.mobile}
                 className="w-full mt-4 outline-none placeholder-black text-black border-b-2 border-black mobile-input"
               />
+              {/* Single combined action button */}
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={goUserEdit}
+                  className="bg-gray-800 text-white text-sm py-2 px-4 rounded-md"
+                >
+                  Edit / Change Password
+                </button>
+              </div>
             </div>
           </div>
           <div className="mx-auto mt-3">
@@ -104,8 +133,11 @@ const UserDashBoard = () => {
               >
                 Post Property
               </Link>
-              <button className="bg-red-600 md:w-1/2 w-full text-white text-md py-2 rounded-md  mb-2 md:mb-0">
-                Delete Account
+              <button
+                onClick={() => navigate(`/userviewproperty/${resolveUserId()}`)}
+                className="bg-red-600 md:w-1/2 w-full text-white text-md py-2 rounded-md  mb-2 md:mb-0"
+              >
+                Edit Post Properties
               </button>
             </div>
           </div>
@@ -113,7 +145,7 @@ const UserDashBoard = () => {
       </div>
       <hr className="mx-10" />
 
-      <Footer />
+      <LuxuryFooter />
     </div>
   );
 };

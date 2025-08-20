@@ -1,12 +1,56 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const UserEditProperty = () => {
   const propertyTypes = ["Select Property Type", "Commercial", "Residential"];
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const selected = state && state.property ? state.property : null;
 
   const [sellProperty, setSellProperty] = useState({
     propertyLooking: "",
     selectoption: "Select Property Type",
+    propertyType: "",
+    subType: "",
+    propertyName: "",
+    address: "",
+    city: "",
+    state: "",
+    price: "",
+    area: "",
+    description: "",
+    landmark: "",
+    amenities: "",
+    builtyear: "",
+    furnishing: "",
+    type: "",
+    availabledate: "",
   });
+
+  useEffect(() => {
+    if (selected) {
+      setSellProperty((prev) => ({
+        ...prev,
+        propertyLooking: selected.propertyLooking || "",
+        selectoption: selected.selectoption || "Select Property Type",
+        propertyType: selected.propertyType || "",
+        subType: selected.subType || "",
+        propertyName: selected.projectName || selected.propertyName || "",
+        address: selected.address || "",
+        city: selected.city || "",
+        state: selected.state || "",
+        price: selected.price || "",
+        area: selected.area || "",
+        description: selected.description || selected.descripation || "",
+        landmark: selected.landMark || selected.landmark || "",
+        amenities: Array.isArray(selected.amenities) ? selected.amenities.join(", ") : (selected.amenities || ""),
+        builtyear: selected.builtyear || "",
+        furnishing: selected.furnishing || "",
+        type: selected.type || "",
+        availabledate: selected.availabledate || "",
+      }));
+    }
+  }, [selected]);
 
   const subTypes = {
     Commercial: [
@@ -59,6 +103,13 @@ const UserEditProperty = () => {
         [name]: value,
       });
     }
+  };
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // TODO: Wire API to update property when backend endpoint is available
+    // For now, return to the list page
+    navigate(-1);
   };
   return (
     <div>
@@ -118,7 +169,7 @@ const UserEditProperty = () => {
 
             </div>
 
-            <div className="p-1 sm:p-8">
+            <form className="p-1 sm:p-8" onSubmit={handleSubmit}>
               <div className="grid gap-3 md:grid-cols-2">
                 <div>
                   <select
@@ -159,6 +210,8 @@ const UserEditProperty = () => {
                   placeholder="Property Name"
                   name="propertyName"
                   className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                  value={sellProperty.propertyName}
+                  onChange={handleChangeValue}
                 />
               </div>
 
@@ -168,6 +221,8 @@ const UserEditProperty = () => {
                   placeholder="Address"
                   name="address"
                   className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                  value={sellProperty.address}
+                  onChange={handleChangeValue}
                 />
               </div>
 
@@ -178,6 +233,8 @@ const UserEditProperty = () => {
                     placeholder="City"
                     name="city"
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    value={sellProperty.city}
+                    onChange={handleChangeValue}
                   />
                 </div>
                 <div>
@@ -186,6 +243,8 @@ const UserEditProperty = () => {
                     placeholder="State"
                     name="state"
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    value={sellProperty.state}
+                    onChange={handleChangeValue}
                   />
                 </div>
               </div>
@@ -197,6 +256,8 @@ const UserEditProperty = () => {
                     placeholder="Price"
                     name="price"
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    value={sellProperty.price}
+                    onChange={handleChangeValue}
                   />
                 </div>
                 <div>
@@ -205,6 +266,8 @@ const UserEditProperty = () => {
                     placeholder="Area"
                     name="area"
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    value={sellProperty.area}
+                    onChange={handleChangeValue}
                   />
                 </div>
               </div>
@@ -215,6 +278,8 @@ const UserEditProperty = () => {
                   placeholder="Description"
                   name="description"
                   className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                  value={sellProperty.description}
+                  onChange={handleChangeValue}
                 />
               </div>
 
@@ -225,6 +290,8 @@ const UserEditProperty = () => {
                     placeholder="Landmark"
                     name="landmark"
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    value={sellProperty.landmark}
+                    onChange={handleChangeValue}
                   />
                 </div>
                 <div>
@@ -234,6 +301,8 @@ const UserEditProperty = () => {
                     multiple
                     name="amenities"
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    value={sellProperty.amenities}
+                    onChange={handleChangeValue}
                   />
                 </div>
               </div>
@@ -245,6 +314,8 @@ const UserEditProperty = () => {
                     placeholder="Built year"
                     name="builtyear"
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    value={sellProperty.builtyear}
+                    onChange={handleChangeValue}
                   />
                 </div>
                 <div>
@@ -253,6 +324,8 @@ const UserEditProperty = () => {
                     placeholder="Furnishing"
                     name="furnishing"
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    value={sellProperty.furnishing}
+                    onChange={handleChangeValue}
                   />
                 </div>
               </div>
@@ -264,6 +337,8 @@ const UserEditProperty = () => {
                     placeholder="Type"
                     name="type"
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    value={sellProperty.type}
+                    onChange={handleChangeValue}
                   />
                 </div>
                 <div>
@@ -272,6 +347,8 @@ const UserEditProperty = () => {
                     placeholder="Available date"
                     name="availabledate"
                     className="mt-2 h-10 w-full rounded-md bg-white border px-3 outline-none"
+                    value={sellProperty.availabledate}
+                    onChange={handleChangeValue}
                   />
                 </div>
               </div>
@@ -305,12 +382,12 @@ const UserEditProperty = () => {
               </div>
               
               <div className="flex justify-center items-center">
-                <button className="rounded-lg text-white text-md sm:text-lg md:text-md border-2 font-normal px-2 sm:px-6 py-1 sm:py-4 bg-red-400 hover:bg-red-500">
-                  Submit
+                <button type="submit" className="rounded-lg text-white text-md sm:text-lg md:text-md border-2 font-normal px-2 sm:px-6 py-1 sm:py-4 bg-red-400 hover:bg-red-500">
+                  Save Changes
                 </button>
               </div>
 
-            </div>
+            </form>
           </div>
         </div>
       </section>

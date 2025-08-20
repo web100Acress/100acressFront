@@ -163,6 +163,28 @@ export default function Navbar() {
       </svg>
     ),
   };
+
+  // Fast navigate helper for menu clicks
+  const go = (path) => {
+    try {
+      history(path);
+      // ensure top of page
+      if (typeof window !== 'undefined' && window.scrollTo) window.scrollTo({ top: 0, behavior: 'auto' });
+    } catch {}
+  };
+  // Resolve current user id for profile edit route `/useredit/:id`
+  const resolveUserId = () => {
+    try {
+      let id = (typeof window !== 'undefined' && localStorage.getItem('mySellerId')) || '';
+      if (id && id.startsWith('"') && id.endsWith('"')) {
+        try { id = JSON.parse(id); } catch {}
+      }
+      const dt = decodedToken || {};
+      const fallbacks = [dt.userId, dt.id, dt.uid, dt.sub];
+      return (id && String(id)) || fallbacks.find(v => v !== undefined && v !== null && String(v).trim() !== '') || '';
+    } catch { return ''; }
+  };
+  const userIdForEdit = resolveUserId();
   const CITY_OPTIONS = [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
     { name: "Delhi", path: "/project-in-delhi/" },
@@ -197,8 +219,27 @@ export default function Navbar() {
   };
 
   // Optional: derive user role for extra options (normalized)
-  const rawUserRole = (typeof window !== 'undefined' && localStorage.getItem("userRole")) || decodedToken?.role || "";
-  const userRole = (rawUserRole || "").toString().trim().toLowerCase();
+  // Collect possible sources: localStorage keys and token claims
+  const lsRole = (typeof window !== 'undefined' && (localStorage.getItem("userRole") || localStorage.getItem("role") || localStorage.getItem("UserRole"))) || "";
+  const tokenRolesRaw = decodedToken?.roles || decodedToken?.role || decodedToken?.authorities || decodedToken?.claims?.roles || "";
+  const normalizeToArray = (val) => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    if (typeof val === 'string') return val.split(/[\s,;]+/);
+    if (typeof val === 'object') {
+      // handle shapes like { role: 'admin' } or { authority: 'ROLE_ADMIN' }
+      if (val.role) return Array.isArray(val.role) ? val.role : [val.role];
+      if (val.authority) return Array.isArray(val.authority) ? val.authority : [val.authority];
+      try { return Object.values(val); } catch { return []; }
+    }
+    return [];
+  };
+  const roles = [...normalizeToArray(lsRole), ...normalizeToArray(tokenRolesRaw)]
+    .map((r) => (r || '').toString().trim().toLowerCase())
+    .filter(Boolean);
+  const userRole = roles[0] || "";
+  const isAdmin = roles.some((r) => r.includes('admin'));
+  const isBlogger = roles.some((r) => r.includes('blog') || r.includes('contentwriter') || r.includes('writer'));
 
   // Derive first name ONLY from localStorage 'firstName' (desktop only)
   const lsFirstName = (typeof window !== 'undefined' && localStorage.getItem("firstName")) || "";
@@ -721,17 +762,17 @@ export default function Navbar() {
                       Signed in {userRole ? `as ${userRole}` : ""}
                     </Box>
                     <Box h="1px" bg="#eee" />
-                    <MenuItem as={Link} to="/userdashboard/" fontSize="14px">View Profile</MenuItem>
-                    <MenuItem as={Link} to="/useredit/" fontSize="14px">Edit Profile</MenuItem>
-                    <MenuItem as={Link} to="/change-password/" fontSize="14px">Change Password</MenuItem>
-                    {userRole === "admin" && (
-                      <MenuItem as={Link} to="/admin/" fontSize="14px">Admin</MenuItem>
+                    <MenuItem onClick={() => go('/userdashboard/')} fontSize="14px">View Profile</MenuItem>
+                    {/* <MenuItem onClick={() => go(userIdForEdit ? `/useredit/${userIdForEdit}` : '/userdashboard/')} fontSize="14px">Edit Profile</MenuItem> */}
+                    {/* <MenuItem onClick={() => go('/change-password/')} fontSize="14px">Change Password</MenuItem> */}
+                    {isAdmin && (
+                      <MenuItem onClick={() => go('/admin/')} fontSize="14px">Admin</MenuItem>
                     )}
-                    {(userRole === "blog" || userRole === "contentwriter") && (
-                      <MenuItem as={Link} to="/seo/blogs" fontSize="14px">Blog</MenuItem>
+                    {isBlogger && (
+                      <MenuItem onClick={() => go('/seo/blogs')} fontSize="14px">Blog</MenuItem>
                     )}
                     <Box h="1px" bg="#eee" />
-                    <MenuItem onClick={handleDeleteAccount} fontSize="14px" color="#e53e3e">Delete Account</MenuItem>
+                    {/* <MenuItem onClick={handleDeleteAccount} fontSize="14px" color="#e53e3e">Delete Account</MenuItem> */}
                     <MenuItem onClick={() => { HandleUserLogout(); ShowLogOutMessage(); }} fontSize="14px">Log out</MenuItem>
                   </MenuList>
                 </Menu>
