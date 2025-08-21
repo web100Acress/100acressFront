@@ -1,6 +1,6 @@
-// const DEFAULT_BASE = 'https://api.100acress.com';  
+const DEFAULT_BASE = 'https://api.100acress.com';  
 
-const DEFAULT_BASE = 'http://localhost:3500';
+// const DEFAULT_BASE = 'http://localhost:3500';
 
 
 export const getApiBase = () => {

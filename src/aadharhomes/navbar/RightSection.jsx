@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal, useToast } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
@@ -27,6 +27,32 @@ export default function RightSection({
   const isMobile = useBreakpointValue({ base: true, md: false });
   const fileInputRef = useRef(null);
   const toast = useToast();
+  // Hide right-side content when user scrolls DOWN; show on scroll UP
+  const [hideRight, setHideRight] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    lastScrollY.current = window.scrollY || 0;
+    let ticking = false;
+    const onScroll = () => {
+      const currentY = window.scrollY || 0;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          // If scrolling down => hide; scrolling up => show
+          if (currentY > lastScrollY.current + 2) {
+            setHideRight(true);
+          } else if (currentY < lastScrollY.current - 2) {
+            setHideRight(false);
+          }
+          lastScrollY.current = currentY;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const openFilePicker = () => {
     if (fileInputRef.current) fileInputRef.current.click();
@@ -103,7 +129,7 @@ export default function RightSection({
         onClick={() => setIsSearchOpen(true)}
       />
 
-      <Box>
+      <Box opacity={hideRight ? 0 : 1} pointerEvents={hideRight ? "none" : "auto"} transition="opacity 200ms ease">
         {/* Hidden file input for avatar upload */}
         <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} style={{ display: 'none' }} />
         {token ? (
@@ -158,7 +184,7 @@ export default function RightSection({
                       {/* View Profile */}
                       <Button
                         variant="ghost"
-                        w="100%"
+                        w="90%"
                         display="flex"
                         flexDir="column"
                         justifyContent="center"
@@ -196,7 +222,7 @@ export default function RightSection({
                       {isAdmin && (
                         <Button
                           variant="ghost"
-                          w="100%"
+                          w="90%"
                           display="flex"
                           flexDir="column"
                           justifyContent="center"
