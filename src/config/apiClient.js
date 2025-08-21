@@ -17,11 +17,12 @@ api.interceptors.request.use((config) => {
       config.baseURL = base;
     }
 
-    // Robust token extraction (handles JSON-quoted values)
-    const stored = window.localStorage.getItem('myToken');
-    let token = stored;
-    if (stored && stored.startsWith('"') && stored.endsWith('"')) {
-      try { token = JSON.parse(stored); } catch {}
+    // Robust token extraction (handles JSON-quoted values) from myToken or token
+    const storedPrimary = window.localStorage.getItem('myToken');
+    const storedFallback = window.localStorage.getItem('token');
+    let token = storedPrimary || storedFallback || '';
+    if (token && token.startsWith('"') && token.endsWith('"')) {
+      try { token = JSON.parse(token); } catch {}
     }
     if (token) {
       config.headers = config.headers || {};

@@ -1,14 +1,18 @@
-import React from "react";
-import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal } from "@chakra-ui/react";
+import React, { useRef } from "react";
+import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal, useToast } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import AuthModal from "../../Components/AuthModal";
+import api from "../../config/apiClient";
 
 export default function RightSection({
   colorChange,
   isSearchOpen,
   setIsSearchOpen,
   token,
+  avatarUrl,
+  userId,
+  onAvatarUpdated,
   firstName,
   isAdmin,
   isBlogger,
@@ -21,6 +25,55 @@ export default function RightSection({
 }) {
   const { isOpen: isAcctOpen, onOpen: onAcctOpen, onClose: onAcctClose } = useDisclosure();
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const fileInputRef = useRef(null);
+  const toast = useToast();
+
+  const openFilePicker = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleFileChange = async (e) => {
+    try {
+      const file = e.target.files && e.target.files[0];
+      if (!file || !userId) return;
+
+      // Client-side validation: images only, <= 5MB
+      const isImage = (file.type || '').toLowerCase().startsWith('image/');
+      const maxSize = 5 * 1024 * 1024;
+      if (!isImage) {
+        toast({ title: 'Only image files are allowed', status: 'error', duration: 3000, isClosable: true });
+        return;
+      }
+      if (file.size > maxSize) {
+        toast({ title: 'File too large (max 5MB)', status: 'error', duration: 3000, isClosable: true });
+        return;
+      }
+
+      // Ensure user is authenticated (Bearer is auto-added by api client from localStorage)
+      if (!token) {
+        toast({ title: 'Please log in to change your photo', status: 'warning', duration: 2500, isClosable: true });
+        return;
+      }
+
+      const form = new FormData();
+      form.append('avatar', file);
+      // Use centralized axios client (handles baseURL and Authorization)
+      const res = await api.post(`/users/${userId}/avatar`, form);
+      const data = res && res.data ? res.data : null;
+      const url = (data && data.data && data.data.avatarUrl) ? data.data.avatarUrl : '';
+      if (url && typeof onAvatarUpdated === 'function') onAvatarUpdated(url);
+      toast({ title: 'Profile photo updated', status: 'success', duration: 2500, isClosable: true });
+    } catch (err) {
+      console.error('Avatar upload error:', err);
+      const msg = (err && err.response && err.response.data && (err.response.data.message || err.response.data.error))
+        || err?.message
+        || 'Upload failed';
+      toast({ title: msg, status: 'error', duration: 3500, isClosable: true });
+    } finally {
+      // reset input to allow same file reselect
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
   return (
     <Flex
       alignItems="center"
@@ -51,19 +104,35 @@ export default function RightSection({
       />
 
       <Box>
+        {/* Hidden file input for avatar upload */}
+        <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} style={{ display: 'none' }} />
         {token ? (
           // Authenticated user: Drawer on mobile, Menu on desktop
           isMobile ? (
             <>
               <Button onClick={() => (isAcctOpen ? onAcctClose() : onAcctOpen())} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
                 <Flex align="center" gap={2}>
-                  <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center">
-                    <Box as="span" lineHeight={0}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                        <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                      </svg>
-                    </Box>
+                  <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden">
+                    {avatarUrl ? (
+                      <Box
+                        as="img"
+                        src={avatarUrl}
+                        alt="Profile"
+                        w="100%"
+                        h="100%"
+                        objectFit="cover"
+                        onError={() => {
+                          toast({ title: 'Could not load profile image', status: 'error', duration: 2500, isClosable: true });
+                        }}
+                      />
+                    ) : (
+                      <Box as="span" lineHeight={0}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                          <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
+                      </Box>
+                    )}
                   </Box>
                 </Flex>
               </Button>
@@ -82,42 +151,82 @@ export default function RightSection({
                   <DrawerBody display="flex" flexDirection="column" justifyContent="space-between" p={0}>
                     {/* Top Section */}
                     <Box>
-                      <Box px={4} py={3} color="#666" fontSize="12px">Signed in</Box>
-                      <Box h="1px" bg="#eee" />
+                      <Box position="sticky" top={0} zIndex={0} bg="white" borderBottom="1px solid #eee">
+                        <Box px={4} py={3} color="#666" fontSize="12px">Signed in</Box>
+                      </Box>
 
                       {/* View Profile */}
                       <Button
                         variant="ghost"
-                        justifyContent="flex-start"
                         w="100%"
-                        borderRadius="md"
-                        fontSize="15px"
-                        fontWeight="500"
-                        py={5}
+                        display="flex"
+                        flexDir="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        textAlign="center"
+                        py={3}
                         px={4}
-                        _hover={{ bg: "gray.100" }}
-                        _active={{ bg: "gray.200" }}
+                        minH={{ base: 14, md: 12 }}
+                        bg="white"
+                        borderWidth="1px"
+                        borderColor="#e5e7eb"
+                        rounded="xl"
+                        boxShadow="xs"
+                        transition="all 0.15s ease"
+                        _hover={{ bg: 'white', boxShadow: 'sm' }}
+                        _active={{ bg: 'white', boxShadow: 'xs' }}
                         onClick={() => { onAcctClose(); go('/userdashboard/'); }}
+                        my={3}
+                        mx={3}
+                        position="relative"
+                        zIndex={1}
                       >
-                        View Profile
+                        <Box as="span" lineHeight={0} mb={1}>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                            <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                          </svg>
+                        </Box>
+                        <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Profile</Box>
                       </Button>
+
+                      {/* Removed Change Photo from sidebar menu as per requirement */}
 
                       {/* Admin */}
                       {isAdmin && (
                         <Button
                           variant="ghost"
-                          justifyContent="flex-start"
                           w="100%"
-                          borderRadius="md"
-                          fontSize="15px"
-                          fontWeight="500"
-                          py={5}
+                          display="flex"
+                          flexDir="column"
+                          justifyContent="center"
+                          alignItems="center"
+                          textAlign="center"
+                          py={3}
                           px={4}
-                          _hover={{ bg: "gray.100" }}
-                          _active={{ bg: "gray.200" }}
+                          minH={{ base: 14, md: 12 }}
+                          bg="white"
+                          borderWidth="1px"
+                          borderColor="#e5e7eb"
+                          rounded="lg"
+                          boxShadow="xs"
+                          transition="all 0.15s ease"
+                          _hover={{ bg: 'white', boxShadow: 'sm' }}
+                          _active={{ bg: 'white', boxShadow: 'xs' }}
                           onClick={() => { onAcctClose(); go('/admin/'); }}
+                          my={3}
+                          mx={4}
+                          position="relative"
+                          zIndex={2}
+                          borderRadius="xl"
                         >
-                          Admin
+                          <Box as="span" lineHeight={0} mb={1}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </Box>
+                          <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Admin</Box>
                         </Button>
                       )}
 
@@ -125,18 +234,36 @@ export default function RightSection({
                       {isBlogger && (
                         <Button
                           variant="ghost"
-                          justifyContent="flex-start"
                           w="100%"
-                          borderRadius="md"
-                          fontSize="15px"
-                          fontWeight="500"
-                          py={5}
+                          display="flex"
+                          flexDir="column"
+                          justifyContent="center"
+                          alignItems="center"
+                          textAlign="center"
+                          py={3}
                           px={4}
-                          _hover={{ bg: "gray.100" }}
-                          _active={{ bg: "gray.200" }}
+                          minH={{ base: 14, md: 12 }}
+                          bg="white"
+                          borderWidth="1px"
+                          borderColor="#e5e7eb"
+                          rounded="xl"
+                          boxShadow="xs"
+                          transition="all 0.15s ease"
+                          _hover={{ bg: 'white', boxShadow: 'sm' }}
+                          _active={{ bg: 'white', boxShadow: 'xs' }}
                           onClick={() => { onAcctClose(); go('/seo/blogs'); }}
+                          my={3}
+                          mx={3}
+                          position="relative"
+                          zIndex={1}
                         >
-                          Blog
+                          <Box as="span" lineHeight={0} mb={1}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M5 5h14v14H5z" stroke="#111" strokeWidth="1.6"/>
+                              <path d="M8 9h8M8 12h8M8 15h5" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
+                            </svg>
+                          </Box>
+                          <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Blog</Box>
                         </Button>
                       )}
                     </Box>
@@ -169,22 +296,24 @@ export default function RightSection({
                 px={2}
               >
                 <Flex align="center" gap={2}>
-                  <Box
-                    as="span"
-                    border="1px solid rgba(0,0,0,0.35)"
-                    borderRadius="full"
-                    w="32px"
-                    h="32px"
-                    display="inline-flex"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <Box as="span" lineHeight={0}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                        <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                      </svg>
-                    </Box>
+                  <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden">
+                    {avatarUrl ? (
+                      <Box
+                        as="img"
+                        src={avatarUrl}
+                        alt="Profile"
+                        w="100%"
+                        h="100%"
+                        objectFit="cover"
+                      />
+                    ) : (
+                      <Box as="span" lineHeight={0}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                          <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
+                      </Box>
+                    )}
                   </Box>
                   {firstName && (
                     <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" fontWeight="600" display={{ base: "none", md: "inline" }}>
@@ -198,7 +327,8 @@ export default function RightSection({
                   <Box px={3} pt={2} pb={2} color="#666" fontSize="12px">Signed in</Box>
                   <Box h="1px" bg="#eee" />
                   <MenuItem onClick={() => go('/userdashboard/')} fontSize="14px">View Profile</MenuItem>
-                  {isAdmin && (
+                  {/* Removed Change photo from dropdown menu */}
+                    {isAdmin && (
                     <MenuItem onClick={() => go('/admin/')} fontSize="14px">Admin</MenuItem>
                   )}
                   {isBlogger && (

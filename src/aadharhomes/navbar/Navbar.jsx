@@ -211,6 +211,66 @@ export default function Navbar() {
     } catch { return ''; }
   };
   const userIdForEdit = resolveUserId();
+  // Avatar URL for navbar profile icon (initialize from localStorage cache)
+  const [avatarUrl, setAvatarUrl] = useState(() => {
+    try { return (typeof window !== 'undefined' && localStorage.getItem('avatarUrl')) || ""; } catch { return ""; }
+  });
+
+  // Helper to fetch and set avatar from backend
+  const fetchAndSetAvatar = async () => {
+    try {
+      if (!userIdForEdit) return;
+      const res = await axios.get(`/users/${userIdForEdit}/profile`, {
+        headers: { Authorization: usertoken ? `Bearer ${usertoken}` : undefined },
+      });
+      const url = res?.data?.data?.avatarUrl || "";
+      if (url) {
+        const bust = `${url}${url.includes('?') ? '&' : '?'}t=${Date.now()}`;
+        setAvatarUrl(bust);
+        try { localStorage.setItem('avatarUrl', bust); } catch {}
+      }
+    } catch {}
+  };
+
+  // Listen for avatar updates broadcasted from profile page (UserEdit)
+  useEffect(() => {
+    const updateFromUrl = (url) => {
+      const bust = url ? `${url}${url.includes('?') ? '&' : '?'}t=${Date.now()}` : "";
+      setAvatarUrl(bust);
+    };
+    // BroadcastChannel for multi-tab updates
+    let bc;
+    try {
+      bc = new BroadcastChannel('profile-updates');
+      bc.onmessage = (evt) => {
+        const data = evt?.data || {};
+        if (data.type === 'avatar-updated' && data.url) {
+          updateFromUrl(data.url);
+        } else if (data.type === 'profile-updated') {
+          // Refetch avatar after profile save
+          fetchAndSetAvatar();
+        }
+      };
+    } catch {}
+    // Same-tab CustomEvent fallback
+    const onCustom = (e) => {
+      const url = e?.detail?.url;
+      if (url) updateFromUrl(url);
+      else fetchAndSetAvatar();
+    };
+    window.addEventListener('avatar-updated', onCustom);
+    window.addEventListener('profile-updated', onCustom);
+    return () => {
+      try { if (bc) bc.close(); } catch {}
+      window.removeEventListener('avatar-updated', onCustom);
+      window.removeEventListener('profile-updated', onCustom);
+    };
+  }, []);
+
+  // Fetch user profile to get avatarUrl when logged in
+  useEffect(() => {
+    fetchAndSetAvatar();
+  }, [token, userIdForEdit]);
   const CITY_OPTIONS = [
     { name: "Gurugram", path: "/projects-in-gurugram/" },
     { name: "Delhi", path: "/project-in-delhi/" },
@@ -350,6 +410,7 @@ export default function Navbar() {
       localStorage.removeItem("mySellerId");
       localStorage.removeItem("userRole");
       localStorage.removeItem("firstName");
+      localStorage.removeItem("avatarUrl");
       window.location.reload(false);
     } catch (error) {
       console.error("Logout failed:", error);
@@ -472,6 +533,15 @@ export default function Navbar() {
               isSearchOpen={isSearchOpen}
               setIsSearchOpen={setIsSearchOpen}
               token={token}
+              avatarUrl={avatarUrl}
+              userId={userIdForEdit}
+              onAvatarUpdated={(url) => {
+                const bust = url ? `${url}${url.includes('?') ? '&' : '?'}t=${Date.now()}` : "";
+                setAvatarUrl(bust);
+                try {
+                  if (bust) localStorage.setItem('avatarUrl', bust);
+                } catch {}
+              }}
               firstName={firstName}
               isAdmin={isAdmin}
               isBlogger={isBlogger}

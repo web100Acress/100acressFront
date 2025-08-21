@@ -1,7 +1,7 @@
-import React from "react";
-import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, Text, SimpleGrid } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, Text, SimpleGrid, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // Custom rounded hamburger icon
 const RoundedHamburgerIcon = ({ boxSize = 5, color = "currentColor" }) => (
@@ -29,6 +29,13 @@ export default function LeftSection({
   showHamburgerOnDesktop = false,
   forceHamburger = false,
 }) {
+  const { isOpen: isDrawerOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
+  const location = useLocation();
+  useEffect(() => {
+    // Close drawer on route change
+    if (isDrawerOpen) closeDrawer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
   return (
     <Flex
       alignItems="center"
@@ -44,107 +51,208 @@ export default function LeftSection({
       pointerEvents={{ base: "auto", md: isSearchOpen ? 'none' : 'auto' }}
       display={{ base: 'flex', md: isSearchOpen ? 'none' : 'flex' }}
     >
-      {/* Mobile/compact-tablet/desktop-compact hamburger menu */}
-      <Menu placement="bottom-start">
-        <MenuButton
-          as={IconButton}
-          size="sm"
-          icon={<RoundedHamburgerIcon boxSize={7} />}
-          aria-label="Menu"
-          variant="ghost"
-          color="#111"
-          mr={2}
-          display={{ base: "inline-flex", md: (forceHamburger || showHamburgerOnDesktop) ? "inline-flex" : "none" }}
-        />
-        <MenuList p={3} minW={{ base: '260px', md: '340px' }}>
-          {(forceHamburger || hideCity) && (
-            <>
-              <Box fontWeight="700" fontSize="12px" color="#e53e3e" textTransform="uppercase" mb={2}>City</Box>
-              <SimpleGrid columns={3} spacing={2} mb={3}>
-                {CITY_OPTIONS.map((c) => (
-                  <Button
-                    key={c.name}
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleCitySelect(c)}
-                    justifyContent="center"
-                    display="flex"
-                    flexDir="column"
-                    alignItems="center"
-                    gap={1}
-                    borderWidth="1px"
-                    borderColor="#eaeaea"
-                    _hover={{ bg: "gray.50" }}
-                    py={3}
-                  >
-                    <Box color="#666">{CityIcons[c.name] || CityIcons.Delhi}</Box>
-                    <Text fontSize="12px" color="#111">{c.name}</Text>
+      {/* Hamburger -> Left Drawer */}
+      <IconButton
+        size="sm"
+        icon={<RoundedHamburgerIcon boxSize={7} />}
+        aria-label="Menu"
+        variant="ghost"
+        color="#111"
+        mr={2}
+        onClick={() => (isDrawerOpen ? closeDrawer() : openDrawer())}
+        display={{ base: "inline-flex", md: (forceHamburger || showHamburgerOnDesktop) ? "inline-flex" : "none" }}
+      />
+      <Drawer placement="left" isOpen={isDrawerOpen} onClose={closeDrawer} size="xs" motionPreset="slideInLeft" closeOnOverlayClick>
+        <DrawerOverlay />
+        <DrawerContent borderRightRadius={{ base: 0, md: 8 }}>
+          <DrawerCloseButton />
+          <DrawerHeader borderBottomWidth="1px">Explore</DrawerHeader>
+          <DrawerBody p={3} overflowY="auto">
+            {(forceHamburger || hideCity) && (
+              <>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 2 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>City</Box>
+                <SimpleGrid columns={{ base: 2, md: 3 }} spacing={2} mb={3}>
+                  {CITY_OPTIONS.map((c) => (
+                    <Button
+                      key={c.name}
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => { handleCitySelect(c); closeDrawer(); }}
+                      justifyContent="center"
+                      display="flex"
+                      flexDir="column"
+                      alignItems="center"
+                      gap={1}
+                      borderWidth="1px"
+                      borderColor="#eaeaea"
+                      _hover={{ bg: "gray.50" }}
+                      py={3}
+                    >
+                      <Box color="#666" display={{ base: 'none', md: 'block' }}>{CityIcons[c.name] || CityIcons.Delhi}</Box>
+                      <Text fontSize="12px" color="#111">{c.name}</Text>
+                    </Button>
+                  ))}
+                </SimpleGrid>
+                <Box h="1px" bg="#eee" my={2} />
+              </>
+            )}
+
+            {(forceHamburger || hideBudget) && (
+              <>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Budget</Box>
+                <SimpleGrid columns={{ base: 2, md: 1 }} spacing={2}>
+                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(0, 1); closeDrawer(); }}
+                    w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    Under ₹1 Cr
                   </Button>
-                ))}
-              </SimpleGrid>
-              <Box h="1px" bg="#eee" my={2} />
-            </>
-          )}
+                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(1, 5); closeDrawer(); }}
+                    w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    ₹1 Cr - ₹5 Cr
+                  </Button>
+                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(5, 10); closeDrawer(); }}
+                    w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    ₹5 Cr - ₹10 Cr
+                  </Button>
+                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(10, 20); closeDrawer(); }}
+                    w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    ₹10 Cr - ₹20 Cr
+                  </Button>
+                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(20, 50); closeDrawer(); }}
+                    w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    ₹20 Cr - ₹50 Cr
+                  </Button>
+                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(50, Infinity); closeDrawer(); }}
+                    w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    Above ₹50 Cr
+                  </Button>
+                </SimpleGrid>
+                <Box h="1px" bg="#eee" my={2} />
+              </>
+            )}
 
-          {(forceHamburger || hideBudget) && (
-            <>
-              <Box fontWeight="700" fontSize="12px" color="#e53e3e" textTransform="uppercase" mb={1}>Budget</Box>
-              <Box>
-                <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</MenuItem>
-                <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</MenuItem>
-                <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</MenuItem>
-                <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(10, 20)}>₹10 Cr - ₹20 Cr</MenuItem>
-                <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(20, 50)}>₹20 Cr - ₹50 Cr</MenuItem>
-                <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(50, Infinity)}>Above ₹50 Cr</MenuItem>
-              </Box>
-              <Box h="1px" bg="#eee" my={2} />
-            </>
-          )}
+            {(forceHamburger || hideProjectStatus) && (
+              <>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Status</Box>
+                <SimpleGrid columns={{ base: 2, md: 2 }} spacing={3}>
+                  <Button as={Link} to="/projects/upcoming-projects-in-gurgaon/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25" textAlign="center">Upcoming Projects</Text>
+                  </Button>
+                  <Button as={Link} to="/projects-in-newlaunch/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25" textAlign="center">New Launch Projects</Text>
+                  </Button>
+                  <Button as={Link} to="/project-in-underconstruction/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25" textAlign="center">Under Construction</Text>
+                  </Button>
+                  <Button as={Link} to="/projects-in-gurugram/property-ready-to-move/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25" textAlign="center">Ready To Move</Text>
+                  </Button>
+                </SimpleGrid>
+                <Box h="1px" bg="#eee" my={2} />
+              </>
+            )}
 
-          {(forceHamburger || hideProjectStatus) && (
-            <>
-              <Box fontWeight="700" fontSize="12px" color="#e53e3e" textTransform="uppercase" mb={1}>Project Status</Box>
-              <Box>
-                <MenuItem as={Link} to="/projects/upcoming-projects-in-gurgaon/">Upcoming Projects</MenuItem>
-                <MenuItem as={Link} to="/projects-in-newlaunch/">New Launch Projects</MenuItem>
-                <MenuItem as={Link} to="/project-in-underconstruction/">Under Construction</MenuItem>
-                <MenuItem as={Link} to="/projects-in-gurugram/property-ready-to-move/">Ready To Move</MenuItem>
-              </Box>
-              <Box h="1px" bg="#eee" my={2} />
-            </>
-          )}
+            {(forceHamburger || hideProjectType) && (
+              <>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Project Type</Box>
+                <SimpleGrid columns={{ base: 2, md: 2 }} spacing={3}>
+                  <Button as={Link} to="/sco/plots/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">SCO Plots</Text>
+                  </Button>
+                  <Button as={Link} to="/projects/villas/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Luxury Villas</Text>
+                  </Button>
+                  <Button as={Link} to="/plots-in-gurugram/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Plots In Gurugram</Text>
+                  </Button>
+                  <Button as={Link} to="/property/residential/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Residential Projects</Text>
+                  </Button>
+                  <Button as={Link} to="/projects/independentfloors/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Independent Floors</Text>
+                  </Button>
+                  <Button as={Link} to="/projects/commercial/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Commercial Projects</Text>
+                  </Button>
+                </SimpleGrid>
+                <Box h="1px" bg="#eee" my={2} />
+              </>
+            )}
 
-          {(forceHamburger || hideProjectType) && (
-            <>
-              <Box fontWeight="700" fontSize="12px" color="#e53e3e" textTransform="uppercase" mb={1}>Project Type</Box>
-              <Box>
-                <MenuItem as={Link} to="/sco/plots/">SCO Plots</MenuItem>
-                <MenuItem as={Link} to="/projects/villas/">Luxury Villas</MenuItem>
-                <MenuItem as={Link} to="/plots-in-gurugram/">Plots In Gurugram</MenuItem>
-                <MenuItem as={Link} to="/property/residential/">Residential Projects</MenuItem>
-                <MenuItem as={Link} to="/projects/independentfloors/">Independent Floors</MenuItem>
-                <MenuItem as={Link} to="/projects/commercial/">Commercial Projects</MenuItem>
-              </Box>
-              <Box h="1px" bg="#eee" my={2} />
-            </>
-          )}
+            {(forceHamburger || hideRental) && (
+              <>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Rental</Box>
+                <Button as={Link} to="/rental-properties/best-rental-property-in-gurugram/" onClick={closeDrawer}
+                  w="100%" variant="ghost" display="flex" flexDir="column"
+                  justifyContent="center" alignItems="center" textAlign="center"
+                  py={3} px={4} minH={{ base: 14, md: 12 }}
+                  borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                  <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Rental Properties</Text>
+                </Button>
+                <Box h="1px" bg="#eee" my={2} />
+              </>
+            )}
 
-          {(forceHamburger || hideRental) && (
-            <>
-              <Box fontWeight="700" fontSize="12px" color="#e53e3e" textTransform="uppercase" mb={1}>Rental</Box>
-              <MenuItem as={Link} to="/rental-properties/best-rental-property-in-gurugram/">View Rental Properties</MenuItem>
-              <Box h="1px" bg="#eee" my={2} />
-            </>
-          )}
-
-          {(forceHamburger || hideResale) && (
-            <>
-              <Box fontWeight="700" fontSize="12px" color="#e53e3e" textTransform="uppercase" mb={1}>Resale</Box>
-              <MenuItem as={Link} to="/buy-properties/best-resale-property-in-gurugram/">View Resale Properties</MenuItem>
-            </>
-          )}
-        </MenuList>
-      </Menu>
+            {(forceHamburger || hideResale) && (
+              <>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Resale</Box>
+                <Button as={Link} to="/buy-properties/best-resale-property-in-gurugram/" onClick={closeDrawer}
+                  w="100%" variant="ghost" display="flex" flexDir="column"
+                  justifyContent="center" alignItems="center" textAlign="center"
+                  py={3} px={4} minH={{ base: 14, md: 12 }}
+                  borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                  <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Resale Properties</Text>
+                </Button>
+              </>
+            )}
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
 
       {/* Hidden desktop text trigger (kept for parity) */}
       <Box 
