@@ -46,7 +46,7 @@ export default function RightSection({
         opacity={{ base: !isSearchOpen ? 1 : 0, md: colorChange && !isSearchOpen ? 1 : 0 }}
         transition="opacity 300ms ease"
         pointerEvents={{ base: !isSearchOpen ? "auto" : "none", md: colorChange && !isSearchOpen ? "auto" : "none" }}
-        display={{ base: "inline-flex", sm: "inline-flex" }}
+        display={{ base: "none", md: "inline-flex" }}
         onClick={() => setIsSearchOpen(true)}
       />
 
@@ -67,26 +67,96 @@ export default function RightSection({
                   </Box>
                 </Flex>
               </Button>
-              <Drawer isOpen={isAcctOpen} placement="right" onClose={onAcctClose} size="xs" zIndex={15000} closeOnOverlayClick={true} closeOnEsc={true}>
+              <Drawer
+                isOpen={isAcctOpen}
+                placement="right"
+                onClose={onAcctClose}
+                size="xs"
+                zIndex={15000}
+              >
                 <DrawerOverlay />
-                <DrawerContent>
+                <DrawerContent maxW="260px">
                   <DrawerCloseButton />
                   <DrawerHeader borderBottomWidth="1px">{firstName || 'Account'}</DrawerHeader>
-                  <DrawerBody p={0}>
-                    <Box px={4} py={3} color="#666" fontSize="12px">Signed in</Box>
-                    <Box h="1px" bg="#eee" />
-                    <Box as={Button} variant="ghost" w="100%" justifyContent="flex-start" borderRadius={0} onClick={() => { onAcctClose(); go('/userdashboard/'); }} fontSize="16px" py={6}>View Profile</Box>
-                    {isAdmin && (
-                      <Box as={Button} variant="ghost" w="100%" justifyContent="flex-start" borderRadius={0} onClick={() => { onAcctClose(); go('/admin/'); }} fontSize="16px" py={6}>Admin</Box>
-                    )}
-                    {isBlogger && (
-                      <Box as={Button} variant="ghost" w="100%" justifyContent="flex-start" borderRadius={0} onClick={() => { onAcctClose(); go('/seo/blogs'); }} fontSize="16px" py={6}>Blog</Box>
-                    )}
-                    <Box h="1px" bg="#eee" />
-                    <Box as={Button} colorScheme="red" variant="ghost" w="100%" justifyContent="flex-start" borderRadius={0} onClick={() => { onAcctClose(); HandleUserLogout(); ShowLogOutMessage(); }} fontSize="16px" py={6}>Log out</Box>
+
+                  <DrawerBody display="flex" flexDirection="column" justifyContent="space-between" p={0}>
+                    {/* Top Section */}
+                    <Box>
+                      <Box px={4} py={3} color="#666" fontSize="12px">Signed in</Box>
+                      <Box h="1px" bg="#eee" />
+
+                      {/* View Profile */}
+                      <Button
+                        variant="ghost"
+                        justifyContent="flex-start"
+                        w="100%"
+                        borderRadius="md"
+                        fontSize="15px"
+                        fontWeight="500"
+                        py={5}
+                        px={4}
+                        _hover={{ bg: "gray.100" }}
+                        _active={{ bg: "gray.200" }}
+                        onClick={() => { onAcctClose(); go('/userdashboard/'); }}
+                      >
+                        View Profile
+                      </Button>
+
+                      {/* Admin */}
+                      {isAdmin && (
+                        <Button
+                          variant="ghost"
+                          justifyContent="flex-start"
+                          w="100%"
+                          borderRadius="md"
+                          fontSize="15px"
+                          fontWeight="500"
+                          py={5}
+                          px={4}
+                          _hover={{ bg: "gray.100" }}
+                          _active={{ bg: "gray.200" }}
+                          onClick={() => { onAcctClose(); go('/admin/'); }}
+                        >
+                          Admin
+                        </Button>
+                      )}
+
+                      {/* Blogger */}
+                      {isBlogger && (
+                        <Button
+                          variant="ghost"
+                          justifyContent="flex-start"
+                          w="100%"
+                          borderRadius="md"
+                          fontSize="15px"
+                          fontWeight="500"
+                          py={5}
+                          px={4}
+                          _hover={{ bg: "gray.100" }}
+                          _active={{ bg: "gray.200" }}
+                          onClick={() => { onAcctClose(); go('/seo/blogs'); }}
+                        >
+                          Blog
+                        </Button>
+                      )}
+                    </Box>
+
+                    {/* Logout Button at Bottom */}
+                    <Box px={4} pb={3}>
+                      <Button
+                        colorScheme="red"
+                        w="100%"
+                        borderRadius="md"
+                        fontWeight="600"
+                        onClick={() => { onAcctClose(); HandleUserLogout(); ShowLogOutMessage(); }}
+                      >
+                        Log out
+                      </Button>
+                    </Box>
                   </DrawerBody>
                 </DrawerContent>
               </Drawer>
+
             </>
           ) : (
             <Menu placement="bottom-end" isLazy strategy="fixed">
@@ -159,6 +229,53 @@ export default function RightSection({
           </>
         )}
 
+        {/* Mobile Post property CTA */}
+        {token ? (
+          <Link to="/postproperty/">
+            <IconButton
+              aria-label="Post property"
+              variant="outline"
+              size="sm"
+              borderColor="#e53e3e"
+              color={colorChange ? "white" : "#e53e3e"}
+              _hover={{ bg: colorChange ? "whiteAlpha.200" : "red.50" }}
+              display={{ base: "inline-flex", lg: "none" }}
+              borderRadius="full"
+              ml={{ base: 1, md: 2 }}
+              icon={
+                <Box as="span" lineHeight={0}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-5H9v5H4a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M16.5 8.5v-3M15 7h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                  </svg>
+                </Box>
+              }
+            />
+          </Link>
+        ) : (
+          <Link to="/auth/signin/">
+            <IconButton
+              aria-label="Post property"
+              variant="outline"
+              size="sm"
+              borderColor="#e53e3e"
+              color={colorChange ? "white" : "#e53e3e"}
+              _hover={{ bg: colorChange ? "whiteAlpha.200" : "red.50" }}
+              display={{ base: "inline-flex", lg: "none" }}
+              borderRadius="full"
+              ml={{ base: 1, md: 2 }}
+              icon={
+                <Box as="span" lineHeight={0}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-5H9v5H4a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M16.5 8.5v-3M15 7h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                  </svg>
+                </Box>
+              }
+            />
+          </Link>
+        )}
+
         {/* Post property CTA */}
         {token ? (
           <Link to="/postproperty/">
@@ -183,4 +300,3 @@ export default function RightSection({
     </Flex>
   );
 }
-

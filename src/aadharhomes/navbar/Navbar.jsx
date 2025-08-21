@@ -1,37 +1,20 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Flex,
-  IconButton,
-  Button,
-  useDisclosure,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Image,
-  Text,
-  SimpleGrid,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  InputRightElement,
-} from "@chakra-ui/react";
-import { HamburgerIcon, ChevronDownIcon, SearchIcon, CloseIcon } from "@chakra-ui/icons";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Box, Flex, Button, useDisclosure } from "@chakra-ui/react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { message } from "antd";
 import { useDispatch } from "react-redux";
-import { maxprice, minprice } from "../Redux/slice/PriceBasedSlice";
+import { maxprice, minprice } from "../../Redux/slice/PriceBasedSlice";
 // import { Modal } from "antd"; // removed old user menu modal
-import AuthModal from "../Components/AuthModal";
 import { useJwt } from "react-jwt";
-import LeftSection from "./navbar/LeftSection";
-import CenterLogo from "./navbar/CenterLogo";
-import RightSection from "./navbar/RightSection";
+import LeftSection from "./LeftSection";
+import CenterLogo from "./CenterLogo";
+import RightSection from "./RightSection";
+import SearchBarOverlay from "./SearchBarOverlay";
+import MegaMenu from "./MegaMenu";
 
-const SpacerComponent = () => <Box width="60px" />;
+// const SpacerComponent = () => <Box width="60px" />; // unused spacer
 
 export default function Navbar() {
   const history = useNavigate();
@@ -48,7 +31,6 @@ export default function Navbar() {
   // const [isModalOpen, setIsModalOpen] = useState(false); // removed old user menu modal state
   const [showAuth, setShowAuth] = useState(false);
   const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   // Navbar Search state (reuse hero search technique)
   const [formData, setFormData] = useState({ location: "", query: "", collectionName: "" });
@@ -62,10 +44,51 @@ export default function Navbar() {
   ];
   const [currentPlaceholder, setCurrentPlaceholder] = useState(placeholders[0]);
   
+  
 
-  const [isMenuOpen, setMenuOpen] = useState(false);
-  const [isMenuOpen1, setMenuOpen1] = useState(false);
-  const [isMenuOpen2, setMenuOpen2] = useState(false);
+  // Staged responsiveness: hide Resale → Rental → Project Type → Project Status → Budget → City → finally force hamburger
+  const [isCompactTablet, setIsCompactTablet] = useState(false);
+  const [hideResale, setHideResale] = useState(false);
+  const [hideRental, setHideRental] = useState(false);
+  const [hideProjectType, setHideProjectType] = useState(false);
+  const [hideProjectStatus, setHideProjectStatus] = useState(false);
+  const [hideBudget, setHideBudget] = useState(false);
+  const [hideCity, setHideCity] = useState(false);
+  const [showHamburger, setShowHamburger] = useState(false);
+  useEffect(() => {
+    const compute = () => {
+      const w = typeof window !== 'undefined' ? window.innerWidth : 0;
+      // Thresholds (tweak based on actual content width)
+      const RENTAL_HIDE_MAX       = 1250; // 1) Rental (hide first)
+      const RESALE_HIDE_MAX       = 1160; // 2) Resale (hide after Rental)
+      const PROJECT_TYPE_HIDE_MAX = 1080; // 3) Project Type
+      const PROJECT_STATUS_HIDE_MAX = 1030; // 4) Project Status
+      const BUDGET_HIDE_MAX       = 990;  // 5) Budget
+      const CITY_HIDE_MAX         = 960;  // 6) City
+      const HAMBURGER_MAX         = 920;  // 7) Force hamburger layout
+
+      const rnt = w <= RENTAL_HIDE_MAX;
+      const rsl = w <= RESALE_HIDE_MAX;
+      const pjt = w <= PROJECT_TYPE_HIDE_MAX;
+      const pjs = w <= PROJECT_STATUS_HIDE_MAX;
+      const bdg = w <= BUDGET_HIDE_MAX;
+      const cty = w <= CITY_HIDE_MAX;
+      const hmb = w <= HAMBURGER_MAX;
+
+      setHideRental(rnt);
+      setHideResale(rsl);
+      setHideProjectType(pjt);
+      setHideProjectStatus(pjs);
+      setHideBudget(bdg);
+      setHideCity(cty);
+      setIsCompactTablet(hmb);
+      // Show hamburger only when at least one item is hidden, or when forced hamburger layout
+      setShowHamburger(rsl || rnt || pjt || pjs || bdg || cty || hmb);
+    };
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, []);
 
   // City filter state
   // Minimal inline SVG icon set (monochrome outline) for cities
@@ -267,10 +290,10 @@ export default function Navbar() {
     }
   };
 
-  const handleCancel = () => {
-    // setIsModalOpen(false);
-    setShowAuth(false);
-  };
+  // const handleCancel = () => {
+  //   // setIsModalOpen(false);
+  //   setShowAuth(false);
+  // };
   const changeNavbarColor = () => {
     // Fallback threshold if hero not found
     setColorchange(window.scrollY >= 150);
@@ -333,32 +356,17 @@ export default function Navbar() {
     }
   };
 
-  const handleAvatarClick = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  // const handleAvatarClick = () => {
+  //   setIsDropdownOpen(!isDropdownOpen);
+  // };
 
-  const handleHover2 = () => {
-    setMenuOpen2(true);
-  };
-
-  const handleLeave2 = () => {
-    setMenuOpen2(false);
-  };
-
-  const handleHover = () => {
-    setMenuOpen(true);
-  };
-
-  const handleLeave = () => {
-    setMenuOpen(false);
-  };
-  const handleHover1 = () => {
-    setMenuOpen1(true);
-  };
-
-  const handleLeave1 = () => {
-    setMenuOpen1(false);
-  };
+  // Legacy hover handlers (no longer used after refactor)
+  // const handleHover2 = () => setMenuOpen2(true);
+  // const handleLeave2 = () => setMenuOpen2(false);
+  // const handleHover = () => setMenuOpen(true);
+  // const handleLeave = () => setMenuOpen(false);
+  // const handleHover1 = () => setMenuOpen1(true);
+  // const handleLeave1 = () => setMenuOpen1(false);
 
   const checkUserAuth = () => {
     const storedToken = localStorage.getItem("myToken");
@@ -435,7 +443,7 @@ export default function Navbar() {
           py={{ base: 1, md: 2 }}
         >
           
-          <Flex minH={{ base: 14, md: 16 }} alignItems="center" justifyContent="space-between">
+          <Flex minH={{ base: 14, md: 16 }} alignItems="center" justifyContent="space-between" position="relative">
             {/* Left Section - Search Projects + City Filter */}
             <LeftSection
               colorChange={colorChange}
@@ -445,10 +453,18 @@ export default function Navbar() {
               CityIcons={CityIcons}
               handleCitySelect={handleCitySelect}
               handlePriceClick={handlePriceClick}
+              hideResale={hideResale}
+              hideRental={hideRental}
+              hideProjectType={hideProjectType}
+              hideProjectStatus={hideProjectStatus}
+              hideBudget={hideBudget}
+              hideCity={hideCity}
+              showHamburgerOnDesktop={showHamburger}
+              forceHamburger={isCompactTablet}
             />
 
             {/* Center Section - Logo */}
-            <CenterLogo colorChange={colorChange} isSearchOpen={isSearchOpen} />
+            <CenterLogo colorChange={colorChange} isSearchOpen={isSearchOpen} centerOnCompact={isCompactTablet} />
 
             {/* Right Section - Search, Profile & List Property */}
             <RightSection
@@ -467,254 +483,18 @@ export default function Navbar() {
               setShowAuth={setShowAuth}
             />
           </Flex>
-   {/* Removed overlay so logo and right section remain visible while search is open */}
-
-            {/* Centered Animated Search Bar */}
-            <Box
-              position="absolute"
-              left="50%"
-              top="50%"
-              transform={isSearchOpen ? { base: "translate(-55%, -50%)", md: "translate(-50%, -50%)" } : { base: "translate(calc(-50% + 20%), -50%)", md: "translate(calc(-50% + 20%), -50%)" }}
-              opacity={isSearchOpen ? 1 : 0}
-              transition="transform 300ms ease, opacity 250ms ease"
-              pointerEvents={isSearchOpen ? "auto" : "none"}
-              w={{ base: "72vw", md: "min(680px, 70vw)" }}
-              zIndex={10003}
-            >
-              <InputGroup bg="white" borderRadius="9999px" boxShadow="0 8px 24px rgba(0,0,0,0.18)">
-                <InputLeftElement pointerEvents="none" h="42px">
-                  <SearchIcon color="#e53e3e" />
-                </InputLeftElement>
-                <Input
-                  h="42px"
-                  pl="40px"
-                  pr="88px"
-                  placeholder={currentPlaceholder}
-                  _placeholder={{ color: "gray.500" }}
-                  borderRadius="9999px"
-                  border="1px solid rgba(0,0,0,0.06)"
-                  focusBorderColor="#e53e3e"
-                  bg="white"
-                  value={formData.query}
-                  onChange={handleSearchInput}
-                  onKeyDown={handleSearchKeyDown}
-                />
-                <InputRightElement h="42px" width="96px" pr="2" zIndex={2}>
-                  <IconButton
-                    aria-label="Submit search"
-                    size="sm"
-                    borderRadius="full"
-                    colorScheme="red"
-                    bg="#c13b44"
-                    _hover={{ bg: "#aE333C" }}
-                    icon={<SearchIcon />}
-                    onClick={submitSearch}
-                    zIndex={3}
-                  />
-                  <IconButton
-                    aria-label="Close search"
-                    size="sm"
-                    variant="ghost"
-                    icon={<CloseIcon boxSize="0.7em" />}
-                    onClick={() => setIsSearchOpen(false)}
-                    ml={1}
-                    zIndex={3}
-                  />
-                </InputRightElement>
-              </InputGroup>
-            </Box>
-          {/* </Flex> */}
-
-          {isOpen && (
-            <Box
-              pb={4}
-              display={{
-                base: "none",
-                md: "none",
-              }}
-              flexDirection="column"
-              alignItems="center"
-            >
-              <Box
-                display={{ base: "none", md: "none" }}
-                flexDirection="column"
-                alignItems="center"
-                pb={4}
-              >
-                <Link to="/buy-properties/best-resale-property-in-gurugram/">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    borderColor="#e53e3e"
-                    color="#e53e3e"
-                    _hover={{
-                      bg: "#e53e3e",
-                      color: "white",
-                    }}
-                    fontWeight="600"
-                    fontSize="14px"
-                    letterSpacing="0.5px"
-                    mb={2}
-                  >
-                    Resale
-                  </Button>
-                </Link>
-                <Link to="/rental-properties/best-rental-property-in-gurugram/">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    borderColor="#e53e3e"
-                    color="#e53e3e"
-                    _hover={{
-                      bg: "#e53e3e",
-                      color: "white",
-                    }}
-                    fontWeight="600"
-                    fontSize="14px"
-                    letterSpacing="0.5px"
-                    mb={2}
-                  >
-                    Rental
-                  </Button>
-                </Link>
-                <Link to="/projects-in-gurugram/">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    borderColor="#e53e3e"
-                    color="#e53e3e"
-                    _hover={{
-                      bg: "#e53e3e",
-                      color: "white",
-                    }}
-                    fontWeight="600"
-                    fontSize="14px"
-                    letterSpacing="0.5px"
-                    mb={2}
-                  >
-                    Projects
-                  </Button>
-                </Link>
-              </Box>
-            </Box>
-          )}
-
+          {/* Centered Animated Search Bar */}
+          <SearchBarOverlay
+            isSearchOpen={isSearchOpen}
+            setIsSearchOpen={setIsSearchOpen}
+            currentPlaceholder={currentPlaceholder}
+            formData={formData}
+            handleSearchInput={handleSearchInput}
+            handleSearchKeyDown={handleSearchKeyDown}
+            submitSearch={submitSearch}
+          />
           {/* Desktop Mega Menu for SEARCH PROJECTS */}
-          {isOpen && (
-            <>
-              {/* Outside-click overlay (doesn't cover the fixed navbar) */}
-              <Box
-                position="fixed"
-                left={0}
-                right={0}
-                top={{ base: "56px", md: "64px" }}
-                bottom={0}
-                bg="transparent"
-                zIndex={9997}
-                onClick={onClose}
-              />
-            <Box display={{ base: "block", md: "block" }}>
-              {/* Full-width positioning wrapper, background kept transparent to avoid visible extra space */}
-              <Box
-                position="absolute"
-                left={{ base: 0, md: 4, lg: 7 }}
-                right={{ base: 0, md: "auto" }}
-                top={{ base: "56px", md: "64px" }}
-                bg="transparent"
-                boxShadow="none"
-                zIndex={9998}
-                onMouseLeave={onClose}
-                overflowX="hidden"
-                maxH={{ base: "calc(100vh - 56px)", md: "auto" }}
-                overflowY={{ base: "auto", md: "visible" }}
-              >
-                {/* Centered content container with constrained width */}
-                <Box
-                  bg="white"
-                  boxShadow="0 10px 25px rgba(0,0,0,0.12)"
-                  borderRadius="md"
-                  maxW={{ base: "calc(100vw - 2rem)", lg: "calc(100vw - 4rem)" }}
-                  w="fit-content"
-                  mx={0}
-                >
-                  <Flex px={{ base: 4, md: 6 }} py={5} gap={{ base: 3, md: 6 }} wrap="wrap">
-                  {/* Popular Cities */}
-                  <Box minW="200px">
-                    <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Popular Cities</Box>
-                    <Box h="1px" bg="#eaeaea" mb={3} />
-                    <Flex direction="column" gap={1} fontSize="14px">
-                      <Link to="/projects-in-gurugram/">Projects in Gurugram</Link>
-                      <Link to="/project-in-delhi/">Projects in Delhi</Link>
-                      <Link to="/project-in-noida/">Projects in Noida</Link>
-                      <Link to="/project-in-goa/">Projects in Goa</Link>
-                      <Link to="/project-in-ayodhya/">Projects in Ayodhya</Link>
-                      <Link to="/project-in-mumbai/">Projects in Mumbai</Link>
-                      <Link to="/project-in-panipat/">Projects in Panipat</Link>
-                      <Link to="/project-in-panchkula/">Projects in Panchkula</Link>
-                      <Link to="/project-in-kasauli/">Projects in Kasauli</Link>
-                      <Link to="/projects-in-sonipat/">Projects in Sonipat</Link>
-                      <Link to="/projects-in-karnal/">Projects in Karnal</Link>
-                      <Link to="/projects-in-jalandhar/">Projects in Jalandhar</Link>
-                      <Link to="/projects-in-pushkar/">Projects in Pushkar</Link>
-                      <Link to="/projects-in-dubai/" style={{ color: "#e53e3e", fontWeight: 600 }}>Projects in Dubai *</Link>
-                    </Flex>
-                  </Box>
-
-                  {/* Budget */}
-                  <Box minW="200px">
-                    <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Budget</Box>
-                    <Box h="1px" bg="#eaeaea" mb={3} />
-                    <Flex direction="column" gap={1} fontSize="14px">
-                      <Link to="/budget-properties/" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</Link>
-                      <Link to="/budget-properties/" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</Link>
-                      <Link to="/budget-properties/" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</Link>
-                      <Link to="/budget-properties/" onClick={() => handlePriceClick(10, 20)}>₹10 Cr - ₹20 Cr</Link>
-                      <Link to="/budget-properties/" onClick={() => handlePriceClick(20, 50)}>₹20 Cr - ₹50 Cr</Link>
-                      <Link to="/budget-properties/" onClick={() => handlePriceClick(50, Infinity)}>Above ₹50 Cr</Link>
-                    </Flex>
-                  </Box>
-
-                  {/* Project Status */}
-                  <Box minW="200px">
-                    <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Project Status</Box>
-                    <Box h="1px" bg="#eaeaea" mb={3} />
-                    <Flex direction="column" gap={1} fontSize="14px">
-                      <Link to="/projects/upcoming-projects-in-gurgaon/">Upcoming Projects</Link>
-                      <Link to="/projects-in-newlaunch/">New Launch Projects</Link>
-                      <Link to="/project-in-underconstruction/">Under Construction</Link>
-                      <Link to="/projects-in-gurugram/property-ready-to-move/">Ready To Move</Link>
-                    </Flex>
-                  </Box>
-
-                  {/* Project Type */}
-                  <Box minW="200px">
-                    <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Project Type</Box>
-                    <Box h="1px" bg="#eaeaea" mb={3} />
-                    <Flex direction="column" gap={1} fontSize="14px">
-                      <Link to="/sco/plots/">SCO Plots</Link>
-                      <Link to="/projects/villas/">Luxury Villas</Link>
-                      <Link to="/plots-in-gurugram/">Plots In Gurugram</Link>
-                      <Link to="/property/residential/">Residential Projects</Link>
-                      <Link to="/projects/independentfloors/">Independent Floors</Link>
-                      <Link to="/projects/commercial/">Commercial Projects</Link>
-                    </Flex>
-                  </Box>
-                  
-                  {/* Resale & Rental */}
-                  <Box minW="200px">
-                    <Box fontWeight="700" color="#e53e3e" mb={2} textTransform="uppercase">Resale & Rental</Box>
-                    <Box h="1px" bg="#eaeaea" mb={3} />
-                    <Flex direction="column" gap={1} fontSize="14px">
-                      <Link to="/buy-properties/best-resale-property-in-gurugram/">Resale Properties</Link>
-                      <Link to="/rental-properties/best-rental-property-in-gurugram/">Rental Properties</Link>
-                    </Flex>
-                  </Box>
-                  </Flex>
-                </Box>
-              </Box>
-            </Box>
-            </>
-          )}
+          <MegaMenu isOpen={isOpen} onClose={onClose} handlePriceClick={handlePriceClick} />
         </Box>
       </Box>
     </Wrapper>
