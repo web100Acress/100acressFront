@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import Navbar from "../aadharhomes/Navbar";
+import Navbar from "../aadharhomes/navbar/Navbar";
 import Footer from "../Components/Actual_Components/Footer";
 
 const EMICalculator = lazy(() => import("../Components/EMICalculator"));
