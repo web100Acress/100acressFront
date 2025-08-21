@@ -1,5 +1,7 @@
 import React,{useState, useEffect} from "react";
-import { Carousel } from "@trendyol-js/react-carousel";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+
 import styled from "styled-components";
 import StarCard from "./Card";
 import { MdLocationPin } from "react-icons/md";
@@ -32,12 +34,19 @@ function StarCarousel({ AllProjects = [] }) {
     <Wrapper className="section">
       <div className="caroStyle">
         <Carousel
-          swiping={true}
-          show={number}
-          leftArrow={<div className="slMJOW">{"←"}</div>}
-          rightArrow={<div className="slMJOW">{"→"}</div>}
-          slide={1}
-          transition={0.5}
+          swipeable
+          draggable
+          arrows
+          infinite={false}
+          responsive={{
+            superLargeDesktop: { breakpoint: { max: 4000, min: 1200 }, items: 4 },
+            desktop: { breakpoint: { max: 1200, min: 992 }, items: 3 },
+            tablet: { breakpoint: { max: 992, min: 768 }, items: 2 },
+            mobile: { breakpoint: { max: 768, min: 0 }, items: 1 }
+          }}
+          slidesToSlide={1}
+          customTransition="transform 500ms ease"
+          transitionDuration={500}
         >
           {AllProjects && AllProjects.length > 0 ? (
             AllProjects.slice(0, 3).map((property, idx) => (
