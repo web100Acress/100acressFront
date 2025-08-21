@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 // import Footer from "../Actual_Components/Footer";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import api from "../../config/apiClient";
 import { message, Modal, Alert } from "antd";
 import LuxuryFooter from "../Actual_Components/LuxuryFooter";
 import { getApiBase as sharedGetApiBase } from "../../config/apiBase";
@@ -21,28 +22,40 @@ const UserEdit = () => {
       };
     } catch { return { name: "", email: "", mobile: "" }; }
   });
-  const [avatar, setAvatar] = useState(() => {
-    try { return localStorage.getItem("agentAvatar") || ""; } catch { return ""; }
-  });
+  const [avatar, setAvatar] = useState("");
   const [avatarFile, setAvatarFile] = useState(null);
   const [pwd, setPwd] = useState({ current: "", next: "", confirm: "" });
   const [pwdAlert, setPwdAlert] = useState({ show: false, type: "info", msg: "" });
 
-  // Extract a valid MongoDB ObjectId from localStorage mySellerId
+  // Resolve user id robustly: prefer mySellerId, else decode from JWT (userId/id/uid/sub)
   const getUserId = () => {
     try {
+      // 1) Try mySellerId from localStorage
       let raw = localStorage.getItem('mySellerId');
-      if (!raw) return null;
-      // If JSON-stringified object or string
-      try {
-        const parsed = JSON.parse(raw);
-        if (typeof parsed === 'string') raw = parsed;
-        else if (parsed && typeof parsed === 'object' && parsed._id) raw = parsed._id;
-      } catch {}
-      // Remove wrapping quotes and pick a 24-hex sequence
-      const match = String(raw).match(/[a-fA-F0-9]{24}/);
-      return match ? match[0] : null;
-    } catch { return null; }
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (typeof parsed === 'string') raw = parsed;
+          else if (parsed && typeof parsed === 'object' && parsed._id) raw = parsed._id;
+        } catch {}
+        const match = String(raw).match(/[a-fA-F0-9]{24}/);
+        if (match) return match[0];
+      }
+
+      // 2) Fallback to token claims
+      let token = localStorage.getItem('myToken') || localStorage.getItem('token');
+      if (token && token.startsWith('"') && token.endsWith('"')) {
+        try { token = JSON.parse(token); } catch {}
+      }
+      if (token && token.split('.').length === 3) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const id = payload.userId || payload.user_id || payload.id || payload.uid || payload.sub || '';
+          if (id) return String(id);
+        } catch {}
+      }
+    } catch {}
+    return null;
   };
 
   const withBase = (path) => {
@@ -96,11 +109,8 @@ const UserEdit = () => {
         `/postPerson/update/${userId}`,
       ];
       if (avatarFile) {
-        // Backend route doesn't declare upload middleware, so avoid multipart.
         const body = { name: profile.name, email: profile.email, mobile: profile.mobile };
         res = await tryEndpoints('post', putEndpoints, { headers }, body);
-        // Persist avatar locally so Nav shows it
-        try { localStorage.setItem('agentAvatar', avatar); } catch {}
       } else {
         const body = { name: profile.name, email: profile.email, mobile: profile.mobile };
         res = await tryEndpoints('post', putEndpoints, { headers }, body);
@@ -114,6 +124,8 @@ const UserEdit = () => {
           bc.postMessage({ type: 'profile-updated', at: Date.now() });
           bc.close();
         } catch {}
+        // Same-tab event so Navbar listener can refetch avatar immediately
+        try { window.dispatchEvent(new CustomEvent('profile-updated')); } catch {}
       } else {
         message.error('Failed to save profile');
       }
@@ -122,16 +134,48 @@ const UserEdit = () => {
     }
   };
 
-  const onAvatarChange = (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
-    setAvatarFile(file);
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const url = ev.target?.result || "";
-      setAvatar(url); // preview only; persist after successful save
-    };
-    reader.readAsDataURL(file);
+  const onAvatarChange = async (e) => {
+    try {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      setAvatarFile(file);
+
+      // Preview immediately
+      try {
+        const reader = new FileReader();
+        reader.onload = (ev) => setAvatar(ev.target?.result || "");
+        reader.readAsDataURL(file);
+      } catch {}
+
+      // Upload immediately to backend
+      const token = localStorage.getItem('myToken') || localStorage.getItem('token');
+      const userId = getUserId();
+      if (!token || !userId) {
+        message.error('Please login again');
+        return;
+      }
+      const form = new FormData();
+      form.append('avatar', file);
+      const resp = await api.post(`/users/${userId}/avatar`, form);
+      const url = resp?.data?.data?.avatarUrl || '';
+      if (url) {
+        const bust = `${url}${url.includes('?') ? '&' : '?'}t=${Date.now()}`;
+        setAvatar(bust);
+        // Broadcast to navbar and other tabs
+        try {
+          const bc = new BroadcastChannel('profile-updates');
+          bc.postMessage({ type: 'avatar-updated', url, at: Date.now() });
+          bc.close();
+        } catch {}
+        try { window.dispatchEvent(new CustomEvent('avatar-updated', { detail: { url } })); } catch {}
+        message.success('Profile photo updated');
+      } else {
+        message.error('Upload failed: no URL returned');
+      }
+    } catch (err) {
+      const msg = err?.response?.data?.message || err?.message || 'Upload failed';
+      message.error(msg);
+    }
   };
 
   const fetchProfile = async () => {
@@ -154,9 +198,8 @@ const UserEdit = () => {
       setProfile(newProfile);
       if (data.avatarUrl || data.avatar) {
         setAvatar(data.avatarUrl || data.avatar);
-        try { localStorage.setItem('agentAvatar', data.avatarUrl || data.avatar); } catch {}
       }
-      // Persist to localStorage for other parts of app (e.g., navbar)
+      // Persist to localStorage for other parts of app (exclude avatar per requirements)
       try {
         localStorage.setItem('agentData', JSON.stringify(newProfile));
         const first = (newProfile.name || '').toString().trim().split(/\s+/)[0] || '';
