@@ -1,19 +1,14 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import Navbar from "../aadharhomes/Navbar"; // Adjust the path to your Navbar component
+import Navbar from "../aadharhomes/navbar/Navbar"; // Correct path to Navbar component
 
 const PublicRoute = () => {
     const location = useLocation();
     const path = location.pathname || "";
-
-    // Default: show navbar on all pages
     let hideNavbar = false;
-
-    // Additionally, hide on dynamic project detail route: "/:pUrl/" (single slug at root)
-    // We whitelist known top-level routes to avoid hiding on non-project pages like /about-us/, /blog/, etc.
     if (!hideNavbar) {
       const segments = path.split("/").filter(Boolean);
-      const isSingleSlugRoot = segments.length === 1; // e.g., "/experion-the-trillion/"
+      const isSingleSlugRoot = segments.length === 1;
       const first = segments[0] || "";
       const whitelist = new Set([
         "", // home
