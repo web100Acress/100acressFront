@@ -238,7 +238,7 @@ const BuilderPage = React.memo(() => {
         />
       </Helmet>
 
-      <section className="flex pt-2 flex-col items-center mt-12">
+      <section className="flex flex-col items-center pt-16 sm:pt-20 lg:pt-24 px-2 scroll-mt-24">
               <h1 className="mb-3 p-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
               {formattedBuilderName} Projects in Gurugram
               </h1>
