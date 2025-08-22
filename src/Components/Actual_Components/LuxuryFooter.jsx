@@ -114,15 +114,17 @@ const LuxuryFooter = () => {
                 {/* Enhanced Social Media */}
                 <div className="flex space-x-2">
                   {[
-                    { Icon: Facebook, href: "#", label: "Facebook", color: "hover:bg-blue-600" },
-                    { Icon: Twitter, href: "#", label: "Twitter", color: "hover:bg-sky-500" },
-                    { Icon: Instagram, href: "#", label: "Instagram", color: "hover:bg-pink-600" },
-                    { Icon: Linkedin, href: "#", label: "LinkedIn", color: "hover:bg-blue-700" },
-                    { Icon: Youtube, href: "#", label: "YouTube", color: "hover:bg-red-600" },
-                  ].map(({ Icon, href, label, color }, index) => (
+                    { Icon: Facebook, href: "https://www.facebook.com/100Acress/", target:"blank", label: "Facebook", color: "hover:bg-blue-600" },
+                    { Icon: Twitter, href: "https://x.com/100acressdotcom", target:"blank", label: "Twitter", color: "hover:bg-sky-500" },
+                    { Icon: Instagram, href: "https://www.instagram.com/official100acress/?hl=en", target:"blank", label: "Instagram", color: "hover:bg-pink-600" },
+                    { Icon: Linkedin, href: "https://www.linkedin.com/company/100acress/", target:"blank", label: "LinkedIn", color: "hover:bg-blue-700" },
+                    { Icon: Youtube, href: "https://www.youtube.com/@100acress", target:"blank", label: "YouTube", color: "hover:bg-red-600" },
+                  ].map(({ Icon, href, label, color, target }, index) => (
                     <motion.a
                       key={index}
                       href={href}
+                      target={target === "blank" ? "_blank" : undefined}
+                      rel={target === "blank" ? "noopener noreferrer" : undefined}
                       aria-label={label}
                       className={`group relative w-10 h-10 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full flex items-center justify-center text-gray-600 ${color} hover:text-white hover:border-transparent hover:scale-110 hover:shadow-lg transition-all duration-300 overflow-hidden`}
                       whileHover={{ scale: 1.2, rotate: 15 }}
@@ -307,21 +309,21 @@ const LuxuryFooter = () => {
           className="relative z-10 bg-red-600 w-full"
           variants={itemVariants}
         >
-          <div className="py-6 w-full px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-3 items-center w-full text-sm whitespace-nowrap overflow-x-auto">
+          <div className="py-4 sm:py-6 w-full px-4 sm:px-6 lg:px-8 pb-16 sm:pb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 items-center w-full text-xs sm:text-sm gap-3 sm:gap-0 text-center sm:text-left whitespace-normal overflow-visible">
               {/* Left: Copyright */}
-              <div className="justify-self-start text-white flex items-center">
+              <div className="justify-self-center sm:justify-self-start text-white flex items-center">
                 <p className="drop-shadow-sm">© 2000 - 2025 100acress. All rights reserved.</p>
               </div>
 
               {/* Center: Contact (single line) */}
               <div className="justify-self-center text-white">
-                <div className="flex items-center gap-6">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-6">
                   <a href="tel:+918500900100" className="flex items-center hover:text-white/90 transition-colors">
                     <Phone size={16} className="mr-1" />
                     +91 8500-900-100
                   </a>
-                  <a href="mailto:support@100acress.com" className="flex items-center hover:text-white/90 transition-colors">
+                  <a href="mailto:support@100acress.com" className="flex items-center hover:text-white/90 transition-colors break-all sm:break-normal">
                     <Mail size={16} className="mr-1" />
                     support@100acress.com
                   </a>
@@ -329,8 +331,8 @@ const LuxuryFooter = () => {
               </div>
 
               {/* Right: Policy Links */}
-              <div className="justify-self-end flex items-center">
-                <div className="flex justify-end space-x-4 lg:space-x-6 text-sm">
+              <div className="justify-self-center sm:justify-self-end flex items-center">
+                <div className="flex flex-wrap justify-center sm:justify-end space-x-4 lg:space-x-6 text-xs sm:text-sm">
                   {[
                     "Privacy Policy", "Terms of Service", "Cookie Policy"
                   ].map((link, index) => (
