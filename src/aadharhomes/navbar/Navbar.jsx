@@ -13,6 +13,7 @@ import CenterLogo from "./CenterLogo";
 import RightSection from "./RightSection";
 import SearchBarOverlay from "./SearchBarOverlay";
 import MegaMenu from "./MegaMenu";
+import { getApiBase } from "../../config/apiBase";
 
 // const SpacerComponent = () => <Box width="60px" />; // unused spacer
 
@@ -23,6 +24,17 @@ export default function Navbar() {
   if (usertoken && usertoken.startsWith('"') && usertoken.endsWith('"')) {
     try { usertoken = JSON.parse(usertoken); } catch { /* ignore */ }
   }
+  const API_BASE = getApiBase();
+  const sanitizeToken = (raw) => {
+    if (!raw || typeof raw !== 'string') return '';
+    let t = raw.trim();
+    if (t.toLowerCase().startsWith('bearer ')) t = t.slice(7);
+    if (t.startsWith('"') && t.endsWith('"')) {
+      try { t = JSON.parse(t); } catch {}
+    }
+    return t.replace(/\"/g, '');
+  };
+  const authToken = sanitizeToken(usertoken);
   const { decodedToken } = useJwt(usertoken || "");
   const dispatch = useDispatch();
   // Initialize token synchronously to avoid brief logged-out UI state
@@ -220,8 +232,8 @@ export default function Navbar() {
   const fetchAndSetAvatar = async () => {
     try {
       if (!userIdForEdit) return;
-      const res = await axios.get(`/users/${userIdForEdit}/profile`, {
-        headers: { Authorization: usertoken ? `Bearer ${usertoken}` : undefined },
+      const res = await axios.get(`${API_BASE}/users/${userIdForEdit}/profile`, {
+        headers: { Authorization: authToken ? `Bearer ${authToken}` : undefined },
       });
       const url = res?.data?.data?.avatarUrl || "";
       if (url) {
@@ -404,7 +416,9 @@ export default function Navbar() {
 
   const HandleUserLogout = async () => {
     try {
-      await axios.get("/postPerson/logout");
+      await axios.get(`${API_BASE}/postPerson/logout`, {
+        headers: { Authorization: authToken ? `Bearer ${authToken}` : undefined },
+      });
       history("/");
       localStorage.removeItem("myToken");
       localStorage.removeItem("mySellerId");

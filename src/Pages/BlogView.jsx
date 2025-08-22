@@ -7,10 +7,12 @@ import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
 import "./BlogView.css";
 import useIsMobile from '../hooks/useIsMobile';
+import { getApiBase } from '../config/apiBase';
 
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
-  const [data, setData] = useState([]);
+  const API_BASE = getApiBase();
+  const [data, setData] = useState({});
   const [recentBlogs,setRecentBlogs]=useState([]);
   const { id, slug } = useParams();
   const location = useLocation();
@@ -55,7 +57,7 @@ const BlogView = () => {
     setButtonText("Submitting...");
     try {
       await axios.post(
-        "/contact_Insert",
+        `${API_BASE}/contact_Insert`,
         blogQuery
       );
       setResponseMessage("Data submitted successfully");
@@ -73,13 +75,36 @@ const BlogView = () => {
     }
   };
 
+  // Normalize blog object from API
+  const normalizeBlog = (b) => {
+    const obj = (b && typeof b === 'object') ? b : {};
+    const img = obj.blog_Image;
+    let normalizedImage = null;
+    if (img && typeof img === 'object' && 'url' in img) {
+      normalizedImage = img;
+    } else if (typeof img === 'string') {
+      normalizedImage = { url: img };
+    }
+    return {
+      blog_Title: obj.blog_Title || '',
+      blog_Description: obj.blog_Description || '',
+      author: obj.author || '',
+      blog_Category: obj.blog_Category || '',
+      published_Date: obj.published_Date || obj.createdAt || '',
+      blog_Image: normalizedImage,
+      createdAt: obj.createdAt || '',
+      slug: obj.slug || '',
+      _id: obj._id || ''
+    };
+  };
+
   const fetchData = async () => {
     try {
       let res;
       if (slug) {
         try {
-          res = await axios.get(`/blog/slug/${slug}`);
-          setData(res.data.data);
+          res = await axios.get(`${API_BASE}/blog/slug/${slug}`);
+          setData(normalizeBlog(res?.data?.data));
         } catch (err) {
           const status = err?.response?.status;
           if (status === 404) {
@@ -87,8 +112,8 @@ const BlogView = () => {
             const params = new URLSearchParams(location.search);
             const qid = params.get('id');
             if (qid) {
-              const byId = await axios.get(`/blog/view/${qid}`);
-              setData(byId.data.data);
+              const byId = await axios.get(`${API_BASE}/blog/view/${qid}`);
+              setData(normalizeBlog(byId?.data?.data));
             } else {
               throw err; // rethrow to be caught below
             }
@@ -97,8 +122,8 @@ const BlogView = () => {
           }
         }
       } else if (id) {
-        res = await axios.get(`/blog/view/${id}`);
-        setData(res.data.data);
+        res = await axios.get(`${API_BASE}/blog/view/${id}`);
+        setData(normalizeBlog(res?.data?.data));
       } else {
         return;
       }
@@ -109,13 +134,14 @@ const BlogView = () => {
 
   const fetchRecentsBlog = async () =>{
     try{
-      const recent = await axios.get('/blog/view?page=1&limit=6');
-      setRecentBlogs(
-        recent.data.data.filter((blog)=> {
-          if (slug && blog.slug) return blog.slug !== slug;
-          return blog._id !== id;
-        })
-      );
+      const recent = await axios.get(`${API_BASE}/blog/view?page=1&limit=6`);
+      const list = Array.isArray(recent?.data?.data) ? recent.data.data : [];
+      const normalized = list.map((b) => normalizeBlog(b));
+      const filtered = normalized.filter((blog)=> {
+        if (slug && blog.slug) return blog.slug !== slug;
+        return blog._id !== id;
+      });
+      setRecentBlogs(filtered);
     }
     catch (error) {
       console.log(error || error.message);

@@ -36,7 +36,7 @@ export default function DraftBlogManagement() {
     setIsPublishedLoading(true);
 
     try {
-      const res = await axios.patch(`/blog/update/${id}`,
+      const res = await axios.patch(`blog/update/${id}`,
       {
         isPublished: checked,
       },
@@ -112,7 +112,7 @@ export default function DraftBlogManagement() {
         const fetchData = async () => {
           try {
             setLoading(true);
-            const res = await axios.get(`/blog/draft/view?page=${currentPage}&limit=${pageSize}`);
+            const res = await axios.get(`blog/draft/view?page=${currentPage}&limit=${pageSize}`);
             console.log("Response",res.data);
             setBlogs(res.data.data);
             setTotalPages(res.data.totalPages);
@@ -149,7 +149,7 @@ export default function DraftBlogManagement() {
 const handleDeleteUser = async (id) => {
     try {
       const response = await axios.delete(
-        `/blog/Delete/${id}`,
+        `blog/Delete/${id}`,
         {
           headers: {
             'Content-Type': 'multipart/form-data',

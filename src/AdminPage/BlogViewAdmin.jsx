@@ -5,6 +5,7 @@ import Sidebar from "./Sidebar";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { MdArticle, MdImage, MdTitle, MdDescription, MdCategory, MdPerson } from "react-icons/md";
+import { getApiBase } from '../config/apiBase';
 
 const customStyle = {
   position: "absolute",
@@ -16,24 +17,45 @@ const customStyle = {
 
 
 const BlogViewAdmin = () => {
-  const [viewDetails, setViewDetails] = useState([]);
+  const [viewDetails, setViewDetails] = useState({
+    blog_Category: "",
+    blog_Description: "",
+    blog_Title: "",
+    blog_Image: "",
+    author: "",
+  });
   const { id } = useParams();
+  const tokenRaw = localStorage.getItem("myToken") || "";
+  const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `/blog/view/${id}`
+          `${getApiBase()}/blog/view/${id}`,
+          {
+            headers: {
+              ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+            }
+          }
         );
-   
-        setViewDetails(res.data.data);
+        const payload = res.data;
+        const safe = payload && typeof payload.data === 'object' && payload.data !== null ? payload.data : {};
+        setViewDetails(prev => ({
+          blog_Category: "",
+          blog_Description: "",
+          blog_Title: "",
+          blog_Image: "",
+          author: "",
+          ...safe,
+        }));
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-  }, []);
+  }, [id, token]);
 
   return (
     <>

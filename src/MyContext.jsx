@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { getApiBase } from "./config/apiBase";
 import { sortByDesiredOrder } from "./Utils/ProjectSorting";
 import { Affordable_Desired_Order, Luxury_Desired_Order, Trending_Desired_Order } from "./Pages/datafeed/Desiredorder";
 export const DataContext = createContext();
@@ -110,7 +111,7 @@ export const DataProvider = ({ children }) => {
     if (email && password) {
       try {
         const loginResponse = await axios.post(
-          "/postPerson/verify_Login",
+          `postPerson/verify_Login`,
           { email, password }
         );
         const newToken = loginResponse.data.token;
@@ -119,7 +120,7 @@ export const DataProvider = ({ children }) => {
 
         if (loginResponse.status === 200) {
           const roleResponse = await axios.get(
-            `/postPerson/Role/${email}`
+            `postPerson/Role/${email}`
           );
 
           if (roleResponse.status === 200) {

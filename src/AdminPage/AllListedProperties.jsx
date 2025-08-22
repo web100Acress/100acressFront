@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import axios from "axios";
+import { getApiBase } from '../config/apiBase';
+
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Oval } from "react-loader-spinner";
@@ -8,7 +10,9 @@ import { PaginationControls } from "../Components/Blog_Components/BlogManagement
 import { Modal, message } from "antd"; // Import message from antd
 
 const AllListedProperties = () => {
-  const token = localStorage.getItem("myToken");
+  const tokenRaw = localStorage.getItem("myToken") || "";
+  const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
+
   const [allListedProperty, setAllListedProperty] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,19 +43,28 @@ const AllListedProperties = () => {
   const fetchData = useCallback(async () => {
     try {
       setIsLoading(true);
+      const base = getApiBase();
       const res = await axios.get(
-        `/postPerson/view/allListedProperty/?page=${currentPage}&limit=${pageLimit}&verify=${isVerified}`,
+        `${base}/postPerson/view/allListedProperty/?page=${currentPage}&limit=${pageLimit}&verify=${isVerified}`,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           }
         }
       );
       if (res.status >= 200 && res.status < 300) {
-        console.log("PropertyData: ", res.data.data?.[0].data);
-        setAllListedProperty(res.data.data?.[0].data || []);
-        setTotalPages(res.data.data?.[0].totalPages || 0);
+        const root = res.data;
+        const pageArr = Array.isArray(root?.data) ? root.data : [];
+        const first = pageArr[0] || {};
+        const list = Array.isArray(first?.data)
+          ? first.data
+          : Array.isArray(root?.data)
+          ? root.data
+          : [];
+        const pages = Number(first?.totalPages || root?.totalPages || 0) || 0;
+        setAllListedProperty(list);
+        setTotalPages(pages);
       }
     } catch (error) {
       console.error("Error fetching properties:", error);
@@ -98,15 +111,17 @@ const AllListedProperties = () => {
   const handleDeleteProperty = async (id) => {
     try {
       console.log("Attempting to delete property with ID:", id);
+      const base = getApiBase();
       const res = await axios.delete(
-        `/postPerson/propertyDelete/${id}`,
+        `${base}/postPerson/propertyDelete/${id}`,
         {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
             }
         }
       );
+
       console.log("Delete response:", res);
       if (res.status >= 200 && res.status < 300) {
         return {

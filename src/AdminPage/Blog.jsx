@@ -8,32 +8,33 @@ import { MdArticle, MdSearch, MdAddCircle, MdEdit, MdDelete, MdVisibility } from
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
+import { getApiBase } from '../config/apiBase';
 
 const Blog = () => {
   const [viewAll, setViewAll] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
 
-  const token = localStorage.getItem("myToken");
+  const raw = localStorage.getItem("myToken") || "";
+  const token = raw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
 
   // Function to fetch all blog data
   const fetchBlogData = async (search = "") => {
     try {
       // Use the new admin endpoint to get ALL blogs (published + drafts)
-      const url = `/blog/admin/view?page=1&limit=1000`;
-      
+      const base = getApiBase();
+      const url = `${base}/blog/admin/view?page=1&limit=1000`;
       const res = await axios.get(url, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         }
       });
       
       console.log("Admin API Response:", res.data);
-      console.log("Total blogs from admin API:", res.data.data?.length || 0);
-      console.log("Published blogs:", res.data.publishedBlogs || 0);
-      console.log("Draft blogs:", res.data.draftBlogs || 0);
+      const payload = res.data;
+      const allBlogsRaw = Array.isArray(payload?.data) ? payload.data : (Array.isArray(payload) ? payload : []);
       
-      let allBlogs = res.data.data || [];
+      let allBlogs = allBlogsRaw;
       
       if (search) {
         // Filter the data based on search term
@@ -83,12 +84,12 @@ const Blog = () => {
     });
 
     try {
+      const base = getApiBase();
       const response = await axios.delete(
-        `/blog/Delete/${id}`,
+        `${base}/blog/Delete/${id}`,
         {
           headers: {
-            'Content-Type': 'multipart/form-data', // This might be incorrect for DELETE, usually not needed
-            'Authorization': `Bearer ${token}`,
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
           }
         }
       );

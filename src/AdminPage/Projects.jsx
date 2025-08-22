@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { getApiBase } from '../config/apiBase';
+
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
 import { message } from "antd"; // Assuming Ant Design message is available
@@ -28,10 +30,21 @@ const Projects = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const base = getApiBase();
+        const tokenRaw = localStorage.getItem("myToken") || "";
+        const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
         const res = await axios.get(
-          "/project/viewAll/data"
+          `${base}/project/viewAll/data`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            }
+          }
         );
-        setViewAll(res.data.data);
+        const payload = res.data;
+        const rows = Array.isArray(payload?.data) ? payload.data : (Array.isArray(payload) ? payload : []);
+        setViewAll(rows);
       } catch (error) {
         console.error("Error fetching projects:", error);
         messageApi.open({
@@ -46,16 +59,19 @@ const Projects = () => {
 
   const handleDeleteUser = async (id) => {
     try {
-      const myToken = localStorage.getItem("myToken");
+      const base = getApiBase();
+      const raw = localStorage.getItem("myToken") || "";
+      const myToken = raw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
       const response = await axios.delete(
-        `/project/Delete/${id}`,
+        `${base}/project/Delete/${id}`,
         {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${myToken}`,
+            ...(myToken ? { Authorization: `Bearer ${myToken}` } : {}),
           },
         }
       );
+
       console.log(response, "response");
       if (response.status >= 200 && response.status < 300) {
         messageApi.open({
@@ -64,8 +80,9 @@ const Projects = () => {
           duration: 2,
         });
         // Filter out the deleted item from the state to update UI
-        setViewAll(prevViewAll => prevViewAll.filter(item => item._id !== id));
+        setViewAll(prevViewAll => (Array.isArray(prevViewAll) ? prevViewAll.filter(item => item._id !== id) : []));
       } else {
+
         messageApi.open({
           type: "error",
           content: "Failed to delete project. Server returned an error.",
