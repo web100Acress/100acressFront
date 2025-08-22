@@ -112,19 +112,6 @@ const NewBanner = () => {
     fetchData();
   }, [query, getProjectbyBuilder]);
 
-  // Measure navbar height and expose as CSS var --nav-h
-  useEffect(() => {
-    const updateNavHeight = () => {
-      const nav = document.getElementById("project-nav");
-      if (!nav) return;
-      const h = nav.offsetHeight || 0;
-      document.documentElement.style.setProperty("--nav-h", `${h}px`);
-    };
-    updateNavHeight();
-    window.addEventListener("resize", updateNavHeight);
-    return () => window.removeEventListener("resize", updateNavHeight);
-  }, []);
-
   useEffect(() => {
     const checkTextHeight = () => {
       if (aboutTextRef.current && aboutImageRef.current) {
@@ -339,12 +326,14 @@ const NewBanner = () => {
         }
 
         const response = await axios.get(
-          `/project/View/${pUrl}`
+          `/api/project/View/${pUrl}`
         );
-        if (response.data.dataview.length === 0) {
+        const dataview = response?.data?.dataview;
+        if (!Array.isArray(dataview) || dataview.length === 0) {
           navigate("/");
+          return;
         }
-        const projectData = response?.data?.dataview?.[0];
+        const projectData = dataview[0];
         if (projectData) {
           setProjectViewDetails(projectData);
           setBuilderName(projectData.builderName);
@@ -515,7 +504,7 @@ const NewBanner = () => {
         message.success("Callback Requested Successfully");
         try {
           setIsLoading1(true);
-          await axios.post("/userInsert", {
+          await axios.post("/api/userInsert", {
             ...popDetails,
             projectName: projectViewDetails.projectName,
             address: projectViewDetails.projectAddress,
@@ -598,7 +587,7 @@ const NewBanner = () => {
         setIsLoading2(true);
         setUserButtonText("Submitting...");
         axios
-          .post("/userInsert", {
+          .post("/api/userInsert", {
             ...userDetails,
             projectName: projectViewDetails.projectName,
             address: projectViewDetails.projectAddress,
@@ -638,7 +627,7 @@ const NewBanner = () => {
         setIsLoading2(true);
         setSideButtonText("Submitting...");
         try {
-          await axios.post("/userInsert", {
+          await axios.post("/api/userInsert", {
             ...sideDetails,
             projectName: projectViewDetails.projectName,
             address: projectViewDetails.projectAddress,
@@ -978,8 +967,7 @@ const NewBanner = () => {
                 </a>
               </div>
             </nav>
-            {/* Spacer to prevent content hidden under fixed navbar (desktop only) */}
-            <div className="nb-nav-spacer"></div>
+            {/* Spacer removed: global body padding-top (from Navbar measurement) handles offset */}
 
             {/* Semi-transparent gradient overlay */}
             <div className="nb-hero-gradient"></div>

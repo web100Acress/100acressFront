@@ -10,7 +10,7 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  /* z-index: 1000; */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -45,8 +45,6 @@
 .nb-phone-label { color: #2563eb; font-size: 16px; }
 .nb-whatsapp-label { font-size: 16px; }
 
-/* Spacer equal to navbar height; JS sets --nav-h dynamically */
-.nb-nav-spacer { height: var(--nav-h, 64px); width: 100%; }
 
 /* Hero container and sticky behavior */
 .nb-hero { position: relative; width: 100%; }
@@ -66,7 +64,7 @@
 .nb-hero-gradient { position: absolute; left: 0; right: 0; top: 0; height: 24px; background: linear-gradient(to bottom, rgba(0,0,0,0.14), rgba(0,0,0,0)); pointer-events: none; }
 
 /* Centered hero content */
-.nb-hero-content { position: absolute; inset: 0; display: grid; place-items: center; padding-top: var(--nav-h, 64px); }
+.nb-hero-content { position: absolute; inset: 0; display: grid; place-items: center; padding-top: var(--navbar-h, var(--nav-h, 64px)); }
 .nb-hero-center { width: min(1100px, 98%); margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
 
 .nb-hero-location { display: inline-flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.92); font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.35); }
