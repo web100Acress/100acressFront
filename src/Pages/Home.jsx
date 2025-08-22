@@ -41,6 +41,8 @@ const Home = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Shorts ID is now fetched directly by FloatingShorts via backend polling.
+
   const sectionsRef = useRef({});
   const [colorChange, setColorchange] = useState(false);
   const [displayedProjects, setDisplayedProjects] = useState([]);
@@ -535,8 +537,9 @@ const Home = () => {
 
       <PossessionProperty />
       <BackToTopButton />
-      {/* Floating YouTube Shorts (desktop only) */}
-      <FloatingShorts videoId="ouBwbuoqnU8" />
+      {/* Floating YouTube Shorts (reads ID from settings) */}
+      <FloatingShorts />
+
       {/* <Footer /> */}
     </div> {/* Closing div for the blur container */}
 

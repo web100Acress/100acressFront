@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getApiBase } from "../config/apiBase";
 
 /*
   FloatingShorts
@@ -6,22 +7,77 @@ import React, { useEffect, useState } from "react";
   - Autoplays muted, loops, minimal UI, with a close (X) button
   - Usage: <FloatingShorts videoId="XJbjxK0pQx0" />
 */
-const FloatingShorts = ({ videoId = "b28hvCtiYZE82" }) => {
+const FloatingShorts = ({ videoId = "" }) => {
   const [visible, setVisible] = useState(true);
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1024
   );
+  const [activeVideoId, setActiveVideoId] = useState("ouBwbuoqnU8");
 
   useEffect(() => {
     const update = () => setWindowWidth(window.innerWidth);
     update();
     window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+
+    let cancelled = false;
+    let channel;
+
+    const fetchId = async () => {
+      try {
+        const res = await fetch(`${getApiBase()}/settings/shorts-video-id`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const value = data?.value;
+        if (!cancelled && value && value !== activeVideoId) {
+          setActiveVideoId(value);
+        }
+      } catch (_) {
+        // ignore
+      }
+    };
+
+    // Initial fetch and polling
+    fetchId();
+    const interval = setInterval(fetchId, 5000); // 5s
+
+    // Also refresh when tab gains focus or becomes visible
+    const onFocus = () => fetchId();
+    const onVisibility = () => { if (document.visibilityState === 'visible') fetchId(); };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibility);
+
+    // Instant updates within same browser using BroadcastChannel
+    if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+      channel = new BroadcastChannel('shorts-settings');
+      channel.onmessage = (ev) => {
+        if (!ev?.data) return;
+        const { type, value } = ev.data;
+        if (type === 'shorts-update') {
+          if (value !== undefined) setActiveVideoId(value || "");
+        }
+      };
+    }
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("resize", update);
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibility);
+      clearInterval(interval);
+      if (channel) {
+        try { channel.close(); } catch (_) {}
+      }
+    };
   }, []);
+
+  // If prop is provided, it takes precedence
+  useEffect(() => {
+    if (videoId) setActiveVideoId(videoId);
+  }, [videoId]);
 
   if (!visible) return null;
 
-  const embedSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&playsinline=1&rel=0`;
+  const embedSrc = `https://www.youtube.com/embed/${activeVideoId}?autoplay=1&mute=1&loop=1&playlist=${activeVideoId}&controls=0&modestbranding=1&playsinline=1&rel=0`;
 
   const isMobile = windowWidth < 640;
   const isTablet = windowWidth >= 640 && windowWidth < 1024;
