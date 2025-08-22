@@ -69,20 +69,17 @@ const Search = ({ data1 }) => {
       data-aos="fade-UP"
       data-aos-easing="linear"
       data-aos-duration="1500"
-      className={`w-2rem shadow-xl rounded-full bg-white h-16 lg:w-[48rem] flex items-center justify-center`}
+      className={`w-full max-w-[860px] mx-auto -mt-2 shadow-xl rounded-full bg-white h-14 lg:w-[48rem] flex items-center justify-center`}
       style={{
-        marginTop:
-          window.innerWidth < 640
-            ? "-0px"
-            : window.innerWidth >= 640 && window.innerWidth <= 768
-            ? "-12px"
-            : "0",
-        marginBottom: window.innerWidth === 768 ? "0px" : "0",
+        marginBottom: 0,
         borderRadius: window.innerWidth < 640 ? "30px" : "30px",
+        // Shift slightly to the right on very small screens to avoid hamburger overlap
+        marginLeft: isSmallerThan440 ? '44px' : undefined,
+        marginRight: isSmallerThan440 ? '12px' : undefined,
       }}
     >
       <div
-        className="flex items-center ml-2 mr-2 gap-2 w-full ml-6"
+        className="flex items-center w-full px-3 md:px-4 gap-2"
       >
         <input
           className="outline-none flex-grow p-2 rounded-full"

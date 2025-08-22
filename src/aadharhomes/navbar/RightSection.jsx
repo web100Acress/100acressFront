@@ -358,19 +358,82 @@ export default function RightSection({
                 </Flex>
               </MenuButton>
               <Portal>
-                <MenuList p={0} minW="220px" maxH="60vh" overflowY="auto" zIndex={14000}>
+                <MenuList
+                  p={1}
+                  minW="220px"
+                  maxH="60vh"
+                  overflowY="auto"
+                  zIndex={14000}
+                  border="1px solid #e5e7eb"
+                  boxShadow="lg"
+                  rounded="xl"
+                  bg="white"
+                >
                   <Box px={3} pt={2} pb={2} color="#666" fontSize="12px">Signed in</Box>
                   <Box h="1px" bg="#eee" />
-                  <MenuItem onClick={() => go('/userdashboard/')} fontSize="14px">View Profile</MenuItem>
+                  <MenuItem
+                    onClick={() => go('/userdashboard/')}
+                    fontSize="14px"
+                    py={2.5}
+                    _hover={{ bg: '#f9fafb' }}
+                  >
+                    <Box as="span" lineHeight={0} mr={3}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
+                        <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
+                      </svg>
+                    </Box>
+                    View Profile
+                  </MenuItem>
                   {/* Removed Change photo from dropdown menu */}
-                    {isAdmin && (
-                    <MenuItem onClick={() => go('/admin/')} fontSize="14px">Admin</MenuItem>
+                  {isAdmin && (
+                    <MenuItem
+                      onClick={() => go('/admin/')}
+                      fontSize="14px"
+                      py={2.5}
+                      _hover={{ bg: '#f9fafb' }}
+                    >
+                      <Box as="span" lineHeight={0} mr={3}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </Box>
+                      Admin
+                    </MenuItem>
                   )}
                   {isBlogger && (
-                    <MenuItem onClick={() => go('/seo/blogs')} fontSize="14px">Blog</MenuItem>
+                    <MenuItem
+                      onClick={() => go('/seo/blogs')}
+                      fontSize="14px"
+                      py={2.5}
+                      _hover={{ bg: '#f9fafb' }}
+                    >
+                      <Box as="span" lineHeight={0} mr={3}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M5 5h14v14H5z" stroke="#111" strokeWidth="1.6"/>
+                          <path d="M8 9h8M8 12h8M8 15h5" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
+                        </svg>
+                      </Box>
+                      Blog
+                    </MenuItem>
                   )}
                   <Box h="1px" bg="#eee" />
-                  <MenuItem onClick={() => { HandleUserLogout(); ShowLogOutMessage(); }} fontSize="14px">Log out</MenuItem>
+                  <MenuItem
+                    onClick={() => { HandleUserLogout(); ShowLogOutMessage(); }}
+                    fontSize="14px"
+                    py={2.5}
+                    _hover={{ bg: '#fef2f2' }}
+                  >
+                    <Box as="span" lineHeight={0} mr={3}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 17l5-5-5-5" stroke="#dc2626" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M21 12H9" stroke="#dc2626" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M13 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </Box>
+                    Log out
+                  </MenuItem>
                 </MenuList>
               </Portal>
             </Menu>
@@ -404,7 +467,7 @@ export default function RightSection({
               borderColor="#e53e3e"
               color={colorChange ? "white" : "#e53e3e"}
               _hover={{ bg: colorChange ? "whiteAlpha.200" : "red.50" }}
-              display={{ base: "inline-flex", lg: "none" }}
+              display={{ base: "none", lg: "none" }}
               borderRadius="full"
               ml={{ base: 1, md: 2 }}
               icon={
@@ -424,9 +487,9 @@ export default function RightSection({
               variant="outline"
               size="sm"
               borderColor="#e53e3e"
-              color={colorChange ? "white" : "#e53e3e"}
+              color={colorChange ? "white" : "e53e3e"}
               _hover={{ bg: colorChange ? "whiteAlpha.200" : "red.50" }}
-              display={{ base: "inline-flex", lg: "none" }}
+              display={{ base: "none", lg: "none" }}
               borderRadius="full"
               ml={{ base: 1, md: 2 }}
               icon={
