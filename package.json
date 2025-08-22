@@ -120,6 +120,7 @@
     "eslint-plugin-unused-imports": "^4.1.4",
     "postcss": "^8.5.3",
     "react-lazyload": "^3.2.1",
+    "rollup": "^4.24.0",
     "tailwindcss": "^3.4.17",
     "terser": "^5.43.1",
     "vite": "^6.1.1",
