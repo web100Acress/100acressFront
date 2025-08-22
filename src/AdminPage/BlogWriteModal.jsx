@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Quill from 'quill';
 import axios from 'axios';
-import ReactQuill from 'react-quill';
+  import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -84,6 +84,18 @@ const BlogWriteModal = () => {
   const cropImgRef = useRef(null);
 
   const quillRef = useRef(null);
+  // Safe accessor for Quill instance: react-quill throws if called before mount
+  const safeGetQuill = () => {
+    try {
+      const inst = quillRef.current && typeof quillRef.current.getEditor === 'function'
+        ? quillRef.current.getEditor()
+        : null;
+      return inst || null;
+    } catch (e) {
+      // Editor not instantiated yet
+      return null;
+    }
+  };
   // Lightbox & preview helpers
   const [lightboxUrl, setLightboxUrl] = useState('');
   const [frontPreviewObjUrl, setFrontPreviewObjUrl] = useState('');
@@ -212,7 +224,7 @@ const BlogWriteModal = () => {
 
   // Convert the next 4 standalone images (from cursor) into a grid with inline styles
   const convertNextImagesToGrid = () => {
-    const quill = quillRef.current?.getEditor?.();
+    const quill = safeGetQuill();
     if (!quill) return;
     const root = quill.root;
     const sel = quill.getSelection(true) || { index: 0 };
@@ -272,7 +284,7 @@ const BlogWriteModal = () => {
 
   // Helper: insert image URL into Quill with trailing newline
   const insertImageIntoQuill = (imageUrl) => {
-    const quill = quillRef.current?.getEditor?.();
+    const quill = safeGetQuill();
     if (!quill) return;
     const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
     const insertAt = sel.index;
@@ -403,7 +415,7 @@ const BlogWriteModal = () => {
   const insertImageByUrl = () => {
     const url = window.prompt('Paste image URL');
     if (!url) return;
-    const quill = quillRef.current?.getEditor?.();
+    const quill = safeGetQuill();
     if (quill) {
       const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
       const insertAt = sel.index;
@@ -665,7 +677,7 @@ const BlogWriteModal = () => {
 
   // Handle paste images (e.g., screenshots) -> open cropper
   useEffect(() => {
-    const quill = quillRef.current?.getEditor?.();
+    const quill = safeGetQuill();
     if (!quill) return;
     const root = quill.root;
     const onPaste = (e) => {
@@ -715,7 +727,7 @@ const BlogWriteModal = () => {
 
   // Apply B/W mode to editor root
   useEffect(() => {
-    const quill = quillRef.current?.getEditor?.();
+    const quill = safeGetQuill();
     if (!quill) return;
     const root = quill.root;
     if (bwMode) root.classList.add('bw-mode');
@@ -724,14 +736,14 @@ const BlogWriteModal = () => {
 
   // Helper to apply selected font to current selection
   const applyFontToSelection = (fontName) => {
-    const quill = quillRef.current?.getEditor?.();
+    const quill = safeGetQuill();
     if (!quill) return;
     quill.format('font', fontName);
   };
 
   // Apply current grid controls to the grid at the cursor (also set inline styles + flex fallback for publish)
   const applyGridSettingsToSelection = () => {
-    const quill = quillRef.current?.getEditor?.();
+    const quill = safeGetQuill();
     if (!quill) return;
     const sel = quill.getSelection(true);
     if (!sel) return;
@@ -1286,10 +1298,10 @@ const BlogWriteModal = () => {
                       const inner = `<div class=\"img-grid-4 layout-${gridLayout}\" style=\"display:flex;flex-wrap:nowrap;align-items:stretch;gap:12px;display:grid;grid-template-columns:${gridCols};--grid-img-height:${gridSizeToPx[gridImgSize]}px;\">${cards}</div>`;
                       const frameStyle = 'border:3px solid #111;border-radius:18px;padding:14px;background:#fff;';
                       const titleStyle = 'text-align:center;font-weight:700;margin:4px 0 12px;font-size:16px;';
-                      const html = gridUseFrameTitle
-                        ? `<section class=\"img-grid-4-frame\" style=\"${frameStyle}\"><div class=\"grid-title\" style=\"${titleStyle}\" contenteditable=\"true\">Grid Title</div>${inner}</section><p><br/></p>`
+                      const html = gridWithTitles
+                        ? `<section class=\"img-grid-4-frame\" style=\"${frameStyle}\"><div class=\"grid-title\" style=\"${titleStyle}\" contenteditable=\"true\">Grid Title</div>${inner}</section>`
                         : `${inner}<p><br/></p>`;
-                      const quill = quillRef.current?.getEditor?.();
+                      const quill = safeGetQuill();
                       if (quill) {
                         const sel = quill.getSelection(true) || { index: quill.getLength(), length: 0 };
                         quill.clipboard.dangerouslyPasteHTML(sel.index, html, 'user');

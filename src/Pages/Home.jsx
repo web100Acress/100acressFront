@@ -379,7 +379,7 @@ const Home = () => {
               onClick={() => setActiveFilter("Budget")}
               className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Budget" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
             >
-              Budget 🏠
+              Budget
             </button>
             <button
               onClick={() => setActiveFilter("Luxury")}
