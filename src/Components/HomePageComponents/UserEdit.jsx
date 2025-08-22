@@ -431,32 +431,32 @@ const UserEdit = () => {
 
   return (
     <>
-      <div className="pt-20 md:pt-24 pb-2 bg-white">
+      <div className="pt-20 md:pt-24 pb-6 bg-gray-50">
         {contextHolder}
-        <div className="mx-auto max-w-4xl px-2 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl px-3 sm:px-6 lg:px-8">
           {/* User Profile Section */}
-          <div className="card-body mb-4 border rounded-lg p-4">
-            <h2 className="text-xl font-semibold mb-4">Edit Profile</h2>
-            <div className="flex items-start gap-6">
-              <div className="flex flex-col items-center">
-                <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center">
+          <div className="card-body mb-6 bg-white border rounded-2xl p-5 sm:p-6 shadow-sm">
+            <h2 className="text-2xl font-semibold mb-5 tracking-tight">Edit Profile</h2>
+            <div className="flex flex-col sm:flex-row items-start gap-6">
+              <div className="flex flex-col items-center sm:items-center">
+                <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center ring-2 ring-gray-200 shadow-sm">
                   {avatar ? (
                     <img src={avatar} alt="avatar" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-gray-500 text-sm">No Photo</span>
                   )}
                 </div>
-                <label className="mt-3 inline-block cursor-pointer text-sm text-blue-600">
+                <label className="mt-3 inline-block cursor-pointer text-sm font-medium text-blue-700 hover:text-blue-800">
                   <input type="file" accept="image/*" className="hidden" onChange={onAvatarChange} />
                   Upload Icon Photo
                 </label>
               </div>
-              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <div>
                   <label className="text-sm text-gray-600">Name</label>
                   <input
                     type="text"
-                    className="w-full mt-1 outline-none border-b border-gray-400 p-1"
+                    className="w-full mt-1 px-3 py-3 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900/20 transition-colors duration-200"
                     value={profile.name}
                     onChange={(e) => setProfile((s) => ({ ...s, name: e.target.value }))}
                   />
@@ -465,7 +465,7 @@ const UserEdit = () => {
                   <label className="text-sm text-gray-600">Email</label>
                   <input
                     type="email"
-                    className="w-full mt-1 outline-none border-b border-gray-400 p-1"
+                    className="w-full mt-1 px-3 py-3 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900/20 transition-colors duration-200"
                     value={profile.email}
                     onChange={(e) => setProfile((s) => ({ ...s, email: e.target.value }))}
                   />
@@ -474,26 +474,26 @@ const UserEdit = () => {
                   <label className="text-sm text-gray-600">Mobile</label>
                   <input
                     type="tel"
-                    className="w-full mt-1 outline-none border-b border-gray-400 p-1"
+                    className="w-full mt-1 px-3 py-3 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900/20 transition-colors duration-200"
                     value={profile.mobile}
                     onChange={(e) => setProfile((s) => ({ ...s, mobile: e.target.value }))}
                   />
                 </div>
               </div>
             </div>
-            <div className="mt-4">
+            <div className="mt-5">
               <button
                 type="button"
                 onClick={saveProfile}
-                className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm"
               >
                 Save Profile
               </button>
             </div>
 
             {/* Change Password under Edit Profile */}
-            <div className="mt-8">
-              <h3 className="text-lg font-semibold mb-2">Change Password</h3>
+            <div className="mt-8 pt-6 border-t">
+              <h3 className="text-xl font-semibold mb-3 tracking-tight">Change Password</h3>
               {pwdAlert.show && (
                 <div className="mb-3">
                   <Alert
@@ -509,21 +509,21 @@ const UserEdit = () => {
                 <input
                   type="password"
                   placeholder="Current Password"
-                  className="w-full outline-none border-b border-gray-400 p-1"
+                  className="w-full px-3 py-3 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900/20 transition-colors duration-200"
                   value={pwd.current}
                   onChange={(e) => setPwd((s) => ({ ...s, current: e.target.value }))}
                 />
                 <input
                   type="password"
                   placeholder="New Password"
-                  className="w-full outline-none border-b border-gray-400 p-1"
+                  className="w-full px-3 py-3 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900/20 transition-colors duration-200"
                   value={pwd.next}
                   onChange={(e) => setPwd((s) => ({ ...s, next: e.target.value }))}
                 />
                 <input
                   type="password"
                   placeholder="Confirm Password"
-                  className="w-full outline-none border-b border-gray-400 p-1"
+                  className="w-full px-3 py-3 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900/20 transition-colors duration-200"
                   value={pwd.confirm}
                   onChange={(e) => setPwd((s) => ({ ...s, confirm: e.target.value }))}
                 />
@@ -532,7 +532,7 @@ const UserEdit = () => {
                 <button
                   type="button"
                   onClick={goChangePassword}
-                  className="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                  className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-semibold rounded-lg text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-sm"
                 >
                   Continue to Change Password
                 </button>
