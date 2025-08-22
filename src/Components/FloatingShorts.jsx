@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getShortsVideoId } from "../config/siteSettings";
 
 /*
   FloatingShorts
@@ -6,22 +7,38 @@ import React, { useEffect, useState } from "react";
   - Autoplays muted, loops, minimal UI, with a close (X) button
   - Usage: <FloatingShorts videoId="XJbjxK0pQx0" />
 */
-const FloatingShorts = ({ videoId = "b28hvCtiYZE82" }) => {
+const FloatingShorts = ({ videoId = "" }) => {
   const [visible, setVisible] = useState(true);
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1024
   );
+  const [activeVideoId, setActiveVideoId] = useState(() => getShortsVideoId("ouBwbuoqnU8"));
 
   useEffect(() => {
     const update = () => setWindowWidth(window.innerWidth);
     update();
     window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    // Listen to settings changes from other tabs/pages
+    const onStorage = (e) => {
+      if (e.key === 'homeShortsVideoId') {
+        setActiveVideoId(getShortsVideoId(activeVideoId));
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener('storage', onStorage);
+    };
   }, []);
+
+  // If prop is provided, it takes precedence
+  useEffect(() => {
+    if (videoId) setActiveVideoId(videoId);
+  }, [videoId]);
 
   if (!visible) return null;
 
-  const embedSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&playsinline=1&rel=0`;
+  const embedSrc = `https://www.youtube.com/embed/${activeVideoId}?autoplay=1&mute=1&loop=1&playlist=${activeVideoId}&controls=0&modestbranding=1&playsinline=1&rel=0`;
 
   const isMobile = windowWidth < 640;
   const isTablet = windowWidth >= 640 && windowWidth < 1024;

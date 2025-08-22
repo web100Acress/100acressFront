@@ -31,6 +31,8 @@ import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
 import FloatingShorts from "../Components/FloatingShorts";
+import { setShortsVideoId } from "../config/siteSettings";
+import { getApiBase } from "../config/apiBase";
 // import ConfettiAllCorners from "../Components/ConfettiAllCorners";
 
 const Home = () => {
@@ -39,6 +41,27 @@ const Home = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  // Prime Shorts video ID from backend so the floating player uses server value
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch(`${getApiBase()}/settings/shorts-video-id`);
+        if (res.ok) {
+          const data = await res.json();
+          const value = data?.value;
+          if (value) {
+            setShortsVideoId(value);
+            // Manually notify listeners in this tab
+            try {
+              window.dispatchEvent(new StorageEvent('storage', { key: 'homeShortsVideoId', newValue: value }));
+            } catch (_) {}
+          }
+        }
+      } catch (_) {}
+    };
+    load();
   }, []);
 
   const sectionsRef = useRef({});
@@ -535,8 +558,9 @@ const Home = () => {
 
       <PossessionProperty />
       <BackToTopButton />
-      {/* Floating YouTube Shorts (desktop only) */}
-      <FloatingShorts videoId="ouBwbuoqnU8" />
+      {/* Floating YouTube Shorts (reads ID from settings) */}
+      <FloatingShorts />
+
       {/* <Footer /> */}
     </div> {/* Closing div for the blur container */}
 
