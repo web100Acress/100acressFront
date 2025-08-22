@@ -167,17 +167,13 @@ const Wrapper = styled.section`
   }
 
   .dream-text {
-    background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    /* Unified brand color */
+    color: #e53e3e;
   }
 
   .gurugram-text {
-    background: linear-gradient(135deg, #0D8F28 0%, #138808 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    /* Use same unified brand color */
+    color: #e53e3e;
   }
 
   .subheading {
@@ -276,15 +272,15 @@ const Wrapper = styled.section`
     position: absolute;
     top: 15px;
     right: 15px;
-    background: linear-gradient(135deg, #FFA500, #0D8F28);
+    background: #e53e3e; /* unified brand color */
     color: white;
     padding: 6px 12px;
     border-radius: 20px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+    letter-spacing: 0.6px;
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
   }
 
   .description-overlay {
