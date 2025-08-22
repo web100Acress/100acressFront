@@ -85,13 +85,14 @@ export default function BlogManagement() {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `/blog/view?page=${currentPage}&limit=${pageSize}`
+          `blog/view?page=${currentPage}&limit=${pageSize}`
         );
-        setBlogs(res.data.data);
-        setTotalPages(res.data.totalPages);
-        
+        const list = Array.isArray(res?.data?.data) ? res.data.data : [];
+        setBlogs(list);
+        setTotalPages(res?.data?.totalPages || 1);
+
         // Calculate analytics
-        calculateAnalytics(res.data.data);
+        calculateAnalytics(list);
       } catch (error) {
         console.error("Error fetching blogs:", error);
       }
@@ -136,7 +137,7 @@ export default function BlogManagement() {
 
     try {
       const res = await axios.patch(
-        `/blog/update/${id}`,
+        `blog/update/${id}`,
         {
           isPublished: checked,
         },
@@ -178,7 +179,7 @@ export default function BlogManagement() {
   const handleDeleteUser = async (id) => {
     try {
       const response = await axios.delete(
-        `/blog/Delete/${id}`,
+        `blog/Delete/${id}`,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -264,7 +265,7 @@ export default function BlogManagement() {
                 <FileText size={20} className="text-blue-500" />
               </div>
               <div className="text-3xl font-bold text-blue-600">
-                {blogs.filter(blog => blog.isPublished).length}
+                {(blogs || []).filter((blog) => blog?.isPublished).length}
               </div>
               <p className="text-sm text-gray-600 mt-2">Out of {blogs.length} total blogs</p>
             </Card>

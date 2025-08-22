@@ -3,6 +3,7 @@ import { message, Modal, notification } from "antd";
 import Sidebar from "./Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { getApiBase } from '../config/apiBase';
 import { MdEdit, MdImage, MdTitle, MdDescription, MdCategory, MdPerson } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -26,7 +27,8 @@ const BlogEdit = () => {
   });
   const { id } = useParams();
   const navigate = useNavigate();
-  const token = localStorage.getItem("myToken");
+  const tokenRaw = localStorage.getItem("myToken") || "";
+  const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
 
   // Theme state
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
@@ -55,11 +57,11 @@ const BlogEdit = () => {
       }
       
       const response = await axios.put(
-        `/blog/update/${id}`,
+        `${getApiBase()}/blog/update/${id}`,
         formData,
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
           }
         }
       );
@@ -73,12 +75,21 @@ const BlogEdit = () => {
         // Re-fetch latest blog data to reflect updates in real-time
         try {
           const refreshed = await axios.get(
-            `/blog/edit/${id}`,
+            `${getApiBase()}/blog/edit/${id}`,
             {
-              headers: { 'Authorization': `Bearer ${token}` }
+              headers: { ...(token ? { 'Authorization': `Bearer ${token}` } : {}) }
             }
           );
-          setViewDetails(refreshed.data.data);
+          const payload = refreshed.data;
+          const safe = payload && typeof payload.data === 'object' && payload.data !== null ? payload.data : {};
+          setViewDetails(prev => ({
+            blog_Category: "",
+            blog_Description: "",
+            blog_Title: "",
+            blog_Image: "",
+            author: "",
+            ...safe,
+          }));
         } catch (refetchErr) {
           console.error('Refetch failed:', refetchErr);
         }
@@ -181,15 +192,24 @@ const BlogEdit = () => {
       try {
         console.log('Fetching blog data for ID:', id);
         const res = await axios.get(
-          `/blog/edit/${id}`,
+          `${getApiBase()}/blog/edit/${id}`,
           {
             headers: {
-              'Authorization': `Bearer ${token}`,
+              ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
             }
           }
         );
         console.log('Blog data received:', res.data);
-        setViewDetails(res.data.data);
+        const payload = res.data;
+        const safe = payload && typeof payload.data === 'object' && payload.data !== null ? payload.data : {};
+        setViewDetails(prev => ({
+          blog_Category: "",
+          blog_Description: "",
+          blog_Title: "",
+          blog_Image: "",
+          author: "",
+          ...safe,
+        }));
       } catch (error) {
         console.error('Error fetching blog data:', error);
         

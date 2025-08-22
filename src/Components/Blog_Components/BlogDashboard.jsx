@@ -183,7 +183,7 @@ export default function BlogDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`/blog/view?page=${currentPage}&limit=${pageSize}`);
+      const res = await axios.get(`blog/view?page=${currentPage}&limit=${pageSize}`);
       const fetchedBlogs = res.data.data || [];
       
       // Debug: Log the first blog to see the image structure
@@ -255,7 +255,7 @@ export default function BlogDashboard() {
     setPublishLoading(true);
     try {
       const res = await axios.patch(
-        `/blog/update/${blogId}`,
+        `blog/update/${blogId}`,
         { isPublished: checked },
         {
           headers: {

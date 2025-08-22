@@ -40,8 +40,9 @@ function LoginMain() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const URLREGISTER = "https://one00acress.onrender.com/postPerson/register";
-  const URLLOGIN = "https://one00acress.onrender.com/postPerson/verify_Login";
+  // Path-only endpoints; axiosSetup will prefix baseURL
+  const URLREGISTER = `postPerson/register`;
+  const URLLOGIN = `postPerson/verify_Login`;
 
   const [formDataRegister, setFormDataRegister] = useState({
     name: "",

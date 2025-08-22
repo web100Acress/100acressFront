@@ -27,7 +27,7 @@ const Footer = () => {
       return;
     }
     try {
-      await axios.post("/contact_Insert", data);
+      await axios.post("contact_Insert", data);
       alert("Data submit successfully");
       resetData();
     } catch (error) {

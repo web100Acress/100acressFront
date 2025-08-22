@@ -5,7 +5,8 @@ import { getApiBase, setApiBase, clearApiBaseOverride } from "../../config/apiBa
 export const API_ROUTES = {
   // Base helpers (if a component needs absolute URL for any reason)
   base: () => getApiBase(),
-  projectsBase: () => `${getApiBase()}/project`,
+  // Return path-only (no leading slash). Axios baseURL will prefix this.
+  projectsBase: () => `project`,
 
   // Users
   getAllUsers: "/postPerson/view/allusers",
@@ -13,7 +14,8 @@ export const API_ROUTES = {
 };
 
 // Backward-compat named exports (avoid breaking older code paths)
-export const API_ROUTES_PROJECTS = `${getApiBase()}/project`;
+// IMPORTANT: Path-only (no leading slash) so axios baseURL can prefix correctly.
+export const API_ROUTES_PROJECTS = `project`;
 
 // Helpers to manage base at runtime for the whole app
 export const switchApiBase = (url) => {

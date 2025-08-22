@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+  import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Box, Flex, Button, useDisclosure } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -13,6 +13,7 @@ import CenterLogo from "./CenterLogo";
 import RightSection from "./RightSection";
 import SearchBarOverlay from "./SearchBarOverlay";
 import MegaMenu from "./MegaMenu";
+import { getApiBase } from "../../config/apiBase";
 
 // const SpacerComponent = () => <Box width="60px" />; // unused spacer
 
@@ -23,6 +24,17 @@ export default function Navbar() {
   if (usertoken && usertoken.startsWith('"') && usertoken.endsWith('"')) {
     try { usertoken = JSON.parse(usertoken); } catch { /* ignore */ }
   }
+  const API_BASE = getApiBase();
+  const sanitizeToken = (raw) => {
+    if (!raw || typeof raw !== 'string') return '';
+    let t = raw.trim();
+    if (t.toLowerCase().startsWith('bearer ')) t = t.slice(7);
+    if (t.startsWith('"') && t.endsWith('"')) {
+      try { t = JSON.parse(t); } catch {}
+    }
+    return t.replace(/\"/g, '');
+  };
+  const authToken = sanitizeToken(usertoken);
   const { decodedToken } = useJwt(usertoken || "");
   const dispatch = useDispatch();
   // Initialize token synchronously to avoid brief logged-out UI state
@@ -55,6 +67,36 @@ export default function Navbar() {
   const [hideBudget, setHideBudget] = useState(false);
   const [hideCity, setHideCity] = useState(false);
   const [showHamburger, setShowHamburger] = useState(false);
+  // Measure navbar height and prevent content from sliding under fixed header
+  const navRef = useRef(null);
+  useLayoutEffect(() => {
+    const applyOffsets = () => {
+      const h = navRef.current ? (navRef.current.getBoundingClientRect().height || 0) : 0;
+      document.documentElement.style.setProperty('--navbar-h', `${h}px`);
+      // Mirror var for NewBanner.css which uses --nav-h
+      document.documentElement.style.setProperty('--nav-h', `${h}px`);
+      document.body.style.paddingTop = `${h}px`;
+      document.documentElement.style.scrollPaddingTop = `${h}px`;
+    };
+    applyOffsets();
+    // Track changes: resize, orientation, font/layout shifts via ResizeObserver
+    const onResize = () => applyOffsets();
+    window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize);
+    window.addEventListener('load', onResize);
+    let ro;
+    if (window.ResizeObserver && navRef.current) {
+      ro = new ResizeObserver(() => applyOffsets());
+      ro.observe(navRef.current);
+    }
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onResize);
+      window.removeEventListener('load', onResize);
+      try { if (ro) ro.disconnect(); } catch {}
+      // do not reset padding to avoid layout shift on route changes
+    };
+  }, []);
   useEffect(() => {
     const compute = () => {
       const w = typeof window !== 'undefined' ? window.innerWidth : 0;
@@ -220,8 +262,8 @@ export default function Navbar() {
   const fetchAndSetAvatar = async () => {
     try {
       if (!userIdForEdit) return;
-      const res = await axios.get(`/users/${userIdForEdit}/profile`, {
-        headers: { Authorization: usertoken ? `Bearer ${usertoken}` : undefined },
+      const res = await axios.get(`${API_BASE}/users/${userIdForEdit}/profile`, {
+        headers: { Authorization: authToken ? `Bearer ${authToken}` : undefined },
       });
       const url = res?.data?.data?.avatarUrl || "";
       if (url) {
@@ -404,7 +446,9 @@ export default function Navbar() {
 
   const HandleUserLogout = async () => {
     try {
-      await axios.get("/postPerson/logout");
+      await axios.get(`${API_BASE}/postPerson/logout`, {
+        headers: { Authorization: authToken ? `Bearer ${authToken}` : undefined },
+      });
       history("/");
       localStorage.removeItem("myToken");
       localStorage.removeItem("mySellerId");
@@ -489,6 +533,7 @@ export default function Navbar() {
     <Wrapper className="section">
       <Box>
         <Box
+          ref={navRef}
           bg={colorChange ? "#e60023" : "#ffffff"}
           className="top-0 z-[9999] w-full"
           style={{ 

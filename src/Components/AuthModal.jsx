@@ -28,7 +28,7 @@ export default function AuthModal({ open = false, onClose = () => {}, defaultVie
     <Modal isOpen={!!open} onClose={onClose} isCentered size={{ base: "md", md: "lg" }} motionPreset="scale">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{view === "login" ? "Log in to 100acress" : ""}</ModalHeader>
+        <ModalHeader>{view === "login" ? "" : ""}</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
           {view === "login" ? (

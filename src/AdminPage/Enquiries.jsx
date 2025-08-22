@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { getApiBase } from '../config/apiBase';
+
 import Sidebar from "./Sidebar";
 import BackToTopButton from "../Pages/BackToTopButton";
 import { ClipLoader } from "react-spinners";
@@ -17,7 +19,8 @@ const Enquiries = () => {
 
   const { messageApi, contextHolder } = message.useMessage();
   const navigate = useNavigate();
-  const token = localStorage.getItem("myToken");
+  const tokenRaw = localStorage.getItem("myToken") || "";
+  const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
 
   // Effect to inject styles into the document head
   useEffect(() => {
@@ -40,12 +43,13 @@ const Enquiries = () => {
       return;
     }
     try {
+      const base = getApiBase();
       const response = await axios.get(
-        `/userViewAll?limit=${pageSize}&page=${page}`,
+        `${base}/userViewAll?limit=${pageSize}&page=${page}`,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           }
         }
       );
@@ -59,10 +63,16 @@ const Enquiries = () => {
         console.error("Failed to fetch data");
       }
 
-      setData(response.data.data);
-      setTotal(response.data.total || 0);
+      const payload = response.data;
+      let rows = [];
+      if (Array.isArray(payload?.data)) rows = payload.data;
+      else if (Array.isArray(payload?.users)) rows = payload.users;
+      else if (Array.isArray(payload)) rows = payload;
+      setData(rows);
+      setTotal(payload?.total || payload?.data?.[0]?.totalCount || 0);
       setCurrentPage(page);
     } catch (error) {
+
       console.error("Error fetching data:", error);
       messageApi.open({
         type: "error",
@@ -97,14 +107,16 @@ const Enquiries = () => {
 
   const downloadExelFile = async () => {
     try {
-      const response = await fetch("/userViewAll/dowloadData",
+      const base = getApiBase();
+      const response = await fetch(`${base}/userViewAll/dowloadData`,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         }
       );
+
       if (!response.ok) {
         throw new Error(`Failed to download file: ${response.statusText}`);
       }

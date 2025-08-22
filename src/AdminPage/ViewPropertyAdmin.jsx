@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../config/apiClient";
 import { message, Modal, notification } from "antd";
 import { MdSearch, MdVisibility, MdEdit, MdDelete, MdExpandMore, MdExpandLess } from "react-icons/md";
 import Tippy from '@tippyjs/react';
@@ -43,18 +43,13 @@ const ViewPropertyAdmin = () => {
         console.log('🔍 Fetching data for user ID:', id);
         const token = localStorage.getItem("myToken");
         console.log('🔑 Token available:', token ? 'Yes' : 'No');
-        
+
         if (!token) {
           messageApi.error('Authentication token not found. Please login again.');
           return;
         }
-        
-        const config = {
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        };
+        // api client will inject Authorization header automatically
+        const config = { headers: { 'Content-Type': 'application/json' } };
         
         // Try multiple endpoints to find the working one
         const endpoints = [
@@ -69,7 +64,7 @@ const ViewPropertyAdmin = () => {
         for (const endpoint of endpoints) {
           try {
             console.log(`🌐 Trying endpoint: ${endpoint}`);
-            const res = await axios.get(endpoint, config);
+            const res = await api.get(endpoint, config);
             console.log('✅ API Response:', res.data);
             
             const data = res.data?.data || res.data;
@@ -118,7 +113,7 @@ const ViewPropertyAdmin = () => {
   const handleDeleteProperty = async (propertyId) => {
     messageApi.open({ key: 'deleteProp', type: 'loading', content: 'Deleting property...' });
     try {
-      const res = await axios.delete(`/postPerson/propertyDelete/${propertyId}`);
+      const res = await api.delete(`/postPerson/propertyDelete/${propertyId}`);
       if (res.status >= 200 && res.status < 300) {
         messageApi.destroy('deleteProp');
         messageApi.success('Property deleted');
@@ -162,8 +157,8 @@ const ViewPropertyAdmin = () => {
           // Call the primary backend endpoint that performs real DB deletion
           let deleteSuccess = false;
           try {
-            const res = await axios.delete(`/postPerson/deleteUser/${id}` , {
-              headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+            const res = await api.delete(`/postPerson/deleteUser/${id}` , {
+              headers: { 'Content-Type': 'application/json' },
               timeout: 15000,
             });
             deleteSuccess = res.status >= 200 && res.status < 300;

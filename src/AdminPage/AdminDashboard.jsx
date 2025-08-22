@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { getApiBase } from '../config/apiBase';
 import Sidebar from './Sidebar'; // Assuming Sidebar is correctly imported
 import { MdBarChart, MdAssignment, MdHome, MdShoppingCart, MdBusiness, MdContactMail, MdPerson, MdPeople, MdLibraryBooks, MdWork, MdAccountCircle } from 'react-icons/md';
 
@@ -166,15 +167,22 @@ const AdminDashboard = () => {
     setError(null);
     try {
       console.log('Fetching counts from API...');
-      const token = localStorage.getItem("myToken");
+      // Build base URL and sanitize token
+      const base = getApiBase(); // '/api' in local dev; full host in prod
+      const raw = localStorage.getItem("myToken") || "";
+      const cleanedToken = raw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
       const results = await Promise.all(
         sections.map(section =>
-          axios.get(section.api, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+          axios.get(
+            // Normalize to avoid double '/api'
+            `${base}${section.api.replace(/^\/api/, '')}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                ...(cleanedToken ? { Authorization: `Bearer ${cleanedToken}` } : {}),
+              }
             }
-          })
+          )
             .then(res => {
               // For Project Enquiries, use the 'total' field if available
               if (section.name === 'Project Enquiries' && typeof res.data === 'object' && res.data !== null && typeof res.data.total === 'number') {

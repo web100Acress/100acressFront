@@ -27,7 +27,7 @@ const ViewDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`/postPerson/propertyoneView/${id}`);
+        const res = await axios.get(`postPerson/propertyoneView/${id}`);
         setViewDetails(res.data.data.postProperty[0]);
       } catch (error) {
         console.log(error);

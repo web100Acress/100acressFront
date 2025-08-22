@@ -16,8 +16,7 @@ export function initAxios() {
   if (initialized) return;
   initialized = true;
 
-  // Set initial baseURL
-  axios.defaults.baseURL = getApiBase();
+  // Do NOT set a global default baseURL; we will decide per-request.
 
   // Attach token automatically
   axios.interceptors.request.use((config) => {
@@ -38,11 +37,18 @@ export function initAxios() {
 
     const base = getApiBase();
 
-    // Only ensure baseURL for relative URLs. Do not rewrite absolute URLs.
+    // Only ensure baseURL for relative URLs NOT starting with '/'. Absolute URLs untouched.
     const full = typeof config.url === 'string' ? config.url : '';
     if (full && !/^https?:\/\//i.test(full)) {
-      // Relative URL: ensure baseURL is current
-      config.baseURL = base;
+      // If URL starts with '/api/' or any leading '/', do not apply base
+      if (full.startsWith('/')) {
+        // Unset baseURL so axios doesn't use a default
+        delete config.baseURL;
+      } else {
+        // Relative path like 'postPerson/verify_Login' -> prefix base
+        const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+        config.baseURL = normalizedBase;
+      }
     }
 
     // Dev-only diagnostics: show final resolved URL
@@ -60,6 +66,5 @@ export function initAxios() {
 }
 
 export function refreshAxiosBase() {
-  // Update default base for future requests
-  axios.defaults.baseURL = getApiBase();
+  // No-op: we compute base per request now.
 }
