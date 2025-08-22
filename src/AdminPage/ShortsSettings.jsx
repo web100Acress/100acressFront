@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { getShortsVideoId, setShortsVideoId, parseYouTubeVideoId, clearShortsVideoId } from "../config/siteSettings";
+import { parseYouTubeVideoId } from "../config/siteSettings";
 import { getApiBase } from "../config/apiBase";
 import Sidebar from "./Sidebar";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,25 +9,22 @@ const ShortsSettings = () => {
   const [input, setInput] = useState("");
   const [savedId, setSavedId] = useState("");
   const [previewKey, setPreviewKey] = useState(0);
+  const channel = typeof window !== 'undefined' && 'BroadcastChannel' in window ? new BroadcastChannel('shorts-settings') : null;
 
   useEffect(() => {
-    // Load from backend, fallback to localStorage
+    // Load from backend only
     const load = async () => {
       try {
         const res = await fetch(`${getApiBase()}/settings/shorts-video-id`);
         if (res.ok) {
           const data = await res.json();
           const value = data?.value || "";
-          if (value) {
-            setShortsVideoId(value);
-          }
+          setSavedId(value);
+          setInput(value);
         }
       } catch (e) {
-        // ignore; fallback to localStorage below
+        // ignore
       }
-      const current = getShortsVideoId("ouBwbuoqnU8");
-      setSavedId(current);
-      setInput(current);
     };
     load();
   }, []);
@@ -40,7 +37,11 @@ const ShortsSettings = () => {
   const onSave = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("myToken");
-    const clean = parseYouTubeVideoId(input);
+    const clean = parsed;
+    if (!clean) {
+      toast.error("Please enter a valid YouTube URL or ID");
+      return;
+    }
     try {
       const res = await fetch(`${getApiBase()}/settings/shorts-video-id`, {
         method: "PUT",
@@ -53,21 +54,17 @@ const ShortsSettings = () => {
       if (!res.ok) {
         throw new Error("Failed to save setting");
       }
-      // Persist locally and refresh preview
-      setShortsVideoId(clean);
-      try {
-        window.dispatchEvent(new StorageEvent('storage', { key: 'homeShortsVideoId', newValue: clean }));
-      } catch (_) {}
+      setSavedId(clean);
+      setInput(clean);
       toast.success("Shorts ID saved successfully");
+      // Notify other tabs instantly
+      if (channel) {
+        try { channel.postMessage({ type: 'shorts-update', value: clean }); } catch (_) {}
+      }
     } catch (_) {
-      // Fallback to local persistence if API fails
-      setShortsVideoId(clean);
-      try {
-        window.dispatchEvent(new StorageEvent('storage', { key: 'homeShortsVideoId', newValue: clean }));
-      } catch (_) {}
-      toast.warn("Saved locally. API not reachable.");
+      toast.error("Failed to save to server");
     }
-    const current = getShortsVideoId();
+    const current = clean;
     setSavedId(current);
     setPreviewKey((k) => k + 1);
   };
@@ -87,13 +84,12 @@ const ShortsSettings = () => {
     } catch (_) {
       // ignore
     }
-    clearShortsVideoId();
     setSavedId("");
     setInput("");
     setPreviewKey((k) => k + 1);
-    try {
-      window.dispatchEvent(new StorageEvent('storage', { key: 'homeShortsVideoId', newValue: '' }));
-    } catch (_) {}
+    if (channel) {
+      try { channel.postMessage({ type: 'shorts-update', value: '' }); } catch (_) {}
+    }
   };
 
   return (

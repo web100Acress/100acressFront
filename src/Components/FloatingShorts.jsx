@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getShortsVideoId } from "../config/siteSettings";
+import { getApiBase } from "../config/apiBase";
 
 /*
   FloatingShorts
@@ -12,22 +12,61 @@ const FloatingShorts = ({ videoId = "" }) => {
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1024
   );
-  const [activeVideoId, setActiveVideoId] = useState(() => getShortsVideoId("ouBwbuoqnU8"));
+  const [activeVideoId, setActiveVideoId] = useState("ouBwbuoqnU8");
 
   useEffect(() => {
     const update = () => setWindowWidth(window.innerWidth);
     update();
     window.addEventListener("resize", update);
-    // Listen to settings changes from other tabs/pages
-    const onStorage = (e) => {
-      if (e.key === 'homeShortsVideoId') {
-        setActiveVideoId(getShortsVideoId(activeVideoId));
+
+    let cancelled = false;
+    let channel;
+
+    const fetchId = async () => {
+      try {
+        const res = await fetch(`${getApiBase()}/settings/shorts-video-id`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const value = data?.value;
+        if (!cancelled && value && value !== activeVideoId) {
+          setActiveVideoId(value);
+        }
+      } catch (_) {
+        // ignore
       }
     };
-    window.addEventListener('storage', onStorage);
+
+    // Initial fetch and polling
+    fetchId();
+    const interval = setInterval(fetchId, 5000); // 5s
+
+    // Also refresh when tab gains focus or becomes visible
+    const onFocus = () => fetchId();
+    const onVisibility = () => { if (document.visibilityState === 'visible') fetchId(); };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibility);
+
+    // Instant updates within same browser using BroadcastChannel
+    if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+      channel = new BroadcastChannel('shorts-settings');
+      channel.onmessage = (ev) => {
+        if (!ev?.data) return;
+        const { type, value } = ev.data;
+        if (type === 'shorts-update') {
+          if (value !== undefined) setActiveVideoId(value || "");
+        }
+      };
+    }
+
     return () => {
+      cancelled = true;
       window.removeEventListener("resize", update);
-      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibility);
+      clearInterval(interval);
+      if (channel) {
+        try { channel.close(); } catch (_) {}
+      }
     };
   }, []);
 
