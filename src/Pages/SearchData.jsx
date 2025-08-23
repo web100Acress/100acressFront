@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../config/apiClient";
 import CustomSkeleton from "../Utils/CustomSkeleton";
 import Footer from "../Components/Actual_Components/Footer";
 import CommonInside from "../Utils/CommonInside";
@@ -39,7 +39,7 @@ const SearchData = () => {
     const fetchData = async () => {
       try {
         if (isEmptySearch) {
-          const allProjectsRes = await axios.get(
+          const allProjectsRes = await api.get(
             "/project/viewAll/data"
           );
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
@@ -63,7 +63,7 @@ const SearchData = () => {
           return;
         }
 
-        const res = await axios.get(
+        const res = await api.get(
           `/property/search/${key}`
         );
         const searchArr = (res.data.searchdata || []).map((item) => ({
@@ -72,7 +72,7 @@ const SearchData = () => {
         }));
         setSearchData(searchArr);
 
-        const rentRes = await axios.get(
+        const rentRes = await api.get(
           `/rentproperty/search/${key}`
         );
         const rentArr = (rentRes.data.data || []).map((item) => ({
@@ -81,7 +81,7 @@ const SearchData = () => {
         }));
         setRentSearchData(rentArr);
 
-        const buyRes = await axios.get(
+        const buyRes = await api.get(
           `/buyproperty/search/${key}`
         );
         const buyArr = (buyRes.data.data || []).map((item) => ({
@@ -95,7 +95,7 @@ const SearchData = () => {
           rentArr.length === 0 &&
           buyArr.length === 0
         ) {
-          const allProjectsRes = await axios.get(
+          const allProjectsRes = await api.get(
             "/project/viewAll/data"
           );
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
@@ -121,7 +121,7 @@ const SearchData = () => {
         }
       } catch (error) {
         if (error.response && error.response.status === 404) {
-          const allProjectsRes = await axios.get(
+          const allProjectsRes = await api.get(
             "/project/viewAll/data"
           );
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
