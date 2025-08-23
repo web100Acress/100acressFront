@@ -8,7 +8,7 @@ import {bptpplots,orrisplots} from "../slice/ProjectOverviewSlice";
 
 import {sohnaroad,golfcourseextensionroad,golfcourseroad,mgroad,nprroad,dwarkaexpressway,newgurgaon,sohna,sprroad,nh48} from "../slice/PrimeLocation"
 import {resale} from "../slice/ResaleSlice";
-import axios from "axios";
+import api from "../../config/apiClient";
 import { API_ROUTES, API_ROUTES_PROJECTS } from "./Constant_Service";
 import { sortByDesiredOrder } from "../../Utils/ProjectSorting";
 import { Affordable_Desired_Order, COMMERCIAL_DESIRED_ORDER, DesiredLuxuryOrder, SCO_DESIRED_ORDER, Trending_Desired_Order } from "../../Pages/datafeed/Desiredorder";
@@ -21,7 +21,7 @@ const Api_service = () => {
 
   const getTrending = async () => {
     try {
-      const response = await axios.get(`${API_ROUTES.projectsBase()}/trending`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/trending`);
       const Trendingprojects = response.data.data;
       dispatch(trending(sortByDesiredOrder((Trendingprojects),Trending_Desired_Order,"projectName")));
     } catch (error) {
@@ -31,7 +31,7 @@ const Api_service = () => {
 
   const getSpotlight = useCallback(async () => {
     try {
-      const response = await axios.get(`${API_ROUTES.projectsBase()}/spotlight`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/spotlight`);
       const Spotlightprojects = response.data.data;
       dispatch(spotlight(Spotlightprojects));
     } catch (error) {
@@ -41,7 +41,7 @@ const Api_service = () => {
 
   const getFeatured = async() =>{
     try {
-        const response = await axios.get(`${API_ROUTES.projectsBase()}/featured`);
+        const response = await api.get(`${API_ROUTES.projectsBase()}/featured`);
         const Featuredprojects = response.data.data;
         dispatch(featured(Featuredprojects));
 
@@ -53,7 +53,7 @@ const Api_service = () => {
 
   const getUpcoming = async() =>{
     try{
-        const response = await axios.get(`${API_ROUTES.projectsBase()}/upcoming`);
+        const response = await api.get(`${API_ROUTES.projectsBase()}/upcoming`);
         const Featuredprojects = response.data.data;
         dispatch(upcoming(Featuredprojects));
     }catch(error){
@@ -63,7 +63,7 @@ const Api_service = () => {
 
   const getAffordable = async() =>{
     try{
-        const response = await axios.get(`${API_ROUTES.projectsBase()}/affordable`);
+        const response = await api.get(`${API_ROUTES.projectsBase()}/affordable`);
         const Featuredprojects = response.data.data;
         dispatch(affordable(sortByDesiredOrder((Featuredprojects),Affordable_Desired_Order,"projectName")));
     }catch(error){
@@ -73,7 +73,7 @@ const Api_service = () => {
 
   const getLuxury = async() =>{
     try{
-        const response = await axios.get(`${API_ROUTES.projectsBase()}/luxury`);
+        const response = await api.get(`${API_ROUTES.projectsBase()}/luxury`);
         const Featuredprojects = response.data.data;
         dispatch(luxury(Featuredprojects));
     }catch(error){
@@ -83,7 +83,7 @@ const Api_service = () => {
 
   const getScoplots = async() =>{
     try{
-        const response = await axios.get(`${API_ROUTES.projectsBase()}/scoplots`);
+        const response = await api.get(`${API_ROUTES.projectsBase()}/scoplots`);
         const Featuredprojects = response.data.data;
         dispatch(scoplots(sortByDesiredOrder((Featuredprojects),SCO_DESIRED_ORDER,"projectName")));
     }catch(error){
@@ -93,7 +93,7 @@ const Api_service = () => {
 
   const getCommercial = async() =>{
     try{
-        const response = await axios.get(`${API_ROUTES.projectsBase()}/commercial`);
+        const response = await api.get(`${API_ROUTES.projectsBase()}/commercial`);
         const Featuredprojects = response.data.data;
         dispatch(commercial(sortByDesiredOrder((Featuredprojects),COMMERCIAL_DESIRED_ORDER,"projectName")));
     }catch(error){
@@ -103,7 +103,7 @@ const Api_service = () => {
 
   const getBudgetHomes = async() =>{
     try{
-        const response = await axios.get(`${API_ROUTES.projectsBase()}/budgethomes`);
+        const response = await api.get(`${API_ROUTES.projectsBase()}/budgethomes`);
         const Featuredprojects = response.data.data;
         dispatch(budget(Featuredprojects));
     }catch(error){
@@ -113,7 +113,7 @@ const Api_service = () => {
 
   const getProjectIndelhi = async()=>{
     try{
-      const response = await axios.get(`${API_ROUTES.projectsBase()}/city`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/city`);
       const Delhiprojects = response.data.data;
       dispatch(projectindelhi(Delhiprojects));
   }catch(error){
@@ -123,7 +123,7 @@ const Api_service = () => {
 
   const getProjectfind = async(query ,page ,limit )=>{
     try{
-      const response = await axios.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&page=${page}&limit=${limit}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&page=${page}&limit=${limit}`);
       const ProjectFind = response.data.data;
     }catch(error){
       console.error("Error fetching ")
@@ -132,7 +132,7 @@ const Api_service = () => {
 
   const getResaleProperties = async()=>{
     try {
-            const res = await axios.get(`${API_ROUTES}property/buy/ViewAll`);
+            const res = await api.get(`property/buy/ViewAll`);
             const responsedata = res.data.ResaleData;
             dispatch(resale(responsedata));
           } catch (error) {
@@ -143,7 +143,7 @@ const Api_service = () => {
 
  const getProjectbyState = async (query, limit) => {
   try {
-    const response = await axios.get(`${API_ROUTES.projectsBase()}/projectsearch?city=${query}&limit=${limit}`);
+    const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?city=${query}&limit=${limit}`);
     const ProjectbyState = response.data.data;
 
     if (query === 'Gurugram') {
@@ -186,7 +186,7 @@ const Api_service = () => {
   const getAllProjects= async(query ,limit )=>{
 
     try{
-      const response = await axios.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
       const AllProjectbyQuery = response.data.data;
       if (query === 'allupcomingproject') {
         dispatch(allupcomingproject(AllProjectbyQuery));
@@ -280,7 +280,7 @@ const Api_service = () => {
   const getProjectOnStatus = async(query )=>{
 
     try{
-      const response = await axios.get(`${API_ROUTES.projectsBase()}/projectsearch?projectStatus=${query}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?projectStatus=${query}`);
       const ProjectbyStatus = response.data.data;
       if(query === "emaar"){
         dispatch(emaar(ProjectbyStatus));
@@ -294,7 +294,7 @@ const Api_service = () => {
   const getProjectOnOverview = async(query )=>{
 
     try{
-      const response = await axios.get(`${API_ROUTES.projectsBase()}/projectsearch?projectOverview=${query}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?projectOverview=${query}`);
       const ProjectByOverview =  response.data.data;
       if(query === "bptp"){
         dispatch(bptpplots(ProjectByOverview))
@@ -314,7 +314,7 @@ const Api_service = () => {
         return [];
       }
       console.log('🔍 API Call - builderName:', query);
-      const response = await axios.get(`${API_ROUTES.projectsBase()}/projectsearch?builderName=${query}&limit=${limit}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?builderName=${query}&limit=${limit}`);
       console.log('🔍 API Response:', response.data);
       const BuilderbyQuery = response.data.data;
 
@@ -403,7 +403,7 @@ const Api_service = () => {
 
   const getPossessionByYear = useCallback(async(query ) =>{
     try{
-      const response = await axios.get(`${API_ROUTES.projectsBase()}/projectsearch?possessiondate=${query}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?possessiondate=${query}`);
       const Possessionbyyear = response?.data?.data;
       if(query === "2025"){
         dispatch(Possessionin2025(Possessionbyyear))
@@ -421,7 +421,7 @@ const Api_service = () => {
   const getProjectBasedOnminPrice = useCallback(async(query ,limit ) =>{
 
     try{
-      const response = await axios.get(`${API_ROUTES.projectsBase()}/projectsearch?minPrice=${query}&limit=${limit}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?minPrice=${query}&limit=${limit}`);
       const minpriceprojectresponse = response.data.data;
       dispatch(minpriceproject(minpriceprojectresponse));
 
@@ -434,7 +434,7 @@ const Api_service = () => {
   const getProjectBasedOnmaxPrice = useCallback(async(query ,limit ) =>{
 
     try{
-      const response = await axios.get(`${API_ROUTES.projectsBase()}/projectsearch?maxPrice=${query}&limit=${limit}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?maxPrice=${query}&limit=${limit}`);
       const maxpriceprojectresponse = response.data.data;
       dispatch(maxpriceproject(maxpriceprojectresponse));
     }catch(error){

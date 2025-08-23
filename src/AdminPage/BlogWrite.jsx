@@ -2,11 +2,10 @@ import React, { useState, Suspense } from 'react';
 import { lazy } from 'react';
 const ReactQuill = lazy(() => import('react-quill'));
 import 'react-quill/dist/quill.snow.css';
-import axios from "axios";
+import api from "../config/apiClient";
 
 const BlogWrite = () => {
   const [content, setContent] = useState('');
-  const token = JSON.parse(localStorage.getItem("myToken"));
   
 
   const handleContent = (value) => {
@@ -62,7 +61,7 @@ const BlogWrite = () => {
     }
 
     const formDataAPI = new FormData();
-    const apiEndpoint = "/blog/insert";
+    const apiEndpoint = "blog/insert";
     
     // Add form data to formDataAPI
     for (const key in editForm) {
@@ -78,12 +77,7 @@ const BlogWrite = () => {
     formDataAPI.append("blog_Description", content);
 
     try {
-      const response = await axios.post(apiEndpoint, formDataAPI,{
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await api.post(apiEndpoint, formDataAPI);
       if (response.status === 200) {
         console.log(response.data, "response");
         alert("Blog post submitted successfully");

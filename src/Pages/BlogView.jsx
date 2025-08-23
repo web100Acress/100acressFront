@@ -1,17 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../config/apiClient";
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
 import "./BlogView.css";
 import useIsMobile from '../hooks/useIsMobile';
-import { getApiBase } from '../config/apiBase';
 
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
-  const API_BASE = getApiBase();
   const [data, setData] = useState({});
   const [recentBlogs,setRecentBlogs]=useState([]);
   const { id, slug } = useParams();
@@ -56,8 +54,8 @@ const BlogView = () => {
 
     setButtonText("Submitting...");
     try {
-      await axios.post(
-        `${API_BASE}/contact_Insert`,
+      await api.post(
+        `contact_Insert`,
         blogQuery
       );
       setResponseMessage("Data submitted successfully");
@@ -103,7 +101,7 @@ const BlogView = () => {
       let res;
       if (slug) {
         try {
-          res = await axios.get(`${API_BASE}/blog/slug/${slug}`);
+          res = await api.get(`blog/slug/${slug}`);
           setData(normalizeBlog(res?.data?.data));
         } catch (err) {
           const status = err?.response?.status;
@@ -112,7 +110,7 @@ const BlogView = () => {
             const params = new URLSearchParams(location.search);
             const qid = params.get('id');
             if (qid) {
-              const byId = await axios.get(`${API_BASE}/blog/view/${qid}`);
+              const byId = await api.get(`blog/view/${qid}`);
               setData(normalizeBlog(byId?.data?.data));
             } else {
               throw err; // rethrow to be caught below
@@ -122,7 +120,7 @@ const BlogView = () => {
           }
         }
       } else if (id) {
-        res = await axios.get(`${API_BASE}/blog/view/${id}`);
+        res = await api.get(`blog/view/${id}`);
         setData(normalizeBlog(res?.data?.data));
       } else {
         return;
@@ -134,7 +132,7 @@ const BlogView = () => {
 
   const fetchRecentsBlog = async () =>{
     try{
-      const recent = await axios.get(`${API_BASE}/blog/view?page=1&limit=6`);
+      const recent = await api.get(`blog/view?page=1&limit=6`);
       const list = Array.isArray(recent?.data?.data) ? recent.data.data : [];
       const normalized = list.map((b) => normalizeBlog(b));
       const filtered = normalized.filter((blog)=> {

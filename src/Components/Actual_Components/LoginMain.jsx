@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { BLOG, REGISTER, ROOT } from "../../lib/route";
 
-import axios from "axios";
+import api from "../../config/apiClient";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Home from "../../Pages/Home";
@@ -68,12 +68,7 @@ function LoginMain() {
   }
   function submitRegister(e) {
     e.preventDefault();
-
-    axios({
-      method: "post",
-      url: URLREGISTER,
-      data: formDataRegister,
-    })
+    api.post(URLREGISTER, formDataRegister)
       .then((res) => {
         console.log(res.data.message);
         navigate("/");
@@ -89,11 +84,7 @@ function LoginMain() {
 
   function submitLogin(e) {
     e.preventDefault();
-    axios({
-      method: "post",
-      url: URLLOGIN,
-      data: formDataLogin,
-    })
+    api.post(URLLOGIN, formDataLogin)
       .then((res) => {
         console.log(res.data.message);
       })
