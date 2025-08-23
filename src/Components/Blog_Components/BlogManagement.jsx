@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../config/apiClient";
 import { ArrowDown, ArrowUp, Edit, Eye, Plus, Trash2, Search, Calendar, User, FileText, TrendingUp, BarChart3, Activity, Clock, Users, Eye as EyeIcon, ThumbsUp, Share2, MessageCircle } from "lucide-react";
 import { Modal, Switch, Badge, Progress, Card, Row, Col, Statistic, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
@@ -86,9 +86,7 @@ export default function BlogManagement() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `blog/view?page=${currentPage}&limit=${pageSize}`
-        );
+        const res = await api.get(`blog/view?page=${currentPage}&limit=${pageSize}`);
         const list = Array.isArray(res?.data?.data) ? res.data.data : [];
         setBlogs(list);
         setTotalPages(res?.data?.totalPages || 1);
@@ -138,17 +136,8 @@ export default function BlogManagement() {
     setIsPublishedLoading(true);
 
     try {
-      const res = await axios.patch(
-        `blog/update/${id}`,
-        {
-          isPublished: checked,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const res = await api.patch(`blog/update/${id}`,
+        { isPublished: checked }
       );
       if (res.status >= 200 && res.status < 300) {
         setBlogs((prevBlogs) =>
@@ -180,15 +169,7 @@ export default function BlogManagement() {
 
   const handleDeleteUser = async (id) => {
     try {
-      const response = await axios.delete(
-        `blog/Delete/${id}`,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.delete(`blog/delete/${id}`);
       if (response.status >= 200 && response.status < 300) {
         return { success: true, error: false };
       } else {

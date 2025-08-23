@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
-import { useParams, Link } from "react-router-dom";
-import axios from "axios";
+import { useParams } from "react-router-dom";
+import api from "../config/apiClient";
 import { MdArticle, MdImage, MdTitle, MdDescription, MdCategory, MdPerson } from "react-icons/md";
-import { getApiBase } from '../config/apiBase';
 
 const customStyle = {
   position: "absolute",
@@ -25,20 +24,13 @@ const BlogViewAdmin = () => {
     author: "",
   });
   const { id } = useParams();
-  const tokenRaw = localStorage.getItem("myToken") || "";
-  const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `${getApiBase()}/blog/view/${id}`,
-          {
-            headers: {
-              ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-            }
-          }
+        const res = await api.get(
+          `blog/view/${id}`
         );
         const payload = res.data;
         const safe = payload && typeof payload.data === 'object' && payload.data !== null ? payload.data : {};
@@ -55,7 +47,7 @@ const BlogViewAdmin = () => {
       }
     };
     fetchData();
-  }, [id, token]);
+  }, [id]);
 
   return (
     <>

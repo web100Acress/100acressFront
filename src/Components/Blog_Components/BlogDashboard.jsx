@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../config/apiClient";
 import { 
   Eye, 
   ThumbsUp, 
@@ -119,7 +119,6 @@ const blogLink = (blog) => {
 };
 
 export default function BlogDashboard() {
-  const token = localStorage.getItem("myToken");
   const history = useNavigate();
 
   const [blogs, setBlogs] = useState([]);
@@ -183,7 +182,7 @@ export default function BlogDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`blog/view?page=${currentPage}&limit=${pageSize}`);
+      const res = await api.get(`blog/view?page=${currentPage}&limit=${pageSize}`);
       const fetchedBlogs = res.data.data || [];
       
       // Debug: Log the first blog to see the image structure
@@ -254,15 +253,9 @@ export default function BlogDashboard() {
   const handlePublishToggle = async (checked, blogId) => {
     setPublishLoading(true);
     try {
-      const res = await axios.patch(
+      const res = await api.patch(
         `blog/update/${blogId}`,
-        { isPublished: checked },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { isPublished: checked }
       );
       if (res.status >= 200 && res.status < 300) {
         const updatedBlogs = blogs.map(blog =>
@@ -281,15 +274,8 @@ export default function BlogDashboard() {
   const handleDeleteBlog = async (blogId) => {
     try {
       console.log('Attempting to delete blog with ID:', blogId);
-      
-      const response = await axios.delete(
-        `/blog/delete/${blogId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const response = await api.delete(
+        `blog/delete/${blogId}`
       );
       
       console.log('Delete response:', response.data);

@@ -1,34 +1,26 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { PaginationControls } from "../Components/Blog_Components/BlogManagement"; // Assuming this component exists and handles its own styling, or we'll wrap it.
+import api from "../config/apiClient";
 import { message } from "antd"; // Import Ant Design message
 import { MdArticle, MdSearch, MdAddCircle, MdEdit, MdDelete, MdVisibility } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
-import { getApiBase } from '../config/apiBase';
+//
 
 const Blog = () => {
   const [viewAll, setViewAll] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
 
-  const raw = localStorage.getItem("myToken") || "";
-  const token = raw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
+  // Token is injected by api client interceptors; no local handling needed here
 
   // Function to fetch all blog data
   const fetchBlogData = async (search = "") => {
     try {
       // Use the new admin endpoint to get ALL blogs (published + drafts)
-      const base = getApiBase();
-      const url = `${base}/blog/admin/view?page=1&limit=1000`;
-      const res = await axios.get(url, {
-        headers: {
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-        }
-      });
+      const res = await api.get(`blog/admin/view?page=1&limit=1000`);
       
       console.log("Admin API Response:", res.data);
       const payload = res.data;
@@ -84,15 +76,7 @@ const Blog = () => {
     });
 
     try {
-      const base = getApiBase();
-      const response = await axios.delete(
-        `${base}/blog/Delete/${id}`,
-        {
-          headers: {
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-          }
-        }
-      );
+      const response = await api.delete(`blog/delete/${id}`);
       if (response.status >= 200 && response.status < 300) {
         messageApi.destroy('deletingBlog');
         messageApi.open({
