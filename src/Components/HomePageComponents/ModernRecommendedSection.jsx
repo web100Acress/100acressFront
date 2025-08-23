@@ -333,6 +333,23 @@ const PropertyCard = ({
             alt={project?.projectName}
             className={`property-image ${imageLoaded ? 'loaded' : ''}`}
             onLoad={() => setImageLoaded(true)}
+            onError={(e) => {
+              // Prevent infinite loop if fallback also errors
+              if (!e.currentTarget.dataset.fallbackApplied) {
+                e.currentTarget.dataset.fallbackApplied = '1';
+                // Inline SVG fallback to avoid extra network requests
+                const fallback =
+                  'data:image/svg+xml;utf8,' +
+                  encodeURIComponent(
+                    `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+                      <rect width="100%" height="100%" fill="#f3f4f6"/>
+                      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="20">Image unavailable</text>
+                    </svg>`
+                  );
+                e.currentTarget.src = fallback;
+                setImageLoaded(true);
+              }
+            }}
             loading="lazy"
           />
           
