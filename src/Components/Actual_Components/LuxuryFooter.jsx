@@ -155,6 +155,7 @@ const LuxuryFooter = () => {
                     { label: "About Us", href: "/about-us/" },
                     { label: "Contact Us", href: "/contact-us/" },
                     { label: "Our Services", href: "/#our-services" },
+                    { label: "Career", href: "/career-with-us/"},
                   ].map((link, index) => (
                     <motion.a
                       key={index}

@@ -12,6 +12,7 @@ const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
   const [data, setData] = useState({});
   const [recentBlogs,setRecentBlogs]=useState([]);
+  const [loadError, setLoadError] = useState("");
   const { id, slug } = useParams();
   const location = useLocation();
 
@@ -28,6 +29,15 @@ const BlogView = () => {
   const history = useNavigate();
   const isMobile = useIsMobile ? useIsMobile() : false;
   const [showMobileEnquiry, setShowMobileEnquiry] = useState(false);
+
+  // Safe image fallback for broken S3 URLs
+  const FALLBACK_IMG = "/Images/blog.avif";
+  const onImgError = (e) => {
+    if (e?.target && e.target.src !== window.location.origin + FALLBACK_IMG && !e.target.dataset.fallback) {
+      e.target.dataset.fallback = "1";
+      e.target.src = FALLBACK_IMG;
+    }
+  };
 
   const resetData = () => {
     setBlogQuery({
@@ -101,27 +111,62 @@ const BlogView = () => {
       let res;
       if (slug) {
         try {
-          res = await api.get(`blog/slug/${slug}`);
-          setData(normalizeBlog(res?.data?.data));
-        } catch (err) {
-          const status = err?.response?.status;
-          if (status === 404) {
-            // slug not found: try fallback by id from query string if provided
+          const safeSlug = encodeURIComponent(slug);
+          res = await api.get(`blog/slug/${safeSlug}`);
+          const normalized = normalizeBlog(res?.data?.data);
+          // If slug endpoint returns 200 but empty/invalid data, try id fallback
+          if (!normalized || !normalized._id) {
             const params = new URLSearchParams(location.search);
-            const qid = params.get('id');
+            const qid = params.get('id') || id;
             if (qid) {
-              const byId = await api.get(`blog/view/${qid}`);
-              setData(normalizeBlog(byId?.data?.data));
+              try {
+                const byId = await api.get(`blog/view/${qid}`);
+                const normById = normalizeBlog(byId?.data?.data);
+                if (normById && normById._id) {
+                  setData(normById);
+                } else {
+                  setLoadError("Blog not found.");
+                }
+              } catch (idErr) {
+                setLoadError(idErr?.response?.data?.message || idErr.message || "Failed to load blog.");
+                throw idErr;
+              }
             } else {
-              throw err; // rethrow to be caught below
+              setLoadError("Blog not found.");
             }
           } else {
+            setData(normalizeBlog(res?.data?.data));
+          }
+        } catch (err) {
+          // On ANY slug failure, try fallback by id from query string or route param
+          const params = new URLSearchParams(location.search);
+          const qid = params.get('id') || id;
+          if (qid) {
+            try {
+              const byId = await api.get(`blog/view/${qid}`);
+              const normById = normalizeBlog(byId?.data?.data);
+              if (normById && normById._id) {
+                setData(normById);
+              } else {
+                setLoadError("Blog not found.");
+              }
+            } catch (idErr) {
+              setLoadError(idErr?.response?.data?.message || idErr.message || "Failed to load blog.");
+              throw idErr;
+            }
+          } else {
+            setLoadError(err?.response?.data?.message || err.message || "Failed to load blog.");
             throw err;
           }
         }
       } else if (id) {
         res = await api.get(`blog/view/${id}`);
-        setData(normalizeBlog(res?.data?.data));
+        const normalized = normalizeBlog(res?.data?.data);
+        if (normalized && normalized._id) {
+          setData(normalized);
+        } else {
+          setLoadError("Blog not found.");
+        }
       } else {
         return;
       }
@@ -163,7 +208,7 @@ const BlogView = () => {
   useEffect(() => {
     fetchData();
     fetchRecentsBlog();
-  }, [id, slug]);
+  }, [id, slug, location.search]);
 
   const createSanitizedHTML = (dirtyHTML) => ({
     __html: DOMPurify.sanitize(dirtyHTML, {
@@ -229,8 +274,13 @@ const BlogView = () => {
               <span className="text-gray-700 text-sm">By {author}</span>
             )}
           </div>
-          {blog_Image?.url && (
-            <img src={blog_Image.url} alt={blog_Title} className="w-full max-h-[500px] object-contain rounded-xl mb-6" />
+          {(
+            <img
+              src={blog_Image?.url || FALLBACK_IMG}
+              alt={blog_Title}
+              className="w-full max-h-[500px] object-contain rounded-xl mb-6"
+              onError={onImgError}
+            />
           )}
           <div
             className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-primaryRed prose-a:no-underline hover:prose-a:underline"
@@ -251,9 +301,10 @@ const BlogView = () => {
                   className="group cursor-pointer p-2 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200 flex items-center gap-2"
                 >
                   <img 
-                    src={blog.blog_Image.url} 
+                    src={blog.blog_Image?.url || FALLBACK_IMG} 
                     className="w-12 h-12 rounded-lg object-cover flex-shrink-0" 
                     alt={blog.blog_Title}
+                    onError={onImgError}
                   />
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
