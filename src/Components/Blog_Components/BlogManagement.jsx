@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../config/apiClient";
 import { ArrowDown, ArrowUp, Edit, Eye, Plus, Trash2, Search, Calendar, User, FileText, TrendingUp, BarChart3, Activity, Clock, Users, Eye as EyeIcon, ThumbsUp, Share2, MessageCircle } from "lucide-react";
-import { Modal, Switch, Badge, Progress, Card, Row, Col, Statistic } from "antd";
+import { Modal, Switch, Badge, Progress, Card, Row, Col, Statistic, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function BlogManagement() {
@@ -44,13 +44,15 @@ export default function BlogManagement() {
     const isDeleted = await handleDeleteUser(id);
     if (isDeleted.success) {
       setModalText("Blog deleted successfully.");
-      setBlogs(blogs.filter((blog) => blog._id !== id));
+      setBlogs((prev) => prev.filter((blog) => blog._id !== id));
       setConfirmLoading(false);
       setOpenModal(false);
+      message.success("Blog deleted successfully.");
     } else {
       setModalText("Error deleting blog.");
       setConfirmLoading(false);
       setOpenModal(false);
+      message.error("Failed to delete blog. Please try again.");
     }
   };
 
@@ -84,14 +86,13 @@ export default function BlogManagement() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `/blog/view?page=${currentPage}&limit=${pageSize}`
-        );
-        setBlogs(res.data.data);
-        setTotalPages(res.data.totalPages);
-        
+        const res = await api.get(`blog/view?page=${currentPage}&limit=${pageSize}`);
+        const list = Array.isArray(res?.data?.data) ? res.data.data : [];
+        setBlogs(list);
+        setTotalPages(res?.data?.totalPages || 1);
+
         // Calculate analytics
-        calculateAnalytics(res.data.data);
+        calculateAnalytics(list);
       } catch (error) {
         console.error("Error fetching blogs:", error);
       }
@@ -135,17 +136,8 @@ export default function BlogManagement() {
     setIsPublishedLoading(true);
 
     try {
-      const res = await axios.patch(
-        `/blog/update/${id}`,
-        {
-          isPublished: checked,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const res = await api.patch(`blog/update/${id}`,
+        { isPublished: checked }
       );
       if (res.status >= 200 && res.status < 300) {
         setBlogs((prevBlogs) =>
@@ -177,15 +169,7 @@ export default function BlogManagement() {
 
   const handleDeleteUser = async (id) => {
     try {
-      const response = await axios.delete(
-        `/blog/Delete/${id}`,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.delete(`blog/delete/${id}`);
       if (response.status >= 200 && response.status < 300) {
         return { success: true, error: false };
       } else {
@@ -264,7 +248,7 @@ export default function BlogManagement() {
                 <FileText size={20} className="text-blue-500" />
               </div>
               <div className="text-3xl font-bold text-blue-600">
-                {blogs.filter(blog => blog.isPublished).length}
+                {(blogs || []).filter((blog) => blog?.isPublished).length}
               </div>
               <p className="text-sm text-gray-600 mt-2">Out of {blogs.length} total blogs</p>
             </Card>

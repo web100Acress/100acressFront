@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import axios from "axios";
 import { message } from "antd"; // Assuming Ant Design message is available
 import { ClipLoader } from "react-spinners"; // Assuming react-spinners is installed for loading indicator
+import { getApiBase } from '../config/apiBase';
 
 const ResaleEnquiries = () => {
   const [enquiries, setEnquiries] = useState([]);
@@ -28,9 +29,23 @@ const ResaleEnquiries = () => {
   const fetchEnquiriesData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("/postEnq_view");
-      // Sort by createdAt descending (newest first)
-      const sorted = [...res.data.data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const base = getApiBase();
+      const tokenRaw = localStorage.getItem("myToken") || "";
+      const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
+      const res = await axios.get(`${base}/postEnq_view`, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+      // Normalize array shape and sort by createdAt descending (newest first)
+      const payload = res.data;
+      const list = Array.isArray(payload?.data)
+        ? payload.data
+        : Array.isArray(payload)
+        ? payload
+        : [];
+      const sorted = [...list].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setEnquiries(sorted);
     } catch (error) {
       console.error("Error fetching resale enquiries:", error);
@@ -87,12 +102,14 @@ const ResaleEnquiries = () => {
   const downloadExcelFile = async () => {
     setDownloadProgress(1);
     try {
-      const token = localStorage.getItem("myToken");
-      const response = await fetch("/postEnq_download",
+      const base = getApiBase();
+      const raw = localStorage.getItem("myToken") || "";
+      const token = raw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
+      const response = await fetch(`${base}/postEnq_download`,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         }
       );

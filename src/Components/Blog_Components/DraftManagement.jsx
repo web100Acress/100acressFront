@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react"
-import axios from "axios"
+import api from "../../config/apiClient"
 import { ArrowDown, ArrowUp, Edit, Eye, Plus, Trash2, Search, FileText, Calendar, User, Filter, BarChart3 } from "lucide-react";
 import { Switch, Modal, Card, Badge, Tooltip, Empty, Skeleton } from "antd";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,7 +7,6 @@ import { PaginationControls } from "./BlogManagement";
 
 export default function DraftBlogManagement() {
 
-  const token = localStorage.getItem("myToken");
   const history = useNavigate();
   const [isPublishedLoading, setIsPublishedLoading] = useState(false);
   // Sample blog data
@@ -36,15 +35,9 @@ export default function DraftBlogManagement() {
     setIsPublishedLoading(true);
 
     try {
-      const res = await axios.patch(`/blog/update/${id}`,
+      const res = await api.patch(`blog/update/${id}`,
       {
         isPublished: checked,
-      },
-      {
-        headers: {
-          'Content-Type':'application/json',
-          'Authorization': `Bearer ${token}`,
-        }
       }
     );
       if(res.status >= 200 && res.status < 300) {
@@ -112,7 +105,7 @@ export default function DraftBlogManagement() {
         const fetchData = async () => {
           try {
             setLoading(true);
-            const res = await axios.get(`/blog/draft/view?page=${currentPage}&limit=${pageSize}`);
+            const res = await api.get(`blog/draft/view?page=${currentPage}&limit=${pageSize}`);
             console.log("Response",res.data);
             setBlogs(res.data.data);
             setTotalPages(res.data.totalPages);
@@ -148,14 +141,8 @@ export default function DraftBlogManagement() {
 
 const handleDeleteUser = async (id) => {
     try {
-      const response = await axios.delete(
-        `/blog/Delete/${id}`,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`,
-          }
-        }
+      const response = await api.delete(
+        `blog/Delete/${id}`
       );
       if (response.status >= 200 && response.status < 300) {
         return {success:true,error:false};

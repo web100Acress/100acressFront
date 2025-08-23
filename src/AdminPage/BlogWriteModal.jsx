@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Quill from 'quill';
-import axios from 'axios';
+import api from '../config/apiClient';
   import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ReactCrop from 'react-image-crop';
@@ -9,7 +9,7 @@ import 'quill-emoji/dist/quill-emoji.css';
 import 'quill-emoji';
 import { useParams, useNavigate } from 'react-router-dom';
 import { message } from 'antd';
-import { getApiBase } from '../config/apiBase';
+ 
 import {
   FileText,
   Image as ImageIcon,
@@ -47,9 +47,8 @@ const slugify = (text = '') =>
 const BlogWriteModal = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const token = localStorage.getItem('myToken');
+  // Auth is handled by the shared axios client interceptor
   const [messageApi, contextHolder] = message.useMessage();
-  const API_BASE = getApiBase();
 
   // Core fields
   const [title, setTitle] = useState('');
@@ -123,7 +122,7 @@ const BlogWriteModal = () => {
     }
   }, [title, slugTouched]);
 
-  // Debounced slug uniqueness check
+  // Debounced slug uniqueness check (fetch admin list and check client-side)
   useEffect(() => {
     if (!slug || !slug.trim()) {
       setSlugAvailable(null);
@@ -134,11 +133,14 @@ const BlogWriteModal = () => {
       try {
         setSlugChecking(true);
         setSlugCheckMsg('Checking slug...');
-        // Try to fetch by slug; 200 => exists, 404 => available
-        const res = await axios.get(`${API_BASE}/blog/slug/${encodeURIComponent(slug)}`);
-        const found = res?.data?.data;
+        const res = await api.get(`/blog/admin/view?limit=1000`);
+        const list = Array.isArray(res?.data?.data) ? res.data.data : [];
+        const target = slugify(slug);
+        const found = list.find((b) => {
+          const s = (b?.slug || slugify(b?.blog_Title || '')).toString();
+          return s === target;
+        });
         if (found) {
-          // If editing and the found blog is the same, then available
           if (blogToEdit && found._id === blogId) {
             setSlugAvailable(true);
             setSlugCheckMsg('This slug belongs to this post.');
@@ -147,36 +149,25 @@ const BlogWriteModal = () => {
             setSlugCheckMsg('Slug is already taken.');
           }
         } else {
-          // Unexpected shape; treat as unknown
-          setSlugAvailable(null);
-          setSlugCheckMsg('');
-        }
-      } catch (err) {
-        // If 404, available
-        const status = err?.response?.status;
-        if (status === 404) {
           setSlugAvailable(true);
           setSlugCheckMsg('Slug is available.');
-        } else if (status === 400) {
-          setSlugAvailable(null);
-          setSlugCheckMsg('Invalid slug.');
-        } else {
-          setSlugAvailable(null);
-          setSlugCheckMsg('Could not verify slug.');
         }
+      } catch (err) {
+        setSlugAvailable(null);
+        setSlugCheckMsg('Could not verify slug.');
       } finally {
         setSlugChecking(false);
       }
     }, 400);
     return () => clearTimeout(timer);
-  }, [slug, API_BASE, blogToEdit, blogId]);
+  }, [slug, blogToEdit, blogId]);
 
   // Load blog for edit / set default author for create
   useEffect(() => {
     const fetchBlog = async () => {
       if (id) {
         try {
-          const res = await axios.get(`${API_BASE}/blog/view/${id}`);
+          const res = await api.get(`/blog/view/${id}`);
           const b = res?.data?.data;
           if (b) {
             setTitle(b.blog_Title || '');
@@ -349,12 +340,7 @@ const BlogWriteModal = () => {
       const fd = new FormData();
       fd.append('image', file);
 
-      const res = await axios.post(`${API_BASE}/blog/upload-image`, fd, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await api.post(`/blog/upload-image`, fd);
 
       const imageUrl = res?.data?.url || res?.data?.data?.url || res?.data?.imageUrl || '';
       if (!imageUrl) throw new Error('Upload succeeded but no URL returned');
@@ -374,7 +360,7 @@ const BlogWriteModal = () => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/blog/categories`);
+        const res = await api.get(`/blog/categories`);
         const apiCats = (res?.data?.data || []).map((c) => c.name).filter(Boolean);
         // merge with initial and unique (case-sensitive keep first)
         const merged = [...initialCategories];
@@ -392,7 +378,7 @@ const BlogWriteModal = () => {
       }
     };
     loadCategories();
-  }, [API_BASE]);
+  }, []);
 
   /** Featured image change */
   const handleFileChange = (e) => {
@@ -440,12 +426,7 @@ const BlogWriteModal = () => {
           messageApi.open({ key: 'svgUpload', type: 'loading', content: 'Uploading SVG...', duration: 0 });
           const fd = new FormData();
           fd.append('image', file);
-          const res = await axios.post(`${API_BASE}/blog/upload-image`, fd, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          const res = await api.post(`/blog/upload-image`, fd);
           const imageUrl = res?.data?.url || res?.data?.data?.url || res?.data?.imageUrl || '';
           if (!imageUrl) throw new Error('Upload succeeded but no URL returned');
           insertImageIntoQuill(imageUrl);
@@ -490,10 +471,9 @@ const BlogWriteModal = () => {
     const name = (addedCategory || '').trim();
     if (!name) return;
     try {
-      const res = await axios.post(
-        `${API_BASE}/blog/categories`,
-        { name },
-        { headers: { Authorization: `Bearer ${token}` } }
+      const res = await api.post(
+        `/blog/categories`,
+        { name }
       );
       const createdName = res?.data?.data?.name || name;
       if (!categoryList.includes(createdName)) {
@@ -541,6 +521,8 @@ const BlogWriteModal = () => {
       return messageApi.error('Please select a featured image');
     }
 
+    // Authorization is handled by the axios interceptor and enforced by the backend.
+
     setIsSubmitting(true);
 
     try {
@@ -569,12 +551,7 @@ const BlogWriteModal = () => {
           duration: 0,
         });
 
-        const res = await axios.put(`${API_BASE}/blog/update/${blogId}`, formDataAPI, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await api.put(`/blog/update/${blogId}`, formDataAPI);
 
         messageApi.destroy('updateloading');
         if (res.status === 200) {
@@ -592,12 +569,7 @@ const BlogWriteModal = () => {
           duration: 0,
         });
 
-        const res = await axios.post(`${API_BASE}/blog/insert`, formDataAPI, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await api.post(`/blog/insert`, formDataAPI);
 
         messageApi.destroy('loadingNewBlog');
         if (res.status === 200) {
@@ -1280,9 +1252,7 @@ const BlogWriteModal = () => {
                       for (const f of files) {
                         const fd = new FormData();
                         fd.append('image', f);
-                        const r = await axios.post(`${API_BASE}/blog/upload-image`, fd, {
-                          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
-                        });
+                        const r = await api.post(`/blog/upload-image`, fd);
                         const u = r?.data?.url || r?.data?.data?.url || r?.data?.imageUrl || '';
                         if (u) urls.push(u);
                       }

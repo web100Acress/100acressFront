@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { message, Modal, notification } from "antd";
 import Sidebar from "./Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../config/apiClient";
 import { MdEdit, MdImage, MdTitle, MdDescription, MdCategory, MdPerson } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
@@ -26,7 +26,7 @@ const BlogEdit = () => {
   });
   const { id } = useParams();
   const navigate = useNavigate();
-  const token = localStorage.getItem("myToken");
+  
 
   // Theme state
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
@@ -54,14 +54,9 @@ const BlogEdit = () => {
         formData.append("blog_Image", viewDetails.frontImage.file);
       }
       
-      const response = await axios.put(
-        `/blog/update/${id}`,
-        formData,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          }
-        }
+      const response = await api.put(
+        `blog/update/${id}`,
+        formData
       );
       if (response.status === 200) {
         message.destroy(toastKey);
@@ -72,13 +67,19 @@ const BlogEdit = () => {
         });
         // Re-fetch latest blog data to reflect updates in real-time
         try {
-          const refreshed = await axios.get(
-            `/blog/edit/${id}`,
-            {
-              headers: { 'Authorization': `Bearer ${token}` }
-            }
+          const refreshed = await api.get(
+            `blog/edit/${id}`
           );
-          setViewDetails(refreshed.data.data);
+          const payload = refreshed.data;
+          const safe = payload && typeof payload.data === 'object' && payload.data !== null ? payload.data : {};
+          setViewDetails(prev => ({
+            blog_Category: "",
+            blog_Description: "",
+            blog_Title: "",
+            blog_Image: "",
+            author: "",
+            ...safe,
+          }));
         } catch (refetchErr) {
           console.error('Refetch failed:', refetchErr);
         }
@@ -180,16 +181,20 @@ const BlogEdit = () => {
     const fetchData = async () => {
       try {
         console.log('Fetching blog data for ID:', id);
-        const res = await axios.get(
-          `/blog/edit/${id}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            }
-          }
+        const res = await api.get(
+          `blog/edit/${id}`
         );
         console.log('Blog data received:', res.data);
-        setViewDetails(res.data.data);
+        const payload = res.data;
+        const safe = payload && typeof payload.data === 'object' && payload.data !== null ? payload.data : {};
+        setViewDetails(prev => ({
+          blog_Category: "",
+          blog_Description: "",
+          blog_Title: "",
+          blog_Image: "",
+          author: "",
+          ...safe,
+        }));
       } catch (error) {
         console.error('Error fetching blog data:', error);
         

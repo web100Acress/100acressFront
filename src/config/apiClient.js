@@ -21,8 +21,18 @@ api.interceptors.request.use((config) => {
     const storedPrimary = window.localStorage.getItem('myToken');
     const storedFallback = window.localStorage.getItem('token');
     let token = storedPrimary || storedFallback || '';
+    // Unquote JSON-quoted values
     if (token && token.startsWith('"') && token.endsWith('"')) {
       try { token = JSON.parse(token); } catch {}
+    }
+    // Normalize accidental prefixes and whitespace
+    if (typeof token === 'string') {
+      token = token.trim();
+      if (/^Bearer\s+/i.test(token)) {
+        token = token.replace(/^Bearer\s+/i, '').trim();
+      }
+      // Remove any stray quotes inside
+      token = token.replace(/"/g, '');
     }
     if (token) {
       config.headers = config.headers || {};
@@ -45,3 +55,27 @@ api.interceptors.request.use((config) => {
 });
 
 export default api;
+
+// Error diagnostics: log useful info on failures to help debugging
+api.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    try {
+      const cfg = error.config || {};
+      const info = {
+        message: error.message,
+        code: error.code,
+        method: (cfg.method || 'GET').toUpperCase(),
+        baseURL: cfg.baseURL,
+        url: cfg.url,
+        finalUrl: `${cfg.baseURL || ''}${typeof cfg.url === 'string' ? cfg.url : ''}`,
+        hasAuth: !!(cfg.headers && cfg.headers.Authorization),
+        responseStatus: error.response && error.response.status,
+        responseData: error.response && error.response.data,
+      };
+      // eslint-disable-next-line no-console
+      console.error('[api error]', info);
+    } catch {}
+    return Promise.reject(error);
+  }
+);

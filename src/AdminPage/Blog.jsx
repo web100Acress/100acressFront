@@ -1,39 +1,32 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { PaginationControls } from "../Components/Blog_Components/BlogManagement"; // Assuming this component exists and handles its own styling, or we'll wrap it.
+import api from "../config/apiClient";
 import { message } from "antd"; // Import Ant Design message
 import { MdArticle, MdSearch, MdAddCircle, MdEdit, MdDelete, MdVisibility } from "react-icons/md";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
+//
 
 const Blog = () => {
   const [viewAll, setViewAll] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
 
-  const token = localStorage.getItem("myToken");
+  // Token is injected by api client interceptors; no local handling needed here
 
   // Function to fetch all blog data
   const fetchBlogData = async (search = "") => {
     try {
       // Use the new admin endpoint to get ALL blogs (published + drafts)
-      const url = `/blog/admin/view?page=1&limit=1000`;
-      
-      const res = await axios.get(url, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        }
-      });
+      const res = await api.get(`blog/admin/view?page=1&limit=1000`);
       
       console.log("Admin API Response:", res.data);
-      console.log("Total blogs from admin API:", res.data.data?.length || 0);
-      console.log("Published blogs:", res.data.publishedBlogs || 0);
-      console.log("Draft blogs:", res.data.draftBlogs || 0);
+      const payload = res.data;
+      const allBlogsRaw = Array.isArray(payload?.data) ? payload.data : (Array.isArray(payload) ? payload : []);
       
-      let allBlogs = res.data.data || [];
+      let allBlogs = allBlogsRaw;
       
       if (search) {
         // Filter the data based on search term
@@ -83,15 +76,7 @@ const Blog = () => {
     });
 
     try {
-      const response = await axios.delete(
-        `/blog/Delete/${id}`,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data', // This might be incorrect for DELETE, usually not needed
-            'Authorization': `Bearer ${token}`,
-          }
-        }
-      );
+      const response = await api.delete(`blog/delete/${id}`);
       if (response.status >= 200 && response.status < 300) {
         messageApi.destroy('deletingBlog');
         messageApi.open({
