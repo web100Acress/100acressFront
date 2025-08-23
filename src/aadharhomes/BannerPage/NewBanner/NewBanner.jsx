@@ -1,5 +1,5 @@
 import { Button, message } from "antd";
-import axios from "axios";
+import api from "../../../config/apiClient";
 import React, {
   useContext,
   useEffect,
@@ -325,9 +325,7 @@ const NewBanner = () => {
           return;
         }
 
-        const response = await axios.get(
-          `/api/project/View/${pUrl}`
-        );
+        const response = await api.get(`/project/View/${pUrl}`);
         const dataview = response?.data?.dataview;
         if (!Array.isArray(dataview) || dataview.length === 0) {
           navigate("/");
@@ -504,7 +502,7 @@ const NewBanner = () => {
         message.success("Callback Requested Successfully");
         try {
           setIsLoading1(true);
-          await axios.post("/api/userInsert", {
+          await api.post("/userInsert", {
             ...popDetails,
             projectName: projectViewDetails.projectName,
             address: projectViewDetails.projectAddress,
@@ -586,8 +584,8 @@ const NewBanner = () => {
       if (/^([+]\d{2})?\d{10}$/.test(mobile)) {
         setIsLoading2(true);
         setUserButtonText("Submitting...");
-        axios
-          .post("/api/userInsert", {
+        api
+          .post("/userInsert", {
             ...userDetails,
             projectName: projectViewDetails.projectName,
             address: projectViewDetails.projectAddress,
@@ -627,7 +625,7 @@ const NewBanner = () => {
         setIsLoading2(true);
         setSideButtonText("Submitting...");
         try {
-          await axios.post("/api/userInsert", {
+          await api.post("/userInsert", {
             ...sideDetails,
             projectName: projectViewDetails.projectName,
             address: projectViewDetails.projectAddress,
