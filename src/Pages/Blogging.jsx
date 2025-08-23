@@ -4,7 +4,7 @@ import Footer from "../Components/Actual_Components/Footer";
 import { PaginationControls } from "../Components/Blog_Components/BlogManagement";
 import { Helmet } from "react-helmet";
 import Free from "./Free";
-import axios from "axios";
+import api from "../config/apiClient";
 
 // Brand colors and tagline
 const BRAND_RED = '#b8333a';
@@ -46,12 +46,21 @@ const Blogging = () => {
   const [loading, setLoading] = useState(false);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
+  // Safe image fallback
+  const FALLBACK_IMG = "/Images/blog.avif";
+  const onImgError = (e) => {
+    if (e?.target && e.target.src !== window.location.origin + FALLBACK_IMG && !e.target.dataset.fallback) {
+      e.target.dataset.fallback = "1";
+      e.target.src = FALLBACK_IMG;
+    }
+  };
+
   // Fetch all blogs for featured and pagination
   useEffect(() => {
     const fetchAllBlogs = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`blog/view?page=1&limit=1000`);
+        const res = await api.get(`blog/view?page=1&limit=1000`);
         setAllBlogs(res.data.data || []);
       } catch (error) {
         setAllBlogs([]);
@@ -238,6 +247,7 @@ const Blogging = () => {
                 src={featuredBlog.blog_Image?.url}
                 alt={featuredBlog.blog_Title}
                 className="w-full h-full object-cover group-hover:scale-105 transition"
+                onError={onImgError}
               />
             </Link>
             <div className="flex-1 p-6 flex flex-col justify-between">
@@ -298,6 +308,7 @@ const Blogging = () => {
                     src={blog.blog_Image?.url}
                     alt={blog.blog_Title}
                     className="w-full h-full object-cover"
+                    onError={onImgError}
                   />
                 </Link>
                 <div className="p-5 flex flex-col flex-1">
