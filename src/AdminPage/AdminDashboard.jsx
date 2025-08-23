@@ -95,6 +95,21 @@ const sections = [
     shadowClass: 'shadow-stone'
   },
   {
+    name: 'Career',
+    // Merge openings and applications into one card
+    openingsApi: '/career/opening/ViewAll?limit=1&page=1',
+    applicationsApi: '/career/application/count',
+    link: '/Admin/jobposting',
+    gradientClass: 'bg-light-slate-gradient',
+    icon: <MdContactMail size={32} className="card-icon" />,
+    description: 'Job openings and total applications.',
+    shadowClass: 'shadow-light-slate'
+  },
+
+  // Removed separate "Career Applications" card - merged into Career
+
+  
+  {
     name: 'Contact Us',
     api: '/api/admin/contact/count',
     link: '/Admin/contact',
@@ -103,15 +118,7 @@ const sections = [
     description: 'Contact form submissions.',
     shadowClass: 'shadow-light-slate'
   },
-  {
-    name: 'Contact User',
-    api: '/api/admin/contact-user/count',
-    link: '#',
-    gradientClass: 'bg-light-gray-gradient',
-    icon: <MdPerson size={32} className="card-icon" />,
-    description: 'Direct user contact requests.',
-    shadowClass: 'shadow-light-gray'
-  },
+
 ];
 
 function formatNumber(num) {
@@ -172,10 +179,44 @@ const AdminDashboard = () => {
       const raw = localStorage.getItem("myToken") || "";
       const cleanedToken = raw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
       const results = await Promise.all(
-        sections.map(section =>
-          axios.get(
-            // Normalize to avoid double '/api'
-            `${base}${section.api.replace(/^\/api/, '')}`,
+        sections.map(section => {
+          // Special handling for merged Career card
+          if (section.name === 'Career' && section.openingsApi && section.applicationsApi) {
+            return Promise.all([
+              axios.get(`${base}${section.openingsApi.replace(/^\/api/, '')}`, {
+                headers: {
+                  "Content-Type": "application/json",
+                  ...(cleanedToken ? { Authorization: `Bearer ${cleanedToken}` } : {}),
+                }
+              }).then(res => {
+                if (res?.data && typeof res.data === 'object' && res.data.meta && typeof res.data.meta.total === 'number') {
+                  return res.data.meta.total;
+                }
+                return 0;
+              }).catch(err => {
+                console.error('Career openings API error:', err);
+                return 0;
+              }),
+              axios.get(`${base}${section.applicationsApi.replace(/^\/api/, '')}`, {
+                headers: {
+                  "Content-Type": "application/json",
+                  ...(cleanedToken ? { Authorization: `Bearer ${cleanedToken}` } : {}),
+                }
+              }).then(res => {
+                if (res?.data && typeof res.data.count === 'number') {
+                  return res.data.count;
+                }
+                return 0;
+              }).catch(err => {
+                console.error('Career applications API error:', err);
+                return 0;
+              })
+            ]).then(([openings, applications]) => ({ openings, applications }));
+          }
+
+          // Default single-endpoint handling
+          return axios.get(
+            `${base}${(section.api || '').replace(/^\/api/, '')}`,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -184,57 +225,47 @@ const AdminDashboard = () => {
             }
           )
             .then(res => {
-              // For Project Enquiries, use the 'total' field if available
+              if (res?.data && typeof res.data === 'object' && res.data.meta && typeof res.data.meta.total === 'number') {
+                return res.data.meta.total;
+              }
+              if (res?.data && typeof res.data.count === 'number') {
+                return res.data.count;
+              }
               if (section.name === 'Project Enquiries' && typeof res.data === 'object' && res.data !== null && typeof res.data.total === 'number') {
                 return res.data.total;
               }
-              // Check for the nested structure of Properties API first, using totalCount if available
               if (
                 typeof res.data === 'object' && res.data !== null && Array.isArray(res.data.data) && res.data.data.length > 0 && res.data.data[0]
               ) {
-                // Prefer totalCount for paginated results
                 if (typeof res.data.data[0].totalCount === 'number') {
                   return res.data.data[0].totalCount;
                 }
-                // Fallback to counting the nested data array
                 if (Array.isArray(res.data.data[0].data)) {
                   return res.data.data[0].data.length;
                 }
               }
-
-              // Check for Project Enquiries structure (data property is the array)
               if (typeof res.data === 'object' && res.data !== null && Array.isArray(res.data.data)) {
                 return res.data.data.length;
               }
-
-              // Check for User structure (users property is the array)
               if (typeof res.data === 'object' && res.data !== null && Array.isArray(res.data.users)) {
                 return res.data.users.length;
               }
-
-              // Check for User structure (allusers property is the array)
               if (typeof res.data === 'object' && res.data !== null && Array.isArray(res.data.allusers)) {
                 return res.data.allusers.length;
               }
-              
-              // Check for a direct array response
               if (Array.isArray(res.data)) {
                 return res.data.length;
               }
-
-              // Check for a simple count property
               if (typeof res.data === 'object' && res.data !== null && 'count' in res.data) {
                 return res.data.count;
               }
-
-              // Fallback if no other structure matches
               return 0;
             })
             .catch((err) => {
               console.error(`API error for ${section.name}:`, err);
               return 0;
-            })
-        )
+            });
+        })
       );
       const countsObj = {};
       sections.forEach((section, idx) => {
@@ -264,8 +295,10 @@ const AdminDashboard = () => {
       const easeOut = 1 - Math.pow(1 - progress, 3);
       const newAnimatedCounts = {};
       sections.forEach(section => {
-        const start = startCounts[section.name] || 0;
-        const end = endCounts[section.name] || 0;
+        const startVal = startCounts[section.name];
+        const endVal = endCounts[section.name];
+        const start = typeof startVal === 'number' ? startVal : 0;
+        const end = typeof endVal === 'number' ? endVal : 0;
         newAnimatedCounts[section.name] = Math.floor(start + (end - start) * easeOut);
       });
       setAnimatedCounts(newAnimatedCounts);
@@ -368,20 +401,37 @@ const AdminDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="card-number-section">
-                      <div className="card-number">
-                        {formatNumber(animatedCounts[section.name] || 0)}
-                      </div>
-
-                      {/* Minimalist progress indicator */}
-                      <div className="progress-bar-container">
-                        <div
-                          className="progress-bar-fill"
-                          style={{
-                            width: `${Math.min((animatedCounts[section.name] || 0) / Math.max(...Object.values(animatedCounts), 1) * 100, 100)}%`
-                          }}
-                        ></div>
-                      </div>
+                    <div className={`card-number-section ${section.name === 'Career' ? 'career-two-line' : ''}`}>
+                      {section.name === 'Career' && counts['Career'] && typeof counts['Career'] === 'object' ? (
+                        <>
+                          <div className="card-number-small">Openings: {formatNumber(counts['Career'].openings || 0)}</div>
+                          <div className="card-number-small">Applications: {formatNumber(counts['Career'].applications || 0)}</div>
+                          <div className="progress-bar-container">
+                            <div
+                              className="progress-bar-fill"
+                              style={{
+                                width: `${Math.min(((counts['Career'].openings || 0) + (counts['Career'].applications || 0)) / Math.max(
+                                  ...Object.values(animatedCounts).filter(v => typeof v === 'number'), 1
+                                ) * 100, 100)}%`
+                              }}
+                            ></div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="card-number">
+                            {formatNumber(animatedCounts[section.name] || 0)}
+                          </div>
+                          <div className="progress-bar-container">
+                            <div
+                              className="progress-bar-fill"
+                              style={{
+                                width: `${Math.min((animatedCounts[section.name] || 0) / Math.max(...Object.values(animatedCounts), 1) * 100, 100)}%`
+                              }}
+                            ></div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -720,6 +770,23 @@ const dashboardStyles = `
 
 .card-link:hover .card-number {
   transform: scale(1.1);
+}
+
+/* Smaller number style for compact two-line displays (Career card) */
+.card-number-small {
+  font-size: 1.125rem; /* ~18px */
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.3;
+}
+
+/* Tighter spacing when rendering two lines in a card */
+.career-two-line {
+  gap: 0.25rem;
+}
+
+.career-two-line .progress-bar-container {
+  margin-top: 0.25rem;
 }
 
 .progress-bar-container {

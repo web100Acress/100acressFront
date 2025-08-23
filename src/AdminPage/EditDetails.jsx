@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../config/apiClient";
+
 import { Switch,message } from "antd";
 import { FaCheck, FaXmark, FaRegImage, FaRegBuilding, FaCouch } from "react-icons/fa6";
 import { FaRupeeSign, FaMapMarkerAlt, FaLayerGroup, FaRegDotCircle, FaRegCalendar, FaRegClock, FaEdit, FaListAlt } from "react-icons/fa";
@@ -44,18 +45,31 @@ const EditDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `/postPerson/propertyoneEdit/${id}`
-        );
-        console.log("Property Details",res.data.data.postProperty[0]);
-        setValues(res.data.data.postProperty[0]);
+        const res = await api.get(`/postPerson/propertyoneEdit/${id}`);
+        const data = res?.data?.data;
+        const list = Array.isArray(data?.postProperty) ? data.postProperty : [];
+        const payload = list.length > 0 ? list[0] : {};
+        // Normalize potentially varying shapes
+        const normalized = (prev => ({
+          ...prev,
+          ...payload,
+          // Ensure arrays
+          otherImage: Array.isArray(payload?.otherImage) ? payload.otherImage : [],
+          // frontImage could be string URL or object with url
+          frontImage: payload?.frontImage && typeof payload.frontImage === 'object'
+            ? payload.frontImage
+            : (typeof payload?.frontImage === 'string' && payload.frontImage
+                ? { url: payload.frontImage }
+                : prev.frontImage),
+        }))(values);
+        console.log("Property Details (normalized)", normalized);
+        setValues(normalized);
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
   }, []);
-
 
   function handleFileChange(event) {
     const input = event.target;
@@ -124,14 +138,12 @@ const EditDetails = () => {
           }
         });
       }
-      const myToken = localStorage.getItem("myToken");
-      const response = await axios.post(
+      const response = await api.post(
         `/postPerson/propertyoneUpdate/${id}`,
         formData,
         {
           headers: {
             'Content-Type' : 'multipart/form-data',
-            Authorization: `Bearer ${myToken}`
           }
         }
       );

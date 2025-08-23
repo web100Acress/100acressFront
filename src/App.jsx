@@ -134,6 +134,7 @@ const JobPosting = lazy(() => import("./AdminPage/JobPosting"));
 const CareerView = lazy(() => import("./AdminPage/CareerView"));
 const CareerEdit = lazy(() => import("./AdminPage/CareerEdit"));
 const JobPostingView = lazy(() => import("./AdminPage/JobPostingView"));
+const JobApplications = lazy(() => import("./AdminPage/JobApplications"));
 const JobPostingEdit = lazy(() => import("./AdminPage/JobPostingEdit"));
 const InsertProject = lazy(() => import("./AdminPage/InsertProject"));
 const AllListedProperties = lazy(() => import("./AdminPage/AllListedProperties"));
@@ -391,6 +392,10 @@ function App() {
               <Route
                 path="jobposting/view/:id"
                 element={<LazyLoad> <JobPostingView /></LazyLoad>}
+              />
+              <Route
+                path="jobposting/applications/:id"
+                element={<LazyLoad> <JobApplications /></LazyLoad>}
               />
               <Route
                 path="jobposting/edit/:id"

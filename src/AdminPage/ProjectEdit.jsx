@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
+import api from "../config/apiClient";
 import { MdOutlineDeleteOutline, MdInfo, MdAttachMoney, MdDateRange, MdBarChart, MdDescription, MdStar, MdCheckCircle, MdUpdate } from "react-icons/md";
 const customStyle = {
   position: "absolute",
@@ -54,15 +54,21 @@ const ProjectEdit = () => {
   });
 
   const { id } = useParams();
-  const { project_floorplan_Image, projectGallery } = values;
-  const floorPlanLength = values.project_floorplan_Image.length;
-  const projectGalleryLength = values.projectGallery.length;
+  // Safely derive arrays from values to avoid destructuring errors
+  const project_floorplan_Image = Array.isArray(values?.project_floorplan_Image)
+    ? values.project_floorplan_Image
+    : [];
+  const projectGallery = Array.isArray(values?.projectGallery)
+    ? values.projectGallery
+    : [];
+  const floorPlanLength = project_floorplan_Image.length;
+  const projectGalleryLength = projectGallery.length;
 
   console.log(values,"admin")
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
+        const res = await api.get(
           `/project/Edit/${id}`
         );
         if (res.status === 200){
@@ -224,14 +230,12 @@ const ProjectEdit = () => {
         fromData.append('projectMaster_plan', values.projectMaster_plan.file);
         console.log(`Appending master plan image: projectMaster_plan`, values.projectMaster_plan.file);
       }
-      const myToken = localStorage.getItem("myToken");
-      const response = await axios.post(
+      const response = await api.post(
         `/project/Update/${id}`,
         fromData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            "Authorization": `Bearer ${myToken}`,
           },
         }
       );
@@ -267,14 +271,9 @@ const ProjectEdit = () => {
   const handleDeleteUser = async (index) => {
     const IndexNumber = index;
     try {
-      const myToken=localStorage.getItem("myToken");
-      const response = await axios.delete(
+      const response = await api.delete(
         `/floorImage/${id}/${IndexNumber}`,
-        {
-          headers:{
-            Authorization: `Bearer ${myToken}`,
-          }
-        }
+        {}
       );
       if (response.status >= 200 && response.status < 300) {
         window.location.reload();

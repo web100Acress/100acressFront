@@ -5,7 +5,8 @@ import { RxCross2 } from "react-icons/rx";
 import axios from "axios";
 import { DataContext } from "../MyContext";
 const Career = () => {
-  const { careerData } = useContext(DataContext);
+  const contextValue = useContext(DataContext) || {};
+  const careerData = Array.isArray(contextValue.careerData) ? contextValue.careerData : [];
 
   const customStyle = {
     position: "absolute",
@@ -322,14 +323,14 @@ const Career = () => {
                 </tr>
               </thead>
               <tbody>
-                {careerData.map((item, index) => {
+                {(careerData || []).map((item, index) => {
                   return (
                     <tr className="bg-white-500 border-b border-red-400">
                       <td className="px-4 py-1 ">{index + 1}</td>
 
                       <td className="px-4 py-2">
                         <img
-                          src={item.bannerImage && item.bannerImage.url}
+                          src={item?.bannerImage?.url}
                           alt="Image"
                           className="w-12 h-12"
                         />
@@ -337,10 +338,10 @@ const Career = () => {
 
                       <td className="px-4 py-2">
                         <div className="flex">
-                          {item.activityImage.map((image, idx) => (
+                          {(item.activityImage || []).map((image, idx) => (
                             <img
                               key={idx}
-                              src={image.url}
+                              src={image?.url}
                               alt="Activity Image"
                               className="w-12 h-12 mr-2"
                             />
