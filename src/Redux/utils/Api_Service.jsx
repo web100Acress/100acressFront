@@ -239,7 +239,7 @@ const Api_service = () => {
   const getPrimeLocation = useCallback(async(query ,limit ) => {
 
     try{
-      const response = await axios.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?${query}=1&limit=${limit}`);
       const PrimeLocation = response.data.data;
       if (query === "sohnaroad") {
         dispatch(sohnaroad(PrimeLocation))
