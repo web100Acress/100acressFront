@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../config/apiClient";
 import Modal from "react-modal";
 import Sidebar from "./Sidebar";
 import { Link, useParams } from "react-router-dom";
@@ -59,10 +59,11 @@ const ProjectAddHighligths = () => {
   // Function to fetch highlight data (can be called on initial load and after mutations)
   const ViewHighLights = async () => {
     try {
-      const fetchData = await axios.get(
+      const fetchData = await api.get(
         `/highlight/view/${id}`
       );
-      setViewAll(fetchData.data.data);
+      const data = fetchData?.data?.data;
+      setViewAll(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching highlights:", error.message);
       messageApi.open({
@@ -87,7 +88,7 @@ const ProjectAddHighligths = () => {
     });
 
     try {
-      const res = await axios.post(
+      const res = await api.post(
         `/highlight/${id}`,
         highlights
       );
@@ -137,7 +138,7 @@ const ProjectAddHighligths = () => {
     });
 
     try {
-      const response = await axios.delete(
+      const response = await api.delete(
         `/highlight/delete/${_id}`
       );
       if (response.status >= 200 && response.status < 300) {
@@ -216,8 +217,8 @@ const ProjectAddHighligths = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {viewAll.length > 0 ? (
-                  viewAll.map((item, index) => {
+                {(() => { const list = Array.isArray(viewAll) ? viewAll : []; return list.length > 0 ? (
+                  list.map((item, index) => {
                     const id1 = item._id;
                     return (
                       <tr
@@ -261,7 +262,7 @@ const ProjectAddHighligths = () => {
                       </div>
                     </td>
                   </tr>
-                )}
+                ); })()}
               </tbody>
             </table>
           </div>

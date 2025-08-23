@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../config/apiClient";
 import { MdInfo, MdAttachMoney, MdDateRange, MdBarChart, MdDescription, MdStar, MdCheckCircle } from "react-icons/md";
 
 const ProjectView = () => {
@@ -53,10 +53,9 @@ const ProjectView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `/project/View/${pUrl}`
-        );
-        setViewDetails(res.data.dataview[0] || {});
+        const res = await api.get(`/project/View/${pUrl}`);
+        const dv = res?.data?.dataview;
+        setViewDetails(Array.isArray(dv) && dv.length > 0 ? dv[0] : {});
       } catch (error) {
         console.error("Error fetching project details:", error);
       }
