@@ -17,6 +17,9 @@ const UserAdmin = () => {
   const [verifyFilter, setVerifyFilter] = useState('all'); // 'all' | 'verified' | 'unverified'
   const [updatingRole, setUpdatingRole] = useState({}); // { [userId]: boolean }
   const [verifyingEmail, setVerifyingEmail] = useState({}); // { [userId]: boolean }
+  const [dateFrom, setDateFrom] = useState(""); // ISO yyyy-mm-dd
+  const [dateTo, setDateTo] = useState("");   // ISO yyyy-mm-dd
+  const [sourceFilter, setSourceFilter] = useState('all'); // 'all' | source values
 
   // Available roles
   const ROLE_OPTIONS = [
@@ -80,6 +83,22 @@ const UserAdmin = () => {
     };
     fetchData();
   }, []);
+
+  // Extract a reasonable "source" value from a user object
+  const SOURCE_KEYS = ['source', 'signupSource', 'provider', 'origin'];
+  const getSourceValue = (u) => {
+    try {
+      for (const k of SOURCE_KEYS) {
+        const v = u && u[k];
+        if (v !== undefined && v !== null && String(v).trim() !== '') {
+          return String(v).trim();
+        }
+      }
+      return 'unknown';
+    } catch {
+      return 'unknown';
+    }
+  };
 
   // Helpers for date sorting
   const getTimestampFromId = (id) => {
@@ -147,6 +166,25 @@ const UserAdmin = () => {
         name.includes(q) || email.includes(q) || mobile.includes(q)
       );
     })
+    // Source filter
+    .filter((item) => {
+      if (sourceFilter === 'all') return true;
+      return getSourceValue(item) === sourceFilter;
+    })
+    // Date range filter (inclusive)
+    .filter((item) => {
+      if (!dateFrom && !dateTo) return true;
+      const created = getCreatedAtMs(item);
+      if (dateFrom) {
+        const fromMs = new Date(dateFrom + 'T00:00:00').getTime();
+        if (created < fromMs) return false;
+      }
+      if (dateTo) {
+        const toMs = new Date(dateTo + 'T23:59:59').getTime();
+        if (created > toMs) return false;
+      }
+      return true;
+    })
     .filter((item) => {
       if (roleFilter === 'all') return true;
       return canonicalizeRole(item.role) === roleFilter;
@@ -165,6 +203,47 @@ const UserAdmin = () => {
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  // CSV Export of filtered users (all pages)
+  const exportToCSV = () => {
+    const rows = filteredProjects;
+    const headers = [
+      'S No',
+      'Name',
+      'Email',
+      'Mobile',
+      'Role',
+      'Email Verified',
+      'Created At',
+      'User ID',
+    ];
+    const csv = [headers.join(',')]
+      .concat(
+        rows.map((u, idx) => {
+          const vals = [
+            (idx + 1).toString(),
+            (u.name || '').replaceAll('"', '""'),
+            (u.email || '').replaceAll('"', '""'),
+            (u.mobile || '').toString().replaceAll('"', '""'),
+            canonicalizeRole(u.role),
+            u.emailVerified ? 'Yes' : 'No',
+            formatLastModified(u.createdAt || getCreatedAtMs(u)),
+            u._id || '',
+          ];
+          return vals
+            .map((v) => `"${v}"`)
+            .join(',');
+        })
+      )
+      .join('\n');
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'users.csv';
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleSearch = (e) => {
@@ -261,7 +340,7 @@ const UserAdmin = () => {
             </div>
 
             {/* Right: Filters */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
               {/* Role filter */}
               <select
                 className="px-3 py-2 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -286,6 +365,51 @@ const UserAdmin = () => {
                 <option value="verified">Verified</option>
                 <option value="unverified">Unverified</option>
               </select>
+
+              {/* Source filter */}
+              {(() => {
+                const options = Array.from(new Set(viewAll.map(getSourceValue))).filter(Boolean).sort();
+                return (
+                  <select
+                    className="px-3 py-2 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                    value={sourceFilter}
+                    onChange={(e)=>{ setSourceFilter(e.target.value); setCurrentPage(1); }}
+                    title="Filter by source"
+                  >
+                    <option value="all">All Sources</option>
+                    {options.map((opt) => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                );
+              })()}
+
+              {/* Date From */}
+              <input
+                type="date"
+                className="px-3 py-2 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                value={dateFrom}
+                onChange={(e)=>{ setDateFrom(e.target.value); setCurrentPage(1); }}
+                title="Registered from date"
+              />
+
+              {/* Date To */}
+              <input
+                type="date"
+                className="px-3 py-2 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                value={dateTo}
+                onChange={(e)=>{ setDateTo(e.target.value); setCurrentPage(1); }}
+                title="Registered to date"
+              />
+
+              {/* Export CSV */}
+              <button
+                onClick={exportToCSV}
+                className="px-4 py-2 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 shadow"
+                title="Export filtered users to CSV"
+              >
+                Export CSV
+              </button>
             </div>
           </div>
 
@@ -422,22 +546,41 @@ const UserAdmin = () => {
 
             {/* Pagination */}
             <div className="flex justify-center mt-8 gap-2 flex-wrap">
-              {Array.from(
-                { length: Math.ceil(filteredProjects.length / rowsPerPage) },
-                (_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => paginate(index + 1)}
-                    className={`px-4 py-2 rounded-lg font-medium border transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ${
-                      currentPage === index + 1
-                        ? "bg-red-500 text-white border-red-500 shadow-md"
-                        : "bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
-                    }`}
-                  >
-                    {index + 1}
-                  </button>
-                )
-              )}
+              {(() => {
+                const totalPages = Math.ceil(filteredProjects.length / rowsPerPage) || 1;
+                const windowSize = 5; // how many pages to show around current
+                const start = Math.max(1, currentPage - Math.floor(windowSize / 2));
+                const end = Math.min(totalPages, start + windowSize - 1);
+                const pages = [];
+                for (let p = Math.max(1, end - windowSize + 1); p <= end; p++) pages.push(p);
+                return (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className={`px-4 py-2 rounded-lg font-medium border ${currentPage === 1 ? 'bg-gray-100 text-gray-400 border-gray-200' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'}`}
+                    >
+                      Previous
+                    </button>
+                    {pages.map((p) => (
+                      <button
+                        key={p}
+                        onClick={() => paginate(p)}
+                        className={`w-10 h-10 rounded-lg font-semibold border ${currentPage === p ? 'bg-red-500 text-white border-red-500' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'}`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className={`px-4 py-2 rounded-lg font-medium border ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 border-gray-200' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'}`}
+                    >
+                      Next
+                    </button>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>

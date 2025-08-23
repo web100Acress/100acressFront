@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { ArrowDown, ArrowUp, Edit, Eye, Plus, Trash2, Search, Calendar, User, FileText, TrendingUp, BarChart3, Activity, Clock, Users, Eye as EyeIcon, ThumbsUp, Share2, MessageCircle } from "lucide-react";
-import { Modal, Switch, Badge, Progress, Card, Row, Col, Statistic } from "antd";
+import { Modal, Switch, Badge, Progress, Card, Row, Col, Statistic, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function BlogManagement() {
@@ -44,13 +44,15 @@ export default function BlogManagement() {
     const isDeleted = await handleDeleteUser(id);
     if (isDeleted.success) {
       setModalText("Blog deleted successfully.");
-      setBlogs(blogs.filter((blog) => blog._id !== id));
+      setBlogs((prev) => prev.filter((blog) => blog._id !== id));
       setConfirmLoading(false);
       setOpenModal(false);
+      message.success("Blog deleted successfully.");
     } else {
       setModalText("Error deleting blog.");
       setConfirmLoading(false);
       setOpenModal(false);
+      message.error("Failed to delete blog. Please try again.");
     }
   };
 
