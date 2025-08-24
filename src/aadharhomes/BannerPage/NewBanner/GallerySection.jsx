@@ -15,7 +15,7 @@ const GallerySection = ({
   const hasImages = Array.isArray(projectGallery) && projectGallery.length > 0;
 
   return (
-    <section id="gallery" className="nb-gallery-section">
+    <div className="nb-gallery-section">
       <div className="nb-gallery-header">
         <div className="nb-gallery-eyebrow">
           <div className="nb-gallery-line" />
@@ -173,7 +173,7 @@ const GallerySection = ({
           </div>
         </div>
       )}
-    </section>
+    </div>
   );
 };
 
