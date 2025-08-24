@@ -10,7 +10,8 @@
   top: 0;
   left: 0;
   right: 0;
-  /* z-index: 1000; */
+  /* Make sure the class itself has a very high stacking order */
+  z-index: 20000 !important;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -48,7 +49,7 @@
 
 /* Hero container and sticky behavior */
 .nb-hero { position: relative; width: 100%; }
-.nb-hero-sticky { position: sticky; top: 0; }
+.nb-hero-sticky { position: sticky; top: 0; z-index: 20000 !important; }
 .nb-hero-bg { position: relative; width: 100%; height: 100%; overflow: hidden; }
 .nb-hero-bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
 
@@ -64,7 +65,7 @@
 .nb-hero-gradient { position: absolute; left: 0; right: 0; top: 0; height: 24px; background: linear-gradient(to bottom, rgba(0,0,0,0.14), rgba(0,0,0,0)); pointer-events: none; }
 
 /* Centered hero content */
-.nb-hero-content { position: absolute; inset: 0; display: grid; place-items: center; padding-top: var(--navbar-h, var(--nav-h, 64px)); }
+.nb-hero-content { position: absolute; inset: 0; display: grid; place-items: center; padding-top: 80px; }
 .nb-hero-center { width: min(1100px, 98%); margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
 
 .nb-hero-location { display: inline-flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.92); font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.35); }
@@ -81,7 +82,7 @@
 
 /* Ensure the fixed project navbar is above page sections */
 #project-nav.nb-fixed-nav {
-  z-index: 1095 !important; /* Above page content (<= 1000), below modals (>= 1100) */
+  z-index: 20000 !important; /* Force above all page content and sticky elements */
 }
 
 /* All content sections on NewBanner page should sit below navbar */
@@ -90,9 +91,50 @@
   z-index: 0;
 }
 
+/* Provide top spacing under the fixed navbar for NewBanner content sections */
+.new-banner-wrapper {
+  padding-top: 100px; /* Add padding to push content below navbar */
+}
+
+/* Ensure all section headers have adequate top spacing */
+.nb-section-header,
+.nb-gallery-header,
+.prc-header,
+.nb-amenities-header,
+.nb-location-header {
+  padding-top: 40px;
+}
+
+/* Additional spacing for section containers */
+.nb-about-section,
+.nb-gallery-section,
+.prc-section,
+.nb-amenities-section,
+.nb-location-section {
+  padding-top: 60px !important;
+}
+
+/* Ensure anchor navigation and programmatic scrolling account for fixed navbar */
+html {
+  scroll-padding-top: 80px; /* Offset for browser anchor jumps */
+}
+
+/* Global scroll offset for all sections and elements with IDs */
+section,
+div[id],
+*[id] {
+  scroll-margin-top: 80px; /* Offset for scrollIntoView and #hash links */
+}
+
+/* Specific targeting for NewBanner sections */
+.section > *,
+.section *[id],
+.new-banner-wrapper > * {
+  scroll-margin-top: 80px;
+}
+
 /* Ensure all hero layers are below the fixed project navbar */
 .nb-hero,
-.nb-hero-sticky,
 .nb-hero-bg,
 .nb-hero-bg-img,
 .nb-overlay-b,

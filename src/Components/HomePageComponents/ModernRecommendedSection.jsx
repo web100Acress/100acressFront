@@ -165,7 +165,7 @@ const ModernRecommendedSection = () => {
 
   return (
     <SectionWrapper>
-      <div className="container mx-auto px-4 pt-0 pb-4">
+      <div className="w-full px-4 pt-0 pb-4">
         {/* Header Section */}
         <div className="text-center mb-2 sm:mb-4 px-2 pt-2">
           <div className="inline-flex sm:inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-1 sm:mb-0">
@@ -217,18 +217,18 @@ const ModernRecommendedSection = () => {
                 centeredSlides: false,
               },
               768: {
-                slidesPerView: 2,
+                slidesPerView: 3,
                 spaceBetween: 20,
                 centeredSlides: false,
               },
               1024: {
-                slidesPerView: 2,
+                slidesPerView: 4,
                 spaceBetween: 20,
                 centeredSlides: false,
               },
               1280: {
-                slidesPerView: 2,
-                spaceBetween: 20,
+                slidesPerView: 4,
+                spaceBetween: 24,
                 centeredSlides: false,
               },
             }}
@@ -419,9 +419,9 @@ const SectionWrapper = styled.section`
     position: relative;
     overflow: visible;
     width: 100%;
-    max-width: 1200px;
+    max-width: none; /* Remove max-width constraint for full width */
     height: 450px;
-    margin: 0 auto;
+    margin: 0;
     background: #ffffff; /* Ensure container remains white as well */
     border-radius: 0; /* avoid showing page bg at rounded edges */
   }
@@ -524,7 +524,7 @@ const SectionWrapper = styled.section`
     .carousel-container {
       padding: 8px 0 52px 0; /* reduce top padding to bring cards closer to heading */
       min-height: 400px;
-      max-width: 900px;
+      max-width: none; /* Remove max-width constraint for mobile too */
       overflow: visible;
       position: relative;
     }
@@ -554,7 +554,7 @@ const SectionWrapper = styled.section`
     .carousel-container {
       padding: 6px 0 44px 0; /* further reduce gap on small phones */
       min-height: 350px;
-      max-width: 700px;
+      max-width: none; /* Remove max-width constraint for small phones too */
       overflow: visible;
     }
 

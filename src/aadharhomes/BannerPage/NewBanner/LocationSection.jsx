@@ -10,7 +10,7 @@ const LocationSection = ({
   education = [],
 }) => {
   return (
-    <div className="nb-location-section">
+    <section id="location" className="nb-location-section">
       <div className="nb-section-header nb-location-header">
         <div className="nb-section-lines">
           <div className="nb-section-line"></div>
@@ -88,7 +88,7 @@ const LocationSection = ({
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
