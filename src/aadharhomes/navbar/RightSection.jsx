@@ -351,7 +351,7 @@ export default function RightSection({
                     )}
                   </Box>
                   {firstName && (
-                    <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" fontWeight="600" display={{ base: "none", md: "inline" }}>
+                    <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" fontWeight="600" display={{ base: "none", xl: "inline" }}>
                       {firstName}
                     </Box>
                   )}
