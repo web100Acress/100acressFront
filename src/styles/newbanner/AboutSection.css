@@ -2,6 +2,8 @@
   position: relative;
   width: 100%;
   margin: 48px 0;
+  /* Keep About section below fixed navbar stacking */
+  z-index: 0;
 }
 
 .nb-section-header {
