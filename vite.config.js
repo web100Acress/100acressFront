@@ -10,7 +10,7 @@ export default defineConfig(() => {
       proxy: {
         // In dev, route all '/api' requests to local backend to avoid CORS
         '/api': {
-          target: 'https://api.100acress.com',
+          target: 'http://localhost:3500',
           changeOrigin: true,
           secure: true,
           rewrite: path => path.replace(/^\/api/, '')
