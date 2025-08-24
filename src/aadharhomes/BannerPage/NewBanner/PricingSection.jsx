@@ -3,7 +3,7 @@ import '../../../styles/PricingSection.css';
 
 export default function PricingSection({ projectViewDetails, BhK_Details, handleShowInstantcallBack }) {
   return (
-    <section id="pricing" className="prc-section">
+    <div className="prc-section">
       <div className="prc-inner">
         <div className="prc-header">
           <div className="prc-lines">
@@ -77,6 +77,6 @@ export default function PricingSection({ projectViewDetails, BhK_Details, handle
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

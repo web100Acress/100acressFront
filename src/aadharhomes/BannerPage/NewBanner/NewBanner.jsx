@@ -1035,168 +1035,173 @@ const NewBanner = () => {
             100% { transform: scale(1.08) translateY(-2%); }
           }
         `}</style>
-        <div className="new-banner-wrapper">
-          {/* About Project Section */}
-          <AboutSection
-            projectViewDetails={projectViewDetails}
-            nextSectionRef={nextSectionRef}
-            nextY={nextY}
-            aboutImageRef={aboutImageRef}
-            aboutTextRef={aboutTextRef}
-            description={description}
-            showViewMoreBtn={showViewMoreBtn}
-            setIsAboutModalOpen={setIsAboutModalOpen}
-            formatDate={formatDate}
-          />
+        {/* About Project Section */}
+        <AboutSection
+          projectViewDetails={projectViewDetails}
+          nextSectionRef={nextSectionRef}
+          nextY={nextY}
+          aboutImageRef={aboutImageRef}
+          aboutTextRef={aboutTextRef}
+          description={description}
+          showViewMoreBtn={showViewMoreBtn}
+          setIsAboutModalOpen={setIsAboutModalOpen}
+          formatDate={formatDate}
+        />
+        {/* successulll updated */}
 
-          {/* Rest of content - Normal scrolling continues */}
-          <HighlightsSection
-            projectViewDetails={projectViewDetails}
-            highlight={highlight}
-            handleShowInstantcallBack={handleShowInstantcallBack}
-          />
-
-          <PricingSection
-            projectViewDetails={projectViewDetails}
-            BhK_Details={BhK_Details}
-            handleShowInstantcallBack={handleShowInstantcallBack}
-          />
-
-          {projectViewDetails.project_floorplan_Image?.length !== 0 && (
-            <FloorPlanSection
-              projectViewDetails={projectViewDetails}
-              sliderImages={sliderImages}
-              slideRefs={slideRefs}
-              sliderSettings={set}
-              BhK_Details={BhK_Details}
-              openModalfloor={openModalfloor}
-              isModalOpenFloor={isModalOpenFloor}
-              closeModalfloor={closeModalfloor}
-              selectedImagefloor={selectedImagefloor}
-            />
-          )}
-
-          {/* Gallery */}
-          <GallerySection
-            projectName={projectViewDetails.projectName}
-            projectGallery={projectViewDetails?.projectGallery || []}
-            galleryCurrentIndex={galleryCurrentIndex}
-            setGalleryCurrentIndex={setGalleryCurrentIndex}
-            openModalGallery={openModalGallery}
-            closeModalGallery={closeModalGallery}
-            isModalOpenGallery={isModalOpenGallery}
-            modalImageGallery={modalImageGallery}
-          />
-
-          {/* Amenities */}
-          <AmenitiesSection
-            projectName={projectViewDetails.projectName}
-            Amenities={Amenities}
-          />
-
-          {/* Location & Connectivity */}
-          <LocationSection
-            projectName={projectViewDetails.projectName}
-            locationImageUrl={projectViewDetails?.project_locationImage?.url}
-            connectivity={projectRedefine_Connectivity || []}
-            entertainment={projectRedefine_Entertainment || []}
-            business={projectRedefine_Business || []}
-            education={projectRedefine_Education || []}
-          />
-
-          {/* Master Plan */}
-          <MasterPlanSection
-            projectName={projectViewDetails.projectName}
-            imageUrl={projectViewDetails?.projectMaster_plan?.url}
-            isOpen={isMasterPlanOpen}
-            setIsOpen={setIsMasterPlanOpen}
-          />
-
-          {/* Builder */}
-          <BuilderSection
-            builderName={projectViewDetails.builderName}
-            builderdescription={builderdescription}
-          />
-
-          {/* FAQ */}
-          <FAQSection
-            title={`About ${projectViewDetails.projectName}`}
-            items={items}
-          />
-
-          {/* Related property */}
-          <RelatedSection
-            builderName={projectViewDetails.builderName}
-            projectsToShow={projectsToShow}
-            builderProjectLength={builderProject.length}
-            showAllProjects={showAllProjects}
-            setShowAllProjects={setShowAllProjects}
-            handleShare={handleShare}
-            projectName={projectViewDetails.projectName}
-          />
-
-          {/* contact us */}
-          <ContactSection
-            projectViewDetails={projectViewDetails}
-            userDetails={userDetails}
-            emailError={emailError}
-            setEmailError={setEmailError}
-            handleChange={handleChange}
-            userSubmitDetails={userSubmitDetails}
-          />
-
-          <div>
-            <a
-              href="#"
-              className="dd-m-whatsapp"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="fa-brands fa-whatsapp"></i>
-            </a>
-          </div>
-        </div>
-
-        {/* Sticky Schedule Site Visit button for mobile only */}
-        <StickyVisitButton onClick={handleShowInstantcallBack} />
-
-        {/* About Project Modal */}
-        {isAboutModalOpen && (
-          <div
-            className="about-modal-overlay"
-            onClick={() => setIsAboutModalOpen(false)}
-          >
-            <div
-              className="about-modal-container"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="about-modal-header">
-                <h2 className="about-modal-title">
-                  About {projectViewDetails.projectName}
-                </h2>
-              </div>
-              <div className="about-modal-body">
-                <div dangerouslySetInnerHTML={{ __html: description }} />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Instant Callback Modal */}
-        <InstantCallbackModal
-          open={instantcallbackmodal}
-          sideDetails={sideDetails}
-          handleChangeSide={handleChangeSide}
-          debouncedSideSubmit={SideSubmitDetails}
-          isLoading2={isLoading2}
-          sideButtonText={sideButtonText}
-          handleClose={handleCloseInstantcallBack}
+        {/* Rest of content - Normal scrolling continues */}
+        <HighlightsSection
+          projectViewDetails={projectViewDetails}
+          highlight={highlight}
+          handleShowInstantcallBack={handleShowInstantcallBack}
         />
 
-        {/* Footer thin black line */}
-        <div className="nb-footer-divider"></div>
+        <PricingSection
+          projectViewDetails={projectViewDetails}
+          BhK_Details={BhK_Details}
+          handleShowInstantcallBack={handleShowInstantcallBack}
+        />
+
+        {projectViewDetails.project_floorplan_Image?.length !== 0 && (
+          <FloorPlanSection
+            projectViewDetails={projectViewDetails}
+            sliderImages={sliderImages}
+            slideRefs={slideRefs}
+            sliderSettings={set}
+            BhK_Details={BhK_Details}
+            openModalfloor={openModalfloor}
+            isModalOpenFloor={isModalOpenFloor}
+            closeModalfloor={closeModalfloor}
+            selectedImagefloor={selectedImagefloor}
+          />
+        )}
+
+        {/* Gallery */}
+        <GallerySection
+          projectName={projectViewDetails.projectName}
+          projectGallery={projectViewDetails?.projectGallery || []}
+          galleryCurrentIndex={galleryCurrentIndex}
+          setGalleryCurrentIndex={setGalleryCurrentIndex}
+          openModalGallery={openModalGallery}
+          closeModalGallery={closeModalGallery}
+          isModalOpenGallery={isModalOpenGallery}
+          modalImageGallery={modalImageGallery}
+        />
+
+        {/* Amenities */}
+        <AmenitiesSection
+          projectName={projectViewDetails.projectName}
+          Amenities={Amenities}
+        />
+
+        {/* Location & Connectivity */}
+        <LocationSection
+          projectName={projectViewDetails.projectName}
+          locationImageUrl={projectViewDetails?.project_locationImage?.url}
+          connectivity={projectRedefine_Connectivity || []}
+          entertainment={projectRedefine_Entertainment || []}
+          business={projectRedefine_Business || []}
+          education={projectRedefine_Education || []}
+        />
+
+        {/* Master Plan */}
+        <MasterPlanSection
+          projectName={projectViewDetails.projectName}
+          imageUrl={projectViewDetails?.projectMaster_plan?.url}
+          isOpen={isMasterPlanOpen}
+          setIsOpen={setIsMasterPlanOpen}
+        />
+
+        {/* Builder */}
+        <BuilderSection
+          builderName={projectViewDetails.builderName}
+          builderdescription={builderdescription}
+        />
+
+        {/* FAQ */}
+        <FAQSection
+          title={`About ${projectViewDetails.projectName}`}
+          items={items}
+        />
+
+        {/* Related property */}
+        <RelatedSection
+          builderName={projectViewDetails.builderName}
+          projectsToShow={projectsToShow}
+          builderProjectLength={builderProject.length}
+          showAllProjects={showAllProjects}
+          setShowAllProjects={setShowAllProjects}
+          handleShare={handleShare}
+          projectName={projectViewDetails.projectName}
+        />
+
+        {/* contact us */}
+        <ContactSection
+          projectViewDetails={projectViewDetails}
+          userDetails={userDetails}
+          emailError={emailError}
+          setEmailError={setEmailError}
+          handleChange={handleChange}
+          userSubmitDetails={userSubmitDetails}
+        />
+
+        <div>
+          <a
+            href="#"
+            className="dd-m-whatsapp"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i className="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
       </div>
 
+      {/* Sticky Schedule Site Visit button for mobile only */}
+      <StickyVisitButton onClick={handleShowInstantcallBack} />
+
+      {/* About Project Modal */}
+      {isAboutModalOpen && (
+        <div
+          className="about-modal-overlay"
+          onClick={() => setIsAboutModalOpen(false)}
+        >
+          <div
+            className="about-modal-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="about-modal-header">
+              <h2 className="about-modal-title">
+                About {projectViewDetails.projectName}
+              </h2>
+              <button
+                className="about-modal-close"
+                onClick={() => setIsAboutModalOpen(false)}
+                aria-label="Close modal"
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+            <div className="about-modal-body">
+              <div dangerouslySetInnerHTML={{ __html: description }} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Instant Callback Modal */}
+      <InstantCallbackModal
+        open={instantcallbackmodal}
+        sideDetails={sideDetails}
+        handleChangeSide={handleChangeSide}
+        debouncedSideSubmit={SideSubmitDetails}
+        isLoading2={isLoading2}
+        sideButtonText={sideButtonText}
+        handleClose={handleCloseInstantcallBack}
+      />
+
+      {/* Footer thin black line */}
+      <div className="nb-footer-divider"></div>
     </div>
   );
 };
