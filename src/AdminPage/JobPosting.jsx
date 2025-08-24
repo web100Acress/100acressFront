@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useMemo } from "react";
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
@@ -158,6 +158,58 @@ const JobPosting = () => {
   const [applicants, setApplicants] = useState([]);
   const [applicantsLoading, setApplicantsLoading] = useState(false);
   const [selectedOpening, setSelectedOpening] = useState(null);
+  const [appActionLoading, setAppActionLoading] = useState({ id: null, type: null });
+  // Filters for applicants modal (4 filters)
+  const [appFilters, setAppFilters] = useState({ name: "", email: "", phone: "", from: "", to: "" });
+
+  const filteredApplicantsList = useMemo(() => {
+    let list = Array.isArray(applicants) ? applicants : [];
+    const name = appFilters.name?.toLowerCase?.() || "";
+    const email = appFilters.email?.toLowerCase?.() || "";
+    const phone = (appFilters.phone || "").trim();
+    const from = appFilters.from ? new Date(appFilters.from) : null;
+    const to = appFilters.to ? new Date(appFilters.to) : null;
+    if (to) {
+      // include entire end day
+      to.setHours(23, 59, 59, 999);
+    }
+    return list.filter((a) => {
+      const nm = (a?.name || "").toLowerCase();
+      const em = (a?.email || "").toLowerCase();
+      const ph = (a?.phone || "").toString();
+      const dt = a?.createdAt ? new Date(a.createdAt) : null;
+      if (name && !nm.includes(name)) return false;
+      if (email && !em.includes(email)) return false;
+      if (phone && !ph.includes(phone)) return false;
+      if (from && (!dt || dt < from)) return false;
+      if (to && (!dt || dt > to)) return false;
+      return true;
+    });
+  }, [applicants, appFilters]);
+
+  const exportApplicantsToCsv = () => {
+    const headers = ["#", "Candidate Name", "Email", "Phone", "Applied On"];
+    const rows = filteredApplicantsList.map((a, idx) => [
+      idx + 1,
+      (a?.name || "").replace(/\n|\r/g, " "),
+      (a?.email || "").replace(/\n|\r/g, " "),
+      (a?.phone || "").toString().replace(/\n|\r/g, " "),
+      a?.createdAt ? new Date(a.createdAt).toLocaleString() : "-",
+    ]);
+    const csv = [headers, ...rows]
+      .map((row) => row.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    const title = selectedOpening ? selectedOpening.jobTitle || "applicants" : "applicants";
+    link.download = `${title.replace(/[^a-z0-9]+/gi, "_").toLowerCase()}_applicants.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   const openApplicants = async (opening) => {
     try {
@@ -177,6 +229,42 @@ const JobPosting = () => {
     setApplicantsOpen(false);
     setSelectedOpening(null);
     setApplicants([]);
+    setAppFilters({ name: "", email: "", phone: "", from: "", to: "" });
+    setAppActionLoading({ id: null, type: null });
+  };
+
+  const updateApplicantStatusLocal = (id, status) => {
+    setApplicants((prev) => prev.map((a) => (a._id === id ? { ...a, status } : a)));
+  };
+  const approveApplicant = async (id) => {
+    if (!id) return;
+    setAppActionLoading({ id, type: 'approve' });
+    try {
+      const res = await api.put(`/career/application/${id}/approve`);
+      if (res?.status >= 200 && res?.status < 300) {
+        updateApplicantStatusLocal(id, 'approved');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Failed to approve or send mail.');
+    } finally {
+      setAppActionLoading({ id: null, type: null });
+    }
+  };
+  const rejectApplicant = async (id) => {
+    if (!id) return;
+    setAppActionLoading({ id, type: 'reject' });
+    try {
+      const res = await api.put(`/career/application/${id}/reject`);
+      if (res?.status >= 200 && res?.status < 300) {
+        updateApplicantStatusLocal(id, 'rejected');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Failed to reject or send mail.');
+    } finally {
+      setAppActionLoading({ id: null, type: null });
+    }
   };
 
   return (
@@ -299,6 +387,53 @@ const JobPosting = () => {
                   <RxCross2 size={24} />
                 </button>
               </div>
+              {/* Filters toolbar */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
+                <input
+                  type="text"
+                  placeholder="Filter by name"
+                  className="border border-gray-300 rounded-md p-2 text-sm"
+                  value={appFilters.name}
+                  onChange={(e) => setAppFilters((s) => ({ ...s, name: e.target.value }))}
+                />
+                <input
+                  type="text"
+                  placeholder="Filter by email"
+                  className="border border-gray-300 rounded-md p-2 text-sm"
+                  value={appFilters.email}
+                  onChange={(e) => setAppFilters((s) => ({ ...s, email: e.target.value }))}
+                />
+                <input
+                  type="text"
+                  placeholder="Filter by phone"
+                  className="border border-gray-300 rounded-md p-2 text-sm"
+                  value={appFilters.phone}
+                  onChange={(e) => setAppFilters((s) => ({ ...s, phone: e.target.value }))}
+                />
+                <input
+                  type="date"
+                  className="border border-gray-300 rounded-md p-2 text-sm"
+                  value={appFilters.from}
+                  onChange={(e) => setAppFilters((s) => ({ ...s, from: e.target.value }))}
+                  title="From date"
+                />
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="date"
+                    className="flex-1 border border-gray-300 rounded-md p-2 text-sm"
+                    value={appFilters.to}
+                    onChange={(e) => setAppFilters((s) => ({ ...s, to: e.target.value }))}
+                    title="To date"
+                  />
+                  <button
+                    onClick={exportApplicantsToCsv}
+                    className="bg-gray-800 text-white text-sm font-semibold py-2 px-3 rounded-md hover:bg-gray-700 transition"
+                    title="Export filtered applicants"
+                  >
+                    Export
+                  </button>
+                </div>
+              </div>
               <div className="bg-white rounded-md border border-gray-200 overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm text-left text-gray-600">
@@ -309,26 +444,61 @@ const JobPosting = () => {
                         <th className="px-6 py-3">Email</th>
                         <th className="px-6 py-3">Phone</th>
                         <th className="px-6 py-3">Applied On</th>
+                        {/* <th className="px-6 py-3">Status</th> */}
+                        {/* <th className="px-6 py-3 text-center">Action</th> */}
                       </tr>
                     </thead>
                     <tbody>
                       {applicantsLoading ? (
                         <tr>
-                          <td colSpan="5" className="text-center py-8 text-gray-500">Loading...</td>
+                          <td colSpan="7" className="text-center py-8 text-gray-500">Loading...</td>
                         </tr>
-                      ) : applicants.length > 0 ? (
-                        applicants.map((a, idx) => (
-                          <tr key={a._id || idx} className="bg-white border-b border-gray-200">
-                            <td className="px-6 py-3">{idx + 1}</td>
-                            <td className="px-6 py-3" title={a.name}>{truncate(a.name, 40)}</td>
-                            <td className="px-6 py-3" title={a.email}>{truncate(a.email, 40)}</td>
-                            <td className="px-6 py-3" title={a.phone}>{truncate(a.phone, 20)}</td>
-                            <td className="px-6 py-3">{a.createdAt ? new Date(a.createdAt).toLocaleString() : "-"}</td>
-                          </tr>
-                        ))
+                      ) : filteredApplicantsList.length > 0 ? (
+                        filteredApplicantsList.map((a, idx) => {
+                          const status = a.status || 'pending';
+                          const isApproved = status === 'approved';
+                          const isRejected = status === 'rejected';
+                          const loadingApprove = appActionLoading.id === a._id && appActionLoading.type === 'approve';
+                          const loadingReject = appActionLoading.id === a._id && appActionLoading.type === 'reject';
+                          return (
+                            <tr key={a._id || idx} className="bg-white border-b border-gray-200">
+                              <td className="px-6 py-3">{idx + 1}</td>
+                              <td className="px-6 py-3" title={a.name}>{truncate(a.name, 40)}</td>
+                              <td className="px-6 py-3" title={a.email}>{truncate(a.email, 40)}</td>
+                              <td className="px-6 py-3" title={a.phone}>{truncate(a.phone, 20)}</td>
+                              <td className="px-6 py-3">{a.createdAt ? new Date(a.createdAt).toLocaleString() : "-"}</td>
+                              {/* <td className="px-6 py-3">
+                                {isApproved ? (
+                                  <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-700">Approved</span>
+                                ) : isRejected ? (
+                                  <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-700">Rejected</span>
+                                ) : (
+                                  <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-yellow-100 text-yellow-700">Pending</span>
+                                )}
+                              </td> */}
+                              <td className="px-6 py-3 text-center space-x-2 whitespace-nowrap">
+                                {/* Approve/Reject buttons temporarily disabled as requested */}
+                                {/* <button
+                                  disabled={isApproved || loadingApprove}
+                                  onClick={() => approveApplicant(a._id)}
+                                  className={`px-3 py-1 rounded-md text-white font-semibold transition ${isApproved ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
+                                >
+                                  {loadingApprove ? 'Approving…' : isApproved ? 'Approved' : 'Approve'}
+                                </button>
+                                <button
+                                  disabled={isRejected || loadingReject}
+                                  onClick={() => rejectApplicant(a._id)}
+                                  className={`px-3 py-1 rounded-md text-white font-semibold transition ${isRejected ? 'bg-red-400 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
+                                >
+                                  {loadingReject ? 'Rejecting…' : isRejected ? 'Rejected' : 'Reject'}
+                                </button> */}
+                              </td>
+                            </tr>
+                          );
+                        })
                       ) : (
                         <tr>
-                          <td colSpan="5" className="text-center py-8 text-gray-500">No applicants yet.</td>
+                          <td colSpan="7" className="text-center py-8 text-gray-500">No applicants yet.</td>
                         </tr>
                       )}
                     </tbody>
@@ -350,7 +520,6 @@ const JobPosting = () => {
                   <th scope="col" className="px-6 py-3">Location</th>
                   <th scope="col" className="px-6 py-3">Skills</th>
                   <th scope="col" className="px-6 py-3">Job Brief</th>
-                  <th scope="col" className="px-6 py-3">Candidate Name</th>
                   <th scope="col" className="px-6 py-3 text-center">Action</th>
                 </tr>
               </thead>
@@ -364,9 +533,6 @@ const JobPosting = () => {
                       <td className="px-6 py-4" title={item.jobLocation}>{truncate(item.jobLocation, 30)}</td>
                       <td className="px-6 py-4" title={item.skill}>{truncate(item.skill, 40)}</td>
                       <td className="px-6 py-4" title={item.jobProfile}>{truncate(item.jobProfile, 60)}</td>
-                      <td className="px-6 py-4" title={applicantsSummary[item._id]?.latestName || "-"}>
-                        {truncate(applicantsSummary[item._id]?.latestName || "-", 40)}
-                      </td>
                       <td className="px-6 py-4 space-x-2 whitespace-nowrap text-center">
                         <Link to={`/Admin/jobposting/view/${item._id}`}>
                           <button className="bg-green-500 text-white font-semibold py-1 px-3 rounded-md hover:bg-green-600 transition duration-300">
@@ -395,7 +561,7 @@ const JobPosting = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8" className="text-center py-8 text-gray-500">
+                    <td colSpan="7" className="text-center py-8 text-gray-500">
                       No job postings found.
                     </td>
                   </tr>
