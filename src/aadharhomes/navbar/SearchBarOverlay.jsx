@@ -20,7 +20,7 @@ export default function SearchBarOverlay({
       opacity={isSearchOpen ? 1 : 0}
       transition="transform 300ms ease, opacity 250ms ease"
       pointerEvents={isSearchOpen ? "auto" : "none"}
-      w={{ base: "78vw", md: "min(720px, 72vw)" }}
+      w={{ base: "74vw", md: "min(600px, 60vw)" }}
       zIndex={10003}
     >
       <InputGroup
@@ -30,12 +30,9 @@ export default function SearchBarOverlay({
         border="1px solid rgba(0,0,0,0.06)"
         overflow="hidden"
       >
-        <InputLeftElement pointerEvents="none" h={{ base: "44px", md: "48px" }}>
-          <SearchIcon color="#e53e3e" boxSize={4} />
-        </InputLeftElement>
         <Input
           h={{ base: "44px", md: "48px" }}
-          pl={{ base: "42px", md: "46px" }}
+          pl={{ base: "16px", md: "20px" }}
           pr={{ base: "112px", md: "126px" }}
           placeholder={currentPlaceholder}
           _placeholder={{ color: "gray.500" }}

@@ -67,7 +67,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                             <Link to={`/${pUrl}/`} target="_top" className="block">
                               <div className="overflow-hidden rounded-t-2xl">
                                 <img
-                                  src={`https://d16gdc5rm7f21b.cloudfront.net/${item?.thumbnailImage?.public_id}`}
+                                  src={`https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${item?.thumbnailImage?.public_id}`}
                                   alt="Property"
                                   className="w-full aspect-[16/9] object-cover transform-gpu transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                                   loading="lazy"

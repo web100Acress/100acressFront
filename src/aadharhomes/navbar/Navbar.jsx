@@ -103,10 +103,10 @@ export default function Navbar() {
       // Thresholds (tweak based on actual content width)
       const RENTAL_HIDE_MAX       = 1250; // 1) Rental (hide first)
       const RESALE_HIDE_MAX       = 1160; // 2) Resale (hide after Rental)
-      const PROJECT_TYPE_HIDE_MAX = 1080; // 3) Project Type
-      const PROJECT_STATUS_HIDE_MAX = 1030; // 4) Project Status
-      const BUDGET_HIDE_MAX       = 990;  // 5) Budget
-      const CITY_HIDE_MAX         = 960;  // 6) City
+      const PROJECT_TYPE_HIDE_MAX = 1140; // 3) Project Type (hide a bit earlier)
+      const PROJECT_STATUS_HIDE_MAX = 1100; // 4) Project Status (hide earlier)
+      const BUDGET_HIDE_MAX       = 1060;  // 5) Budget (hide earlier)
+      const CITY_HIDE_MAX         = 1020;  // 6) City (hide earlier)
       const HAMBURGER_MAX         = 920;  // 7) Force hamburger layout
 
       const rnt = w <= RENTAL_HIDE_MAX;
@@ -546,6 +546,8 @@ export default function Navbar() {
             transition: "background-color 300ms ease, box-shadow 300ms ease"
           }}
           px={{ base: 4, md: 4, lg: 7 }}
+          // Add a bit more right padding on wider screens to avoid clipping the last button
+          pr={{ base: 5, md: 6, lg: 8, xl: 10 }}
           py={{ base: 1, md: 2 }}
         >
           
