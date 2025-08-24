@@ -507,32 +507,28 @@ export default function RightSection({
         {/* Post property CTA */}
         {token ? (
           <Link to="/postproperty/">
-            <Button size="sm" variant="solid" bg="white" color="#111" border="2px solid #e53e3e" boxShadow="sm" _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }} fontWeight="700" fontSize={{ base: '14px', lg: '13px', xl: '13px', '2xl': '14px' }} letterSpacing="0.3px" display={{ base: "none", lg: "inline-flex" }} gap={{ base: 3, lg: 2, xl: 2, '2xl': 3 }} alignItems="center" borderRadius="xl" px={{ base: 4, lg: 3, xl: 3, '2xl': 4 }} py={2} ml={{ base: 2, md: 2 }}>
-              <Box as="span" display={{ base: 'none', lg: 'inline-flex', '2xl': 'none' }} color="#e53e3e" lineHeight={0}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-5H9v5H4a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M16.5 8.5v-3M15 7h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-                </svg>
+            <Button size="sm" variant="solid" bg="white" color="#111" border="2px solid #e53e3e" boxShadow="sm" _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }} fontWeight="700" fontSize={{ base: '14px', md: '13px', xl: '13px' }} letterSpacing="0.3px" display={{ base: "none", md: "inline-flex" }} gap={{ base: 3, md: 2, xl: 3 }} alignItems="center" borderRadius="xl" px={{ base: 4, md: 3, xl: 4 }} py={2} ml={{ base: 2, md: 2 }}>
+              {/* Hide icon on tablet/laptop */}
+              <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
+                {/* icon intentionally hidden for md+ */}
               </Box>
-              <Box as="span" display={{ base: 'none', lg: 'inline', '2xl': 'none' }}>Post</Box>
-              <Box as="span" display={{ base: 'none', '2xl': 'inline' }}>Post property</Box>
-              <Box as="span" display={{ base: 'none', '2xl': 'inline-flex' }} bg="#FACC15" color="#e53e3e" px={3} py={0.5} fontSize="11px" fontWeight="800" lineHeight={1} style={{ clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' }}>
+              {/* Always show full label on md and up */}
+              <Box as="span" display={{ base: 'none', md: 'inline' }}>Post property</Box>
+              <Box as="span" display={{ base: 'none', md: 'inline-flex' }} bg="#FACC15" color="#e53e3e" px={3} py={0.5} fontSize="11px" fontWeight="800" lineHeight={1} style={{ clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' }}>
                 FREE
               </Box>
             </Button>
           </Link>
         ) : (
           <Link to="/auth/signin/">
-            <Button size="sm" variant="solid" bg="white" color="#111" border="2px solid #e53e3e" boxShadow="sm" _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }} fontWeight="700" fontSize={{ base: '14px', lg: '13px', xl: '13px', '2xl': '14px' }} letterSpacing="0.3px" display={{ base: "none", lg: "inline-flex" }} gap={{ base: 3, lg: 2, xl: 2, '2xl': 3 }} alignItems="center" borderRadius="xl" px={{ base: 4, lg: 3, xl: 3, '2xl': 4 }} py={2} ml={{ base: 2, md: 2 }}>
-              <Box as="span" display={{ base: 'none', lg: 'inline-flex', '2xl': 'none' }} color="#e53e3e" lineHeight={0}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-5H9v5H4a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M16.5 8.5v-3M15 7h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-                </svg>
+            <Button size="sm" variant="solid" bg="white" color="#111" border="2px solid #e53e3e" boxShadow="sm" _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }} fontWeight="700" fontSize={{ base: '14px', md: '13px', xl: '13px' }} letterSpacing="0.3px" display={{ base: "none", md: "inline-flex" }} gap={{ base: 3, md: 2, xl: 3 }} alignItems="center" borderRadius="xl" px={{ base: 4, md: 3, xl: 4 }} py={2} ml={{ base: 2, md: 2 }}>
+              {/* Hide icon on tablet/laptop */}
+              <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
+                {/* icon intentionally hidden for md+ */}
               </Box>
-              <Box as="span" display={{ base: 'none', lg: 'inline', '2xl': 'none' }}>Post</Box>
-              <Box as="span" display={{ base: 'none', '2xl': 'inline' }}>Post property</Box>
-              <Box as="span" display={{ base: 'none', '2xl': 'inline-flex' }} bg="#FACC15" color="#e53e3e" px={3} py={0.5} fontSize="11px" fontWeight="800" lineHeight={1} style={{ clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' }}>
+              {/* Always show full label on md and up */}
+              <Box as="span" display={{ base: 'none', md: 'inline' }}>Post property</Box>
+              <Box as="span" display={{ base: 'none', md: 'inline-flex' }} bg="#FACC15" color="#e53e3e" px={3} py={0.5} fontSize="11px" fontWeight="800" lineHeight={1} style={{ clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' }}>
                 FREE
               </Box>
             </Button>
