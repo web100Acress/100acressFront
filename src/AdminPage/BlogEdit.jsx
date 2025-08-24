@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import { message, Modal, notification } from "antd";
 import Sidebar from "./Sidebar";
 import { useParams, Link, useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { MdEdit, MdImage, MdTitle, MdDescription, MdCategory, MdPerson } from "r
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
+import { AuthContext } from "../AuthContext";
 
 const customStyle = {
   position: "absolute",
@@ -26,6 +27,13 @@ const BlogEdit = () => {
   });
   const { id } = useParams();
   const navigate = useNavigate();
+  const { agentData, isAdmin } = useContext(AuthContext) || {};
+  const localAgent = useMemo(() => {
+    try { return JSON.parse(window.localStorage.getItem('agentData') || 'null'); } catch { return null; }
+  }, []);
+  const currentUserName = (agentData?.name || localAgent?.name || "").toString().trim();
+  const currentUserEmail = (agentData?.email || localAgent?.email || "").toString().trim().toLowerCase();
+  const currentUserId = (agentData?._id || localAgent?._id || "").toString();
   
 
   // Theme state
@@ -195,6 +203,24 @@ const BlogEdit = () => {
           author: "",
           ...safe,
         }));
+
+        // Ownership check: allow if admin or matches by name/email/id
+        const authorName = (safe?.author || "").toString().trim();
+        const authorEmail = (safe?.authorEmail || "").toString().trim().toLowerCase();
+        const authorId = (safe?.authorId || safe?.userId || safe?.postedBy || "").toString();
+        const nameMatch = currentUserName && authorName && authorName.toLowerCase() === currentUserName.toLowerCase();
+        const emailMatch = currentUserEmail && authorEmail && authorEmail === currentUserEmail;
+        const idMatch = currentUserId && authorId && authorId === currentUserId;
+        const allowed = isAdmin || nameMatch || emailMatch || idMatch;
+        if (!allowed) {
+          notification.error({
+            message: 'Unauthorized',
+            description: 'You are not allowed to edit this blog.',
+            placement: 'topRight',
+          });
+          navigate('/seo/blogs');
+          return;
+        }
       } catch (error) {
         console.error('Error fetching blog data:', error);
         
@@ -209,7 +235,18 @@ const BlogEdit = () => {
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, currentUserName, currentUserEmail, currentUserId, isAdmin, navigate]);
+
+  // Defensive UI guard for actions
+  const canEdit = useMemo(() => {
+    const authorName = (viewDetails?.author || "").toString().trim();
+    const authorEmail = (viewDetails?.authorEmail || "").toString().trim().toLowerCase();
+    const authorId = (viewDetails?.authorId || viewDetails?.userId || viewDetails?.postedBy || "").toString();
+    const nameMatch = currentUserName && authorName && authorName.toLowerCase() === currentUserName.toLowerCase();
+    const emailMatch = currentUserEmail && authorEmail && authorEmail === currentUserEmail;
+    const idMatch = currentUserId && authorId && authorId === currentUserId;
+    return !!(isAdmin || nameMatch || emailMatch || idMatch);
+  }, [viewDetails, currentUserName, currentUserEmail, currentUserId, isAdmin]);
 
 
   return (
@@ -317,6 +354,7 @@ const BlogEdit = () => {
             type="button"
             onClick={handleConfirmAndUpdate}
             className={`flex items-center gap-2 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-lg px-8 py-3 shadow-lg transition-all ${theme === 'dark' ? 'bg-gradient-to-r from-blue-700 via-blue-800 to-gray-900' : ''}`}
+            disabled={!canEdit}
           >
                   <MdEdit className="text-xl" /> Update
           </button>

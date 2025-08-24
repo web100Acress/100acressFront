@@ -1,11 +1,19 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useContext, useMemo } from 'react';
 import { lazy } from 'react';
 const ReactQuill = lazy(() => import('react-quill'));
 import 'react-quill/dist/quill.snow.css';
 import api from "../config/apiClient";
+import { AuthContext } from "../AuthContext";
 
 const BlogWrite = () => {
   const [content, setContent] = useState('');
+  const { agentData } = useContext(AuthContext) || {};
+  const localAgent = useMemo(() => {
+    try { return JSON.parse(window.localStorage.getItem('agentData') || 'null'); } catch { return null; }
+  }, []);
+  const currentName = (agentData?.name || localAgent?.name || "").toString().trim();
+  const currentEmail = (agentData?.email || localAgent?.email || "").toString().trim().toLowerCase();
+  const currentId = (agentData?._id || localAgent?._id || "").toString();
   
 
   const handleContent = (value) => {
@@ -20,7 +28,9 @@ const BlogWrite = () => {
   const [editForm, setEditForm] = useState({
     blog_Title: "",
     blog_Description: "",
-    author: "Admin",
+    author: currentName || "",
+    authorEmail: currentEmail || "",
+    authorId: currentId || "",
     blog_Category: "",
   });
 
@@ -66,7 +76,7 @@ const BlogWrite = () => {
     // Add form data to formDataAPI
     for (const key in editForm) {
       if (key !== 'blog_Description') {
-        formDataAPI.append(key, editForm[key]);
+        formDataAPI.append(key, editForm[key] ?? "");
       }
     }
     
@@ -107,7 +117,9 @@ const BlogWrite = () => {
     setEditForm({
       blog_Title: "",
       blog_Description: "",
-      author: "Admin",
+      author: currentName || "",
+      authorEmail: currentEmail || "",
+      authorId: currentId || "",
       blog_Category: "",
     });
     setContent('');
