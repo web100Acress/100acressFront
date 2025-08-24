@@ -58,7 +58,7 @@ export default function Navbar() {
   
   
 
-  // Staged responsiveness: hide Resale → Rental → Project Type → Project Status → Budget → City → finally force hamburger
+  // Staged responsiveness: hide Resale (earlier to save space for CTA) → Rental → Project Type → Project Status → Budget → City → finally force hamburger
   const [isCompactTablet, setIsCompactTablet] = useState(false);
   const [hideResale, setHideResale] = useState(false);
   const [hideRental, setHideRental] = useState(false);
@@ -101,9 +101,9 @@ export default function Navbar() {
     const compute = () => {
       const w = typeof window !== 'undefined' ? window.innerWidth : 0;
       // Thresholds (tweak based on actual content width)
-      const RENTAL_HIDE_MAX       = 1250; // 1) Rental (hide first)
-      const RESALE_HIDE_MAX       = 1160; // 2) Resale (hide after Rental)
-      const PROJECT_TYPE_HIDE_MAX = 1140; // 3) Project Type (hide a bit earlier)
+      const RENTAL_HIDE_MAX       = 1300; // Rental: hide earlier so at ~1268px it moves to hamburger
+      const RESALE_HIDE_MAX       = 1300; // Resale: hide earlier too so at ~1287px it moves to hamburger
+      const PROJECT_TYPE_HIDE_MAX = 1200; // Project Type: hide earlier so at ~1155px it moves to hamburger
       const PROJECT_STATUS_HIDE_MAX = 1100; // 4) Project Status (hide earlier)
       const BUDGET_HIDE_MAX       = 1060;  // 5) Budget (hide earlier)
       const CITY_HIDE_MAX         = 1020;  // 6) City (hide earlier)
