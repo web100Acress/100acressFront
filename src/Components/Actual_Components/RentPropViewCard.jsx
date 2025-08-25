@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
 import api from "../../config/apiClient";
 import { Link, useNavigate } from "react-router-dom";
+import { MdFavoriteBorder } from "react-icons/md";
+import { LOGIN } from "../../lib/route";
 import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
 import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
+import AuthModal from "../AuthModal";
+import { AuthContext } from "../../AuthContext";
 
 const RentPropViewCard = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useContext(AuthContext);
+  const [showAuth, setShowAuth] = useState(false);
   const [buyData, setBuyData] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -659,6 +665,23 @@ const RentPropViewCard = () => {
                           className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                           loading="lazy"
                         />
+                        {/* Heart/Wishlist Button */}
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (!isAuthenticated) {
+                              setShowAuth(true);
+                              return;
+                            }
+                            // TODO: handle wishlist action for logged-in users
+                          }}
+                          className="absolute top-3 right-3 w-10 h-10 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition"
+                          aria-label="Add to wishlist (login required)"
+                          title="Login to add to wishlist"
+                        >
+                          <MdFavoriteBorder className="text-gray-600 hover:text-red-500 text-xl" />
+                        </button>
                         <div className="absolute top-3 right-3">
                           <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                             Rental
@@ -718,6 +741,8 @@ const RentPropViewCard = () => {
         </div>
       </main>
       <Footer />
+      {/* Auth Modal for Login/Register */}
+      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
     </>
   );
 }

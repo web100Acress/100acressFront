@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from '../Assets/icons';
 import Aos from 'aos';
 import { Link } from 'react-router-dom';
 import { EyeIcon } from 'lucide-react';
 import CustomSkeleton from './CustomSkeleton';
+import { MdFavoriteBorder } from 'react-icons/md';
+import AuthModal from '../Components/AuthModal';
+import { AuthContext } from '../AuthContext';
 
 const CommonProject = ({ data, title, path ,animation }) => {
 
@@ -21,6 +24,9 @@ const CommonProject = ({ data, title, path ,animation }) => {
       alert("Share functionality is not supported on this device/browser.");
     }
   };
+
+  const { isAuthenticated } = useContext(AuthContext);
+  const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
     Aos.init();
@@ -77,14 +83,33 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                 />
                               </div>
                             </Link>
-                            <button
-                              type="button"
-                              aria-label="Share"
-                              className="absolute top-3 right-3 md:top-4 md:right-4 inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/90 text-gray-700 shadow-md hover:shadow-lg hover:bg-white transition"
-                              onClick={() => handleShare(item)}
-                            >
-                              <ShareFrameIcon />
-                            </button>
+                            <div className="absolute top-3 right-3 md:top-4 md:right-4 flex items-center gap-2">
+                              <button
+                                type="button"
+                                aria-label="Add to wishlist (login required)"
+                                title="Login to add to wishlist"
+                                className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/90 text-gray-700 shadow-md hover:shadow-lg hover:bg-white hover:text-red-600 transition"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  if (!isAuthenticated) {
+                                    setShowAuth(true);
+                                    return;
+                                  }
+                                  // TODO: handle wishlist for logged-in users
+                                }}
+                              >
+                                <MdFavoriteBorder size={20} />
+                              </button>
+                              <button
+                                type="button"
+                                aria-label="Share"
+                                className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/90 text-gray-700 shadow-md hover:shadow-lg hover:bg-white transition"
+                                onClick={() => handleShare(item)}
+                              >
+                                <ShareFrameIcon />
+                              </button>
+                            </div>
                             {/* subtle gradient bottom overlay */}
                             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/10 to-transparent"></div>
                           </div>
@@ -140,6 +165,8 @@ const CommonProject = ({ data, title, path ,animation }) => {
               </section>
             }
           </div>
+          {/* Auth Modal for Login/Register */}
+          <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="register" />
         </>
       )
       }
