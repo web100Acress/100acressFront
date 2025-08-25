@@ -45,7 +45,7 @@ export default function LeftSection({
       justifyContent={{ base: "flex-start", md: forceHamburger ? "flex-start" : "center" }}
       ml={{ base: 0, md: forceHamburger ? 0 : 3, lg: forceHamburger ? 0 : 6 }}
       pl={{ base: 0, md: forceHamburger ? 0 : 3 }}
-      borderLeft={{ base: 'none', md: forceHamburger ? 'none' : '1px solid #f1f1f1' }}
+      borderLeft={{ base: 'none', md: 'none' }}
       opacity={{ base: 1, md: isSearchOpen ? 0 : 1 }}
       transition="opacity 250ms ease"
       pointerEvents={{ base: "auto", md: isSearchOpen ? 'none' : 'auto' }}
@@ -442,9 +442,6 @@ export default function LeftSection({
           <MenuItem as={Link} to="/projects/commercial/">Commercial Projects</MenuItem>
         </MenuList>
       </Menu>
-
-      {/* Divider */}
-      <Box as="span" display={{ base: "none", md: (forceHamburger || showHamburgerOnDesktop) ? "none" : (colorChange ? "none" : "inline-block") }} w="1px" h="18px" bg="#eaeaea" mx={2} />
 
       {/* Quick links */}
       <Link to="/rental-properties/best-rental-property-in-gurugram/">
