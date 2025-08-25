@@ -35,7 +35,14 @@ const ProjectOrderManager = () => {
   const previewRef = useRef(null);
   const relatedRef = useRef(null);
 
-  const { getProjectbyBuilder } = Api_Service();
+  // Management mode: projects | properties
+  const [manageMode, setManageMode] = useState('projects');
+  const [propItems, setPropItems] = useState([]); // fetched properties for selected builder
+  const [propLoading, setPropLoading] = useState(false);
+  const [propSynced, setPropSynced] = useState(true);
+  const [propOrderIds, setPropOrderIds] = useState([]);
+
+  const { getProjectbyBuilder, getPropertyOrder, savePropertyOrder, getPropertiesByBuilder } = Api_Service();
 
   // Memoize dispatch functions to prevent infinite re-renders
   const memoizedSyncProjectOrders = useCallback(() => {
@@ -183,8 +190,67 @@ const ProjectOrderManager = () => {
       const randomSeed = randomSeeds[selectedBuilder] || generateSeedFromBuilderName(selectedBuilder);
       return shuffleArrayWithSeed([...selectedBuilderProjects], randomSeed);
     }
-  }, [selectedBuilderProjects, customOrders, buildersWithCustomOrder, randomSeeds, selectedBuilder]);
-  
+  }, [selectedBuilderProjects, customOrders, buildersWithCustomOrder, randomSeeds, selectedBuilder, isRandomOrder]);
+
+  // Load properties + saved order when switching to properties mode
+  useEffect(() => {
+    const loadProperties = async () => {
+      if (!selectedBuilder || manageMode !== 'properties') return;
+      setPropLoading(true);
+      try {
+        const builderName = selectedBuilderData?.query || selectedBuilderData?.name || selectedBuilder;
+        const [list, orderDoc] = await Promise.all([
+          getPropertiesByBuilder(builderName, 500),
+          getPropertyOrder(builderName),
+        ]);
+        const byId = new Map(list.map(p => [p._id || p.id, p]));
+        let ordered = list;
+        let orderIds = [];
+        if (orderDoc?.customOrder?.length) {
+          orderIds = orderDoc.customOrder.filter(id => byId.has(id));
+          const remaining = list.filter(p => !orderIds.includes(p._id || p.id));
+          ordered = [...orderIds.map(id => byId.get(id)), ...remaining];
+        } else {
+          orderIds = list.map(p => p._id || p.id);
+        }
+        setPropItems(ordered);
+        setPropOrderIds(orderIds);
+        setPropSynced(true);
+      } catch (e) {
+        console.error('Failed to load properties/order:', e);
+        setPropItems([]);
+      } finally {
+        setPropLoading(false);
+      }
+    };
+    loadProperties();
+  }, [manageMode, selectedBuilder, selectedBuilderData, getPropertiesByBuilder, getPropertyOrder]);
+
+  const moveProperty = (index, dir) => {
+    setPropItems(prev => {
+      const arr = [...prev];
+      const j = index + dir;
+      if (j < 0 || j >= arr.length) return arr;
+      const tmp = arr[index];
+      arr[index] = arr[j];
+      arr[j] = tmp;
+      setPropOrderIds(arr.map(p => p._id || p.id));
+      setPropSynced(false);
+      return arr;
+    });
+  };
+
+  const handleSavePropertyOrder = async () => {
+    try {
+      const builderName = selectedBuilderData?.query || selectedBuilderData?.name || selectedBuilder;
+      await savePropertyOrder({ builderName, customOrder: propOrderIds, hasCustomOrder: true });
+      setPropSynced(true);
+    } catch (e) {
+      console.error('Save property order failed:', e);
+      alert('Failed to save property order');
+    }
+  };
+
   // Debug logging
   console.log('🔍 selectedBuilder:', selectedBuilder);
   console.log('🔍 selectedBuilderData:', selectedBuilderData);
@@ -513,6 +579,28 @@ const ProjectOrderManager = () => {
             </div>
           </div>
 
+          {/* Management Mode Toggle */}
+          <div className="mb-4">
+            <div className="inline-flex rounded-md shadow-sm" role="group">
+              <button
+                type="button"
+                onClick={() => setManageMode('projects')}
+                className={`px-4 py-2 text-sm font-medium border ${manageMode === 'projects' ? 'bg-red-600 text-white border-red-600' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600'}`}
+                title="Manage project order"
+              >
+                Projects
+              </button>
+              <button
+                type="button"
+                onClick={() => setManageMode('properties')}
+                className={`px-4 py-2 text-sm font-medium border -ml-px ${manageMode === 'properties' ? 'bg-red-600 text-white border-red-600' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600'}`}
+                title="Manage property order"
+              >
+                Properties
+              </button>
+            </div>
+          </div>
+
                      {/* Status Display */}
            {selectedBuilder && (
              <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
@@ -525,6 +613,67 @@ const ProjectOrderManager = () => {
                   ) : (
                     <>Using random order with seed: {randomSeeds[selectedBuilder] || 'default'}</>
                   )}
+
+        {/* Properties Management (Properties mode) */}
+        {selectedBuilder && manageMode === 'properties' && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                {selectedBuilderData?.name} Properties
+              </h2>
+              <div className="flex items-center gap-3">
+                <span className={`text-sm ${propSynced ? 'text-green-600' : 'text-yellow-600'}`}>
+                  {propSynced ? '✅ Synced' : '🔄 Unsaved changes'}
+                </span>
+                <button
+                  onClick={handleSavePropertyOrder}
+                  disabled={propLoading || propItems.length === 0 || propSynced}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400"
+                >
+                  {propLoading ? 'Saving...' : 'Save Property Order'}
+                </button>
+              </div>
+            </div>
+
+            {propLoading ? (
+              <div className="text-center py-8 text-gray-600">Loading properties…</div>
+            ) : propItems.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">No properties found for this builder.</div>
+            ) : (
+              <div className="space-y-2">
+                {propItems.map((p, idx) => (
+                  <div key={p._id || p.id || idx} className="flex items-center justify-between p-3 border rounded-md bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-200">{idx + 1}</span>
+                      <div>
+                        <div className="font-semibold text-gray-800 dark:text-gray-100">{p.projectName || p.name || p.project_title}</div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">{(p.city || p.location_city) ?? ''}{(p.state || p.location_state) ? `, ${p.state || p.location_state}` : ''}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => moveProperty(idx, -1)}
+                        disabled={idx === 0}
+                        className="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 disabled:opacity-50"
+                        title="Move up"
+                      >
+                        ▲
+                      </button>
+                      <button
+                        onClick={() => moveProperty(idx, 1)}
+                        disabled={idx === propItems.length - 1}
+                        className="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 disabled:opacity-50"
+                        title="Move down"
+                      >
+                        ▼
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
                 </p>
                 <p className={`text-sm ${isSynced ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400'}`}>
                   {isSynced ? "✅ Synced with server" : "🔄 Syncing with server..."}
@@ -660,8 +809,8 @@ const ProjectOrderManager = () => {
           )}
         </div>
 
-        {/* Project List */}
-        {selectedBuilder && !relatedBuilder && (
+        {/* Project List (Projects mode) */}
+        {selectedBuilder && manageMode === 'projects' && !relatedBuilder && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
               {selectedBuilderData.name} Projects
@@ -795,10 +944,17 @@ const ProjectOrderManager = () => {
                             ref={provided.innerRef}
                             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
                           >
-                            {orderedProjects.map((project, index) => (
+                            {orderedProjects.map((project, index) => {
+                              const rawId = project && (project._id || project.id);
+                              if (!rawId) {
+                                console.warn('Skipping project without id for DnD:', project);
+                                return null;
+                              }
+                              const dragId = String(rawId);
+                              return (
                               <Draggable
-                                key={project._id || project.id}
-                                draggableId={project._id || project.id}
+                                key={dragId}
+                                draggableId={dragId}
                                 index={index}
                               >
                                 {(provided, snapshot) => (
@@ -841,7 +997,7 @@ const ProjectOrderManager = () => {
                                   </div>
                                 )}
                               </Draggable>
-                            ))}
+                            )})}
                             {provided.placeholder}
                           </div>
                         )}

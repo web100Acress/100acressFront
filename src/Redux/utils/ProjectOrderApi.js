@@ -1,21 +1,57 @@
 import api from '../../config/apiClient';
 
 class ProjectOrderApi {
+  // Throttle/backoff state (in-memory, per-tab)
+  static _lastSyncAt = 0;
+  static _nextAllowedAt = 0;
+  static _inFlight = null;
+  static _cache = null;
+  static _THROTTLE_MS = 15000; // minimum gap between sync requests
+  static _BACKOFF_MS = 60000;  // wait after 429
   // Get all project orders for sync
   static async getAllProjectOrdersForSync() {
-    try {
-      const response = await api.get(`projectOrder/sync`);
-      return response.data.data;
-    } catch (error) {
-      console.error('Error fetching project orders for sync:', error);
+    const now = Date.now();
+    const defaultData = { customOrders: {}, buildersWithCustomOrder: {}, randomSeeds: {} };
 
-      // Return default structure instead of throwing
-      return {
-        customOrders: {},
-        buildersWithCustomOrder: {},
-        randomSeeds: {}
-      };
+    // Backoff window active
+    if (now < ProjectOrderApi._nextAllowedAt) {
+      console.warn('[ProjectOrderApi] Sync in backoff window; serving cache');
+      return ProjectOrderApi._cache || defaultData;
     }
+
+    // If a request is already in flight, reuse it
+    if (ProjectOrderApi._inFlight) {
+      return ProjectOrderApi._inFlight;
+    }
+
+    // Throttle: if recent and we have cache, return it
+    if (now - ProjectOrderApi._lastSyncAt < ProjectOrderApi._THROTTLE_MS && ProjectOrderApi._cache) {
+      return ProjectOrderApi._cache;
+    }
+
+    // Issue network request
+    ProjectOrderApi._inFlight = api.get(`projectOrder/sync`)
+      .then((response) => {
+        const data = response?.data?.data || defaultData;
+        ProjectOrderApi._cache = data;
+        ProjectOrderApi._lastSyncAt = Date.now();
+        return data;
+      })
+      .catch((error) => {
+        console.error('Error fetching project orders for sync:', error);
+        // 429 handling: set backoff window
+        const status = error?.response?.status;
+        if (status === 429) {
+          ProjectOrderApi._nextAllowedAt = Date.now() + ProjectOrderApi._BACKOFF_MS;
+          console.warn(`[ProjectOrderApi] Received 429. Backing off for ${ProjectOrderApi._BACKOFF_MS / 1000}s`);
+        }
+        return ProjectOrderApi._cache || defaultData;
+      })
+      .finally(() => {
+        ProjectOrderApi._inFlight = null;
+      });
+
+    return ProjectOrderApi._inFlight;
   }
 
   // Get project order by builder name
