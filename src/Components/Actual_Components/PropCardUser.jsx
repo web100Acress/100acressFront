@@ -207,7 +207,7 @@ function PropCardUser() {
         </div>
       </div>
       {/* Auth Modal for Login/Register */}
-      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="register" />
+      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
     </Wrapper>
   );
 }

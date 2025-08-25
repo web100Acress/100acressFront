@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
 import axios from "axios";
@@ -9,9 +9,13 @@ import { Helmet } from "react-helmet";
 import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
 import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
+import AuthModal from "../AuthModal";
+import { AuthContext } from "../../AuthContext";
 
 const RentPropViewCard = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useContext(AuthContext);
+  const [showAuth, setShowAuth] = useState(false);
   const [buyData, setBuyData] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -663,7 +667,11 @@ const RentPropViewCard = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            navigate(LOGIN);
+                            if (!isAuthenticated) {
+                              setShowAuth(true);
+                              return;
+                            }
+                            // TODO: handle wishlist action for logged-in users
                           }}
                           className="absolute top-3 right-3 w-10 h-10 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition"
                           aria-label="Add to wishlist (login required)"
@@ -730,6 +738,8 @@ const RentPropViewCard = () => {
         </div>
       </main>
       <Footer />
+      {/* Auth Modal for Login/Register */}
+      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
     </>
   );
 }

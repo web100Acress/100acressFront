@@ -276,7 +276,7 @@ const ModernRecommendedSection = () => {
       <AuthModal
         open={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        defaultView="register"
+        defaultView="login"
       />
     </SectionWrapper>
   );

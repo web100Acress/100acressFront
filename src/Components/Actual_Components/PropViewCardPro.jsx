@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { styled } from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { MdFavoriteBorder } from "react-icons/md";
 import { LOGIN } from "../../lib/route";
+import AuthModal from "../AuthModal";
+import { AuthContext } from "../../AuthContext";
 
 function PropViewCardPro() {
   const navigate = useNavigate();
   const [rentData, setRentData] = useState([]);
+  const { isAuthenticated } = useContext(AuthContext);
+  const [showAuth, setShowAuth] = useState(false);
 
   // Check and redirect if URL is missing trailing slash
   useEffect(() => {
@@ -57,7 +61,11 @@ function PropViewCardPro() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      navigate(LOGIN);
+                      if (!isAuthenticated) {
+                        setShowAuth(true);
+                        return;
+                      }
+                      // TODO: handle wishlist action for logged-in users
                     }}
                     className="absolute top-3 right-3 w-10 h-10 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition"
                     aria-label="Add to wishlist (login required)"
@@ -216,6 +224,8 @@ function PropViewCardPro() {
           })}
         </div>
       </section>
+      {/* Auth Modal for Login/Register */}
+      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
     </div>
   );
 }
