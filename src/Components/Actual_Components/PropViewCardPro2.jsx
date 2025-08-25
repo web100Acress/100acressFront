@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { MdFavoriteBorder } from "react-icons/md";
+import { LOGIN } from "../../lib/route";
 import { AiFillStar } from "react-icons/ai";
 import { BsFillCameraFill } from "react-icons/bs";
 
 function PropViewCardPro2() {
+    const navigate = useNavigate();
     let[readMore,setReadMore] = useState(false);
 
     const showTextHandler=()=>{
@@ -17,6 +21,20 @@ function PropViewCardPro2() {
             <div className='imgeProp bc-rd-23'>
               <div className='imgdev position-relative'>
                 <img src='' alt='' />
+                {/* Heart/Wishlist Button */}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigate(LOGIN);
+                  }}
+                  className='position-absolute'
+                  style={{ top: 10, right: 10, width: 40, height: 40, borderRadius: '9999px', background: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }}
+                  aria-label='Add to wishlist (login required)'
+                  title='Login to add to wishlist'
+                >
+                  <MdFavoriteBorder style={{ color: '#4b5563', fontSize: 20 }} />
+                </button>
               </div>
               <div className='photDivnum p-2 d-flex flex-column justify-content-between h-100'>
                 <div className='vrfied bc-rd-23 d-flex justify-content-center align-items-center'>

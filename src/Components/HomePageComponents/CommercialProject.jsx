@@ -7,6 +7,8 @@ import Api_Service from "../../Redux/utils/Api_Service";
 import Footer from "../Actual_Components/Footer";
 import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
 import styled from "styled-components";
+import { MdFavoriteBorder } from "react-icons/md";
+import { LOGIN } from "../../lib/route";
 
 const CommercialProject = () => {
   const {getCommercial} = Api_Service();
@@ -181,6 +183,13 @@ const CommercialProject = () => {
       default:
         break;
     }
+  };
+
+  // Wishlist handler: redirect to login for now
+  const handleWishlist = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = LOGIN;
   };
 
   const {  } = useContext(DataContext);
@@ -561,7 +570,16 @@ const CommercialProject = () => {
                           className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                           loading="lazy"
                         />
-                        <div className="absolute top-3 right-3">
+                        {/* Top-right controls: wishlist + badge */}
+                        <div className="absolute top-3 right-3 flex items-center gap-2">
+                          <button
+                            onClick={handleWishlist}
+                            className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/90 text-gray-700 hover:text-red-600 shadow-md hover:shadow-lg hover:bg-white transition"
+                            aria-label="Add to wishlist (login required)"
+                            title="Login to add to wishlist"
+                          >
+                            <MdFavoriteBorder size={20} />
+                          </button>
                           <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                             Commercial
                           </span>
