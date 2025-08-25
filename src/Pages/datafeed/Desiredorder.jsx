@@ -25,7 +25,7 @@ export const SCO_DESIRED_ORDER = [
 
 export const COMMERCIAL_DESIRED_ORDER = [
   "Elan Imperial",
-  "MVN Mall",
+  "Trehan IRIS Broadway",
   "Aarize The Tessoro",
   "Omaxe State Dwarka"
 ];

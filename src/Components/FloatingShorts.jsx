@@ -97,15 +97,17 @@ const FloatingShorts = ({ videoId = "" }) => {
   const closeBtnStyle = {
     position: "absolute",
     top: 8,
-    right: 8,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    // On mobile/tablet place on left, desktop on right
+    right: isMobile || isTablet ? "auto" : 8,
+    left: isMobile || isTablet ? 8 : "auto",
+    width: isMobile || isTablet ? 36 : 32,
+    height: isMobile || isTablet ? 36 : 32,
+    borderRadius: 18,
     border: "none",
     background: "rgba(0,0,0,0.55)",
     color: "#fff",
-    fontSize: 20,
-    lineHeight: "32px",
+    fontSize: isMobile || isTablet ? 22 : 20,
+    lineHeight: isMobile || isTablet ? "36px" : "32px",
     cursor: "pointer",
     zIndex: 2,
   };

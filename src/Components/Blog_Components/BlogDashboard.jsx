@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import api from "../../config/apiClient";
 import { 
   Eye, 
@@ -106,6 +106,7 @@ import {
 } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { BlogPaginationControls } from "./BlogManagement";
+import { AuthContext } from "../../AuthContext";
 
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
@@ -120,6 +121,15 @@ const blogLink = (blog) => {
 
 export default function BlogDashboard() {
   const history = useNavigate();
+  const { agentData, isAdmin } = useContext(AuthContext) || {};
+
+  // Resolve current user identity for ownership checks
+  const localAgent = (() => {
+    try { return JSON.parse(window.localStorage.getItem("agentData") || "null"); } catch { return null; }
+  })();
+  const currentUserName = (agentData?.name || localAgent?.name || "").toString().trim();
+  const currentUserEmail = (agentData?.email || localAgent?.email || "").toString().trim().toLowerCase();
+  const currentUserId = (agentData?._id || localAgent?._id || "").toString();
 
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -177,13 +187,23 @@ export default function BlogDashboard() {
 
   useEffect(() => {
     fetchDashboardData();
-  }, [timeRange, currentPage, pageSize]);
+  }, [timeRange, currentPage, pageSize, currentUserName, currentUserEmail, currentUserId, isAdmin]);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
       const res = await api.get(`blog/view?page=${currentPage}&limit=${pageSize}`);
       const fetchedBlogs = res.data.data || [];
+      // Scope: if not Admin, show only my blogs
+      const myBlogs = (isAdmin ? fetchedBlogs : fetchedBlogs.filter((b) => {
+        const authorName = (b?.author || "").toString().trim();
+        const authorEmail = (b?.authorEmail || "").toString().trim().toLowerCase();
+        const authorId = (b?.authorId || b?.userId || b?.postedBy || "").toString();
+        const nameMatch = currentUserName && authorName && authorName.toLowerCase() === currentUserName.toLowerCase();
+        const emailMatch = currentUserEmail && authorEmail && authorEmail === currentUserEmail;
+        const idMatch = currentUserId && authorId && authorId === currentUserId;
+        return nameMatch || emailMatch || idMatch;
+      }));
       
       // Debug: Log the first blog to see the image structure
       if (fetchedBlogs.length > 0) {
@@ -191,14 +211,26 @@ export default function BlogDashboard() {
         console.log('Blog image structure:', fetchedBlogs[0].blog_Image);
       }
       
-      setBlogs(fetchedBlogs);
+      setBlogs(myBlogs);
       setTotalPages(res.data.totalPages || 1);
-      calculateAnalytics(fetchedBlogs);
+      calculateAnalytics(myBlogs);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Defensive ownership check for actions (UI already filtered, but keep guard)
+  const isOwnedByMe = (blog) => {
+    if (!blog) return false;
+    const authorName = (blog?.author || "").toString().trim();
+    const authorEmail = (blog?.authorEmail || "").toString().trim().toLowerCase();
+    const authorId = (blog?.authorId || blog?.userId || blog?.postedBy || "").toString();
+    const nameMatch = currentUserName && authorName && authorName.toLowerCase() === currentUserName.toLowerCase();
+    const emailMatch = currentUserEmail && authorEmail && authorEmail === currentUserEmail;
+    const idMatch = currentUserId && authorId && authorId === currentUserId;
+    return isAdmin || nameMatch || emailMatch || idMatch;
   };
 
   const calculateAnalytics = (blogData) => {
@@ -585,19 +617,29 @@ export default function BlogDashboard() {
           </Tooltip>
 
           <Tooltip title="Edit Blog">
-            <Link to={`/seo/blogs/edit/${record._id}`}>
-              <Button
-                type="text"
-                icon={<Edit size={18} />}
-                className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-full"
-              />
-            </Link>
+            <Button
+              type="text"
+              icon={<Edit size={18} />}
+              className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-full"
+              onClick={(e) => {
+                if (!isOwnedByMe(record)) {
+                  e.preventDefault();
+                  message.warning('For edit, contact admin');
+                  return;
+                }
+                history(`/seo/blogs/edit/${record._id}`);
+              }}
+            />
           </Tooltip>
           <Tooltip title={record.isPublished ? "Unpublish Blog" : "Publish Blog"}>
             <Switch
               checked={record.isPublished}
               loading={publishLoading && selectedBlog?._id === record._id}
               onChange={(checked) => {
+                if (!isOwnedByMe(record)) {
+                  message.warning('For publish, contact admin');
+                  return;
+                }
                 setSelectedBlog(record);
                 handlePublishToggle(checked, record._id);
               }}
@@ -611,9 +653,9 @@ export default function BlogDashboard() {
               danger
               icon={<Trash2 size={18} />}
               onClick={() => {
-                console.log('Delete button clicked for blog:', record._id);
-                setSelectedBlog(record);
-                setDeleteModalVisible(true);
+                // Always block deletion: require contacting admin
+                message.warning('For delete, contact admin');
+                return;
               }}
               className="hover:bg-red-50 rounded-full"
             />

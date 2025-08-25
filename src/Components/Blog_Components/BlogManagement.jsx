@@ -1,12 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import api from "../../config/apiClient";
 import { ArrowDown, ArrowUp, Edit, Eye, Plus, Trash2, Search, Calendar, User, FileText, TrendingUp, BarChart3, Activity, Clock, Users, Eye as EyeIcon, ThumbsUp, Share2, MessageCircle } from "lucide-react";
 import { Modal, Switch, Badge, Progress, Card, Row, Col, Statistic, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../AuthContext";
 
 export default function BlogManagement() {
   const token = localStorage.getItem("myToken");
   const history = useNavigate();
+  const { agentData, isAdmin } = useContext(AuthContext) || {};
+
+  // Resolve current user identity (fallback to localStorage for robustness)
+  const localAgent = (() => {
+    try { return JSON.parse(window.localStorage.getItem("agentData") || "null"); } catch { return null; }
+  })();
+  const currentUserName = (agentData?.name || localAgent?.name || "").toString().trim();
+  const currentUserEmail = (agentData?.email || localAgent?.email || "").toString().trim().toLowerCase();
+  const currentUserId = (agentData?._id || localAgent?._id || "").toString();
 
   const [blogs, setBlogs] = useState([]);
   const [openModal, setOpenModal] = useState(false);
@@ -36,6 +46,18 @@ export default function BlogManagement() {
   // Handle delete blog modal
   const showModal = () => {
     setOpenModal(true);
+  };
+
+  // Ownership guard (UI also filtered but keep defensive checks)
+  const isOwnedByMe = (blog) => {
+    if (!blog) return false;
+    const authorName = (blog?.author || "").toString().trim();
+    const authorEmail = (blog?.authorEmail || "").toString().trim().toLowerCase();
+    const authorId = (blog?.authorId || blog?.userId || blog?.postedBy || "").toString();
+    const nameMatch = currentUserName && authorName && authorName.toLowerCase() === currentUserName.toLowerCase();
+    const emailMatch = currentUserEmail && authorEmail && authorEmail === currentUserEmail;
+    const idMatch = currentUserId && authorId && authorId === currentUserId;
+    return isAdmin || nameMatch || emailMatch || idMatch;
   };
 
   const handleOk = async (id) => {
@@ -88,17 +110,27 @@ export default function BlogManagement() {
       try {
         const res = await api.get(`blog/view?page=${currentPage}&limit=${pageSize}`);
         const list = Array.isArray(res?.data?.data) ? res.data.data : [];
-        setBlogs(list);
+        // Scope to my blogs if not admin
+        const myBlogs = (isAdmin ? list : list.filter((b) => {
+          const authorName = (b?.author || "").toString().trim();
+          const authorEmail = (b?.authorEmail || "").toString().trim().toLowerCase();
+          const authorId = (b?.authorId || b?.userId || b?.postedBy || "").toString();
+          const nameMatch = currentUserName && authorName && authorName.toLowerCase() === currentUserName.toLowerCase();
+          const emailMatch = currentUserEmail && authorEmail && authorEmail === currentUserEmail;
+          const idMatch = currentUserId && authorId && authorId === currentUserId;
+          return nameMatch || emailMatch || idMatch;
+        }));
+        setBlogs(myBlogs);
         setTotalPages(res?.data?.totalPages || 1);
 
-        // Calculate analytics
-        calculateAnalytics(list);
+        // Calculate analytics on filtered list
+        calculateAnalytics(myBlogs);
       } catch (error) {
         console.error("Error fetching blogs:", error);
       }
     };
     fetchData();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, currentUserName, currentUserEmail, currentUserId, isAdmin]);
 
   const calculateAnalytics = (blogData) => {
     const totalViews = blogData.reduce((sum, blog) => sum + (blog.views || 0), 0);
@@ -182,9 +214,9 @@ export default function BlogManagement() {
   };
 
   const handleDeleteButtonClick = (id) => {
-    showModal();
-    setBlogToDelete(id);
-    setModalText("Do you want to delete this Blog?");
+    // Always block deletion: require contacting admin
+    message.warning("For delete, contact admin");
+    return;
   };
 
   function cleanString(str) {
@@ -384,29 +416,41 @@ export default function BlogManagement() {
                     {/* Action Buttons */}
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       <div className="flex items-center gap-2">
-                            <button
+                        <button
                           className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-all duration-200"
                           onClick={() => handleBlogView(blog)}
-                              title="View Blog"
-                            >
+                          title="View Blog"
+                        >
                           <Eye size={18} />
-                            </button>
-                            <Link to={`/seo/blogs/edit/${blog._id}`}>
-                              <button
-                            className="p-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-all duration-200"
-                                title="Edit Blog"
-                              >
-                            <Edit size={18} />
-                              </button>
-                            </Link>
-                            <button
+                        </button>
+                        <button
+                          className="p-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+                          title="Edit Blog"
+                          onClick={(e) => {
+                            if (!isOwnedByMe(blog)) {
+                              e.preventDefault();
+                              message.warning("For edit, contact admin");
+                              return;
+                            }
+                            history(`/seo/blogs/edit/${blog._id}`);
+                          }}
+                        >
+                          <Edit size={18} />
+                        </button>
+                        <button
                           className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all duration-200"
-                              onClick={() => handleDeleteButtonClick(blog._id)}
-                              title="Delete Blog"
-                            >
+                          onClick={() => {
+                            if (!isOwnedByMe(blog)) {
+                              message.warning("For delete, contact admin");
+                              return;
+                            }
+                            handleDeleteButtonClick(blog._id);
+                          }}
+                          title="Delete Blog"
+                        >
                           <Trash2 size={18} />
-                            </button>
-                          </div>
+                        </button>
+                      </div>
 
                       {/* Published Toggle */}
                       <div className="flex items-center gap-2">
@@ -414,7 +458,13 @@ export default function BlogManagement() {
                         <Switch
                           checked={blog?.isPublished}
                           loading={isPublishedLoading}
-                          onChange={(checked) => handleIsPublished(checked, blog._id)}
+                          onChange={(checked) => {
+                            if (!isOwnedByMe(blog)) {
+                              message.warning("For publish, contact admin");
+                              return;
+                            }
+                            handleIsPublished(checked, blog._id);
+                          }}
                           className="custom-switch"
                         />
                       </div>
