@@ -27,6 +27,11 @@ const ProjectOrderManager = () => {
   const [previewProject, setPreviewProject] = useState(null); // project details pane
   const [showRawDetails, setShowRawDetails] = useState(false);
   const [relatedProjects, setRelatedProjects] = useState([]);
+  const [relatedOrderIds, setRelatedOrderIds] = useState([]);
+  const [relatedSynced, setRelatedSynced] = useState(true);
+  const [relatedSaving, setRelatedSaving] = useState(false);
+  const [relatedSelected, setRelatedSelected] = useState(null);
+  const [relatedTargetPos, setRelatedTargetPos] = useState("");
   const [relatedLoading, setRelatedLoading] = useState(false);
   const [relatedBuilder, setRelatedBuilder] = useState("");
   const [targetPosition, setTargetPosition] = useState("");
@@ -34,6 +39,8 @@ const ProjectOrderManager = () => {
   const hasSyncedRef = useRef(false);
   const previewRef = useRef(null);
   const relatedRef = useRef(null);
+  const propSyncTimerRef = useRef(null);
+  const relatedSyncTimerRef = useRef(null);
 
   // Management mode: projects | properties
   const [manageMode, setManageMode] = useState('projects');
@@ -107,6 +114,89 @@ const ProjectOrderManager = () => {
     'aarize-developers': { name: 'Aarize Group', projects: aarize, query: 'Aarize Group' }
   };
 
+  // Derived builder data - must be declared before any hooks that reference it
+  const selectedBuilderData = buildersData[selectedBuilder];
+  const selectedBuilderProjects = selectedBuilderData?.projects || [];
+  const hasCustomOrderDefined = buildersWithCustomOrder[selectedBuilder] === true;
+
+  // Real-time sync for Properties (Manage tab)
+  useEffect(() => {
+    // clear any previous timer
+    if (propSyncTimerRef.current) {
+      clearInterval(propSyncTimerRef.current);
+      propSyncTimerRef.current = null;
+    }
+    if (!selectedBuilder || manageMode !== 'properties') return;
+    const builderName = selectedBuilderData?.query || selectedBuilderData?.name || selectedBuilder;
+    const tick = async () => {
+      if (document.visibilityState !== 'visible') return;
+      try {
+        const orderDoc = await getPropertyOrder(builderName);
+        const latestIds = Array.isArray(orderDoc?.customOrder) ? orderDoc.customOrder : [];
+        if (latestIds.length === 0) return; // nothing saved yet
+        // If order differs, reapply
+        const currentIds = (propItems || []).map(p => p._id || p.id);
+        const sameLen = latestIds.length === currentIds.length;
+        const same = sameLen && latestIds.every((id, i) => id === currentIds[i]);
+        if (!same) {
+          const byId = new Map((propItems || []).map(p => [p._id || p.id, p]));
+          const ordered = [
+            ...latestIds.filter(id => byId.has(id)).map(id => byId.get(id)),
+            ...(propItems || []).filter(p => !latestIds.includes(p._id || p.id))
+          ];
+          setPropItems(ordered);
+          setPropOrderIds(ordered.map(p => p._id || p.id));
+          setPropSynced(true);
+        }
+      } catch (e) {
+        // silent
+      }
+    };
+    // initial tick soon
+    tick();
+    propSyncTimerRef.current = setInterval(tick, 30000); // 30s
+    return () => {
+      if (propSyncTimerRef.current) clearInterval(propSyncTimerRef.current);
+      propSyncTimerRef.current = null;
+    };
+  }, [manageMode, selectedBuilder, selectedBuilderData, getPropertyOrder, propItems]);
+
+  // Real-time sync for Related Properties panel
+  useEffect(() => {
+    if (relatedSyncTimerRef.current) {
+      clearInterval(relatedSyncTimerRef.current);
+      relatedSyncTimerRef.current = null;
+    }
+    if (!relatedBuilder) return;
+    const tick = async () => {
+      if (document.visibilityState !== 'visible') return;
+      try {
+        const orderDoc = await getPropertyOrder(relatedBuilder);
+        const latestIds = Array.isArray(orderDoc?.customOrder) ? orderDoc.customOrder : [];
+        if (latestIds.length === 0) return;
+        const currentIds = (relatedProjects || []).map(p => p._id || p.id);
+        const sameLen = latestIds.length === currentIds.length;
+        const same = sameLen && latestIds.every((id, i) => id === currentIds[i]);
+        if (!same) {
+          const byId = new Map((relatedProjects || []).map(p => [p._id || p.id, p]));
+          const ordered = [
+            ...latestIds.filter(id => byId.has(id)).map(id => byId.get(id)),
+            ...(relatedProjects || []).filter(p => !latestIds.includes(p._id || p.id))
+          ];
+          setRelatedProjects(ordered);
+          setRelatedOrderIds(ordered.map(p => p._id || p.id));
+          setRelatedSynced(true);
+        }
+      } catch {}
+    };
+    tick();
+    relatedSyncTimerRef.current = setInterval(tick, 30000);
+    return () => {
+      if (relatedSyncTimerRef.current) clearInterval(relatedSyncTimerRef.current);
+      relatedSyncTimerRef.current = null;
+    };
+  }, [relatedBuilder, getPropertyOrder, relatedProjects]);
+
   // Open related properties by the clicked project's builder
   const openRelatedByBuilder = async (project) => {
     if (!project) return;
@@ -134,14 +224,55 @@ const ProjectOrderManager = () => {
     try {
       // Use a positive limit; some backends treat 0 as return 0 rows
       console.log('🔍 Loading related properties for builder:', queryName, 'from label:', label);
-      const result = await getProjectbyBuilder(queryName, 48);
-      console.log('🔍 Related properties result count:', Array.isArray(result) ? result.length : 'N/A');
-      setRelatedProjects(Array.isArray(result) ? result : []);
+      // Fetch list and existing order, then sort using saved customOrder
+      const [list, orderDoc] = await Promise.all([
+        getProjectbyBuilder(queryName, 48),
+        getPropertyOrder(queryName)
+      ]);
+      const arr = Array.isArray(list) ? list : [];
+      const byId = new Map(arr.map(p => [p._id || p.id, p]));
+      let ordered = arr;
+      let orderIds = [];
+      if (orderDoc?.customOrder?.length) {
+        orderIds = orderDoc.customOrder.filter(id => byId.has(id));
+        const remaining = arr.filter(p => !orderIds.includes(p._id || p.id));
+        ordered = [...orderIds.map(id => byId.get(id)), ...remaining];
+      } else {
+        orderIds = arr.map(p => p._id || p.id);
+      }
+      setRelatedProjects(ordered);
+      setRelatedOrderIds(orderIds);
+      setRelatedSynced(true);
     } catch (e) {
       console.error('Failed to load related projects:', e);
       setRelatedProjects([]);
     } finally {
       setRelatedLoading(false);
+    }
+  };
+
+  const moveRelatedProperty = (index, dir) => {
+    setRelatedProjects(prev => {
+      const arr = [...prev];
+      const j = index + dir;
+      if (j < 0 || j >= arr.length) return arr;
+      const tmp = arr[index];
+      arr[index] = arr[j];
+      arr[j] = tmp;
+      setRelatedOrderIds(arr.map(p => p._id || p.id));
+      setRelatedSynced(false);
+      return arr;
+    });
+  };
+
+  const handleSaveRelatedPropertyOrder = async () => {
+    try {
+      const builderName = relatedBuilder;
+      await savePropertyOrder({ builderName, customOrder: relatedOrderIds, hasCustomOrder: true });
+      setRelatedSynced(true);
+    } catch (e) {
+      console.error('Save related property order failed:', e);
+      alert('Failed to save related property order');
       // Smooth scroll to related section
       setTimeout(() => {
         if (relatedRef?.current) {
@@ -151,10 +282,6 @@ const ProjectOrderManager = () => {
     }
   };
 
-  const selectedBuilderData = buildersData[selectedBuilder];
-  const selectedBuilderProjects = selectedBuilderData?.projects || [];
-  const hasCustomOrderDefined = buildersWithCustomOrder[selectedBuilder] === true;
-  
   // Create ordered projects based on current state
   const orderedProjects = useMemo(() => {
     if (!selectedBuilder || !selectedBuilderProjects.length) {
@@ -190,42 +317,9 @@ const ProjectOrderManager = () => {
       const randomSeed = randomSeeds[selectedBuilder] || generateSeedFromBuilderName(selectedBuilder);
       return shuffleArrayWithSeed([...selectedBuilderProjects], randomSeed);
     }
-  }, [selectedBuilderProjects, customOrders, buildersWithCustomOrder, randomSeeds, selectedBuilder, isRandomOrder]);
+  }, [selectedBuilder, selectedBuilderProjects, customOrders, buildersWithCustomOrder, randomSeeds]);
 
-  // Load properties + saved order when switching to properties mode
-  useEffect(() => {
-    const loadProperties = async () => {
-      if (!selectedBuilder || manageMode !== 'properties') return;
-      setPropLoading(true);
-      try {
-        const builderName = selectedBuilderData?.query || selectedBuilderData?.name || selectedBuilder;
-        const [list, orderDoc] = await Promise.all([
-          getPropertiesByBuilder(builderName, 500),
-          getPropertyOrder(builderName),
-        ]);
-        const byId = new Map(list.map(p => [p._id || p.id, p]));
-        let ordered = list;
-        let orderIds = [];
-        if (orderDoc?.customOrder?.length) {
-          orderIds = orderDoc.customOrder.filter(id => byId.has(id));
-          const remaining = list.filter(p => !orderIds.includes(p._id || p.id));
-          ordered = [...orderIds.map(id => byId.get(id)), ...remaining];
-        } else {
-          orderIds = list.map(p => p._id || p.id);
-        }
-        setPropItems(ordered);
-        setPropOrderIds(orderIds);
-        setPropSynced(true);
-      } catch (e) {
-        console.error('Failed to load properties/order:', e);
-        setPropItems([]);
-      } finally {
-        setPropLoading(false);
-      }
-    };
-    loadProperties();
-  }, [manageMode, selectedBuilder, selectedBuilderData, getPropertiesByBuilder, getPropertyOrder]);
-
+  // Single definition of moveProperty (Properties manage tab)
   const moveProperty = (index, dir) => {
     setPropItems(prev => {
       const arr = [...prev];
@@ -1047,12 +1141,127 @@ const ProjectOrderManager = () => {
             ) : (
               <section className="w-full mb-2">
                 <div className="pt-2 rounded-lg relative">
+                  {/* Ordering Controls */}
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className={`px-2 py-1 rounded ${relatedSynced ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'}`}>
+                        {relatedSynced ? '✅ Synced' : '🔄 Unsaved changes'}
+                      </span>
+                      <span className="text-gray-500">Total: {relatedProjects.length}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <select
+                        className="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-sm"
+                        value={relatedSelected ? (relatedSelected._id || relatedSelected.id) : ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) { setRelatedSelected(null); return; }
+                          const found = relatedProjects.find(p => (p._id || p.id) === val);
+                          setRelatedSelected(found || null);
+                        }}
+                      >
+                        <option value="">Select property…</option>
+                        {relatedProjects.map((p, i) => (
+                          <option key={p._id || p.id || i} value={p._id || p.id}>{i+1}. {p.projectName || p.name || p.project_title}</option>
+                        ))}
+                      </select>
+                      <input
+                        type="number"
+                        min="1"
+                        max={relatedProjects.length}
+                        value={relatedTargetPos}
+                        onChange={(e) => setRelatedTargetPos(e.target.value)}
+                        placeholder={`1-${relatedProjects.length}`}
+                        className="w-24 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-sm"
+                      />
+                      <button
+                        className="px-3 py-1 rounded bg-yellow-600 text-white text-sm disabled:opacity-50"
+                        disabled={!relatedSelected || !relatedTargetPos}
+                        onClick={() => {
+                          const to = Number(relatedTargetPos) - 1;
+                          setRelatedProjects(prev => {
+                            if (!relatedSelected || isNaN(to) || to < 0 || to >= prev.length) return prev;
+                            const copy = [...prev];
+                            const from = copy.findIndex(x => (x._id || x.id) === (relatedSelected._id || relatedSelected.id));
+                            if (from === -1 || from === to) return prev;
+                            const [moved] = copy.splice(from, 1);
+                            copy.splice(to, 0, moved);
+                            setRelatedOrderIds(copy.map(x => x._id || x.id));
+                            setRelatedSynced(false);
+                            return copy;
+                          });
+                          setRelatedSelected(null);
+                          setRelatedTargetPos("");
+                        }}
+                      >
+                        Move to position
+                      </button>
+                      <button
+                        className="px-4 py-1 rounded bg-red-600 text-white text-sm disabled:opacity-50"
+                        disabled={relatedSaving || relatedProjects.length === 0 || relatedSynced}
+                        onClick={async () => {
+                          try {
+                            setRelatedSaving(true);
+                            await savePropertyOrder({ builderName: relatedBuilder, customOrder: relatedOrderIds, hasCustomOrder: true });
+                            setRelatedSynced(true);
+                          } catch (e) {
+                            console.error('Save related order failed:', e);
+                            alert('Failed to save property order');
+                          } finally {
+                            setRelatedSaving(false);
+                          }
+                        }}
+                      >
+                        {relatedSaving ? 'Saving…' : 'Save Order'}
+                      </button>
+                    </div>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {relatedProjects.map((project, idx) => (
                       <div
                         key={project._id || project.id || idx}
                         className="relative m-auto w-full p-3 max-w-lg flex flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 shadow"
                       >
+                        {/* Row header with position and move buttons */}
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-200">{idx + 1}</span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              className="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 disabled:opacity-50"
+                              title="Move up"
+                              disabled={idx === 0}
+                              onClick={() => {
+                                setRelatedProjects(prev => {
+                                  const arr = [...prev];
+                                  if (idx <= 0) return arr;
+                                  const tmp = arr[idx-1];
+                                  arr[idx-1] = arr[idx];
+                                  arr[idx] = tmp;
+                                  setRelatedOrderIds(arr.map(p => p._id || p.id));
+                                  setRelatedSynced(false);
+                                  return arr;
+                                });
+                              }}
+                            >▲</button>
+                            <button
+                              className="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 disabled:opacity-50"
+                              title="Move down"
+                              disabled={idx === relatedProjects.length - 1}
+                              onClick={() => {
+                                setRelatedProjects(prev => {
+                                  const arr = [...prev];
+                                  if (idx >= arr.length - 1) return arr;
+                                  const tmp = arr[idx+1];
+                                  arr[idx+1] = arr[idx];
+                                  arr[idx] = tmp;
+                                  setRelatedOrderIds(arr.map(p => p._id || p.id));
+                                  setRelatedSynced(false);
+                                  return arr;
+                                });
+                              }}
+                            >▼</button>
+                          </div>
+                        </div>
                         {/* Image (optional) */}
                         {project.frontImage?.url ? (
                           <div className="relative flex h-36 overflow-hidden rounded-md bg-gray-100">
