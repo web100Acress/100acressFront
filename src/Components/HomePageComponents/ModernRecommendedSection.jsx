@@ -1,16 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Skeleton } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Autoplay } from 'swiper/modules';
+import { Pagination, Autoplay, Navigation } from 'swiper/modules';
 import { 
   MdLocationPin, 
   MdAttachMoney, 
   MdStar, 
   MdShare,
-  MdArrowForward
+  MdArrowForward,
+  MdChevronLeft,
+  MdChevronRight
 } from 'react-icons/md';
+import { MdFavoriteBorder } from 'react-icons/md';
+import { AuthContext } from '../../AuthContext';
+import AuthModal from '../AuthModal';
 import { FaBed } from 'react-icons/fa';
 import styled from 'styled-components';
 import Api_Service from "../../Redux/utils/Api_Service";
@@ -18,17 +23,22 @@ import Api_Service from "../../Redux/utils/Api_Service";
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 const ModernRecommendedSection = () => {
   const spotlight = useSelector(store => store?.project?.spotlight);
   const [hoveredCard, setHoveredCard] = useState(null);
   const swiperRef = useRef(null);
   const { getSpotlight } = Api_Service();
+  const { isAuthenticated } = useContext(AuthContext);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Fetch spotlight data on component mount
   useEffect(() => {
     getSpotlight();
   }, [getSpotlight]);
+
+  // Autoplay and navigation disabled per request
 
   // Mock data for testing if no spotlight data
   const mockSpotlightData = [
@@ -169,12 +179,12 @@ const ModernRecommendedSection = () => {
         {/* Header Section */}
         <div className="text-center mb-2 sm:mb-4 px-2 pt-2">
           <div className="inline-flex sm:inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-1 sm:mb-0">
-            <div className="w-12 h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full hidden sm:block"></div>
+            <div className="w-12 h-1 bg-gradient-to-r from-red-400 to-red-600 rounded-full hidden sm:block"></div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight tracking-tight">
               <span className="block sm:inline">100acress</span>
-              <span className="text-orange-500 sm:ml-2 block sm:inline">Recommended</span>
+              <span className="text-red-600 sm:ml-2 block sm:inline">Recommended</span>
             </h2>
-            <div className="w-12 h-1 bg-gradient-to-r from-orange-600 to-orange-400 rounded-full hidden sm:block"></div>
+            <div className="w-12 h-1 bg-gradient-to-r from-red-600 to-red-400 rounded-full hidden sm:block"></div>
           </div>
           <p className="hidden sm:block text-gray-600 text-lg max-w-2xl mx-auto mb-0 px-1">
             Discover premium properties with luxury, location, and investment potential.
@@ -190,16 +200,16 @@ const ModernRecommendedSection = () => {
         <div className="carousel-container">
           <Swiper
             ref={swiperRef}
-            modules={[Pagination, Autoplay]}
+            modules={[Pagination, Autoplay, Navigation]}
             grabCursor={true}
             centeredSlides={false}
-            slidesPerView={2}
+            slidesPerView={1}
+            slidesPerGroup={1}
             spaceBetween={24}
             loop={true}
-            autoplay={{
-              delay: 5000,
-              disableOnInteraction: false,
-            }}
+            allowTouchMove={true}
+            simulateTouch={true}
+            autoplay={false}
             pagination={{
               clickable: true,
               dynamicBullets: true,
@@ -208,26 +218,31 @@ const ModernRecommendedSection = () => {
             breakpoints={{
               320: {
                 slidesPerView: 1,
+                slidesPerGroup: 1,
                 spaceBetween: 20,
                 centeredSlides: true,
               },
               640: {
                 slidesPerView: 2,
+                slidesPerGroup: 1,
                 spaceBetween: 24,
                 centeredSlides: false,
               },
               768: {
                 slidesPerView: 3,
+                slidesPerGroup: 1,
                 spaceBetween: 20,
                 centeredSlides: false,
               },
               1024: {
                 slidesPerView: 4,
+                slidesPerGroup: 1,
                 spaceBetween: 20,
                 centeredSlides: false,
               },
               1280: {
                 slidesPerView: 4,
+                slidesPerGroup: 1,
                 spaceBetween: 24,
                 centeredSlides: false,
               },
@@ -244,17 +259,25 @@ const ModernRecommendedSection = () => {
                   truncateText={truncateText}
                   formatPrice={formatPrice}
                   formatLocation={formatLocation}
+                  isAuthenticated={isAuthenticated}
+                  setIsAuthModalOpen={setIsAuthModalOpen}
                 />
               </SwiperSlide>
             ))}
           </Swiper>
 
-          {/* Navigation arrows removed intentionally */}
+          {/* Navigation arrows removed */}
 
           {/* Custom Pagination */}
           <div className="swiper-pagination custom-pagination"></div>
         </div>
       </div>
+      {/* Auth Modal */}
+      <AuthModal
+        open={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        defaultView="register"
+      />
     </SectionWrapper>
   );
 };
@@ -266,9 +289,21 @@ const PropertyCard = ({
   onLeave,
   truncateText,
   formatPrice,
-  formatLocation
+  formatLocation,
+  isAuthenticated,
+  setIsAuthModalOpen
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  
+  const handleWishlist = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      setIsAuthModalOpen(true);
+    } else {
+      // Add to wishlist logic for authenticated users
+    }
+  };
 
   const handleShare = (e) => {
     e.preventDefault();
@@ -310,94 +345,109 @@ const PropertyCard = ({
     });
   };
 
+  const handleCardClick = (e) => {
+    // Don't navigate if clicking on share or view details buttons
+    if (e.target.closest('.share-btn') || e.target.closest('.view-details-btn')) {
+      e.preventDefault();
+      return;
+    }
+    // Navigate to project page
+    window.location.href = `/${project?.project_url}/`;
+  };
+
+  const handleViewDetails = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = `/${project?.project_url}/`;
+  };
+
   return (
     <CardWrapper
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
       className={`property-card ${isHovered ? 'hovered' : ''}`}
+      onClick={handleCardClick}
     >
-      <Link 
-        to={`/${project?.project_url}/`}
-        className="card-link"
-        onClick={(e) => {
-          // Don't navigate if clicking on share or view details buttons
-          if (e.target.closest('.share-btn') || e.target.closest('.view-details-btn')) {
-            e.preventDefault();
-          }
-        }}
-      >
-        {/* Image Section */}
-        <div className="image-container">
-          <img
-            src={project?.frontImage?.url || project?.thumbnailImage?.url}
-            alt={project?.projectName}
-            className={`property-image ${imageLoaded ? 'loaded' : ''}`}
-            onLoad={() => setImageLoaded(true)}
-            onError={(e) => {
-              // Prevent infinite loop if fallback also errors
-              if (!e.currentTarget.dataset.fallbackApplied) {
-                e.currentTarget.dataset.fallbackApplied = '1';
-                // Inline SVG fallback to avoid extra network requests
-                const fallback =
-                  'data:image/svg+xml;utf8,' +
-                  encodeURIComponent(
-                    `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
-                      <rect width="100%" height="100%" fill="#f3f4f6"/>
-                      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="20">Image unavailable</text>
-                    </svg>`
-                  );
-                e.currentTarget.src = fallback;
-                setImageLoaded(true);
-              }
-            }}
-            loading="lazy"
-          />
-          
-          {/* Overlay with gradient */}
-          <div className="image-overlay" />
-          
-          {/* Share Button */}
-          <button
-            onClick={handleShare}
-            className="share-btn"
-          >
-            <MdShare />
-          </button>
+      {/* Image Section */}
+      <div className="image-container">
+        <img
+          src={project?.frontImage?.url || project?.thumbnailImage?.url}
+          alt={project?.projectName}
+          className={`property-image ${imageLoaded ? 'loaded' : ''}`}
+          onLoad={() => setImageLoaded(true)}
+          onError={(e) => {
+            // Prevent infinite loop if fallback also errors
+            if (!e.currentTarget.dataset.fallbackApplied) {
+              e.currentTarget.dataset.fallbackApplied = '1';
+              // Inline SVG fallback to avoid extra network requests
+              const fallback =
+                'data:image/svg+xml;utf8,' +
+                encodeURIComponent(
+                  `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+                    <rect width="100%" height="100%" fill="#f3f4f6"/>
+                    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="20">Image unavailable</text>
+                  </svg>`
+                );
+              e.currentTarget.src = fallback;
+              setImageLoaded(true);
+            }
+          }}
+          loading="lazy"
+        />
+        
+        {/* Overlay with gradient */}
+        <div className="image-overlay" />
+        
+        {/* Share Button */}
+        <button
+          onClick={handleShare}
+          className="share-btn"
+        >
+          <MdShare />
+        </button>
 
-          {/* Price Badge */}
-          <div className="price-badge">
-            <span className="price-text">
-              {formatPrice(project?.minPrice)}
+        {/* Wishlist (Heart) Button */}
+        <button
+          onClick={handleWishlist}
+          className="wishlist-btn"
+          aria-label="Add to wishlist (login required)"
+          title="Login to add to wishlist"
+        >
+          <MdFavoriteBorder />
+        </button>
+
+        {/* Price Badge */}
+        <div className="price-badge">
+          <span className="price-text">
+            {formatPrice(project?.minPrice)}
+          </span>
+        </div>
+
+        {/* Left Side Content Overlay */}
+        <div className="left-content-overlay">
+          <div className="content-header">
+            <h3 className="project-name">
+              {truncateText(project?.projectName, 4)}
+            </h3>
+          </div>
+
+          <div className="location-info">
+            <MdLocationPin className="location-icon" />
+            <span>
+              {formatLocation(project)}
             </span>
           </div>
-
-          {/* Left Side Content Overlay */}
-          <div className="left-content-overlay">
-            <div className="content-header">
-              <h3 className="project-name">
-                {truncateText(project?.projectName, 4)}
-              </h3>
-            </div>
-
-            <div className="location-info">
-              <MdLocationPin className="location-icon" />
-              <span>
-                {formatLocation(project)}
-              </span>
-            </div>
-          </div>
-
-          {/* View Details Button */}
-          <Link 
-            to={`/${project?.project_url}/`}
-            className="view-details-btn"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <span>View Details</span>
-            <MdArrowForward />
-          </Link>
         </div>
-      </Link>
+
+        {/* View Details Button */}
+        <button 
+          onClick={handleViewDetails}
+          className="view-details-btn"
+        >
+          <span>View Details</span>
+          <MdArrowForward />
+        </button>
+      </div>
     </CardWrapper>
   );
 };
@@ -446,36 +496,45 @@ const SectionWrapper = styled.section`
     transform: translateY(-50%);
     width: 60px;
     height: 60px;
-    background: transparent;
-    border: none;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #dc2626;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     z-index: 100;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    color: white;
-    font-size: 32px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: #dc2626;
+    font-size: 28px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 
     &:hover {
-      transform: translateY(-50%) scale(1.2);
+      transform: translateY(-50%) scale(1.1);
+      background: #dc2626;
       color: white;
-      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
     }
 
     &.swiper-button-prev {
-      left: -80px;
+      left: 20px;
     }
     
     &.swiper-button-next {
-      right: -80px;
+      right: 20px;
     }
 
     &.swiper-button-disabled {
-      opacity: 0.5;
+      opacity: 0.3;
       cursor: not-allowed;
       transform: translateY(-50%) scale(0.9);
+      
+      &:hover {
+        transform: translateY(-50%) scale(0.9);
+        background: rgba(255, 255, 255, 0.95);
+        color: #dc2626;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      }
     }
   }
 
@@ -491,7 +550,7 @@ const SectionWrapper = styled.section`
       border-radius: 5px;
       
       &.swiper-pagination-bullet-active {
-        background: #f97316;
+        background: #dc2626;
         opacity: 1;
         transform: scale(1.2);
         width: 20px;
@@ -538,14 +597,14 @@ const SectionWrapper = styled.section`
     .custom-nav-btn {
       width: 50px;
       height: 50px;
-      font-size: 28px;
+      font-size: 24px;
       
       &.swiper-button-prev {
-        left: -70px;
+        left: 10px;
       }
       
       &.swiper-button-next {
-        right: -70px;
+        right: 10px;
       }
     }
   }
@@ -565,14 +624,14 @@ const SectionWrapper = styled.section`
     .custom-nav-btn {
       width: 45px;
       height: 45px;
-      font-size: 24px;
+      font-size: 20px;
       
       &.swiper-button-prev {
-        left: -60px;
+        left: 5px;
       }
       
       &.swiper-button-next {
-        right: -60px;
+        right: 5px;
       }
     }
   }
@@ -669,8 +728,37 @@ const CardWrapper = styled.div`
       &:hover {
         background: white;
         transform: scale(1.1);
-        color: #f97316;
+        color: #dc2626;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+    }
+
+    .wishlist-btn {
+      position: absolute;
+      top: 16px;
+      right: 64px; /* place to the left of share */
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 10;
+      color: #6b7280;
+
+      &:hover {
+        background: white;
+        transform: scale(1.1);
+        color: #ef4444; /* red on hover */
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .wishlist-icon {
+        font-size: 24px;
       }
     }
 
@@ -752,7 +840,7 @@ const CardWrapper = styled.div`
 
       .location-icon {
         font-size: 16px;
-        color: #f97316;
+        color: #dc2626;
       }
     }
 
@@ -766,7 +854,7 @@ const CardWrapper = styled.div`
       gap: 6px;
       padding: 8px 16px;
       background: transparent;
-      color: #f97316;
+      color: #dc2626;
       text-decoration: none;
       border-radius: 8px;
       font-weight: 700;
@@ -778,9 +866,9 @@ const CardWrapper = styled.div`
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 
       &:hover {
-        background: rgba(249, 115, 22, 0.1);
+        background: rgba(220, 38, 38, 0.1);
         transform: translateY(-2px);
-        color: #ea580c;
+        color: #b91c1c;
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
       }
     }

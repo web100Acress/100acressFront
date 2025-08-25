@@ -3,13 +3,15 @@ import { styled } from "styled-components";
 import { MdLocationPin, MdFavorite, MdFavoriteBorder, MdStar, MdArrowForward } from "react-icons/md";
 import { FaBed, FaRulerCombined } from 'react-icons/fa';
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { LOGIN } from "../../lib/route";
 
 function ModernCard() {
   const [trendingProject, setTrendingProject] = useState([]);
   const [hasFetchedData, setHasFetchedData] = useState(false);
   const [favorites, setFavorites] = useState(new Set());
   const [hoveredCard, setHoveredCard] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!hasFetchedData) {
@@ -78,9 +80,11 @@ function ModernCard() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                toggleFavorite(item._id);
+                navigate(LOGIN);
               }}
               className="favorite-btn"
+              aria-label="Add to wishlist (login required)"
+              title="Login to add to wishlist"
             >
               {favorites.has(item._id) ? 
                 <MdFavorite className="text-red-500" /> : 
