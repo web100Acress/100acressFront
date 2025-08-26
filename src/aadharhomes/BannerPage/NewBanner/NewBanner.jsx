@@ -26,8 +26,8 @@ import Dynamicsvg from '../Dynamicsvg';
 import Api_Service from '../../../Redux/utils/Api_Service';
 const NewBanner = () => {
   const { pUrl } = useParams();
-  const [projectViewDetails, setProjectViewDetails] = useState({});
-  const [builderName, setBuilderName] = useState("");
+  const [projectViewDetails, setProjectViewDetails] = useState([]);
+  const [builderName, setBuilderName] = useState([]);
   const { project } = useContext(DataContext);
   const slideRefs = useRef(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -46,7 +46,7 @@ const NewBanner = () => {
   const [PopUpresponseMessage, setPopUpResponseMessage] = useState("");
   const [isModalOpenGallery, setIsModalOpenGallery] = useState(false);
   const [modalImageGallery, setModalImageGallery] = useState(null);
-  const { getProjectbyBuilder, getPropertyOrder } = Api_Service();
+  const {getProjectbyBuilder} = Api_Service();
   const [builderProject, setBuilderProject] = useState([]); 
   const [error, setError] = useState(null);
   const query = projectViewDetails?.builderName ;
@@ -75,52 +75,14 @@ const NewBanner = () => {
     const fetchData = async () => {
       try {
         const fetchedResult = await getProjectbyBuilder(query, 0);
-        let list = Array.isArray(fetchedResult) ? fetchedResult : [];
-
-        // Try to apply saved property order for this builder
-        try {
-          const orderDoc = await getPropertyOrder(query);
-          const orderIds = Array.isArray(orderDoc?.customOrder)
-            ? orderDoc.customOrder.map(String)
-            : [];
-          if (orderIds.length > 0 && list.length > 0) {
-            const byId = new Map(list.map(p => [String(p._id || p.id), p]));
-            const orderedById = orderIds
-              .map(id => byId.get(id))
-              .filter(Boolean);
-            let remaining = list.filter(p => !orderIds.includes(String(p._id || p.id)));
-
-            // If very few matched by id, try a fallback by name to maximize alignment
-            if (orderedById.length < Math.min(3, list.length)) {
-              const byName = new Map(list.map(p => [String(p.projectName || p.name || '').trim().toLowerCase(), p]));
-              const orderedByName = orderIds
-                .map(id => String(id).trim().toLowerCase())
-                .map(nameKey => byName.get(nameKey))
-                .filter(Boolean);
-              // Use whichever yields more matches
-              if (orderedByName.length > orderedById.length) {
-                const used = new Set(orderedByName.map(p => String(p._id || p.id)));
-                remaining = list.filter(p => !used.has(String(p._id || p.id)));
-                list = [...orderedByName, ...remaining];
-              } else {
-                list = [...orderedById, ...remaining];
-              }
-            } else {
-              list = [...orderedById, ...remaining];
-            }
-          }
-        } catch (_) {
-          // no-op if order fetch fails
-        }
-
-        setBuilderProject(list);
+        setBuilderProject(fetchedResult);
       } catch (err) {
         setError(err);
       }
     };
 
-    if (query && typeof query === 'string') fetchData();
-  }, [query, getProjectbyBuilder, getPropertyOrder]);
+    fetchData();
+  }, [query]);
 
 
   const {
@@ -135,9 +97,6 @@ const NewBanner = () => {
     highlight,
     projectGallery,
   } = projectViewDetails || {};
-
-  // Prefer projectViewDetails.builderName; fallback to local state and other possible keys
-  const builderLabel = projectViewDetails?.builderName || builderName || projectViewDetails?.builder || projectViewDetails?.builder_name || "";
 
   const sliderImages = project_floorplan_Image || [];
 
@@ -1113,7 +1072,6 @@ const items =text.map((item, index) => ({
 
 
 
-
             {/* How much */}
 
             <div className="p-2 pt-1 mt-2 pb-0 h-fit" >
@@ -1184,8 +1142,8 @@ const items =text.map((item, index) => ({
 
             {/* Floor Plan */}
 
-           { projectViewDetails.project_floorplan_Image?.length !== 0 && ( <>
-           <div className="p-2 pt-2 mt-4 pb-0 h-fit">
+          { projectViewDetails.project_floorplan_Image?.length !== 0 && ( <>
+          <div className="p-2 pt-2 mt-4 pb-0 h-fit">
               <div className="flex flex-justify-center items-stretch rounded h-auto">
                 <div className="text-black w-full flex flex-col">
                   <div className="flex flex-col md:flex-row h-full">
@@ -1316,7 +1274,7 @@ const items =text.map((item, index) => ({
         right: 1%;
       }
     }
-             `}</style>
+            `}</style>
             </div>
             
             </>)}
@@ -1635,37 +1593,37 @@ const items =text.map((item, index) => ({
             </div>
 
             <div className="h-fit" >
-               <div className="flex flex-justify-center items-stretch rounded h-auto">
-                 <div className="text-black w-full flex flex-col">
-                   <div className="flex flex-col md:flex-row h-full">
- 
-                     <div className="w-full md:w-1/1 sm:w-full p-4 text-black flex flex-col justify-center items-start">
-                       <span className="lg:text-2xl md:text-2xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
-                         <span className="flex items-center justify-center p-1">
-                           <LineIcon />{" "}
-                         </span>
-                         {" "}F.A.Q
-                       </span>
-                       <h4
+              <div className="flex flex-justify-center items-stretch rounded h-auto">
+                <div className="text-black w-full flex flex-col">
+                  <div className="flex flex-col md:flex-row h-full">
+
+                    <div className="w-full md:w-1/1 sm:w-full p-4 text-black flex flex-col justify-center items-start">
+                      <span className="lg:text-2xl md:text-2xl sm:text-base text-justify text-black-600 flex items-center justify-start space-x-2">
+                        <span className="flex items-center justify-center p-1">
+                          <LineIcon />{" "}
+                        </span>
+                        {" "}F.A.Q
+                      </span>
+                      <h4
                         
-                         className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
-                       >
-                         About {projectViewDetails.projectName}
-                       </h4>
- 
- 
-                       <div className='p-8 h-fit w-full '>
-                         <Collapse items={items} />
-                       </div>
- 
-                     </div>
- 
- 
- 
-                   </div>
-                 </div>
-               </div>
-             </div>
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
+                      >
+                        About {projectViewDetails.projectName}
+                      </h4>
+
+
+                      <div className='p-8 h-fit w-full '>
+                        <Collapse items={items} />
+                      </div>
+
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Related property */}
 
@@ -1681,14 +1639,12 @@ const items =text.map((item, index) => ({
                         </span>
                         {" "}Others
                       </span>
-                      {projectViewDetails?.builderName || builderName || projectViewDetails?.builder || projectViewDetails?.builder_name ? (
-                        <h4
-                          
-                          className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
-                        >
-                          Properties by {projectViewDetails?.builderName || builderName || projectViewDetails?.builder || projectViewDetails?.builder_name}
-                        </h4>
-                      ) : null}
+                      <h4
+                        
+                        className="mt-1 text-2xl sm:text-2xl md:text-4xl font-AbrialFatFace"
+                      >
+                        Properties by {projectViewDetails.builderName}
+                      </h4>
 
 
                       <section className="w-full  mb-2">
@@ -1737,7 +1693,7 @@ const items =text.map((item, index) => ({
 
                                         )
                                       }
-                                     
+                                    
                                     </div>
 
                                     {/* Right section for the arrow icon */}
@@ -1799,7 +1755,7 @@ const items =text.map((item, index) => ({
                       href={`tel:${projectViewDetails?.mobileNumber  === 9811750130 ? "8527134491" : "9315375335" }`}
                       className="flex items-center justify-center text-white text-3xl"
                     >
-                     <span className="text-2xl"><PhoneIcon /></span>
+                    <span className="text-2xl"><PhoneIcon /></span>
                       <span className="text-2xl"> &nbsp; {`${projectViewDetails?.mobileNumber  === 9811750130 ? "+91 8527-134-491" : "+91 9315-375-335" }`}</span>
                     </a>
                   </p>
@@ -1906,6 +1862,7 @@ const items =text.map((item, index) => ({
         </Wrapper>
 
       </div>
+    
   );
 };
 
@@ -2019,7 +1976,7 @@ const Wrapper = styled.section`
   }
 
   .dd-m-whatsapp:hover {
-   transform: rotate(0.9turn);
+  transform: rotate(0.9turn);
     box-shadow: 0 5px 15px 2px rgba(0, 123, 255, 0.3); /* Blue shadow */
   }
 

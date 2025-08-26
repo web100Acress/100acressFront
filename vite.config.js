@@ -19,7 +19,7 @@ export default defineConfig(() => {
     },
     preview:{port:4000},
     build: {
-      outDir: 'build',
+      outDir: 'build',  
       rollupOptions: {
         output: {
           // manualChunks removed to let Vite handle chunking automatically
