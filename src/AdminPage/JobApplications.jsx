@@ -39,6 +39,16 @@ const JobApplications = () => {
     }
   };
 
+  const reject = async (appId) => {
+    if (!appId) return;
+    try {
+      await api.put(`/career/application/${appId}/reject`);
+      setApps((prev) => prev.map((a) => (a._id === appId ? { ...a, status: "rejected" } : a)));
+    } catch (e) {
+      alert(e?.response?.data?.message || "Reject failed");
+    }
+  };
+
   const rows = useMemo(() => {
     return [...apps].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [apps]);
@@ -177,16 +187,26 @@ const JobApplications = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           {getStatusBadge(a.status)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          {a.status !== "approved" ? (
-                            <button
-                              className="px-3 py-1.5 rounded-md bg-green-600 text-white hover:bg-green-700 transition duration-300"
-                              onClick={() => approve(a._id)}
-                            >
-                              Approve
-                            </button>
-                          ) : (
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                          {a.status === "approved" ? (
                             <span className="text-gray-400">Approved</span>
+                          ) : a.status === "rejected" ? (
+                            <span className="text-gray-400">Rejected</span>
+                          ) : (
+                            <>
+                              <button
+                                className="px-3 py-1.5 rounded-md bg-green-600 text-white hover:bg-green-700 transition duration-300"
+                                onClick={() => approve(a._id)}
+                              >
+                                Approve
+                              </button>
+                              <button
+                                className="px-3 py-1.5 rounded-md bg-red-600 text-white hover:bg-red-700 transition duration-300"
+                                onClick={() => reject(a._id)}
+                              >
+                                Reject
+                              </button>
+                            </>
                           )}
                         </td>
                       </tr>
@@ -244,16 +264,26 @@ const JobApplications = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="mt-4 text-right">
-                      {a.status !== "approved" ? (
-                        <button
-                          className="w-full px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition duration-300"
-                          onClick={() => approve(a._id)}
-                        >
-                          Approve
-                        </button>
+                    <div className="mt-4 grid grid-cols-2 gap-2">
+                      {a.status === "approved" ? (
+                        <span className="text-gray-400 col-span-2 text-center">Approved</span>
+                      ) : a.status === "rejected" ? (
+                        <span className="text-gray-400 col-span-2 text-center">Rejected</span>
                       ) : (
-                        <span className="text-gray-400 block w-full text-center">Approved</span>
+                        <>
+                          <button
+                            className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition duration-300"
+                            onClick={() => approve(a._id)}
+                          >
+                            Approve
+                          </button>
+                          <button
+                            className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition duration-300"
+                            onClick={() => reject(a._id)}
+                          >
+                            Reject
+                          </button>
+                        </>
                       )}
                     </div>
                   </div>

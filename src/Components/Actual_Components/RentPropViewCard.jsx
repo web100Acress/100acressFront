@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import Footer from "./Footer";
-import axios from "axios";
+import api from "../../config/apiClient";
 import { Link, useNavigate } from "react-router-dom";
 import { MdFavoriteBorder } from "react-icons/md";
 import { LOGIN } from "../../lib/route";
@@ -54,8 +54,8 @@ const RentPropViewCard = () => {
   // Add search state
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Filtered and searched data
-  const filteredAndSearchedData = filterData.filter(property =>
+  // Filtered and searched data (guard against undefined)
+  const filteredAndSearchedData = (Array.isArray(filterData) ? filterData : []).filter(property =>
     property.propertyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     property.city?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -147,12 +147,14 @@ const RentPropViewCard = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get("/property/rent/viewAll");
-      
-      setBuyData(res.data.rentaldata);
-      setFilterData(res.data.rentaldata);
+      const res = await api.get("/property/rent/viewAll");
+      const list = Array.isArray(res?.data?.rentaldata) ? res.data.rentaldata : [];
+      setBuyData(list);
+      setFilterData(list);
     } catch (error) {
       console.error("Error fetching data:", error);
+      setBuyData([]);
+      setFilterData([]);
     }
   };
 
@@ -175,7 +177,8 @@ const RentPropViewCard = () => {
   }
   
   function updateFilteredData() {
-    const filteredData = buyData.filter((data) => {
+    const source = Array.isArray(buyData) ? buyData : [];
+    const filteredData = source.filter((data) => {
       const matchPropertyType =
         selectedPropertyTypes.length === 0 ||
         selectedPropertyTypes.some(

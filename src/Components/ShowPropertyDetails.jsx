@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import axios from "axios";
+import api from "../config/apiClient";
+
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
@@ -77,10 +78,9 @@ const ShowPropertyDetails = ({ id, type }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(
-          `/property/view/${id}`
-        );
-        if (res.data.data) {
+        const res = await api.get(`/property/view/${id}`);
+        const hasData = res?.data?.data && res?.data?.data?.postProperty;
+        if (hasData) {
           console.log("Property details loaded successfully");
           const propertyData = res.data.data.postProperty;
           setRentViewDetails(propertyData);
@@ -91,11 +91,10 @@ const ShowPropertyDetails = ({ id, type }) => {
               const endpoint = type === "rental" 
                 ? "/property/rent/viewAll"
                 : "/property/buy/ViewAll";
-              
-              const categoryRes = await axios.get(endpoint);
+              const categoryRes = await api.get(endpoint);
               const categoryData = type === "rental" 
-                ? categoryRes.data.rentaldata || []
-                : categoryRes.data.ResaleData || [];
+                ? (Array.isArray(categoryRes?.data?.rentaldata) ? categoryRes.data.rentaldata : [])
+                : (Array.isArray(categoryRes?.data?.ResaleData) ? categoryRes.data.ResaleData : []);
               
               const propertyExists = categoryData.some(prop => prop._id === id);
               
@@ -105,10 +104,10 @@ const ShowPropertyDetails = ({ id, type }) => {
                   ? "/property/buy/ViewAll"
                   : "/property/rent/viewAll";
                 
-                const otherRes = await axios.get(otherEndpoint);
+                const otherRes = await api.get(otherEndpoint);
                 const otherData = type === "rental" 
-                  ? otherRes.data.ResaleData || []
-                  : otherRes.data.rentaldata || [];
+                  ? (Array.isArray(otherRes?.data?.ResaleData) ? otherRes.data.ResaleData : [])
+                  : (Array.isArray(otherRes?.data?.rentaldata) ? otherRes.data.rentaldata : []);
                 
                 const existsInOther = otherData.some(prop => prop._id === id);
                 
@@ -135,18 +134,17 @@ const ShowPropertyDetails = ({ id, type }) => {
             agentNumber: res.data?.data?.agentNumber || "",
             agentEmail: res.data?.data?.agentEmail || "",
           });
-          let ImagesData = res.data.data?.postProperty?.otherImage.map(
-            (image) => {
-              return {
-                url: image.url,
-                thumbnail: image.url,
-              };
-            }
-          );
-          ImagesData.push({
-            url: res.data.data?.postProperty?.frontImage.url,
-            thumbnail: res.data?.data?.postProperty.frontImage.url,
-          });
+          const otherImages = Array.isArray(res?.data?.data?.postProperty?.otherImage)
+            ? res.data.data.postProperty.otherImage
+            : [];
+          let ImagesData = otherImages.map((image) => ({
+            url: image?.url,
+            thumbnail: image?.url,
+          })).filter(img => !!img.url);
+          const frontUrl = res?.data?.data?.postProperty?.frontImage?.url;
+          if (frontUrl) {
+            ImagesData.push({ url: frontUrl, thumbnail: frontUrl });
+          }
           setGalleryImageData(ImagesData);
           setLoading(false);
         } else {
@@ -154,6 +152,7 @@ const ShowPropertyDetails = ({ id, type }) => {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+        setLoading(false);
       }
     };
     fetchData();
@@ -205,7 +204,7 @@ const ShowPropertyDetails = ({ id, type }) => {
 
     if (custNumber && custName) {
       try {
-        const response = await axios.post("/postEnquiry", {
+        const response = await api.post("/postEnquiry", {
           ...userForm,
           ...agentDetails,
           propertyAddress: rentViewDetails.address,
@@ -241,12 +240,12 @@ const ShowPropertyDetails = ({ id, type }) => {
         ? "/property/rent/viewAll"
         : "/property/buy/ViewAll";
       
-      const res = await axios.get(endpoint);
+      const res = await api.get(endpoint);
       
       if (propertyType === "rental") {
-        setBuyData(res.data.rentaldata || []);
+        setBuyData(Array.isArray(res?.data?.rentaldata) ? res.data.rentaldata : []);
       } else {
-        setBuyData(res.data.ResaleData || []);
+        setBuyData(Array.isArray(res?.data?.ResaleData) ? res.data.ResaleData : []);
       }
     } catch (error) {
       console.error("Error fetching Data", error);
@@ -525,7 +524,7 @@ const ShowPropertyDetails = ({ id, type }) => {
                   </div>
                   <div className="flex items-center justify-between mt-1">
                                           <span className="font-bold text-xs text-gray-900"><span className="text-[#e63946]">₹ {formatPrice(property.price, propertyType)}</span></span>
-                    <a href={`${propertyType === "rental" ? "/rental-properties" : "/buy-properties"}/${property.propertyName ? property.propertyName.replace(/\s+/g, '-') : 'unknown'}/${property._id}`} target="_blank" rel="noopener noreferrer">
+                    <a href={`${propertyType === "rental" ? "/rental-properties" : "/buy-properties"}/${property.propertyName ? property.propertyName.replace(/\s+/g, '-') : 'unknown'}/${property._id}/`} target="_blank" rel="noopener noreferrer">
                       <button className="bg-[#e63946] hover:bg-red-700 text-white rounded-xl p-2 transition-all duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                       </button>
