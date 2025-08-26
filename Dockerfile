@@ -26,8 +26,8 @@ WORKDIR /usr/share/nginx/html
 
 RUN rm -rf *
 
-# Vite outputs to dist by default
-COPY --from=build /app/dist .
+# Vite outDir is configured to 'build' in vite.config.js
+COPY --from=build /app/build .
 
 EXPOSE 80
 
