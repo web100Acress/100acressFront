@@ -443,6 +443,50 @@ const Api_service = () => {
     }
   },[dispatch]);
 
+  const getPropertyOrder = async (builderName) => {
+    try {
+      if (!builderName) return null;
+      const res = await api.get(`propertyOrder/builder/${encodeURIComponent(builderName)}`);
+      return res?.data?.data || null;
+    } catch (error) {
+      console.error('Error fetching property order:', error);
+      return null;
+    }
+  };
+
+  const savePropertyOrder = async ({ builderName, customOrder, hasCustomOrder = true, randomSeed = null }) => {
+    try {
+      if (!builderName) throw new Error('builderName required');
+      const res = await api.post(`propertyOrder/save`, {
+        builderName,
+        customOrder: Array.isArray(customOrder) ? customOrder : [],
+        hasCustomOrder: !!hasCustomOrder,
+        randomSeed,
+      });
+      return res?.data?.data || null;
+    } catch (error) {
+      console.error('Error saving property order:', error);
+      throw error;
+    }
+  };
+
+  // Fallback fetch: get all properties then filter by builder if a dedicated endpoint doesn't exist
+  const getPropertiesByBuilder = async (builderName, limit = 200) => {
+    try {
+      if (!builderName) return [];
+      const res = await api.get(`property/buy/ViewAll`);
+      const all = res?.data?.ResaleData || res?.data?.data || [];
+      const filtered = all.filter((p) => {
+        const b = p.builderName || p.builder || p.builder_name;
+        return b && String(b).toLowerCase() === String(builderName).toLowerCase();
+      });
+      return filtered.slice(0, limit);
+    } catch (error) {
+      console.error('Error fetching properties by builder:', error);
+      return [];
+    }
+  };
+
   return {
     getTrending,
     getSpotlight,
@@ -464,7 +508,11 @@ const Api_service = () => {
     getPrimeLocation,
     getPossessionByYear,
     getProjectBasedOnminPrice,
-    getProjectBasedOnmaxPrice
+    getProjectBasedOnmaxPrice,
+    // Property order & fetch helpers
+    getPropertyOrder,
+    savePropertyOrder,
+    getPropertiesByBuilder,
   };
 };
 

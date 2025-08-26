@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../config/apiClient";
@@ -102,7 +102,10 @@ const BlogView = () => {
       blog_Image: normalizedImage,
       createdAt: obj.createdAt || '',
       slug: obj.slug || '',
-      _id: obj._id || ''
+      _id: obj._id || '',
+      // SEO fields (handle multiple possible keys)
+      metaTitle: obj.metaTitle || obj.meta_Title || obj.seoTitle || '',
+      metaDescription: obj.metaDescription || obj.meta_Description || obj.seoDescription || obj.meta_desc || ''
     };
   };
 
@@ -212,10 +215,45 @@ const BlogView = () => {
 
   const createSanitizedHTML = (dirtyHTML) => ({
     __html: DOMPurify.sanitize(dirtyHTML, {
-      ALLOWED_TAGS: ['p', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'a', 'img','br'],
-      ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style']
+      ALLOWED_TAGS: ['p', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'a', 'img', 'br', 'figure', 'figcaption'],
+      ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'style', 'width', 'height', 'title', 'loading', 'decoding', 'srcset', 'sizes', 'data-src', 'referrerpolicy', 'crossorigin'],
+      ADD_ATTR: ['srcset', 'sizes', 'data-src', 'referrerpolicy', 'crossorigin'],
+      ADD_URI_SAFE_ATTR: ['src', 'href', 'srcset'],
+      ALLOW_DATA_ATTR: true,
+      ALLOW_UNKNOWN_PROTOCOLS: true,
     })
   });
+
+  // Ref to post-process content images (fix lazy attrs, http->https, fallback on error)
+  const contentRef = useRef(null);
+  useEffect(() => {
+    const root = contentRef.current;
+    if (!root) return;
+    const imgs = root.querySelectorAll('img');
+    imgs.forEach((img) => {
+      try {
+        // Upgrade lazy-loaded images
+        if (img.dataset && img.dataset.src && !img.getAttribute('src')) {
+          img.setAttribute('src', img.dataset.src);
+        }
+        if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
+        if (!img.getAttribute('referrerpolicy')) img.setAttribute('referrerpolicy', 'no-referrer');
+        if (!img.getAttribute('crossorigin')) img.setAttribute('crossorigin', 'anonymous');
+        // Upgrade insecure URLs when possible
+        const src = img.getAttribute('src') || '';
+        if (/^http:\/\//i.test(src)) {
+          img.setAttribute('src', src.replace(/^http:\/\//i, 'https://'));
+        }
+        if (/^\/\//.test(src)) {
+          img.setAttribute('src', 'https:' + src);
+        }
+        // Attach error fallback
+        img.onerror = () => {
+          img.src = FALLBACK_IMG;
+        };
+      } catch (_) { /* ignore */ }
+    });
+  }, [blog_Description]);
 
   const {
     blog_Title,
@@ -224,18 +262,58 @@ const BlogView = () => {
     blog_Category,
     published_Date,
     blog_Image,
+    metaTitle,
+    metaDescription,
   } = data;
 
   // Brand colors
   const BRAND_RED = '#b8333a';
   const DARK_TEXT = '#333';
   const TAGLINE = "Insights, Updates, and Stories from Gurgaon’s Real Estate World";
+  
+
+  // Canonical URL: prefer configured domain; include ?id= when present to avoid empty blog cases
+  const preferredDomain = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_SITE_URL)
+    || (typeof window !== 'undefined' && window.location && window.location.origin)
+    || 'https://www.100acress.com';
+  const domainNoSlash = String(preferredDomain).replace(/\/$/, '');
+  const params = new URLSearchParams(location.search || '');
+  const idQuery = params.get('id');
+  const canonicalUrl = `${domainNoSlash}${location.pathname}${idQuery ? `?id=${encodeURIComponent(idQuery)}` : ''}`;
+
+  // Compute title and description
+  const fallbackTitle = `${blog_Title || ''} ${blog_Category || ''}`.trim();
+  const pageTitle = (metaTitle && metaTitle.trim()) || fallbackTitle || 'Blog | 100acress';
+  const toPlainText = (html) => {
+    if (!html) return '';
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    const text = tmp.textContent || tmp.innerText || '';
+    return text.replace(/\s+/g, ' ').trim();
+  };
+  const fallbackDesc = toPlainText(blog_Description).slice(0, 157);
+  const pageDescription = (metaDescription && metaDescription.trim()) || fallbackDesc || 'Explore real estate insights on 100acress.';
+  const publishedISO = (published_Date ? new Date(published_Date) : (data.createdAt ? new Date(data.createdAt) : null))?.toISOString?.() || '';
 
   return (
     <>
       <Helmet>
-        <title>{`${blog_Title} ${blog_Category}`}</title>
-        <link rel="canonical" href="https://www.100acress.com/" />
+        <title>{pageTitle}</title>
+        <link rel="canonical" href={canonicalUrl} />
+        {/* Primary Meta */}
+        <meta name="description" content={pageDescription} />
+        {/* Open Graph */}
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={canonicalUrl} />
+        {blog_Image?.url && <meta property="og:image" content={blog_Image.url} />}
+        {publishedISO && <meta property="article:published_time" content={publishedISO} />}
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        {blog_Image?.url && <meta name="twitter:image" content={blog_Image.url} />}
       </Helmet>
 
       {/* Modern Brand-Aligned Title */}
@@ -264,16 +342,6 @@ const BlogView = () => {
             {' > '} {blog_Category || 'Blog'}
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-[#1e3a8a] leading-tight mb-4">{blog_Title}</h1>
-          <div className="flex items-center gap-4 mb-4">
-            <span className="text-gray-500 text-sm">
-              {data.createdAt ? new Date(data.createdAt).toLocaleDateString('en-US', {
-                month: 'short', day: 'numeric', year: 'numeric'
-              }) : ''}
-            </span>
-            {author && (
-              <span className="text-gray-700 text-sm">By {author}</span>
-            )}
-          </div>
           {(
             <img
               src={blog_Image?.url || FALLBACK_IMG}
@@ -282,8 +350,20 @@ const BlogView = () => {
               onError={onImgError}
             />
           )}
+          {/* Date and author moved below the featured image */}
+          <div className="flex items-center gap-4 mb-4">
+            <span className="text-gray-500 text-sm">
+              {(published_Date || data.createdAt) ? new Date(published_Date || data.createdAt).toLocaleDateString('en-US', {
+                month: 'short', day: 'numeric', year: 'numeric'
+              }) : ''}
+            </span>
+            {author && (
+              <span className="text-gray-700 text-sm">By {author}</span>
+            )}
+          </div>
           <div
             className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-primaryRed prose-a:no-underline hover:prose-a:underline"
+            ref={contentRef}
             dangerouslySetInnerHTML={createSanitizedHTML(blog_Description)}
           ></div>
         </div>
