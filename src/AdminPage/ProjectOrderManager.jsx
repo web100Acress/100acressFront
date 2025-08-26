@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { 
   setCustomOrder, 
@@ -17,16 +18,38 @@ import Sidebar from "./Sidebar";
 
 const ProjectOrderManager = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [selectedBuilder, setSelectedBuilder] = useState("");
   const [isRandomOrder, setIsRandomOrder] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [previewProject, setPreviewProject] = useState(null); // project details pane
+  const [showRawDetails, setShowRawDetails] = useState(false);
+  const [relatedProjects, setRelatedProjects] = useState([]);
+  const [relatedOrderIds, setRelatedOrderIds] = useState([]);
+  const [relatedSynced, setRelatedSynced] = useState(true);
+  const [relatedSaving, setRelatedSaving] = useState(false);
+  const [relatedSelected, setRelatedSelected] = useState(null);
+  const [relatedTargetPos, setRelatedTargetPos] = useState("");
+  const [relatedLoading, setRelatedLoading] = useState(false);
+  const [relatedBuilder, setRelatedBuilder] = useState("");
   const [targetPosition, setTargetPosition] = useState("");
   const [isSynced, setIsSynced] = useState(true);
   const hasSyncedRef = useRef(false);
+  const previewRef = useRef(null);
+  const relatedRef = useRef(null);
+  const propSyncTimerRef = useRef(null);
+  const relatedSyncTimerRef = useRef(null);
 
-  const { getProjectbyBuilder } = Api_Service();
+  // Management mode: projects | properties
+  const [manageMode, setManageMode] = useState('projects');
+  const [propItems, setPropItems] = useState([]); // fetched properties for selected builder
+  const [propLoading, setPropLoading] = useState(false);
+  const [propSynced, setPropSynced] = useState(true);
+  const [propOrderIds, setPropOrderIds] = useState([]);
+
+  const { getProjectbyBuilder, getPropertyOrder, savePropertyOrder, getPropertiesByBuilder } = Api_Service();
 
   // Memoize dispatch functions to prevent infinite re-renders
   const memoizedSyncProjectOrders = useCallback(() => {
@@ -91,10 +114,174 @@ const ProjectOrderManager = () => {
     'aarize-developers': { name: 'Aarize Group', projects: aarize, query: 'Aarize Group' }
   };
 
+  // Derived builder data - must be declared before any hooks that reference it
   const selectedBuilderData = buildersData[selectedBuilder];
   const selectedBuilderProjects = selectedBuilderData?.projects || [];
   const hasCustomOrderDefined = buildersWithCustomOrder[selectedBuilder] === true;
-  
+
+  // Real-time sync for Properties (Manage tab)
+  useEffect(() => {
+    // clear any previous timer
+    if (propSyncTimerRef.current) {
+      clearInterval(propSyncTimerRef.current);
+      propSyncTimerRef.current = null;
+    }
+    if (!selectedBuilder || manageMode !== 'properties') return;
+    const builderName = selectedBuilderData?.query || selectedBuilderData?.name || selectedBuilder;
+    const tick = async () => {
+      if (document.visibilityState !== 'visible') return;
+      try {
+        const orderDoc = await getPropertyOrder(builderName);
+        const latestIds = Array.isArray(orderDoc?.customOrder) ? orderDoc.customOrder : [];
+        if (latestIds.length === 0) return; // nothing saved yet
+        // If order differs, reapply
+        const currentIds = (propItems || []).map(p => p._id || p.id);
+        const sameLen = latestIds.length === currentIds.length;
+        const same = sameLen && latestIds.every((id, i) => id === currentIds[i]);
+        if (!same) {
+          const byId = new Map((propItems || []).map(p => [p._id || p.id, p]));
+          const ordered = [
+            ...latestIds.filter(id => byId.has(id)).map(id => byId.get(id)),
+            ...(propItems || []).filter(p => !latestIds.includes(p._id || p.id))
+          ];
+          setPropItems(ordered);
+          setPropOrderIds(ordered.map(p => p._id || p.id));
+          setPropSynced(true);
+        }
+      } catch (e) {
+        // silent
+      }
+    };
+    // initial tick soon
+    tick();
+    propSyncTimerRef.current = setInterval(tick, 30000); // 30s
+    return () => {
+      if (propSyncTimerRef.current) clearInterval(propSyncTimerRef.current);
+      propSyncTimerRef.current = null;
+    };
+  }, [manageMode, selectedBuilder, selectedBuilderData, getPropertyOrder, propItems]);
+
+  // Real-time sync for Related Properties panel
+  useEffect(() => {
+    if (relatedSyncTimerRef.current) {
+      clearInterval(relatedSyncTimerRef.current);
+      relatedSyncTimerRef.current = null;
+    }
+    if (!relatedBuilder) return;
+    const tick = async () => {
+      if (document.visibilityState !== 'visible') return;
+      try {
+        const orderDoc = await getPropertyOrder(relatedBuilder);
+        const latestIds = Array.isArray(orderDoc?.customOrder) ? orderDoc.customOrder : [];
+        if (latestIds.length === 0) return;
+        const currentIds = (relatedProjects || []).map(p => p._id || p.id);
+        const sameLen = latestIds.length === currentIds.length;
+        const same = sameLen && latestIds.every((id, i) => id === currentIds[i]);
+        if (!same) {
+          const byId = new Map((relatedProjects || []).map(p => [p._id || p.id, p]));
+          const ordered = [
+            ...latestIds.filter(id => byId.has(id)).map(id => byId.get(id)),
+            ...(relatedProjects || []).filter(p => !latestIds.includes(p._id || p.id))
+          ];
+          setRelatedProjects(ordered);
+          setRelatedOrderIds(ordered.map(p => p._id || p.id));
+          setRelatedSynced(true);
+        }
+      } catch {}
+    };
+    tick();
+    relatedSyncTimerRef.current = setInterval(tick, 30000);
+    return () => {
+      if (relatedSyncTimerRef.current) clearInterval(relatedSyncTimerRef.current);
+      relatedSyncTimerRef.current = null;
+    };
+  }, [relatedBuilder, getPropertyOrder, relatedProjects]);
+
+  // Open related properties by the clicked project's builder
+  const openRelatedByBuilder = async (project) => {
+    if (!project) return;
+    const labelRaw = project.builderName || project.builder || project.builder_name || "";
+    const label = (typeof labelRaw === 'string' ? labelRaw.trim() : labelRaw) || "";
+    if (!label) {
+      alert('No builder name on this project.');
+      return;
+    }
+    setPreviewProject(null);
+    // Normalize to a known query name if possible
+    const norm = String(label).toLowerCase();
+    let queryName = label;
+    const candidates = Object.values(buildersData || {});
+    const match = candidates.find(b => {
+      const n = (b?.name || '').toLowerCase();
+      const q = (b?.query || '').toLowerCase();
+      return norm === n || norm === q || norm.includes(q) || n.includes(norm);
+    });
+    if (match?.query) {
+      queryName = match.query; // Use canonical query expected by API and Redux
+    }
+    setRelatedBuilder(queryName);
+    setRelatedLoading(true);
+    try {
+      // Use a positive limit; some backends treat 0 as return 0 rows
+      console.log('🔍 Loading related properties for builder:', queryName, 'from label:', label);
+      // Fetch list and existing order, then sort using saved customOrder
+      const [list, orderDoc] = await Promise.all([
+        getProjectbyBuilder(queryName, 48),
+        getPropertyOrder(queryName)
+      ]);
+      const arr = Array.isArray(list) ? list : [];
+      const byId = new Map(arr.map(p => [p._id || p.id, p]));
+      let ordered = arr;
+      let orderIds = [];
+      if (orderDoc?.customOrder?.length) {
+        orderIds = orderDoc.customOrder.filter(id => byId.has(id));
+        const remaining = arr.filter(p => !orderIds.includes(p._id || p.id));
+        ordered = [...orderIds.map(id => byId.get(id)), ...remaining];
+      } else {
+        orderIds = arr.map(p => p._id || p.id);
+      }
+      setRelatedProjects(ordered);
+      setRelatedOrderIds(orderIds);
+      setRelatedSynced(true);
+    } catch (e) {
+      console.error('Failed to load related projects:', e);
+      setRelatedProjects([]);
+    } finally {
+      setRelatedLoading(false);
+    }
+  };
+
+  const moveRelatedProperty = (index, dir) => {
+    setRelatedProjects(prev => {
+      const arr = [...prev];
+      const j = index + dir;
+      if (j < 0 || j >= arr.length) return arr;
+      const tmp = arr[index];
+      arr[index] = arr[j];
+      arr[j] = tmp;
+      setRelatedOrderIds(arr.map(p => p._id || p.id));
+      setRelatedSynced(false);
+      return arr;
+    });
+  };
+
+  const handleSaveRelatedPropertyOrder = async () => {
+    try {
+      const builderName = relatedBuilder;
+      await savePropertyOrder({ builderName, customOrder: relatedOrderIds, hasCustomOrder: true });
+      setRelatedSynced(true);
+    } catch (e) {
+      console.error('Save related property order failed:', e);
+      alert('Failed to save related property order');
+      // Smooth scroll to related section
+      setTimeout(() => {
+        if (relatedRef?.current) {
+          relatedRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 0);
+    }
+  };
+
   // Create ordered projects based on current state
   const orderedProjects = useMemo(() => {
     if (!selectedBuilder || !selectedBuilderProjects.length) {
@@ -130,8 +317,34 @@ const ProjectOrderManager = () => {
       const randomSeed = randomSeeds[selectedBuilder] || generateSeedFromBuilderName(selectedBuilder);
       return shuffleArrayWithSeed([...selectedBuilderProjects], randomSeed);
     }
-  }, [selectedBuilderProjects, customOrders, buildersWithCustomOrder, randomSeeds, selectedBuilder]);
-  
+  }, [selectedBuilder, selectedBuilderProjects, customOrders, buildersWithCustomOrder, randomSeeds]);
+
+  // Single definition of moveProperty (Properties manage tab)
+  const moveProperty = (index, dir) => {
+    setPropItems(prev => {
+      const arr = [...prev];
+      const j = index + dir;
+      if (j < 0 || j >= arr.length) return arr;
+      const tmp = arr[index];
+      arr[index] = arr[j];
+      arr[j] = tmp;
+      setPropOrderIds(arr.map(p => p._id || p.id));
+      setPropSynced(false);
+      return arr;
+    });
+  };
+
+  const handleSavePropertyOrder = async () => {
+    try {
+      const builderName = selectedBuilderData?.query || selectedBuilderData?.name || selectedBuilder;
+      await savePropertyOrder({ builderName, customOrder: propOrderIds, hasCustomOrder: true });
+      setPropSynced(true);
+    } catch (e) {
+      console.error('Save property order failed:', e);
+      alert('Failed to save property order');
+    }
+  };
+
   // Debug logging
   console.log('🔍 selectedBuilder:', selectedBuilder);
   console.log('🔍 selectedBuilderData:', selectedBuilderData);
@@ -185,6 +398,15 @@ const ProjectOrderManager = () => {
 
     return () => clearInterval(syncInterval);
   }, [memoizedSyncProjectOrders, selectedBuilder]);
+
+  // Scroll the inline preview into view when opened
+  useEffect(() => {
+    if (previewProject && previewRef.current) {
+      try {
+        previewRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (_) {}
+    }
+  }, [previewProject]);
 
   useEffect(() => {
     if (selectedBuilder) {
@@ -408,8 +630,7 @@ const ProjectOrderManager = () => {
         <Helmet>
           <title>Project Order Manager - Admin Dashboard</title>
         </Helmet>
-
-                <div>
+        
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
             <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
               Project Order Manager
@@ -452,6 +673,28 @@ const ProjectOrderManager = () => {
             </div>
           </div>
 
+          {/* Management Mode Toggle */}
+          <div className="mb-4">
+            <div className="inline-flex rounded-md shadow-sm" role="group">
+              <button
+                type="button"
+                onClick={() => setManageMode('projects')}
+                className={`px-4 py-2 text-sm font-medium border ${manageMode === 'projects' ? 'bg-red-600 text-white border-red-600' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600'}`}
+                title="Manage project order"
+              >
+                Projects
+              </button>
+              <button
+                type="button"
+                onClick={() => setManageMode('properties')}
+                className={`px-4 py-2 text-sm font-medium border -ml-px ${manageMode === 'properties' ? 'bg-red-600 text-white border-red-600' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600'}`}
+                title="Manage property order"
+              >
+                Properties
+              </button>
+            </div>
+          </div>
+
                      {/* Status Display */}
            {selectedBuilder && (
              <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
@@ -464,6 +707,67 @@ const ProjectOrderManager = () => {
                   ) : (
                     <>Using random order with seed: {randomSeeds[selectedBuilder] || 'default'}</>
                   )}
+
+        {/* Properties Management (Properties mode) */}
+        {selectedBuilder && manageMode === 'properties' && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                {selectedBuilderData?.name} Properties
+              </h2>
+              <div className="flex items-center gap-3">
+                <span className={`text-sm ${propSynced ? 'text-green-600' : 'text-yellow-600'}`}>
+                  {propSynced ? '✅ Synced' : '🔄 Unsaved changes'}
+                </span>
+                <button
+                  onClick={handleSavePropertyOrder}
+                  disabled={propLoading || propItems.length === 0 || propSynced}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400"
+                >
+                  {propLoading ? 'Saving...' : 'Save Property Order'}
+                </button>
+              </div>
+            </div>
+
+            {propLoading ? (
+              <div className="text-center py-8 text-gray-600">Loading properties…</div>
+            ) : propItems.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">No properties found for this builder.</div>
+            ) : (
+              <div className="space-y-2">
+                {propItems.map((p, idx) => (
+                  <div key={p._id || p.id || idx} className="flex items-center justify-between p-3 border rounded-md bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-200">{idx + 1}</span>
+                      <div>
+                        <div className="font-semibold text-gray-800 dark:text-gray-100">{p.projectName || p.name || p.project_title}</div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">{(p.city || p.location_city) ?? ''}{(p.state || p.location_state) ? `, ${p.state || p.location_state}` : ''}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => moveProperty(idx, -1)}
+                        disabled={idx === 0}
+                        className="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 disabled:opacity-50"
+                        title="Move up"
+                      >
+                        ▲
+                      </button>
+                      <button
+                        onClick={() => moveProperty(idx, 1)}
+                        disabled={idx === propItems.length - 1}
+                        className="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 disabled:opacity-50"
+                        title="Move down"
+                      >
+                        ▼
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
                 </p>
                 <p className={`text-sm ${isSynced ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400'}`}>
                   {isSynced ? "✅ Synced with server" : "🔄 Syncing with server..."}
@@ -599,212 +903,552 @@ const ProjectOrderManager = () => {
           )}
         </div>
 
-                             {/* Project List */}
-            {selectedBuilder && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-                  {selectedBuilderData.name} Projects
-                </h2>
-             
-             {isLoadingProjects ? (
-               <div className="flex justify-center items-center py-8">
-                 <div className="text-lg text-gray-600">Loading projects...</div>
-               </div>
-             ) : orderedProjects.length > 0 ? (
-               <>
-                 {isRandomOrder ? (
-                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                     {orderedProjects.map((project, index) => (
-                       <div key={project._id || project.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-700">
-                         <div className="flex items-center justify-between mb-2">
-                           <h3 className="font-semibold text-gray-800 dark:text-gray-100">
-                             {index + 1}. {project.projectName}
-                           </h3>
-                           <span className="text-xs bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded text-blue-600 dark:text-blue-300">
-                             Position {index + 1}
-                           </span>
-                         </div>
-                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                           {project.city}, {project.state}
-                         </p>
-                         <p className="text-sm text-gray-500 dark:text-gray-500">
-                           {project.type}
-                         </p>
-                       </div>
-                     ))}
-                   </div>
-                 ) : (
-               <div>
-                 <p className="text-sm text-gray-600 mb-4">
-                   Drag and drop projects to reorder them. The new order will be saved automatically.
-                 </p>
-                 
-                                         {/* Manual Position Selection */}
-                        <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-700">
-                          <h3 className="font-semibold text-yellow-800 dark:text-yellow-300 mb-3">Quick Move Project</h3>
-                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                              <div>
-                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                             Select Project
-                           </label>
-                           <select
-                             value={selectedProject ? (selectedProject._id || selectedProject.id) : ""}
-                             onChange={(e) => {
-                               const selectedValue = e.target.value;
-                               if (!selectedValue) {
-                                 setSelectedProject(null);
-                                 return;
-                               }
-                               
-                               const project = orderedProjects.find(p => {
-                                 const projectId = p._id || p.id;
-                                 return projectId === selectedValue;
-                               });
-                               
-                               if (project) {
-                                 setSelectedProject(project);
-                                 console.log('🔍 Selected project:', project);
-                               } else {
-                                 console.error('🔍 Project not found for value:', selectedValue);
-                                 setSelectedProject(null);
-                               }
-                             }}
-                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                           >
-                         <option value="">Choose a project...</option>
-                         {orderedProjects.map((project, index) => (
-                           <option key={project._id || project.id} value={project._id || project.id}>
-                             {index + 1}. {project.projectName}
-                           </option>
-                         ))}
-                       </select>
-                     </div>
-                     
-                                              <div>
-                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                             Move to Position
-                           </label>
-                           <input
-                             type="number"
-                             min="1"
-                             max={orderedProjects.length}
-                             value={targetPosition}
-                             onChange={(e) => setTargetPosition(e.target.value)}
-                             placeholder={`1-${orderedProjects.length}`}
-                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                           />
-                         </div>
-                     
-                     <div className="flex items-end gap-2">
-                       <button
-                         onClick={handleMoveProject}
-                         disabled={!selectedProject || !targetPosition}
-                         className="flex-1 px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                       >
-                         Move Project
-                       </button>
-                       <button
-                         onClick={() => {
-                           setSelectedProject(null);
-                           setTargetPosition("");
-                         }}
-                         className="px-3 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
-                         title="Clear selection"
-                       >
-                         ✕
-                       </button>
-                     </div>
-                   </div>
-                   {selectedProject && (
-                     <p className="text-sm text-yellow-700 dark:text-yellow-400 mt-2">
-                       Moving: <strong>{selectedProject.projectName}</strong> (Current Position: {orderedProjects.findIndex(p => (p._id || p.id) === (selectedProject._id || selectedProject.id)) + 1})
-                     </p>
-                   )}
-                   {!selectedProject && orderedProjects.length > 0 && (
-                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                       Available projects: {orderedProjects.length} | Select a project to move
-                     </p>
-                   )}
-                 </div>
-                 <DragDropContext onDragEnd={handleDragEnd}>
-                   <Droppable droppableId="projects">
-                     {(provided) => (
-                       <div
-                         {...provided.droppableProps}
-                         ref={provided.innerRef}
-                         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-                       >
-                         {orderedProjects.map((project, index) => (
-                           <Draggable
-                             key={project._id || project.id}
-                             draggableId={project._id || project.id}
-                             index={index}
-                           >
-                             {(provided, snapshot) => (
-                               <div
-                                 ref={provided.innerRef}
-                                 {...provided.draggableProps}
-                                 {...provided.dragHandleProps}
-                                 className={`p-4 border border-gray-200 dark:border-gray-600 rounded-lg cursor-move ${
-                                   snapshot.isDragging ? 'bg-blue-50 dark:bg-blue-900 shadow-lg' : 'bg-white dark:bg-gray-700'
-                                 }`}
-                               >
-                                 <div className="flex items-center justify-between">
-                                   <div>
-                                     <h3 className="font-semibold text-gray-800 dark:text-gray-100">
-                                       {index + 1}. {project.projectName}
-                                     </h3>
-                                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                                       {project.city}, {project.state}
-                                     </p>
-                                     <p className="text-sm text-gray-500 dark:text-gray-500">
-                                       {project.type}
-                                     </p>
-                                   </div>
-                                   <div className="flex items-center gap-2">
-                                     <span className="text-xs bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded text-gray-600 dark:text-gray-300">
-                                       Position {index + 1}
-                                     </span>
-                                     <div className="text-gray-400 dark:text-gray-500">
-                                       ⋮⋮
-                                     </div>
-                                   </div>
-                                 </div>
-                               </div>
-                             )}
-                           </Draggable>
-                         ))}
-                         {provided.placeholder}
-                       </div>
-                     )} 
-                   </Droppable>
-                 </DragDropContext>
-               </div>
-             )}
-           </>
-         ) : (
-           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-             No projects found for this builder.
-           </div>
-         )}
-       </div>
-     )}
+        {/* Project List (Projects mode) */}
+        {selectedBuilder && manageMode === 'projects' && !relatedBuilder && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+              {selectedBuilderData.name} Projects
+            </h2>
+            {isLoadingProjects ? (
+              <div className="flex justify-center items-center py-8">
+                <div className="text-lg text-gray-600">Loading projects...</div>
+              </div>
+            ) : orderedProjects.length > 0 ? (
+              <>
+                {isRandomOrder ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {orderedProjects.map((project, index) => (
+                      <div
+                        key={project._id || project.id}
+                        className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-700 cursor-pointer"
+                        role="button"
+                        title="Open project"
+                        onClick={() => { openRelatedByBuilder(project); }}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+                            {index + 1}. {project.projectName}
+                          </h3>
+                          <span className="text-xs bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded text-blue-600 dark:text-blue-300">
+                            Position {index + 1}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {project.city}, {project.state}
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-500">
+                          {project.type}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Drag and drop projects to reorder them. The new order will be saved automatically.
+                    </p>
+                    {/* Manual Position Selection */}
+                    <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-700">
+                      <h3 className="font-semibold text-yellow-800 dark:text-yellow-300 mb-3">Quick Move Project</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Select Project
+                          </label>
+                          <select
+                            value={selectedProject ? (selectedProject._id || selectedProject.id) : ""}
+                            onChange={(e) => {
+                              const selectedValue = e.target.value;
+                              if (!selectedValue) {
+                                setSelectedProject(null);
+                                return;
+                              }
+                              const project = orderedProjects.find(p => {
+                                const projectId = p._id || p.id;
+                                return projectId === selectedValue;
+                              });
+                              if (project) {
+                                setSelectedProject(project);
+                                console.log('🔍 Selected project:', project);
+                              } else {
+                                console.error('🔍 Project not found for value:', selectedValue);
+                                setSelectedProject(null);
+                              }
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                          >
+                            <option value="">Choose a project...</option>
+                            {orderedProjects.map((project, index) => (
+                              <option key={project._id || project.id} value={project._id || project.id}>
+                                {index + 1}. {project.projectName}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Move to Position
+                          </label>
+                          <input
+                            type="number"
+                            min="1"
+                            max={orderedProjects.length}
+                            value={targetPosition}
+                            onChange={(e) => setTargetPosition(e.target.value)}
+                            placeholder={`1-${orderedProjects.length}`}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                          />
+                        </div>
+                        <div className="flex items-end gap-2">
+                          <button
+                            onClick={handleMoveProject}
+                            disabled={!selectedProject || !targetPosition}
+                            className="flex-1 px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            Move Project
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedProject(null);
+                              setTargetPosition("");
+                            }}
+                            className="px-3 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                            title="Clear selection"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                      {selectedProject && (
+                        <p className="text-sm text-yellow-700 dark:text-yellow-400 mt-2">
+                          Moving: <strong>{selectedProject.projectName}</strong> (Current Position: {orderedProjects.findIndex(p => (p._id || p.id) === (selectedProject._id || selectedProject.id)) + 1})
+                        </p>
+                      )}
+                      {!selectedProject && orderedProjects.length > 0 && (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                          Available projects: {orderedProjects.length} | Select a project to move
+                        </p>
+                      )}
+                    </div>
+                    <DragDropContext onDragEnd={handleDragEnd}>
+                      <Droppable droppableId="projects">
+                        {(provided) => (
+                          <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                          >
+                            {orderedProjects.map((project, index) => {
+                              const rawId = project && (project._id || project.id);
+                              if (!rawId) {
+                                console.warn('Skipping project without id for DnD:', project);
+                                return null;
+                              }
+                              const dragId = String(rawId);
+                              return (
+                              <Draggable
+                                key={dragId}
+                                draggableId={dragId}
+                                index={index}
+                              >
+                                {(provided, snapshot) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className={`p-4 border border-gray-200 dark:border-gray-600 rounded-lg cursor-move ${
+                                      snapshot.isDragging ? 'bg-blue-50 dark:bg-blue-900 shadow-lg' : 'bg-white dark:bg-gray-700'
+                                    }`}
+                                  >
+                                    <div className="flex items-center justify-between">
+                                      <div>
+                                        <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+                                          {index + 1}. {project.projectName}
+                                        </h3>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                          {project.city}, {project.state}
+                                        </p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-500">
+                                          {project.type}
+                                        </p>
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded text-gray-600 dark:text-gray-300">
+                                          Position {index + 1}
+                                        </span>
+                                        <button
+                                          className="text-xs px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
+                                          title="Show properties by builder"
+                                          onClick={(e) => { e.stopPropagation(); openRelatedByBuilder(project); }}
+                                        >
+                                          Show Properties
+                                        </button>
+                                        <div className="text-gray-400 dark:text-gray-500">
+                                          ⋮⋮
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </Draggable>
+                            )})}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </DragDropContext>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                No projects found for this builder.
+              </div>
+            )}
+          </div>
+        )}
 
-        </div>
+        {/* Related Properties by Builder (inline) */}
+        {(relatedLoading || relatedProjects.length > 0) && (
+          <div ref={relatedRef} className="bg-white dark:bg-gray-800 rounded-lg shadow p-3 mt-3">
+            <div className="flex flex-col md:flex-row">
+              <div className="w-full p-1 text-black flex flex-col justify-center items-start">
+                <span className="text-xl sm:text-lg text-gray-700 dark:text-gray-300 flex items-center justify-start space-x-2">
+                  <span className="flex items-center justify-center p-1">—</span>
+                  {" "}Others
+                </span>
+                {relatedBuilder ? (
+                  <h4 className="mt-1 text-2xl sm:text-2xl md:text-3xl font-semibold text-gray-900 dark:text-gray-100">
+                    Properties by {relatedBuilder}
+                  </h4>
+                ) : null}
+                <div className="mt-2">
+                  <button
+                    onClick={() => { setRelatedBuilder(""); setRelatedProjects([]); }}
+                    className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 text-xs"
+                    title="Back to builder projects"
+                  >
+                    ← Back to projects
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {relatedLoading ? (
+              <div className="py-4 text-center text-gray-600 dark:text-gray-300">Loading properties…</div>
+            ) : relatedProjects.length === 0 ? (
+              <></>
+            ) : (
+              <section className="w-full mb-2">
+                <div className="pt-2 rounded-lg relative">
+                  {/* Ordering Controls */}
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className={`px-2 py-1 rounded ${relatedSynced ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'}`}>
+                        {relatedSynced ? '✅ Synced' : '🔄 Unsaved changes'}
+                      </span>
+                      <span className="text-gray-500">Total: {relatedProjects.length}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <select
+                        className="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-sm"
+                        value={relatedSelected ? (relatedSelected._id || relatedSelected.id) : ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) { setRelatedSelected(null); return; }
+                          const found = relatedProjects.find(p => (p._id || p.id) === val);
+                          setRelatedSelected(found || null);
+                        }}
+                      >
+                        <option value="">Select property…</option>
+                        {relatedProjects.map((p, i) => (
+                          <option key={p._id || p.id || i} value={p._id || p.id}>{i+1}. {p.projectName || p.name || p.project_title}</option>
+                        ))}
+                      </select>
+                      <input
+                        type="number"
+                        min="1"
+                        max={relatedProjects.length}
+                        value={relatedTargetPos}
+                        onChange={(e) => setRelatedTargetPos(e.target.value)}
+                        placeholder={`1-${relatedProjects.length}`}
+                        className="w-24 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-sm"
+                      />
+                      <button
+                        className="px-3 py-1 rounded bg-yellow-600 text-white text-sm disabled:opacity-50"
+                        disabled={!relatedSelected || !relatedTargetPos}
+                        onClick={() => {
+                          const to = Number(relatedTargetPos) - 1;
+                          setRelatedProjects(prev => {
+                            if (!relatedSelected || isNaN(to) || to < 0 || to >= prev.length) return prev;
+                            const copy = [...prev];
+                            const from = copy.findIndex(x => (x._id || x.id) === (relatedSelected._id || relatedSelected.id));
+                            if (from === -1 || from === to) return prev;
+                            const [moved] = copy.splice(from, 1);
+                            copy.splice(to, 0, moved);
+                            setRelatedOrderIds(copy.map(x => x._id || x.id));
+                            setRelatedSynced(false);
+                            return copy;
+                          });
+                          setRelatedSelected(null);
+                          setRelatedTargetPos("");
+                        }}
+                      >
+                        Move to position
+                      </button>
+                      <button
+                        className="px-4 py-1 rounded bg-red-600 text-white text-sm disabled:opacity-50"
+                        disabled={relatedSaving || relatedProjects.length === 0 || relatedSynced}
+                        onClick={async () => {
+                          try {
+                            setRelatedSaving(true);
+                            await savePropertyOrder({ builderName: relatedBuilder, customOrder: relatedOrderIds, hasCustomOrder: true });
+                            setRelatedSynced(true);
+                          } catch (e) {
+                            console.error('Save related order failed:', e);
+                            alert('Failed to save property order');
+                          } finally {
+                            setRelatedSaving(false);
+                          }
+                        }}
+                      >
+                        {relatedSaving ? 'Saving…' : 'Save Order'}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {relatedProjects.map((project, idx) => (
+                      <div
+                        key={project._id || project.id || idx}
+                        className="relative m-auto w-full p-3 max-w-lg flex flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 shadow"
+                      >
+                        {/* Row header with position and move buttons */}
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-200">{idx + 1}</span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              className="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 disabled:opacity-50"
+                              title="Move up"
+                              disabled={idx === 0}
+                              onClick={() => {
+                                setRelatedProjects(prev => {
+                                  const arr = [...prev];
+                                  if (idx <= 0) return arr;
+                                  const tmp = arr[idx-1];
+                                  arr[idx-1] = arr[idx];
+                                  arr[idx] = tmp;
+                                  setRelatedOrderIds(arr.map(p => p._id || p.id));
+                                  setRelatedSynced(false);
+                                  return arr;
+                                });
+                              }}
+                            >▲</button>
+                            <button
+                              className="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 disabled:opacity-50"
+                              title="Move down"
+                              disabled={idx === relatedProjects.length - 1}
+                              onClick={() => {
+                                setRelatedProjects(prev => {
+                                  const arr = [...prev];
+                                  if (idx >= arr.length - 1) return arr;
+                                  const tmp = arr[idx+1];
+                                  arr[idx+1] = arr[idx];
+                                  arr[idx] = tmp;
+                                  setRelatedOrderIds(arr.map(p => p._id || p.id));
+                                  setRelatedSynced(false);
+                                  return arr;
+                                });
+                              }}
+                            >▼</button>
+                          </div>
+                        </div>
+                        {/* Image (optional) */}
+                        {project.frontImage?.url ? (
+                          <div className="relative flex h-36 overflow-hidden rounded-md bg-gray-100">
+                            <img src={project.frontImage.url} alt={project.projectName} className="object-cover w-full h-full" />
+                          </div>
+                        ) : null}
+
+                        {/* Content */}
+                        <div className="mt-2 flex-1 flex flex-col gap-1">
+                          <h5 className="text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
+                            {project.projectName || project.name || project.project_title}
+                          </h5>
+                          <div className="text-sm text-gray-600 dark:text-gray-300">
+                            {(project.city || project.location_city) && (project.state || project.location_state) ? (
+                              <span>{project.city || project.location_city}, {project.state || project.location_state}</span>
+                            ) : null}
+                          </div>
+                          {project.type || project.category || project.property_type ? (
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                              {project.type || project.category || project.property_type}
+                            </div>
+                          ) : null}
+                        </div>
+
+                        {/* CTA */}
+                        <div className="mt-2 flex justify-end">
+                          {project.project_url ? (
+                            <a
+                              className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-green-600 text-white hover:bg-green-700 text-xs"
+                              href={`/${project.project_url}/`}
+                              target="_blank"
+                              rel="noreferrer"
+                              title="Open project in new tab"
+                            >
+                              View ↗
+                            </a>
+                          ) : null}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+          </div>
+        )}
+
+        {/* Preview Panel - Inline (not sidebar) */}
+        {previewProject && (
+          <div ref={previewRef} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 mt-6">
+            <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Property Details</h3>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowRawDetails(v => !v)}
+                  className="px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700 text-sm"
+                  title="Toggle raw JSON"
+                >
+                  {showRawDetails ? 'Hide Raw' : 'Show Raw'}
+                </button>
+                <button
+                  onClick={() => setPreviewProject(null)}
+                  className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600"
+                  aria-label="Close details"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+            <div className="mt-3 space-y-3">
+              <div>
+                <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Project</div>
+                <div className="text-base font-medium text-gray-900 dark:text-gray-100">{previewProject.projectName || previewProject.name || previewProject.project_title || '-'}</div>
+              </div>
+              {(previewProject.builderName || previewProject.builder || previewProject.builder_name) && (
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Builder</div>
+                  <div className="text-sm text-gray-800 dark:text-gray-200">{previewProject.builderName || previewProject.builder || previewProject.builder_name}</div>
+                </div>
+              )}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">City</div>
+                  <div className="text-sm text-gray-800 dark:text-gray-200">{previewProject.city || previewProject.location_city || '-'}</div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">State</div>
+                  <div className="text-sm text-gray-800 dark:text-gray-200">{previewProject.state || previewProject.location_state || '-'}</div>
+                </div>
+              </div>
+              {(previewProject.type || previewProject.category || previewProject.property_type) && (
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Type</div>
+                  <div className="text-sm text-gray-800 dark:text-gray-200">{previewProject.type || previewProject.category || previewProject.property_type}</div>
+                </div>
+              )}
+              {previewProject.location && (
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Location</div>
+                  <div className="text-sm text-gray-800 dark:text-gray-200">{previewProject.location}</div>
+                </div>
+              )}
+              {previewProject.price && (
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Price</div>
+                  <div className="text-sm text-gray-800 dark:text-gray-200">{previewProject.price}</div>
+                </div>
+              )}
+              {previewProject.configuration && (
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Configuration</div>
+                  <div className="text-sm text-gray-800 dark:text-gray-200">{previewProject.configuration}</div>
+                </div>
+              )}
+              {/* Optional arrays */}
+              {Array.isArray(previewProject.amenities) && previewProject.amenities.length > 0 && (
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Amenities</div>
+                  <ul className="list-disc pl-5 text-sm text-gray-800 dark:text-gray-200">
+                    {previewProject.amenities.map((a, i) => (
+                      <li key={i}>{a}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {Array.isArray(previewProject.highlights) && previewProject.highlights.length > 0 && (
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Highlights</div>
+                  <ul className="list-disc pl-5 text-sm text-gray-800 dark:text-gray-200">
+                    {previewProject.highlights.map((h, i) => (
+                      <li key={i}>{h}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Raw JSON for diagnostics */}
+              {showRawDetails && (
+                <pre className="mt-2 p-3 bg-gray-100 dark:bg-gray-900 text-xs text-gray-800 dark:text-gray-200 rounded overflow-x-auto">
+{JSON.stringify(previewProject, null, 2)}
+                </pre>
+              )}
+
+              {/* Generic primitive fields renderer */}
+              {(() => {
+                const omit = new Set([
+                  'projectName','name','project_title',
+                  'builderName','builder','builder_name',
+                  'city','location_city','state','location_state',
+                  'type','category','property_type',
+                  'amenities','highlights','configuration','price','location','project_url','_id','id'
+                ]);
+                const entries = Object.entries(previewProject || {}).filter(([k,v]) => (
+                  !omit.has(k) && (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean')
+                ));
+                return entries.length ? (
+                  <div className="mt-3">
+                    <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">More Details</div>
+                    <dl className="grid grid-cols-1 gap-2">
+                      {entries.map(([k,v]) => (
+                        <div key={k} className="flex items-start justify-between gap-3">
+                          <dt className="text-xs text-gray-500 dark:text-gray-400 break-all">{k}</dt>
+                          <dd className="text-sm text-gray-800 dark:text-gray-200 break-all">{String(v)}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
+                ) : null;
+              })()}
+            </div>
+          </div>
+        )}
+
         {/* Instructions */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mt-6">
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">How it works:</h2>
           <div className="space-y-3 text-gray-600 dark:text-gray-400">
             <p>
-              <strong>Random Order:</strong> New builders automatically get random project ordering. 
+              <strong>Random Order:</strong> New builders automatically get random project ordering.
               This provides variety and prevents bias in project display.
             </p>
             <p>
-              <strong>Manual Order:</strong> You can drag and drop projects to create a custom order. 
+              <strong>Manual Order:</strong> You can drag and drop projects to create a custom order.
               This order will be saved and used consistently.
             </p>
             <p>
-              <strong>Switching:</strong> You can switch between random and manual ordering at any time. 
+              <strong>Switching:</strong> You can switch between random and manual ordering at any time.
               Manual orders are preserved when switching back and forth.
             </p>
           </div>
@@ -814,4 +1458,4 @@ const ProjectOrderManager = () => {
   );
 };
 
-export default ProjectOrderManager; 
+export default ProjectOrderManager;
