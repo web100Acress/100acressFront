@@ -253,7 +253,7 @@ const BlogView = () => {
         };
       } catch (_) { /* ignore */ }
     });
-  }, [blog_Description]);
+  }, [data.blog_Description]);
 
   const {
     blog_Title,
