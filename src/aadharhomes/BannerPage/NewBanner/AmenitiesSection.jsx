@@ -15,7 +15,7 @@ const AmenitiesSection = ({ projectName, Amenities = [] }) => {
   const items = normalizeAmenities(Amenities);
 
   return (
-    <section id="amenities" className="nb-amenities-section">
+    <div className="nb-amenities-section">
       <div className="nb-section-header nb-amenities-header">
         <div className="nb-section-lines">
           <div className="nb-section-line"></div>
@@ -44,7 +44,7 @@ const AmenitiesSection = ({ projectName, Amenities = [] }) => {
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 };
 

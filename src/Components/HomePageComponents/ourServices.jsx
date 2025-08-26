@@ -6,6 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { RealestateIcon,LegalIcon,HomeloanIcon, InteriorIcon } from "../../Assets/icons";
 import "aos/dist/aos.css";
 import AOS from "aos";
+import CraneTool from "../Actual_Components/cranetool.svg";
 
 function OurServices() {
   const sliderSettings = {
@@ -26,7 +27,7 @@ function OurServices() {
   
   return (
     <div className="section font-poppins font-light">
-      <div className="max-w-screen-xl mx-auto px-6 py-6">
+      <div className="w-full max-w-[1250px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <h2 className="text-xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
         Explore Our Services
       </h2>
@@ -77,30 +78,30 @@ function OurServices() {
                   <HomeloanIcon/>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl mb-2">Home Loan</h3>
+                  <h3 className="text-xl mb-2">Property Loan</h3>
                   <p className="text-gray-600 text-xs text-center">
-                  We will help you to provide the best home loan to complete your dream and guide.
+                  We will help you get the best property loan with end-to-end guidance.
                   </p>
                 </div>
               </Link>
             </div>
-            {/* <div className="flex flex-col items-center bg-white p-4 rounded-lg ">
+            <div className="flex flex-col items-center bg-white p-4 rounded-lg hover:shadow-[#FF9933]/20 hover:border-[#FF9933]/30 border border-transparent transition-all duration-300">
               <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
                   <img
-                    src="../../Images/construction.webp"
-                    className="h-52 w-60 object-fit"
-                    alt="construction"
+                    src={CraneTool}
+                    className="h-24 w-24 object-contain mx-auto"
+                    alt="Construction"
                   />
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold mb-2">Construction</h3>
-                  <p className="text-gray-600 text-justify">
-                  Skilled talents in real estate and construction are essential for translating social visions into tangible Smart Cities.
+                  <h3 className="text-xl mb-2">Construction</h3>
+                  <p className="text-gray-600 text-xs text-center">
+                    End-to-end construction solutions with quality, timelines, and transparency.
                   </p>
                 </div>
               </Link>
-            </div> */}
+            </div>
           </Slider>
           <style jsx>{`
         .slick-prev {
@@ -123,7 +124,7 @@ function OurServices() {
         </div>
 
  
-        <div data-aos="fade-left" className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div data-aos="fade-left" className="hidden md:grid md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-6">
           <div  data-aos="fade-left" className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
           <Link to={`/contact-us/`} target="_top" className="text-center">
                 <div className="mb-4">
@@ -169,12 +170,29 @@ function OurServices() {
                   <HomeloanIcon/>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl mb-2">Home Loan</h3>
+                  <h3 className="text-xl mb-2">Property Loan</h3>
                   <p className="text-gray-600 text-xs text-center">
-                  We will help you to provide the best home loan to complete your dream and guide.
+                  We will help you get the best property loan with end-to-end guidance.
                   </p>
                 </div>
               </Link>
+          </div>
+          <div  className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
+            <Link to={`/contact-us/`} target="_top" className="text-center">
+              <div className="mb-4">
+                <img
+                  src={CraneTool}
+                  className="h-24 w-24 object-contain mx-auto"
+                  alt="Construction"
+                />
+              </div>
+              <div className="text-center">
+                <h3 className="text-xl mb-2">Construction</h3>
+                <p className="text-gray-600 text-xs text-center">
+                  End-to-end construction solutions with quality, timelines, and transparency.
+                </p>
+              </div>
+            </Link>
           </div>
         
         </div>

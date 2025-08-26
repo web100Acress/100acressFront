@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
 import styled from "styled-components";
 import Footer from "../Actual_Components/Footer";
+import { MdFavoriteBorder } from "react-icons/md";
+import AuthModal from "../../Components/AuthModal";
+import { AuthContext } from "../../AuthContext";
 
 const ResidentialProjects = () => {
   let query = "residentiaProject";
@@ -180,6 +183,21 @@ const ResidentialProjects = () => {
       default:
         break;
     }
+  };
+
+  // Auth modal control
+  const { isAuthenticated } = useContext(AuthContext);
+  const [showAuth, setShowAuth] = useState(false);
+
+  // Wishlist handler: open auth modal if not logged in
+  const handleWishlist = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      setShowAuth(true);
+      return;
+    }
+    // TODO: handle wishlist for logged-in users
   };
 
   return (
@@ -559,7 +577,16 @@ const ResidentialProjects = () => {
                           className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                           loading="lazy"
                         />
-                        <div className="absolute top-3 right-3">
+                        {/* Top-right controls: wishlist + badge */}
+                        <div className="absolute top-3 right-3 flex items-center gap-2">
+                          <button
+                            onClick={handleWishlist}
+                            className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/90 text-gray-700 hover:text-red-600 shadow-md hover:shadow-lg hover:bg-white transition"
+                            aria-label="Add to wishlist (login required)"
+                            title="Login to add to wishlist"
+                          >
+                            <MdFavoriteBorder size={20} />
+                          </button>
                           <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                             Residential
                           </span>
@@ -643,6 +670,8 @@ const ResidentialProjects = () => {
         </div>
       </main>
       <Footer />
+      {/* Auth Modal for Login/Register */}
+      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="register" />
     </div>
   );
 };

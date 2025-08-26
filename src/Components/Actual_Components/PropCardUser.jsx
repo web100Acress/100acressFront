@@ -1,10 +1,15 @@
 /** @format */
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { styled } from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { MdFavoriteBorder } from "react-icons/md";
+import { LOGIN } from "../../lib/route";
 import { AiFillStar } from "react-icons/ai";
 import { BsFillCameraFill } from "react-icons/bs";
 import { BiDotsVerticalRounded } from "react-icons/bi";
+import AuthModal from "../AuthModal";
+import { AuthContext } from "../../AuthContext";
 import {
   MDBBtn,
   MDBModal,
@@ -17,6 +22,8 @@ import {
 } from "mdb-react-ui-kit";
 
 function PropCardUser() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useContext(AuthContext);
   const fullText =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquet aliquam sapien, eu dignissim tortor facilisis vel. Fusce auctor tellus in hendrerit. Vivamus ut lectus purus.";
 
@@ -24,6 +31,7 @@ function PropCardUser() {
   let [showFullText, setShowFullText] = useState(false);
   let [displayText, setDisplayText] = useState(fullText.slice(0, 45));
   let [basicModal, setBasicModal] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
 
   const toggleShow = () => {
     setBasicModal(!basicModal);
@@ -45,6 +53,24 @@ function PropCardUser() {
             <div className='imgeProp bc-rd-23'>
               <div className='imgdev position-relative'>
                 <img src='' alt='' />
+                {/* Heart/Wishlist Button */}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!isAuthenticated) {
+                      setShowAuth(true);
+                      return;
+                    }
+                    // TODO: handle wishlist action for logged-in users
+                  }}
+                  className='position-absolute'
+                  style={{ top: 10, right: 10, width: 40, height: 40, borderRadius: '9999px', background: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }}
+                  aria-label='Add to wishlist (login required)'
+                  title='Login to add to wishlist'
+                >
+                  <MdFavoriteBorder style={{ color: '#4b5563', fontSize: 20 }} />
+                </button>
               </div>
               <div className='photDivnum p-2 d-flex flex-column justify-content-between h-100'>
                 <div className='vrfied bc-rd-23 d-flex justify-content-center align-items-center'>
@@ -180,6 +206,8 @@ function PropCardUser() {
           </div>
         </div>
       </div>
+      {/* Auth Modal for Login/Register */}
+      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
     </Wrapper>
   );
 }

@@ -62,7 +62,7 @@ const Builderaction = () => {
   ];
   
   return (
-    <div className="py-3 sm:py-5 lg:py-6 bg-gradient-to-br from-gray-50 via-white to-orange-50/30 overflow-hidden">
+    <div className="py-3 sm:py-5 lg:py-6 bg-gradient-to-br from-gray-50 via-white to-red-50/40 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Enhanced Header Section */}
@@ -77,7 +77,7 @@ const Builderaction = () => {
           </div> */}
           
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-1">
-            <span className="bg-gradient-to-r from-orange-600 via-red-500 to-orange-700 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">
               Best For You
             </span>
           </h2>
@@ -89,19 +89,19 @@ const Builderaction = () => {
           {/* Stats Bar */}
           <div className="flex items-center justify-center space-x-8 text-sm text-gray-500 mt-1">
             <div className="flex items-center">
-              <svg className="w-4 h-4 mr-1 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-4 h-4 mr-1 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
               Trusted Developers
             </div>
             <div className="flex items-center">
-              <svg className="w-4 h-4 mr-1 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 mr-1 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Quality Assured
             </div>
             <div className="flex items-center">
-              <svg className="w-4 h-4 mr-1 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 mr-1 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
               Fast Delivery
@@ -120,7 +120,7 @@ const Builderaction = () => {
             >
               <Link 
                 to={project.link} 
-                className="block bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-2 overflow-hidden border border-gray-100 group-hover:border-orange-200"
+                className="block bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-2 overflow-hidden border border-gray-100 group-hover:border-red-200"
               >
                 {/* Image Container with Overlay */}
                 <div className="relative h-44 sm:h-48 overflow-hidden rounded-t-3xl">
@@ -143,7 +143,7 @@ const Builderaction = () => {
                   </div>
                   
                   {/* Project Count Badge */}
-                  <div className="absolute top-4 left-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full px-3 py-1.5 text-xs font-semibold shadow-lg">
+                  <div className="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full px-3 py-1.5 text-xs font-semibold shadow-lg">
                     {project.projects}+ Projects
                   </div>
                 </div>
@@ -152,7 +152,7 @@ const Builderaction = () => {
                 <div className="p-4">
                   {/* Title and Subtitle */}
                   <div className="mb-3">
-                    <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-orange-600 transition-colors duration-300">
+                    <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-red-600 transition-colors duration-300">
                       {project.title}
                     </h3>
                     <p className="text-sm text-gray-500 font-medium">
@@ -183,8 +183,8 @@ const Builderaction = () => {
                   </div>
 
                   {/* CTA Button */}
-                  <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 p-[1px] group-hover:from-orange-600 group-hover:to-red-600 transition-all duration-300">
-                    <div className="bg-gradient-to-r from-orange-500 to-red-500 group-hover:from-orange-600 group-hover:to-red-600 rounded-2xl px-6 py-3 text-center transition-all duration-300">
+                  <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-500 to-red-600 p-[1px] group-hover:from-red-600 group-hover:to-red-700 transition-all duration-300">
+                    <div className="bg-gradient-to-r from-red-500 to-red-600 group-hover:from-red-600 group-hover:to-red-700 rounded-2xl px-6 py-3 text-center transition-all duration-300">
                       <div className="text-white font-semibold text-sm group-hover:scale-105 transition-transform duration-300">
                         View All Projects
                       </div>
@@ -196,7 +196,7 @@ const Builderaction = () => {
                 </div>
 
                 {/* Hover Effect Border */}
-                <div className="absolute inset-0 rounded-3xl border-2 border-transparent group-hover:border-gradient-to-r group-hover:from-orange-400 group-hover:to-red-400 transition-all duration-300 pointer-events-none"></div>
+                <div className="absolute inset-0 rounded-3xl border-2 border-transparent group-hover:border-gradient-to-r group-hover:from-red-400 group-hover:to-red-500 transition-all duration-300 pointer-events-none"></div>
               </Link>
             </div>
           ))}
@@ -219,8 +219,8 @@ const Builderaction = () => {
         </div> */}
 
         {/* Background Decorations */}
-        <div className="absolute top-0 right-0 -z-10 w-96 h-96 bg-gradient-to-br from-orange-100 to-red-100 rounded-full blur-3xl opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 -z-10 w-96 h-96 bg-gradient-to-tr from-blue-100 to-purple-100 rounded-full blur-3xl opacity-20 animate-pulse delay-1000"></div>
+        <div className="absolute top-0 right-0 -z-10 w-96 h-96 bg-gradient-to-br from-red-100 to-red-200 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 -z-10 w-96 h-96 bg-gradient-to-tr from-red-100 to-red-200 rounded-full blur-3xl opacity-20 animate-pulse delay-1000"></div>
       </div>
     </div>
   );

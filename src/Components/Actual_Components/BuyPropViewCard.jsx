@@ -8,6 +8,8 @@ import CustomSkeleton from "../../Utils/CustomSkeleton";
 import { FilterIcon, PropertyIcon, RupeeIcon } from "../../Assets/icons";
 import { use } from "react";
 import { PaginationControls } from "../../Components/Blog_Components/BlogManagement";
+import { MdFavoriteBorder } from "react-icons/md";
+import { LOGIN } from "../../lib/route";
 
 // Price formatting function
 function formatPrice(price) {
@@ -901,6 +903,19 @@ const BuyPropViewCard = () => {
                           className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                           loading="lazy"
                         />
+                        {/* Heart/Wishlist Button */}
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            navigate(LOGIN);
+                          }}
+                          className="absolute top-3 right-3 w-10 h-10 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition"
+                          aria-label="Add to wishlist (login required)"
+                          title="Login to add to wishlist"
+                        >
+                          <MdFavoriteBorder className="text-gray-600 hover:text-red-500 text-xl" />
+                        </button>
                         <div className="absolute top-3 right-3">
                           <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                             Resale

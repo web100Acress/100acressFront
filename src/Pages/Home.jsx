@@ -69,8 +69,9 @@ const Home = () => {
   const LuxuryProjects = useSelector(store => store?.project?.luxury) || [];
   const BudgetHomesProjects = useSelector(store => store?.project?.budget) || [];
   const ProjectinDelhi = useSelector(store => store?.project?.projectindelhi) || [];
+  const DubaiProjects = useSelector(store => store?.stateproject?.dubai) || [];
   const LuxuryAllProject = useSelector(store => store?.allsectiondata?.luxuryAll) || [];
-  const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getAllProjects } = Api_Service();
+  const { getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getAllProjects, getProjectbyState } = Api_Service();
   const [dataLoaded, setDataLoaded] = useState({
     trending: false,
     featured: false,
@@ -81,6 +82,7 @@ const Home = () => {
     luxury: false,
     budget: false,
     delhi: false,
+    dubai: false,
   });
   const setRef = (section) => (el) => {
     if (el && !sectionsRef.current[section]) {
@@ -150,6 +152,9 @@ const Home = () => {
       case "Delhi":
         getProjectIndelhi();
         break;
+      case "Dubai":
+        getProjectbyState("dubai");
+        break;
       default:
         break;
     }
@@ -157,7 +162,7 @@ const Home = () => {
       ...prevData,
       [filter]: true
     }));
-  }, [dataLoaded, getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi]);
+  }, [dataLoaded, getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getProjectbyState]);
 
   useEffect(() => {
     loadData(activeFilter);
@@ -244,6 +249,9 @@ const Home = () => {
               if (section === "delhi" && ProjectinDelhi.length === 0) {
                 getProjectIndelhi();
               }
+              if (section === "dubai" && DubaiProjects.length === 0) {
+                getProjectbyState("Dubai");
+              }
               if (section === "resale") {
                 SetResaleSectionVisible(true);
               }
@@ -259,7 +267,7 @@ const Home = () => {
     return () => {
       Object.values(sectionsRef.current).forEach((el) => observer.unobserve(el));
     };
-  }, [UpcomingProjects, LuxuryProjects, BudgetHomesProjects, SCOProjects, ProjectinDelhi]);
+  }, [UpcomingProjects, LuxuryProjects, BudgetHomesProjects, SCOProjects, ProjectinDelhi, DubaiProjects]);
 
   // console.log(resalesectionvisible,"section")
 
@@ -476,7 +484,13 @@ const Home = () => {
           )}
         </div>
 
-
+        {/* Projects in Dubai */}
+        <div ref={setRef("dubai")} data-section="dubai" style={{ height: "10px" }}></div>
+        <div>
+          {DubaiProjects.length === 0 ? <CustomSkeleton /> : (
+            <CommonProject data={DubaiProjects} title="Projects in Dubai" animation="zoom-out-left" path="/projects-in-dubai/" />
+          )}
+        </div>
 
         <Cities />
 
