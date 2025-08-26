@@ -25,12 +25,12 @@ function WhyChoose() {
   }, []);
 
   const monthlydata = [
-    { title: "Residential Projects", count: "1245+", icon: <ResidentialProjectIcon /> },
-    { title: "Commercial Projects", count: "550+", icon: <CommercialProjectIcon /> },
-    { title: "SCO Plots", count: "54+", icon: <ScoPlotsIcon /> },
-    { title: "Plots & Floors", count: "250+", icon: <PlotnFloorIcon /> },
-    { title: "Monthly Visitors", count: "2.25L+", icon: <MonthlyVisitIcon /> },
-    { title: "Awards", count: "300+", icon: <AwardsIcon /> },
+    { title: "Residential Projects", count: "1600+", icon: <ResidentialProjectIcon /> },
+    { title: "Commercial Projects", count: "900+", icon: <CommercialProjectIcon /> },
+    { title: "SCO Plots", count: "90+", icon: <ScoPlotsIcon /> },
+    { title: "Plots & Floors", count: "400+", icon: <PlotnFloorIcon /> },
+    { title: "Monthly Visitors", count: "2.45L+", icon: <MonthlyVisitIcon /> },
+    { title: "Awards", count: "1000+", icon: <AwardsIcon /> },
   ];
 
   useEffect(() => {

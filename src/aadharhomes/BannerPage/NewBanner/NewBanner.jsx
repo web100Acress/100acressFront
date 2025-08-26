@@ -1113,6 +1113,7 @@ const items =text.map((item, index) => ({
 
 
 
+
             {/* How much */}
 
             <div className="p-2 pt-1 mt-2 pb-0 h-fit" >
@@ -1905,7 +1906,6 @@ const items =text.map((item, index) => ({
         </Wrapper>
 
       </div>
-    
   );
 };
 

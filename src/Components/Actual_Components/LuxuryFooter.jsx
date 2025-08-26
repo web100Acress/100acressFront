@@ -1,8 +1,9 @@
 "use client"
 import React, { useState } from "react";
 import api from "../../config/apiClient";
-import { Facebook, Twitter, Instagram, Youtube, Phone, MessageCircle, Mail, ArrowRight, Linkedin, Sparkles, Star } from "lucide-react"
 import { motion } from "framer-motion"
+import { Facebook, Instagram, Youtube, Phone, MessageCircle, Mail, ArrowRight, Linkedin, Sparkles, Star } from "lucide-react"
+import { TwitterIcon } from "../../Assets/icons";
 
 const LuxuryFooter = () => {
   const footerVariants = {
@@ -115,7 +116,7 @@ const LuxuryFooter = () => {
                 <div className="flex space-x-2">
                   {[
                     { Icon: Facebook, href: "https://www.facebook.com/100Acress/", target:"blank", label: "Facebook", color: "hover:bg-blue-600" },
-                    { Icon: Twitter, href: "https://x.com/100acressdotcom", target:"blank", label: "Twitter", color: "hover:bg-sky-500" },
+                    { Icon: TwitterIcon, href: "https://x.com/100acressdotcom", target:"blank", label: "X", color: "hover:bg-black" },
                     { Icon: Instagram, href: "https://www.instagram.com/official100acress/?hl=en", target:"blank", label: "Instagram", color: "hover:bg-pink-600" },
                     { Icon: Linkedin, href: "https://www.linkedin.com/company/100acress/", target:"blank", label: "LinkedIn", color: "hover:bg-blue-700" },
                     { Icon: Youtube, href: "https://www.youtube.com/@100acress", target:"blank", label: "YouTube", color: "hover:bg-red-600" },

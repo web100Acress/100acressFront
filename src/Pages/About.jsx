@@ -43,32 +43,32 @@ const About = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 mt-8">
             <div className="flex flex-col shadow-md px-4 pt-8 pb-1 rounded-lg border-[0.5px] border-gray-100 relative">
               <ResidentialProjectIcon className="absolute -top-5"/>
-              <h3>1245+</h3>
+              <h3>1600+</h3>
               <p>Residential Projects</p>
             </div>
             <div className="flex flex-col shadow-md px-4 pt-8 pb-1 rounded-lg border-[0.5px] border-gray-100 relative">
               <CommercialProjectIcon className="absolute -top-5"/>
-              <h3>550+</h3>
+              <h3>900+</h3>
               <p>Commercial Projects</p>
             </div>
             <div className="flex flex-col shadow-md px-4 pt-8 pb-1 rounded-lg border-[0.5px] border-gray-100 relative">
               <PlotnFloorIcon className="absolute -top-5"/>
-              <h3>250+</h3>
+              <h3>400+</h3>
               <p>Plots & Floors</p>
             </div>
             <div className="flex flex-col shadow-md px-4 pt-8 pb-1 rounded-lg border-[0.5px] border-gray-100 relative">
               <ScoPlotsIcon className="absolute -top-5"/>
-              <h3>54+</h3>
+              <h3>90+</h3>
               <p>SCO Plots</p>
             </div>
             <div className="flex flex-col shadow-md px-4 pt-8 pb-1 rounded-lg border-[0.5px] border-gray-100 relative">
               <MonthlyVisitIcon className="absolute -top-5"/>
-              <h3>2.25L+</h3>
+              <h3>2.45L+</h3>
               <p>Monthly Visitors</p>
             </div>
             <div className="flex flex-col shadow-md px-4 pt-8 pb-1 rounded-lg border-[0.5px] border-gray-100 relative">
               <AwardsIcon className="absolute -top-5"/>
-              <h3>150+</h3>
+              <h3>1000+</h3>
               <p>Awards</p>
             </div>
           </div>

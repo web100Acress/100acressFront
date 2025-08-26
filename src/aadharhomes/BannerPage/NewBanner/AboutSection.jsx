@@ -14,7 +14,7 @@ const AboutSection = ({
   formatDate,
 }) => {
   return (
-    <section id="about" ref={nextSectionRef} className="nb-about-section" style={{ transform: `translateY(${nextY}px)`, transition: 'transform 120ms ease-in-out' }}>
+    <div ref={nextSectionRef} className="nb-about-section" style={{ transform: `translateY(${nextY}px)`, transition: 'transform 120ms ease-in-out' }}>
       <div className="nb-section-header">
         <div className="nb-section-lines">
           <div className="nb-section-line"></div>
@@ -124,7 +124,7 @@ const AboutSection = ({
           )}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
