@@ -3,9 +3,11 @@ FROM node:18-alpine AS build
 
 WORKDIR /app
 
-COPY package*.json .npmrc ./
+COPY package.json package-lock.json .npmrc ./
 
-RUN npm install --legacy-peer-deps
+# Fix esbuild/glibc compatibility on Alpine during npm install
+RUN apk add --no-cache libc6-compat \
+  && npm ci --legacy-peer-deps
 
 COPY . .
 
@@ -24,7 +26,8 @@ WORKDIR /usr/share/nginx/html
 
 RUN rm -rf *
 
-COPY --from=build /app/build .
+# Vite outputs to dist by default
+COPY --from=build /app/dist .
 
 EXPOSE 80
 
