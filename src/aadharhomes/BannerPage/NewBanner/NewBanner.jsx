@@ -25,6 +25,9 @@ import { DataContext } from '../../../MyContext';
 import Slider from "react-slick";
 import Dynamicsvg from '../Dynamicsvg';
 import Api_Service from '../../../Redux/utils/Api_Service';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 const NewBanner = () => {
   const { pUrl } = useParams();
   const [projectViewDetails, setProjectViewDetails] = useState({});
@@ -154,9 +157,26 @@ const NewBanner = () => {
     speed: 500,
     slidesToShow: Math.min(3, sliderImages.length),
     slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
+    arrows: true,
+    swipeToSlide: true,
+    rows: 1,
+    centerMode: false,
+    autoplay: false,
     responsive: [
+      {
+        breakpoint: 1280,
+        settings: {
+          slidesToShow: Math.min(3, sliderImages.length),
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: Math.min(2, sliderImages.length),
+          slidesToScroll: 1,
+        },
+      },
       {
         breakpoint: 768,
         settings: {
@@ -1145,7 +1165,7 @@ const items =text.map((item, index) => ({
 
             {/* Floor Plan */}
 
-           { projectViewDetails.project_floorplan_Image?.length !== 0 && ( <>
+           { Array.isArray(projectViewDetails.project_floorplan_Image) && projectViewDetails.project_floorplan_Image.length > 0 && ( <>
            <div className="p-2 pt-2 mt-4 pb-0 h-fit">
               <div className="flex flex-justify-center items-stretch rounded h-auto">
                 <div className="text-black w-full flex flex-col">
