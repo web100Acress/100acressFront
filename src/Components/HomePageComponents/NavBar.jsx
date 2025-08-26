@@ -8,6 +8,7 @@ import { MdRocketLaunch } from "react-icons/md";
 import { GiSpectacles } from "react-icons/gi";
 import { GiVillage } from "react-icons/gi";
 import { HiBars3 } from "react-icons/hi2";
+import { FiUser } from "react-icons/fi";
 import { ABOUT, BLOG, KNOWABOUT, LOGIN, ROOT } from "../../lib/route";
 import { Link, Navigate } from "react-router-dom";
 import AuthModal from "../AuthModal";
@@ -22,18 +23,35 @@ function FinalNavBar() {
       
       
       <div className='Mflx'>
-      
-        <div className='1euNB' style={{cursor:"pointer"}}>
-          <Link to={ROOT}>
-            <img src="../../Images/mainLogo.png" alt='' width='200' loading="lazy"/>
-            
-            
-          </Link>
+
+        {/* Left: Hamburger (visible <=920px) */}
+        <div className='hdrLeft'>
+          <div
+            className='barDotMenu'
+            style={{ width: "fit-content", marginBottom: "5px", marginTop: "5px" }}
+          >
+            <HiBars3 size={28} color='white' onClick={() => setShowNav(!showNav)} />
+          </div>
         </div>
-        <div
-          className='barDotMenu'
-          style={{ width: "fit-content", marginBottom: "5px",marginTop: "5px" }}>
-          <HiBars3 size={35} color='white' onClick={() => setShowNav(!showNav)} />
+
+        {/* Center: Logo (always) */}
+        <div className='hdrCenter'>
+          <div className='1euNB' style={{ cursor: "pointer" }}>
+            <Link to={ROOT}>
+              <img src="../../Images/mainLogo.png" alt='' width='140' loading="lazy" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Right: Profile + Post Property (visible <=920px) */}
+        <div className='hdrRight'>
+          <button className='profBtn' aria-label='Profile/Login' onClick={() => setShowAuth(true)}>
+            <FiUser size={18} />
+          </button>
+          <div className='_6bnYTum' role="button" aria-label="List Property">
+            <span className='_lpText'>LIST PROPERTY</span>
+            <span className='_73exMP'>FREE</span>
+          </div>
         </div>
 
         {showNav && (
@@ -46,7 +64,7 @@ function FinalNavBar() {
             }}>
             <div className='d-flex align-items-center justify-content-between  pr-3'>
               <div className='1euNB'>
-                <img src="../../Images/mainLogo.png" alt='' width='200' loading="lazy"/>
+                <img src="../../Images/mainLogo.png" alt='' width='140' loading="lazy"/>
                 
               </div>
               <div
@@ -133,7 +151,7 @@ function FinalNavBar() {
           </div>
         )}
         <div className='NBflx'>
-          <ul className='ulfx _1grx' style={{marginTop:"8px"}}>
+          <ul className='ulfx _1grx' style={{marginTop:"2px"}}>
             <li className='pxrE el1'>
               <span className='pxrETXT'>
                 <a>Buy</a>
@@ -332,12 +350,39 @@ function FinalNavBar() {
     </Wrapper>
   );
 }
-
 export default FinalNavBar;
 const Wrapper = styled.section`
-position:sticky;
-top:0px;
-z-index:9999;
+  --nav-h: 68px; /* default navbar height */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  width: 100%;
+  min-height: var(--nav-h);
+  display: block;
+  background: transparent !important; /* fully transparent */
+  backdrop-filter: none; /* remove blur */
+  -webkit-backdrop-filter: none;
+  box-shadow: none; /* remove shadow */
+  /* Gradient divider: strong in center, fades on edges */
+  border-bottom: none;
+  position: fixed;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    pointer-events: none;
+    background: linear-gradient(90deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.7) 45%,
+      rgba(255,255,255,0.7) 55%,
+      rgba(255,255,255,0) 100%
+    );
+  }
   .ieuNB {
     display: flex;
   }
@@ -363,13 +408,17 @@ z-index:9999;
     color: red;
     width: 100%;
   }
+  /* Nav text readability on image backgrounds */
+  .ulfx, .ulfx .linkEl { 
+    text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+  }
   /* Ensure right action links are visible on desktop (white header bg) */
   .NBflx ._2grx .linkEl {
-    color: #e53e3e !important;
+    color: #ffffff !important; /* transparent header over image */
     font-weight: 600;
   }
   .NBflx ._2grx .linkEl:hover {
-    color: #b91c1c !important;
+    color: #e5e7eb !important; /* light gray on hover */
   }
   /* Keep mobile drawer links white on red background */
   .MBflx ._2grx.flex-column .linkEl {
@@ -378,9 +427,12 @@ z-index:9999;
   .Mflx {
     display: flex;
     align-items: center;
-    background:red;
-    padding: 0px 10px;
-    border-radius:0px 0px 10px 10px;
+    background: transparent !important; /* enforce transparent navbar */
+    padding: 0 12px !important; /* horizontal spacing */
+    border-radius: 0; /* remove rounded bottom so hero shows cleanly */
+    box-shadow: none;
+    min-height: var(--nav-h);
+    position: relative; /* for centered logo on mobile */
   }
   hr{
     color:black !important;
@@ -393,7 +445,7 @@ z-index:9999;
   ._2grx {
     justify-content: flex-end;
     flex-grow: 1;
-    padding-right: 20px;
+    padding-right: 0; /* flush to right edge */
     margin-top: 8px;
   }
   .linkEl {
@@ -600,31 +652,39 @@ z-index:9999;
     position: relative;
   }
   .barDotMenu {
-    display: none;
+    display: none; /* shown at <=920px */
   }
   .mob_view_sde {
     display: none;
   }
-  @media screen and (max-width: 1100px) and (min-width: 400px) {
-    .NBflx {
-      display: none;
-    }
-    .barDotMenu {
-      display: block;
-    }
-    .Mflx {
-      justify-content: space-between;
-    }
+  /* Mobile/tablet layout at <=920px */
+  .hdrLeft, .hdrCenter, .hdrRight { display: none; }
+  .profBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.8);
+    color: #fff;
+    width: 34px;
+    height: 34px;
+    border-radius: 9999px;
+    padding: 0;
   }
-  @media screen and (max-width: 400px) {
-    .NBflx {
-      display: none;
+  @media screen and (max-width: 920px) {
+    .NBflx { display: none; }
+    .barDotMenu { display: block; }
+    .hdrLeft, .hdrCenter, .hdrRight { display: flex; align-items: center; }
+    .hdrLeft { flex: 1; justify-content: flex-start; }
+    .hdrRight { flex: 1; justify-content: flex-end; gap: 10px; }
+    .hdrCenter {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 50%;
+      transform: translate(-50%, -50%);
     }
-    .barDotMenu {
-      display: block;
-    }
-    .Mflx {
-      justify-content: space-between;
-    }
+    .Mflx { width: 100%; }
+    ._6bnYTum { padding: 6px 14px; }
   }
 `;

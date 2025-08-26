@@ -4,6 +4,7 @@ import api from "../../config/apiClient";
 import { motion } from "framer-motion"
 import { Facebook, Instagram, Youtube, Phone, MessageCircle, Mail, ArrowRight, Linkedin, Sparkles, Star } from "lucide-react"
 import { TwitterIcon } from "../../Assets/icons";
+import EMICalculator from "../EMICalculator";
 
 const LuxuryFooter = () => {
   const footerVariants = {
@@ -155,6 +156,7 @@ const LuxuryFooter = () => {
                     { label: "Investment Blog", href: "/blog/" },
                     { label: "About Us", href: "/about-us/" },
                     { label: "Contact Us", href: "/contact-us/" },
+                    { label: "EMI Calculator", href: "/emi-calculator/" },
                     { label: "Our Services", href: "/#our-services" },
                     { label: "Career", href: "/career-with-us/"},
                   ].map((link, index) => (
@@ -243,6 +245,20 @@ const LuxuryFooter = () => {
               </div>
             </motion.div>
           </div>
+
+          {/* EMI Calculator Section */}
+          <motion.div
+            className="mt-6 lg:mt-8"
+            variants={itemVariants}
+          >
+            <h3 className="text-xl font-semibold text-gray-800 relative pb-2">
+              EMI Calculator
+              <span className="absolute -bottom-0.5 left-0 w-12 h-0.5 bg-gradient-to-r from-red-600 to-red-400 rounded-full"></span>
+            </h3>
+            <div className="mt-3 bg-white/95 backdrop-blur-sm rounded-2xl border border-gray-200 shadow-sm p-3 sm:p-4">
+              <EMICalculator />
+            </div>
+          </motion.div>
 
           {/* Unified Content Section - Contact + Image */}
           {false && (

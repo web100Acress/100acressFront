@@ -25,9 +25,9 @@ export default function CenterLogo({ colorChange, isSearchOpen, centerOnCompact 
               : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
           }
           alt="100acress logo"
-          height="60px"
-          minH="60px"
-          maxH="60px"
+          height="48px"
+          minH="48px"
+          maxH="48px"
           width="auto"
           maxW="unset"
           objectFit="contain"

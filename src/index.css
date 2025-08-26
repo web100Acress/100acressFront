@@ -111,16 +111,6 @@ html {
   scroll-behavior: auto !important;
 }
 
-/* Global header offset fallbacks: ensure content never hides under fixed navbar */
-:root {
-  /* Default to 72px until JS sets --navbar-h */
-  --navbar-h: 72px;
-  scroll-padding-top: calc(var(--navbar-h, 72px) + env(safe-area-inset-top, 0px)) !important;
-}
-body {
-  padding-top: calc(var(--navbar-h, 72px) + env(safe-area-inset-top, 0px)) !important;
-}
-
 /* Common libraries/components */
 .slick-slider *, .ant-modal *, .ant-drawer *, .ant-message *, .ant-notification * {
   transition: none !important;

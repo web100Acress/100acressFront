@@ -167,6 +167,8 @@ const ModernHeroSection = () => {
 
   return (
     <HeroWrapper>
+      {/* Fixed-height top hero background like 99acres */}
+      <div className="top-hero-bg" aria-hidden="true" />
       <div className="hero-content">
         <div className="skyline-overlay" />
         <div className="clouds">
@@ -305,8 +307,19 @@ const HeroWrapper = styled.section`
   background: linear-gradient(180deg, #e9f1ff 0%, #f5f7ff 60%, #ffffff 100%);
   min-height: 56vh; /* half-ish page */
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   overflow: hidden;
+
+  /* New: top hero background image strip (340px tall) */
+  .top-hero-bg {
+    width: 100%;
+    height: 340px;
+    background-image: url("/Images/Untitled (3000 x 340 px).png");
+    background-repeat: no-repeat;
+    background-position: center center; /* keep image centered */
+    background-size: auto 100%; /* fit height exactly; crop left/right on small screens */
+  }
 
   .hero-content { width: 100%; position: relative; }
 
