@@ -46,7 +46,7 @@ const NewBanner = () => {
   const [PopUpresponseMessage, setPopUpResponseMessage] = useState("");
   const [isModalOpenGallery, setIsModalOpenGallery] = useState(false);
   const [modalImageGallery, setModalImageGallery] = useState(null);
-  const {getProjectbyBuilder} = Api_Service();
+  const { getProjectbyBuilder, getPropertyOrder } = Api_Service();
   const [builderProject, setBuilderProject] = useState([]); 
   const [error, setError] = useState(null);
   const query = projectViewDetails?.builderName ;
@@ -75,14 +75,52 @@ const NewBanner = () => {
     const fetchData = async () => {
       try {
         const fetchedResult = await getProjectbyBuilder(query, 0);
-        setBuilderProject(fetchedResult);
+        let list = Array.isArray(fetchedResult) ? fetchedResult : [];
+
+        // Try to apply saved property order for this builder
+        try {
+          const orderDoc = await getPropertyOrder(query);
+          const orderIds = Array.isArray(orderDoc?.customOrder)
+            ? orderDoc.customOrder.map(String)
+            : [];
+          if (orderIds.length > 0 && list.length > 0) {
+            const byId = new Map(list.map(p => [String(p._id || p.id), p]));
+            const orderedById = orderIds
+              .map(id => byId.get(id))
+              .filter(Boolean);
+            let remaining = list.filter(p => !orderIds.includes(String(p._id || p.id)));
+
+            // If very few matched by id, try a fallback by name to maximize alignment
+            if (orderedById.length < Math.min(3, list.length)) {
+              const byName = new Map(list.map(p => [String(p.projectName || p.name || '').trim().toLowerCase(), p]));
+              const orderedByName = orderIds
+                .map(id => String(id).trim().toLowerCase())
+                .map(nameKey => byName.get(nameKey))
+                .filter(Boolean);
+              // Use whichever yields more matches
+              if (orderedByName.length > orderedById.length) {
+                const used = new Set(orderedByName.map(p => String(p._id || p.id)));
+                remaining = list.filter(p => !used.has(String(p._id || p.id)));
+                list = [...orderedByName, ...remaining];
+              } else {
+                list = [...orderedById, ...remaining];
+              }
+            } else {
+              list = [...orderedById, ...remaining];
+            }
+          }
+        } catch (_) {
+          // no-op if order fetch fails
+        }
+
+        setBuilderProject(list);
       } catch (err) {
         setError(err);
       }
     };
 
-    fetchData();
-  }, [query]);
+    if (query && typeof query === 'string') fetchData();
+  }, [query, getProjectbyBuilder, getPropertyOrder]);
 
 
   const {

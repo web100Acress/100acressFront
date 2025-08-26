@@ -16,6 +16,9 @@ import { emaar } from "../slice/ProjectstatusSlice";
 import { useCallback } from "react";
 import { maxpriceproject,minpriceproject } from "../slice/PriceBasedSlice";
 
+// Maintain per-builder abort controllers to prevent overlapping requests
+const propertyOrderControllers = new Map();
+
 const Api_service = () => {
   const dispatch = useDispatch();
 
@@ -313,9 +316,9 @@ const Api_service = () => {
         console.warn('getProjectbyBuilder: missing builder name');
         return [];
       }
-      console.log('🔍 API Call - builderName:', query);
-      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?builderName=${query}&limit=${limit}`);
-      console.log('🔍 API Response:', response.data);
+      console.log('🟦 getProjectbyBuilder: start', { query, limit });
+      const response = await api.get(`${API_ROUTES.projectsBase()}/projectsearch?builderName=${query}&limit=${limit}` , { timeout: 15000 });
+      console.log('🟦 getProjectbyBuilder: success', { count: Array.isArray(response?.data?.data) ? response.data.data.length : 'n/a' });
       const BuilderbyQuery = response.data.data;
 
       switch (query) {
@@ -395,7 +398,7 @@ const Api_service = () => {
       }
       return BuilderbyQuery;
     } catch (error) {
-      console.error("Error fetching project data:", error);
+      console.error("🟥 getProjectbyBuilder: error", error);
       return [];
     }
   }, [dispatch]);
@@ -446,11 +449,32 @@ const Api_service = () => {
   const getPropertyOrder = async (builderName) => {
     try {
       if (!builderName) return null;
-      const res = await api.get(`propertyOrder/builder/${encodeURIComponent(builderName)}`);
-      return res?.data?.data || null;
+      // Abort any previous request for the same builder to avoid overlaps and hanging XHRs
+      const prev = propertyOrderControllers.get(builderName);
+      if (prev) {
+        try { prev.abort(); console.log('🟨 getPropertyOrder: aborted previous request for', builderName); } catch {}
+      }
+      const controller = new AbortController();
+      propertyOrderControllers.set(builderName, controller);
+      console.log('🟦 getPropertyOrder: start', builderName);
+      const res = await api.get(`propertyOrder/builder/${encodeURIComponent(builderName)}`, {
+        signal: controller.signal,
+        timeout: 15000,
+      });
+      const data = res?.data?.data || null;
+      console.log('🟦 getPropertyOrder: success', builderName, { hasData: !!data, count: Array.isArray(data?.customOrder) ? data.customOrder.length : 'n/a' });
+      return data;
     } catch (error) {
-      console.error('Error fetching property order:', error);
+      if (error?.name === 'CanceledError' || error?.message === 'canceled') {
+        console.warn('🟨 getPropertyOrder: request canceled for', builderName);
+        return null;
+      }
+      console.error('🟥 getPropertyOrder: error', builderName, error);
       return null;
+    } finally {
+      // Clear controller for this builder
+      propertyOrderControllers.delete(builderName);
+      console.log('🟦 getPropertyOrder: end', builderName);
     }
   };
 
