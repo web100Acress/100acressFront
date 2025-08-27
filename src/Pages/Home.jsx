@@ -301,12 +301,11 @@ const Home = () => {
   {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
         <div className="relative w-full">
-          {/* New: 99acres-style hero strip with fixed 340px height */}
+          
           <div className="hero-strip-99" aria-hidden="true" />
         </div>
 
-        {/* Place SearchBar BELOW the hero strip */}
-        <div className="flex items-center justify-center py-4 md:py-6">
+        <div className="relative w-full max-w-6xl mx-auto px-4 py-8 -mt-24 z-10">
           <SearchBar />
         </div>
 
