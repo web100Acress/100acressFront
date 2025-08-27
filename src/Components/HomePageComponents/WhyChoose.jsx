@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "aos/dist/aos.css";
 import AOS from "aos";
+import CountUp from "react-countup";
 
 import {
   MonthlyVisitIcon,
@@ -9,9 +10,7 @@ import {
   CommercialProjectIcon,
   ScoPlotsIcon,
   PlotnFloorIcon,
-} from "../../Assets/icons";
-
-
+} from "../../Assets/icons"; // Ensure these paths are correct
 
 function WhyChoose() {
   const [expanded, setExpanded] = useState(false);
@@ -20,17 +19,39 @@ function WhyChoose() {
   const toggleParagraph = () => {
     setExpanded(!expanded);
   };
+
   useEffect(() => {
-    AOS.init();
+    AOS.init({ duration: 1000, once: true });
   }, []);
 
   const monthlydata = [
-    { title: "Residential Projects", count: "1600+", icon: <ResidentialProjectIcon /> },
-    { title: "Commercial Projects", count: "900+", icon: <CommercialProjectIcon /> },
-    { title: "SCO Plots", count: "90+", icon: <ScoPlotsIcon /> },
-    { title: "Plots & Floors", count: "400+", icon: <PlotnFloorIcon /> },
-    { title: "Monthly Visitors", count: "2.45L+", icon: <MonthlyVisitIcon /> },
-    { title: "Awards", count: "1000+", icon: <AwardsIcon /> },
+    {
+      title: "Residential Projects",
+      count: 1600,
+      suffix: "+",
+      icon: <ResidentialProjectIcon />,
+    },
+    {
+      title: "Commercial Projects",
+      count: 900,
+      suffix: "+",
+      icon: <CommercialProjectIcon />,
+    },
+    { title: "SCO Plots", count: 90, suffix: "+", icon: <ScoPlotsIcon /> },
+    {
+      title: "Plots & Floors",
+      count: 400,
+      suffix: "+",
+      icon: <PlotnFloorIcon />,
+    },
+    {
+      title: "Monthly Visitors",
+      count: 2.45,
+      suffix: "L+",
+      decimals: 2,
+      icon: <MonthlyVisitIcon />,
+    },
+    { title: "Awards", count: 1000, suffix: "+", icon: <AwardsIcon /> },
   ];
 
   useEffect(() => {
@@ -43,45 +64,83 @@ function WhyChoose() {
 
   const truncateText = (text, limit) => {
     const words = text.split(" ");
-    return words.length > limit ? words.slice(0, limit).join(" ") + "..." : text;
+    return words.length > limit
+      ? words.slice(0, limit).join(" ") + "..."
+      : text;
   };
 
   return (
-    <section className="font-sans px-0 sm:px-6 lg:px-12 py-8 max-w-[1250px] mx-auto">
-      <div className="flex flex-col md:flex-row items-center bg-white">
+    <section className="font-sans px-4 sm:px-6 lg:px-12 py-16 max-w-[1250px] mx-auto">
+      <div className="flex flex-col md:flex-row items-center bg-white rounded-3xl shadow-2xl overflow-hidden">
         {/* Left Section */}
-        <div className="w-full md:w-1/2 p-4">
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-4 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent">
+        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-gradient-to-r  to-white">
+          <p
+            className="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-5 leading-tight text-black"
+            data-aos="fade-right"
+          >
             Why 100acress.com?
           </p>
-          <div className="text-justify text-gray-700">
-            <p className="mb-4">
-              {isMobile ? (expanded ? paragraphText : truncateText(paragraphText, 18)) : paragraphText}
+
+          <div className="text-justify text-gray-700 leading-relaxed text-base">
+            <p className="mb-6">
+              {isMobile
+                ? expanded
+                  ? paragraphText
+                  : truncateText(paragraphText, 25)
+                : paragraphText}
             </p>
             {isMobile && (
               <button
-                className="rounded-md mt-2 px-4 justify-center py-2 bg-gradient-to-r from-[#FF9933] to-[#138808] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-[#FF9933] dark:focus:ring-[#138808] text-white text-sm sm:text-base ml-auto mr-auto transition duration-200 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-full shadow-lg text-white
+                           bg-gradient-to-r from-[#FF9933] to-[#138808] hover:from-[#e67e22] hover:to-[#107c07]
+                           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF9933] transition duration-300 ease-in-out transform hover:scale-105"
                 onClick={toggleParagraph}
               >
                 {expanded ? "Read less" : "Read more"}
               </button>
             )}
-            <p className="mt-4 text-[#FF9933] font-medium">Rajesh Aggarwal, Founder</p>
+            <p className="mt-8">
+              <span className="text-gray-600 font-medium">
+                Rajesh Aggarwal,{" "}
+              </span>
+              <span className="font-bold text-xl sm:text-2xl text-black">
+                Founder
+              </span>
+            </p>
           </div>
         </div>
 
         {/* Right Section */}
-        <div className="w-full md:w-1/2 p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="w-full md:w-1/2 p-6 md:p-12 bg-white">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {monthlydata.map((data, index) => (
               <div
-                data-aos="zoom-in" data-aos-delay="200"
+                data-aos="zoom-in"
+                data-aos-delay={index * 150 + 200}
                 key={index}
-                className="relative bg-white shadow rounded-lg pl-4 flex flex-col justify-center items-start hover:shadow-[#FF9933]/20 hover:border-[#FF9933]/30 border border-transparent transition-all duration-300"
+                className="relative bg-white p-6 rounded-2xl shadow-lg flex flex-col items-start justify-center
+                           hover:shadow-2xl hover:shadow-[#FF9933]/40 border border-gray-100 hover:border-[#FF9933]/50
+                           transition-all duration-300 ease-in-out transform hover:-translate-y-2"
               >
-                <div className="absolute -top-5 left-4 ">{data.icon}</div>
-                <div className="mt-8 text-gray-800 font-bold text-xl">{data.count}</div>
-                <p className="text-gray-600 text-sm">{data.title}</p>
+                <div
+                  className="absolute -top-7 left-5 p-3 rounded-full bg-white backdrop-blur-sm
+                             shadow-xl flex items-center justify-center"
+                >
+                  <div className="text-[#FF9933] text-3xl">{data.icon}</div>
+                </div>
+                <div className="mt-8 text-gray-900 font-extrabold text-4xl leading-none tracking-tight">
+                  <CountUp
+                    end={data.count}
+                    duration={3}
+                    decimals={data.decimals || 0}
+                    suffix={data.suffix}
+                    enableScrollSpy={true}
+                    scrollSpyOnce={true}
+                  />
+                </div>
+                <p className="mt-2 text-gray-600 text-sm md:text-base font-medium">
+                  {data.title}
+                </p>
               </div>
             ))}
           </div>
