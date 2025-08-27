@@ -152,14 +152,14 @@ function SearchBar() {
     <Wrapper className="section">
       
       
-      <div className="SJDMls xl:h-12 lg:h-12 md:h-10 sm:h-8 lg:p-0 sm:p-0 md:p-0">
+      <div className="SJDMls w-full xl:h-12 lg:h-12 md:h-10 sm:h-8 p-0 flex justify-center">
         {["Buy", "Rent", "New Launch", "Commercial", "Plots", "SCO"].map((linkName) => (
           <Link
             key={linkName}
             className={`options hidden sm:block hover:rounded-t-lg cursor-pointer whitespace-nowrap ease-in-out ${
               activeLink === linkName
-                ? "active bg-[#FFFFFF] rounded-t-lg"
-                : "text-[#FFFFFF] hover:underline hover:bg-[#FAF9F6] hover:underline-offset-8"
+                ? "active bg-[#FFFFFF] text-black rounded-t-lg"
+                : "text-black hover:underline hover:bg-[#FAF9F6] hover:underline-offset-8"
             }`}
             onClick={() => handleLinkClick(linkName)}
           >

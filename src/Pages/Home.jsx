@@ -305,7 +305,7 @@ const Home = () => {
           <div className="hero-strip-99" aria-hidden="true" />
         </div>
 
-        <div className="relative w-full max-w-6xl mx-auto px-4 py-8 -mt-24 z-10">
+        <div className="relative w-full max-w-6xl mx-auto px-4 py-8 -mt-20 z-10">
           <SearchBar />
         </div>
 
