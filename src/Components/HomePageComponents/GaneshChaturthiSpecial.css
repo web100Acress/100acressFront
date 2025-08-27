@@ -1,0 +1,192 @@
+.ganesh-container {
+    background: linear-gradient(135deg, #fff7e6, #fff0db);
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 25px auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+    position: relative;
+  }
+  
+  /* Decorative festive border */
+  .ganesh-container::before {
+    content: "🪔 🪔 🪔 🪔 🪔";
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    color: #d97706;
+  }
+  
+  .festive-header {
+    font-size: 26px;
+    font-weight: bold;
+    color: #b91c1c;
+    margin-bottom: 8px;
+    text-shadow: 1px 1px 2px #ffedd5;
+    animation: glow 2s infinite alternate;
+  }
+  
+  @keyframes glow {
+    from { text-shadow: 0 0 5px #ff9f1c; }
+    to { text-shadow: 0 0 15px #ff6f00; }
+  }
+  
+  .sub-text {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+  
+  .products {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+  }
+  
+  .product-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    min-width: 200px;
+    flex-shrink: 0;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #fcd34d;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+    border-color: #f59e0b;
+  }
+  
+  .product-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .product-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 10px 0 4px;
+    color: #333;
+  }
+  
+  .product-price {
+    font-size: 14px;
+    color: #065f46;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .shop-btn {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  
+  .shop-btn:hover {
+    background: linear-gradient(90deg, #d97706, #b45309);
+  }
+  
+  /* Hide scrollbar */
+  .products::-webkit-scrollbar {
+    display: none;
+  }
+  .products {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .products {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+  }
+  
+  /* 🔹 Fixed width cards */
+  .product-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    width: 160px;         /* ✅ sabhi cards ek size ke */
+    flex-shrink: 0;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #fcd34d;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* content neat rahe */
+  }
+  
+  /* Card hover effect */
+  .product-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+    border-color: #f59e0b;
+  }
+  
+  /* Image fix height */
+  .product-card img {
+    width: 100%;
+    height: 140px;       /* ✅ ek hi size me image */
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  /* Title same height */
+  .product-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin: 8px 0 4px;
+    color: #333;
+    min-height: 36px;    /* ✅ sabhi titles ek line space */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  /* Offer / Price uniform */
+  .product-price {
+    font-size: 14px;
+    color: #065f46;
+    font-weight: 600;
+    margin-top: auto;
+    padding: 4px 0;
+    min-height: 20px;    /* ✅ sab same line me dikhaye */
+  }
+  
+  /* CTA Button */
+  .shop-btn {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 6px;
+    transition: background 0.3s;
+  }
+  
+  .shop-btn:hover {
+    background: linear-gradient(90deg, #d97706, #b45309);
+  }
+  
