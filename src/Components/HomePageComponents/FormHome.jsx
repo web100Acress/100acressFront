@@ -86,7 +86,7 @@ const FormHome = () => {
         <div
           data-aos="fade-right"
           data-aos-delay="200"
-          className="w-full md:w-1/3 bg-gray-200 flex items-center justify-center h-80 md:h-96"
+          className="w-full md:w-1/3 bg-white-200 flex items-center justify-center h-80 md:h-96"
         >
           <ConsultIcon />
         </div>
