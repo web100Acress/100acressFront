@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FiSearch, FiMic, FiMapPin, FiChevronRight } from 'react-icons/fi';
+import { FiSearch, FiMic, FiMapPin, FiChevronRight, FiChevronLeft, FiCrosshair } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import Slider from 'react-slick';
 import { imageSrc, phoneSrc } from '../../Pages/datafeed/Desiredorder';
@@ -59,62 +59,80 @@ function SearchBar() {
           window.open(window.location.origin + "/sco/plots/", '_blank',);
           break;
 
-      }
-      setActiveLink(linkName);
-      setData(`${linkName}`);
+    }
+  };
+
+  const handleSearch = () => {
+    const searchData = {
+      query: searchQuery,
+      collectionName: activeLink,
     };
+    const key = encodeURIComponent(JSON.stringify(searchData));
+    window.location.href = `/searchdata/${key}`;
+  };
 
-    const localities = [
-      { name: "Sohna Road", link: "/property-in-gurugram/sohna-road/" },
-      { name: "Golf Course Road", link: "/property-in-gurugram/golf-course/" },
-      { name: "MG Road", link: "/property-in-gurugram/mg-road/" },
-      { name: "Northern Peripheral Road", link: "/property-in-gurugram/northern-peripheral-road/" },
-      { name: "Dwarka Expressway", link: "/property-in-gurugram/dwarka-expressway/" },
-      { name: "New Gurgaon", link: "/property-in-gurugram/new-gurgaon/" },
-      { name: "Sohna", link: "/property-in-gurugram/sohna/" },
-      { name: "Southern Peripheral Road", link: "/property-in-gurugram/southern-peripheral-road/" },
-      { name: "NH-48", link: "/property-in-gurugram/nh-48/" },
-      { name: "Golf Course Extn Road", link: "/property-in-gurugram/golf-course-extn-road/" },
-    ];
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') handleSearch();
+  };
 
-    const itemsPerPage = 7;
-    const nextpage = 1;
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      console.warn('Geolocation is not supported by this browser.');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        // Optional: show coords in the input briefly
+        setSearchQuery(`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
 
-    const visibleLocalities = localities.slice(currentIndex, currentIndex + itemsPerPage);
+        // Navigate directly to results with current location so nearby properties show
+        const searchData = {
+          location: { lat: latitude, lng: longitude },
+          query: "",
+          collectionName: activeLink,
+          nearby: true,
+        };
+        const key = encodeURIComponent(JSON.stringify(searchData));
+        window.location.href = `/searchdata/${key}`;
+      },
+      (error) => {
+        console.warn('Unable to retrieve location:', error?.message || error);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  };
 
-    const handleNext = () => {
-      if (currentIndex + itemsPerPage < localities.length) {
-        setCurrentIndex((prev) => prev + nextpage);
-      }
-    };
+  const localities = [
+    { name: "Sohna Road", link: "/property-in-gurugram/sohna-road/" },
+    { name: "Golf Course Road", link: "/property-in-gurugram/golf-course/" },
+    { name: "MG Road", link: "/property-in-gurugram/mg-road/" },
+    { name: "Northern Peripheral Road", link: "/property-in-gurugram/northern-peripheral-road/" },
+    { name: "Dwarka Expressway", link: "/property-in-gurugram/dwarka-expressway/" },
+    { name: "New Gurgaon", link: "/property-in-gurugram/new-gurgaon/" },
+    { name: "Sohna", link: "/property-in-gurugram/sohna/" },
+    { name: "Southern Peripheral Road", link: "/property-in-gurugram/southern-peripheral-road/" },
+    { name: "NH-48", link: "/property-in-gurugram/nh-48/" },
+    { name: "Golf Course Extn Road", link: "/property-in-gurugram/golf-course-extn-road/" },
+  ];
 
-    const handlePrev = () => {
-      if (currentIndex > 0) {
-        setCurrentIndex((prev) => prev - nextpage);
-      }
-    };
+  const itemsPerPage = 7;
+  const nextpage = 1;
 
-    // useEffect(() => {
-    //   const updateImageSrc = () => {
-    //     if (window.innerWidth <= 600) {
-    //       setImageSrc(['../../Imgaes/mobile.png']);
-    //     } else if (window.innerWidth <= 1024) {
-    //       setImageSrc(['https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp']);
-    //     } else {
-    //       setImageSrc(['https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp']);
-    //     }
-    //   };
+  const visibleLocalities = localities.slice(currentIndex, currentIndex + itemsPerPage);
 
-    //   updateImageSrc();
-    //   window.addEventListener('resize', updateImageSrc);
+  const handleNext = () => {
+    if (currentIndex + itemsPerPage < localities.length) {
+      setCurrentIndex((prev) => prev + nextpage);
+    }
+  };
 
-    //   return () => {
-    //     window.removeEventListener('resize', updateImageSrc);
-    //   };
-    // }, []);
-
-
-    const settings = {
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - nextpage);
+    }
+  };
+  const settings = {
       dots: false,
       infinite: true,
       speed: 600,
@@ -134,7 +152,7 @@ function SearchBar() {
       ],
       customPaging: (i) => (
         <button
-          className={`rounded-full mt-4 mr-2 ${i === currentindeximgae ? 'bg-gray-800 h-2 w-5' : 'bg-gray-400 h-3 w-3'}`}
+          className={`rounded-full mt-4 mr-2 ${i === currentImageIndex ? 'bg-gray-800 h-2 w-5' : 'bg-gray-400 h-3 w-3'}`}
         ></button>
       ),
       afterChange: (index) => setCurrentImageIndex(index),
@@ -160,7 +178,7 @@ function SearchBar() {
       ],
       customPaging: (i) => (
       <button
-        className={`rounded-full mt-4 mr-2 ${i === currentindeximgae ? 'bg-gray-800 h-2 w-5' : 'bg-gray-400 h-3 w-3'}`}
+        className={`rounded-full mt-4 mr-2 ${i === currentImageIndex ? 'bg-gray-800 h-2 w-5' : 'bg-gray-400 h-3 w-3'}`}
       ></button>
     ),
     afterChange: (index) => setCurrentImageIndex(index),
@@ -172,17 +190,17 @@ function SearchBar() {
     <Wrapper>
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Search Container */}
-        <div className="glass-container w-full mx-auto p-6 rounded-2xl shadow-2xl backdrop-blur-lg bg-gradient-to-r from-red-400/20 via-orange-400/20 to-pink-400/20 border border-white/10">
+        <div className="glass-container group w-full mx-auto p-6 rounded-3xl overflow-hidden border border-gray-100 -mt-4 sm:-mt-6 md:-mt-14 bg-white shadow-2xl">
         {/* Category Tabs */}
-        <div className="tabs-container flex justify-center mb-6">
-          <div className="inline-flex p-1 bg-black/10 rounded-xl backdrop-blur-sm">
+        <div className="tabs-container flex justify-center mb-1">
+          <div className="inline-flex p-1 bg-gray-100 rounded-xl">
             {["Buy", "Rent", "New Launch", "Commercial", "Plots", "SCO"].map((linkName) => (
               <button
                 key={linkName}
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
                   activeLink === linkName
                     ? "bg-white text-black shadow-md"
-                    : "text-white hover:bg-white/20"
+                    : "text-gray-600 hover:bg-white/50"
                 }`}
                 onClick={() => handleLinkClick(linkName)}
               >
@@ -195,11 +213,11 @@ function SearchBar() {
         {/* Search Bar */}
         <div 
           ref={searchRef}
-          className={`search-bar flex items-center bg-white/90 backdrop-blur-sm rounded-full p-1 shadow-lg transition-all duration-300 ${
+          className={`search-bar flex items-center bg-white/90 backdrop-blur-sm rounded-full p-0.5 shadow-lg transition-all duration-300 ${
             isFocused ? 'ring-2 ring-white/50' : ''
           }`}
         >
-          <div className="flex items-center px-4 text-gray-500">
+          <div className="flex items-center px-3 text-gray-500">
             <FiMapPin className="w-5 h-5" />
           </div>
           <input
@@ -212,18 +230,29 @@ function SearchBar() {
             }}
             onBlur={() => setIsFocused(false)}
             placeholder="Search by City, Locality, or Project"
-            className="flex-1 py-4 px-2 bg-transparent outline-none text-gray-800 placeholder-gray-500"
+            className="flex-1 py-3 px-2 bg-transparent outline-none text-gray-800 placeholder-gray-500"
+            onKeyDown={handleKeyDown}
           />
+          <button
+            type="button"
+            onClick={handleUseCurrentLocation}
+            className="p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+            aria-label="Use current location"
+            title="Use current location"
+          >
+            <FiCrosshair className="w-5 h-5" />
+          </button>
+          <button className="p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors">
+            <FiMic className="w-5 h-5" />
+          </button>
           <motion.button 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="search-btn flex items-center bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-3 rounded-full font-medium ml-2 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/30"
+            className="search-btn flex items-center bg-gradient-to-r from-[#ff3b30] to-[#ff2d55] text-white px-5 py-2.5 rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-red-400/40"
+            onClick={handleSearch}
           >
             <FiSearch className="mr-2" /> Search
           </motion.button>
-          <button className="p-2 mx-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors">
-            <FiMic className="w-5 h-5" />
-          </button>
         </div>
 
         {/* Suggestions Dropdown */}
@@ -247,64 +276,49 @@ function SearchBar() {
           )}
         </AnimatePresence>
 
-        {/* Trending Searches */}
-        <div className="trending-searches mt-6">
-          <div className="text-sm text-white/80 mb-2">Trending Searches:</div>
-          <div className="flex flex-wrap gap-2">
-            {trendingSearches.map((search, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ y: -2 }}
-                className="px-3 py-1.5 bg-white/10 backdrop-blur-sm text-white text-sm rounded-full cursor-pointer hover:bg-white/20 transition-colors border border-white/5"
-              >
-                {search}
-              </motion.div>
-            ))}
+        {/* Top Localities (single row, overflow hidden, arrow navigation) */}
+        <div className="trending-searches mt-6 relative">
+          <div className="flex items-center gap-3">
+            <div className="text-sm text-gray-700 font-medium flex items-center gap-2 shrink-0">
+              <FiMapPin className="text-gray-600" /> Top Localities:
+            </div>
+            <button
+              type="button"
+              onClick={handlePrev}
+              className="h-8 w-8 flex items-center justify-center shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 transition"
+            >
+              <FiChevronLeft />
+            </button>
+            {/* Viewport */}
+            <div className="relative flex-1 overflow-hidden">
+              <div className="flex flex-nowrap gap-2 whitespace-nowrap">
+                {visibleLocalities.map((loc) => (
+                  <a
+                    key={loc.name}
+                    href={loc.link}
+                    className="px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 text-sm transition"
+                  >
+                    {loc.name}
+                  </a>
+                ))}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleNext}
+              className="h-8 w-8 flex items-center justify-center shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 transition"
+            >
+              <FiChevronRight />
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="mt-6">
-        <div className="flex items-center text-white/80 mb-2">
-          <FiMapPin className="mr-2" />
-          <span className="text-sm">Top Localities:</span>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {[
-            { name: "Gurgaon", link: "/gurgaon" },
-            { name: "Noida", link: "/noida" },
-            { name: "Mumbai", link: "/mumbai" },
-            { name: "Bangalore", link: "/bangalore" },
-            { name: "Pune", link: "/pune" },
-            { name: "Hyderabad", link: "/hyderabad" },
-          ].map((locality, index) => (
-            <Link 
-              to={locality.link} 
-              key={index} 
-              className="inline-block"
-              target="_blank"
-            >
-              <motion.span
-                whileHover={{ y: -2 }}
-                className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm text-white text-sm rounded-full cursor-pointer hover:bg-white/20 transition-colors border border-white/5"
-              >
-                {locality.name}
-              </motion.span>
-            </Link>
-          ))}
-        </div>
-        <button 
-          onClick={handleNext} 
-          disabled={currentIndex + itemsPerPage >= localities.length} 
-          className={`cursor-pointer mt-2 ${currentIndex + itemsPerPage >= localities.length ? 'opacity-50 pointer-events-none' : ''}`}
-        >
-          <FiChevronRight />
-        </button>
-      </div>
+      {/* Removed bottom Top Localities chips section as requested */}
     </div>
 
     <div className="hidden md:block mt-2 lg:w-[750px] lg:h-[132px] md:h-[132px] md:w-[650px] mx-auto">
-      <div className="section">
+      <div className="section pt-4 md:pt-6">
         <Slider {...settings}>
           {imageSrc.map((src, index) => (
             <div key={index}>
@@ -360,9 +374,7 @@ const Wrapper = styled.section`
   position: relative;
   z-index: 10;
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  /* Removed section-level background and blur to avoid outer glass effect */
   width: 100%;
   box-sizing: border-box;
   

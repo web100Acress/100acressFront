@@ -300,14 +300,24 @@ const Home = () => {
     >
   {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
-        <div className="relative w-full">
+        <Link to="/experion-the-trillion/" className="block relative w-full group" target="_self" aria-label="Experion The Trillion">
           
-          <div className="hero-strip-99" aria-hidden="true" />
-        </div>
+          <div className="hero-strip-99 transform transition-transform duration-500 ease-out group-hover:scale-[1.02] cursor-pointer" aria-hidden="true" />
+        </Link>
+    </div>
 
-        <div className="relative w-full max-w-6xl mx-auto px-4 py-8 -mt-20 z-10">
-          <SearchBar />
-        </div>
+    {/* SearchBar should NOT be blurred */}
+    <div className="relative w-full max-w-6xl mx-auto px-4 py-8 -mt-20 z-10">
+      <SearchBar />
+    </div>
+
+    {/* Reopen blurred wrapper for the rest of the content */}
+    <div
+      className={`
+        transition-filter duration-300 ease-in-out
+        ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
+      `}
+    >
 
       <div className="relative">
         {/* Removed themed overlay */}
@@ -564,7 +574,7 @@ const Wrapper = styled.div`
   .hero-strip-99 {
     width: 100%;
     height: 340px;
-    background-image: url("/Images/Untitled (3000 x 340 px).png");
+    background-image: url("/Images/experion-the-trillion-banner.png");
     background-repeat: no-repeat;
     background-position: center center; /* keep image centered */
     background-size: auto 100%; /* fit height exactly; crop sides on small screens */

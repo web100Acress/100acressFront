@@ -315,7 +315,7 @@ const HeroWrapper = styled.section`
   .top-hero-bg {
     width: 100%;
     height: 340px;
-    background-image: url("/Images/Untitled (3000 x 340 px).png");
+    background-image: url("/Images/experion-the-trillion-banner.png");
     background-repeat: no-repeat;
     background-position: center center; /* keep image centered */
     background-size: auto 100%; /* fit height exactly; crop left/right on small screens */
