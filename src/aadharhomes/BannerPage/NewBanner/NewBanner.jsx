@@ -402,6 +402,16 @@ const NewBanner = () => {
     }
   },[isLoading2, userDetails, projectViewDetails.projectName, projectViewDetails.projectAddress]);
 
+  const resetData2 = () => {
+    setSideDetails({
+      name: "",
+      email: "",
+      mobile: "",
+      message: "",
+    });
+    setSideResponseMessage("");
+  };
+
   const SideSubmitDetails = useCallback( async (e) => {
     e.preventDefault();
     if (isLoading2) {

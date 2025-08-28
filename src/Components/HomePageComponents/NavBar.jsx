@@ -335,9 +335,13 @@ function FinalNavBar() {
 
 export default FinalNavBar;
 const Wrapper = styled.section`
-position:sticky;
-top:0px;
-z-index:9999;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  margin: 0;
+  padding: 0;
   .ieuNB {
     display: flex;
   }
