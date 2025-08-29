@@ -342,8 +342,17 @@ const InsertProject = () => {
       content: 'Adding new project...',
     });
 
-    const apiEndpoint = "/project/insert";
+    const apiEndpoint = "/api/project/Insert"; // Using /api prefix to trigger Vite proxy
     const formDataAPI = new FormData();
+    
+    // Get auth token from localStorage
+    const token = localStorage.getItem('token') || localStorage.getItem('myToken');
+    if (!token) {
+      messageApi.destroy("insertProject");
+      messageApi.error('Please login first!');
+      setLoading(false);
+      return;
+    }
 
     // Append all text/select data from editFromData
     for (const key in editFromData) {
@@ -391,12 +400,18 @@ const InsertProject = () => {
     // --- END DEBUG LOGGING ---
 
     try {
-      const myToken = localStorage.getItem("myToken");
+      console.log('Sending request to:', apiEndpoint);
+      console.log('Request headers:', {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token.replace(/^"/, '').replace(/"$/, '')}`
+      });
+      
       const response = await axios.post(apiEndpoint, formDataAPI, {
         headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${myToken}`,
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token.replace(/^"|"$/g, '')}`
         },
+        withCredentials: true // Important for cookies if using them
       });
 
       if (response.status === 200) {
@@ -419,28 +434,52 @@ const InsertProject = () => {
       }
     } catch (error) {
       messageApi.destroy("insertProject");
+      let errorMessage = 'An unexpected error occurred';
+      
       if (error.response) {
-        messageApi.open({
-          type: 'error',
-          content: `Error: ${error.response.data?.message || 'Server error.'}`,
-          duration: 4,
+        // Server responded with a status code outside 2xx
+        const { status, data } = error.response;
+        console.error("Server Error:", status, data);
+        
+        if (status === 401) {
+          errorMessage = 'Session expired. Please login again.';
+        } else if (status === 403) {
+          errorMessage = 'You do not have permission to perform this action';
+        } else if (status === 404) {
+          errorMessage = 'API endpoint not found. Please check the URL.';
+        } else if (status === 413) {
+          errorMessage = 'File size too large. Please reduce file size and try again.';
+        } else if (status >= 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else if (data && data.message) {
+          errorMessage = data.message;
+        } else {
+          errorMessage = `Server error (${status})`;
+        }
+        
+        // Log detailed error for debugging
+        console.error('Error details:', {
+          status,
+          data,
+          headers: error.response.headers,
+          config: error.config
         });
-        console.error("Server Error:", error.response.status, error.response.data);
       } else if (error.request) {
-        messageApi.open({
-          type: 'error',
-          content: 'No response from server. Check network connection.',
-          duration: 4,
-        });
+        // Request was made but no response received
         console.error("Network Error:", error.request);
+        errorMessage = 'No response from server. Please check your network connection.';
       } else {
-        messageApi.open({
-          type: 'error',
-          content: `Request Error: ${error.message}`,
-          duration: 4,
-        });
-        console.error("Error setting up request:", error.message);
+        // Error setting up the request
+        console.error("Request Error:", error.message);
+        errorMessage = `Request failed: ${error.message}`;
       }
+      
+      // Show error message to user
+      messageApi.open({
+        type: 'error',
+        content: errorMessage,
+        duration: 5,
+      });
     } finally {
       setLoading(false);
     }
