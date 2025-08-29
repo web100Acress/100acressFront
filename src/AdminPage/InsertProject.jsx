@@ -342,7 +342,7 @@ const InsertProject = () => {
       content: 'Adding new project...',
     });
 
-    const apiEndpoint = "/project/Insert";
+    const apiEndpoint = "/project/insert";
     const formDataAPI = new FormData();
 
     // Append all text/select data from editFromData

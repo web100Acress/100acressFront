@@ -1,81 +1,57 @@
 import axios from 'axios';
 import { getApiBase } from './apiBase';
 
-// Create a shared axios instance using centralized base URL
+// Create axios instance with defaults
 const api = axios.create({
   baseURL: getApiBase(),
+  timeout: 30000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
-
-api.interceptors.request.use((config) => {
-  try {
-    // Always refresh baseURL so localStorage overrides apply without reload
-    const base = getApiBase();
-    const full = typeof config.url === 'string' ? config.url : '';
-    if (full && !/^https?:\/\//i.test(full)) {
-      // Only set base for relative URLs
-      config.baseURL = base;
-    }
-
-    // Robust token extraction (handles JSON-quoted values) from myToken or token
-    const storedPrimary = window.localStorage.getItem('myToken');
-    const storedFallback = window.localStorage.getItem('token');
-    let token = storedPrimary || storedFallback || '';
-    // Unquote JSON-quoted values
-    if (token && token.startsWith('"') && token.endsWith('"')) {
-      try { token = JSON.parse(token); } catch {}
-    }
-    // Normalize accidental prefixes and whitespace
-    if (typeof token === 'string') {
-      token = token.trim();
-      if (/^Bearer\s+/i.test(token)) {
-        token = token.replace(/^Bearer\s+/i, '').trim();
-      }
-      // Remove any stray quotes inside
-      token = token.replace(/"/g, '');
-    }
+// Request interceptor
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('myToken') || localStorage.getItem('token');
     if (token) {
-      config.headers = config.headers || {};
-      if (!config.headers.Authorization) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+      config.headers.Authorization = `Bearer ${token.replace(/^"|"$/g, '')}`;
     }
-
-    // Dev diagnostics: log final resolved URL
-    try {
-      const env = (process.env.NODE_ENV || '').toLowerCase();
-      if (env !== 'production') {
-        const finalUrl = `${config.baseURL || ''}${typeof config.url === 'string' ? config.url : ''}`;
-        // eslint-disable-next-line no-console
-        console.debug('[api request]', { method: (config.method || 'GET').toUpperCase(), base: config.baseURL, url: config.url, finalUrl });
-      }
-    } catch {}
-  } catch {}
-  return config;
-});
-
-export default api;
-
-// Error diagnostics: log useful info on failures to help debugging
-api.interceptors.response.use(
-  (res) => res,
+    
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`%c ${config.method?.toUpperCase()} ${config.url}`, 
+        'color: white; background-color: #2274A5; padding: 2px 5px; border-radius: 3px;');
+    }
+    
+    return config;
+  },
   (error) => {
-    try {
-      const cfg = error.config || {};
-      const info = {
-        message: error.message,
-        code: error.code,
-        method: (cfg.method || 'GET').toUpperCase(),
-        baseURL: cfg.baseURL,
-        url: cfg.url,
-        finalUrl: `${cfg.baseURL || ''}${typeof cfg.url === 'string' ? cfg.url : ''}`,
-        hasAuth: !!(cfg.headers && cfg.headers.Authorization),
-        responseStatus: error.response && error.response.status,
-        responseData: error.response && error.response.data,
-      };
-      // eslint-disable-next-line no-console
-      console.error('[api error]', info);
-    } catch {}
+    console.error('Request error:', error);
     return Promise.reject(error);
   }
 );
+
+// Response interceptor
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      // Server responded with error status
+      console.error('API Error:', {
+        status: error.response.status,
+        url: error.config.url,
+        data: error.response.data
+      });
+    } else if (error.request) {
+      // Request made but no response
+      console.error('No response:', error.request);
+    } else {
+      // Other errors
+      console.error('Error:', error.message);
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
+export default api;
