@@ -39,7 +39,6 @@ const CommonProject = ({ data, title, path ,animation }) => {
       {data?.length === 0 ? <CustomSkeleton /> : (
         <>
           <div data-aos={animation} className="py-0 max-w-[1250px] mx-auto">
-            {" "}
             <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 py-2">
               {title && <div className="flex items-center">
                 <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left text-[#111] font-bold">
@@ -55,7 +54,6 @@ const CommonProject = ({ data, title, path ,animation }) => {
                 </Link>
               </div>}
             </div>
-
 
             { response && 
               <section className="flex flex-col items-center bg-white mt-3">
@@ -122,23 +120,22 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                   {item.projectName}
                                 </h3>
                               )}
-                              {/* City, State directly under title */}
-                              <p className="text-sm text-gray-700">{item.city}, {item.state}</p>
-                              {/* Type row, then address row */}
-                              <div className="mt-1">
+                               <div className="mt-1 text-[13px] text-gray-600 truncate max-w-full">
+                                  <span title={item.projectAddress} className="truncate">{(item.projectAddress || '').slice(0, 48)}{(item.projectAddress || '').length > 48 ? '…' : ''}</span>
+                                </div>
+                              <p className="text-sm text-gray-700 mb-0">{item.city}, {item.state}</p>
+                              
+                              {/* <div className="mt-1">
                                 <div className="inline-flex items-center gap-2 text-[13px] text-gray-800 font-semibold">
                                   <PropertyIcon /> {item.type}
                                 </div>
-                                <div className="mt-1 inline-flex items-center gap-2 text-[13px] text-gray-600 truncate max-w-full">
-                                  <LocationRedIcon style={{ width: 16, height: 16 }} />
-                                  <span title={item.projectAddress} className="truncate">{(item.projectAddress || '').slice(0, 48)}{(item.projectAddress || '').length > 48 ? '…' : ''}</span>
-                                </div>
-                              </div>
+                               
+                              </div> */}
                             </div>
 
-                            {/* Footer row: price + CTA */}
-                            <div className="flex items-center justify-between pt-1 gap-3">
-                              <span className="inline-flex items-center gap-1 text-[15px] font-bold text-red-600 whitespace-nowrap flex-1">
+                            {/* Price row */}
+                            <div className="pt-0">
+                              <span className="inline-flex items-center gap-1 text-[15px] font-bold text-black whitespace-nowrap">
                                 <RupeeIcon />
                                 {item.minPrice && item.maxPrice
                                   ? (
@@ -148,13 +145,30 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                     ) + " - " + `${item.maxPrice} Cr`
                                   : "Reveal Soon"}
                               </span>
+                            </div>
+                            
+                            {/* Buttons row - Modified */}
+                            <div className="flex items-center gap-2 mt-2">
+                              {/* Explore Button */}
                               <Link
                                 to={`/${pUrl}/`}
                                 target="_top"
-                                className="inline-flex items-center justify-center text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none font-medium rounded-full text-[12px] px-4 py-2 whitespace-nowrap shadow-md hover:shadow-lg transition shrink-0"
+                                className="flex-1 flex items-center justify-center text-white bg-[#ee1c25] hover:bg-[#d11922] focus:ring-2 focus:ring-[#ee1c25] focus:outline-none font-medium rounded-full text-[12px] px-4 py-2 shadow-md hover:shadow-lg transition"
                               >
                                 Explore
                               </Link>
+
+                              {/* WhatsApp Button */}
+                              <a 
+                                href={`https://wa.me/${(item.whatsappNumber || item.contactNumber || '918500900100').replace(/\s+/g, '').replace(/^\+/, '')}?text=Hi, I'm interested in ${encodeURIComponent(item.projectName)} project`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 flex items-center justify-center text-white bg-[#ee1c25] hover:bg-[#d11922] focus:ring-2 focus:ring-[#ee1c25] focus:outline-none font-medium rounded-full text-[12px] px-4 py-2 shadow-md hover:shadow-lg transition"
+                                title="Chat on WhatsApp"
+                              >
+                                <i className="fab fa-whatsapp text-lg"></i>
+                                <span className="ml-1 text-xs">WhatsApp</span>
+                              </a>
                             </div>
                           </div>
                         </article>
@@ -168,9 +182,9 @@ const CommonProject = ({ data, title, path ,animation }) => {
           {/* Auth Modal for Login/Register */}
           <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="register" />
         </>
-      )
-      }
-    </>)
+      )}
+    </>
+  )
 }
 
 export default CommonProject
