@@ -513,7 +513,7 @@ export default function RightSection({
                 {/* icon intentionally hidden for md+ */}
               </Box>
               {/* Always show full label on md and up */}
-              <Box as="span" display={{ base: 'none', md: 'inline' }}>Post property</Box>
+              <Box as="span" display={{ base: 'none', md: 'inline' }}>Post Property</Box>
               <Box as="span" display={{ base: 'none', md: 'inline-flex' }} bg="#FACC15" color="#e53e3e" px={3} py={0.5} fontSize="11px" fontWeight="800" lineHeight={1} style={{ clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' }}>
                 FREE
               </Box>

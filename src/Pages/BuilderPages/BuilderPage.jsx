@@ -238,7 +238,7 @@ const BuilderPage = React.memo(() => {
         />
       </Helmet>
 
-      <section className="flex flex-col items-center pt-16 sm:pt-20 lg:pt-24 px-2 scroll-mt-24">
+      <section className="flex flex-col items-center pt-4 sm:pt-6 lg:pt-8 px-2 scroll-mt-24">
               <h1 className="mb-3 p-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
               {formattedBuilderName} Projects in Gurugram
               </h1>
@@ -271,7 +271,7 @@ const BuilderPage = React.memo(() => {
                           <Link to={`/${pUrl}/`} target="_top">
       
                             <img
-                              src={item.frontImage.url}
+                              src={item.frontImage?.url || item.frontImage?.cdn_url || '/placeholder-image.jpg'}
                               alt="property In Gurugram"
                               className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                             />

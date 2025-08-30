@@ -351,51 +351,81 @@ const Home = () => {
             
               <button
                 onClick={() => setActiveFilter("Trending")}
-                className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Trending" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:shadow-lg hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
+                className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                  activeFilter === "Trending" 
+                    ? "bg-black text-white shadow-lg" 
+                    : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+                }`}
               >
                 Trending
               </button>
             <button
               onClick={() => setActiveFilter("Featured")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Featured" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                activeFilter === "Featured" 
+                  ? "bg-black text-white shadow-lg" 
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
             >
               Featured
             </button>
             <button
               onClick={() => setActiveFilter("Upcoming")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Upcoming" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                activeFilter === "Upcoming" 
+                  ? "bg-black text-white shadow-lg" 
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
             >
               Upcoming
             </button>
             <button
               onClick={() => setActiveFilter("Commercial")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Commercial" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                activeFilter === "Commercial" 
+                  ? "bg-black text-white shadow-lg" 
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
             >
               Commercial
             </button>
             <button
               onClick={() => setActiveFilter("Affordable")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Affordable" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                activeFilter === "Affordable" 
+                  ? "bg-black text-white shadow-lg" 
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
             >
               Affordable
             </button>
             <button
               onClick={() => setActiveFilter("SCO")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "SCO" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                activeFilter === "SCO" 
+                  ? "bg-black text-white shadow-lg" 
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
             >
               SCO
             </button>
             <button
               onClick={() => setActiveFilter("Budget")}
-              className={`px-4 py-2 rounded-full text-xs font-medium ${activeFilter === "Budget" ? "bg-red-600 text-white shadow-lg" : "border-2 border-red-600 text-red-600 shadow-sm hover:scale-110 duration-500 ease-in-out hover:bg-red-600 hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                activeFilter === "Budget" 
+                  ? "bg-black text-white shadow-lg" 
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
             >
               Budget
             </button>
             <button
               onClick={() => setActiveFilter("Luxury")}
-              className={`px-4 py-2 rounded-full text-sm font-semibold ${activeFilter === "Luxury"
-                ? "bg-red-600 text-white shadow-lg transform hover:scale-105 duration-300 ease-in-out"
-                : "border-2 border-red-600 text-red-600 shadow-md hover:scale-105 duration-300 ease-in-out hover:bg-red-600 hover:text-white"}`}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+                activeFilter === "Luxury" 
+                  ? "bg-black text-white shadow-lg" 
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
             >
               Luxury
             </button>
@@ -403,7 +433,7 @@ const Home = () => {
             {path && (
               <div className="ml-auto hidden sm:block">
                 <Link to={path} target="_top">
-                  <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-red-600 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-black shadow-lg hover:bg-gray-800 transition-all duration-300">
                     <EyeIcon />
                     <span className="ml-2">View All</span>
                   </span>

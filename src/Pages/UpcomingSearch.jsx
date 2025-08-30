@@ -85,7 +85,7 @@ const UpcomingSearch = () => {
           href="https://www.100acress.com/projects/upcoming-projects-in-gurgaon/"
         />
       </Helmet>
-      <h1 className=" p-1 text-center text-2xl mt-16 sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold ">
+      <h1 className=" p-1 text-center text-2xl mt-4 sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold ">
         UpComing Projects in Gurgaon
       </h1> 
       <div className="hidden lg:flex items-center px-14 bg-gray-200 pt-4 justify-center">
