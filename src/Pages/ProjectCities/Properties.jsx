@@ -56,7 +56,7 @@ const Properties = () => {
       </Helmet>
     
 
-      <section className="flex flex-col items-center bg-white mt-16">
+      <section className="flex flex-col items-center bg-white mt-4">
       <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em]">
           Projects in Gurugram
         </h1>
