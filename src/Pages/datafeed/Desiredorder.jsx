@@ -108,6 +108,8 @@ export const Recommendedreordered = [
   "BPTP Gaia Residences",
   "Experion Windchants Nova",
   "Signature Global Cloverdale SPR",
+  "Indiabulls Heights"
+
   
 ];
 
