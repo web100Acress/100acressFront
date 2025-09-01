@@ -108,7 +108,7 @@ export const Recommendedreordered = [
   "BPTP Gaia Residences",
   "Experion Windchants Nova",
   "Signature Global Cloverdale SPR",
-  "Experion The Trillion",
+  
 ];
 
 export const DesiredLuxuryOrder = [
