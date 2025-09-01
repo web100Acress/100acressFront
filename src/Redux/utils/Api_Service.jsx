@@ -11,7 +11,7 @@ import {resale} from "../slice/ResaleSlice";
 import api from "../../config/apiClient";
 import { API_ROUTES, API_ROUTES_PROJECTS } from "./Constant_Service";
 import { sortByDesiredOrder } from "../../Utils/ProjectSorting";
-import { Affordable_Desired_Order, COMMERCIAL_DESIRED_ORDER, DesiredLuxuryOrder, SCO_DESIRED_ORDER, Trending_Desired_Order } from "../../Pages/datafeed/Desiredorder";
+import { Affordable_Desired_Order, COMMERCIAL_DESIRED_ORDER, DesiredLuxuryOrder, Recommendedreordered, SCO_DESIRED_ORDER, Trending_Desired_Order } from "../../Pages/datafeed/Desiredorder";
 import { emaar } from "../slice/ProjectstatusSlice";
 import { useCallback } from "react";
 import { maxpriceproject,minpriceproject } from "../slice/PriceBasedSlice";
@@ -36,7 +36,7 @@ const Api_service = () => {
     try {
       const response = await api.get(`${API_ROUTES.projectsBase()}/spotlight`);
       const Spotlightprojects = response.data.data;
-      dispatch(spotlight(Spotlightprojects));
+      dispatch(spotlight(sortByDesiredOrder((Spotlightprojects),Recommendedreordered,"projectName")));
     } catch (error) {
       console.error("Error fetching spotlight data:", error);
     }
