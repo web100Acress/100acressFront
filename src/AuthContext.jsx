@@ -3,7 +3,7 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "./MyContext";
 import { useJwt } from "react-jwt";
-import { hydrateFavoritesFromServer } from "./utils/favorites";
+import { hydrateFavoritesFromServer } from "./Utils/favorites";
 
 export const AuthContext = createContext();
 const localStorageToken = localStorage.getItem("myToken");
