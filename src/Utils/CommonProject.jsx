@@ -76,10 +76,10 @@ const CommonProject = ({ data, title, path ,animation }) => {
     <>
       {data?.length === 0 ? <CustomSkeleton /> : (
         <>
-          <div data-aos={animation} className="py-0 max-w-[1250px] mx-auto">
+          <div data-aos={animation} className="py-0 max-w-[1250px] mx-auto" style={{ fontFamily: 'Rubik, sans-serif' }}>
             <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 py-2">
               {title && <div className="flex items-center">
-                <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left text-[#111] font-bold">
+                <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left text-[#111] font-bold" style={{ fontFamily: 'Rubik, sans-serif' }}>
                   {title}
                 </h2>
               </div>}
@@ -94,7 +94,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
             </div>
 
             { response && 
-              <section className="flex flex-col items-center bg-white mt-3">
+              <section className="flex flex-col items-center bg-white mt-3" style={{ fontFamily: 'Rubik, sans-serif' }}>
                 <div className="grid max-w-md grid-cols-1 px-4 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 w-full mb-6 gap-4 lg:gap-6">
                   {response?.map((item, index) => {
                     const pUrl = item.project_url;
@@ -145,10 +145,10 @@ const CommonProject = ({ data, title, path ,animation }) => {
                            </div>
 
                            {/* Body */}
-                           <div className="flex flex-col flex-1 justify-between p-4 gap-2">
+                           <div className="flex flex-col flex-1 justify-between p-4 gap-2" style={{ fontFamily: 'Rubik, sans-serif' }}>
                              <div>
                                {item?.projectName && (
-                                 <h3 className="text-base md:text-[17px] font-semibold tracking-[-0.2px] text-gray-900 mb-1 group-hover:text-red-600 transition-colors truncate whitespace-nowrap">
+                                 <h3 className="text-base md:text-[17px] font-semibold tracking-[-0.2px] text-gray-900 mb-1 group-hover:text-red-600 transition-colors truncate whitespace-nowrap" style={{ fontFamily: 'Rubik, sans-serif' }}>
                                    {item.projectName}
                                  </h3>
                                )}
@@ -167,7 +167,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
 
                              {/* Price row */}
                              <div className="pt-0">
-                               <span className="inline-flex items-center gap-1 text-[15px] font-bold text-black whitespace-nowrap">
+                               <span className="inline-flex items-center gap-1 text-[15px] font-bold text-black whitespace-nowrap" style={{ fontFamily: 'Rubik, sans-serif' }}>
                                  <RupeeIcon />
                                  {item.minPrice && item.maxPrice
                                    ? (

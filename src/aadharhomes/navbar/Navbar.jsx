@@ -627,6 +627,8 @@ export default function Navbar() {
 }
 
 const Wrapper = styled.section`
+  font-family: 'Rubik', sans-serif;
+  
   .shimmer-container {
     position: relative;
     width: 200px;

@@ -40,76 +40,76 @@ const ModernRecommendedSection = () => {
 
   // Mock data for testing if no spotlight data
   const mockSpotlightData = [
-    {
-      _id: 'mock1',
-      projectName: 'Luxury Villa Complex',
-      city: 'Gurugram',
-      sector: 'Sector 102',
-      area: 'Dwarka Expressway',
-      projectAddress: 'Near IGI Airport',
-      minPrice: 2.5,
-      maxPrice: 5.2,
-      project_url: 'luxury-villa',
-      frontImage: { url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop' },
-      BhK_Details: [{ bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }],
-      description: 'Premium luxury villas with world-class amenities and modern architecture in prime location.'
-    },
-    {
-      _id: 'mock2',
-      projectName: 'Modern Apartment Tower',
-      city: 'Gurugram',
-      sector: 'Sector 43',
-      area: 'Golf Course Road',
-      projectAddress: 'Opposite DLF Cyber City',
-      minPrice: 1.8,
-      maxPrice: 3.5,
-      project_url: 'modern-apartment',
-      frontImage: { url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop' },
-      BhK_Details: [{ bhk_type: '2 BHK' }, { bhk_type: '3 BHK' }],
-      description: 'Contemporary apartments featuring smart home technology and sustainable living solutions.'
-    },
-    {
-      _id: 'mock3',
-      projectName: 'Premium Residency',
-      city: 'Gurugram',
-      sector: 'Sector 39',
-      area: 'Sohna Road',
-      projectAddress: 'Near Medanta Hospital',
-      minPrice: 3.2,
-      maxPrice: 6.8,
-      project_url: 'premium-residency',
-      frontImage: { url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop' },
-      BhK_Details: [{ bhk_type: '4 BHK' }, { bhk_type: '5 BHK' }],
-      description: 'Exclusive residential complex with premium finishes and exceptional lifestyle amenities.'
-    },
-    {
-      _id: 'mock4',
-      projectName: 'Elite Gardens',
-      city: 'Gurugram',
-      sector: 'Sector 67',
-      area: 'Golf Course Extension',
-      projectAddress: 'Near Cyber Hub',
-      minPrice: 2.1,
-      maxPrice: 4.5,
-      project_url: 'elite-gardens',
-      frontImage: { url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop' },
-      BhK_Details: [{ bhk_type: '2 BHK' }, { bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }],
-      description: 'Beautifully landscaped community with green spaces and family-friendly environment.'
-    },
-    {
-      _id: 'mock5',
-      projectName: 'Royal Heights',
-      city: 'Gurugram',
-      sector: 'Sector 84',
-      area: 'NH-8',
-      projectAddress: 'Near Manesar',
-      minPrice: 4.5,
-      maxPrice: 8.2,
-      project_url: 'royal-heights',
-      frontImage: { url: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop' },
-      BhK_Details: [{ bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }, { bhk_type: '5 BHK' }],
-      description: 'Ultra-luxury residences with panoramic city views and bespoke lifestyle services.'
-    }
+    // {
+    //   _id: 'mock1',
+    //   projectName: 'Luxury Villa Complex',
+    //   city: 'Gurugram',
+    //   sector: 'Sector 102',
+    //   area: 'Dwarka Expressway',
+    //   projectAddress: 'Near IGI Airport',
+    //   minPrice: 2.5,
+    //   maxPrice: 5.2,
+    //   project_url: 'luxury-villa',
+    //   // frontImage: { url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop' },
+    //   BhK_Details: [{ bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }],
+    //   description: 'Premium luxury villas with world-class amenities and modern architecture in prime location.'
+    // },
+    // {
+    //   _id: 'mock2',
+    //   projectName: 'Modern Apartment Tower',
+    //   city: 'Gurugram',
+    //   sector: 'Sector 43',
+    //   area: 'Golf Course Road',
+    //   projectAddress: 'Opposite DLF Cyber City',
+    //   minPrice: 1.8,
+    //   maxPrice: 3.5,
+    //   project_url: 'modern-apartment',
+    //   // frontImage: { url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop' },
+    //   BhK_Details: [{ bhk_type: '2 BHK' }, { bhk_type: '3 BHK' }],
+    //   description: 'Contemporary apartments featuring smart home technology and sustainable living solutions.'
+    // },
+    // {
+    //   _id: 'mock3',
+    //   projectName: 'Premium Residency',
+    //   city: 'Gurugram',
+    //   sector: 'Sector 39',
+    //   area: 'Sohna Road',
+    //   projectAddress: 'Near Medanta Hospital',
+    //   minPrice: 3.2,
+    //   maxPrice: 6.8,
+    //   project_url: 'premium-residency',
+    //   // frontImage: { url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop' },
+    //   BhK_Details: [{ bhk_type: '4 BHK' }, { bhk_type: '5 BHK' }],
+    //   description: 'Exclusive residential complex with premium finishes and exceptional lifestyle amenities.'
+    // },
+    // {
+    //   _id: 'mock4',
+    //   projectName: 'Elite Gardens',
+    //   city: 'Gurugram',
+    //   sector: 'Sector 67',
+    //   area: 'Golf Course Extension',
+    //   projectAddress: 'Near Cyber Hub',
+    //   minPrice: 2.1,
+    //   maxPrice: 4.5,
+    //   project_url: 'elite-gardens',
+    //   // frontImage: { url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop' },
+    //   BhK_Details: [{ bhk_type: '2 BHK' }, { bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }],
+    //   description: 'Beautifully landscaped community with green spaces and family-friendly environment.'
+    // },
+    // {
+    //   _id: 'mock5',
+    //   projectName: 'Royal Heights',
+    //   city: 'Gurugram',
+    //   sector: 'Sector 84',
+    //   area: 'NH-8',
+    //   projectAddress: 'Near Manesar',
+    //   minPrice: 4.5,
+    //   maxPrice: 8.2,
+    //   project_url: 'royal-heights',
+    //   // frontImage: { url: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop' },
+    //   BhK_Details: [{ bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }, { bhk_type: '5 BHK' }],
+    //   description: 'Ultra-luxury residences with panoramic city views and bespoke lifestyle services.'
+    // }
   ];
 
   // Use mock data if no spotlight data is available
@@ -375,23 +375,6 @@ const PropertyCard = ({
           alt={project?.projectName}
           className={`property-image ${imageLoaded ? 'loaded' : ''}`}
           onLoad={() => setImageLoaded(true)}
-          onError={(e) => {
-            // Prevent infinite loop if fallback also errors
-            if (!e.currentTarget.dataset.fallbackApplied) {
-              e.currentTarget.dataset.fallbackApplied = '1';
-              // Inline SVG fallback to avoid extra network requests
-              const fallback =
-                'data:image/svg+xml;utf8,' +
-                encodeURIComponent(
-                  `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
-                    <rect width="100%" height="100%" fill="#f3f4f6"/>
-                    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="20">Image unavailable</text>
-                  </svg>`
-                );
-              e.currentTarget.src = fallback;
-              setImageLoaded(true);
-            }
-          }}
           loading="lazy"
         />
         
