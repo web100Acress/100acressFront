@@ -1,3 +1,24 @@
+// Helper function to safely access process.env
+const getEnv = (key, defaultValue = '') => {
+  // In browser environment
+  if (typeof window !== 'undefined') {
+    // Check for Vite environment variables (prefixed with VITE_)
+    if (import.meta.env && import.meta.env[`VITE_${key}`] !== undefined) {
+      return import.meta.env[`VITE_${key}`];
+    }
+    // Check for Create React App environment variables (prefixed with REACT_APP_)
+    if (process && process.env && process.env[`REACT_APP_${key}`] !== undefined) {
+      return process.env[`REACT_APP_${key}`];
+    }
+    return defaultValue;
+  }
+  // In Node.js environment
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env[`REACT_APP_${key}`] || defaultValue;
+  }
+  return defaultValue;
+};
+
 const DEFAULT_BASE = (() => {
   try {
     if (typeof window !== 'undefined') {
@@ -28,27 +49,29 @@ const DEFAULT_BASE = (() => {
 export const getApiBase = () => {
   // Check for localStorage override
   if (typeof window !== 'undefined') {
-    const override = localStorage.getItem('apiBaseOverride');
-    if (override) {
-      try {
+    try {
+      const override = localStorage.getItem('apiBaseOverride');
+      if (override) {
         const parsed = JSON.parse(override);
         if (parsed && parsed.url) {
           return parsed.url;
         }
-      } catch (e) {
-        console.warn('Invalid API base override in localStorage', e);
-        localStorage.removeItem('apiBaseOverride');
       }
+    } catch (e) {
+      console.warn('Error reading API base from localStorage:', e);
     }
   }
   
-  return process.env.REACT_APP_API_BASE || DEFAULT_BASE;
+  // Get from environment variables or use default
+  return getEnv('API_BASE') || DEFAULT_BASE;
 };
 
 // Set a custom API base URL (for development/testing)
 export const setApiBase = (url) => {
   if (!url) {
-    localStorage.removeItem('apiBaseOverride');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('apiBaseOverride');
+    }
     return { success: true, message: 'API base reset to default' };
   }
   
@@ -57,10 +80,12 @@ export const setApiBase = (url) => {
     const urlObj = new URL(url);
     const baseUrl = `${urlObj.protocol}//${urlObj.host}`;
     
-    localStorage.setItem('apiBaseOverride', JSON.stringify({
-      url: baseUrl,
-      timestamp: Date.now()
-    }));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('apiBaseOverride', JSON.stringify({
+        url: baseUrl,
+        timestamp: Date.now()
+      }));
+    }
     
     return { 
       success: true, 
@@ -110,15 +135,17 @@ export const testLiveApi = async () => {
   }
 };
 
-// Run the test when this module is imported
-testLiveApi().then(result => {
-  if (result.success) {
-    console.log('✓ API is accessible at', getApiBase());
-  } else {
-    console.warn('⚠️ Could not connect to API at', getApiBase());
-    console.warn('Error:', result.message);
-  }
-});
+// Only run the test in browser environment
+if (typeof window !== 'undefined') {
+  testLiveApi().then(result => {
+    if (result.success) {
+      console.log('✓ API is accessible at', getApiBase());
+    } else {
+      console.warn('⚠️ Could not connect to API at', getApiBase());
+      console.warn('Error:', result.message);
+    }
+  }).catch(console.error);
+}
 
 // Export the current API base URL as a string
 export const API_BASE = getApiBase();

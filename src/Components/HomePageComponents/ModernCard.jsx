@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import { MdLocationPin, MdStar, MdArrowForward } from "react-icons/md";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../utils/favorites";
+import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
 
 function ModernCard() {
   const [trendingProject, setTrendingProject] = useState([]);

@@ -31,9 +31,9 @@ export const COMMERCIAL_DESIRED_ORDER = [
 ];
 
 export const imageSrc = [
-  {
-    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/m3mfreedomsellmobile.jpg", link: "/developers/m3m-india/"
-  },
+  // {
+  //   image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/m3mfreedomsellmobile.jpg", link: "/developers/m3m-india/"
+  // },
   {
     image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/gaia-desktop.webp", link: "/bptp-gaia-residences/"
   },
@@ -59,9 +59,9 @@ export const imageSrc = [
 ];
 // added phon and desktop banner qe
 export const phoneSrc = [  
-  {
-    image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/m3mfreedomsellweb.jpg", link: "/developers/m3m-india/"
-  },
+  // {
+  //   image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/m3mfreedomsellweb.jpg", link: "/developers/m3m-india/"
+  // },
    {
     image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/gaia-mobile.webp", link: "/bptp-gaia-residences/"
    },
