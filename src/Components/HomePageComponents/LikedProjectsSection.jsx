@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   hydrateFavoritesFromServer,
@@ -10,8 +10,10 @@ import {
 import { MdOutlineDelete, MdLocationOn } from "react-icons/md";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import { AuthContext } from "../../AuthContext";
 
 const LikedProjectsSection = () => {
+  const { isAuthenticated } = useContext(AuthContext);
   const [ids, setIds] = useState(() => getFavorites());
   const [data, setData] = useState(() => getFavoritesData());
   const [suggestedProjects, setSuggestedProjects] = useState([]);
@@ -44,7 +46,16 @@ const LikedProjectsSection = () => {
   const handleRemove = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
-    toggleFavorite(id);
+    
+    if (!isAuthenticated) {
+      if (typeof window.showAuthModal === 'function') {
+        window.showAuthModal();
+      }
+      toast.error('Please login to manage favorites');
+      return;
+    }
+    
+    toggleFavorite(id, null, isAuthenticated);
     toast.success("Removed from favorites");
   };
 

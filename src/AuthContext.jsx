@@ -10,7 +10,7 @@ const localStorageToken = localStorage.getItem("myToken");
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
-  const { admin } = useContext(DataContext)
+  const { admin = '' } = useContext(DataContext) || {}; 
   const [loading, setLoading] = useState(false);
   const [decodedTokenState, setDecodedTokenState] = useState(null);
   const history = useNavigate();
@@ -301,6 +301,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const showLogin = () => {
+    // You can implement your login modal logic here
+    // For example, if you're using a state to control the login modal:
+    // setShowLoginModal(true);
+    
+    // Or if you're using a global modal:
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+      window.dispatchEvent(new CustomEvent('showLoginModal'));
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -318,6 +329,7 @@ export const AuthProvider = ({ children }) => {
         setIsAdmin,
         isContentWriter,
         setIsContentWriter,
+        showLogin,
       }}
     >
       {children}

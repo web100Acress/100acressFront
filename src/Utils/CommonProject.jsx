@@ -43,6 +43,35 @@ const CommonProject = ({ data, title, path ,animation }) => {
 
   const response = data;
 
+  const handleFavoriteClick = (e, id, item) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const snapshot = {
+      title: item?.projectName,
+      frontImage: item?.frontImage,
+      thumbnailImage: item?.thumbnailImage,
+      priceText: (() => {
+        try {
+          const min = item?.minPrice ?? item?.price;
+          if (!min) return "Price on request";
+          return `₹${min} Cr`;
+        } catch { return undefined; }
+      })(),
+      url: item.project_url ? `/${item.project_url}/` : undefined,
+      city: item?.city,
+      maxPrice: item?.maxPrice || item?.price,
+      minPrice: item?.minPrice,
+    };
+    
+    if (!isAuthenticated) {
+      setShowAuth(true);
+      return;
+    }
+    toggleFavorite(id, snapshot, isAuthenticated);
+    setFavTick((v) => v + 1);
+  };
+
   return (
     <>
       {data?.length === 0 ? <CustomSkeleton /> : (
@@ -98,32 +127,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
                                  aria-label={isFav ? "Remove from wishlist" : (isAuthenticated ? "Add to wishlist" : "Login to add to wishlist")}
                                  title={isFav ? "Remove from wishlist" : (isAuthenticated ? "Add to wishlist" : "Login to add to wishlist")}
                                  className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/90 text-gray-700 shadow-md hover:shadow-lg hover:bg-white hover:text-red-600 transition"
-                                 onClick={(e) => {
-                                   e.preventDefault();
-                                   e.stopPropagation();
-                                   if (!isAuthenticated) {
-                                     setShowAuth(true);
-                                     return;
-                                   }
-                                   const snapshot = {
-                                     title: item?.projectName,
-                                     frontImage: item?.frontImage,
-                                     thumbnailImage: item?.thumbnailImage,
-                                     priceText: (() => {
-                                       try {
-                                         const min = item?.minPrice ?? item?.price;
-                                         if (!min) return "Price on request";
-                                         return `₹${min} Cr`;
-                                       } catch { return undefined; }
-                                     })(),
-                                     url: pUrl ? `/${pUrl}/` : undefined,
-                                     city: item?.city,
-                                     maxPrice: item?.maxPrice || item?.price,
-                                     minPrice: item?.minPrice,
-                                   };
-                                   toggleFavorite(id, snapshot);
-                                   setFavTick((v) => v + 1);
-                                 }}
+                                 onClick={(e) => handleFavoriteClick(e, id, item)}
                                >
                                  {favCheck(id) ? <MdFavorite size={20} className="text-red-500"/> : <MdFavoriteBorder size={20} />}
                                </button>

@@ -59,7 +59,20 @@ function notifyAll(ids) {
   }
 }
 
-export function toggleFavorite(id, snapshot) {
+export function toggleFavorite(id, snapshot, isAuthenticated = false) {
+  // If user is not authenticated, show login prompt and return early
+  if (!isAuthenticated && typeof window !== 'undefined') {
+    // Show toast notification
+    if (typeof window.toast === 'function') {
+      window.toast.error('Please login to save properties');
+    }
+    // Open login modal if available
+    if (typeof window.showAuthModal === 'function') {
+      window.showAuthModal();
+    }
+    return getFavorites();
+  }
+
   if (!id) return getFavorites();
   const stringId = String(id);
   const ids = getFavorites();

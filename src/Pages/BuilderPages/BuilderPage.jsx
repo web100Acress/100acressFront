@@ -139,6 +139,7 @@ const BuilderPage = React.memo(() => {
   const onToggleFavorite = (project) => (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
     const snapshot = {
       title: project.projectName,
       image: project.frontImage?.url || project.frontImage?.cdn_url,
@@ -151,7 +152,21 @@ const BuilderPage = React.memo(() => {
       maxPrice: project.maxPrice,
       minPrice: project.minPrice,
     };
-    toggleFavorite(project._id || project.id || project.slug, snapshot);
+    
+    // Get authentication state from localStorage since we don't have access to AuthContext here
+    const isAuthenticated = !!localStorage.getItem('myToken');
+    
+    if (!isAuthenticated) {
+      if (typeof window.showAuthModal === 'function') {
+        window.showAuthModal();
+      }
+      if (window.toast) {
+        window.toast.error('Please login to save properties');
+      }
+      return;
+    }
+    
+    toggleFavorite(project._id || project.id || project.slug, snapshot, isAuthenticated);
   };
 
   const formatBuilderName = (name) => {
