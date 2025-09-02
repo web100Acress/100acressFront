@@ -23,7 +23,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
         .catch((error) => console.log("Error sharing:", error));
     } else {
       alert("Share functionality is not supported on this device/browser.");
-    }
+    } 
   };
 
   const { isAuthenticated } = useContext(AuthContext);
