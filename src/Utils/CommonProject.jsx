@@ -7,7 +7,7 @@ import CustomSkeleton from './CustomSkeleton';
 import { MdFavoriteBorder, MdFavorite } from 'react-icons/md';
 import AuthModal from '../Components/AuthModal';
 import { AuthContext } from '../AuthContext';
-import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../utils/favorites";
+import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../Utils/favorites";
 
 const CommonProject = ({ data, title, path ,animation }) => {
 

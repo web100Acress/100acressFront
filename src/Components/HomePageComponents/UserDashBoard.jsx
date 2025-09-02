@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import LuxuryFooter from "../Actual_Components/LuxuryFooter";
 import LikedProjectsSection from "./LikedProjectsSection";
 import SuggestedProjects from "./SuggestedProjects";
-import { hydrateFavoritesFromServer, subscribe, getFavorites, getFavoritesData } from "../../utils/favorites";
+import { hydrateFavoritesFromServer, subscribe, getFavorites, getFavoritesData } from "../../Utils/favorites";
 import api from "../../config/apiClient";
 import axios from 'axios';
 

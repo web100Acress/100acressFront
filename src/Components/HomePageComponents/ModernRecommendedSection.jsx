@@ -10,7 +10,7 @@ import {
 } from 'react-icons/md';
 import styled from 'styled-components';
 import Api_Service from "../../Redux/utils/Api_Service";
-import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../utils/favorites";
+import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
 
 // Import Swiper styles
 import 'swiper/css';
