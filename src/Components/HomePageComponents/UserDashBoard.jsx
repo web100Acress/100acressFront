@@ -4,6 +4,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import LuxuryFooter from "../Actual_Components/LuxuryFooter";
+import LikedProjectsSection from "./LikedProjectsSection";
+import SuggestedProjects from "./SuggestedProjects";
 import { hydrateFavoritesFromServer, subscribe, getFavorites, getFavoritesData } from "../../utils/favorites";
 
 const UserDashBoard = () => {
@@ -67,6 +69,8 @@ const UserDashBoard = () => {
     });
     return unsub;
   }, []);
+
+  
 
   return (
     <div className="min-h-screen bg-gray-50" style={{ overflowX: "hidden" }}>
@@ -241,48 +245,10 @@ const UserDashBoard = () => {
         </div>
       </div>
       
-      {/* Your Favorites Section */}
-      <div className="px-4 sm:px-6 lg:px-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900">Your Favorites</h2>
-              <button
-                type="button"
-                onClick={() => hydrateFavoritesFromServer()}
-                className="text-xs rounded-full border px-3 py-1 text-gray-700 hover:bg-gray-100"
-                title="Refresh"
-              >
-                Refresh
-              </button>
-            </div>
-            {favIds && favIds.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {favIds.map((id) => {
-                  const it = favData[id] || {};
-                  return (
-                    <article key={id} className="rounded-xl overflow-hidden border bg-white shadow-sm hover:shadow-md transition-shadow">
-                      {it.image ? (
-                        <img src={it.image} alt={it.title || 'Project'} className="w-full h-32 object-cover" />
-                      ) : (
-                        <div className="w-full h-32 bg-gray-100" />
-                      )}
-                      <div className="p-3">
-                        <div className="text-sm font-semibold truncate">{it.title || 'Project'}</div>
-                        <div className="text-xs text-gray-500 truncate">{it.city || ''}</div>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="border border-dashed rounded-xl p-8 text-center text-gray-600 bg-gray-50">
-                You have no favorites yet.
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      <LikedProjectsSection />
+      
+      {/* Suggested Projects */}
+      <SuggestedProjects />
       
       {/* Divider */}
       <div className="px-4 sm:px-6 lg:px-10">
