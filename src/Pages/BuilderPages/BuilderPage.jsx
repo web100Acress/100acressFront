@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import { orderProjects, hasCustomOrder, getCustomOrder, getRandomSeed } from "../../Utils/ProjectOrderUtils";
 import { syncProjectOrdersFromServer } from "../../Redux/slice/ProjectOrderSlice";
-import { isFavorite, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../utils/favorites";
+import { isFavorite, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
 
 const BuilderPage = React.memo(() => {
     const { builderName } = useParams(); 

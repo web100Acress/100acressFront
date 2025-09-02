@@ -6,7 +6,7 @@ import {
   getFavoritesData,
   getFavorites,
   toggleFavorite,
-} from "../../utils/favorites";
+} from "../../Utils/favorites";
 import { MdOutlineDelete, MdLocationOn } from "react-icons/md";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
