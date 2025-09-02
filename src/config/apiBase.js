@@ -2,19 +2,20 @@ const DEFAULT_BASE = (() => {
   try {
     if (typeof window !== 'undefined') {
       const isHttps = window.location.protocol === 'https:';
-      const isLocalhost = /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname);
+      const isLocalhost = /^(localhost|127\.0\.0\.1|\[::1\]|192\.168|10\.|172\.(1[6-9]|2[0-9]|3[01]))/i.test(window.location.hostname);
       
+      // In development or when running locally
       if (!isHttps && isLocalhost) {
-        console.log('Using Vite proxy /api for local development');
-        return '/api';
+        console.log('Using development API: http://localhost:3500');
+        return 'http://localhost:3500';
       }
       
-      if (isHttps || !isLocalhost) {
-        console.log('Using production API: https://api.100acress.com');
-        return 'https://api.100acress.com';
-      }
+      // In production or when accessed via HTTPS
+      console.log('Using production API: https://api.100acress.com');
+      return 'https://api.100acress.com';
     }
     
+    // Fallback for server-side rendering or other environments
     console.log('Using default API base: http://localhost:3500');
     return 'http://localhost:3500';
   } catch (error) {
@@ -23,73 +24,88 @@ const DEFAULT_BASE = (() => {
   }
 })();
 
-const getApiBase = () => {
-  try {
-    if (typeof window !== 'undefined') {
-      const isHttps = window.location.protocol === 'https:';
-      const isLocalhost = /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname);
-      if (!isHttps && isLocalhost) {
-        return '/api';
+// Get the current API base URL
+export const getApiBase = () => {
+  // Check for localStorage override
+  if (typeof window !== 'undefined') {
+    const override = localStorage.getItem('apiBaseOverride');
+    if (override) {
+      try {
+        const parsed = JSON.parse(override);
+        if (parsed && parsed.url) {
+          return parsed.url;
+        }
+      } catch (e) {
+        console.warn('Invalid API base override in localStorage', e);
+        localStorage.removeItem('apiBaseOverride');
       }
     }
-    const stored = typeof window !== 'undefined' ? window.localStorage.getItem('apiBase') : null;
-    let base = stored || DEFAULT_BASE;
-    if (typeof base === 'string') {
-      base = base.trim();
-      if (base.length > 1 && base.endsWith('/')) base = base.slice(0, -1);
-      if (base === 'api') base = '/api';
-      if (base.startsWith('//')) base = base.replace(/^\/+/g, '/');
-      if (base === '/api/api') base = '/api';
-      if (base.startsWith('/api/api')) base = '/api' + base.slice('/api/api'.length);
-      if (base === '' || base === '/') base = DEFAULT_BASE;
-    }
-    console.log('Using API base:', base);
-    return base;
+  }
+  
+  return process.env.REACT_APP_API_BASE || DEFAULT_BASE;
+};
+
+// Set a custom API base URL (for development/testing)
+export const setApiBase = (url) => {
+  if (!url) {
+    localStorage.removeItem('apiBaseOverride');
+    return { success: true, message: 'API base reset to default' };
+  }
+  
+  try {
+    // Ensure the URL is properly formatted
+    const urlObj = new URL(url);
+    const baseUrl = `${urlObj.protocol}//${urlObj.host}`;
+    
+    localStorage.setItem('apiBaseOverride', JSON.stringify({
+      url: baseUrl,
+      timestamp: Date.now()
+    }));
+    
+    return { 
+      success: true, 
+      message: `API base set to ${baseUrl}`,
+      url: baseUrl
+    };
   } catch (error) {
-    console.error('Error getting API base URL:', error);
-    return DEFAULT_BASE;
+    console.error('Invalid API base URL:', error);
+    return { 
+      success: false, 
+      message: 'Invalid URL. Please use format: http(s)://domain.com',
+      error: error.message 
+    };
   }
 };
 
-const setApiBase = (url) => {
-  try {
-    if (typeof window !== 'undefined') {
-      if (url) {
-        window.localStorage.setItem('apiBase', url);
-        console.log('API base URL overridden to:', url);
-      } else {
-        clearApiBaseOverride();
-      }
-    }
-  } catch (error) {
-    console.error('Error setting API base URL:', error);
+// Clear any API base override
+export const clearApiBaseOverride = () => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('apiBaseOverride');
   }
+  return { success: true, message: 'API base override cleared' };
 };
 
-const clearApiBaseOverride = () => {
+// Test if the API is accessible
+export const testLiveApi = async () => {
+  const baseUrl = getApiBase();
+  const testUrl = `${baseUrl.replace(/\/+$/, '')}/api/health`;
+  
   try {
-    if (typeof window !== 'undefined') {
-      window.localStorage.removeItem('apiBase');
-      console.log('API base URL override cleared');
-    }
-  } catch (error) {
-    console.error('Error clearing API base URL override:', error);
-  }
-};
-
-const testLiveApi = async () => {
-  try {
-    console.log('Testing connection to live API...');
-    const response = await fetch('https://api.100acress.com/health');
+    const response = await fetch(testUrl, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      mode: 'cors'
+    });
+    
     const data = await response.json();
-    console.log('Live API response:', data);
     return { success: true, data };
   } catch (error) {
-    console.error('Error connecting to live API:', error);
+    console.error('API test failed:', error);
     return { 
       success: false, 
       error: error.message,
-      suggestion: 'Please check if the API server is running and CORS is properly configured.'
+      message: `Failed to connect to API at ${testUrl}`
     };
   }
 };
@@ -97,10 +113,12 @@ const testLiveApi = async () => {
 // Run the test when this module is imported
 testLiveApi().then(result => {
   if (result.success) {
-    console.log(' Live API is accessible');
+    console.log('✓ API is accessible at', getApiBase());
   } else {
-    console.error(' Could not connect to live API:', result.error);
+    console.warn('⚠️ Could not connect to API at', getApiBase());
+    console.warn('Error:', result.message);
   }
 });
 
-export { getApiBase, setApiBase, clearApiBaseOverride, testLiveApi };
+// Export the current API base URL as a string
+export const API_BASE = getApiBase();
