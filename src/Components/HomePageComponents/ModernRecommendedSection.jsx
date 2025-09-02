@@ -1,24 +1,16 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { Skeleton } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper/modules';
 import { 
   MdLocationPin, 
-  MdAttachMoney, 
-  MdStar, 
   MdShare,
-  MdArrowForward,
-  MdChevronLeft,
-  MdChevronRight
+  MdArrowForward
 } from 'react-icons/md';
-import { MdFavoriteBorder } from 'react-icons/md';
-import { AuthContext } from '../../AuthContext';
-import AuthModal from '../AuthModal';
-import { FaBed } from 'react-icons/fa';
 import styled from 'styled-components';
 import Api_Service from "../../Redux/utils/Api_Service";
+import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../utils/favorites";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -28,15 +20,21 @@ import 'swiper/css/navigation';
 const ModernRecommendedSection = () => {
   const spotlight = useSelector(store => store?.project?.spotlight);
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [favTick, setFavTick] = useState(0);
   const swiperRef = useRef(null);
   const { getSpotlight } = Api_Service();
-  const { isAuthenticated } = useContext(AuthContext);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Fetch spotlight data on component mount
   useEffect(() => {
     getSpotlight();
   }, [getSpotlight]);
+
+  // Keep favorites in sync and hydrated
+  useEffect(() => {
+    hydrateFavoritesFromServer();
+    const unsub = subscribe(() => setFavTick((v) => v + 1));
+    return () => { if (typeof unsub === 'function') unsub(); };
+  }, []);
 
   // Autoplay and navigation disabled per request
 
@@ -259,8 +257,7 @@ const ModernRecommendedSection = () => {
                   truncateText={truncateText}
                   formatPrice={formatPrice}
                   formatLocation={formatLocation}
-                  isAuthenticated={isAuthenticated}
-                  setIsAuthModalOpen={setIsAuthModalOpen}
+                  favTick={favTick}
                 />
               </SwiperSlide>
             ))}
@@ -272,12 +269,6 @@ const ModernRecommendedSection = () => {
           <div className="swiper-pagination custom-pagination"></div>
         </div>
       </div>
-      {/* Auth Modal */}
-      <AuthModal
-        open={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        defaultView="login"
-      />
     </SectionWrapper>
   );
 };
@@ -290,19 +281,25 @@ const PropertyCard = ({
   truncateText,
   formatPrice,
   formatLocation,
-  isAuthenticated,
-  setIsAuthModalOpen
+  favTick
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
-  
+
   const handleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!isAuthenticated) {
-      setIsAuthModalOpen(true);
-    } else {
-      // Add to wishlist logic for authenticated users
-    }
+    const id = project?._id || project?.id || project?.slug;
+    const snapshot = {
+      title: project?.projectName,
+      frontImage: project?.frontImage,
+      thumbnailImage: project?.thumbnailImage,
+      priceText: formatPrice(project?.minPrice || project?.price),
+      url: project?.project_url ? `/${project?.project_url}/` : undefined,
+      city: project?.city,
+      maxPrice: project?.maxPrice || project?.price,
+      minPrice: project?.minPrice,
+    };
+    toggleFavorite(id, snapshot);
   };
 
   const handleShare = (e) => {
@@ -361,6 +358,9 @@ const PropertyCard = ({
     window.location.href = `/${project?.project_url}/`;
   };
 
+  // Recompute favorite when favTick changes
+  const isFav = favCheck(project?._id || project?.id || project?.slug);
+
   return (
     <CardWrapper
       onMouseEnter={onHover}
@@ -410,10 +410,10 @@ const PropertyCard = ({
         <button
           onClick={handleWishlist}
           className="wishlist-btn"
-          aria-label="Add to wishlist (login required)"
-          title="Login to add to wishlist"
+          aria-label="Toggle wishlist"
+          title={isFav ? 'Remove from wishlist' : 'Add to wishlist'}
         >
-          <MdFavoriteBorder />
+          {isFav ? <span style={{color:'#ef4444'}}>❤️</span> : <span>🤍</span>}
         </button>
 
         {/* Price Badge */}
@@ -736,7 +736,7 @@ const CardWrapper = styled.div`
     .wishlist-btn {
       position: absolute;
       top: 16px;
-      right: 64px; /* place to the left of share */
+      right: 64px; /* to the left of share */
       width: 40px;
       height: 40px;
       background: rgba(255, 255, 255, 0.9);
@@ -753,12 +753,8 @@ const CardWrapper = styled.div`
       &:hover {
         background: white;
         transform: scale(1.1);
-        color: #ef4444; /* red on hover */
+        color: #ef4444;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-      }
-
-      .wishlist-icon {
-        font-size: 24px;
       }
     }
 
@@ -967,4 +963,4 @@ const CardWrapper = styled.div`
   }
 `;
 
-export default ModernRecommendedSection; 
+export default ModernRecommendedSection;
