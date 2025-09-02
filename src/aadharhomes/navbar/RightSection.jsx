@@ -145,7 +145,7 @@ export default function RightSection({
           // Authenticated user: Drawer on mobile, Menu on desktop
           isMobile ? (
             <>
-              <Button onClick={() => (isAcctOpen ? onAcctOpen() : onAcctOpen())} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
+              <Button onClick={() => (isAcctOpen ? onAcctClose() : onAcctOpen())} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
                 <Flex align="center" gap={2}>
                   <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden">
                     {avatarUrl ? (
@@ -453,7 +453,7 @@ export default function RightSection({
                 <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" display={{ base: "none", xl: "inline" }}>Log in</Box>
               </Flex>
             </Button>
-            <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
+            <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="register" />
           </>
         )}
 
@@ -504,166 +504,35 @@ export default function RightSection({
           </Link>
         )}
 
-        {/* CSS for always rotating black and yellow border */}
-        <style>{`
-          .rotating-border-always {
-            position: relative;
-            display: inline-block;
-          }
-          
-          .rotating-border-always::before {
-            content: '';
-            position: absolute;
-            left: -2px;
-            top: -2px;
-            width: calc(100% + 4px);
-            height: calc(100% + 4px);
-            background: conic-gradient(from 0deg, 
-              #000 0deg, 
-              #FACC15 90deg, 
-              #000 180deg, 
-              #FACC15 270deg, 
-              #000 360deg
-            );
-            border-radius: calc(0.75rem + 2px);
-            animation: rotateColorBorder 2s linear infinite;
-            z-index: -1;
-          }
-          
-          .rotating-border-always::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: white;
-            border-radius: 0.75rem;
-            z-index: -1;
-          }
-          
-          @keyframes rotateColorBorder {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-          
-          .button-inner {
-            position: relative;
-            z-index: 1;
-          }
-        `}</style>
-
-        {/* Post property CTA with Always Rotating Black and Yellow Border */}
+        {/* Post property CTA */}
         {token ? (
-          <div className="rotating-border-always">
-            <Link to="/postproperty/">
-              <Button 
-                className="button-inner"
-                size="sm" 
-                variant="solid" 
-                bg="white" 
-                color="#111" 
-                boxShadow="none" 
-                _hover={{ 
-                  bg: 'white',
-                  transform: 'translateY(-1px)'
-                }}
-                _active={{
-                  transform: 'translateY(0)'
-                }}
-                fontWeight="700" 
-                fontSize={{ base: '14px', md: '13px', xl: '13px' }} 
-                letterSpacing="0.3px" 
-                display={{ base: "none", md: "inline-flex" }} 
-                gap={{ base: 3, md: 2, xl: 3 }} 
-                alignItems="center" 
-                borderRadius="xl" 
-                px={{ base: 4, md: 3, xl: 4 }} 
-                py={2} 
-                ml={{ base: 2, md: 2 }}
-                position="relative"
-                zIndex={1}
-                transition="all 0.3s ease"
-                border="none"
-              >
-                <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
-                  {/* icon intentionally hidden for md+ */}
-                </Box>
-                <Box as="span" display={{ base: 'none', md: 'inline' }}>Post Property</Box>
-                <Box 
-                  as="span" 
-                  display={{ base: 'none', md: 'inline-flex' }} 
-                  bg="#FACC15" 
-                  color="#e53e3e" 
-                  px={3} 
-                  py={0.5} 
-                  fontSize="11px" 
-                  fontWeight="800" 
-                  lineHeight={1} 
-                  style={{ 
-                    clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' 
-                  }}
-                >
-                  FREE
-                </Box>
-              </Button>
-            </Link>
-          </div>
+          <Link to="/postproperty/">
+            <Button size="sm" variant="solid" bg="white" color="#111" border="2px solid #e53e3e" boxShadow="sm" _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }} fontWeight="700" fontSize={{ base: '14px', md: '13px', xl: '13px' }} letterSpacing="0.3px" display={{ base: "none", md: "inline-flex" }} gap={{ base: 3, md: 2, xl: 3 }} alignItems="center" borderRadius="xl" px={{ base: 4, md: 3, xl: 4 }} py={2} ml={{ base: 2, md: 2 }}>
+              {/* Hide icon on tablet/laptop */}
+              <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
+                {/* icon intentionally hidden for md+ */}
+              </Box>
+              {/* Always show full label on md and up */}
+              <Box as="span" display={{ base: 'none', md: 'inline' }}>Post Property</Box>
+              <Box as="span" display={{ base: 'none', md: 'inline-flex' }} bg="#FACC15" color="#e53e3e" px={3} py={0.5} fontSize="11px" fontWeight="800" lineHeight={1} style={{ clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' }}>
+                FREE
+              </Box>
+            </Button>
+          </Link>
         ) : (
-          <div className="rotating-border-always">
-            <Link to="/auth/signin/">
-              <Button 
-                className="button-inner"
-                size="sm" 
-                variant="solid" 
-                bg="white" 
-                color="#111" 
-                border="none" 
-                boxShadow="none" 
-                _hover={{ 
-                  bg: 'white',
-                  transform: 'translateY(-1px)'
-                }}
-                _active={{
-                  transform: 'translateY(0)'
-                }}
-                fontWeight="700" 
-                fontSize={{ base: '14px', md: '13px', xl: '13px' }} 
-                letterSpacing="0.3px" 
-                display={{ base: "none", md: "inline-flex" }} 
-                gap={{ base: 3, md: 2, xl: 3 }} 
-                alignItems="center" 
-                borderRadius="xl" 
-                px={{ base: 4, md: 3, xl: 4 }} 
-                py={2} 
-                ml={{ base: 2, md: 2 }}
-                position="relative"
-                zIndex={1}
-                transition="all 0.3s ease"
-              >
-                <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
-                  {/* icon intentionally hidden for md+ */}
-                </Box>
-                <Box as="span" display={{ base: 'none', md: 'inline' }}>Post Property</Box>
-                <Box 
-                  as="span" 
-                  display={{ base: 'none', md: 'inline-flex' }} 
-                  bg="#FACC15" 
-                  color="#e53e3e" 
-                  px={3} 
-                  py={0.5} 
-                  fontSize="11px" 
-                  fontWeight="800" 
-                  lineHeight={1} 
-                  style={{ 
-                    clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' 
-                  }}
-                >
-                  FREE
-                </Box>
-              </Button>
-            </Link>
-          </div>
+          <Link to="/auth/signin/">
+            <Button size="sm" variant="solid" bg="white" color="#111" border="2px solid #e53e3e" boxShadow="sm" _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }} fontWeight="700" fontSize={{ base: '14px', md: '13px', xl: '13px' }} letterSpacing="0.3px" display={{ base: "none", md: "inline-flex" }} gap={{ base: 3, md: 2, xl: 3 }} alignItems="center" borderRadius="xl" px={{ base: 4, md: 3, xl: 4 }} py={2} ml={{ base: 2, md: 2 }}>
+              {/* Hide icon on tablet/laptop */}
+              <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
+                {/* icon intentionally hidden for md+ */}
+              </Box>
+              {/* Always show full label on md and up */}
+              <Box as="span" display={{ base: 'none', md: 'inline' }}>Post property</Box>
+              <Box as="span" display={{ base: 'none', md: 'inline-flex' }} bg="#FACC15" color="#e53e3e" px={3} py={0.5} fontSize="11px" fontWeight="800" lineHeight={1} style={{ clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' }}>
+                FREE
+              </Box>
+            </Button>
+          </Link>
         )}
       </Box>
     </Flex>

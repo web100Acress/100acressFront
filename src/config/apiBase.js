@@ -4,31 +4,27 @@ const DEFAULT_BASE = (() => {
       const isHttps = window.location.protocol === 'https:';
       const isLocalhost = /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname);
       
-      // In local dev over HTTP, use Vite proxy
       if (!isHttps && isLocalhost) {
         console.log('Using Vite proxy /api for local development');
         return '/api';
       }
       
-      // For production or HTTPS, use the production API
       if (isHttps || !isLocalhost) {
         console.log('Using production API: https://api.100acress.com');
         return 'https://api.100acress.com';
       }
     }
     
-    // Fallback for non-browser environments
     console.log('Using default API base: http://localhost:3500');
     return 'http://localhost:3500';
   } catch (error) {
     console.error('Error determining API base URL:', error);
-    return 'http://localhost:3500'; // Fallback
+    return 'http://localhost:3500';
   }
 })();
 
-export const getApiBase = () => {
+const getApiBase = () => {
   try {
-    // If running on HTTP localhost, always use Vite proxy '/api' and ignore overrides
     if (typeof window !== 'undefined') {
       const isHttps = window.location.protocol === 'https:';
       const isLocalhost = /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname);
@@ -36,19 +32,15 @@ export const getApiBase = () => {
         return '/api';
       }
     }
-    // Check for override in localStorage
     const stored = typeof window !== 'undefined' ? window.localStorage.getItem('apiBase') : null;
     let base = stored || DEFAULT_BASE;
     if (typeof base === 'string') {
       base = base.trim();
-      // Remove trailing slash
       if (base.length > 1 && base.endsWith('/')) base = base.slice(0, -1);
-      // Normalize common mistakes that create double '/api'
       if (base === 'api') base = '/api';
       if (base.startsWith('//')) base = base.replace(/^\/+/g, '/');
       if (base === '/api/api') base = '/api';
       if (base.startsWith('/api/api')) base = '/api' + base.slice('/api/api'.length);
-      // If someone stored just '' or '/' fallback
       if (base === '' || base === '/') base = DEFAULT_BASE;
     }
     console.log('Using API base:', base);
@@ -59,7 +51,7 @@ export const getApiBase = () => {
   }
 };
 
-export const setApiBase = (url) => {
+const setApiBase = (url) => {
   try {
     if (typeof window !== 'undefined') {
       if (url) {
@@ -74,7 +66,7 @@ export const setApiBase = (url) => {
   }
 };
 
-export const clearApiBaseOverride = () => {
+const clearApiBaseOverride = () => {
   try {
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem('apiBase');
@@ -84,3 +76,31 @@ export const clearApiBaseOverride = () => {
     console.error('Error clearing API base URL override:', error);
   }
 };
+
+const testLiveApi = async () => {
+  try {
+    console.log('Testing connection to live API...');
+    const response = await fetch('https://api.100acress.com/health');
+    const data = await response.json();
+    console.log('Live API response:', data);
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error connecting to live API:', error);
+    return { 
+      success: false, 
+      error: error.message,
+      suggestion: 'Please check if the API server is running and CORS is properly configured.'
+    };
+  }
+};
+
+// Run the test when this module is imported
+testLiveApi().then(result => {
+  if (result.success) {
+    console.log(' Live API is accessible');
+  } else {
+    console.error(' Could not connect to live API:', result.error);
+  }
+});
+
+export { getApiBase, setApiBase, clearApiBaseOverride, testLiveApi };
