@@ -449,12 +449,20 @@ export default function Navbar() {
       await axios.get(`${API_BASE}/postPerson/logout`, {
         headers: { Authorization: authToken ? `Bearer ${authToken}` : undefined },
       });
-      history("/");
+      
+      // Clear favorites from localStorage
+      localStorage.removeItem('favoriteProjects');
+      localStorage.removeItem('favoriteProjectsData');
+      
+      // Clear other user data
       localStorage.removeItem("myToken");
       localStorage.removeItem("mySellerId");
       localStorage.removeItem("userRole");
+      localStorage.removeItem("userData");
       localStorage.removeItem("firstName");
       localStorage.removeItem("avatarUrl");
+      
+      history("/");
       window.location.reload(false);
     } catch (error) {
       console.error("Logout failed:", error);
