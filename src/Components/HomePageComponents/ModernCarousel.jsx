@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectCoverflow } from 'swiper/modules';
 import { MdArrowForward, MdArrowBack } from 'react-icons/md';
 import styled from "styled-components";
-import ModernCard from "./ModernCard";
+import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../utils/favorites";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -30,6 +30,8 @@ function ModernCarousel({ AllProjects = [] }) {
   useEffect(() => {
     updateNumber();
     window.addEventListener('resize', updateNumber);
+    // Ensure initial server state is reflected in hearts
+    hydrateFavoritesFromServer();
 
     return () => {
       window.removeEventListener('resize', updateNumber);
@@ -123,7 +125,16 @@ function ModernCarousel({ AllProjects = [] }) {
 
 const PropertyCard = ({ property }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(() => favCheck(property?._id || property?.id || property?.slug));
+
+  useEffect(() => {
+    // Cross-tab + in-process updates for this card's heart
+    const unsub = subscribe(() => {
+      const id = property?._id || property?.id || property?.slug;
+      setIsFavorite(favCheck(id));
+    });
+    return () => { if (typeof unsub === 'function') unsub(); };
+  }, [property?._id, property?.id, property?.slug]);
 
   const formatPrice = (price) => {
     if (!price) return "Price on request";
@@ -162,7 +173,20 @@ const PropertyCard = ({ property }) => {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            setIsFavorite(!isFavorite);
+            const id = property?._id || property?.id || property?.slug;
+            const snapshot = {
+              title: property?.projectName,
+              frontImage: property?.frontImage,
+              thumbnailImage: property?.thumbnailImage,
+              priceText: formatPrice(property?.minPrice || property?.price),
+              url: property?.project_url ? `/${property?.project_url}/` : undefined,
+              city: property?.city,
+              maxPrice: property?.maxPrice || property?.price,
+              minPrice: property?.minPrice,
+            };
+            toggleFavorite(id, snapshot);
+            // Immediate update; subscription will keep it consistent across tabs as well
+            setIsFavorite((v) => !v);
           }}
           className="favorite-btn"
         >
@@ -581,4 +605,4 @@ const CardWrapper = styled.div`
   }
 `;
 
-export default ModernCarousel; 
+export default ModernCarousel;

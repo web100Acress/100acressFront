@@ -16,6 +16,7 @@ import {
   Edit3,
   Save,
   Upload,
+  UploadCloud,
   X,
   Plus,
   Tag,
@@ -74,6 +75,7 @@ const BlogWriteModal = () => {
   const [blogToEdit, setBlogToEdit] = useState(false);
   const [newBlog, setNewBlog] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPublished, setIsPublished] = useState(false);
   // Cropper state for inline content images
   const [showCropper, setShowCropper] = useState(false);
   const [rawImageUrl, setRawImageUrl] = useState('');
@@ -333,26 +335,66 @@ const BlogWriteModal = () => {
         return messageApi.warning('Please select a crop area');
       }
       messageApi.open({ key: 'cropUpload', type: 'loading', content: 'Uploading cropped image...', duration: 0 });
+      
+      // Get the cropped blob
       const blob = await getCroppedBlob();
-      const filename = (rawImageFile?.name || 'image.png').replace(/\.[^.]+$/, '') + '-cropped.png';
+      const filename = (rawImageFile?.name || 'image.png').replace(/\.[^.]*$/, '') + '-cropped.png';
       const file = new File([blob], filename, { type: 'image/png' });
 
+      // Create FormData and append the file
       const fd = new FormData();
       fd.append('image', file);
 
-      const res = await api.post(`/blog/upload-image`, fd);
+      // Add Content-Type header manually for FormData
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        },
+        withCredentials: true
+      };
 
-      const imageUrl = res?.data?.url || res?.data?.data?.url || res?.data?.imageUrl || '';
-      if (!imageUrl) throw new Error('Upload succeeded but no URL returned');
+      try {
+        const res = await api.post(`/blog/upload-image`, fd, config);
+        
+        // Handle different response formats
+        const imageUrl = res?.data?.url || 
+                        res?.data?.data?.url || 
+                        (typeof res?.data === 'string' ? res.data : '') || 
+                        '';
+                        
+        if (!imageUrl) {
+          console.error('Unexpected response format:', res?.data);
+          throw new Error('Upload succeeded but no URL was returned in the response');
+        }
 
-      insertImageIntoQuill(imageUrl);
-      messageApi.destroy('cropUpload');
-      messageApi.success('Cropped image inserted');
-      closeCropper();
+        insertImageIntoQuill(imageUrl);
+        messageApi.destroy('cropUpload');
+        messageApi.success('Image uploaded and inserted');
+        closeCropper();
+      } catch (uploadError) {
+        console.error('Upload error:', uploadError);
+        if (uploadError.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error('Response data:', uploadError.response.data);
+          console.error('Response status:', uploadError.response.status);
+          console.error('Response headers:', uploadError.response.headers);
+          throw new Error(uploadError.response.data?.message || 'Server error during upload');
+        } else if (uploadError.request) {
+          // The request was made but no response was received
+          console.error('No response received:', uploadError.request);
+          throw new Error('No response from server. Please check your connection.');
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.error('Request setup error:', uploadError.message);
+          throw uploadError;
+        }
+      }
     } catch (err) {
-      console.error('Crop upload failed', err);
+      console.error('Crop upload failed:', err);
       messageApi.destroy('cropUpload');
-      messageApi.error('Failed to upload cropped image');
+      messageApi.error(err.message || 'Failed to upload cropped image');
     }
   };
 
@@ -380,20 +422,71 @@ const BlogWriteModal = () => {
     loadCategories();
   }, []);
 
-  /** Featured image change */
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    setFrontImage(file || null);
-    if (file) {
-      // Revoke previous object URL
-      if (frontPreviewObjUrl) URL.revokeObjectURL(frontPreviewObjUrl);
-      const objUrl = URL.createObjectURL(file);
-      setFrontPreviewObjUrl(objUrl);
-      setFrontImagePreview(objUrl);
+  /** Handle image URL input */
+  const handleImageUrlChange = (e) => {
+    const url = e.target.value;
+    setFrontImage(url);
+    
+    // Basic URL validation
+    if (url && url.trim() !== '') {
+      try {
+        new URL(url); // Will throw if invalid URL
+        setFrontImagePreview(url);
+      } catch (err) {
+        // Don't show error while typing, only when submitting
+        setFrontImagePreview('');
+      }
     } else {
       setFrontImagePreview('');
-      if (frontPreviewObjUrl) URL.revokeObjectURL(frontPreviewObjUrl);
-      setFrontPreviewObjUrl('');
+    }
+  };
+
+  /** Featured image change - handles both file upload and URL */
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setFrontImage(null);
+      setFrontImagePreview('');
+      if (frontPreviewObjUrl) {
+        URL.revokeObjectURL(frontPreviewObjUrl);
+        setFrontPreviewObjUrl('');
+      }
+      return;
+    }
+
+    // Check file type
+    if (!file.type.match('image.*')) {
+      messageApi.error('Please select a valid image file');
+      return;
+    }
+
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      messageApi.error('Image size should be less than 5MB');
+      return;
+    }
+
+    // Revoke previous object URL if exists
+    if (frontPreviewObjUrl) {
+      URL.revokeObjectURL(frontPreviewObjUrl);
+    }
+
+    // Create object URL for preview
+    const objUrl = URL.createObjectURL(file);
+    
+    // Set states
+    setFrontImage(file);
+    setFrontPreviewObjUrl(objUrl);
+    setFrontImagePreview(objUrl);
+    
+    // Auto-set meta title from filename if empty
+    if (!metaTitle) {
+      const fileName = file.name.replace(/\.[^/.]+$/, ''); // Remove extension
+      const formattedName = fileName
+        .replace(/[-_]/g, ' ') // Replace underscores and dashes with spaces
+        .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+        .trim();
+      setMetaTitle(formattedName);
     }
   };
 
@@ -494,7 +587,9 @@ const BlogWriteModal = () => {
   };
 
   /** Submit (draft/publish) */
-  const handleSubmit = async (e, isPublished = false) => {
+  const handleSubmit = async (e, publishStatus) => {
+    const willPublish = publishStatus === true;
+    setIsPublished(willPublish);
     e.preventDefault();
     if (isSubmitting) return;
 
@@ -531,7 +626,7 @@ const BlogWriteModal = () => {
       formDataAPI.append('blog_Description', description);
       formDataAPI.append('blog_Category', categories);
       formDataAPI.append('author', author || 'Admin');
-      formDataAPI.append('isPublished', isPublished ? 'true' : 'false');
+      formDataAPI.append('isPublished', willPublish);
 
       // SEO payload
       if (metaTitle) formDataAPI.append('metaTitle', metaTitle.trim());
@@ -1104,42 +1199,88 @@ const BlogWriteModal = () => {
                 </label>
               </div>
 
-              {frontImagePreview ? (
-                <div className="relative group">
+              {frontImagePreview && (
+                <div className="relative group mb-4">
                   <img
                     src={frontImagePreview}
-                    alt="Front"
-                    className="featured-preview w-full h-64 rounded-xl shadow-lg"
+                    alt="Featured preview"
+                    className="w-full h-64 object-cover rounded-xl shadow-lg"
                     onClick={() => setLightboxUrl(frontImagePreview)}
+                    onError={(e) => {
+                      // If image fails to load, clear the preview
+                      setFrontImagePreview('');
+                      setFrontImage(null);
+                      messageApi.error('Failed to load image. Please try another one.');
+                    }}
                     title="Click to view full size"
                   />
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-xl flex items-center justify-center">
-                    <div className="opacity-0 group-hover:opacity-100 transition-all duration-200">
-                      <Upload className="w-8 h-8 text-white" />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-xl flex items-center justify-center cursor-pointer">
+                    <div className="opacity-0 group-hover:opacity-100 transition-all duration-200 bg-white bg-opacity-80 p-3 rounded-full">
+                      <Upload className="w-6 h-6 text-gray-700" />
                     </div>
                   </div>
                 </div>
-              ) : null}
+              )}
 
-              <div className="relative">
-                <input
-                  type="file"
-                  name="blog_Image"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="w-full px-4 py-12 border-2 border-dashed border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 cursor-pointer"
-                />
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="flex items-center space-x-2 text-gray-500">
-                    <Upload className="w-5 h-5" />
-                    <span className="text-sm font-medium">Click to upload image</span>
+              <div className="space-y-4">
+                {/* File Upload Option */}
+                <div className="relative border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
+                  <input
+                    type="file"
+                    id="featured-image-upload"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    key={frontImagePreview ? 'has-image' : 'no-image'}
+                  />
+                  <div className="space-y-2">
+                    <Upload className="w-10 h-10 mx-auto text-gray-400" />
+                    <p className="text-sm font-medium text-gray-700">
+                      {frontImagePreview ? 'Click to change image' : 'Upload an image'}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {frontImagePreview ? 'or drag and drop a new image' : 'Drag and drop or click to browse'}
+                    </p>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Category */}
-            <div className="space-y-3">
+                {/* OR Divider */}
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-white text-gray-500">OR</span>
+                  </div>
+                </div>
+
+                {/* URL Input */}
+                <div>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Paste image URL here"
+                    onPaste={async (e) => {
+                      try {
+                        const pastedText = e.clipboardData.getData('text/plain');
+                        if (pastedText) {
+                          e.preventDefault(); // Prevent default paste behavior
+                          e.target.value = pastedText; // Manually set the input value
+                          handleImageUrlChange({ target: { value: pastedText } });
+                        }
+                      } catch (err) {
+                        console.error('Error handling paste:', err);
+                      }
+                    }}
+                    onChange={handleImageUrlChange}
+                    value={frontImage || ''}
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Paste direct image URL (e.g., https://example.com/image.jpg)
+                  </p>
+                </div>
+              </div>
+
               <div className="flex items-center space-x-2">
                 <Tag className="w-5 h-5 text-purple-600" />
                 <label className="text-lg font-semibold text-gray-900">
@@ -1364,26 +1505,35 @@ const BlogWriteModal = () => {
             <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
               {!blogToEdit && (
                 <button
-                  type="button"
-                  className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all duration-200 font-medium flex items-center space-x-2"
-                  disabled={isSubmitting}
-                  onClick={(e) => handleSubmit(e, false)}
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{isSubmitting ? 'Saving...' : 'Save as Draft'}</span>
-                </button>
+                type="button"
+                className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all duration-200 font-medium flex items-center space-x-2"
+                disabled={isSubmitting}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSubmit(e, false);
+                }}
+              >
+                <Save className="w-4 h-4" />
+                <span>{
+                  isSubmitting && !isPublished ? 'Saving...' : 
+                  isPublished ? 'Save as Draft' : 'Save as Draft'
+                }</span>
+              </button>
               )}
 
               <button
                 type="button"
                 className="px-8 py-3 text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition duration-200 font-medium flex items-center space-x-2 shadow-lg hover:shadow-xl"
-                onClick={(e) => handleSubmit(e, true)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSubmit(e, true);
+                }}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? (
+                {isSubmitting && isPublished ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Saving...</span>
+                    <span>{blogToEdit ? 'Updating...' : 'Publishing...'}</span>
                   </>
                 ) : (
                   <>

@@ -105,12 +105,11 @@ export const budgetPlots = [
 ];
 
 export const Recommendedreordered = [
-  "BPTP Gaia Residences",
-  "Experion Windchants Nova",
-  "Signature Global Cloverdale SPR",
-  "Indiabulls Heights"
 
-  
+  "ROF Pravasa",
+  "Experion One 42",
+  "Indiabulls Heights",
+  "Experion The Trillion",
 ];
 
 export const DesiredLuxuryOrder = [

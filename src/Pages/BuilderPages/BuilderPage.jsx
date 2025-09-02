@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import { orderProjects, hasCustomOrder, getCustomOrder, getRandomSeed } from "../../Utils/ProjectOrderUtils";
 import { syncProjectOrdersFromServer } from "../../Redux/slice/ProjectOrderSlice";
-// Removed unused imports as they are not used in this file
+import { isFavorite, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../utils/favorites";
 
 const BuilderPage = React.memo(() => {
     const { builderName } = useParams(); 
@@ -15,6 +15,7 @@ const BuilderPage = React.memo(() => {
     const [query, setQuery] = useState("");
     const [loading, setLoading] = useState(true);
     const [isSynced, setIsSynced] = useState(false);
+    const [favoriteIds, setFavoriteIds] = useState([]);
     const {getProjectbyBuilder} = Api_Service();
     
     // Memoize sync function to prevent infinite re-renders
@@ -22,6 +23,13 @@ const BuilderPage = React.memo(() => {
       return dispatch(syncProjectOrdersFromServer());
     }, [dispatch]);
     
+    // Subscribe to favorites to trigger re-render on updates
+    useEffect(() => {
+      hydrateFavoritesFromServer();
+      const unsub = subscribe((ids) => setFavoriteIds(ids || []));
+      return () => { if (typeof unsub === 'function') unsub(); };
+    }, []);
+
     // Get builder projects from Redux store
     const SignatureBuilder = useSelector(store => store?.builder?.signatureglobal);
     const M3M = useSelector(store => store?.builder?.m3m);
@@ -126,6 +134,39 @@ const BuilderPage = React.memo(() => {
     } else {
       alert("Share functionality is not supported on this device/browser.");
     }
+  };
+
+  const onToggleFavorite = (project) => (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const snapshot = {
+      title: project.projectName,
+      image: project.frontImage?.url || project.frontImage?.cdn_url,
+      priceText:
+        typeof project.minPrice !== 'undefined' && typeof project.maxPrice !== 'undefined'
+          ? `${project.minPrice} - ${project.maxPrice} Cr`
+          : '',
+      url: `/${project.project_url}/`,
+      city: project.city,
+      maxPrice: project.maxPrice,
+      minPrice: project.minPrice,
+    };
+    
+    // Get authentication state from localStorage since we don't have access to AuthContext here
+    const isAuthenticated = !!localStorage.getItem('myToken');
+    
+    if (!isAuthenticated) {
+      if (typeof window.showAuthModal === 'function') {
+        window.showAuthModal();
+      }
+      if (window.toast) {
+        window.toast.error('Please login to save properties');
+      }
+      return;
+    }
+    
+    toggleFavorite(project._id || project.id || project.slug, snapshot, isAuthenticated);
   };
 
   const formatBuilderName = (name) => {
@@ -276,10 +317,33 @@ const BuilderPage = React.memo(() => {
                               className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
                             />
                           </Link>
-                          <div className="absolute top-5 right-5"
-                            onClick={() => handleShare(item)}
-                          >
-                            <ShareFrameIcon />
+                          <div className="absolute top-5 right-5 flex gap-2">
+                            <button
+                              type="button"
+                              onClick={onToggleFavorite(item)}
+                              className="w-8 h-8 rounded-full bg-white/90 backdrop-blur hover:bg-white shadow flex items-center justify-center"
+                              aria-label={isFavorite(item._id || item.id || item.slug) ? "Remove from favorites" : "Add to favorites"}
+                            >
+                              {isFavorite(item._id || item.id || item.slug) ? (
+                                // Filled heart
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ef4444" className="w-5 h-5">
+                                  <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.188 3 12.9 3 10.25 3 7.902 4.902 6 7.25 6c1.273 0 2.49.495 3.39 1.384L12 8.743l1.36-1.36A4.75 4.75 0 0116.75 6C19.098 6 21 7.902 21 10.25c0 2.65-1.688 4.938-3.989 7.257a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.218l-.022.012-.007.003a.75.75 0 01-.666 0z" />
+                                </svg>
+                              ) : (
+                                // Outline heart
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="1.8" className="w-5 h-5">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 10.25c0 2.65-1.688 4.938-3.989 7.257a25.175 25.175 0 01-4.244 3.17l-.383.218-.022.012-.007.003-.007-.003-.022-.012-.383-.218a25.18 25.18 0 01-4.244-3.17C4.688 15.188 3 12.9 3 10.25 3 7.902 4.902 6 7.25 6c1.273 0 2.49.495 3.39 1.384L12 8.743l1.36-1.36A4.75 4.75 0 0116.75 6C19.098 6 21 7.902 21 10.25z" />
+                                </svg>
+                              )}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleShare(item)}
+                              className="w-8 h-8 rounded-full bg-white/90 backdrop-blur hover:bg-white shadow flex items-center justify-center"
+                              aria-label="Share"
+                            >
+                              <ShareFrameIcon />
+                            </button>
                           </div>
                         </div>
                         <div className="pt-0 p-3">

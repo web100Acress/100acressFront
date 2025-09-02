@@ -65,7 +65,7 @@ const CommonInside = ({
   }
 
   return (
-    <div>
+    <div style={{ fontFamily: "'Rubik', sans-serif" }}>
       <Helmet>
         {HelmetTitle && <title>{HelmetTitle}</title>}
         {metaContent && <meta name="description" content={`${metaContent}`} />}
