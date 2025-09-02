@@ -1,16 +1,29 @@
 const DEFAULT_BASE = (() => {
-  if (typeof window !== 'undefined') {
-    const isHttps = window.location.protocol === 'https:';
-    const isLocalhost = /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname);
-    // In local dev over HTTP, use Vite proxy
-    if (!isHttps && isLocalhost) {
-      return '/api';
+  try {
+    if (typeof window !== 'undefined') {
+      const isHttps = window.location.protocol === 'https:';
+      const isLocalhost = /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(window.location.hostname);
+      
+      // In local dev over HTTP, use Vite proxy
+      if (!isHttps && isLocalhost) {
+        console.log('Using Vite proxy /api for local development');
+        return '/api';
+      }
+      
+      // For production or HTTPS, use the production API
+      if (isHttps || !isLocalhost) {
+        console.log('Using production API: https://api.100acress.com');
+        return 'https://api.100acress.com';
+      }
     }
-    if (isHttps || !isLocalhost) {
-      return 'https://api.100acress.com';
-    }
+    
+    // Fallback for non-browser environments
+    console.log('Using default API base: http://localhost:3500');
+    return 'http://localhost:3500';
+  } catch (error) {
+    console.error('Error determining API base URL:', error);
+    return 'http://localhost:3500'; // Fallback
   }
-  return 'http://localhost:3500';
 })();
 
 export const getApiBase = () => {
@@ -23,6 +36,7 @@ export const getApiBase = () => {
         return '/api';
       }
     }
+    // Check for override in localStorage
     const stored = typeof window !== 'undefined' ? window.localStorage.getItem('apiBase') : null;
     let base = stored || DEFAULT_BASE;
     if (typeof base === 'string') {
@@ -37,20 +51,36 @@ export const getApiBase = () => {
       // If someone stored just '' or '/' fallback
       if (base === '' || base === '/') base = DEFAULT_BASE;
     }
+    console.log('Using API base:', base);
     return base;
-  } catch {
+  } catch (error) {
+    console.error('Error getting API base URL:', error);
     return DEFAULT_BASE;
   }
 };
 
 export const setApiBase = (url) => {
-  if (typeof window !== 'undefined') {
-    window.localStorage.setItem('apiBase', url);
+  try {
+    if (typeof window !== 'undefined') {
+      if (url) {
+        window.localStorage.setItem('apiBase', url);
+        console.log('API base URL overridden to:', url);
+      } else {
+        clearApiBaseOverride();
+      }
+    }
+  } catch (error) {
+    console.error('Error setting API base URL:', error);
   }
 };
 
 export const clearApiBaseOverride = () => {
-  if (typeof window !== 'undefined') {
-    window.localStorage.removeItem('apiBase');
+  try {
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('apiBase');
+      console.log('API base URL override cleared');
+    }
+  } catch (error) {
+    console.error('Error clearing API base URL override:', error);
   }
 };

@@ -6,8 +6,13 @@ const api = axios.create({
   baseURL: getApiBase(),
   timeout: 30000,
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+  },
+  withCredentials: true,
+  crossDomain: true
 });
 
 // Request interceptor
@@ -49,7 +54,6 @@ api.interceptors.response.use(
       // Other errors
       console.error('Error:', error.message);
     }
-    
     return Promise.reject(error);
   }
 );

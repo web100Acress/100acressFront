@@ -7,12 +7,85 @@ import LuxuryFooter from "../Actual_Components/LuxuryFooter";
 import LikedProjectsSection from "./LikedProjectsSection";
 import SuggestedProjects from "./SuggestedProjects";
 import { hydrateFavoritesFromServer, subscribe, getFavorites, getFavoritesData } from "../../utils/favorites";
+import api from "../../config/apiClient";
+import axios from 'axios';
 
 const UserDashBoard = () => {
   const navigate = useNavigate();
-  const { agentData, handleDeleteUser } = useContext(AuthContext);
+  const { agentData, loading } = useContext(AuthContext);
   const [favIds, setFavIds] = useState(() => getFavorites());
   const [favData, setFavData] = useState(() => getFavoritesData());
+  const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
+
+  // Fetch user data on component mount
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        setIsLoading(true);
+        const token = localStorage.getItem("myToken");
+        if (!token) {
+          navigate('/login');
+          return;
+        }
+
+        // If agentData is not available, try to fetch it
+        if (!agentData?._id) {
+          const email = JSON.parse(localStorage.getItem("agentData"))?.email;
+          if (email) {
+            const response = await api.get(`/postPerson/Role/${email}`);
+            if (response.data?.User) {
+              setUserData(response.data.User);
+            }
+          }
+        } else {
+          setUserData(agentData);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const testApiConnection = async () => {
+      try {
+        console.log("Testing API connection...");
+        const testResponse = await api.get('/test');
+        console.log("Test API response:", testResponse.data);
+        
+        // Also test the actual endpoint we need
+        const email = JSON.parse(localStorage.getItem("agentData"))?.email;
+        if (email) {
+          console.log("Testing user data endpoint with email:", email);
+          const userResponse = await api.get(`/postPerson/Role/${email}`);
+          console.log("User data endpoint response:", userResponse.data);
+        }
+      } catch (error) {
+        console.error("API test failed:", {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+          url: error.config?.url,
+        });
+      }
+    };
+
+    fetchUserData();
+    testApiConnection();
+    
+    // Subscribe to favorites changes
+    hydrateFavoritesFromServer();
+    const unsub = subscribe((newIds) => {
+      setFavIds(newIds || []);
+      setFavData(getFavoritesData());
+    });
+    
+    return unsub;
+  }, [agentData, navigate]);
+
+  // Use userData instead of agentData throughout the component
+  const displayData = userData || agentData;
 
   const resolveUserId = () => {
     try {
@@ -20,9 +93,9 @@ const UserDashBoard = () => {
       if (raw) {
         try { return JSON.parse(raw); } catch { return raw; }
       }
-      return (agentData && agentData._id) || "";
+      return (displayData && displayData._id) || "";
     } catch {
-      return (agentData && agentData._id) || "";
+      return (displayData && displayData._id) || "";
     }
   };
 
@@ -42,35 +115,31 @@ const UserDashBoard = () => {
     blog: "Content Writer",
   };
   const roleLabel = (() => {
-    const r = agentData?.role?.toString()?.toLowerCase();
-    return roleMap[r] || agentData?.role || "User";
+    const r = displayData?.role?.toString()?.toLowerCase();
+    return roleMap[r] || displayData?.role || "User";
   })();
 
   let filteredRentProperties = [];
   let filteredSellProperties = [];
 
-  if (agentData && agentData.postProperty) {
-    filteredRentProperties = agentData.postProperty.filter(
+  if (displayData?.postProperty) {
+    filteredRentProperties = displayData.postProperty.filter(
       (property) => property.propertyLooking === "rent"
     );
-    filteredSellProperties = agentData.postProperty.filter(
+    filteredSellProperties = displayData.postProperty.filter(
       (property) => property.propertyLooking === "Sell"
     );
   } else {
     console.log("agentData or agentData.postProperty is undefined.");
   }
 
-  // Favorites: hydrate on mount and subscribe to changes
-  useEffect(() => {
-    hydrateFavoritesFromServer();
-    const unsub = subscribe((newIds) => {
-      setFavIds(newIds || []);
-      setFavData(getFavoritesData());
-    });
-    return unsub;
-  }, []);
-
-  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50" style={{ overflowX: "hidden" }}>
@@ -101,7 +170,7 @@ const UserDashBoard = () => {
                     <input
                       type="text"
                       name="name"
-                      value={agentData?.name || ''}
+                      value={displayData?.name || ''}
                       readOnly
                       className="w-full px-3 py-3 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900/20 transition-colors duration-200 text-base sm:text-lg"
                       placeholder="Name"
@@ -115,7 +184,7 @@ const UserDashBoard = () => {
                     <input
                       type="email"
                       name="email"
-                      value={agentData?.email || ''}
+                      value={displayData?.email || ''}
                       readOnly
                       className="w-full px-3 py-3 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900/20 transition-colors duration-200 text-base sm:text-lg"
                       placeholder="Email"
@@ -129,7 +198,7 @@ const UserDashBoard = () => {
                     <input
                       type="tel"
                       name="mobile"
-                      value={agentData?.mobile || ''}
+                      value={displayData?.mobile || ''}
                       readOnly
                       className="w-full px-3 py-3 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900/20 transition-colors duration-200 text-base sm:text-lg"
                       placeholder="Mobile"
@@ -179,7 +248,7 @@ const UserDashBoard = () => {
                       Total Listing
                     </p>
                     <p className="text-2xl sm:text-3xl font-bold text-gray-900">
-                      {agentData?.postProperty?.length || 0}
+                      {displayData?.postProperty?.length || 0}
                     </p>
                   </div>
                   
