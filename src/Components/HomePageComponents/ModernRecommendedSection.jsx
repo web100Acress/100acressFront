@@ -1,24 +1,16 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { Skeleton } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper/modules';
 import { 
   MdLocationPin, 
-  MdAttachMoney, 
-  MdStar, 
   MdShare,
-  MdArrowForward,
-  MdChevronLeft,
-  MdChevronRight
+  MdArrowForward
 } from 'react-icons/md';
-import { MdFavoriteBorder } from 'react-icons/md';
-import { AuthContext } from '../../AuthContext';
-import AuthModal from '../AuthModal';
-import { FaBed } from 'react-icons/fa';
 import styled from 'styled-components';
 import Api_Service from "../../Redux/utils/Api_Service";
+import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../utils/favorites";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -28,90 +20,96 @@ import 'swiper/css/navigation';
 const ModernRecommendedSection = () => {
   const spotlight = useSelector(store => store?.project?.spotlight);
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [favTick, setFavTick] = useState(0);
   const swiperRef = useRef(null);
   const { getSpotlight } = Api_Service();
-  const { isAuthenticated } = useContext(AuthContext);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Fetch spotlight data on component mount
   useEffect(() => {
     getSpotlight();
   }, [getSpotlight]);
 
+  // Keep favorites in sync and hydrated
+  useEffect(() => {
+    hydrateFavoritesFromServer();
+    const unsub = subscribe(() => setFavTick((v) => v + 1));
+    return () => { if (typeof unsub === 'function') unsub(); };
+  }, []);
+
   // Autoplay and navigation disabled per request
 
   // Mock data for testing if no spotlight data
   const mockSpotlightData = [
-    {
-      _id: 'mock1',
-      projectName: 'Luxury Villa Complex',
-      city: 'Gurugram',
-      sector: 'Sector 102',
-      area: 'Dwarka Expressway',
-      projectAddress: 'Near IGI Airport',
-      minPrice: 2.5,
-      maxPrice: 5.2,
-      project_url: 'luxury-villa',
-      frontImage: { url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop' },
-      BhK_Details: [{ bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }],
-      description: 'Premium luxury villas with world-class amenities and modern architecture in prime location.'
-    },
-    {
-      _id: 'mock2',
-      projectName: 'Modern Apartment Tower',
-      city: 'Gurugram',
-      sector: 'Sector 43',
-      area: 'Golf Course Road',
-      projectAddress: 'Opposite DLF Cyber City',
-      minPrice: 1.8,
-      maxPrice: 3.5,
-      project_url: 'modern-apartment',
-      frontImage: { url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop' },
-      BhK_Details: [{ bhk_type: '2 BHK' }, { bhk_type: '3 BHK' }],
-      description: 'Contemporary apartments featuring smart home technology and sustainable living solutions.'
-    },
-    {
-      _id: 'mock3',
-      projectName: 'Premium Residency',
-      city: 'Gurugram',
-      sector: 'Sector 39',
-      area: 'Sohna Road',
-      projectAddress: 'Near Medanta Hospital',
-      minPrice: 3.2,
-      maxPrice: 6.8,
-      project_url: 'premium-residency',
-      frontImage: { url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop' },
-      BhK_Details: [{ bhk_type: '4 BHK' }, { bhk_type: '5 BHK' }],
-      description: 'Exclusive residential complex with premium finishes and exceptional lifestyle amenities.'
-    },
-    {
-      _id: 'mock4',
-      projectName: 'Elite Gardens',
-      city: 'Gurugram',
-      sector: 'Sector 67',
-      area: 'Golf Course Extension',
-      projectAddress: 'Near Cyber Hub',
-      minPrice: 2.1,
-      maxPrice: 4.5,
-      project_url: 'elite-gardens',
-      frontImage: { url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop' },
-      BhK_Details: [{ bhk_type: '2 BHK' }, { bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }],
-      description: 'Beautifully landscaped community with green spaces and family-friendly environment.'
-    },
-    {
-      _id: 'mock5',
-      projectName: 'Royal Heights',
-      city: 'Gurugram',
-      sector: 'Sector 84',
-      area: 'NH-8',
-      projectAddress: 'Near Manesar',
-      minPrice: 4.5,
-      maxPrice: 8.2,
-      project_url: 'royal-heights',
-      frontImage: { url: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop' },
-      BhK_Details: [{ bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }, { bhk_type: '5 BHK' }],
-      description: 'Ultra-luxury residences with panoramic city views and bespoke lifestyle services.'
-    }
+    // {
+    //   _id: 'mock1',
+    //   projectName: 'Luxury Villa Complex',
+    //   city: 'Gurugram',
+    //   sector: 'Sector 102',
+    //   area: 'Dwarka Expressway',
+    //   projectAddress: 'Near IGI Airport',
+    //   minPrice: 2.5,
+    //   maxPrice: 5.2,
+    //   project_url: 'luxury-villa',
+    //   // frontImage: { url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop' },
+    //   BhK_Details: [{ bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }],
+    //   description: 'Premium luxury villas with world-class amenities and modern architecture in prime location.'
+    // },
+    // {
+    //   _id: 'mock2',
+    //   projectName: 'Modern Apartment Tower',
+    //   city: 'Gurugram',
+    //   sector: 'Sector 43',
+    //   area: 'Golf Course Road',
+    //   projectAddress: 'Opposite DLF Cyber City',
+    //   minPrice: 1.8,
+    //   maxPrice: 3.5,
+    //   project_url: 'modern-apartment',
+    //   // frontImage: { url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop' },
+    //   BhK_Details: [{ bhk_type: '2 BHK' }, { bhk_type: '3 BHK' }],
+    //   description: 'Contemporary apartments featuring smart home technology and sustainable living solutions.'
+    // },
+    // {
+    //   _id: 'mock3',
+    //   projectName: 'Premium Residency',
+    //   city: 'Gurugram',
+    //   sector: 'Sector 39',
+    //   area: 'Sohna Road',
+    //   projectAddress: 'Near Medanta Hospital',
+    //   minPrice: 3.2,
+    //   maxPrice: 6.8,
+    //   project_url: 'premium-residency',
+    //   // frontImage: { url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop' },
+    //   BhK_Details: [{ bhk_type: '4 BHK' }, { bhk_type: '5 BHK' }],
+    //   description: 'Exclusive residential complex with premium finishes and exceptional lifestyle amenities.'
+    // },
+    // {
+    //   _id: 'mock4',
+    //   projectName: 'Elite Gardens',
+    //   city: 'Gurugram',
+    //   sector: 'Sector 67',
+    //   area: 'Golf Course Extension',
+    //   projectAddress: 'Near Cyber Hub',
+    //   minPrice: 2.1,
+    //   maxPrice: 4.5,
+    //   project_url: 'elite-gardens',
+    //   // frontImage: { url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop' },
+    //   BhK_Details: [{ bhk_type: '2 BHK' }, { bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }],
+    //   description: 'Beautifully landscaped community with green spaces and family-friendly environment.'
+    // },
+    // {
+    //   _id: 'mock5',
+    //   projectName: 'Royal Heights',
+    //   city: 'Gurugram',
+    //   sector: 'Sector 84',
+    //   area: 'NH-8',
+    //   projectAddress: 'Near Manesar',
+    //   minPrice: 4.5,
+    //   maxPrice: 8.2,
+    //   project_url: 'royal-heights',
+    //   // frontImage: { url: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop' },
+    //   BhK_Details: [{ bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }, { bhk_type: '5 BHK' }],
+    //   description: 'Ultra-luxury residences with panoramic city views and bespoke lifestyle services.'
+    // }
   ];
 
   // Use mock data if no spotlight data is available
@@ -259,8 +257,7 @@ const ModernRecommendedSection = () => {
                   truncateText={truncateText}
                   formatPrice={formatPrice}
                   formatLocation={formatLocation}
-                  isAuthenticated={isAuthenticated}
-                  setIsAuthModalOpen={setIsAuthModalOpen}
+                  favTick={favTick}
                 />
               </SwiperSlide>
             ))}
@@ -272,12 +269,6 @@ const ModernRecommendedSection = () => {
           <div className="swiper-pagination custom-pagination"></div>
         </div>
       </div>
-      {/* Auth Modal */}
-      <AuthModal
-        open={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        defaultView="login"
-      />
     </SectionWrapper>
   );
 };
@@ -290,19 +281,25 @@ const PropertyCard = ({
   truncateText,
   formatPrice,
   formatLocation,
-  isAuthenticated,
-  setIsAuthModalOpen
+  favTick
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
-  
+
   const handleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!isAuthenticated) {
-      setIsAuthModalOpen(true);
-    } else {
-      // Add to wishlist logic for authenticated users
-    }
+    const id = project?._id || project?.id || project?.slug;
+    const snapshot = {
+      title: project?.projectName,
+      frontImage: project?.frontImage,
+      thumbnailImage: project?.thumbnailImage,
+      priceText: formatPrice(project?.minPrice || project?.price),
+      url: project?.project_url ? `/${project?.project_url}/` : undefined,
+      city: project?.city,
+      maxPrice: project?.maxPrice || project?.price,
+      minPrice: project?.minPrice,
+    };
+    toggleFavorite(id, snapshot);
   };
 
   const handleShare = (e) => {
@@ -361,6 +358,9 @@ const PropertyCard = ({
     window.location.href = `/${project?.project_url}/`;
   };
 
+  // Recompute favorite when favTick changes
+  const isFav = favCheck(project?._id || project?.id || project?.slug);
+
   return (
     <CardWrapper
       onMouseEnter={onHover}
@@ -375,23 +375,6 @@ const PropertyCard = ({
           alt={project?.projectName}
           className={`property-image ${imageLoaded ? 'loaded' : ''}`}
           onLoad={() => setImageLoaded(true)}
-          onError={(e) => {
-            // Prevent infinite loop if fallback also errors
-            if (!e.currentTarget.dataset.fallbackApplied) {
-              e.currentTarget.dataset.fallbackApplied = '1';
-              // Inline SVG fallback to avoid extra network requests
-              const fallback =
-                'data:image/svg+xml;utf8,' +
-                encodeURIComponent(
-                  `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
-                    <rect width="100%" height="100%" fill="#f3f4f6"/>
-                    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="20">Image unavailable</text>
-                  </svg>`
-                );
-              e.currentTarget.src = fallback;
-              setImageLoaded(true);
-            }
-          }}
           loading="lazy"
         />
         
@@ -410,10 +393,10 @@ const PropertyCard = ({
         <button
           onClick={handleWishlist}
           className="wishlist-btn"
-          aria-label="Add to wishlist (login required)"
-          title="Login to add to wishlist"
+          aria-label="Toggle wishlist"
+          title={isFav ? 'Remove from wishlist' : 'Add to wishlist'}
         >
-          <MdFavoriteBorder />
+          {isFav ? <span style={{color:'#ef4444'}}>❤️</span> : <span>🤍</span>}
         </button>
 
         {/* Price Badge */}
@@ -736,7 +719,7 @@ const CardWrapper = styled.div`
     .wishlist-btn {
       position: absolute;
       top: 16px;
-      right: 64px; /* place to the left of share */
+      right: 64px; /* to the left of share */
       width: 40px;
       height: 40px;
       background: rgba(255, 255, 255, 0.9);
@@ -753,12 +736,8 @@ const CardWrapper = styled.div`
       &:hover {
         background: white;
         transform: scale(1.1);
-        color: #ef4444; /* red on hover */
+        color: #ef4444;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-      }
-
-      .wishlist-icon {
-        font-size: 24px;
       }
     }
 
@@ -967,4 +946,4 @@ const CardWrapper = styled.div`
   }
 `;
 
-export default ModernRecommendedSection; 
+export default ModernRecommendedSection;

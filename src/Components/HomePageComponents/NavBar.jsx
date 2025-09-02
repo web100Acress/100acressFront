@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "../../Images/100acress.png";
 import { BsFolder } from "react-icons/bs";
 import styled from "styled-components";
@@ -17,6 +17,10 @@ function FinalNavBar() {
   const [showNav, setShowNav] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const URL="/projects"
+
+  useEffect(() => {
+  }, []);
+
   return (
     <Wrapper className='section'>
       
