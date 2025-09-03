@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "../../Images/100acress.png";
 import { BsFolder } from "react-icons/bs";
 import styled from "styled-components";
@@ -17,11 +17,41 @@ import { RxCross2 } from "react-icons/rx";
 function FinalNavBar() {
   const [showNav, setShowNav] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  
   const URL="/projects"
+  // Add scroll effect
+
+  // Add scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const navbar = document.querySelector('.nav-wrapper');
+      if (navbar) {
+        if (window.scrollY > 50) {
+          navbar.style.background = '#e53e3e';
+        } else {
+          navbar.style.background = 'transparent';
+        }
+      }
+    };
+
+    // Initial check
+    handleScroll();
+    
+    // Add scroll listener
+    window.addEventListener('scroll', handleScroll);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <Wrapper className='section'>
-      
-      
+    <Wrapper className='section nav-wrapper' style={{
+      transition: 'background 0.3s ease-in-out',
+      background: 'transparent'
+    }}>
       <div className='Mflx'>
 
         {/* Left: Hamburger (visible <=920px) */}
@@ -357,14 +387,10 @@ const Wrapper = styled.section`
   top: 0;
   left: 0;
   right: 0;
-  z-index: 9999;
-  width: 100%;
+  z-index: 1000;
   min-height: var(--nav-h);
   display: block;
-  background: transparent !important; /* fully transparent */
-  backdrop-filter: none; /* remove blur */
-  -webkit-backdrop-filter: none;
-  box-shadow: none; /* remove shadow */
+  
   /* Gradient divider: strong in center, fades on edges */
   border-bottom: none;
   position: fixed;
@@ -674,17 +700,24 @@ const Wrapper = styled.section`
   @media screen and (max-width: 920px) {
     .NBflx { display: none; }
     .barDotMenu { display: block; }
-    .hdrLeft, .hdrCenter, .hdrRight { display: flex; align-items: center; }
-    .hdrLeft { flex: 1; justify-content: flex-start; }
-    .hdrRight { flex: 1; justify-content: flex-end; gap: 10px; }
-    .hdrCenter {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 50%;
-      transform: translate(-50%, -50%);
+    /* Switch to 3-column grid for perfect alignment */
+    .Mflx {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      width: 100%;
+      padding: 0 10px !important;
+      min-height: 60px; /* slightly shorter navbar on mobile */
     }
-    .Mflx { width: 100%; }
+    .hdrLeft, .hdrCenter, .hdrRight { display: flex; align-items: center; }
+    .hdrLeft { grid-column: 1 / 2; justify-content: flex-start; }
+    .hdrCenter { grid-column: 2 / 3; justify-content: center; align-items: center; position: static; transform: none; }
+    .hdrRight { grid-column: 3 / 4; justify-content: flex-end; gap: 8px; }
+    /* Force smaller logo on mobile */
+    .hdrCenter img { width: 100px !important; height: auto !important; display: block; }
+    .profBtn { width: 32px; height: 32px; }
+    .barDotMenu svg { width: 26px; height: 26px; }
     ._6bnYTum { padding: 6px 14px; }
+    :root { --nav-h: 60px; }
   }
 `;

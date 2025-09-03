@@ -8,12 +8,18 @@ export default defineConfig(() => {
       port: 3000,
       allowedHosts: ['30eb0c089ea5.ngrok-free.app', '.ngrok-free.app'],
       proxy: {
-        // In dev, route all '/api' requests to local backend to avoid CORS
+        // In dev, route all '/api' requests to the backend
         '/api': {
-          target: 'http://localhost:3500',
+          target: 'https://api.100acress.com',
           changeOrigin: true,
           secure: true,
-          rewrite: path => path.replace(/^\/api/, '')
+          rewrite: (path) => {
+            // Only rewrite if it's not already the full URL
+            if (!path.startsWith('https://')) {
+              return path.replace(/^\/api/, '');
+            }
+            return path;
+          }
         }
       }
     },

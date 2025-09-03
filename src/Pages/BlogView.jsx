@@ -33,9 +33,24 @@ const BlogView = () => {
   // Safe image fallback for broken S3 URLs
   const FALLBACK_IMG = "/Images/blog.avif";
   const onImgError = (e) => {
-    if (e?.target && e.target.src !== window.location.origin + FALLBACK_IMG && !e.target.dataset.fallback) {
-      e.target.dataset.fallback = "1";
-      e.target.src = FALLBACK_IMG;
+    try {
+      const img = e?.target;
+      if (!img) return;
+      
+      // Prevent infinite loop if fallback also fails
+      if (img.dataset.fallback) return;
+      
+      // Only fallback if the error is not from the fallback image itself
+      const fallbackSrc = FALLBACK_IMG.startsWith('http') 
+        ? FALLBACK_IMG 
+        : `${window.location.origin}${FALLBACK_IMG}`;
+      
+      if (img.src !== fallbackSrc) {
+        img.dataset.fallback = "1";
+        img.src = fallbackSrc;
+      }
+    } catch (error) {
+      console.error('Error in image fallback:', error);
     }
   };
 
@@ -48,6 +63,7 @@ const BlogView = () => {
       status: "",
     });
   };
+
 
   const handleBlogQueryChange = (e) => {
     const { name, value } = e.target;
@@ -85,13 +101,31 @@ const BlogView = () => {
 
   // Normalize blog object from API
   const normalizeBlog = (b) => {
-    const obj = (b && typeof b === 'object') ? b : {};
+    if (!b) return {};
+    
+    const obj = (typeof b === 'object') ? b : {};
     const img = obj.blog_Image;
-    let normalizedImage = null;
-    if (img && typeof img === 'object' && 'url' in img) {
-      normalizedImage = img;
-    } else if (typeof img === 'string') {
-      normalizedImage = { url: img };
+    let normalizedImage = {
+      url: '',
+      cdn_url: '',
+      public_id: ''
+    };
+
+    // Handle different image formats
+    if (img) {
+      if (typeof img === 'object') {
+        normalizedImage = {
+          url: img.url || img.Location || '',
+          cdn_url: img.cdn_url || (img.Key ? `https://d16gdc5rm7f21b.cloudfront.net/${img.Key}` : ''),
+          public_id: img.public_id || img.Key || ''
+        };
+      } else if (typeof img === 'string') {
+        normalizedImage = {
+          url: img,
+          cdn_url: img.includes('cloudfront.net') ? img : '',
+          public_id: ''
+        };
+      }
     }
     return {
       blog_Title: obj.blog_Title || '',
@@ -109,109 +143,43 @@ const BlogView = () => {
     };
   };
 
-  const fetchData = async () => {
-    try {
-      let res;
-      if (slug) {
-        try {
-          const safeSlug = encodeURIComponent(slug);
-          res = await api.get(`blog/slug/${safeSlug}`);
-          const normalized = normalizeBlog(res?.data?.data);
-          // If slug endpoint returns 200 but empty/invalid data, try id fallback
-          if (!normalized || !normalized._id) {
-            const params = new URLSearchParams(location.search);
-            const qid = params.get('id') || id;
-            if (qid) {
-              try {
-                const byId = await api.get(`blog/view/${qid}`);
-                const normById = normalizeBlog(byId?.data?.data);
-                if (normById && normById._id) {
-                  setData(normById);
-                } else {
-                  setLoadError("Blog not found.");
-                }
-              } catch (idErr) {
-                setLoadError(idErr?.response?.data?.message || idErr.message || "Failed to load blog.");
-                throw idErr;
-              }
-            } else {
-              setLoadError("Blog not found.");
-            }
-          } else {
-            setData(normalizeBlog(res?.data?.data));
-          }
-        } catch (err) {
-          // On ANY slug failure, try fallback by id from query string or route param
-          const params = new URLSearchParams(location.search);
-          const qid = params.get('id') || id;
-          if (qid) {
-            try {
-              const byId = await api.get(`blog/view/${qid}`);
-              const normById = normalizeBlog(byId?.data?.data);
-              if (normById && normById._id) {
-                setData(normById);
-              } else {
-                setLoadError("Blog not found.");
-              }
-            } catch (idErr) {
-              setLoadError(idErr?.response?.data?.message || idErr.message || "Failed to load blog.");
-              throw idErr;
-            }
-          } else {
-            setLoadError(err?.response?.data?.message || err.message || "Failed to load blog.");
-            throw err;
-          }
-        }
-      } else if (id) {
-        res = await api.get(`blog/view/${id}`);
-        const normalized = normalizeBlog(res?.data?.data);
-        if (normalized && normalized._id) {
-          setData(normalized);
-        } else {
-          setLoadError("Blog not found.");
-        }
-      } else {
-        return;
-      }
-    } catch (error) {
-      console.log(error || error.message);
-    }
-  };
-
-  const fetchRecentsBlog = async () =>{
-    try{
-      const recent = await api.get(`blog/view?page=1&limit=6`);
-      const list = Array.isArray(recent?.data?.data) ? recent.data.data : [];
-      const normalized = list.map((b) => normalizeBlog(b));
-      const filtered = normalized.filter((blog)=> {
-        if (slug && blog.slug) return blog.slug !== slug;
-        return blog._id !== id;
-      });
-      setRecentBlogs(filtered);
-    }
-    catch (error) {
-      console.log(error || error.message);
-    }
-  }
-
-  function cleanString(str) {
-    return str
-        .replace(/\s+/g, '-')        // Replace all spaces with hyphen
-        .replace(/[?!,\.;:\{\}\(\)\$\@]+/g, ''); // Replace punctuation with empty string
-  }
-  const handleBlogView = (Title, id, s) => {
-    const blogTitle = cleanString(Title);
-    if (s) {
-      history(`/blog/${s}?id=${id}`);
-    } else if (id) {
-      history(`/blog/${blogTitle}/${id}`);
-    }
-  };
-
+  // Fetch blog data when component mounts
   useEffect(() => {
-    fetchData();
-    fetchRecentsBlog();
-  }, [id, slug, location.search]);
+    const fetchBlogData = async () => {
+      try {
+        setLoadError("");
+        const response = await api.get(`blog/getBlogById/${id}`);
+        if (response.data && response.data.success) {
+          setData(normalizeBlog(response.data.data));
+        } else {
+          setLoadError("Blog not found");
+        }
+      } catch (error) {
+        console.error("Error fetching blog:", error);
+        setLoadError("Failed to load blog. Please try again later.");
+      }
+    };
+
+    if (id) {
+      fetchBlogData();
+    }
+  }, [id]);
+
+  // Fetch recent blogs for sidebar
+  useEffect(() => {
+    const fetchRecentBlogs = async () => {
+      try {
+        const response = await api.get('blog/view?limit=5&sort=-createdAt');
+        if (response.data && response.data.data) {
+          setRecentBlogs(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching recent blogs:", error);
+      }
+    };
+
+    fetchRecentBlogs();
+  }, []);
 
   const createSanitizedHTML = (dirtyHTML) => ({
     __html: DOMPurify.sanitize(dirtyHTML, {
@@ -223,6 +191,18 @@ const BlogView = () => {
       ALLOW_UNKNOWN_PROTOCOLS: true,
     })
   });
+
+  // Destructure data properties first
+  const {
+    blog_Title,
+    blog_Description,
+    author,
+    blog_Category,
+    published_Date,
+    blog_Image,
+    metaTitle,
+    metaDescription,
+  } = data;
 
   // Ref to post-process content images (fix lazy attrs, http->https, fallback on error)
   const contentRef = useRef(null);
@@ -255,17 +235,6 @@ const BlogView = () => {
     });
   }, [blog_Description]);
 
-  const {
-    blog_Title,
-    blog_Description,
-    author,
-    blog_Category,
-    published_Date,
-    blog_Image,
-    metaTitle,
-    metaDescription,
-  } = data;
-
   // Brand colors
   const BRAND_RED = '#b8333a';
   const DARK_TEXT = '#333';
@@ -293,26 +262,38 @@ const BlogView = () => {
   };
   const fallbackDesc = toPlainText(blog_Description).slice(0, 157);
   const pageDescription = (metaDescription && metaDescription.trim()) || fallbackDesc || 'Explore real estate insights on 100acress.';
-  const publishedISO = (published_Date ? new Date(published_Date) : (data.createdAt ? new Date(data.createdAt) : null))?.toISOString?.() || '';
+  const publishedISO = (published_Date || data.createdAt) ? new Date(published_Date || data.createdAt).toISOString() : '';
+
+  if (loadError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-red-600">{loadError}</h2>
+          <Link to="/blog" className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Back to Blog
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data._id) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
-    <>
+    <div className="blog-view bg-gray-50 min-h-screen">
       <Helmet>
-        <title>{pageTitle}</title>
-        <link rel="canonical" href={canonicalUrl} />
-        {/* Primary Meta */}
-        <meta name="description" content={pageDescription} />
-        {/* Open Graph */}
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDescription} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={canonicalUrl} />
-        {blog_Image?.url && <meta property="og:image" content={blog_Image.url} />}
-        {publishedISO && <meta property="article:published_time" content={publishedISO} />}
-        {/* Twitter */}
+        <title>{data.blog_Title || 'Blog Post'}</title>
+        <meta name="description" content={data.metaDescription || data.blog_Description?.substring(0, 160)} />
+        <meta property="og:title" content={data.blog_Title || 'Blog Post'} />
+        <meta property="og:description" content={data.metaDescription || data.blog_Description?.substring(0, 160)} />
+        <meta property="og:image" content={data.blog_Image?.cdn_url || data.blog_Image?.url || FALLBACK_IMG} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={pageTitle} />
-        <meta name="twitter:description" content={pageDescription} />
         {blog_Image?.url && <meta name="twitter:image" content={blog_Image.url} />}
       </Helmet>
 
@@ -342,13 +323,21 @@ const BlogView = () => {
             {' > '} {blog_Category || 'Blog'}
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-[#1e3a8a] leading-tight mb-4">{blog_Title}</h1>
-          {(
-            <img
-              src={blog_Image?.url || FALLBACK_IMG}
-              alt={blog_Title}
-              className="w-full max-h-[500px] object-contain rounded-xl mb-6"
-              onError={onImgError}
-            />
+          {(blog_Image?.url || FALLBACK_IMG) && (
+            <div className="relative w-full h-[500px] mb-6">
+              <img
+                src={blog_Image?.url || FALLBACK_IMG}
+                alt={blog_Title || 'Blog post image'}
+                className="w-full h-full object-contain rounded-xl"
+                onError={onImgError}
+                loading="lazy"
+              />
+              {!blog_Image?.url && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-xl">
+                  <span className="text-gray-400">No image available</span>
+                </div>
+              )}
+            </div>
           )}
           {/* Date and author moved below the featured image */}
           <div className="flex items-center gap-4 mb-4">
@@ -589,9 +578,8 @@ const BlogView = () => {
          </>
        )}
       </div>
-
       <Footer />
-    </>
+    </div>
   );
 };
 

@@ -188,7 +188,7 @@ function SearchBar() {
 
   return (
     <Wrapper>
-      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-6xl mx-auto px-1 mt-2">
         {/* Main Search Container */}
         <div className="glass-container group w-full mx-auto p-6 rounded-3xl overflow-hidden border border-gray-100 -mt-4 sm:-mt-6 md:-mt-14 bg-white shadow-2xl">
         {/* Category Tabs */}
@@ -213,7 +213,7 @@ function SearchBar() {
         {/* Search Bar */}
         <div 
           ref={searchRef}
-          className={`search-bar flex items-center bg-white/90 backdrop-blur-sm rounded-full p-0.5 shadow-lg transition-all duration-300 ${
+          className={`search-bar flex items-center bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-full p-1 sm:p-0.5 shadow-lg transition-all duration-300 ${
             isFocused ? 'ring-2 ring-white/50' : ''
           }`}
         >
@@ -230,28 +230,30 @@ function SearchBar() {
             }}
             onBlur={() => setIsFocused(false)}
             placeholder="Search by City, Locality, or Project"
-            className="flex-1 py-3 px-2 bg-transparent outline-none text-gray-800 placeholder-gray-500"
+            className="flex-1 py-2 sm:py-3 px-2 bg-transparent outline-none text-gray-800 placeholder-gray-500"
             onKeyDown={handleKeyDown}
           />
           <button
             type="button"
             onClick={handleUseCurrentLocation}
-            className="p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+            className="mobile-hidden p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
             aria-label="Use current location"
             title="Use current location"
           >
             <FiCrosshair className="w-5 h-5" />
           </button>
-          <button className="p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors">
+          <button className="mobile-hidden p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors">
             <FiMic className="w-5 h-5" />
           </button>
           <motion.button 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="search-btn flex items-center bg-gradient-to-r from-[#ff3b30] to-[#ff2d55] text-white px-5 py-2.5 rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-red-400/40"
+            className="search-btn flex items-center justify-center bg-gradient-to-r from-[#ff3b30] to-[#ff2d55] text-white px-0 py-0 sm:px-5 sm:py-2.5 rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-red-400/40"
             onClick={handleSearch}
+            aria-label="Search"
           >
-            <FiSearch className="mr-2" /> Search
+            <FiSearch className="mr-0 sm:mr-2 w-5 h-5" />
+            <span className="search-btn-text hidden sm:inline">Search</span>
           </motion.button>
         </div>
 
@@ -279,13 +281,11 @@ function SearchBar() {
         {/* Top Localities (single row, overflow hidden, arrow navigation) */}
         <div className="trending-searches mt-6 relative">
           <div className="flex items-center gap-3">
-            <div className="text-sm text-gray-700 font-medium flex items-center gap-2 shrink-0">
-              <FiMapPin className="text-gray-600" /> Top Localities:
-            </div>
+            
             <button
               type="button"
               onClick={handlePrev}
-              className="h-8 w-8 flex items-center justify-center shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 transition"
+              className="nav-btn h-8 w-8 flex items-center justify-center shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 transition"
             >
               <FiChevronLeft />
             </button>
@@ -296,7 +296,7 @@ function SearchBar() {
                   <a
                     key={loc.name}
                     href={loc.link}
-                    className="px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 text-sm transition"
+                    className="chip px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 text-xs sm:text-sm transition"
                   >
                     {loc.name}
                   </a>
@@ -306,7 +306,7 @@ function SearchBar() {
             <button
               type="button"
               onClick={handleNext}
-              className="h-8 w-8 flex items-center justify-center shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 transition"
+              className="nav-btn h-8 w-8 flex items-center justify-center shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 transition"
             >
               <FiChevronRight />
             </button>
@@ -335,7 +335,7 @@ function SearchBar() {
       </div>
     </div>
 
-    <div className="block sm:hidden w-[360px] h-[198px] mt-8">
+    <div className="block sm:hidden w-full max-w-[360px] h-[198px] mt-6 mx-auto">
       <div className="section">
         <Slider {...phonesettings}>
           {phoneSrc.map((src, index) => (
@@ -344,7 +344,7 @@ function SearchBar() {
                 src={src.image}
                 alt={`Slide ${index}`}
                 onClick={() => window.open(src.link, "_self")}
-                className="w-full h-full object-cover rounded-lg cursor-pointer"
+                className="w-full h-full object-contain rounded-lg cursor-pointer bg-white"
                 loading="lazy"
               />
             </div>
@@ -419,30 +419,58 @@ const Wrapper = styled.section`
   @media (max-width: 768px) {
     padding: 1rem 0.5rem;
     
+    /* Hide category tabs on mobile */
     .tabs-container {
-      overflow-x: auto;
-      padding-bottom: 0.5rem;
-      -webkit-overflow-scrolling: touch;
-      
-      &::-webkit-scrollbar {
-        display: none;
-      }
+      display: none;
+    }
+
+    /* Remove card look so it blends with background */
+    .glass-container {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      border-radius: 0 !important;
+      overflow: visible !important;
+      margin-top: 0 !important;
     }
     
     .search-bar {
-      flex-direction: column;
-      padding: 0.5rem;
+      /* Keep row layout on mobile to avoid tall circular block */
+      flex-direction: row;
+      padding: 0.25rem 0.5rem;
+      border-radius: 1rem;
       
       input {
         width: 100%;
-        margin: 0.5rem 0;
-      }
-      
-      button {
-        width: 100%;
-        margin: 0.5rem 0 0;
+        margin: 0; /* no extra vertical spacing */
       }
     }
+
+    /* Hide non-essential controls on small screens */
+    .mobile-hidden {
+      display: none;
+    }
+
+    /* Ensure at least 2–3 chips fit on one line */
+    .flex-nowrap { flex-wrap: nowrap !important; }
+    .nav-btn { width: 28px; height: 28px; }
+    .trending-searches .flex { gap: 0.5rem; }
+    .trending-searches .text-sm { font-size: 12px; }
+    .top-localities-label { display: none; }
+
+    /* Icon-only search button style on mobile */
+    .search-btn {
+      width: 40px;
+      height: 40px;
+      padding: 0 !important;
+      background: transparent !important;
+      background-image: none !important;
+      color: inherit;
+      box-shadow: none !important;
+    }
+    .search-btn:hover { box-shadow: none !important; background: transparent !important; }
+    .search-btn svg { color: #6b7280 !important; } /* gray-500 */
   }
   
   @media (max-width: 480px) {

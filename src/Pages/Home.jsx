@@ -307,7 +307,7 @@ const Home = () => {
     </div>
 
     {/* SearchBar should NOT be blurred */}
-    <div className="relative w-full max-w-6xl mx-auto px-4 py-8 -mt-20 z-10">
+    <div className="relative w-full max-w-6xl mx-auto px-4 pb-1 py-8 -mt-20 z-10">
       <SearchBar />
     </div>
 
