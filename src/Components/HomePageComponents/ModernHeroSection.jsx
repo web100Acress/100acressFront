@@ -573,7 +573,7 @@ const HeroWrapper = styled.section`
       background-size: 400% 400%;
       border-radius: 50px;
       opacity: 0;
-      z-index: -1;
+      z-index: -1; 
       animation: gradientShift 3s ease infinite;
       transition: opacity 0.3s ease;
     }

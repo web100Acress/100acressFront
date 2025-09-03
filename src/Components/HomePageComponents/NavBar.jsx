@@ -26,11 +26,68 @@ function FinalNavBar() {
   useEffect(() => {
     const handleScroll = () => {
       const navbar = document.querySelector('.nav-wrapper');
+      const hamburgerIcon = document.querySelector('.barDotMenu svg');
+      const profileBtn = document.querySelector('.profBtn');
+      const navLinks = document.querySelectorAll('.linkEl');
+      const navText = document.querySelectorAll('.pxrETXT');
+      
       if (navbar) {
         if (window.scrollY > 50) {
+          // Change navbar background to red
           navbar.style.background = '#e53e3e';
+          navbar.style.boxShadow = '0 2px 10px rgba(229, 62, 62, 0.3)';
+          
+          // Change hamburger icon color to white
+          if (hamburgerIcon) {
+            hamburgerIcon.style.color = 'white';
+          }
+          
+          // Change profile button styling
+          if (profileBtn) {
+            profileBtn.style.borderColor = 'rgba(255,255,255,0.8)';
+            profileBtn.style.color = 'white';
+          }
+          
+          // Change nav links color to white
+          navLinks.forEach(link => {
+            link.style.color = 'white';
+          });
+          
+          // Change nav text color to white
+          navText.forEach(text => {
+            text.style.color = 'white';
+          });
+          
+          // Add scrolled class for additional styling
+          navbar.classList.add('scrolled');
         } else {
+          // Reset to transparent
           navbar.style.background = 'transparent';
+          navbar.style.boxShadow = 'none';
+          
+          // Reset hamburger icon color
+          if (hamburgerIcon) {
+            hamburgerIcon.style.color = 'white';
+          }
+          
+          // Reset profile button styling
+          if (profileBtn) {
+            profileBtn.style.borderColor = 'rgba(255,255,255,0.8)';
+            profileBtn.style.color = 'white';
+          }
+          
+          // Reset nav links color
+          navLinks.forEach(link => {
+            link.style.color = 'white';
+          });
+          
+          // Reset nav text color
+          navText.forEach(text => {
+            text.style.color = 'white';
+          });
+          
+          // Remove scrolled class
+          navbar.classList.remove('scrolled');
         }
       }
     };
@@ -390,6 +447,30 @@ const Wrapper = styled.section`
   z-index: 1000;
   min-height: var(--nav-h);
   display: block;
+  transition: all 0.3s ease-in-out;
+  
+  /* Scrolled state styling */
+  &.scrolled {
+    background: #e53e3e !important;
+    box-shadow: 0 2px 10px rgba(229, 62, 62, 0.3) !important;
+    
+    .linkEl {
+      color: white !important;
+    }
+    
+    .pxrETXT {
+      color: white !important;
+    }
+    
+    .profBtn {
+      border-color: rgba(255,255,255,0.8) !important;
+      color: white !important;
+    }
+    
+    .barDotMenu svg {
+      color: white !important;
+    }
+  }
   
   /* Gradient divider: strong in center, fades on edges */
   border-bottom: none;
@@ -428,6 +509,15 @@ const Wrapper = styled.section`
     margin-bottom: 5px;
     margin-top: 0px;
     color:white;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .pxrETXT {
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .barDotMenu svg {
+    transition: color 0.3s ease-in-out;
   }
   .NBflx {
     display: flex;
@@ -478,6 +568,7 @@ const Wrapper = styled.section`
     color: inherit;
     display: inherit;
     align-items: inherit;
+    transition: color 0.3s ease-in-out;
   }
   ._1grx > li > ul {
     opacity: 0;
@@ -696,6 +787,7 @@ const Wrapper = styled.section`
     height: 34px;
     border-radius: 9999px;
     padding: 0;
+    transition: all 0.3s ease-in-out;
   }
   @media screen and (max-width: 920px) {
     .NBflx { display: none; }
