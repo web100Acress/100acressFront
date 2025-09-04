@@ -288,20 +288,6 @@ const LuxuryFooter = () => {
             </motion.div>
           </div>
 
-          {/* EMI Calculator Section */}
-          <motion.div
-            className="mt-6 lg:mt-8"
-            variants={itemVariants}
-          >
-            <h3 className="text-xl font-semibold text-gray-800 relative pb-2">
-              EMI Calculator
-              <span className="absolute -bottom-0.5 left-0 w-12 h-0.5 bg-gradient-to-r from-red-600 to-red-400 rounded-full"></span>
-            </h3>
-            <div className="mt-3 bg-white/95 backdrop-blur-sm rounded-2xl border border-gray-200 shadow-sm p-3 sm:p-4">
-              <EMICalculator />
-            </div>
-          </motion.div>
-
           {/* Unified Content Section - Contact + Image */}
           {false && (
             <motion.div

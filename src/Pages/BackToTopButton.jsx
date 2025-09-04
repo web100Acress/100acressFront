@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 
 const BackToTopButton = () => {
@@ -34,20 +33,18 @@ const BackToTopButton = () => {
           </span>
         </button>
       )}
-      <style jsx>{`
-        @layer utilities {
-          @keyframes bounceUpDown {
-            0%, 100% {
-              transform: translateY(0) rotate(45deg);
-            }
-            50% {
-              transform: translateY(-10px) rotate(45deg);
-            }
+      <style>{`
+        @keyframes bounceUpDown {
+          0%, 100% {
+            transform: translateY(0) rotate(45deg);
           }
+          50% {
+            transform: translateY(-10px) rotate(45deg);
+          }
+        }
 
-          .animate-bounceUpDown {
-            animation: bounceUpDown 1s infinite;
-          }
+        .animate-bounceUpDown {
+          animation: bounceUpDown 1s infinite;
         }
       `}</style>
     </>

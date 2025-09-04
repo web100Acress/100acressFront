@@ -103,7 +103,7 @@ function OurServices() {
               </Link>
             </div>
           </Slider>
-          <style jsx>{`
+          <style>{`
         .slick-prev {
           left: 10px;
           z-index: 1;

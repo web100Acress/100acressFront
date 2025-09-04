@@ -36,15 +36,23 @@ const BlogView = () => {
     try {
       const img = e?.target;
       if (!img) return;
-      
+
       // Prevent infinite loop if fallback also fails
       if (img.dataset.fallback) return;
-      
-      // Only fallback if the error is not from the fallback image itself
+
       const fallbackSrc = FALLBACK_IMG.startsWith('http') 
         ? FALLBACK_IMG 
         : `${window.location.origin}${FALLBACK_IMG}`;
-      
+
+      // If we have an alternate candidate stored on element, try it once
+      const alt = img.dataset.altSrc;
+      if (alt && img.src !== alt) {
+        img.src = alt;
+        // Clear alt to ensure only a single retry
+        delete img.dataset.altSrc;
+        return;
+      }
+
       if (img.src !== fallbackSrc) {
         img.dataset.fallback = "1";
         img.src = fallbackSrc;
@@ -64,6 +72,24 @@ const BlogView = () => {
     });
   };
 
+  // Read id from query string as fallback when using slug-only route
+  const getQueryId = () => {
+    try {
+      const params = new URLSearchParams(location.search || "");
+      return params.get("id") || "";
+    } catch (_) {
+      return "";
+    }
+  };
+
+  // Navigate to blog detail (used by Recent Posts)
+  const handleBlogView = (title, _id, postSlug) => {
+    const createSlug = (t) =>
+      t ? t.replace(/\s+/g, "-").replace(/[?!,\.;:\{\}\(\)\$\@]+/g, "").toLowerCase() : "blog";
+    const path = postSlug ? `/blog/${postSlug}?id=${_id}` : `/blog/${createSlug(title)}/${_id}`;
+    history(path);
+    try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (_) {}
+  };
 
   const handleBlogQueryChange = (e) => {
     const { name, value } = e.target;
@@ -105,28 +131,47 @@ const BlogView = () => {
     
     const obj = (typeof b === 'object') ? b : {};
     const img = obj.blog_Image;
+    const isPlaceholder = (u) => typeof u === 'string' && /^data:image\/svg\+xml/i.test(u);
     let normalizedImage = {
       url: '',
       cdn_url: '',
-      public_id: ''
+      public_id: '',
+      // computed final display URL
+      display: ''
+    };
+
+    const toHttps = (u) => {
+      if (!u) return '';
+      if (/^\/\//.test(u)) return 'https:' + u;
+      if (/^http:\/\//i.test(u)) return u.replace(/^http:\/\//i, 'https://');
+      return u;
     };
 
     // Handle different image formats
     if (img) {
       if (typeof img === 'object') {
+        const rawUrl = img.url || img.Location || '';
+        const rawCdn = img.cdn_url || (img.Key ? `https://d16gdc5rm7f21b.cloudfront.net/${img.Key}` : '');
+        const cleanedUrl = isPlaceholder(rawUrl) ? '' : toHttps(rawUrl);
+        const cleanedCdn = isPlaceholder(rawCdn) ? '' : toHttps(rawCdn);
         normalizedImage = {
-          url: img.url || img.Location || '',
-          cdn_url: img.cdn_url || (img.Key ? `https://d16gdc5rm7f21b.cloudfront.net/${img.Key}` : ''),
-          public_id: img.public_id || img.Key || ''
+          url: cleanedUrl,
+          cdn_url: cleanedCdn,
+          public_id: img.public_id || img.Key || '',
         };
       } else if (typeof img === 'string') {
+        const cleaned = isPlaceholder(img) ? '' : toHttps(img);
         normalizedImage = {
-          url: img,
-          cdn_url: img.includes('cloudfront.net') ? img : '',
+          url: cleaned,
+          cdn_url: cleaned && cleaned.includes('cloudfront.net') ? cleaned : '',
           public_id: ''
         };
       }
     }
+
+    // Choose display URL: prefer CDN, then S3/url; ignore placeholders
+    normalizedImage.display = normalizedImage.cdn_url || normalizedImage.url || '';
+
     return {
       blog_Title: obj.blog_Title || '',
       blog_Description: obj.blog_Description || '',
@@ -136,7 +181,6 @@ const BlogView = () => {
       blog_Image: normalizedImage,
       createdAt: obj.createdAt || '',
       slug: obj.slug || '',
-      _id: obj._id || '',
       // SEO fields (handle multiple possible keys)
       metaTitle: obj.metaTitle || obj.meta_Title || obj.seoTitle || '',
       metaDescription: obj.metaDescription || obj.meta_Description || obj.seoDescription || obj.meta_desc || ''
@@ -148,9 +192,46 @@ const BlogView = () => {
     const fetchBlogData = async () => {
       try {
         setLoadError("");
-        const response = await api.get(`blog/getBlogById/${id}`);
-        if (response.data && response.data.success) {
-          setData(normalizeBlog(response.data.data));
+
+        // Prefer explicit id param or ?id, else resolve from slug
+        let effectiveId = id || getQueryId();
+        if (!effectiveId && slug) {
+          try {
+            const slugResp = await api.get(`blog/slug/${encodeURIComponent(slug)}`);
+            if (slugResp?.data?.data?.exists && slugResp?.data?.data?.id) {
+              effectiveId = slugResp.data.data.id;
+              // Update URL to include id param for shareability without reload
+              try {
+                const params = new URLSearchParams(location.search);
+                params.set('id', effectiveId);
+                const newUrl = `${location.pathname}?${params.toString()}`;
+                window.history.replaceState({}, '', newUrl);
+              } catch (_) {}
+            } else {
+              setLoadError('Blog not found');
+              return;
+            }
+          } catch (e) {
+            console.warn('[BlogView] Failed to resolve ID from slug:', e?.message || e);
+            setLoadError('Blog not found');
+            return;
+          }
+        }
+
+        if (!effectiveId) {
+          setLoadError('Blog not found');
+          return;
+        }
+
+        const response = await api.get(`blog/view/${effectiveId}`);
+        if ((response.status === 200 || response.status === 201) && response.data && response.data.data) {
+          const normalized = normalizeBlog(response.data.data);
+          // Debug: log image fields to diagnose missing image
+          try {
+            console.log('[BlogView] Raw blog_Image from API:', response.data.data?.blog_Image);
+            console.log('[BlogView] Normalized image:', normalized.blog_Image);
+          } catch (_) {}
+          setData(normalized);
         } else {
           setLoadError("Blog not found");
         }
@@ -160,10 +241,9 @@ const BlogView = () => {
       }
     };
 
-    if (id) {
-      fetchBlogData();
-    }
-  }, [id]);
+    // Trigger fetch on id, slug, or query changes
+    fetchBlogData();
+  }, [id, slug, location.search]);
 
   // Fetch recent blogs for sidebar
   useEffect(() => {
@@ -292,7 +372,7 @@ const BlogView = () => {
         <meta name="description" content={data.metaDescription || data.blog_Description?.substring(0, 160)} />
         <meta property="og:title" content={data.blog_Title || 'Blog Post'} />
         <meta property="og:description" content={data.metaDescription || data.blog_Description?.substring(0, 160)} />
-        <meta property="og:image" content={data.blog_Image?.cdn_url || data.blog_Image?.url || FALLBACK_IMG} />
+        <meta property="og:image" content={data.blog_Image?.display || FALLBACK_IMG} />
         <meta name="twitter:card" content="summary_large_image" />
         {blog_Image?.url && <meta name="twitter:image" content={blog_Image.url} />}
       </Helmet>
@@ -323,16 +403,20 @@ const BlogView = () => {
             {' > '} {blog_Category || 'Blog'}
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-[#1e3a8a] leading-tight mb-4">{blog_Title}</h1>
-          {(blog_Image?.url || FALLBACK_IMG) && (
+          {(blog_Image?.display || FALLBACK_IMG) && (
             <div className="relative w-full h-[500px] mb-6">
-              <img
-                src={blog_Image?.url || FALLBACK_IMG}
-                alt={blog_Title || 'Blog post image'}
-                className="w-full h-full object-contain rounded-xl"
-                onError={onImgError}
-                loading="lazy"
-              />
-              {!blog_Image?.url && (
+              {blog_Image?.display ? (
+                <img
+                  src={blog_Image.display}
+                  alt={blog_Title || 'Blog post image'}
+                  className="w-full h-full object-contain rounded-xl"
+                  onError={onImgError}
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                  crossOrigin="anonymous"
+                  data-alt-src={blog_Image?.cdn_url && blog_Image?.url && blog_Image.cdn_url !== blog_Image.url ? (blog_Image.display === blog_Image.cdn_url ? blog_Image.url : blog_Image.cdn_url) : ''}
+                />
+              ) : (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-xl">
                   <span className="text-gray-400">No image available</span>
                 </div>
@@ -370,10 +454,16 @@ const BlogView = () => {
                   className="group cursor-pointer p-2 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200 flex items-center gap-2"
                 >
                   <img 
-                    src={blog.blog_Image?.url || FALLBACK_IMG} 
+                    src={(() => {
+                      const u = blog.blog_Image?.cdn_url || blog.blog_Image?.url || '';
+                      return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
+                    })()} 
                     className="w-12 h-12 rounded-lg object-cover flex-shrink-0" 
                     alt={blog.blog_Title}
                     onError={onImgError}
+                    referrerPolicy="no-referrer"
+                    crossOrigin="anonymous"
+                    data-alt-src={(blog.blog_Image?.cdn_url && blog.blog_Image?.url && blog.blog_Image.cdn_url !== blog.blog_Image.url) ? (blog.blog_Image.cdn_url) : ''}
                   />
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
