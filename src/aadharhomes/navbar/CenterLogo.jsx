@@ -8,14 +8,13 @@ export default function CenterLogo({ colorChange, isSearchOpen, centerOnCompact 
       order={{ base: 2, md: 1 }}
       justifyContent={{ base: "center", md: centerOnCompact ? "center" : "flex-start" }}
       flex={{ base: "initial", md: 1 }}
-      position={centerOnCompact ? "absolute" : "relative"}
-      left={centerOnCompact ? "50%" : "auto"}
-      transform={centerOnCompact ? "translateX(-50%)" : "none"}
+      position="relative"
       zIndex={10000}
       display={{ base: isSearchOpen ? 'none' : 'flex', md: 'flex' }}
       pointerEvents="auto"
       flexShrink={0}
       alignItems="center"
+      height="100%"
     >
       <Link to="/">
         <Image
@@ -25,9 +24,9 @@ export default function CenterLogo({ colorChange, isSearchOpen, centerOnCompact 
               : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp"
           }
           alt="100acress logo"
-          height="60px"
-          minH="60px"
-          maxH="60px"
+          height={{ base: '48px', md: '60px' }}
+          minH={{ base: '48px', md: '60px' }}
+          maxH={{ base: '48px', md: '60px' }}
           width="auto"
           maxW="unset"
           objectFit="contain"

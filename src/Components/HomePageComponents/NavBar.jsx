@@ -22,13 +22,21 @@ function FinalNavBar() {
   const URL="/projects"
 
   useEffect(() => {
+    const onScroll = () => {
+      try {
+        setIsScrolled((window?.scrollY || 0) > 10);
+      } catch (_) {}
+    };
+    onScroll(); // set initial state
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
-    <Wrapper className='section'>
-      
-      
-      <div className='Mflx'>
+    <Wrapper className='section' data-scrolled={isScrolled ? '1' : '0'}>
+       
+       
+      <div className={`Mflx ${isScrolled ? 'scrolled' : ''}`}>
 
         {/* Left: Hamburger (visible <=920px) */}
         <div className='hdrLeft'>
@@ -418,12 +426,18 @@ const Wrapper = styled.section`
   .Mflx {
     display: flex;
     align-items: center;
-    background: transparent !important; /* enforce transparent navbar */
+    background: transparent !important; /* default transparent navbar */
     padding: 0 12px !important; /* horizontal spacing */
     border-radius: 0; /* remove rounded bottom so hero shows cleanly */
     box-shadow: none;
     min-height: var(--nav-h);
     position: relative; /* for centered logo on mobile */
+    transition: background 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
+  }
+  /* Solid red navbar after scroll */
+  .Mflx.scrolled {
+    background: #e53e3e !important; /* solid red */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
   }
   hr{
     color:black !important;
