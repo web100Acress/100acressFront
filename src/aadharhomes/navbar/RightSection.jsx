@@ -1,4 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+
+  import React, { useEffect, useRef, useState } from "react";
+
+
 import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal, useToast } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
@@ -36,14 +39,12 @@ export default function RightSection({
     setHideRight(false);
   }, [isMobile]);
 
-  const openFilePicker = () => {
-    if (fileInputRef.current) fileInputRef.current.click();
-  };
 
   const handleFileChange = async (e) => {
     try {
-      const file = e.target.files && e.target.files[0];
+      const file = (e.target.files && e.target.files[0]) || null;
       if (!file || !userId) return;
+
 
       // Client-side validation: images only, <= 5MB
       const isImage = (file.type || '').toLowerCase().startsWith('image/');
@@ -67,8 +68,8 @@ export default function RightSection({
       form.append('avatar', file);
       // Use centralized axios client (handles baseURL and Authorization)
       const res = await api.post(`/users/${userId}/avatar`, form);
-      const data = res && res.data ? res.data : null;
-      const url = (data && data.data && data.data.avatarUrl) ? data.data.avatarUrl : '';
+      const data = res?.data;
+      const url = data?.data?.avatarUrl || '';
       if (url && typeof onAvatarUpdated === 'function') onAvatarUpdated(url);
       toast({ title: 'Profile photo updated', status: 'success', duration: 2500, isClosable: true });
     } catch (err) {
@@ -82,6 +83,7 @@ export default function RightSection({
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
+
   return (
     <Flex
       alignItems="center"
@@ -426,7 +428,10 @@ export default function RightSection({
                 <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" display={{ base: "none", xl: "inline" }}>Log in</Box>
               </Flex>
             </Button>
-            <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="register" />
+
+            <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
+
+           
           </>
         )}
 
@@ -454,7 +459,9 @@ export default function RightSection({
             />
           </Link>
         ) : (
-          <Link to="/auth/login/">
+
+          <Link to="/auth/signin/">
+
             <IconButton
               aria-label="Post property"
               variant="outline"
@@ -477,35 +484,169 @@ export default function RightSection({
           </Link>
         )}
 
-        {/* Post property CTA */}
+
+        {/* CSS for always rotating black and yellow border */}
+        <style>{`
+          .rotating-border-always {
+            position: relative;
+            display: inline-block;
+          }
+          
+          .rotating-border-always::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            background: conic-gradient(from 0deg, 
+              #000 0deg, 
+              #FACC15 90deg, 
+              #000 180deg, 
+              #FACC15 270deg, 
+              #000 360deg
+            );
+            border-radius: calc(0.75rem + 2px);
+            animation: rotateColorBorder 2s linear infinite;
+            z-index: -1;
+          }
+          
+          .rotating-border-always::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            border-radius: 0.75rem;
+            z-index: -1;
+          }
+          
+          @keyframes rotateColorBorder {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          
+          .button-inner {
+            position: relative;
+            z-index: 1;
+          }
+        `}</style>
+
+        {/* Post property CTA with Always Rotating Black and Yellow Border */}
         {token ? (
-          <Link to="/postproperty/">
-            <Button size="sm" variant="solid" bg="white" color="#111" border="2px solid #e53e3e" boxShadow="sm" _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }} fontWeight="700" fontSize={{ base: '14px', md: '13px', xl: '13px' }} letterSpacing="0.3px" display={{ base: "none", md: "inline-flex" }} gap={{ base: 3, md: 2, xl: 3 }} alignItems="center" borderRadius="xl" px={{ base: 4, md: 3, xl: 4 }} py={2} ml={{ base: 2, md: 2 }}>
-              {/* Hide icon on tablet/laptop */}
-              <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
-                {/* icon intentionally hidden for md+ */}
-              </Box>
-              {/* Always show full label on md and up */}
-              <Box as="span" display={{ base: 'none', md: 'inline' }}>Post Property</Box>
-              <Box as="span" display={{ base: 'none', md: 'inline-flex' }} bg="#FACC15" color="#e53e3e" px={3} py={0.5} fontSize="11px" fontWeight="800" lineHeight={1} style={{ clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' }}>
-                FREE
-              </Box>
-            </Button>
-          </Link>
+          <div className="rotating-border-always">
+            <Link to="/postproperty/">
+              <Button 
+                className="button-inner"
+                size="sm" 
+                variant="solid" 
+                bg="white" 
+                color="#111" 
+                boxShadow="none" 
+                _hover={{ 
+                  bg: 'white',
+                  transform: 'translateY(-1px)'
+                }}
+                _active={{
+                  transform: 'translateY(0)'
+                }}
+                fontWeight="700" 
+                fontSize={{ base: '14px', md: '13px', xl: '13px' }} 
+                letterSpacing="0.3px" 
+                display={{ base: "none", md: "inline-flex" }} 
+                gap={{ base: 3, md: 2, xl: 3 }} 
+                alignItems="center" 
+                borderRadius="xl" 
+                px={{ base: 4, md: 3, xl: 4 }} 
+                py={2} 
+                ml={{ base: 2, md: 2 }}
+                position="relative"
+                zIndex={1}
+                transition="all 0.3s ease"
+                border="none"
+              >
+                <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
+                  {/* icon intentionally hidden for md+ */}
+                </Box>
+                <Box as="span" display={{ base: 'none', md: 'inline' }}>Post Property</Box>
+                <Box 
+                  as="span" 
+                  display={{ base: 'none', md: 'inline-flex' }} 
+                  bg="#FACC15" 
+                  color="#e53e3e" 
+                  px={3} 
+                  py={0.5} 
+                  fontSize="11px" 
+                  fontWeight="800" 
+                  lineHeight={1} 
+                  style={{ 
+                    clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' 
+                  }}
+                >
+                  FREE
+                </Box>
+              </Button>
+            </Link>
+          </div>
         ) : (
-          <Link to="/auth/login/">
-            <Button size="sm" variant="solid" bg="white" color="#111" border="2px solid #e53e3e" boxShadow="sm" _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }} fontWeight="700" fontSize={{ base: '14px', md: '13px', xl: '13px' }} letterSpacing="0.3px" display={{ base: "none", md: "inline-flex" }} gap={{ base: 3, md: 2, xl: 3 }} alignItems="center" borderRadius="xl" px={{ base: 4, md: 3, xl: 4 }} py={2} ml={{ base: 2, md: 2 }}>
-              {/* Hide icon on tablet/laptop */}
-              <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
-                {/* icon intentionally hidden for md+ */}
-              </Box>
-              {/* Always show full label on md and up */}
-              <Box as="span" display={{ base: 'none', md: 'inline' }}>Post property</Box>
-              <Box as="span" display={{ base: 'none', md: 'inline-flex' }} bg="#FACC15" color="#e53e3e" px={3} py={0.5} fontSize="11px" fontWeight="800" lineHeight={1} style={{ clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' }}>
-                FREE
-              </Box>
-            </Button>
-          </Link>
+          <div className="rotating-border-always">
+            <Link to="/auth/signin/">
+              <Button 
+                className="button-inner"
+                size="sm" 
+                variant="solid" 
+                bg="white" 
+                color="#111" 
+                border="none" 
+                boxShadow="none" 
+                _hover={{ 
+                  bg: 'white',
+                  transform: 'translateY(-1px)'
+                }}
+                _active={{
+                  transform: 'translateY(0)'
+                }}
+                fontWeight="700" 
+                fontSize={{ base: '14px', md: '13px', xl: '13px' }} 
+                letterSpacing="0.3px" 
+                display={{ base: "none", md: "inline-flex" }} 
+                gap={{ base: 3, md: 2, xl: 3 }} 
+                alignItems="center" 
+                borderRadius="xl" 
+                px={{ base: 4, md: 3, xl: 4 }} 
+                py={2} 
+                ml={{ base: 2, md: 2 }}
+                position="relative"
+                zIndex={1}
+                transition="all 0.3s ease"
+              >
+                <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
+                  {/* icon intentionally hidden for md+ */}
+                </Box>
+                <Box as="span" display={{ base: 'none', md: 'inline' }}>Post Property</Box>
+                <Box 
+                  as="span" 
+                  display={{ base: 'none', md: 'inline-flex' }} 
+                  bg="#FACC15" 
+                  color="#e53e3e" 
+                  px={3} 
+                  py={0.5} 
+                  fontSize="11px" 
+                  fontWeight="800" 
+                  lineHeight={1} 
+                  style={{ 
+                    clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' 
+                  }}
+                >
+                  FREE
+                </Box>
+              </Button>
+            </Link>
+          </div>
+
+     
         )}
       </Box>
     </Flex>
