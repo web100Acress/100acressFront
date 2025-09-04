@@ -17,6 +17,30 @@ const FormHome = () => {
   const [responseFillData, setResponsefillData] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const testimonials = [
+    {
+      name: "Rahul Sharma",
+      role: "Home Buyer",
+      text:
+        "100acress made my property search effortless. The team was responsive and guided me to the perfect home.",
+      rating: 5,
+    },
+    {
+      name: "Ananya Verma",
+      role: "First-time Investor",
+      text:
+        "Great experience! Transparent process and professional advice helped me make a confident investment.",
+      rating: 5,
+    },
+    {
+      name: "Vikram Singh",
+      role: "Seller",
+      text:
+        "From listing to closing, everything was smooth. My property sold faster than I expected!",
+      rating: 4,
+    },
+  ];
+
   const resetData = () => {
     setFormDataInquiry({
       name: "",
@@ -68,6 +92,49 @@ const FormHome = () => {
 
   return (
     <div className="max-w-[1250px] mx-auto py-6 px-4 sm:px-6 lg:px-8 ">
+      {/* Testimonials Section */}
+      <div className="mb-10" data-aos="fade-up" data-aos-duration="1000">
+        <div className="text-center mb-6">
+          <p className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
+            What Our Clients Say
+          </p>
+          <p className="mt-2 text-base text-gray-600">
+            Real experiences from buyers, sellers, and investors.
+          </p>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {testimonials.map((t, idx) => (
+            <div
+              key={idx}
+              className="h-full rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md"
+            >
+              <div className="flex items-center gap-2 mb-4">
+                {/* Star ratings */}
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <svg
+                    key={i}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill={i < t.rating ? "#F59E0B" : "#E5E7EB"}
+                    className="h-5 w-5"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.804 2.037a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.804-2.037a1 1 0 00-1.176 0L6.613 16.284c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.977 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.072-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-gray-700 leading-relaxed mb-5">“{t.text}”</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-semibold text-gray-900">{t.name}</p>
+                  <p className="text-sm text-gray-500">{t.role}</p>
+                </div>
+                <div className="text-2xl">🏡</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="text-center md:text-start mb-5">
         <p className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
           Consult a Property Expert Now

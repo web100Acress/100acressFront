@@ -25,6 +25,7 @@ const FloatingShorts = ({ videoId = "" }) => {
   const dragPosRef = useRef({ x: 0, y: 0 });
   const rafIdRef = useRef(null);
   const [dragState, setDragState] = useState(null); // {offsetX, offsetY}
+  const dragOffsetRef = useRef(null); // {offsetX, offsetY}
 
   useEffect(() => {
     const update = () => {
@@ -130,7 +131,9 @@ const FloatingShorts = ({ videoId = "" }) => {
 
   const startDrag = (e) => {
     const pt = getPoint(e);
-    setDragState({ offsetX: pt.x - pos.x, offsetY: pt.y - pos.y });
+    const offsets = { offsetX: pt.x - pos.x, offsetY: pt.y - pos.y };
+    dragOffsetRef.current = offsets;
+    setDragState(offsets); // keep for cursor state only
     window.addEventListener("mousemove", onDrag, { passive: false });
     window.addEventListener("mouseup", endDrag);
     window.addEventListener("touchmove", onDrag, { passive: false });
@@ -140,10 +143,11 @@ const FloatingShorts = ({ videoId = "" }) => {
   // rAF-batched drag handler
   const onDrag = (e) => {
     e.preventDefault();
-    if (!dragState) return;
+    if (!dragOffsetRef.current) return;
     const pt = getPoint(e);
-    const x = clamp(pt.x - dragState.offsetX, 0, windowWidth - dims.w);
-    const y = clamp(pt.y - dragState.offsetY, 0, windowHeight - dims.h);
+    const { offsetX, offsetY } = dragOffsetRef.current;
+    const x = clamp(pt.x - offsetX, 0, windowWidth - dims.w);
+    const y = clamp(pt.y - offsetY, 0, windowHeight - dims.h);
     dragPosRef.current = { x, y };
     if (rafIdRef.current == null) {
       rafIdRef.current = requestAnimationFrame(() => {
@@ -155,6 +159,7 @@ const FloatingShorts = ({ videoId = "" }) => {
 
   const endDrag = () => {
     setDragState(null);
+    dragOffsetRef.current = null;
     window.removeEventListener("mousemove", onDrag);
     window.removeEventListener("mouseup", endDrag);
     window.removeEventListener("touchmove", onDrag);
@@ -177,7 +182,7 @@ const FloatingShorts = ({ videoId = "" }) => {
     top: 0,
     width: dims.w,
     height: dims.h,
-    zIndex: 9999,
+    zIndex: 10001,
     borderRadius: 16,
     overflow: "hidden",
     boxShadow: "0 12px 30px rgba(0,0,0,0.35)",
@@ -188,6 +193,7 @@ const FloatingShorts = ({ videoId = "" }) => {
     background: "#000",
     userSelect: "none",
     willChange: "transform",
+    WebkitUserDrag: "none",
   };
 
   const btnBase = {
@@ -220,6 +226,7 @@ const FloatingShorts = ({ videoId = "" }) => {
     background: "linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.05))",
     cursor: dragState ? "grabbing" : "grab",
     WebkitTapHighlightColor: "transparent",
+    WebkitUserDrag: "none",
   };
 
   const overlayStyle = {
@@ -228,12 +235,14 @@ const FloatingShorts = ({ videoId = "" }) => {
     zIndex: 2,
     background: "transparent",
     cursor: dragState ? "grabbing" : "grab",
+    WebkitUserDrag: "none",
   };
 
   const frameWrapStyle = {
     width: "100%",
     height: "100%",
     background: "#000",
+    WebkitUserDrag: "none",
   };
 
   const iframeStyle = {
@@ -243,12 +252,13 @@ const FloatingShorts = ({ videoId = "" }) => {
     display: "block",
     // Disable clicks when tiny or when moving to allow dragging over the whole card
     pointerEvents: mini || moveMode || !!dragState ? "none" : "auto",
+    WebkitUserDrag: "none",
   };
 
   return (
-    <div style={containerDynamicStyle}>
+    <div style={containerDynamicStyle} onDragStart={(e) => e.preventDefault()} draggable={false}>
       {/* Drag handle (always available) */}
-      <div style={handleStyle} onMouseDown={startDrag} onTouchStart={startDrag} />
+      <div style={handleStyle} onMouseDown={startDrag} onTouchStart={startDrag} onDragStart={(e) => e.preventDefault()} draggable={false} />
 
       {/* Move toggle (full-card drag) */}
       <button aria-label="Move video" title="Move" onClick={(e) => { e.stopPropagation(); setMoveMode((m) => !m); }} style={moveBtnStyle}>
@@ -265,11 +275,11 @@ const FloatingShorts = ({ videoId = "" }) => {
 
       {/* Full-card overlay when moving */}
       {moveMode && (
-        <div style={overlayStyle} onMouseDown={startDrag} onTouchStart={startDrag} />
+        <div style={overlayStyle} onMouseDown={startDrag} onTouchStart={startDrag} onDragStart={(e) => e.preventDefault()} draggable={false} />
       )}
 
       {/* Video */}
-      <div style={frameWrapStyle}>
+      <div style={frameWrapStyle} onDragStart={(e) => e.preventDefault()} draggable={false}>
         <iframe
           title="YouTube Shorts"
           src={embedSrc}
