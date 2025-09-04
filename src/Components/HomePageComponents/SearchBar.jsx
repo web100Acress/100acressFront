@@ -248,11 +248,11 @@ function SearchBar() {
           <motion.button 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="search-btn flex items-center justify-center bg-gradient-to-r from-[#ff3b30] to-[#ff2d55] text-white px-0 py-0 sm:px-5 sm:py-2.5 rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-red-400/40"
+            className="search-btn flex items-center justify-center bg-[#e53e3e] hover:bg-[#cc2f3b] text-white px-0 py-0 sm:px-5 md:px-6 rounded-full font-medium transition-all duration-300 hover:shadow-lg text-sm sm:text-base min-w-[110px] sm:h-12 md:h-14"
             onClick={handleSearch}
             aria-label="Search"
           >
-            <FiSearch className="mr-0 sm:mr-2 w-5 h-5" />
+            <FiSearch className="mr-0 sm:mr-2 w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
             <span className="search-btn-text hidden sm:inline">Search</span>
           </motion.button>
         </div>
@@ -461,8 +461,8 @@ const Wrapper = styled.section`
 
     /* Icon-only search button style on mobile */
     .search-btn {
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
       padding: 0 !important;
       background: transparent !important;
       background-image: none !important;
@@ -470,7 +470,8 @@ const Wrapper = styled.section`
       box-shadow: none !important;
     }
     .search-btn:hover { box-shadow: none !important; background: transparent !important; }
-    .search-btn svg { color: #6b7280 !important; } /* gray-500 */
+    .search-btn svg { color: #e53e3e !important; } /* unified red */
+    .search-btn:hover svg { color: #cc2f3b !important; }
   }
   
   @media (max-width: 480px) {
@@ -586,4 +587,3 @@ const Wrapper = styled.section`
       width: 90%;
     }
   `;
-
