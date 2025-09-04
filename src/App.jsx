@@ -15,7 +15,6 @@ import "animate.css";
 import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import LoginForm from "./Components/LoginForm";
-import FloatingShorts from "./Components/FloatingShorts";
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
 // Lazy load all main page components
@@ -515,8 +514,6 @@ function App() {
           </TooltipProvider>
         </AuthProvider>
       </DataProvider>
-      {/* Global floating draggable YouTube Shorts */}
-      <FloatingShorts />
       {/* Global mobile bottom navigation */}
       <MobileBottomNav />
     </>
