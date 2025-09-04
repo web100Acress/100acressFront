@@ -481,7 +481,7 @@ export default function RightSection({
             />
           </Link>
         ) : (
-          <Link to="/auth/signin/">
+          <Link to="/auth/login/">
             <IconButton
               aria-label="Post property"
               variant="outline"
@@ -513,14 +513,14 @@ export default function RightSection({
                 {/* icon intentionally hidden for md+ */}
               </Box>
               {/* Always show full label on md and up */}
-              <Box as="span" display={{ base: 'none', md: 'inline' }}>Post property</Box>
+              <Box as="span" display={{ base: 'none', md: 'inline' }}>Post Property</Box>
               <Box as="span" display={{ base: 'none', md: 'inline-flex' }} bg="#FACC15" color="#e53e3e" px={3} py={0.5} fontSize="11px" fontWeight="800" lineHeight={1} style={{ clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' }}>
                 FREE
               </Box>
             </Button>
           </Link>
         ) : (
-          <Link to="/auth/signin/">
+          <Link to="/auth/login/">
             <Button size="sm" variant="solid" bg="white" color="#111" border="2px solid #e53e3e" boxShadow="sm" _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }} fontWeight="700" fontSize={{ base: '14px', md: '13px', xl: '13px' }} letterSpacing="0.3px" display={{ base: "none", md: "inline-flex" }} gap={{ base: 3, md: 2, xl: 3 }} alignItems="center" borderRadius="xl" px={{ base: 4, md: 3, xl: 4 }} py={2} ml={{ base: 2, md: 2 }}>
               {/* Hide icon on tablet/laptop */}
               <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>

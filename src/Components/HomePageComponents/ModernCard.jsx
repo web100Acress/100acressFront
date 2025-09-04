@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
-import { MdLocationPin, MdFavorite, MdFavoriteBorder, MdStar, MdArrowForward } from "react-icons/md";
-import { FaBed, FaRulerCombined } from 'react-icons/fa';
+import { MdLocationPin, MdStar, MdArrowForward } from "react-icons/md";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { LOGIN } from "../../lib/route";
+import { Link } from "react-router-dom";
+import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
 
 function ModernCard() {
   const [trendingProject, setTrendingProject] = useState([]);
   const [hasFetchedData, setHasFetchedData] = useState(false);
-  const [favorites, setFavorites] = useState(new Set());
   const [hoveredCard, setHoveredCard] = useState(null);
-  const navigate = useNavigate();
+  const [favTick, setFavTick] = useState(0);
 
   useEffect(() => {
     if (!hasFetchedData) {
@@ -28,17 +26,12 @@ function ModernCard() {
     }
   }, [hasFetchedData]);
 
-  const toggleFavorite = (projectId) => {
-    setFavorites(prev => {
-      const newFavorites = new Set(prev);
-      if (newFavorites.has(projectId)) {
-        newFavorites.delete(projectId);
-      } else {
-        newFavorites.add(projectId);
-      }
-      return newFavorites;
-    });
-  };
+  // hydrate favorites on mount and subscribe for cross-component updates
+  useEffect(() => {
+    hydrateFavoritesFromServer();
+    const unsub = subscribe(() => setFavTick((v) => v + 1));
+    return () => { if (typeof unsub === 'function') unsub(); };
+  }, []);
 
   const formatPrice = (price) => {
     if (!price) return "Price on request";
@@ -80,18 +73,30 @@ function ModernCard() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                navigate(LOGIN);
+                const id = item?._id || item?.id || item?.slug;
+                const snapshot = {
+                  title: item?.projectName,
+                  frontImage: item?.frontImage,
+                  thumbnailImage: item?.thumbnailImage,
+                  priceText: formatPrice(item?.minPrice || item?.price),
+                  url: item?.project_url ? `/${item?.project_url}/` : undefined,
+                  city: item?.city,
+                  maxPrice: item?.maxPrice || item?.price,
+                  minPrice: item?.minPrice,
+                };
+                toggleFavorite(id, snapshot);
+                setFavTick((v) => v + 1);
               }}
               className="favorite-btn"
-              aria-label="Add to wishlist (login required)"
-              title="Login to add to wishlist"
+              aria-label="Toggle wishlist"
+              title={favCheck(item?._id || item?.id || item?.slug) ? 'Remove from wishlist' : 'Add to wishlist'}
             >
-              {favorites.has(item._id) ? 
-                <MdFavorite className="text-red-500" /> : 
-                <MdFavoriteBorder />
+              {favCheck(item?._id || item?.id || item?.slug) ? 
+                <span className="heart-filled">❤️</span> : 
+                <span className="heart-outline">🤍</span>
               }
             </button>
-
++
             {/* Price Badge */}
             <div className="price-badge">
               <span className="price-text">
@@ -208,13 +213,12 @@ const CardContainer = styled.div`
       cursor: pointer;
       transition: all 0.3s ease;
       z-index: 10;
-      color: #6b7280;
+      font-size: 18px;
 
-      &:hover {
-        background: white;
-        transform: scale(1.1);
-        color: #ef4444;
-      }
+      &:hover { background: white; transform: scale(1.1); }
+
+      .heart-filled { color: #ef4444; }
+      .heart-outline { color: #6b7280; }
     }
 
     .price-badge {
@@ -241,9 +245,7 @@ const CardContainer = styled.div`
       transform: translateY(100%);
       transition: transform 0.3s ease;
 
-      &.visible {
-        transform: translateY(0);
-      }
+      &.visible { transform: translateY(0); }
 
       .info-grid {
         display: grid;
@@ -257,9 +259,7 @@ const CardContainer = styled.div`
           color: white;
           font-size: 12px;
 
-          .info-icon {
-            color: #f97316;
-          }
+          .info-icon { color: #f97316; }
         }
       }
     }
@@ -291,9 +291,7 @@ const CardContainer = styled.div`
         font-weight: 600;
         font-size: 14px;
 
-        .star-icon {
-          font-size: 16px;
-        }
+        .star-icon { font-size: 16px; }
       }
     }
 
@@ -307,27 +305,15 @@ const CardContainer = styled.div`
         color: #4b5563;
         font-size: 14px;
 
-        .location-icon {
-          color: #f97316;
-          font-size: 16px;
-        }
+        .location-icon { color: #f97316; font-size: 16px; }
       }
     }
 
     .price-info {
       margin-bottom: 20px;
 
-      .price-label {
-        color: #6b7280;
-        font-size: 14px;
-        margin-bottom: 4px;
-      }
-
-      .price-value {
-        color: #1f2937;
-        font-size: 18px;
-        font-weight: 700;
-      }
+      .price-label { color: #6b7280; font-size: 14px; margin-bottom: 4px; }
+      .price-value { color: #1f2937; font-size: 18px; font-weight: 700; }
     }
 
     .view-details-btn {
@@ -354,37 +340,20 @@ const CardContainer = styled.div`
     }
   }
 
-  &:hover .image-section .property-image {
-    transform: scale(1.1);
-  }
-
-  &:hover .image-section .image-overlay {
-    opacity: 1;
-  }
+  &:hover .image-section .property-image { transform: scale(1.1); }
+  &:hover .image-section .image-overlay { opacity: 1; }
 
   @media (max-width: 768px) {
     min-width: 300px;
     max-width: 350px;
-
-    .image-section {
-      height: 200px;
-    }
-
-    .content-section {
-      padding: 16px;
-
-      .content-header .project-name {
-        font-size: 16px;
-      }
-
-      .price-info .price-value {
-        font-size: 16px;
-      }
-    }
+    .image-section { height: 200px; }
+    .content-section { padding: 16px; }
+    .content-header .project-name { font-size: 16px; }
+    .price-info .price-value { font-size: 16px; }
   }
 
   @media (max-width: 480px) {
     min-width: 100%;
     max-width: 100%;
   }
-`; 
+`;

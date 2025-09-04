@@ -173,6 +173,48 @@ const ResaleEnquiries = () => {
     }
   };
 
+  // Delete a resale enquiry by id (ensure backend route matches)
+  const handleDelete = async (item) => {
+    try {
+      const confirmDelete = window.confirm(`Delete resale enquiry for ${item?.custName || item?.custEmail || item?._id}?`);
+      if (!confirmDelete) return;
+      const base = getApiBase();
+      const raw = localStorage.getItem("myToken") || "";
+      const token = raw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
+      const res = await axios.delete(`${base}/postEnq_delete/${item._id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+      if (res.status === 200) {
+        messageApi.success('Deleted successfully');
+        fetchEnquiriesData();
+      } else {
+        throw new Error('Non-200 response');
+      }
+    } catch (e) {
+      console.error(e);
+      messageApi.error('Failed to delete');
+    }
+  };
+
+  // Format date + time like: 02 September 2025, 11:22:05 AM
+  const formatDateTime = (dt) => {
+    try {
+      return new Date(dt).toLocaleString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      });
+    } catch (_) {
+      return dt || '';
+    }
+  };
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
@@ -219,12 +261,14 @@ const ResaleEnquiries = () => {
                 <th scope="col" className="table-header">Customer Email</th>
                 <th scope="col" className="table-header">Customer Number</th>
                 <th scope="col" className="table-header">Property Address</th>
+                <th scope="col" className="table-header">Date</th>
+                <th scope="col" className="table-header">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="6" className="no-data-message">
+                  <td colSpan="8" className="no-data-message">
                     <ClipLoader color="#6750A4" size={30} />
                     <p>Loading enquiries...</p>
                   </td>
@@ -238,11 +282,15 @@ const ResaleEnquiries = () => {
                     <td className="table-cell email-cell">{item.custEmail}</td>
                     <td className="table-cell">{item.custNumber}</td>
                     <td className="table-cell address-cell">{item.propertyAddress}</td>
+                    <td className="table-cell">{formatDateTime(item.createdAt)}</td>
+                    <td className="table-cell">
+                      <button className="btn btn-danger" onClick={() => handleDelete(item)}>Delete</button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="no-data-message">
+                  <td colSpan="8" className="no-data-message">
                   No resale enquiries found matching your criteria.
                   </td>
                 </tr>
@@ -548,4 +596,22 @@ const resaleEnquiriesStyles = `
   border-color: #e0e5ed;
   box-shadow: none;
 }
+
+/* Minimal danger button for actions */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-weight: 700;
+  transition: all .2s ease;
+}
+.btn-danger {
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
+}
+.btn-danger:hover { background: #dc2626; border-color: #dc2626; }
 `;

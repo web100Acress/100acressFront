@@ -2,9 +2,7 @@
 import React, { useState } from "react";
 import api from "../../config/apiClient";
 import { motion } from "framer-motion"
-import { Facebook, Instagram, Youtube, Phone, MessageCircle, Mail, ArrowRight, Linkedin, Sparkles, Star } from "lucide-react"
-import { TwitterIcon } from "../../Assets/icons";
-import EMICalculator from "../EMICalculator";
+import { Facebook, Instagram, Youtube, Phone, MessageCircle, Mail, ArrowRight, Linkedin, Sparkles, Star, Twitter } from "lucide-react"
 
 const LuxuryFooter = () => {
   const footerVariants = {
@@ -72,7 +70,7 @@ const LuxuryFooter = () => {
         </div>
 
         {/* Textured Overlay */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23a1a1aa\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm10 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm10 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM24 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm10 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM24 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm10 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM24 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm10 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23a1a1aa\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm10 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm10 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM24 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm10 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM24 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm10 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM24 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm10 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-4-4v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
 
         <div className="relative z-10 py-12 lg:py-12 w-full px-4 sm:px-6 lg:px-8">
           {/* Main Footer Content */}
@@ -114,30 +112,75 @@ const LuxuryFooter = () => {
                 </p>
 
                 {/* Enhanced Social Media */}
-                <div className="flex space-x-2">
+                <div className="flex space-x-3 mt-4">
                   {[
-                    { Icon: Facebook, href: "https://www.facebook.com/100Acress/", target:"blank", label: "Facebook", color: "hover:bg-blue-600" },
-                    { Icon: TwitterIcon, href: "https://x.com/100acressdotcom", target:"blank", label: "X", color: "hover:bg-black" },
-                    { Icon: Instagram, href: "https://www.instagram.com/official100acress/?hl=en", target:"blank", label: "Instagram", color: "hover:bg-pink-600" },
-                    { Icon: Linkedin, href: "https://www.linkedin.com/company/100acress/", target:"blank", label: "LinkedIn", color: "hover:bg-blue-700" },
-                    { Icon: Youtube, href: "https://www.youtube.com/@100acress", target:"blank", label: "YouTube", color: "hover:bg-red-600" },
-                  ].map(({ Icon, href, label, color, target }, index) => (
+                    { 
+                      Icon: Facebook, 
+                      href: "https://www.facebook.com/100Acress/", 
+                      label: "Facebook",
+                      bgColor: "bg-blue-600 hover:bg-blue-700"
+                    },
+                    {
+                      Icon: () => (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 1200 1227"
+                          className="w-5 h-5 fill-white"
+                        >
+                          <path d="M714.163 519.284L1160.89 0H1055.53L669.235 
+                          450.887L356.757 0H0L468.293 681.821L0 1226.37H105.365
+                          L511.974 751.618L843.243 1226.37H1200L714.137 
+                          519.284H714.163ZM567.04 686.983L517.956 
+                          617.523L143.44 79.694H305.697L602.006 
+                          503.675L651.09 573.135L1056.12 
+                          1169.74H893.863L567.04 686.983Z" />
+                        </svg>
+                      ),
+                      href: "https://x.com/100acressdotcom",
+                      label: "X",
+                      bgColor: "bg-black hover:bg-gray-800"
+                    },
+                    
+                    { 
+                      Icon: Instagram, 
+                      href: "https://www.instagram.com/official100acress/", 
+                      label: "Instagram",
+                      bgColor: "bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90"
+                    },
+                    { 
+                      Icon: Linkedin, 
+                      href: "https://www.linkedin.com/company/100acress/", 
+                      label: "LinkedIn",
+                      bgColor: "bg-blue-700 hover:bg-blue-800"
+                    },
+                    { 
+                      Icon: Youtube, 
+                      href: "https://www.youtube.com/@100acress", 
+                      label: "YouTube",
+                      bgColor: "bg-red-600 hover:bg-red-700"
+                    },
+                  ].map(({ Icon, href, label, bgColor }, index) => (
                     <motion.a
                       key={index}
                       href={href}
-                      target={target === "blank" ? "_blank" : undefined}
-                      rel={target === "blank" ? "noopener noreferrer" : undefined}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       aria-label={label}
-                      className={`group relative w-10 h-10 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full flex items-center justify-center text-gray-600 ${color} hover:text-white hover:border-transparent hover:scale-110 hover:shadow-lg transition-all duration-300 overflow-hidden`}
-                      whileHover={{ scale: 1.2, rotate: 15 }}
-                      whileTap={{ scale: 0.95 }}
-                      variants={itemVariants}
+                      className={`
+                        w-10 h-10 rounded-full flex items-center justify-center
+                        ${bgColor} text-white
+                        shadow-md hover:shadow-lg
+                        transition-all duration-300
+                      `}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
                     >
-                      <div className="absolute inset-0 animate-shimmer opacity-0 group-hover:opacity-100"></div>
-                      <Icon size={20} className="relative z-10" />
+                      <Icon size={18} />
                     </motion.a>
                   ))}
                 </div>
+  
+
               </div>
             </motion.div>
 
@@ -152,13 +195,12 @@ const LuxuryFooter = () => {
                 <nav className="grid grid-cols-2 lg:grid-cols-1 gap-2 lg:gap-3 text-sm">
                   {[
                     { label: "Home", href: "/" },
-                    { label: "Luxury Properties", href: "/top-luxury-projects/" },
-                    { label: "Investment Blog", href: "/blog/" },
                     { label: "About Us", href: "/about-us/" },
-                    { label: "Contact Us", href: "/contact-us/" },
-                    { label: "EMI Calculator", href: "/emi-calculator/" },
                     { label: "Our Services", href: "/#our-services" },
+                    { label: "Luxury Properties", href: "/top-luxury-projects/" },
+                    { label: "Blog", href: "/blog/" },
                     { label: "Career", href: "/career-with-us/"},
+                    { label: "Contact", href: "/contact-us/" },
                   ].map((link, index) => (
                     <motion.a
                       key={index}

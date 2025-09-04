@@ -20,95 +20,14 @@ function FinalNavBar() {
   const [isScrolled, setIsScrolled] = useState(false);
   
   const URL="/projects"
-  // Add scroll effect
 
-  // Add scroll effect
   useEffect(() => {
-    const handleScroll = () => {
-      const navbar = document.querySelector('.nav-wrapper');
-      const hamburgerIcon = document.querySelector('.barDotMenu svg');
-      const profileBtn = document.querySelector('.profBtn');
-      const navLinks = document.querySelectorAll('.linkEl');
-      const navText = document.querySelectorAll('.pxrETXT');
-      
-      if (navbar) {
-        if (window.scrollY > 50) {
-          // Change navbar background to red
-          navbar.style.background = '#e53e3e';
-          navbar.style.boxShadow = '0 2px 10px rgba(229, 62, 62, 0.3)';
-          
-          // Change hamburger icon color to white
-          if (hamburgerIcon) {
-            hamburgerIcon.style.color = 'white';
-          }
-          
-          // Change profile button styling
-          if (profileBtn) {
-            profileBtn.style.borderColor = 'rgba(255,255,255,0.8)';
-            profileBtn.style.color = 'white';
-          }
-          
-          // Change nav links color to white
-          navLinks.forEach(link => {
-            link.style.color = 'white';
-          });
-          
-          // Change nav text color to white
-          navText.forEach(text => {
-            text.style.color = 'white';
-          });
-          
-          // Add scrolled class for additional styling
-          navbar.classList.add('scrolled');
-        } else {
-          // Reset to transparent
-          navbar.style.background = 'transparent';
-          navbar.style.boxShadow = 'none';
-          
-          // Reset hamburger icon color
-          if (hamburgerIcon) {
-            hamburgerIcon.style.color = 'white';
-          }
-          
-          // Reset profile button styling
-          if (profileBtn) {
-            profileBtn.style.borderColor = 'rgba(255,255,255,0.8)';
-            profileBtn.style.color = 'white';
-          }
-          
-          // Reset nav links color
-          navLinks.forEach(link => {
-            link.style.color = 'white';
-          });
-          
-          // Reset nav text color
-          navText.forEach(text => {
-            text.style.color = 'white';
-          });
-          
-          // Remove scrolled class
-          navbar.classList.remove('scrolled');
-        }
-      }
-    };
-
-    // Initial check
-    handleScroll();
-    
-    // Add scroll listener
-    window.addEventListener('scroll', handleScroll);
-    
-    // Cleanup
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
   }, []);
 
   return (
-    <Wrapper className='section nav-wrapper' style={{
-      transition: 'background 0.3s ease-in-out',
-      background: 'transparent'
-    }}>
+    <Wrapper className='section'>
+      
+      
       <div className='Mflx'>
 
         {/* Left: Hamburger (visible <=920px) */}
@@ -439,57 +358,13 @@ function FinalNavBar() {
 }
 export default FinalNavBar;
 const Wrapper = styled.section`
-  --nav-h: 68px; /* default navbar height */
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
-  min-height: var(--nav-h);
-  display: block;
-  transition: all 0.3s ease-in-out;
-  
-  /* Scrolled state styling */
-  &.scrolled {
-    background: #e53e3e !important;
-    box-shadow: 0 2px 10px rgba(229, 62, 62, 0.3) !important;
-    
-    .linkEl {
-      color: white !important;
-    }
-    
-    .pxrETXT {
-      color: white !important;
-    }
-    
-    .profBtn {
-      border-color: rgba(255,255,255,0.8) !important;
-      color: white !important;
-    }
-    
-    .barDotMenu svg {
-      color: white !important;
-    }
-  }
-  
-  /* Gradient divider: strong in center, fades on edges */
-  border-bottom: none;
-  position: fixed;
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 2px;
-    pointer-events: none;
-    background: linear-gradient(90deg,
-      rgba(255,255,255,0) 0%,
-      rgba(255,255,255,0.7) 45%,
-      rgba(255,255,255,0.7) 55%,
-      rgba(255,255,255,0) 100%
-    );
-  }
+  z-index: 9999;
+  margin: 0;
+  padding: 0;
   .ieuNB {
     display: flex;
   }

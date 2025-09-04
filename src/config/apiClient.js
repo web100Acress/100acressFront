@@ -1,81 +1,88 @@
 import axios from 'axios';
 import { getApiBase } from './apiBase';
 
-// Create a shared axios instance using centralized base URL
+// Helper function to get the base URL with proper protocol
+const getBaseUrl = () => {
+  const base = getApiBase();
+  // Ensure the URL has a protocol
+  if (base.startsWith('http')) {
+    return base;
+  }
+  // Default to https in production, http in development
+  const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
+  return `${protocol}//${base.replace(/^\/\//, '')}`;
+};
+
+// Create axios instance with defaults
 const api = axios.create({
-  baseURL: getApiBase(),
+  baseURL: getBaseUrl(),
+  timeout: 30000,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  },
+  withCredentials: true,
+  crossDomain: true,
+  // Add this to handle CORS credentials properly
+  withXSRFToken: true,
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
 });
 
-
-api.interceptors.request.use((config) => {
-  try {
-    // Always refresh baseURL so localStorage overrides apply without reload
-    const base = getApiBase();
-    const full = typeof config.url === 'string' ? config.url : '';
-    if (full && !/^https?:\/\//i.test(full)) {
-      // Only set base for relative URLs
-      config.baseURL = base;
-    }
-
-    // Robust token extraction (handles JSON-quoted values) from myToken or token
-    const storedPrimary = window.localStorage.getItem('myToken');
-    const storedFallback = window.localStorage.getItem('token');
-    let token = storedPrimary || storedFallback || '';
-    // Unquote JSON-quoted values
-    if (token && token.startsWith('"') && token.endsWith('"')) {
-      try { token = JSON.parse(token); } catch {}
-    }
-    // Normalize accidental prefixes and whitespace
-    if (typeof token === 'string') {
-      token = token.trim();
-      if (/^Bearer\s+/i.test(token)) {
-        token = token.replace(/^Bearer\s+/i, '').trim();
-      }
-      // Remove any stray quotes inside
-      token = token.replace(/"/g, '');
-    }
+// Request interceptor
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('myToken') || localStorage.getItem('token');
     if (token) {
-      config.headers = config.headers || {};
-      if (!config.headers.Authorization) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+      config.headers.Authorization = `Bearer ${token.replace(/^"|"$/g, '')}`;
     }
-
-    // Dev diagnostics: log final resolved URL
-    try {
-      const env = (process.env.NODE_ENV || '').toLowerCase();
-      if (env !== 'production') {
-        const finalUrl = `${config.baseURL || ''}${typeof config.url === 'string' ? config.url : ''}`;
-        // eslint-disable-next-line no-console
-        console.debug('[api request]', { method: (config.method || 'GET').toUpperCase(), base: config.baseURL, url: config.url, finalUrl });
-      }
-    } catch {}
-  } catch {}
-  return config;
-});
-
-export default api;
-
-// Error diagnostics: log useful info on failures to help debugging
-api.interceptors.response.use(
-  (res) => res,
-  (error) => {
-    try {
-      const cfg = error.config || {};
-      const info = {
-        message: error.message,
-        code: error.code,
-        method: (cfg.method || 'GET').toUpperCase(),
-        baseURL: cfg.baseURL,
-        url: cfg.url,
-        finalUrl: `${cfg.baseURL || ''}${typeof cfg.url === 'string' ? cfg.url : ''}`,
-        hasAuth: !!(cfg.headers && cfg.headers.Authorization),
-        responseStatus: error.response && error.response.status,
-        responseData: error.response && error.response.data,
+    
+    // Add cache-busting parameter for GET requests
+    if (config.method === 'get') {
+      config.params = {
+        ...config.params,
+        _t: Date.now(), // Add timestamp to prevent caching
       };
-      // eslint-disable-next-line no-console
-      console.error('[api error]', info);
-    } catch {}
+    }
+    
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`%c ${config.method?.toUpperCase()} ${config.url}`, 
+        'color: white; background-color: #2274A5; padding: 2px 5px; border-radius: 3px;');
+    }
+    
+    return config;
+  },
+  (error) => {
     return Promise.reject(error);
   }
 );
+
+// Response interceptor
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // Handle CORS errors
+    if (error.code === 'ERR_NETWORK') {
+      console.error('Network Error:', error.message);
+      // Optionally show a user-friendly message
+      // You can add a notification system call here
+    }
+    
+    // Handle 401 Unauthorized
+    if (error.response?.status === 401) {
+      // Handle unauthorized access
+      localStorage.removeItem('myToken');
+      localStorage.removeItem('token');
+      // Redirect to login or show login modal
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
+export default api;

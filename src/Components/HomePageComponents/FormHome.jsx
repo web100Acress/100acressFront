@@ -3,7 +3,7 @@ import axios from "axios";
 import { ConsultIcon } from "../../Assets/icons";
 import AOS from "aos";
 import "aos/dist/aos.css";
-AOS.init()
+AOS.init();
 
 const FormHome = () => {
   const [formDataInquiry, setFormDataInquiry] = useState({
@@ -38,7 +38,7 @@ const FormHome = () => {
       return;
     }
 
-    setIsSubmitting(true); 
+    setIsSubmitting(true);
     try {
       await axios.post(
         "/contact_Insert",
@@ -57,7 +57,7 @@ const FormHome = () => {
       }
       setResponsefillData("An error occurred. Please try again.");
     } finally {
-      setIsSubmitting(false); 
+      setIsSubmitting(false);
     }
   };
 
@@ -67,32 +67,44 @@ const FormHome = () => {
   };
 
   return (
-    <div className="max-w-[1250px] mx-auto" >
-    <div className="text-start ml-10">
-          <p className=" text-xl lg:text-2xl md:text-2xl sm:text-xl xs:text-xl text-gray-700 mb-4 mt-2 bg-gradient-to-r from-[#FF9933] via-[#1a1a1a] to-[#138808] bg-clip-text text-transparent font-bold">
-          Consult a Property Expert Now
-          </p>
-    </div>
-  
-    <div className="flex flex-wrap m-4 rounded-lg shadow-lg">
-    <div
-          data-aos="zoom-in"
+    <div className="max-w-[1250px] mx-auto py-6 px-4 sm:px-6 lg:px-8 ">
+      <div className="text-center md:text-start mb-5">
+        <p className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+          Consult a Property Expert
+        </p>
+        <p className="mt-2 text-base text-gray-600">
+          We’re here to help you find your dream property.
+        </p>
+      </div>
+
+      <div
+        className="flex flex-wrap rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-3xl"
+        data-aos="fade-up"
+        data-aos-duration="1000"
+      >
+        {/* Left Section (Icon) */}
+        <div
+          data-aos="fade-right"
           data-aos-delay="200"
-          className="w-full md:w-1/3 bg-white flex items-center justify-center rounded-lg h-80 md:h-96 hidden md:flex"
+          className="w-full md:w-1/3 bg-white-200 flex items-center justify-center h-80 md:h-96"
         >
           <ConsultIcon />
         </div>
-      <div  data-aos="zoom-in" data-aos-delay="200" className="w-full md:w-2/3  pt-10 p-4">
-        
-        <form className="space-y-4 p-5" onSubmit={handleInquirySubmitData}>
-          {responseFillData && (
-            <div className="bg-red-100 text-red-600 p-4 rounded-md">
-              {responseFillData}
-            </div>
-          )}
-        
-          <div className="relative ">
-              <i className="fa-solid fa-user text-gray-400 text-md absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+        {/* Right Section (Form) */}
+        <div
+          data-aos="fade-left"
+          data-aos-delay="200"
+          className="w-full md:w-2/3 p-6 sm:p-10 bg-white"
+        >
+          <form className="space-y-6" onSubmit={handleInquirySubmitData}>
+            {responseFillData && (
+              <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-200 transition-all duration-300">
+                {responseFillData}
+              </div>
+            )}
+            {/* Input fields */}
+            <div className="relative">
+              <i className="fa-solid fa-user text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2 text-lg"></i>
               <input
                 type="text"
                 id="name"
@@ -100,67 +112,66 @@ const FormHome = () => {
                 placeholder="Your Name"
                 onChange={handleInquiryDataChange}
                 value={formDataInquiry.name}
-                className="block w-full pl-10 pr-3 py-2  border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="block w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl shadow-inner bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-orange-600 transition-all duration-300"
                 required
               />
             </div>
-            <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <i className="fa-solid fa-envelope text-gray-400 text-md absolute left-3 top-1/2 transform -translate-y-1/2"></i>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Your Email"
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="relative flex-1">
+                <i className="fa-solid fa-envelope text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2 text-lg"></i>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Your Email"
+                  onChange={handleInquiryDataChange}
+                  value={formDataInquiry.email}
+                  className="block w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl shadow-inner bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-orange-600 transition-all duration-300"
+                  required
+                />
+              </div>
+              <div className="relative flex-1">
+                <i className="fa-solid fa-phone text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2 text-lg"></i>
+                <input
+                  type="number"
+                  name="mobile"
+                  placeholder="Phone No"
+                  onChange={handleInquiryDataChange}
+                  value={formDataInquiry.mobile}
+                  className="block w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl shadow-inner bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-orange-600 transition-all duration-300"
+                  required
+                />
+              </div>
+            </div>
+            <div className="relative">
+              <i className="fa-solid fa-comment text-gray-400 absolute left-4 top-4 text-lg"></i>
+              <textarea
+                id="message"
+                name="message"
+                rows="4"
+                placeholder="Your Message"
                 onChange={handleInquiryDataChange}
-                value={formDataInquiry.email}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                value={formDataInquiry.message}
+                className="block w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl shadow-inner bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-orange-600 transition-all duration-300"
                 required
               />
             </div>
-          <div className="relative flex-1">
-            <i className="fa-solid fa-phone text-gray-400 text-md absolute left-3 top-1/2 transform -translate-y-1/2"></i>
-            <input
-              type="number"
-              name="mobile"
-              placeholder="Phone No"
-              onChange={handleInquiryDataChange}
-              value={formDataInquiry.mobile}
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              required
-            />
-          </div>
-          </div>
-          
-
-          <div className="relative">
-            <i className="fa-solid fa-comment text-gray-400 text-md absolute left-3 top-[24%] transform -translate-y-1/2"></i>
-            <textarea
-              id="message"
-              name="message"
-              rows="3"
-              placeholder="Your Message"
-              onChange={handleInquiryDataChange}
-              value={formDataInquiry.message}
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              required
-            />
-          </div>
-
-          <div className="flex justify-start mt-4">
-            <button
-              type="submit"
-              className={`py-2 px-8 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ${
-                isSubmitting ? 'bg-green-600 text-white' : 'bg-[#C13B44] text-[#FFFFFF] hover:bg-red-700'
-              }`}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Submitting...' : 'Send Message'}
-            </button>
-          </div>
-        </form>
+            <div className="flex justify-start pt-2">
+              <button
+                type="submit"
+                className={`w-full md:w-auto py-3 px-8 rounded-full font-bold shadow-md transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 
+                  ${isSubmitting
+                    ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                    : 'bg-orange-600 text-white hover:bg-orange-700'
+                  }`}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Submitting...' : 'Send Message'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
     </div>
   );
 };

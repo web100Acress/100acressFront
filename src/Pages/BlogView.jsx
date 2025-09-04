@@ -233,7 +233,7 @@ const BlogView = () => {
         };
       } catch (_) { /* ignore */ }
     });
-  }, [blog_Description]);
+  }, [data.blog_Description]);
 
   // Brand colors
   const BRAND_RED = '#b8333a';

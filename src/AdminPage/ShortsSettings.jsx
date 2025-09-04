@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 const ShortsSettings = () => {
   const [input, setInput] = useState("");
   const [savedId, setSavedId] = useState("");
+  const [savedList, setSavedList] = useState([]);
   const [previewKey, setPreviewKey] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -23,8 +24,11 @@ const ShortsSettings = () => {
         if (res.ok) {
           const data = await res.json();
           const value = data?.value || "";
+          const list = Array.isArray(data?.list) ? data.list : [];
           setSavedId(value);
-          setInput(value);
+          setSavedList(list);
+          // Pre-fill textarea with one per line
+          setInput(list.join("\n") || value);
         }
       } catch (e) {
         toast.error("Failed to load current settings");
@@ -35,25 +39,63 @@ const ShortsSettings = () => {
     load();
   }, []);
 
-  const parsed = useMemo(() => parseYouTubeVideoId(input), [input]);
+  // Build parsed list from textarea (comma or newline separated)
+  const parsedList = useMemo(() => {
+    if (!input) return [];
+    return input
+      .split(/[\n,]/)
+      .map((s) => parseYouTubeVideoId(s))
+      .map((s) => String(s || '').trim())
+      .filter(Boolean);
+  }, [input]);
+
+  const firstParsed = parsedList[0] || "";
+
   const previewSrc = useMemo(() => (
-    parsed ? `https://www.youtube.com/embed/${parsed}?autoplay=0&mute=1&loop=1&playlist=${parsed}&controls=1&modestbranding=1&playsinline=1&rel=0` : ""
-  ), [parsed]);
+    firstParsed ? `https://www.youtube.com/embed/${firstParsed}?autoplay=0&mute=1&loop=1&playlist=${firstParsed}&controls=1&modestbranding=1&playsinline=1&rel=0` : ""
+  ), [firstParsed]);
+
+  // Rotation info (3 hours) + live countdown
+  const ROTATE_MS = 3 * 60 * 60 * 1000;
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const rotationInfo = useMemo(() => {
+    const list = savedList.length ? savedList : parsedList;
+    const len = list.length;
+    if (!len) return { list, currentIdx: -1, nextIdx: -1, nextId: "", msToNext: ROTATE_MS };
+    const bucket = Math.floor(now / ROTATE_MS);
+    const currentIdx = bucket % len;
+    const nextIdx = (currentIdx + 1) % len;
+    const nextId = list[nextIdx] || "";
+    const msToNext = ROTATE_MS - (now % ROTATE_MS);
+    return { list, currentIdx, nextIdx, nextId, msToNext };
+  }, [savedList, parsedList, now]);
+
+  const formatMs = (ms) => {
+    const s = Math.max(0, Math.floor(ms / 1000));
+    const hh = String(Math.floor(s / 3600)).padStart(2, '0');
+    const mm = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+    const ss = String(s % 60).padStart(2, '0');
+    return `${hh}:${mm}:${ss}`;
+  };
 
   const onSave = async (e) => {
     e.preventDefault();
     setIsSaving(true);
     const token = localStorage.getItem("myToken");
-    const clean = parsed;
-    
-    if (!clean) {
-      toast.error("Please enter a valid YouTube URL or ID", {
+
+    if (!parsedList.length) {
+      toast.error("Please enter at least one valid YouTube URL or ID", {
         icon: "⚠️"
       });
       setIsSaving(false);
       return;
     }
-    
+
     try {
       const res = await fetch(`${getApiBase()}/settings/shorts-video-id`, {
         method: "PUT",
@@ -61,22 +103,27 @@ const ShortsSettings = () => {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({ value: clean }),
+        body: JSON.stringify({ value: parsedList }),
       });
       
       if (!res.ok) {
         throw new Error("Failed to save setting");
       }
-      
-      setSavedId(clean);
-      setInput(clean);
-      toast.success("🎉 Shorts video updated successfully!", {
+
+      const data = await res.json();
+      const current = data?.value || parsedList[0];
+      const list = Array.isArray(data?.list) ? data.list : parsedList;
+      setSavedId(current);
+      setSavedList(list);
+      setInput(list.join("\n"));
+
+      toast.success("🎉 Shorts videos updated successfully! (Will rotate every 3 hours)", {
         icon: "✅"
       });
       
-      // Notify other tabs instantly
+      // Notify other tabs instantly with current active id
       if (channel) {
-        try { channel.postMessage({ type: 'shorts-update', value: clean }); } catch (_) {}
+        try { channel.postMessage({ type: 'shorts-update', value: current }); } catch (_) {}
       }
     } catch (_) {
       toast.error("❌ Failed to save to server", {
@@ -86,8 +133,6 @@ const ShortsSettings = () => {
       setIsSaving(false);
     }
     
-    const current = clean;
-    setSavedId(current);
     setPreviewKey((k) => k + 1);
   };
 
@@ -105,7 +150,7 @@ const ShortsSettings = () => {
         body: JSON.stringify({ value: "" }),
       });
       
-      toast.success("🧹 Shorts video cleared successfully!", {
+      toast.success("🧹 Shorts videos cleared successfully!", {
         icon: "✅"
       });
     } catch (_) {
@@ -117,6 +162,7 @@ const ShortsSettings = () => {
     }
     
     setSavedId("");
+    setSavedList([]);
     setInput("");
     setPreviewKey((k) => k + 1);
     
@@ -208,7 +254,7 @@ const ShortsSettings = () => {
               <div className="mb-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">Video Configuration</h2>
                 <p className="text-gray-600 text-sm leading-relaxed">
-                  Paste a YouTube Shorts or Video URL (or just the video ID). This will update the floating shorts widget displayed on your homepage instantly.
+                  Paste multiple YouTube Shorts or Video URLs/IDs (comma or one per line). The homepage floating shorts will rotate across them automatically every 3 hours.
                 </p>
               </div>
 
@@ -221,7 +267,7 @@ const ShortsSettings = () => {
                 <form onSubmit={onSave} className="space-y-6">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      YouTube URL or Video ID
+                      YouTube URLs or Video IDs (multiple)
                     </label>
                     
                     <div className="relative">
@@ -231,50 +277,42 @@ const ShortsSettings = () => {
                         </svg>
                       </div>
                       
-                      <input
-                        type="text"
+                      <textarea
+                        rows={6}
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder="https://youtube.com/shorts/XXXXXXXXXXX or video ID"
+                        placeholder={"Enter up to 10 videos, e.g.\nhttps://youtube.com/shorts/XXXXXXXXXXX\nhttps://youtu.be/YYYYYYYYYYY\nZzzZZzZzzzzZ"}
                         className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all duration-200 text-sm bg-gray-50 focus:bg-white"
                       />
                       
                       {input && (
-                        <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
-                          {parsed ? (
-                            <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          ) : (
-                            <svg className="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                          )}
+                        <div className="absolute top-2 right-3 text-xs text-gray-500 bg-white/80 px-2 py-1 rounded">
+                          {parsedList.length} detected
                         </div>
                       )}
                     </div>
                     
-                    {parsed && (
+                    {firstParsed && (
                       <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
                         <div className="flex items-center">
                           <svg className="w-4 h-4 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
                           <span className="text-sm text-green-700">
-                            Valid video detected: <span className="font-mono font-medium">{parsed}</span>
+                            First valid video: <span className="font-mono font-medium">{firstParsed}</span>
                           </span>
                         </div>
                       </div>
                     )}
                     
-                    {input && !parsed && (
+                    {input && !parsedList.length && (
                       <div className="mt-3 p-3 bg-red-50 rounded-lg border border-red-200">
                         <div className="flex items-center">
                           <svg className="w-4 h-4 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                           <span className="text-sm text-red-700">
-                            Invalid YouTube URL or ID format
+                            Invalid YouTube URLs or IDs
                           </span>
                         </div>
                       </div>
@@ -284,7 +322,7 @@ const ShortsSettings = () => {
                   <div className="flex gap-4 pt-2">
                     <button 
                       type="submit" 
-                      disabled={!parsed || isSaving}
+                      disabled={!parsedList.length || isSaving}
                       className="flex-1 group relative inline-flex items-center justify-center px-6 py-4 text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-pink-600 rounded-xl hover:from-red-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
                     >
                       {isSaving ? (
@@ -316,7 +354,7 @@ const ShortsSettings = () => {
                       ) : (
                         <>
                           <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a 1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                           Clear
                         </>
@@ -333,7 +371,7 @@ const ShortsSettings = () => {
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sticky top-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Live Preview</h3>
-                {parsed && (
+                {firstParsed && (
                   <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                     <span className="w-2 h-2 bg-green-400 rounded-full mr-1.5 animate-pulse"></span>
                     Active
@@ -365,6 +403,29 @@ const ShortsSettings = () => {
                       This is how it will appear on your homepage
                     </div>
                   </div>
+
+                  {/* Next up section */}
+                  {rotationInfo.nextId && (
+                    <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <img
+                            src={`https://img.youtube.com/vi/${rotationInfo.nextId}/hqdefault.jpg`}
+                            alt="Next video thumbnail"
+                            className="w-16 h-10 object-cover rounded mr-3"
+                          />
+                          <div>
+                            <p className="text-sm font-medium text-purple-800">Next up</p>
+                            <p className="text-xs font-mono text-purple-700">{rotationInfo.nextId}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[11px] text-purple-600 uppercase tracking-wide">Switches in</p>
+                          <p className="text-sm font-semibold text-purple-800">{formatMs(rotationInfo.msToNext)}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="text-center py-12">
@@ -374,7 +435,7 @@ const ShortsSettings = () => {
                     </svg>
                   </div>
                   <p className="text-sm text-gray-500 mb-2">No video selected</p>
-                  <p className="text-xs text-gray-400">Enter a YouTube URL to see preview</p>
+                  <p className="text-xs text-gray-400">Enter YouTube URLs to see preview</p>
                 </div>
               )}
             </div>
@@ -394,20 +455,20 @@ const ShortsSettings = () => {
               <h4 className="font-semibold text-gray-900 mb-2">Current Configuration</h4>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Saved Video ID:</span>
-                  <span className="font-mono text-gray-900 bg-white px-2 py-1 rounded">
-                    {savedId || 'Not set'}
+                  <span className="text-gray-600">Saved Video IDs:</span>
+                  <span className="font-mono text-gray-900 bg-white px-2 py-1 rounded max-w-[70%] truncate" title={savedList.join(', ')}>
+                    {savedList.length ? `${savedList.length} saved` : (savedId || 'Not set')}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Update Status:</span>
-                  <span className="text-green-600 font-medium">Real-time</span>
+                  <span className="text-gray-600">Rotation:</span>
+                  <span className="text-green-600 font-medium">Every 3 hours</span>
                 </div>
               </div>
               
               <div className="mt-4 p-3 bg-white/60 rounded-lg">
                 <p className="text-xs text-gray-600 leading-relaxed">
-                  💡 <strong>Pro Tip:</strong> Changes apply instantly across your website. If the homepage doesn't update immediately, try refreshing the page. The floating shorts widget will display your selected video with optimized mobile responsiveness.
+                  💡 <strong>Pro Tip:</strong> Add up to ~10 videos. They will auto-rotate. If the homepage doesn't update immediately, refresh the page. Tabs update in real-time when you save.
                 </p>
               </div>
             </div>

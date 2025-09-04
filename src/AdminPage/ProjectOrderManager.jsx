@@ -15,6 +15,8 @@ import { Helmet } from "react-helmet";
 import Api_Service from "../Redux/utils/Api_Service";
 import { shuffleArrayWithSeed, generateSeedFromBuilderName } from "../Utils/ProjectOrderUtils";
 import Sidebar from "./Sidebar";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProjectOrderManager = () => {
   const dispatch = useDispatch();
@@ -27,6 +29,7 @@ const ProjectOrderManager = () => {
   const [previewProject, setPreviewProject] = useState(null); // project details pane
   const [showRawDetails, setShowRawDetails] = useState(false);
   const [relatedProjects, setRelatedProjects] = useState([]);
+  const [showRelated, setShowRelated] = useState(false); // explicit visibility control for related panel
   const [relatedOrderIds, setRelatedOrderIds] = useState([]);
   const [relatedSynced, setRelatedSynced] = useState(true);
   const [relatedSaving, setRelatedSaving] = useState(false);
@@ -119,6 +122,81 @@ const ProjectOrderManager = () => {
   const selectedBuilderProjects = selectedBuilderData?.projects || [];
   const hasCustomOrderDefined = buildersWithCustomOrder[selectedBuilder] === true;
 
+  // Compute orderedProjects used across handlers and UI
+  const orderedProjects = useMemo(() => {
+    const projects = selectedBuilderProjects || [];
+    const customOrder = customOrders[selectedBuilder] || [];
+    const hasCustom = buildersWithCustomOrder[selectedBuilder] === true;
+
+    if (hasCustom && Array.isArray(customOrder) && customOrder.length > 0) {
+      const byId = new Map(projects.map(p => [p._id || p.id, p]));
+      const ordered = [];
+      // add in custom order
+      customOrder.forEach(id => {
+        const p = byId.get(id);
+        if (p) ordered.push(p);
+      });
+      // append any remaining not in custom order
+      projects.forEach(p => {
+        const id = p._id || p.id;
+        if (!customOrder.includes(id)) ordered.push(p);
+      });
+      return ordered;
+    }
+
+    // fallback to deterministic random
+    const seed = randomSeeds[selectedBuilder] || generateSeedFromBuilderName(selectedBuilder || '');
+    return shuffleArrayWithSeed(projects, seed);
+  }, [selectedBuilder, selectedBuilderProjects, customOrders, buildersWithCustomOrder, randomSeeds]);
+
+  // Load properties list when switching to Properties manage mode
+  useEffect(() => {
+    if (!selectedBuilder || manageMode !== 'properties') return;
+    const builderName = selectedBuilderData?.query || selectedBuilderData?.name || selectedBuilder;
+    let cancelled = false;
+    const run = async () => {
+      try {
+        setPropLoading(true);
+        // 1) Fetch properties for builder
+        let list = [];
+        try {
+          list = await getPropertiesByBuilder(builderName, 200);
+          if (!Array.isArray(list)) list = [];
+        } catch (_) {
+          list = [];
+        }
+        if (cancelled) return;
+        setPropItems(list);
+        setPropOrderIds(list.map(p => p._id || p.id));
+        setPropSynced(true);
+
+        // 2) Apply saved order if any (and if user hasn't started reordering locally)
+        try {
+          const orderDoc = await getPropertyOrder(builderName);
+          if (cancelled) return;
+          const latestIds = Array.isArray(orderDoc?.customOrder) ? orderDoc.customOrder : [];
+          if (latestIds.length > 0 && propSynced !== false) {
+            const byId = new Map(list.map(p => [String(p._id || p.id), p]));
+            const latestStr = latestIds.map(String);
+            const ordered = [
+              ...latestStr.filter(id => byId.has(id)).map(id => byId.get(id)),
+              ...list.filter(p => !latestStr.includes(String(p._id || p.id)))
+            ];
+            setPropItems(ordered);
+            setPropOrderIds(ordered.map(p => p._id || p.id));
+            setPropSynced(true);
+          }
+        } catch (_) {
+          // silent
+        }
+      } finally {
+        if (!cancelled) setPropLoading(false);
+      }
+    };
+    run();
+    return () => { cancelled = true; };
+  }, [selectedBuilder, manageMode, selectedBuilderData, getPropertiesByBuilder, getPropertyOrder, propSynced]);
+
   // Real-time sync for Properties (Manage tab)
   useEffect(() => {
     // clear any previous timer
@@ -134,15 +212,17 @@ const ProjectOrderManager = () => {
         const orderDoc = await getPropertyOrder(builderName);
         const latestIds = Array.isArray(orderDoc?.customOrder) ? orderDoc.customOrder : [];
         if (latestIds.length === 0) return; // nothing saved yet
-        // If order differs, reapply
+        // If order differs, reapply (string-safe comparisons)
         const currentIds = (propItems || []).map(p => p._id || p.id);
-        const sameLen = latestIds.length === currentIds.length;
-        const same = sameLen && latestIds.every((id, i) => id === currentIds[i]);
+        const latestIdsStr = latestIds.map(String);
+        const currentIdsStr = currentIds.map(String);
+        const sameLen = latestIdsStr.length === currentIdsStr.length;
+        const same = sameLen && latestIdsStr.every((id, i) => id === currentIdsStr[i]);
         if (!same) {
-          const byId = new Map((propItems || []).map(p => [p._id || p.id, p]));
+          const byId = new Map((propItems || []).map(p => [String(p._id || p.id), p]));
           const ordered = [
-            ...latestIds.filter(id => byId.has(id)).map(id => byId.get(id)),
-            ...(propItems || []).filter(p => !latestIds.includes(p._id || p.id))
+            ...latestIdsStr.filter(id => byId.has(id)).map(id => byId.get(id)),
+            ...(propItems || []).filter(p => !latestIdsStr.includes(String(p._id || p.id)))
           ];
           setPropItems(ordered);
           setPropOrderIds(ordered.map(p => p._id || p.id));
@@ -175,13 +255,15 @@ const ProjectOrderManager = () => {
         const latestIds = Array.isArray(orderDoc?.customOrder) ? orderDoc.customOrder : [];
         if (latestIds.length === 0) return;
         const currentIds = (relatedProjects || []).map(p => p._id || p.id);
-        const sameLen = latestIds.length === currentIds.length;
-        const same = sameLen && latestIds.every((id, i) => id === currentIds[i]);
+        const latestIdsStr = latestIds.map(String);
+        const currentIdsStr = currentIds.map(String);
+        const sameLen = latestIdsStr.length === currentIdsStr.length;
+        const same = sameLen && latestIdsStr.every((id, i) => id === currentIdsStr[i]);
         if (!same) {
-          const byId = new Map((relatedProjects || []).map(p => [p._id || p.id, p]));
+          const byId = new Map((relatedProjects || []).map(p => [String(p._id || p.id), p]));
           const ordered = [
-            ...latestIds.filter(id => byId.has(id)).map(id => byId.get(id)),
-            ...(relatedProjects || []).filter(p => !latestIds.includes(p._id || p.id))
+            ...latestIdsStr.filter(id => byId.has(id)).map(id => byId.get(id)),
+            ...(relatedProjects || []).filter(p => !latestIdsStr.includes(String(p._id || p.id)))
           ];
           setRelatedProjects(ordered);
           setRelatedOrderIds(ordered.map(p => p._id || p.id));
@@ -197,15 +279,43 @@ const ProjectOrderManager = () => {
     };
   }, [relatedBuilder, getPropertyOrder, relatedProjects]);
 
+  // Keep related properties panel in view on open/update
+  useEffect(() => {
+    if (!relatedBuilder) return;
+    try {
+      if (relatedRef?.current) {
+        relatedRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } catch (_) {}
+  }, [relatedBuilder, relatedProjects]);
+
+  // Debug: track visibility toggles of related panel
+  useEffect(() => {
+    console.log('🔎 showRelated changed:', showRelated, 'relatedBuilder:', relatedBuilder, 'items:', relatedProjects.length);
+  }, [showRelated, relatedBuilder, relatedProjects.length]);
+
+  // If a related builder is selected, keep the panel visible (guards against remount/reset flicker)
+  useEffect(() => {
+    if (relatedBuilder) {
+      setShowRelated(true);
+    }
+  }, [relatedBuilder]);
+
   // Open related properties by the clicked project's builder
   const openRelatedByBuilder = async (project) => {
+    console.log('🟦 openRelatedByBuilder: invoked with project:', project?.projectName, 'builder fields:', {
+      builderName: project?.builderName,
+      builder: project?.builder,
+      builder_name: project?.builder_name
+    });
     if (!project) return;
     const labelRaw = project.builderName || project.builder || project.builder_name || "";
     const label = (typeof labelRaw === 'string' ? labelRaw.trim() : labelRaw) || "";
     if (!label) {
-      alert('No builder name on this project.');
+      console.log('No builder name on this project.');
       return;
     }
+    console.log('🟦 openRelatedByBuilder: raw label:', labelRaw, 'normalized label:', label);
     setPreviewProject(null);
     // Normalize to a known query name if possible
     const norm = String(label).toLowerCase();
@@ -219,39 +329,80 @@ const ProjectOrderManager = () => {
     if (match?.query) {
       queryName = match.query; // Use canonical query expected by API and Redux
     }
+    console.log('🟦 openRelatedByBuilder: resolved queryName:', queryName, 'match:', match);
     setRelatedBuilder(queryName);
+    setShowRelated(true);
+    console.log('🟦 openRelatedByBuilder: setRelatedBuilder + setShowRelated(true)');
+    // Ensure the related section scrolls into view when opened
+    setTimeout(() => {
+      try {
+        if (relatedRef?.current) {
+          relatedRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } catch (_) {}
+    }, 0);
     setRelatedLoading(true);
     try {
-      // Use a positive limit; some backends treat 0 as return 0 rows
-      console.log('🔍 Loading related properties for builder:', queryName, 'from label:', label);
-      // Fetch list and existing order, then sort using saved customOrder
-      const [list, orderDoc] = await Promise.all([
-        getProjectbyBuilder(queryName, 48),
-        getPropertyOrder(queryName)
-      ]);
-      const arr = Array.isArray(list) ? list : [];
-      const byId = new Map(arr.map(p => [p._id || p.id, p]));
-      let ordered = arr;
-      let orderIds = [];
-      if (orderDoc?.customOrder?.length) {
-        orderIds = orderDoc.customOrder.filter(id => byId.has(id));
-        const remaining = arr.filter(p => !orderIds.includes(p._id || p.id));
-        ordered = [...orderIds.map(id => byId.get(id)), ...remaining];
+      console.log('🟦 openRelatedByBuilder: fetching related properties for', queryName);
+    // 1) Fetch projects first and render immediately
+    let arr = [];
+    try {
+      arr = await getProjectbyBuilder(queryName, 48);
+      if (!Array.isArray(arr)) arr = [];
+    } catch (err) {
+      console.warn('🟨 openRelatedByBuilder: getProjectbyBuilder failed; using empty list');
+      arr = [];
+    }
+    console.log('🟦 openRelatedByBuilder: projects fetched, count:', arr.length);
+    if (relatedBuilder && relatedBuilder !== queryName) {
+      console.warn('🟨 openRelatedByBuilder: stale projects ignored. current=', relatedBuilder, 'resultFor=', queryName);
+      return;
+    }
+    // Render immediately with unordered list
+    setRelatedProjects(arr);
+    setRelatedOrderIds(arr.map(p => p._id || p.id));
+    setRelatedSynced(true);
+    console.log('🟦 openRelatedByBuilder: initial render without order');
+
+    // 2) Fetch order in background and re-order if available
+    try {
+      const orderDoc = await getPropertyOrder(queryName);
+      if (!orderDoc || !Array.isArray(orderDoc.customOrder) || orderDoc.customOrder.length === 0) {
+        console.log('🟦 openRelatedByBuilder: no custom order found; keeping unordered');
       } else {
-        orderIds = arr.map(p => p._id || p.id);
+        if (relatedBuilder && relatedBuilder !== queryName) {
+          console.warn('🟨 openRelatedByBuilder: stale order ignored. current=', relatedBuilder, 'resultFor=', queryName);
+        } else {
+          // If the user has already started reordering (unsynced), do NOT override their live order
+          if (relatedSynced === false) {
+            console.warn('🟨 openRelatedByBuilder: user is reordering (unsynced). Skipping background order apply.');
+          } else {
+          const byId = new Map(arr.map(p => [p._id || p.id, p]));
+          const orderIds = orderDoc.customOrder.filter(id => byId.has(id));
+          const remaining = arr.filter(p => !orderIds.includes(p._id || p.id));
+          const ordered = [...orderIds.map(id => byId.get(id)), ...remaining];
+          console.log('🟦 openRelatedByBuilder: applying custom order. ordered count:', ordered.length);
+          // Preserve non-empty guard still applies implicitly since ordered is based on arr
+          setRelatedProjects(ordered);
+          setRelatedOrderIds(ordered.map(p => p._id || p.id));
+          setRelatedSynced(true);
+          }
+        }
       }
-      setRelatedProjects(ordered);
-      setRelatedOrderIds(orderIds);
-      setRelatedSynced(true);
+    } catch (err) {
+      console.warn('🟨 openRelatedByBuilder: getPropertyOrder failed/timed out; keep unordered');
+    }
     } catch (e) {
-      console.error('Failed to load related projects:', e);
-      setRelatedProjects([]);
+      console.error('🟥 openRelatedByBuilder: unexpected error:', e);
+      // Do NOT wipe existing UI; just stop loading
     } finally {
       setRelatedLoading(false);
+      console.log('🟦 openRelatedByBuilder: finished. relatedLoading=false');
     }
   };
 
   const moveRelatedProperty = (index, dir) => {
+    console.log('🟦 moveRelatedProperty: invoked with index:', index, 'dir:', dir);
     setRelatedProjects(prev => {
       const arr = [...prev];
       const j = index + dir;
@@ -266,58 +417,22 @@ const ProjectOrderManager = () => {
   };
 
   const handleSaveRelatedPropertyOrder = async () => {
-    try {
-      const builderName = relatedBuilder;
-      await savePropertyOrder({ builderName, customOrder: relatedOrderIds, hasCustomOrder: true });
-      setRelatedSynced(true);
-    } catch (e) {
-      console.error('Save related property order failed:', e);
-      alert('Failed to save related property order');
-      // Smooth scroll to related section
-      setTimeout(() => {
-        if (relatedRef?.current) {
-          relatedRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 0);
-    }
+    const builderName = relatedBuilder;
+    const customOrder = relatedOrderIds;
+    // Update Redux immediately for real-time reflection on public pages
+    dispatch(setCustomOrder({ builderName, projectIds: customOrder }));
+    // Persist to server (fire-and-forget)
+    dispatch(saveProjectOrderToServer({ builderName, customOrder, hasCustomOrder: true, randomSeed: null }))
+      .unwrap()
+      .then(() => {
+        setRelatedSynced(true);
+        toast.success('Related properties order saved');
+      })
+      .catch((e) => {
+        console.warn('Save related property order failed:', e);
+        toast.error('Failed to save related property order. Will retry in background.');
+      });
   };
-
-  // Create ordered projects based on current state
-  const orderedProjects = useMemo(() => {
-    if (!selectedBuilder || !selectedBuilderProjects.length) {
-      return [];
-    }
-    
-    // Get the custom order for this builder
-    const customOrder = customOrders[selectedBuilder];
-    const hasCustomOrder = buildersWithCustomOrder[selectedBuilder] === true;
-    
-    if (hasCustomOrder && customOrder && customOrder.length > 0) {
-      // Use custom order if available
-      const orderedProjects = [];
-      const projectMap = new Map(selectedBuilderProjects.map(p => [p._id || p.id, p]));
-      
-      customOrder.forEach(projectId => {
-        const project = projectMap.get(projectId);
-        if (project) {
-          orderedProjects.push(project);
-        }
-      });
-      
-      // Add any remaining projects that weren't in the custom order
-      selectedBuilderProjects.forEach(project => {
-        if (!customOrder.includes(project._id || project.id)) {
-          orderedProjects.push(project);
-        }
-      });
-      
-      return orderedProjects;
-    } else {
-      // Use random order
-      const randomSeed = randomSeeds[selectedBuilder] || generateSeedFromBuilderName(selectedBuilder);
-      return shuffleArrayWithSeed([...selectedBuilderProjects], randomSeed);
-    }
-  }, [selectedBuilder, selectedBuilderProjects, customOrders, buildersWithCustomOrder, randomSeeds]);
 
   // Single definition of moveProperty (Properties manage tab)
   const moveProperty = (index, dir) => {
@@ -335,14 +450,17 @@ const ProjectOrderManager = () => {
   };
 
   const handleSavePropertyOrder = async () => {
-    try {
-      const builderName = selectedBuilderData?.query || selectedBuilderData?.name || selectedBuilder;
-      await savePropertyOrder({ builderName, customOrder: propOrderIds, hasCustomOrder: true });
-      setPropSynced(true);
-    } catch (e) {
-      console.error('Save property order failed:', e);
-      alert('Failed to save property order');
-    }
+    const builderName = selectedBuilderData?.query || selectedBuilderData?.name || selectedBuilder;
+    // Persist to server (fire-and-forget)
+    savePropertyOrder({ builderName, customOrder: propOrderIds, hasCustomOrder: true })
+      .then(() => {
+        setPropSynced(true);
+        toast.success('Properties order saved');
+      })
+      .catch((e) => {
+        console.warn('Save property order failed:', e);
+        toast.error('Failed to save property order. Will retry in background if applicable.');
+      });
   };
 
   // Debug logging
@@ -472,48 +590,91 @@ const ProjectOrderManager = () => {
     
     setIsRandomOrder(false);
 
-    // Save to server
+    // Save to server (fire-and-forget; background retries inside API)
+    memoizedSaveProjectOrder({
+      builderName: selectedBuilder,
+      customOrder: projectIds,
+      hasCustomOrder: true,
+      randomSeed: randomSeeds[selectedBuilder] || null
+    })
+      .unwrap()
+      .then(() => {
+        console.log('🔍 Project order saved to server after drag');
+      })
+      .catch((error) => {
+        console.warn('Save after drag failed (will have retried):', error?.message || error);
+        toast.error('Failed to save order after drag. Will retry in background.');
+      });
+
+    // Also persist property order to mirror project order
     try {
-      await memoizedSaveProjectOrder({
-        builderName: selectedBuilder,
-        customOrder: projectIds,
-        hasCustomOrder: true,
-        randomSeed: randomSeeds[selectedBuilder] || null
-      }).unwrap();
-      
-      console.log('🔍 Project order saved to server after drag');
-    } catch (error) {
-      console.error('Error saving project order to server:', error);
-      alert('Error saving project order to server. Please try again.');
-    }
+      const builderQuery = selectedBuilderData?.query || selectedBuilderData?.name || selectedBuilder;
+      savePropertyOrder({ builderName: builderQuery, customOrder: projectIds, hasCustomOrder: true })
+        .then(() => console.log('🔍 Mirrored property order saved after drag'))
+        .catch((e) => {
+          console.warn('Mirrored property order save failed (drag):', e?.message || e);
+        });
+      // Optimistically mirror in Properties tab UI if active
+      if (manageMode === 'properties') {
+        setPropOrderIds(projectIds);
+        // Reorder propItems by projectIds if we have items loaded
+        setPropItems(prev => {
+          if (!Array.isArray(prev) || prev.length === 0) return prev;
+          const byId = new Map(prev.map(p => [String(p._id || p.id), p]));
+          const ordered = [
+            ...projectIds.map(id => byId.get(String(id))).filter(Boolean),
+            ...prev.filter(p => !projectIds.map(String).includes(String(p._id || p.id)))
+          ];
+          return ordered;
+        });
+        setPropSynced(false);
+      }
+    } catch (_) {}
   };
 
   const handleSaveOrder = async () => {
     if (!selectedBuilder) return;
-    
-    setIsLoading(true);
-    
+
+    // Get current state for the selected builder
+    const customOrder = customOrders[selectedBuilder] || [];
+    const hasCustomOrder = buildersWithCustomOrder[selectedBuilder] === true;
+    const randomSeed = randomSeeds[selectedBuilder] || null;
+
+    // Fire-and-forget; don't block UI
+    console.log('🔍 Saving project order in background...');
+    memoizedSaveProjectOrder({
+      builderName: selectedBuilder,
+      customOrder,
+      hasCustomOrder,
+      randomSeed
+    })
+      .unwrap()
+      .then(() => console.log('🔍 Project order saved successfully to server'))
+      .catch((error) => {
+        console.warn('Background save failed (after retries):', error?.message || error);
+        toast.error('Failed to save order. Will retry in background.');
+      });
+
+    // Mirror to property order as well
     try {
-      // Get current state for the selected builder
-      const customOrder = customOrders[selectedBuilder] || [];
-      const hasCustomOrder = buildersWithCustomOrder[selectedBuilder] === true;
-      const randomSeed = randomSeeds[selectedBuilder] || null;
-      
-      // Save to server
-      await memoizedSaveProjectOrder({
-        builderName: selectedBuilder,
-        customOrder,
-        hasCustomOrder,
-        randomSeed
-      }).unwrap();
-      
-      alert('Project order saved successfully to server!');
-    } catch (error) {
-      console.error('Error saving project order:', error);
-      alert('Error saving project order. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
+      const builderQuery = selectedBuilderData?.query || selectedBuilderData?.name || selectedBuilder;
+      savePropertyOrder({ builderName: builderQuery, customOrder, hasCustomOrder: true })
+        .then(() => console.log('🔍 Mirrored property order saved (manual save)'))
+        .catch((e) => console.warn('Mirrored property order save failed (manual save):', e?.message || e));
+      if (manageMode === 'properties') {
+        setPropOrderIds(customOrder);
+        setPropItems(prev => {
+          if (!Array.isArray(prev) || prev.length === 0) return prev;
+          const byId = new Map(prev.map(p => [String(p._id || p.id), p]));
+          const ordered = [
+            ...customOrder.map(id => byId.get(String(id))).filter(Boolean),
+            ...prev.filter(p => !customOrder.map(String).includes(String(p._id || p.id)))
+          ];
+          return ordered;
+        });
+        setPropSynced(false);
+      }
+    } catch (_) {}
   };
 
   const handleResetToRandom = async () => {
@@ -549,7 +710,8 @@ const ProjectOrderManager = () => {
 
   const handleMoveProject = async () => {
     if (!selectedProject || !targetPosition || !selectedBuilder) {
-      alert('Please select a project and enter a target position.');
+      console.error('Move Project blocked: missing selection/position/builder', { selectedProject, targetPosition, selectedBuilder });
+      toast.error('Please select a project and enter a valid position');
       return;
     }
     
@@ -558,7 +720,8 @@ const ProjectOrderManager = () => {
     const projectExists = orderedProjects.some(p => (p._id || p.id) === selectedProjectId);
     
     if (!projectExists) {
-      alert('Selected project is no longer available. Please select a project again.');
+      console.error('Selected project missing from current list.');
+      toast.error('Selected project is no longer available. Please select again.');
       setSelectedProject(null);
       setTargetPosition("");
       return;
@@ -577,9 +740,9 @@ const ProjectOrderManager = () => {
     });
     
     if (currentIndex === -1) {
-      console.error('🔍 Debug - selectedProject:', selectedProject);
-      console.error('🔍 Debug - selectedProjectId:', selectedProjectId);
-      console.error('🔍 Debug - orderedProjects IDs:', orderedProjects.map(p => p._id || p.id));
+      console.error(' Debug - selectedProject:', selectedProject);
+      console.error(' Debug - selectedProjectId:', selectedProjectId);
+      console.error(' Debug - orderedProjects IDs:', orderedProjects.map(p => p._id || p.id));
       alert('Selected project not found! Please try selecting the project again.');
       return;
     }
@@ -607,26 +770,47 @@ const ProjectOrderManager = () => {
     setSelectedProject(null);
     setTargetPosition("");
     
-    // Save to server
+    // Save to server (fire-and-forget)
+    memoizedSaveProjectOrder({
+      builderName: selectedBuilder,
+      customOrder: projectIds,
+      hasCustomOrder: true,
+      randomSeed: randomSeeds[selectedBuilder] || null
+    })
+      .unwrap()
+      .then(() => console.log(` Moved "${movedProject.projectName}" to #${targetPosition} and saved to server`))
+      .catch((error) => {
+        console.warn('Background save after move failed:', error?.message || error);
+        toast.error('Failed to save order. Will retry in background.');
+      });
+
+    // Also mirror the properties order to match
     try {
-      await memoizedSaveProjectOrder({
-        builderName: selectedBuilder,
-        customOrder: projectIds,
-        hasCustomOrder: true,
-        randomSeed: randomSeeds[selectedBuilder] || null
-      }).unwrap();
-      
-      alert(`Project "${movedProject.projectName}" moved to position ${targetPosition} and saved to server!`);
-    } catch (error) {
-      console.error('Error saving project order to server:', error);
-      alert(`Project moved locally but failed to save to server. Please try again.`);
-    }
+      const builderQuery = selectedBuilderData?.query || selectedBuilderData?.name || selectedBuilder;
+      savePropertyOrder({ builderName: builderQuery, customOrder: projectIds, hasCustomOrder: true })
+        .then(() => console.log('🔍 Mirrored property order saved after Move Project'))
+        .catch((e) => console.warn('Mirrored property order save failed (Move Project):', e?.message || e));
+      if (manageMode === 'properties') {
+        setPropOrderIds(projectIds);
+        setPropItems(prev => {
+          if (!Array.isArray(prev) || prev.length === 0) return prev;
+          const byId = new Map(prev.map(p => [String(p._id || p.id), p]));
+          const ordered = [
+            ...projectIds.map(id => byId.get(String(id))).filter(Boolean),
+            ...prev.filter(p => !projectIds.map(String).includes(String(p._id || p.id)))
+          ];
+          return ordered;
+        });
+        setPropSynced(false);
+      }
+    } catch (_) {}
   };
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
       <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
+        <ToastContainer />
         <Helmet>
           <title>Project Order Manager - Admin Dashboard</title>
         </Helmet>
@@ -923,15 +1107,24 @@ const ProjectOrderManager = () => {
                         className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-700 cursor-pointer"
                         role="button"
                         title="Open project"
-                        onClick={() => { openRelatedByBuilder(project); }}
+                        onClick={() => { console.log('🟦 Card click: Show properties for', project?.projectName); openRelatedByBuilder(project); }}
                       >
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="font-semibold text-gray-800 dark:text-gray-100">
                             {index + 1}. {project.projectName}
                           </h3>
-                          <span className="text-xs bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded text-blue-600 dark:text-blue-300">
-                            Position {index + 1}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded text-blue-600 dark:text-blue-300">
+                              Position {index + 1}
+                            </span>
+                            <button
+                              className="text-xs px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
+                              title="Show properties by builder"
+                              onClick={(e) => { e.stopPropagation(); console.log('🟦 Button click: Show Properties for', project?.projectName); openRelatedByBuilder(project); }}
+                            >
+                              Show Properties
+                            </button>
+                          </div>
                         </div>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                           {project.city}, {project.state}
@@ -964,8 +1157,8 @@ const ProjectOrderManager = () => {
                                 return;
                               }
                               const project = orderedProjects.find(p => {
-                                const projectId = p._id || p.id;
-                                return projectId === selectedValue;
+                                const projectId = String(p._id || p.id);
+                                return projectId === String(selectedValue);
                               });
                               if (project) {
                                 setSelectedProject(project);
@@ -977,16 +1170,14 @@ const ProjectOrderManager = () => {
                             }}
                             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                           >
-                            <option value="">Choose a project...</option>
+                            <option value="">Select project…</option>
                             {orderedProjects.map((project, index) => (
-                              <option key={project._id || project.id} value={project._id || project.id}>
+                              <option key={project._id || project.id} value={String(project._id || project.id)}>
                                 {index + 1}. {project.projectName}
                               </option>
                             ))}
                           </select>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mt-4 mb-2">
                             Move to Position
                           </label>
                           <input
@@ -1021,7 +1212,7 @@ const ProjectOrderManager = () => {
                       </div>
                       {selectedProject && (
                         <p className="text-sm text-yellow-700 dark:text-yellow-400 mt-2">
-                          Moving: <strong>{selectedProject.projectName}</strong> (Current Position: {orderedProjects.findIndex(p => (p._id || p.id) === (selectedProject._id || selectedProject.id)) + 1})
+                          Moving: <strong>{selectedProject.projectName}</strong> (Current Position: {orderedProjects.findIndex(p => String(p._id || p.id) === String(selectedProject._id || selectedProject.id)) + 1})
                         </p>
                       )}
                       {!selectedProject && orderedProjects.length > 0 && (
@@ -1109,8 +1300,8 @@ const ProjectOrderManager = () => {
         )}
 
         {/* Related Properties by Builder (inline) */}
-        {(relatedLoading || relatedProjects.length > 0) && (
-          <div ref={relatedRef} className="bg-white dark:bg-gray-800 rounded-lg shadow p-3 mt-3">
+        {showRelated && (
+          <div ref={relatedRef} className="bg-white dark:bg-gray-800 rounded-lg shadow p-3 mt-3 min-h-[80px]">
             <div className="flex flex-col md:flex-row">
               <div className="w-full p-1 text-black flex flex-col justify-center items-start">
                 <span className="text-xl sm:text-lg text-gray-700 dark:text-gray-300 flex items-center justify-start space-x-2">
@@ -1124,7 +1315,7 @@ const ProjectOrderManager = () => {
                 ) : null}
                 <div className="mt-2">
                   <button
-                    onClick={() => { setRelatedBuilder(""); setRelatedProjects([]); }}
+                    onClick={() => { setRelatedBuilder(""); setRelatedProjects([]); setShowRelated(false); }}
                     className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 text-xs"
                     title="Back to builder projects"
                   >
@@ -1137,7 +1328,9 @@ const ProjectOrderManager = () => {
             {relatedLoading ? (
               <div className="py-4 text-center text-gray-600 dark:text-gray-300">Loading properties…</div>
             ) : relatedProjects.length === 0 ? (
-              <></>
+              <div className="py-6 text-center text-gray-500 dark:text-gray-400">
+                No properties found for <span className="font-semibold">{relatedBuilder}</span>.
+              </div>
             ) : (
               <section className="w-full mb-2">
                 <div className="pt-2 rounded-lg relative">
@@ -1156,13 +1349,13 @@ const ProjectOrderManager = () => {
                         onChange={(e) => {
                           const val = e.target.value;
                           if (!val) { setRelatedSelected(null); return; }
-                          const found = relatedProjects.find(p => (p._id || p.id) === val);
+                          const found = relatedProjects.find(p => String(p._id || p.id) === String(val));
                           setRelatedSelected(found || null);
                         }}
                       >
                         <option value="">Select property…</option>
                         {relatedProjects.map((p, i) => (
-                          <option key={p._id || p.id || i} value={p._id || p.id}>{i+1}. {p.projectName || p.name || p.project_title}</option>
+                          <option key={p._id || p.id || i} value={String(p._id || p.id)}>{i+1}. {p.projectName || p.name || p.project_title}</option>
                         ))}
                       </select>
                       <input
@@ -1178,16 +1371,50 @@ const ProjectOrderManager = () => {
                         className="px-3 py-1 rounded bg-yellow-600 text-white text-sm disabled:opacity-50"
                         disabled={!relatedSelected || !relatedTargetPos}
                         onClick={() => {
-                          const to = Number(relatedTargetPos) - 1;
+                          const to = parseInt(relatedTargetPos, 10) - 1;
+                          if (!relatedSelected || Number.isNaN(to)) {
+                            console.error('🟥 Related move invalid input', { relatedSelected, relatedTargetPos, total: relatedProjects.length });
+                            toast.error('Enter a valid position and select a property');
+                            return;
+                          }
+                          const selId = String(relatedSelected._id || relatedSelected.id);
                           setRelatedProjects(prev => {
-                            if (!relatedSelected || isNaN(to) || to < 0 || to >= prev.length) return prev;
+                            const total = prev.length;
+                            if (to < 0 || to >= total) {
+                              console.error('🟥 Related move: target out of range', { to, total });
+                              toast.error(`Target must be between 1 and ${total}`);
+                              return prev;
+                            }
+                            const from = prev.findIndex(x => String(x._id || x.id) === selId);
+                            console.log('🟦 Related move request:', { selectedId: selId, from, to, total });
+                            if (from === -1) {
+                              console.error('🟥 Related move: selected not found in current state');
+                              toast.error('Selected property not found');
+                              return prev;
+                            }
+                            if (from === to) {
+                              toast.error('Property is already at that position');
+                              return prev;
+                            }
                             const copy = [...prev];
-                            const from = copy.findIndex(x => (x._id || x.id) === (relatedSelected._id || relatedSelected.id));
-                            if (from === -1 || from === to) return prev;
                             const [moved] = copy.splice(from, 1);
                             copy.splice(to, 0, moved);
-                            setRelatedOrderIds(copy.map(x => x._id || x.id));
+                            const ids = copy.map(x => x._id || x.id);
+                            console.log('🟦 Related new order ids:', ids);
+                            setRelatedOrderIds(ids);
                             setRelatedSynced(false);
+                            // Real-time: push to Redux and persist in background
+                            if (relatedBuilder) {
+                              dispatch(setCustomOrder({ builderName: relatedBuilder, projectIds: ids }));
+                              dispatch(saveProjectOrderToServer({ builderName: relatedBuilder, customOrder: ids, hasCustomOrder: true, randomSeed: null }))
+                                .unwrap()
+                                .then(() => setRelatedSynced(true))
+                                .catch((e) => {
+                                  console.warn('Related move autosave failed (will have retried):', e?.message || e);
+                                  toast.error('Failed to save property order. Will retry in background.');
+                                });
+                            }
+                            toast.success(`Moved to position ${to + 1}`);
                             return copy;
                           });
                           setRelatedSelected(null);
@@ -1198,15 +1425,17 @@ const ProjectOrderManager = () => {
                       </button>
                       <button
                         className="px-4 py-1 rounded bg-red-600 text-white text-sm disabled:opacity-50"
-                        disabled={relatedSaving || relatedProjects.length === 0 || relatedSynced}
+                        disabled={relatedSaving || relatedProjects.length === 0}
                         onClick={async () => {
                           try {
                             setRelatedSaving(true);
-                            await savePropertyOrder({ builderName: relatedBuilder, customOrder: relatedOrderIds, hasCustomOrder: true });
+                            // Update Redux immediately and persist
+                            dispatch(setCustomOrder({ builderName: relatedBuilder, projectIds: relatedOrderIds }));
+                            await dispatch(saveProjectOrderToServer({ builderName: relatedBuilder, customOrder: relatedOrderIds, hasCustomOrder: true, randomSeed: null })).unwrap();
                             setRelatedSynced(true);
                           } catch (e) {
                             console.error('Save related order failed:', e);
-                            alert('Failed to save property order');
+                            toast.error('Failed to save property order.');
                           } finally {
                             setRelatedSaving(false);
                           }

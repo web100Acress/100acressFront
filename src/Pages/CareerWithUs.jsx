@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Footer from "../Components/Actual_Components/Footer";
-import { MapPin, Mail, Phone, X, Search, SlidersHorizontal } from "lucide-react";
+import { MapPin, Mail, Phone, X, Search, SlidersHorizontal, Filter, ChevronDown, Clock, Building2, Users, Briefcase } from "lucide-react";
 import { CarrierIcon } from "../Assets/icons";
 import api from "../config/apiClient";
 import { motion, AnimatePresence } from "framer-motion";
@@ -197,402 +197,598 @@ const CareerWithUs = () => {
     return jobs.map((job, index) => (
       <motion.div
         key={(job._id || index) + (job.jobTitle || "")}
-        className="bg-white p-6 shadow-xl rounded-2xl flex flex-col justify-between transform transition-transform duration-300 hover:scale-105"
-        initial={{ opacity: 0, y: 50 }}
+        className="group bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-gray-200 p-6 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:shadow-primaryRed/10 hover:-translate-y-2"
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: index * 0.1 }}
+        transition={{ duration: 0.4, delay: index * 0.05 }}
       >
-        <div>
-          <h4 className="font-bold text-lg text-gray-800">{job.jobTitle}</h4>
-          <p className="flex items-center text-gray-600 mt-2">
-            <MapPin color="#C13B44" size={16} className="mr-2" />
-            {job.jobLocation || job.location || "Gurgaon, Haryana"}
-          </p>
-          <p className="mt-2 text-gray-600">
-            Experience: <span className="font-semibold">{job.experience || "N/A"}</span>
-          </p>
+        <div className="space-y-4">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <h4 className="font-bold text-xl text-gray-900 group-hover:text-primaryRed transition-colors duration-300">
+                {job.jobTitle}
+              </h4>
+              <div className="flex items-center gap-2 text-gray-600 mt-2">
+                <div className="w-2 h-2 rounded-full bg-primaryRed/60"></div>
+                <Building2 size={14} className="text-gray-400" />
+                <span className="text-sm font-medium">
+                  {job.jobLocation || job.location || "Gurgaon, Haryana"}
+                </span>
+              </div>
+            </div>
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primaryRed/10 to-red-100 flex items-center justify-center">
+              <Briefcase size={20} className="text-primaryRed" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-50/80 rounded-2xl p-3">
+              <div className="flex items-center gap-2 mb-1">
+                <Users size={14} className="text-gray-400" />
+                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Experience</span>
+              </div>
+              <p className="text-sm font-semibold text-gray-800">
+                {job.experience || "Not specified"}
+              </p>
+            </div>
+            
+            <div className="bg-gray-50/80 rounded-2xl p-3">
+              <div className="flex items-center gap-2 mb-1">
+                <Clock size={14} className="text-gray-400" />
+                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Posted</span>
+              </div>
+              <p className="text-sm font-semibold text-gray-800">
+                {calculateDaysAgo(job.createdAt || new Date().toISOString())}
+              </p>
+            </div>
+          </div>
+
           {job.skill && (
-            <p className="text-gray-600">
-              Skills: <span className="font-semibold">{job.skill}</span>
-            </p>
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                <span className="text-xs font-medium text-blue-700 uppercase tracking-wide">Skills Required</span>
+              </div>
+              <p className="text-sm text-blue-800 font-medium">{job.skill}</p>
+            </div>
           )}
         </div>
-        <div className="mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
-          <p className="text-sm font-light text-gray-500 mb-2 sm:mb-0">
-            Posted {calculateDaysAgo(job.createdAt || new Date().toISOString())}
-          </p>
-          <button
+
+        <div className="mt-6 pt-4 border-t border-gray-100">
+          <motion.button
             onClick={() => setApplyForId(job._id)}
-            className="px-6 py-2 bg-primaryRed hover:bg-red-700 text-white font-medium rounded-lg transition duration-300 transform hover:scale-105 shadow-md"
+            className="w-full px-6 py-3 bg-gradient-to-r from-primaryRed to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg shadow-primaryRed/25 hover:shadow-xl hover:shadow-primaryRed/40"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             Apply Now
-          </button>
+          </motion.button>
         </div>
       </motion.div>
     ));
   }, [jobs]);
 
   return (
-    <div className="overflow-x-hidden bg-gray-50">
-      <div className="w-full px-4 md:px-8 py-8 md:py-16">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-16">
         {/* Hero Section */}
-        <div className="flex flex-col lg:flex-row items-center justify-between">
-          <motion.div
-            className="lg:basis-1/2"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-5xl font-extrabold text-primaryRed my-4" style={{ fontFamily: "'Gluten', serif" }}>
-              Shape Your Future With Us
-            </h1>
-            <p className="text-lg md:text-xl text-gray-700 my-6">
-              Join a team that values growth, innovation, and impact. Discover opportunities to build a fulfilling career with us and drive your professional journey forward.
-            </p>
-            <a href="#openings">
-              <motion.button
-                className="px-8 py-3 bg-primaryRed hover:bg-red-700 text-white font-semibold rounded-full transition duration-300 shadow-lg"
-                whileHover={{ scale: 1.05, boxShadow: "0 8px 15px rgba(193, 59, 68, 0.4)" }}
-                whileTap={{ scale: 0.95 }}
-              >
-                View Openings
-              </motion.button>
-            </a>
-          </motion.div>
-          <motion.div
-            className="lg:basis-1/2 flex justify-center mt-8 lg:mt-0"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <CarrierIcon className="w-full max-w-sm" />
-          </motion.div>
-        </div>
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primaryRed via-red-600 to-red-700 text-white mb-20">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="relative grid lg:grid-cols-2 gap-12 items-center p-8 lg:p-16">
+            <motion.div
+              className="space-y-6"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm">
+                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                <span className="text-sm font-medium">We're Hiring!</span>
+              </div>
+              
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+                Shape Your
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-orange-200">
+                  Future With Us
+                </span>
+              </h1>
+              
+              <p className="text-lg lg:text-xl text-red-100 leading-relaxed max-w-2xl">
+                Join a team that values growth, innovation, and impact. Discover opportunities to build a fulfilling career with us and drive your professional journey forward.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <motion.a 
+                  href="#openings"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-primaryRed font-semibold rounded-2xl hover:bg-gray-100 transition-all duration-300 shadow-xl"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  View Open Positions
+                  <ChevronDown size={20} className="ml-2" />
+                </motion.a>
+                
+                <motion.button
+                  className="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-2xl hover:bg-white/10 transition-all duration-300"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Learn About Us
+                </motion.button>
+              </div>
+            </motion.div>
+            
+            <motion.div
+              className="flex justify-center lg:justify-end"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="relative">
+                <div className="absolute inset-0 bg-white/20 rounded-3xl blur-2xl transform rotate-6"></div>
+                <CarrierIcon className="relative w-full max-w-md h-auto" />
+              </div>
+            </motion.div>
+          </div>
+        </section>
 
-        {/* Commitment Section */}
-        <section className="mt-20 text-center">
-          <h2 className="text-3xl font-bold text-gray-800">Our Commitment</h2>
-          <p className="text-md text-gray-600 max-w-3xl mx-auto mt-4">
-            We are committed to providing exceptional service and user-friendly tools to help our customers achieve their goals. We are always looking for ambitious, hard-working, and talented individuals who are passionate about making a difference. If you have the drive to achieve great milestones in your career, join our team!
-          </p>
+        {/* Stats Section */}
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 mb-20">
+          {[
+            { number: "200+", label: "Team Members", icon: Users },
+            { number: "50+", label: "Open Positions", icon: Briefcase },
+            { number: "1+", label: "Office Locations", icon: Building2 },
+            { number: "24/7", label: "Support", icon: Clock }
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              className="bg-white/70 backdrop-blur-sm rounded-3xl p-6 text-center border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-lg"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+            >
+              <div className="w-12 h-12 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primaryRed/10 to-red-100 flex items-center justify-center">
+                <stat.icon size={24} className="text-primaryRed" />
+              </div>
+              <h3 className="text-2xl lg:text-3xl font-bold text-gray-900">{stat.number}</h3>
+              <p className="text-gray-600 font-medium">{stat.label}</p>
+            </motion.div>
+          ))}
         </section>
 
         {/* Open Positions Section */}
-        <section id="openings" className="mt-16">
-          <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">Current Open Positions</h2>
+        <section id="openings" className="space-y-8">
+          <div className="text-center space-y-4">
+            <motion.h2 
+              className="text-3xl lg:text-4xl font-bold text-gray-900"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              Current Open Positions
+            </motion.h2>
+            <motion.p 
+              className="text-lg text-gray-600 max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              Find your perfect role and join our growing team of innovators
+            </motion.p>
+          </div>
 
-          {/* Results summary */}
-          <div className="flex items-center justify-between text-sm text-gray-600 mb-3">
-            <div>
-              <span className="font-medium text-gray-800">{total}</span> jobs found
-              <span className="ml-2 text-gray-500">(Page {currentPage} of {totalPages})</span>
+          {/* Results Summary */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white/60 backdrop-blur-sm rounded-2xl p-4">
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-gray-600">
+                <span className="font-bold text-gray-900 text-lg">{total}</span> positions found
+              </div>
+              <div className="text-sm text-gray-500">
+                Page {currentPage} of {totalPages}
+              </div>
             </div>
+            
             {(locationFilter !== 'all' || experienceFilter !== 'all' || debouncedSearch) && (
-              <div className="hidden md:flex items-center gap-2">
+              <div className="flex flex-wrap gap-2">
                 {debouncedSearch && (
-                  <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700">Search: {debouncedSearch}</span>
+                  <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-blue-100 text-blue-800 text-sm">
+                    <Search size={14} />
+                    {debouncedSearch}
+                  </span>
                 )}
                 {locationFilter !== 'all' && (
-                  <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700">Location: {locationFilter}</span>
+                  <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-green-100 text-green-800 text-sm">
+                    <MapPin size={14} />
+                    {locationFilter}
+                  </span>
                 )}
                 {experienceFilter !== 'all' && (
-                  <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700">Experience: {experienceFilter}</span>
+                  <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-purple-100 text-purple-800 text-sm">
+                    <Users size={14} />
+                    {experienceFilter} years
+                  </span>
                 )}
               </div>
             )}
           </div>
 
-          {/* Quick filter chips */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {/* Experience chips */}
-            {['all','0-1','2-4','5+'].map(exp => (
-              <button
+          {/* Quick Filters */}
+          <div className="flex flex-wrap gap-3">
+            {/* Experience filters */}
+            {['all', '0-1', '2-4', '5+'].map(exp => (
+              <motion.button
                 key={`exp-${exp}`}
                 onClick={() => setExperienceFilter(exp)}
-                className={`px-3 py-1.5 rounded-full text-sm border transition ${experienceFilter === exp ? 'bg-primaryRed text-white border-primaryRed' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+                className={`px-4 py-2 rounded-2xl text-sm font-medium transition-all duration-300 ${
+                  experienceFilter === exp 
+                    ? 'bg-gradient-to-r from-primaryRed to-red-600 text-white shadow-lg' 
+                    : 'bg-white/70 text-gray-700 border border-gray-200 hover:bg-white hover:shadow-md'
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {exp === 'all' ? 'Any experience' : `${exp} yrs`}
-              </button>
+                {exp === 'all' ? 'Any Experience' : `${exp} years`}
+              </motion.button>
             ))}
-            {/* Location chips: top 5 (excluding 'all') */}
-            {locations.filter(l => l !== 'all').slice(0,5).map(loc => (
-              <button
+            
+            {/* Top location filters */}
+            {locations.filter(l => l !== 'all').slice(0, 4).map(loc => (
+              <motion.button
                 key={`loc-${loc}`}
                 onClick={() => setLocationFilter(loc)}
-                className={`px-3 py-1.5 rounded-full text-sm border transition ${locationFilter === loc ? 'bg-primaryRed text-white border-primaryRed' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+                className={`px-4 py-2 rounded-2xl text-sm font-medium transition-all duration-300 ${
+                  locationFilter === loc 
+                    ? 'bg-gradient-to-r from-primaryRed to-red-600 text-white shadow-lg' 
+                    : 'bg-white/70 text-gray-700 border border-gray-200 hover:bg-white hover:shadow-md'
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 {loc}
-              </button>
+              </motion.button>
             ))}
           </div>
 
           {/* Mobile Filters Toggle */}
-          <div className="md:hidden mb-3 flex justify-end">
-            <button
-              type="button"
+          <div className="lg:hidden">
+            <motion.button
               onClick={() => setShowFilters(true)}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white shadow-sm"
+              className="inline-flex items-center gap-3 px-6 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-2xl text-gray-700 font-medium hover:bg-white hover:shadow-md transition-all duration-300"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <SlidersHorizontal size={18} /> Filters
-            </button>
+              <Filter size={20} />
+              Advanced Filters
+            </motion.button>
           </div>
 
-          {/* Professional Filters Bar (Desktop) */}
-          <div className="sticky top-0 z-30 mb-6 hidden md:block">
-            <div className="bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/70 rounded-xl shadow border border-gray-200 p-3">
-              <div className="grid grid-cols-12 gap-3 items-center">
+          {/* Desktop Filters */}
+          <div className="hidden lg:block sticky top-4 z-30">
+            <div className="bg-white/80 backdrop-blur-xl border border-gray-200 rounded-3xl p-6 shadow-lg">
+              <div className="grid grid-cols-12 gap-4 items-center">
                 {/* Search */}
-                <label className="col-span-4 relative block">
-                  <span className="sr-only">Search jobs</span>
-                  <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
-                    <Search size={16} />
-                  </span>
-                  <input
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg pl-9 pr-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primaryRed"
-                    placeholder="Search by title, skill, or location"
-                  />
-                </label>
+                <div className="col-span-4">
+                  <div className="relative">
+                    <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 bg-gray-50/50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-300"
+                      placeholder="Search positions, skills, locations..."
+                    />
+                  </div>
+                </div>
 
                 {/* Location */}
-                <label className="col-span-3">
-                  <span className="sr-only">Location</span>
+                <div className="col-span-3">
                   <select
                     value={locationFilter}
                     onChange={(e) => setLocationFilter(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primaryRed"
+                    className="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-300"
                   >
                     {locations.map((loc) => (
-                      <option key={loc} value={loc}>{loc === 'all' ? 'All locations' : loc}</option>
+                      <option key={loc} value={loc}>
+                        {loc === 'all' ? 'All Locations' : loc}
+                      </option>
                     ))}
                   </select>
-                </label>
+                </div>
 
                 {/* Experience */}
-                <label className="col-span-2">
-                  <span className="sr-only">Experience</span>
+                <div className="col-span-2">
                   <select
                     value={experienceFilter}
                     onChange={(e) => setExperienceFilter(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primaryRed"
+                    className="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-300"
                   >
-                    <option value="all">Any experience</option>
-                    <option value="0-1">0-1 yrs</option>
-                    <option value="2-4">2-4 yrs</option>
-                    <option value="5+">5+ yrs</option>
+                    <option value="all">Any Experience</option>
+                    <option value="0-1">0-1 years</option>
+                    <option value="2-4">2-4 years</option>
+                    <option value="5+">5+ years</option>
                   </select>
-                </label>
+                </div>
 
                 {/* Sort */}
-                <label className="col-span-1">
-                  <span className="sr-only">Sort by</span>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-3 flex items-center text-gray-400">
-                      <SlidersHorizontal size={18} />
-                    </div>
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg pl-10 pr-2 py-2 focus:outline-none focus:ring-2 focus:ring-primaryRed"
-                    >
-                      <option value="newest">Newest</option>
-                      <option value="oldest">Oldest</option>
-                    </select>
-                  </div>
-                </label>
-
-                {/* Page Size */}
-                <label className="col-span-1">
-                  <span className="sr-only">Page size</span>
+                <div className="col-span-2">
                   <select
-                    value={pageSize}
-                    onChange={(e) => { setPageSize(parseInt(e.target.value, 10)); setCurrentPage(1); }}
-                    className="w-full border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-primaryRed"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-300"
                   >
-                    {[9, 12, 24, 36].map(sz => (
-                      <option key={sz} value={sz}>{sz}/page</option>
-                    ))}
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
                   </select>
-                </label>
+                </div>
 
                 {/* Clear */}
-                <div className="col-span-1 flex justify-end">
-                  <button
-                    type="button"
+                <div className="col-span-1">
+                  <motion.button
                     onClick={() => {
                       setSearch('');
                       setLocationFilter('all');
                       setExperienceFilter('all');
                       setSortBy('newest');
-                      setPageSize(9);
                       setCurrentPage(1);
                     }}
-                    className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition w-full md:w-auto"
+                    className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-2xl transition-all duration-300"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
                     Clear
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Mobile Filters Drawer */}
+          {/* Mobile Filter Modal */}
           <AnimatePresence>
             {showFilters && (
               <motion.div
-                className="fixed inset-0 z-40 flex items-end md:hidden"
+                className="fixed inset-0 z-50 lg:hidden"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                <div className="absolute inset-0 bg-black/40" onClick={() => setShowFilters(false)} />
-                <motion.div
-                  className="relative w-full bg-white rounded-t-2xl p-4 shadow-xl"
-                  initial={{ y: 400 }}
-                  animate={{ y: 0 }}
-                  exit={{ y: 400 }}
-                  transition={{ type: 'spring', stiffness: 260, damping: 25 }}
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold text-gray-800">Filters</h3>
-                    <button onClick={() => setShowFilters(false)} className="text-gray-500 hover:text-gray-700">
-                      <X size={22} />
-                    </button>
-                  </div>
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowFilters(false)} />
+                <div className="absolute bottom-0 left-0 right-0">
+                  <motion.div
+                    className="bg-white rounded-t-3xl p-6 shadow-2xl max-h-[80vh] overflow-y-auto"
+                    initial={{ y: 400 }}
+                    animate={{ y: 0 }}
+                    exit={{ y: 400 }}
+                    transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                  >
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-xl font-bold text-gray-900">Filter Positions</h3>
+                      <button
+                        onClick={() => setShowFilters(false)}
+                        className="p-2 rounded-2xl bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors"
+                      >
+                        <X size={20} />
+                      </button>
+                    </div>
 
-                  {/* Search */}
-                  <label className="relative block mb-3">
-                    <span className="sr-only">Search jobs</span>
-                    <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
-                      <Search size={18} />
-                    </span>
-                    <input
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-primaryRed"
-                      placeholder="Search by title, skill, or location"
-                    />
-                  </label>
+                    <div className="space-y-6">
+                      {/* Search */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                        <div className="relative">
+                          <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                          <input
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-300"
+                            placeholder="Search positions, skills, locations..."
+                          />
+                        </div>
+                      </div>
 
-                  {/* Location */}
-                  <label className="block mb-3">
-                    <span className="sr-only">Location</span>
-                    <select
-                      value={locationFilter}
-                      onChange={(e) => setLocationFilter(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primaryRed"
-                    >
-                      {locations.map((loc) => (
-                        <option key={loc} value={loc}>{loc === 'all' ? 'All locations' : loc}</option>
-                      ))}
-                    </select>
-                  </label>
+                      {/* Location */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                        <select
+                          value={locationFilter}
+                          onChange={(e) => setLocationFilter(e.target.value)}
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-300"
+                        >
+                          {locations.map((loc) => (
+                            <option key={loc} value={loc}>
+                              {loc === 'all' ? 'All Locations' : loc}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
 
-                  {/* Experience */}
-                  <label className="block mb-3">
-                    <span className="sr-only">Experience</span>
-                    <select
-                      value={experienceFilter}
-                      onChange={(e) => setExperienceFilter(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primaryRed"
-                    >
-                      <option value="all">Any experience</option>
-                      <option value="0-1">0-1 yrs</option>
-                      <option value="2-4">2-4 yrs</option>
-                      <option value="5+">5+ yrs</option>
-                    </select>
-                  </label>
+                      {/* Experience */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Experience</label>
+                        <select
+                          value={experienceFilter}
+                          onChange={(e) => setExperienceFilter(e.target.value)}
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-300"
+                        >
+                          <option value="all">Any Experience</option>
+                          <option value="0-1">0-1 years</option>
+                          <option value="2-4">2-4 years</option>
+                          <option value="5+">5+ years</option>
+                        </select>
+                      </div>
 
-                  {/* Sort */}
-                  <label className="block mb-4">
-                    <span className="sr-only">Sort by</span>
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primaryRed"
-                    >
-                      <option value="newest">Newest</option>
-                      <option value="oldest">Oldest</option>
-                    </select>
-                  </label>
+                      {/* Sort */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                        <select
+                          value={sortBy}
+                          onChange={(e) => setSortBy(e.target.value)}
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-300"
+                        >
+                          <option value="newest">Newest First</option>
+                          <option value="oldest">Oldest First</option>
+                        </select>
+                      </div>
+                    </div>
 
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSearch('');
-                        setLocationFilter('all');
-                        setExperienceFilter('all');
-                        setSortBy('newest');
-                      }}
-                      className="flex-1 px-4 py-2 rounded-lg border border-gray-300 text-gray-700"
-                    >
-                      Clear
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowFilters(false)}
-                      className="flex-1 px-4 py-2 rounded-lg bg-primaryRed text-white"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                </motion.div>
+                    <div className="flex gap-3 mt-8 pt-6 border-t border-gray-100">
+                      <button
+                        onClick={() => {
+                          setSearch('');
+                          setLocationFilter('all');
+                          setExperienceFilter('all');
+                          setSortBy('newest');
+                        }}
+                        className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-2xl hover:bg-gray-200 transition-colors"
+                      >
+                        Clear All
+                      </button>
+                      <button
+                        onClick={() => setShowFilters(false)}
+                        className="flex-1 px-6 py-3 bg-gradient-to-r from-primaryRed to-red-600 text-white font-semibold rounded-2xl shadow-lg"
+                      >
+                        Apply Filters
+                      </button>
+                    </div>
+                  </motion.div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
 
+          {/* Loading State */}
           {loading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-white p-6 rounded-2xl shadow animate-pulse">
-                  <div className="h-5 bg-gray-200 rounded w-2/3 mb-3"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/3 mb-6"></div>
-                  <div className="h-10 bg-gray-200 rounded"></div>
+                <div key={i} className="bg-white/60 backdrop-blur-sm rounded-3xl p-6 animate-pulse">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <div className="h-6 bg-gray-200 rounded-2xl w-3/4 mb-3"></div>
+                      <div className="h-4 bg-gray-200 rounded-xl w-1/2"></div>
+                    </div>
+                    <div className="w-12 h-12 bg-gray-200 rounded-2xl"></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="h-16 bg-gray-200 rounded-2xl"></div>
+                    <div className="h-16 bg-gray-200 rounded-2xl"></div>
+                  </div>
+                  <div className="h-12 bg-gray-200 rounded-2xl"></div>
                 </div>
               ))}
             </div>
           )}
+
+          {/* Error State */}
           {error && (
-            <div className="bg-red-100 text-red-700 p-4 rounded-lg text-center">{error}</div>
+            <motion.div 
+              className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                <X size={32} className="text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-red-800 mb-2">Something went wrong</h3>
+              <p className="text-red-600">{error}</p>
+            </motion.div>
           )}
+
+          {/* Empty State */}
           {!loading && total === 0 && !error && (
-            <div className="text-center py-10 text-gray-500 text-lg">
-              No positions are currently open. Please check back later.
-            </div>
+            <motion.div 
+              className="bg-gray-50 border border-gray-200 rounded-3xl p-12 text-center"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <div className="w-20 h-20 mx-auto mb-6 bg-gray-200 rounded-full flex items-center justify-center">
+                <Search size={40} className="text-gray-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">No positions found</h3>
+              <p className="text-gray-600 mb-6">Try adjusting your filters or check back later for new opportunities.</p>
+              <button
+                onClick={() => {
+                  setSearch('');
+                  setLocationFilter('all');
+                  setExperienceFilter('all');
+                }}
+                className="inline-flex items-center px-6 py-3 bg-primaryRed text-white font-semibold rounded-2xl hover:bg-red-600 transition-colors"
+              >
+                Clear Filters
+              </button>
+            </motion.div>
           )}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          {/* Job Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
             {jobCards}
           </div>
 
-          {/* Pagination controls */}
+          {/* Pagination */}
           {total > pageSize && (
-            <div className="mt-6 flex items-center justify-center gap-2">
-              <button
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className={`px-3 py-2 rounded border ${currentPage === 1 ? 'text-gray-400 border-gray-200 cursor-not-allowed' : 'text-gray-700 border-gray-300 hover:bg-gray-50'}`}
-              >
-                Prev
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).slice(Math.max(0, currentPage - 3), Math.max(0, currentPage - 3) + 5).map(pg => (
-                <button
-                  key={pg}
-                  onClick={() => setCurrentPage(pg)}
-                  className={`px-3 py-2 rounded border ${currentPage === pg ? 'bg-primaryRed text-white border-primaryRed' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-12">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Show</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(parseInt(e.target.value, 10));
+                    setCurrentPage(1);
+                  }}
+                  className="px-3 py-1.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primaryRed"
                 >
-                  {pg}
-                </button>
-              ))}
-              <button
-                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-                className={`px-3 py-2 rounded border ${currentPage === totalPages ? 'text-gray-400 border-gray-200 cursor-not-allowed' : 'text-gray-700 border-gray-300 hover:bg-gray-50'}`}
-              >
-                Next
-              </button>
+                  {[9, 12, 24, 36].map(size => (
+                    <option key={size} value={size}>{size} per page</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <motion.button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className={`px-4 py-2 rounded-xl font-medium transition-all ${
+                    currentPage === 1 
+                      ? 'text-gray-400 bg-gray-100 cursor-not-allowed' 
+                      : 'text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:shadow-md'
+                  }`}
+                  whileHover={currentPage > 1 ? { scale: 1.05 } : {}}
+                  whileTap={currentPage > 1 ? { scale: 0.95 } : {}}
+                >
+                  Previous
+                </motion.button>
+
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .slice(Math.max(0, currentPage - 3), Math.min(totalPages, currentPage + 2))
+                    .map(page => (
+                      <motion.button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`w-10 h-10 rounded-xl font-medium transition-all ${
+                          currentPage === page
+                            ? 'bg-gradient-to-r from-primaryRed to-red-600 text-white shadow-lg'
+                            : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                        }`}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        {page}
+                      </motion.button>
+                    ))}
+                </div>
+
+                <motion.button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className={`px-4 py-2 rounded-xl font-medium transition-all ${
+                    currentPage === totalPages 
+                      ? 'text-gray-400 bg-gray-100 cursor-not-allowed' 
+                      : 'text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:shadow-md'
+                  }`}
+                  whileHover={currentPage < totalPages ? { scale: 1.05 } : {}}
+                  whileTap={currentPage < totalPages ? { scale: 0.95 } : {}}
+                >
+                  Next
+                </motion.button>
+              </div>
             </div>
           )}
         </section>
@@ -601,95 +797,176 @@ const CareerWithUs = () => {
         <AnimatePresence>
           {applyForId && (
             <motion.div
-              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 lg:p-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
               <motion.div
-                className="bg-white p-6 md:p-8 rounded-2xl w-full max-w-lg shadow-xl"
+                className="bg-white rounded-xl sm:rounded-2xl w-full max-w-2xl max-h-[75vh] sm:max-h-[75vh] overflow-y-auto shadow-xl mx-2 sm:mx-3"
                 initial={{ scale: 0.9, y: 50 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 50 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
               >
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-800">
-                    Apply for this Job
-                  </h3>
-                  <button
-                    onClick={() => setApplyForId(null)}
-                    className="text-gray-400 hover:text-gray-600 transition"
-                  >
-                    <X size={24} />
-                  </button>
-                </div>
-                <form onSubmit={submitApplication} className="space-y-4">
-                  {formError && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded">
-                      {formError}
+                <div className="sticky top-0 bg-white/95 backdrop-blur-sm p-4 sm:p-5 border-b border-gray-100 rounded-t-2xl sm:rounded-t-3xl">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 pr-4">
+                      <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 text-center">Apply for Position</h3>
+                      <p className="text-xs sm:text-sm text-gray-500 text-center">Submit your application and we'll get back to you soon</p>
                     </div>
+                    <button
+                      onClick={() => setApplyForId(null)}
+                      className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-all duration-200 flex-shrink-0"
+                    >
+                      <X size={20} className="sm:hidden" />
+                      <X size={24} className="hidden sm:block" />
+                    </button>
+                  </div>
+                </div>
+
+                <form onSubmit={submitApplication} className="p-3 sm:p-4 space-y-3 sm:space-y-4">
+                  {formError && (
+                    <motion.div 
+                      className="bg-red-50 border border-red-200 text-red-700 p-4 sm:p-5 rounded-2xl"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <X size={12} className="text-red-600" />
+                        </div>
+                        <p className="text-sm sm:text-base font-medium leading-relaxed">{formError}</p>
+                      </div>
+                    </motion.div>
                   )}
-                  <input
-                    className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryRed"
-                    placeholder="Full name"
-                    value={form.name}
-                    onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
-                    required
-                  />
-                  <input
-                    type="email"
-                    className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryRed"
-                    placeholder="Email"
-                    value={form.email}
-                    onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))}
-                    required
-                  />
-                  <input
-                    className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryRed"
-                    placeholder="Phone"
-                    value={form.phone}
-                    onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))}
-                  />
-                  <input
-                    className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryRed"
-                    placeholder="Resume URL (e.g., Google Drive link)"
-                    value={form.resumeUrl}
-                    onChange={(e) => setForm(f => ({ ...f, resumeUrl: e.target.value }))}
-                  />
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Or upload resume (PDF/DOCX, optional)
-                    </label>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+                    <div className="space-y-2">
+                      <label className="block text-sm sm:text-base font-semibold text-gray-700">Full Name *</label>
+                      <input
+                        className="w-full px-4 sm:px-5 py-3 sm:py-4 text-sm sm:text-base bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-300"
+                        placeholder="Enter your full name"
+                        value={form.name}
+                        onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm sm:text-base font-semibold text-gray-700">Email Address *</label>
+                      <input
+                        type="email"
+                        className="w-full px-4 sm:px-5 py-3 sm:py-4 text-sm sm:text-base bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-300"
+                        placeholder="Enter your email address"
+                        value={form.email}
+                        onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm sm:text-base font-semibold text-gray-700">Phone Number</label>
                     <input
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
-                      className="w-full text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primaryRed file:text-white hover:file:bg-red-700"
+                      type="tel"
+                      className="w-full px-4 sm:px-5 py-3 sm:py-4 text-sm sm:text-base bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-300"
+                      placeholder="Enter your phone number (optional)"
+                      value={form.phone}
+                      onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))}
                     />
                   </div>
-                  <textarea
-                    className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryRed"
-                    placeholder="Write your cover letter here..."
-                    rows={4}
-                    value={form.coverLetter}
-                    onChange={(e) => setForm(f => ({ ...f, coverLetter: e.target.value }))}
-                  />
-                  <div className="flex gap-2 justify-end pt-2">
-                    <button
+
+                  <div className="space-y-2">
+                    <label className="block text-sm sm:text-base font-semibold text-gray-700">Resume URL</label>
+                    <input
+                      type="url"
+                      className="w-full px-4 sm:px-5 py-3 sm:py-4 text-sm sm:text-base bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-300"
+                      placeholder="Link to your resume (Google Drive, LinkedIn, etc.)"
+                      value={form.resumeUrl}
+                      onChange={(e) => setForm(f => ({ ...f, resumeUrl: e.target.value }))}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm sm:text-base font-semibold text-gray-700">Upload Resume</label>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                        className="sr-only"
+                        id="resume-upload"
+                      />
+                      <label
+                        htmlFor="resume-upload"
+                        className="flex flex-col items-center justify-center w-full h-32 sm:h-40 lg:h-48 border-2 border-gray-200 border-dashed rounded-xl sm:rounded-2xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all duration-300 group"
+                      >
+                        <div className="flex flex-col items-center justify-center p-6">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 mb-4 bg-gradient-to-br from-primaryRed/10 to-red-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <svg className="w-6 h-6 sm:w-8 sm:h-8 text-primaryRed" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                          </div>
+                          <div className="text-center">
+                            <p className="mb-2 text-sm sm:text-base text-gray-600">
+                              {resumeFile ? (
+                                <span className="font-semibold text-primaryRed break-all">{resumeFile.name}</span>
+                              ) : (
+                                <>
+                                  <span className="font-semibold text-gray-700">Click to upload</span>
+                                  <span className="text-gray-500"> or drag and drop</span>
+                                </>
+                              )}
+                            </p>
+                            <p className="text-xs sm:text-sm text-gray-400 font-medium">PDF, DOC, DOCX (MAX. 5MB)</p>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm sm:text-base font-semibold text-gray-700">Cover Letter</label>
+                    <textarea
+                      className="w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primaryRed focus:border-transparent transition-all duration-200 resize-none"
+                      placeholder="Tell us why you're interested in this position..."
+                      rows={3}
+                      value={form.coverLetter}
+                      onChange={(e) => setForm(f => ({ ...f, coverLetter: e.target.value }))}
+                    />
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-6 lg:pt-8 border-t border-gray-100">
+                    <motion.button
                       type="button"
                       onClick={() => setApplyForId(null)}
-                      className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+                      className="flex-1 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base bg-gray-100 text-gray-700 font-semibold rounded-xl sm:rounded-2xl hover:bg-gray-200 transition-all duration-300"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       Cancel
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
                       type="submit"
                       disabled={submitting}
-                      className={`px-6 py-2 rounded-lg text-white font-semibold transition duration-300 ${submitting ? 'bg-red-300 cursor-not-allowed' : 'bg-primaryRed hover:bg-red-700'}`}
+                      className={`flex-1 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 ${
+                        submitting 
+                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                          : 'bg-gradient-to-r from-primaryRed to-red-600 text-white shadow-lg hover:shadow-xl'
+                      }`}
+                      whileHover={!submitting ? { scale: 1.02 } : {}}
+                      whileTap={!submitting ? { scale: 0.98 } : {}}
                     >
-                      {submitting ? 'Submitting...' : 'Submit Application'}
-                    </button>
+                      {submitting ? (
+                        <div className="flex items-center justify-center gap-3">
+                          <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                          <span>Submitting...</span>
+                        </div>
+                      ) : (
+                        'Submit Application'
+                      )}
+                    </motion.button>
                   </div>
                 </form>
               </motion.div>
@@ -697,26 +974,56 @@ const CareerWithUs = () => {
           )}
         </AnimatePresence>
 
-        {/* Contact Information Section */}
-        <section className="mt-20 text-center">
-          <div className="bg-white p-6 md:p-8 shadow-lg rounded-2xl max-w-2xl mx-auto">
-            <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-4">
-              Can't Find Your Role?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              If you don't see a suitable opening, feel free to reach out to us directly. We are always interested in connecting with passionate and talented individuals.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-6 md:gap-8">
-              <a href="mailto:hr@100acress.com" className="flex items-center text-primaryRed font-medium hover:underline transition">
-                <Mail color="#C13B44" size={20} strokeWidth={1.5} className="mr-2" />
-                hr@100acress.com
-              </a>
-              <a href="tel:+918500900100" className="flex items-center text-primaryRed font-medium hover:underline transition">
-                <Phone color="#C13B44" size={20} strokeWidth={1.5} className="mr-2" />
-                +91-8500900100
-              </a>
+        {/* Contact Section */}
+        <section className="mt-24">
+          <motion.div
+            className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-3xl p-8 lg:p-16 text-white relative overflow-hidden"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-primaryRed/10 to-red-600/10"></div>
+            <div className="relative text-center space-y-6">
+              <h3 className="text-3xl lg:text-4xl font-bold">
+                Can't Find Your Perfect Role?
+              </h3>
+              <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                Don't see a position that matches your skills? We're always interested in connecting with passionate and talented individuals. Reach out to us directly!
+              </p>
+              
+              <div className="flex flex-col sm:flex-row justify-center gap-6 lg:gap-12 mt-12">
+                <motion.a
+                  href="mailto:hr@100acress.com"
+                  className="flex items-center justify-center gap-4 px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white hover:bg-white/20 transition-all duration-300"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <div className="w-12 h-12 rounded-xl bg-primaryRed/20 flex items-center justify-center">
+                    <Mail size={24} className="text-primaryRed" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-semibold">Email Us</p>
+                    <p className="text-sm text-gray-300">hr@100acress.com</p>
+                  </div>
+                </motion.a>
+
+                <motion.a
+                  href="tel:+918500900100"
+                  className="flex items-center justify-center gap-4 px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white hover:bg-white/20 transition-all duration-300"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+                    <Phone size={24} className="text-green-400" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-semibold">Call Us</p>
+                    <p className="text-sm text-gray-300">+91-8500 900 100</p>
+                  </div>
+                </motion.a>
+              </div>
             </div>
-          </div>
+          </motion.div>
         </section>
       </div>
       <Footer />
