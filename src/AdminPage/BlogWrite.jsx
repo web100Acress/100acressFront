@@ -81,7 +81,7 @@ const BlogWrite = () => {
     }
     
     // Add the blog image
-    formDataAPI.append("blog_Image", fileData.blog_Image);
+    formDataAPI.append("blogImage", fileData.blog_Image);
     
     // Add the HTML content from the editor
     formDataAPI.append("blog_Description", content);
@@ -182,7 +182,7 @@ const BlogWrite = () => {
                       Front Image
                       <input
                         type="file"
-                        name="blog_Image"
+                        name="blogImage"
                         accept="image/*"
                         onChange={(e) => handleFileChange(e, "blog_Image")}
                         className="mx-2 border-gray-200 mt-1"
