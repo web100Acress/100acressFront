@@ -300,28 +300,24 @@ const Home = () => {
     >
   {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
-        <div className="relative w-full">
-          <img
-            // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/summer+banner.png"
-            //  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/monsoon-banner.webp"
-            src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp"
-            alt="Banner"
-            className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
-          />
-          <img
-            // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/mobilebanner.webp"
-            src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-mobile.webp"
-            alt="Mobile Banner"
-            className="mt-14 block md:hidden w-full h-[38rem]"
-          />
+        <Link to="/experion-the-trillion/" className="block relative w-full group" target="_self" aria-label="Experion The Trillion">
+          
+          <div className="hero-strip-99 transform transition-transform duration-500 ease-out group-hover:scale-[1.02] cursor-pointer" aria-hidden="true" />
+        </Link>
+    </div>
 
+    {/* SearchBar should NOT be blurred */}
+    <div className="relative w-full max-w-6xl mx-auto px-4 pb-1 py-8 -mt-20 z-10">
+      <SearchBar />
+    </div>
 
-          {/* Center the SearchBar */}
-          <div className="absolute inset-0 flex items-center justify-center mt-16 md:mt-0 lg:mt-24">
-            <SearchBar />
-          </div>
-
-        </div>
+    {/* Reopen blurred wrapper for the rest of the content */}
+    <div
+      className={`
+        transition-filter duration-300 ease-in-out
+        ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
+      `}
+    >
 
       <div className="relative">
         {/* Removed themed overlay */}
@@ -603,6 +599,36 @@ export default Home;
 const Wrapper = styled.div`
   /* Neutral background */
   background: #ffffff;
+
+  
+  .hero-strip-99 {
+    width: 100%;
+    height: 340px;
+    background-image: url("/Images/experion-the-trillion-banner.png");
+    background-repeat: no-repeat;
+    background-position: center center; /* keep image centered */
+    background-size: auto 100%; /* fit height exactly; crop sides on small screens */
+    margin-top: 0; /* navbar is fixed and overlays this strip */
+    position: relative; /* for gradient overlay */
+  }
+
+  /* Top fade to white to blend with transparent navbar */
+  .hero-strip-99::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 72px; /* fade height */
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 28%, rgba(255,255,255,0.4) 56%, rgba(255,255,255,0) 100%);
+  }
+
+  @media (max-width: 640px) {
+    .hero-strip-99 {
+      margin-top: 0;
+    }
+  }
 
   .dd-m-phone {
     position: fixed;

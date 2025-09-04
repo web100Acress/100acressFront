@@ -348,21 +348,22 @@ export default function BlogManagement() {
                 >
                   {/* Blog Image */}
                   <div className="relative h-48 overflow-hidden">
-                              <img
-                                src={
-                        blog.blog_Image?.url && typeof blog.blog_Image.url === 'string' && !blog.blog_Image.url.includes('via.placeholder.com')
-                          ? blog.blog_Image.url
-                          : blog.blog_Image && typeof blog.blog_Image === 'string' && !blog.blog_Image.includes('via.placeholder.com')
-                          ? blog.blog_Image
-                          : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f3f4f6'/%3E%3Ctext x='200' y='110' font-family='Arial' font-size='14' text-anchor='middle' fill='%236b7280'%3ENo Image%3C/text%3E%3C/svg%3E"
-                                }
-                                alt={blog.blog_Title || "Blog Image"}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      onError={(e) => {
-                        console.log('Image failed to load for blog:', blog._id, 'URL:', blog.blog_Image?.url);
-                        e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f3f4f6'/%3E%3Ctext x='200' y='110' font-family='Arial' font-size='14' text-anchor='middle' fill='%236b7280'%3ENo Image%3C/text%3E%3C/svg%3E";
-                      }}
-                    />
+                    { (blog?.blog_Image?.cdn_url || blog?.blog_Image?.url) ? (
+                      <img
+                        src={blog.blog_Image?.cdn_url || blog.blog_Image?.url}
+                        alt={blog.blog_Title || "Blog Image"}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        onError={(e) => {
+                          console.log('Image failed to load for blog:', blog._id, 'URL:', blog.blog_Image?.cdn_url || blog.blog_Image?.url);
+                          // Hide the broken image element; container will show fallback UI below if needed
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-500 text-sm">
+                        No image
+                      </div>
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     
                     {/* Published Badge */}
@@ -371,8 +372,8 @@ export default function BlogManagement() {
                         status={blog?.isPublished ? "success" : "default"}
                         text={blog?.isPublished ? "Published" : "Draft"}
                         className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium"
-                              />
-                            </div>
+                      />
+                    </div>
 
                     {/* Performance Metrics Overlay */}
                     <div className="absolute bottom-4 left-4 right-4 flex justify-between text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -715,4 +716,3 @@ export const PaginationControls = ({
     </button>
   </div>
 );
-
