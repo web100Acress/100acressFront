@@ -1,6 +1,6 @@
   import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Box, Flex, Button, useDisclosure } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { message } from "antd";
@@ -19,6 +19,8 @@ import { getApiBase } from "../../config/apiBase";
 
 export default function Navbar() {
   const history = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   // Safely read JWT from localStorage (may be raw string or JSON-quoted)
   let usertoken = (typeof window !== 'undefined' && localStorage.getItem("myToken")) || "";
   if (usertoken && usertoken.startsWith('"') && usertoken.endsWith('"')) {
@@ -548,8 +550,8 @@ export default function Navbar() {
         right="0"
         zIndex="9999"
         width="100%"
-        bg={colorChange ? "#e53e3e" : "transparent"}
-        boxShadow={colorChange ? "0 6px 18px rgba(0,0,0,0.12)" : "none"}
+        bg={isHome ? (colorChange ? "#e53e3e" : "transparent") : "#ffffff"}
+        boxShadow={isHome ? (colorChange ? "0 6px 18px rgba(0,0,0,0.12)" : "none") : "0 6px 18px rgba(0,0,0,0.08)"}
         transition="background-color 200ms ease, box-shadow 200ms ease"
       >
         <Box

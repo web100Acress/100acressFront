@@ -32,31 +32,8 @@ export default function RightSection({
   const lastScrollY = useRef(0);
 
   useEffect(() => {
-    if (!isMobile) {
-      // Ensure visible on desktop/tablet
-      setHideRight(false);
-      return;
-    }
-    lastScrollY.current = window.scrollY || 0;
-    let ticking = false;
-    const onScroll = () => {
-      const currentY = window.scrollY || 0;
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          // If scrolling down => hide; scrolling up => show
-          if (currentY > lastScrollY.current + 2) {
-            setHideRight(true);
-          } else if (currentY < lastScrollY.current - 2) {
-            setHideRight(false);
-          }
-          lastScrollY.current = currentY;
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    // Always keep right section visible (disable scroll-hide behavior)
+    setHideRight(false);
   }, [isMobile]);
 
   const openFilePicker = () => {
@@ -134,11 +111,7 @@ export default function RightSection({
         onClick={() => setIsSearchOpen(true)}
       />
 
-      <Box
-        opacity={{ base: hideRight ? 0 : 1, md: 1 }}
-        pointerEvents={{ base: hideRight ? 'none' : 'auto', md: 'auto' }}
-        transition="opacity 200ms ease"
-      >
+      <Box opacity={1} pointerEvents="auto">
         {/* Hidden file input for avatar upload */}
         <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} style={{ display: 'none' }} />
         {token ? (
