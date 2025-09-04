@@ -107,8 +107,7 @@ const LuxuryFooter = () => {
 
                 {/* Description */}
                 <p className="text-gray-600 leading-relaxed max-w-md text-base mt-2">
-                  Experience unparalleled luxury in the heart of the city. We offer the pinnacle of modern
-                  residential living, where sophisticated design meets exclusive lifestyle amenities.
+                Enjoy world-class luxury homes in the center of the city. Get the best modern apartments with stylish design, premium features, and top-class amenities for a truly exclusive lifestyle.
                 </p>
 
                 {/* Enhanced Social Media */}

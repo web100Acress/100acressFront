@@ -488,24 +488,21 @@ export default function BlogDashboard() {
       render: (_, record) => (
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <img
-              src={
-                record.blog_Image?.url && typeof record.blog_Image.url === 'string' && !record.blog_Image.url.includes('via.placeholder.com') 
-                  ? record.blog_Image.url 
-                  : record.blog_Image && typeof record.blog_Image === 'string' && !record.blog_Image.includes('via.placeholder.com')
-                  ? record.blog_Image
-                  : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='60' viewBox='0 0 80 60'%3E%3Crect width='80' height='60' fill='%23f3f4f6'/%3E%3Ctext x='40' y='35' font-family='Arial' font-size='10' text-anchor='middle' fill='%236b7280'%3EBlog Image%3C/text%3E%3C/svg%3E"
-              }
-              alt={record.blog_Title || "Blog Image"}
-              className="w-20 h-15 object-cover rounded-lg shadow-sm border border-gray-200"
-              onError={(e) => {
-                console.log('Image failed to load for blog:', record._id, 'URL:', record.blog_Image?.url);
-                e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='60' viewBox='0 0 80 60'%3E%3Crect width='80' height='60' fill='%23f3f4f6'/%3E%3Ctext x='40' y='35' font-family='Arial' font-size='10' text-anchor='middle' fill='%236b7280'%3EBlog Image%3C/text%3E%3C/svg%3E";
-              }}
-              onLoad={() => {
-                console.log('Image loaded successfully for blog:', record._id, 'URL:', record.blog_Image?.url);
-              }}
-            />
+            {(() => {
+              const img = record.blog_Image || {};
+              const cdn = typeof img.cdn_url === 'string' && img.cdn_url.trim();
+              const direct = typeof img.url === 'string' && img.url.trim();
+              const src = cdn || direct || (typeof img === 'string' ? img : '');
+              return src ? (
+                <img
+                  src={src}
+                  alt={record.blog_Title || "Blog Image"}
+                  className="w-20 h-15 object-cover rounded-lg shadow-sm border border-gray-200"
+                />
+              ) : (
+                <div className="w-20 h-15 rounded-lg border border-gray-200 bg-gray-100" />
+              );
+            })()}
             {record.isPublished && (
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
                 <div className="w-2 h-2 bg-white rounded-full"></div>
@@ -825,24 +822,21 @@ export default function BlogDashboard() {
             </div>
                          <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
                <div className="relative">
-                 <img
-                   src={
-                     analytics.topPerformingBlog.blog_Image?.url && typeof analytics.topPerformingBlog.blog_Image.url === 'string' && !analytics.topPerformingBlog.blog_Image.url.includes('via.placeholder.com')
-                       ? analytics.topPerformingBlog.blog_Image.url
-                       : analytics.topPerformingBlog.blog_Image && typeof analytics.topPerformingBlog.blog_Image === 'string' && !analytics.topPerformingBlog.blog_Image.includes('via.placeholder.com')
-                       ? analytics.topPerformingBlog.blog_Image
-                       : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='120' viewBox='0 0 160 120'%3E%3Crect width='160' height='120' fill='%23f3f4f6'/%3E%3Ctext x='80' y='70' font-family='Arial' font-size='12' text-anchor='middle' fill='%236b7280'%3ETop Blog%3C/text%3E%3C/svg%3E"
-                   }
-                   alt={analytics.topPerformingBlog.blog_Title || "Top Blog Image"}
-                   className="w-40 h-30 object-cover rounded-xl shadow-lg border border-gray-200 flex-shrink-0"
-                   onError={(e) => {
-                     console.log('Top blog image failed to load:', analytics.topPerformingBlog._id, 'URL:', analytics.topPerformingBlog.blog_Image?.url);
-                     e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='120' viewBox='0 0 160 120'%3E%3Crect width='160' height='120' fill='%23f3f4f6'/%3E%3Ctext x='80' y='70' font-family='Arial' font-size='12' text-anchor='middle' fill='%236b7280'%3ETop Blog%3C/text%3E%3C/svg%3E";
-                   }}
-                   onLoad={() => {
-                     console.log('Top blog image loaded successfully:', analytics.topPerformingBlog._id, 'URL:', analytics.topPerformingBlog.blog_Image?.url);
-                   }}
-                 />
+                 {(() => {
+                   const img = analytics.topPerformingBlog.blog_Image || {};
+                   const cdn = typeof img.cdn_url === 'string' && img.cdn_url.trim();
+                   const direct = typeof img.url === 'string' && img.url.trim();
+                   const src = cdn || direct || (typeof img === 'string' ? img : '');
+                   return src ? (
+                     <img
+                       src={src}
+                       alt={analytics.topPerformingBlog.blog_Title || "Top Blog Image"}
+                       className="w-40 h-30 object-cover rounded-xl shadow-lg border border-gray-200 flex-shrink-0"
+                     />
+                   ) : (
+                     <div className="w-40 h-30 rounded-xl border border-gray-200 bg-gray-100 flex-shrink-0" />
+                   );
+                 })()}
                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
                    <Award size={16} className="text-white" />
                  </div>
