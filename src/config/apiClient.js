@@ -36,6 +36,13 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token.replace(/^"|"$/g, '')}`;
     }
+
+    // If sending FormData, let the browser set the proper multipart boundaries
+    if (config.data instanceof FormData) {
+      try {
+        delete config.headers['Content-Type'];
+      } catch (_) {}
+    }
     
     // Add cache-busting parameter for GET requests
     if (config.method === 'get') {
