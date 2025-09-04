@@ -31,37 +31,11 @@
     const [hideRight, setHideRight] = useState(false);
     const lastScrollY = useRef(0);
 
-    useEffect(() => {
-      if (!isMobile) {
-        // Ensure visible on desktop/tablet
-        setHideRight(false);
-        return;
-      }
-      lastScrollY.current = window.scrollY || 0;
-      let ticking = false;
-      const onScroll = () => {
-        const currentY = window.scrollY || 0;
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            // If scrolling down => hide; scrolling up => show
-            if (currentY > lastScrollY.current + 2) {
-              setHideRight(true);
-            } else if (currentY < lastScrollY.current - 2) {
-              setHideRight(false);
-            }
-            lastScrollY.current = currentY;
-            ticking = false;
-          });
-          ticking = true;
-        }
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      return () => window.removeEventListener('scroll', onScroll);
-    }, [isMobile]);
+  useEffect(() => {
+    // Always keep right section visible (disable scroll-hide behavior)
+    setHideRight(false);
+  }, [isMobile]);
 
-    const openFilePicker = () => {
-      if (fileInputRef.current) fileInputRef.current.click();
-    };
 
     const handleFileChange = async (e) => {
       try {
@@ -104,35 +78,101 @@
         // reset input to allow same file reselect
         if (fileInputRef.current) fileInputRef.current.value = '';
       }
-    };
-    return (
-      <Flex
-        alignItems="center"
-        gap={{ base: 1, md: 2 }}
-        order={{ base: 3, md: 3 }}
-        justifyContent={{ base: "flex-end", md: "flex-end" }}
-        flex={{ base: "initial", md: 1 }}
-        position="relative"
-        zIndex={10001}
-        flexWrap="nowrap"
-        whiteSpace="nowrap"
-        overflowX={{ base: 'auto', md: 'visible' }}
-        sx={{ '::-webkit-scrollbar': { display: 'none' } }}
-      >
-        {/* Search trigger */}
-        <IconButton
-          aria-label="Search"
-          icon={<SearchIcon />}
-          size="sm"
-          variant="ghost"
-          color={colorChange ? "white" : "#111"}
-          _hover={{ bg: "transparent", color: colorChange ? "whiteAlpha.800" : "#111" }}
-          opacity={{ base: !isSearchOpen ? 1 : 0, md: colorChange && !isSearchOpen ? 1 : 0 }}
-          transition="opacity 300ms ease"
-          pointerEvents={{ base: !isSearchOpen ? "auto" : "none", md: colorChange && !isSearchOpen ? "auto" : "none" }}
-          display={{ base: "none", md: "inline-flex" }}
-          onClick={() => setIsSearchOpen(true)}
-        />
+
+
+      const form = new FormData();
+      form.append('avatar', file);
+      // Use centralized axios client (handles baseURL and Authorization)
+      const res = await api.post(`/users/${userId}/avatar`, form);
+      const data = res && res.data ? res.data : null;
+      const url = (data && data.data && data.data.avatarUrl) ? data.data.avatarUrl : '';
+      if (url && typeof onAvatarUpdated === 'function') onAvatarUpdated(url);
+      toast({ title: 'Profile photo updated', status: 'success', duration: 2500, isClosable: true });
+    } catch (err) {
+      console.error('Avatar upload error:', err);
+      const msg = (err && err.response && err.response.data && (err.response.data.message || err.response.data.error))
+        || err?.message
+        || 'Upload failed';
+      toast({ title: msg, status: 'error', duration: 3500, isClosable: true });
+    } finally {
+      // reset input to allow same file reselect
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+  return (
+    <Flex
+      alignItems="center"
+      gap={{ base: 1, md: 2 }}
+      order={{ base: 3, md: 3 }}
+      justifyContent={{ base: "flex-end", md: "flex-end" }}
+      flex={{ base: "initial", md: 1 }}
+      position="relative"
+      zIndex={10001}
+      flexWrap="nowrap"
+      whiteSpace="nowrap"
+      overflowX={{ base: 'auto', md: 'visible' }}
+      sx={{ '::-webkit-scrollbar': { display: 'none' } }}
+    >
+      {/* Search trigger */}
+      <IconButton
+        aria-label="Search"
+        icon={<SearchIcon />}
+        size="sm"
+        variant="ghost"
+        color={colorChange ? "white" : "#111"}
+        _hover={{ bg: "transparent", color: colorChange ? "whiteAlpha.800" : "#111" }}
+        opacity={{ base: !isSearchOpen ? 1 : 0, md: colorChange && !isSearchOpen ? 1 : 0 }}
+        transition="opacity 300ms ease"
+        pointerEvents={{ base: !isSearchOpen ? "auto" : "none", md: colorChange && !isSearchOpen ? "auto" : "none" }}
+        display={{ base: "none", md: "inline-flex" }}
+        onClick={() => setIsSearchOpen(true)}
+      />
+
+      <Box opacity={1} pointerEvents="auto">
+        {/* Hidden file input for avatar upload */}
+        <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} style={{ display: 'none' }} />
+        {token ? (
+          // Authenticated user: Drawer on mobile, Menu on desktop
+          isMobile ? (
+            <>
+              <Button onClick={() => (isAcctOpen ? onAcctClose() : onAcctOpen())} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
+                <Flex align="center" gap={2}>
+                  <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden">
+                    {avatarUrl ? (
+                      <Box
+                        as="img"
+                        src={avatarUrl}
+                        alt="Profile"
+                        w="100%"
+                        h="100%"
+                        objectFit="cover"
+                        onError={() => {
+                          toast({ title: 'Could not load profile image', status: 'error', duration: 2500, isClosable: true });
+                        }}
+                      />
+                    ) : (
+                      <Box as="span" lineHeight={0}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                          <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
+                      </Box>
+                    )}
+                  </Box>
+                </Flex>
+              </Button>
+              <Drawer
+                isOpen={isAcctOpen}
+                placement="right"
+                onClose={onAcctClose}
+                size="xs"
+                zIndex={15000}
+              >
+                <DrawerOverlay />
+                <DrawerContent maxW="260px">
+                  <DrawerCloseButton />
+                  <DrawerHeader borderBottomWidth="1px">{firstName || 'Account'}</DrawerHeader>
+
 
         <Box
           opacity={{ base: hideRight ? 0 : 1, md: 1 }}

@@ -1,6 +1,6 @@
   import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Box, Flex, Button, useDisclosure } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { message } from "antd";
@@ -19,6 +19,8 @@ import { getApiBase } from "../../config/apiBase";
 
 export default function Navbar() {
   const history = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   // Safely read JWT from localStorage (may be raw string or JSON-quoted)
   let usertoken = (typeof window !== 'undefined' && localStorage.getItem("myToken")) || "";
   if (usertoken && usertoken.startsWith('"') && usertoken.endsWith('"')) {
@@ -548,15 +550,36 @@ export default function Navbar() {
         right="0"
         zIndex="9999"
         width="100%"
+        bg={isHome ? (colorChange ? "#e53e3e" : "transparent") : "#ffffff"}
+        boxShadow={isHome ? (colorChange ? "0 6px 18px rgba(0,0,0,0.12)" : "none") : "0 6px 18px rgba(0,0,0,0.08)"}
+        transition="background-color 200ms ease, box-shadow 200ms ease"
       >
-        <Box w="100%" px={{ base: 3, md: 6 }} py={2} display="grid" gridTemplateColumns="1fr auto 1fr" alignItems="center" columnGap={4}>
+        <Box
+          w="100%"
+          px={{ base: 2, md: 6 }}
+          py={{ base: 1, md: 2 }}
+          display="grid"
+          gridTemplateColumns={{ base: 'auto 1fr auto', md: '1fr auto 1fr' }}
+          gridAutoFlow="column"
+          alignItems="center"
+          minH={{ base: '52px', md: '64px' }}
+          columnGap={{ base: 2, md: 4 }}
+        >
           {/* Left: Logo */}
-          <Box justifySelf="start">
+          <Box
+            justifySelf={{ base: 'center', md: 'start' }}
+            gridColumn={{ base: 2, md: 'auto' }}
+            alignSelf={{ base: 'center', md: 'center' }}
+          >
             <CenterLogo colorChange={colorChange} isSearchOpen={isSearchOpen} centerOnCompact={isCompactTablet} />
           </Box>
 
           {/* Center: Filters & Menus */}
-          <Box justifySelf="center">
+          <Box
+            justifySelf={{ base: 'start', md: 'center' }}
+            gridColumn={{ base: 1, md: 'auto' }}
+            alignSelf={{ base: 'center', md: 'center' }}
+          >
           <LeftSection
             colorChange={colorChange}
             isSearchOpen={isSearchOpen}
@@ -577,7 +600,11 @@ export default function Navbar() {
           </Box>
 
           {/* Right: Search, Profile & List Property */}
-          <Box justifySelf="end">
+          <Box
+            justifySelf={{ base: 'end', md: 'end' }}
+            gridColumn={{ base: 3, md: 'auto' }}
+            alignSelf={{ base: 'center', md: 'center' }}
+          >
           <RightSection
             colorChange={colorChange}
             isSearchOpen={isSearchOpen}

@@ -604,7 +604,7 @@ const Wrapper = styled.div`
   .hero-strip-99 {
     width: 100%;
     height: 340px;
-    background-image: url("/Images/experion-the-trillion-banner.png");
+    background-image: url("https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/experion-the-trillion-banner.webp");
     background-repeat: no-repeat;
     background-position: center center; /* keep image centered */
     background-size: auto 100%; /* fit height exactly; crop sides on small screens */

@@ -181,6 +181,7 @@ const BlogView = () => {
       blog_Image: normalizedImage,
       createdAt: obj.createdAt || '',
       slug: obj.slug || '',
+      _id: obj._id || '',
       // SEO fields (handle multiple possible keys)
       metaTitle: obj.metaTitle || obj.meta_Title || obj.seoTitle || '',
       metaDescription: obj.metaDescription || obj.meta_Description || obj.seoDescription || obj.meta_desc || ''
