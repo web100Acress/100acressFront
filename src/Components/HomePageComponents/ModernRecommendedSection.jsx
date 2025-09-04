@@ -187,7 +187,7 @@ const ModernRecommendedSection = () => {
             <div className="w-12 h-1 bg-gradient-to-r from-red-600 to-red-400 rounded-full hidden sm:block"></div>
           </div>
           <p className="hidden sm:block text-gray-600 text-lg max-w-2xl mx-auto mb-0 px-1">
-            Discover premium properties with luxury, location, and investment potential.
+          Find top-rated properties that offer luxury living, prime locations, and great investment opportunities.
           </p>
         </div>
 
