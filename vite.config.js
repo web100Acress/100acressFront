@@ -10,12 +10,12 @@ export default defineConfig(() => {
       proxy: {
         // In dev, route all '/api' requests to the backend
         '/api': {
-          target: 'https://api.100acress.com',
+          target: 'http://localhost:3500',
           changeOrigin: true,
-          secure: true,
+          secure: false,
           rewrite: (path) => {
             // Only rewrite if it's not already the full URL
-            if (!path.startsWith('https://')) {
+            if (!path.startsWith('http://')) {
               return path.replace(/^\/api/, '');
             }
             return path;
