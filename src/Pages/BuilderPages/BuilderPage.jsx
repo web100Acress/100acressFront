@@ -279,9 +279,9 @@ const BuilderPage = React.memo(() => {
         />
       </Helmet>
 
-      <section className="flex flex-col items-center pt-4 sm:pt-6 lg:pt-8 px-2 scroll-mt-24">
-              <h1 className="mb-3 p-3 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold">
-              {formattedBuilderName} Projects in Gurugram
+      <section className="w-full flex flex-col items-center pt-20 px-4 md:px-6 scroll-mt-16">
+              <h1 className="w-full max-w-screen-xl text-center text-2xl sm:text-3xl md:text-4xl lg:text-4xl text-red-600 font-bold px-4 py-6 break-words">
+                {formattedBuilderName} Projects in Gurugram
               </h1>
               
               {/* Sync Status Indicator */}
@@ -348,7 +348,7 @@ const BuilderPage = React.memo(() => {
                         </div>
                         <div className="pt-0 p-3">
                           <div className="pb-2">
-                            <span className="text-[15px] font-semibold hover:text-red-600  duration-500 ease-in-out">
+                            <span className="text-[15px] font-semibold hover:text-red-600 duration-500 ease-in-out font-['Rubik',sans-serif]">
                               {item.projectName}
                             </span>
                             <br />
