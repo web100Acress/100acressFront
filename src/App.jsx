@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useState, useEffect } from "react";
 import "./App.css";
 import { styled } from "styled-components";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
 import { DataProvider } from "./MyContext";
 import { AuthProvider } from "./AuthContext";
 import { Toaster } from "./Components/ui/Toaster";
@@ -15,6 +15,7 @@ import "animate.css";
 import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import LoginForm from "./Components/LoginForm";
+import FloatingShorts from "./Components/FloatingShorts";
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
 // Lazy load all main page components
@@ -182,40 +183,41 @@ function App() {
   }, []);
 
   return (
-    <DataProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <QueryClientProvider client={queryClient}>
-            <ErrorBoundary>
-              <Suspense fallback={<LoadingSpinner />}>
-                <Toaster position="top-right" />
-                <Sonner position="top-right" richColors />
-                
-                {/* Login Modal */}
-                {showLoginModal && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                      <button 
-                        onClick={() => setShowLoginModal(false)}
-                        className="float-right text-gray-500 hover:text-gray-700"
-                      >
-                        ✕
-                      </button>
-                      <LoginForm onSuccess={() => setShowLoginModal(false)} />
-                      <div className="mt-4 text-center">
+    <>
+      <DataProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <QueryClientProvider client={queryClient}>
+              <ErrorBoundary>
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Toaster position="top-right" />
+                  <Sonner position="top-right" richColors />
+                  
+                  {/* Login Modal */}
+                  {showLoginModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                      <div className="bg-white rounded-lg p-6 w-full max-w-md">
                         <button 
-                          onClick={() => {
-                            setShowLoginModal(false);
-                            setShowSignupModal(true);
-                          }}
-                          className="text-blue-600 hover:underline"
+                          onClick={() => setShowLoginModal(false)}
+                          className="float-right text-gray-500 hover:text-gray-700"
                         >
-                          Don't have an account? Sign up
+                          ✕
                         </button>
+                        <LoginForm onSuccess={() => setShowLoginModal(false)} />
+                        <div className="mt-4 text-center">
+                          <button 
+                            onClick={() => {
+                              setShowLoginModal(false);
+                              setShowSignupModal(true);
+                            }}
+                            className="text-blue-600 hover:underline"
+                          >
+                            Don't have an account? Sign up
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Your existing routes */}
                 <Routes>
@@ -403,121 +405,195 @@ function App() {
                     />
                   </Route>
 
-                  {/* Admin Routing */}
-                  <Route path="/admin" element={<PrivateRoute />}>
-                    <Route index element={<LazyLoad><AdminDashboard /></LazyLoad>} />
-                    <Route
-                      path="viewproperty/:id"
-                      element={<LazyLoad><ViewPropertyAdmin /></LazyLoad>}
-                    />
-                    <Route
-                      path="viewproperty/viewdetails/:id"
-                      element={<LazyLoad><ClientDetails /></LazyLoad>}
-                    />
-                    <Route
-                      path="viewproperty/editdetails/:id"
-                      element={<LazyLoad><EditDetails /></LazyLoad>}
-                    />
-                    <Route path="addnew" element={<LazyLoad><Addnew /></LazyLoad>} />
-                    <Route path="project-insert" element={<LazyLoad><InsertProject /></LazyLoad>} />
-                    <Route path="adminproperty" element={<LazyLoad><Adminproperty /></LazyLoad>} />
-                    <Route path="blog/view/:id" element={<LazyLoad><BlogViewAdmin /></LazyLoad>} />
-                    <Route path="blog/edit/:id" element={<LazyLoad><BlogEdit /></LazyLoad>} />
-                    <Route path="career" element={<LazyLoad><Career /></LazyLoad>} />
-                    <Route path="user" element={<LazyLoad><UserAdmin /></LazyLoad>} />
-                    <Route path="all-listed-properties" element={<LazyLoad><AllListedProperties /></LazyLoad>} />
-                    <Route path="contact" element={<LazyLoad><AdminContact /></LazyLoad>} />
-                    <Route path="editProject" element={<LazyLoad><EditProject /></LazyLoad>} />
-                    <Route path="enquiries" element={<LazyLoad><Enquiries /></LazyLoad>} />
-                    <Route path="header" element={<LazyLoad><Header /></LazyLoad>} />
-                    <Route path="Projects/property" element={<LazyLoad><Projects /></LazyLoad>} />
-                    <Route path="resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />
-                    <Route path="jobposting" element={<LazyLoad><JobPosting /></LazyLoad>} />
-                    <Route path="blog" element={<LazyLoad><Blog /></LazyLoad>} />
-                    <Route
-                      path="jobposting/view/:id"
-                      element={<LazyLoad> <JobPostingView /></LazyLoad>}
-                    />
-                    <Route
-                      path="jobposting/applications/:id"
-                      element={<LazyLoad> <JobApplications /></LazyLoad>}
-                    />
-                    <Route
-                      path="jobposting/edit/:id"
-                      element={<LazyLoad> <JobPostingEdit /></LazyLoad>}
-                    />
-                    <Route path="rent/view/:id" element={<LazyLoad> <RentView /></LazyLoad>} />
-                    <Route path="rent/view/edit/:id" element={<LazyLoad> <RentEdit /></LazyLoad>} />
-                    <Route
-                      path="acress/property/aadhar"
-                      element={<LazyLoad> <Sidebar /></LazyLoad>}
-                    />
-                    <Route path="buy" element={<LazyLoad> <Buy /></LazyLoad>} />
-                    <Route path="buy/view/:id" element={<LazyLoad> <BuyView /></LazyLoad>} />
-                    <Route path="buy/view/edit/:id" element={<LazyLoad> <BuyEdit /></LazyLoad>} />
-                    <Route path="contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
-                    <Route path="shorts" element={<LazyLoad><ShortsSettings /></LazyLoad>} />
-                    <Route
-                      path="ContactUs/UserProfile"
-                      element={<LazyLoad> <UserProfile /></LazyLoad>}
-                    />
-                    <Route
-                      path="ProjectsView/:pUrl"
-                      element={<LazyLoad> <ProjectView /></LazyLoad>}
-                    />
-                    <Route path="ProjectsEdit/:id" element={<LazyLoad> <ProjectEdit /></LazyLoad>} />
-                    <Route path="careerview/:id" element={<LazyLoad> <CareerView /></LazyLoad>} />
-                    <Route path="careerEdit/:id" element={<LazyLoad> <CareerEdit /></LazyLoad>} />
-                    <Route
-                      path="projecteditbhk/:id"
-                      element={<LazyLoad> <ProjectEditBHK /></LazyLoad>}
-                    />
-                    <Route
-                      path="projectedithighlight/:id"
-                      element={<LazyLoad> <ProjectEditHighlight /></LazyLoad>}
-                    />
-                    <Route
-                      path="ProjectsAddBhk/:id"
-                      element={<LazyLoad> <ProjectsAddBhk /></LazyLoad>}
-                    />
-                    <Route path="adminProperty" element={<LazyLoad> <Adminproperty /></LazyLoad>} />
-                    <Route
-                      path="ProjectAddHighlights/:id"
-                      element={<LazyLoad> <ProjectAddHighligths /></LazyLoad>}
-                    />
-                    <Route
-                      path="project-order-manager"
-                      element={<LazyLoad><ProjectOrderManager /></LazyLoad>}
-                    />
-                    <Route
-                      path="dashboard"
-                      element={<LazyLoad><AdminDashboard /></LazyLoad>}
-                    />
-                  </Route>
-
-                  {/* Blog route only user with role Blog will be able to login */}
-                  <Route path="/seo/" element={<SeoPrivateRoute />}>
-                    <Route path="blogs" element={<BlogManagementSidebar />} >
-                      <Route index element={<BlogDashboard />} />
-                      <Route path="dashboard" element={<BlogDashboard />} />
-                      <Route path="manage" element={<BlogManagement />} />
-                      <Route path="write" element={<BlogWriteModal />} />
-                      <Route path="view/:id" element={<BlogView />} />
-                      <Route path="edit/:id" element={<BlogWriteModal />} />
-                      <Route path="drafts" element={<DraftManagement />} />
+                    {/* Admin Routing */}
+                    <Route path="/admin" element={<PrivateRoute />}>
+                      <Route index element={<LazyLoad><AdminDashboard /></LazyLoad>} />
+                      <Route
+                        path="viewproperty/:id"
+                        element={<LazyLoad><ViewPropertyAdmin /></LazyLoad>}
+                      />
+                      <Route
+                        path="viewproperty/viewdetails/:id"
+                        element={<LazyLoad><ClientDetails /></LazyLoad>}
+                      />
+                      <Route
+                        path="viewproperty/editdetails/:id"
+                        element={<LazyLoad><EditDetails /></LazyLoad>}
+                      />
+                      <Route path="addnew" element={<LazyLoad><Addnew /></LazyLoad>} />
+                      <Route path="project-insert" element={<LazyLoad><InsertProject /></LazyLoad>} />
+                      <Route path="adminproperty" element={<LazyLoad><Adminproperty /></LazyLoad>} />
+                      <Route path="blog/view/:id" element={<LazyLoad><BlogViewAdmin /></LazyLoad>} />
+                      <Route path="blog/edit/:id" element={<LazyLoad><BlogEdit /></LazyLoad>} />
+                      <Route path="career" element={<LazyLoad><Career /></LazyLoad>} />
+                      <Route path="user" element={<LazyLoad><UserAdmin /></LazyLoad>} />
+                      <Route path="all-listed-properties" element={<LazyLoad><AllListedProperties /></LazyLoad>} />
+                      <Route path="contact" element={<LazyLoad><AdminContact /></LazyLoad>} />
+                      <Route path="editProject" element={<LazyLoad><EditProject /></LazyLoad>} />
+                      <Route path="enquiries" element={<LazyLoad><Enquiries /></LazyLoad>} />
+                      <Route path="header" element={<LazyLoad><Header /></LazyLoad>} />
+                      <Route path="Projects/property" element={<LazyLoad><Projects /></LazyLoad>} />
+                      <Route path="resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />
+                      <Route path="jobposting" element={<LazyLoad><JobPosting /></LazyLoad>} />
+                      <Route path="blog" element={<LazyLoad><Blog /></LazyLoad>} />
+                      <Route
+                        path="jobposting/view/:id"
+                        element={<LazyLoad> <JobPostingView /></LazyLoad>}
+                      />
+                      <Route
+                        path="jobposting/applications/:id"
+                        element={<LazyLoad> <JobApplications /></LazyLoad>}
+                      />
+                      <Route
+                        path="jobposting/edit/:id"
+                        element={<LazyLoad> <JobPostingEdit /></LazyLoad>}
+                      />
+                      <Route path="rent/view/:id" element={<LazyLoad> <RentView /></LazyLoad>} />
+                      <Route path="rent/view/edit/:id" element={<LazyLoad> <RentEdit /></LazyLoad>} />
+                      <Route
+                        path="acress/property/aadhar"
+                        element={<LazyLoad> <Sidebar /></LazyLoad>}
+                      />
+                      <Route path="buy" element={<LazyLoad> <Buy /></LazyLoad>} />
+                      <Route path="buy/view/:id" element={<LazyLoad> <BuyView /></LazyLoad>} />
+                      <Route path="buy/view/edit/:id" element={<LazyLoad> <BuyEdit /></LazyLoad>} />
+                      <Route path="contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
+                      <Route path="shorts" element={<LazyLoad><ShortsSettings /></LazyLoad>} />
+                      <Route
+                        path="ContactUs/UserProfile"
+                        element={<LazyLoad> <UserProfile /></LazyLoad>}
+                      />
+                      <Route
+                        path="ProjectsView/:pUrl"
+                        element={<LazyLoad> <ProjectView /></LazyLoad>}
+                      />
+                      <Route path="ProjectsEdit/:id" element={<LazyLoad> <ProjectEdit /></LazyLoad>} />
+                      <Route path="careerview/:id" element={<LazyLoad> <CareerView /></LazyLoad>} />
+                      <Route path="careerEdit/:id" element={<LazyLoad> <CareerEdit /></LazyLoad>} />
+                      <Route
+                        path="projecteditbhk/:id"
+                        element={<LazyLoad> <ProjectEditBHK /></LazyLoad>}
+                      />
+                      <Route
+                        path="projectedithighlight/:id"
+                        element={<LazyLoad> <ProjectEditHighlight /></LazyLoad>}
+                      />
+                      <Route
+                        path="ProjectsAddBhk/:id"
+                        element={<LazyLoad> <ProjectsAddBhk /></LazyLoad>}
+                      />
+                      <Route path="adminProperty" element={<LazyLoad> <Adminproperty /></LazyLoad>} />
+                      <Route
+                        path="ProjectAddHighlights/:id"
+                        element={<LazyLoad> <ProjectAddHighligths /></LazyLoad>}
+                      />
+                      <Route
+                        path="project-order-manager"
+                        element={<LazyLoad><ProjectOrderManager /></LazyLoad>}
+                      />
+                      <Route
+                        path="dashboard"
+                        element={<LazyLoad><AdminDashboard /></LazyLoad>}
+                      />
                     </Route>
-                  </Route>
-                </Routes>
-              </Suspense>
-            </ErrorBoundary>
-          </QueryClientProvider>
-        </TooltipProvider>
-      </AuthProvider>
-    </DataProvider>
+
+                    {/* Blog route only user with role Blog will be able to login */}
+                    <Route path="/seo/" element={<SeoPrivateRoute />}>
+                      <Route path="blogs" element={<BlogManagementSidebar />} >
+                        <Route index element={<BlogDashboard />} />
+                        <Route path="dashboard" element={<BlogDashboard />} />
+                        <Route path="manage" element={<BlogManagement />} />
+                        <Route path="write" element={<BlogWriteModal />} />
+                        <Route path="view/:id" element={<BlogView />} />
+                        <Route path="edit/:id" element={<BlogWriteModal />} />
+                        <Route path="drafts" element={<DraftManagement />} />
+                      </Route>
+                    </Route>
+                  </Routes>
+                </Suspense>
+              </ErrorBoundary>
+            </QueryClientProvider>
+          </TooltipProvider>
+        </AuthProvider>
+      </DataProvider>
+      {/* Global floating draggable YouTube Shorts */}
+      <FloatingShorts />
+      {/* Global mobile bottom navigation */}
+      <MobileBottomNav />
+    </>
   );
 }
 
 export default App;
+
+// Mobile bottom navigation (visible only on small screens)
+function MobileBottomNav() {
+  const location = useLocation();
+  const path = location.pathname || "/";
+  const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
+
+  const isActive = (match) => {
+    if (Array.isArray(match)) return match.some((m) => path.startsWith(m));
+    return path === match || path.startsWith(match);
+  };
+
+  const postTarget = token ? "/postproperty" : "/auth/signin";
+  const likedTarget = token ? "/userdashboard/?tab=liked" : "/auth/signin";
+  const profileTarget = token ? "/userdashboard/" : "/auth/signin";
+
+  return (
+    <nav className="md:hidden fixed bottom-0 inset-x-0 z-[10000]">
+      <div className="mx-auto max-w-screen-md">
+        <div className="relative px-2 pb-[10px] pt-2">
+          {/* Bar background */}
+          <div className="absolute inset-0 rounded-t-3xl bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.08)]"></div>
+
+          <div className="relative grid grid-cols-5 items-end text-xs text-gray-600">
+            {/* Home */}
+            <Link to="/" className="flex flex-col items-center gap-1 py-2">
+              <span className={`text-xl ${isActive(["/", "/projects", "/property"]) ? "text-red-600" : "text-gray-500"}`}>
+                <i className="fa-solid fa-house"></i>
+              </span>
+              <span className={`${isActive(["/", "/projects", "/property"]) ? "text-gray-900 font-semibold" : ""}`}>Home</span>
+            </Link>
+
+            {/* Blogs (Insights -> Blogs) */}
+            <Link to="/blog/" className="flex flex-col items-center gap-1 py-2">
+              <span className={`text-xl ${isActive("/blog") ? "text-red-600" : "text-gray-500"}`}>
+                <i className="fa-solid fa-blog"></i>
+              </span>
+              <span className={`${isActive("/blog") ? "text-gray-900 font-semibold" : ""}`}>Blogs</span>
+            </Link>
+
+            {/* Center CTA: Post Properties (was See/Buy) */}
+            <div className="flex flex-col items-center justify-center -mt-6">
+              <Link to={postTarget} className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg ring-4 ring-white">
+                <i className="fa-solid fa-plus text-lg"></i>
+              </Link>
+              <span className="mt-1 text-[11px]">Post Properties</span>
+            </div>
+
+            {/* Liked (was Shortlisted) */}
+            <Link to={likedTarget} className="flex flex-col items-center gap-1 py-2">
+              <span className={`text-xl ${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-red-600" : "text-gray-500"}`}>
+                <i className="fa-solid fa-heart"></i>
+              </span>
+              <span className={`${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-gray-900 font-semibold" : ""}`}>Liked</span>
+            </Link>
+
+            {/* Profile */}
+            <Link to={profileTarget} className="flex flex-col items-center gap-1 py-2">
+              <span className={`text-xl ${isActive("/userdashboard") ? "text-red-600" : "text-gray-500"}`}>
+                <i className="fa-solid fa-user"></i>
+              </span>
+              <span className={`${isActive("/userdashboard") ? "text-gray-900 font-semibold" : ""}`}>Profile</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
 
 const Wrapper = styled.section`
   .rubik-default {
