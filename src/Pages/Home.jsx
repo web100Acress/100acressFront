@@ -281,7 +281,7 @@ const Home = () => {
           content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential &amp; Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon"
         />
         <title>
-          Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India
+        100acress | The Best Real Estate Portal in Gurgaon
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
@@ -300,28 +300,24 @@ const Home = () => {
     >
   {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
-        <div className="relative w-full">
-          <img
-            // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/summer+banner.png"
-            //  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/monsoon-banner.webp"
-            src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-desktop.webp"
-            alt="Banner"
-            className="hidden md:block w-full h-[25rem] md:h-[30rem] sm:h-[35rem] lg:h-[30rem] xl:h-[30rem]"
-          />
-          <img
-            // src="https://d16gdc5rm7f21b.cloudfront.net/100acre/banner/mobilebanner.webp"
-            src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/main-banner-mobile.webp"
-            alt="Mobile Banner"
-            className="mt-14 block md:hidden w-full h-[38rem]"
-          />
+        <Link to="/experion-the-trillion/" className="block relative w-full group" target="_self" aria-label="Experion The Trillion">
+          
+          <div className="hero-strip-99 transform transition-transform duration-500 ease-out group-hover:scale-[1.02] cursor-pointer" aria-hidden="true" />
+        </Link>
+    </div>
 
+    {/* SearchBar should NOT be blurred */}
+    <div className="relative w-full max-w-6xl mx-auto px-4 pb-1 py-8 -mt-20 z-10">
+      <SearchBar />
+    </div>
 
-          {/* Center the SearchBar */}
-          <div className="absolute inset-0 flex items-center justify-center mt-16 md:mt-0 lg:mt-24">
-            <SearchBar />
-          </div>
-
-        </div>
+    {/* Reopen blurred wrapper for the rest of the content */}
+    <div
+      className={`
+        transition-filter duration-300 ease-in-out
+        ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
+      `}
+    >
 
       <div className="relative">
         {/* Removed themed overlay */}
@@ -340,7 +336,7 @@ const Home = () => {
             <br />
           <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 ">
             <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold">
-              {`${activeFilter}`} Properties in Gurugram
+              {`${activeFilter}`} Properties in Gurugram and Delhi NCR
             </h2>
           </div>
 
@@ -457,7 +453,7 @@ const Home = () => {
         <div ref={setRef("upcoming")} data-section="upcoming" style={{ height: "10px" }}></div>
         <div>
           {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={UpcomingProjects} title="Upcoming Projects " animation="fade-down" path={"/projects/upcoming-projects-in-gurgaon/"} />
+            <CommonProject data={UpcomingProjects} title="New Upcoming Housing Projects in Gurgaon 2025" animation="fade-down" path={"/projects/upcoming-projects-in-gurgaon/"} />
           )}
         </div>
 
@@ -465,7 +461,7 @@ const Home = () => {
         <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
         <div>
           {LuxuryAllProject.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Luxury Apartments For You" animation="fade-up" path={"/top-luxury-projects/"} />
+            <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Top Luxury Apartments For You" animation="fade-up" path={"/top-luxury-projects/"} />
           )}
         </div>
 
@@ -474,7 +470,7 @@ const Home = () => {
         <div ref={setRef("budget")} data-section="budget" style={{ height: "10px" }}></div>
         <div>
           {BudgetHomesProjects.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={BudgetHomesProjects} title="Budget Projects in Gurugram" animation="flip-left" />
+            <CommonProject data={BudgetHomesProjects} title="Best Budget Projects in Gurugram" animation="flip-left" />
           )}
         </div>
 
@@ -503,14 +499,14 @@ const Home = () => {
         <div ref={setRef("feature")} data-section="feature" style={{ height: "10px" }}></div>
         <div>
           {FeaturedProjects.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={FeaturedProjects.slice(0, 8)} title="Featured Projects" animation="flip-left" path="/projects-in-gurugram/" />
+            <CommonProject data={FeaturedProjects.slice(0, 8)} title="Top Featured Residential Projects in Gurugram" animation="flip-left" path="/projects-in-gurugram/" />
           )}
         </div>
 
         <div ref={setRef("delhi")} data-section="delhi" style={{ height: "10px" }}></div>
         <div>
           {ProjectinDelhi.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={ProjectinDelhi} title="Projects in Delhi" animation="zoom-out-left" path="/project-in-delhi/" />
+            <CommonProject data={ProjectinDelhi} title="Top Projects in Delhi" animation="zoom-out-left" path="/project-in-delhi/" />
           )}
         </div>
 
@@ -528,7 +524,7 @@ const Home = () => {
         <div ref={setRef("affordable")} data-section="affordable" style={{ height: "10px" }}></div>
         <div>
           {AffordableProjects.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={AffordableProjects.slice(0, 4)} title="Affordable Homes" animation="fade-up" path="/projects-in-gurugram/" />
+            <CommonProject data={AffordableProjects.slice(0, 4)} title="Affordable Homes in Gurgaon" animation="fade-up" path="/projects-in-gurugram/" />
           )}
         </div>
 
@@ -603,6 +599,36 @@ export default Home;
 const Wrapper = styled.div`
   /* Neutral background */
   background: #ffffff;
+
+  
+  .hero-strip-99 {
+    width: 100%;
+    height: 340px;
+    background-image: url("https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/experion-the-trillion-banner.webp");
+    background-repeat: no-repeat;
+    background-position: center center; /* keep image centered */
+    background-size: auto 100%; /* fit height exactly; crop sides on small screens */
+    margin-top: 0; /* navbar is fixed and overlays this strip */
+    position: relative; /* for gradient overlay */
+  }
+
+  /* Top fade to white to blend with transparent navbar */
+  .hero-strip-99::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 72px; /* fade height */
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 28%, rgba(255,255,255,0.4) 56%, rgba(255,255,255,0) 100%);
+  }
+
+  @media (max-width: 640px) {
+    .hero-strip-99 {
+      margin-top: 0;
+    }
+  }
 
   .dd-m-phone {
     position: fixed;

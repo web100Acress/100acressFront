@@ -103,7 +103,7 @@ function OurServices() {
               </Link>
             </div>
           </Slider>
-          <style jsx>{`
+          <style>{`
         .slick-prev {
           left: 10px;
           z-index: 1;
@@ -133,7 +133,7 @@ function OurServices() {
                 <div className="text-center">
                   <h3 className="text-xl mb-2">Real Estate Consulting</h3>
                   <p className="text-gray-600 text-xs text-center">
-                    We Provide the best services to help you get your dream home as per your expectations.
+                  Get expert real estate consulting to find the right property, whether it’s flats, apartments, or new residential projects.
                   </p>
                 </div>
               </Link>
@@ -144,9 +144,9 @@ function OurServices() {
                   <LegalIcon/>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl mb-2">Legal Advice</h3>
+                  <h3 className="text-xl mb-2">Legal Assistance</h3>
                   <p className="text-gray-600 text-xs text-center">
-                  The major issue is trust worthy legal assistance. We will help you through all the aspects.
+                  Buying property needs trusted legal support. We guide you with property documents, agreements, and safe transactions.
                   </p>
                 </div>
               </Link>
@@ -159,7 +159,7 @@ function OurServices() {
                 <div className="text-center">
                   <h3 className="text-xl mb-2">Interior Design</h3>
                   <p className="text-gray-600 text-xs text-center">
-                    We Provide the best services to help you get your dream home as per your expectations.
+                  Transform your house into a dream home with affordable interior design solutions for flats, villas, and apartments.
                   </p>
                 </div>
               </Link>
@@ -172,7 +172,7 @@ function OurServices() {
                 <div className="text-center">
                   <h3 className="text-xl mb-2">Property Loan</h3>
                   <p className="text-gray-600 text-xs text-center">
-                  We will help you get the best property loan with end-to-end guidance.
+                  We help you choose the best home loan options and guide you through the process to buy your property with ease.
                   </p>
                 </div>
               </Link>

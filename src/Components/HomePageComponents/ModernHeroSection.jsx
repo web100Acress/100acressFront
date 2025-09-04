@@ -167,6 +167,8 @@ const ModernHeroSection = () => {
 
   return (
     <HeroWrapper>
+      {/* Fixed-height top hero background like 99acres */}
+      <div className="top-hero-bg" aria-hidden="true" />
       <div className="hero-content">
         <div className="skyline-overlay" />
         <div className="clouds">
@@ -305,8 +307,19 @@ const HeroWrapper = styled.section`
   background: linear-gradient(180deg, #e9f1ff 0%, #f5f7ff 60%, #ffffff 100%);
   min-height: 56vh; /* half-ish page */
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   overflow: hidden;
+
+  /* New: top hero background image strip (340px tall) */
+  .top-hero-bg {
+    width: 100%;
+    height: 340px;
+    background-image: url("/Images/experion-the-trillion-banner.png");
+    background-repeat: no-repeat;
+    background-position: center center; /* keep image centered */
+    background-size: auto 100%; /* fit height exactly; crop left/right on small screens */
+  }
 
   .hero-content { width: 100%; position: relative; }
 
@@ -373,10 +386,10 @@ const HeroWrapper = styled.section`
   .tab.active { border-color: rgba(239,68,68,0.45); background: rgba(239,68,68,0.08); color: #b91c1c; }
 
   .searchbar { display:flex; align-items:center; gap: 10px; background:#fff; border:1px solid #e2e8f0; border-radius: 999px; padding: 10px 12px; box-shadow: 0 10px 28px rgba(15,23,42,0.08); }
-  .s-icon { color:#ef4444; font-size: 20px; }
+  .s-icon { color:#e53e3e; font-size: 20px; }
   .searchbar input { border:none; outline:none; flex:1; font-size:16px; padding: 6px 6px; background: transparent; color:#0f172a; }
-  .search-btn { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg, #ef4444, #dc2626); color:#fff; border:none; border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; box-shadow: 0 12px 30px rgba(239,68,68,0.35); transition: transform .15s ease, box-shadow .2s ease; }
-  .search-btn:hover { transform: translateY(-1px); box-shadow: 0 16px 34px rgba(239,68,68,0.45); }
+  .search-btn { display:inline-flex; align-items:center; gap:8px; background:#e53e3e; color:#fff; border:none; border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; box-shadow: 0 12px 30px rgba(229,62,62,0.35); transition: transform .15s ease, box-shadow .2s ease, background-color .15s ease; }
+  .search-btn:hover { transform: translateY(-1px); background:#cc2f3b; box-shadow: 0 16px 34px rgba(229,62,62,0.45); }
 
   .localities { margin-top: 14px; }
   .loc-title { display:block; font-size:12px; color:#64748b; margin-bottom:6px; font-weight:700; letter-spacing: .04em; text-transform: uppercase; }
@@ -560,7 +573,7 @@ const HeroWrapper = styled.section`
       background-size: 400% 400%;
       border-radius: 50px;
       opacity: 0;
-      z-index: -1;
+      z-index: -1; 
       animation: gradientShift 3s ease infinite;
       transition: opacity 0.3s ease;
     }
@@ -579,7 +592,7 @@ const HeroWrapper = styled.section`
       transform: translateY(-2px);
       background: rgba(255, 255, 255, 0.15);
       border-color: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
 
       &::before {
         opacity: 1;
@@ -642,7 +655,7 @@ const HeroWrapper = styled.section`
       color: #ff512f;
       font-size: 1.3rem;
       margin-right: 0.75rem;
-      filter: drop-shadow(0 2px 4px rgba(255, 81, 47, 0.3));
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
     }
 
     .input-shimmer {

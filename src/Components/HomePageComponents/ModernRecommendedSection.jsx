@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useSelector } from "react-redux";
 import { Skeleton } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -11,6 +11,7 @@ import {
 import styled from 'styled-components';
 import Api_Service from "../../Redux/utils/Api_Service";
 import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
+import { AuthContext } from "../../AuthContext";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -23,6 +24,7 @@ const ModernRecommendedSection = () => {
   const [favTick, setFavTick] = useState(0);
   const swiperRef = useRef(null);
   const { getSpotlight } = Api_Service();
+  const { isAuthenticated } = useContext(AuthContext);
 
   // Fetch spotlight data on component mount
   useEffect(() => {
@@ -161,7 +163,7 @@ const ModernRecommendedSection = () => {
   if (!displayData || displayData.length === 0) {
     return (
       <SectionWrapper>
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-4">
           <div className="text-center">
             <h3 className="text-xl font-semibold text-gray-600 mb-4">Loading Recommended Properties...</h3>
             <Skeleton active />
@@ -185,7 +187,7 @@ const ModernRecommendedSection = () => {
             <div className="w-12 h-1 bg-gradient-to-r from-red-600 to-red-400 rounded-full hidden sm:block"></div>
           </div>
           <p className="hidden sm:block text-gray-600 text-lg max-w-2xl mx-auto mb-0 px-1">
-            Discover premium properties with luxury, location, and investment potential.
+          Find top-rated properties that offer luxury living, prime locations, and great investment opportunities.
           </p>
         </div>
 
@@ -258,6 +260,7 @@ const ModernRecommendedSection = () => {
                   formatPrice={formatPrice}
                   formatLocation={formatLocation}
                   favTick={favTick}
+                  isAuthenticated={isAuthenticated}
                 />
               </SwiperSlide>
             ))}
@@ -281,7 +284,8 @@ const PropertyCard = ({
   truncateText,
   formatPrice,
   formatLocation,
-  favTick
+  favTick,
+  isAuthenticated
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -299,7 +303,7 @@ const PropertyCard = ({
       maxPrice: project?.maxPrice || project?.price,
       minPrice: project?.minPrice,
     };
-    toggleFavorite(id, snapshot);
+    toggleFavorite(id, snapshot, isAuthenticated);
   };
 
   const handleShare = (e) => {

@@ -1,6 +1,6 @@
   import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Box, Flex, Button, useDisclosure } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { message } from "antd";
@@ -19,6 +19,8 @@ import { getApiBase } from "../../config/apiBase";
 
 export default function Navbar() {
   const history = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   // Safely read JWT from localStorage (may be raw string or JSON-quoted)
   let usertoken = (typeof window !== 'undefined' && localStorage.getItem("myToken")) || "";
   if (usertoken && usertoken.startsWith('"') && usertoken.endsWith('"')) {
@@ -75,8 +77,9 @@ export default function Navbar() {
       document.documentElement.style.setProperty('--navbar-h', `${h}px`);
       // Mirror var for NewBanner.css which uses --nav-h
       document.documentElement.style.setProperty('--nav-h', `${h}px`);
-      document.body.style.paddingTop = `${h}px`;
-      document.documentElement.style.scrollPaddingTop = `${h}px`;
+      // Do not push content down; allow hero to start at top under the transparent navbar
+      document.body.style.paddingTop = `0px`;
+      document.documentElement.style.scrollPaddingTop = `0px`;
     };
     applyOffsets();
     // Track changes: resize, orientation, font/layout shifts via ResizeObserver
@@ -538,76 +541,96 @@ export default function Navbar() {
   };
 
   return (
-    <Wrapper className="section">
-      <Box>
+    <Wrapper>
+      <Box
+        ref={navRef}
+        position="fixed"
+        top="0"
+        left="0"
+        right="0"
+        zIndex="9999"
+        width="100%"
+        bg={colorChange ? "#e53e3e" : (isHome ? "transparent" : "#ffffff")}
+        boxShadow={colorChange ? "0 6px 18px rgba(0,0,0,0.12)" : (isHome ? "none" : "0 6px 18px rgba(0,0,0,0.08)")}
+        transition="background-color 200ms ease, box-shadow 200ms ease"
+      >
         <Box
-          ref={navRef}
-          bg={colorChange ? "#e60023" : "#ffffff"}
-          className="top-0 z-[9999] w-full"
-          style={{ 
-            position: "fixed", 
-            scrollBehavior: "smooth",
-            background: colorChange ? "#e60023" : "#ffffff",
-            boxShadow: colorChange ? "0 2px 10px rgba(0,0,0,0.15)" : "none",
-            zIndex: 9999,
-            borderBottom: colorChange ? "none" : "1px solid rgba(0,0,0,0.08)",
-            transition: "background-color 300ms ease, box-shadow 300ms ease"
-          }}
-          px={{ base: 4, md: 4, lg: 7 }}
-          // Add a bit more right padding on wider screens to avoid clipping the last button
-          pr={{ base: 5, md: 6, lg: 8, xl: 10 }}
+          w="100%"
+          px={{ base: 2, md: 6 }}
           py={{ base: 1, md: 2 }}
+          display="grid"
+          gridTemplateColumns={{ base: 'auto 1fr auto', md: '1fr auto 1fr' }}
+          gridAutoFlow="column"
+          alignItems="center"
+          minH={{ base: '52px', md: '64px' }}
+          columnGap={{ base: 2, md: 4 }}
         >
-          
-          <Flex minH={{ base: 14, md: 16 }} alignItems="center" justifyContent="space-between" position="relative">
-            {/* Left Section - Search Projects + City Filter */}
-            <LeftSection
-              colorChange={colorChange}
-              isSearchOpen={isSearchOpen}
-              onToggle={onToggle}
-              CITY_OPTIONS={CITY_OPTIONS}
-              CityIcons={CityIcons}
-              handleCitySelect={handleCitySelect}
-              handlePriceClick={handlePriceClick}
-              hideResale={hideResale}
-              hideRental={hideRental}
-              hideProjectType={hideProjectType}
-              hideProjectStatus={hideProjectStatus}
-              hideBudget={hideBudget}
-              hideCity={hideCity}
-              showHamburgerOnDesktop={showHamburger}
-              forceHamburger={isCompactTablet}
-            />
-
-            {/* Center Section - Logo */}
+          {/* Left: Logo */}
+          <Box
+            justifySelf={{ base: 'center', md: 'start' }}
+            gridColumn={{ base: 2, md: 'auto' }}
+            alignSelf={{ base: 'center', md: 'center' }}
+          >
             <CenterLogo colorChange={colorChange} isSearchOpen={isSearchOpen} centerOnCompact={isCompactTablet} />
+          </Box>
 
-            {/* Right Section - Search, Profile & List Property */}
-            <RightSection
-              colorChange={colorChange}
-              isSearchOpen={isSearchOpen}
-              setIsSearchOpen={setIsSearchOpen}
-              token={token}
-              avatarUrl={avatarUrl}
-              userId={userIdForEdit}
-              onAvatarUpdated={(url) => {
-                const bust = url ? `${url}${url.includes('?') ? '&' : '?'}t=${Date.now()}` : "";
-                setAvatarUrl(bust);
-                try {
-                  if (bust) localStorage.setItem('avatarUrl', bust);
-                } catch {}
-              }}
-              firstName={firstName}
-              isAdmin={isAdmin}
-              isBlogger={isBlogger}
-              go={go}
-              HandleUserLogout={HandleUserLogout}
-              ShowLogOutMessage={ShowLogOutMessage}
-              showModal={showModal}
-              showAuth={showAuth}
-              setShowAuth={setShowAuth}
-            />
-          </Flex>
+          {/* Center: Filters & Menus */}
+          <Box
+            justifySelf={{ base: 'start', md: 'center' }}
+            gridColumn={{ base: 1, md: 'auto' }}
+            alignSelf={{ base: 'center', md: 'center' }}
+          >
+          <LeftSection
+            colorChange={colorChange}
+            isSearchOpen={isSearchOpen}
+            onToggle={onOpen}
+            CITY_OPTIONS={CITY_OPTIONS}
+            CityIcons={CityIcons}
+            handleCitySelect={handleCitySelect}
+            handlePriceClick={handlePriceClick}
+            hideResale={hideResale}
+            hideRental={hideRental}
+            hideProjectType={hideProjectType}
+            hideProjectStatus={hideProjectStatus}
+            hideBudget={hideBudget}
+            hideCity={hideCity}
+            showHamburgerOnDesktop={showHamburger}
+            forceHamburger={isCompactTablet}
+          />
+          </Box>
+
+          {/* Right: Search, Profile & List Property */}
+          <Box
+            justifySelf={{ base: 'end', md: 'end' }}
+            gridColumn={{ base: 3, md: 'auto' }}
+            alignSelf={{ base: 'center', md: 'center' }}
+          >
+          <RightSection
+            colorChange={colorChange}
+            isSearchOpen={isSearchOpen}
+            setIsSearchOpen={setIsSearchOpen}
+            token={token}
+            avatarUrl={avatarUrl}
+            userId={userIdForEdit}
+            onAvatarUpdated={(url) => {
+              const bust = url ? `${url}${url.includes('?') ? '&' : '?'}t=${Date.now()}` : "";
+              setAvatarUrl(bust);
+              try {
+                if (bust) localStorage.setItem('avatarUrl', bust);
+              } catch {}
+            }}
+            firstName={firstName}
+            isAdmin={isAdmin}
+            isBlogger={isBlogger}
+            go={go}
+            HandleUserLogout={HandleUserLogout}
+            ShowLogOutMessage={ShowLogOutMessage}
+            showModal={showModal}
+            showAuth={showAuth}
+            setShowAuth={setShowAuth}
+          />
+          </Box>
+        </Box>
           {/* Centered Animated Search Bar */}
           <SearchBarOverlay
             isSearchOpen={isSearchOpen}
@@ -620,11 +643,20 @@ export default function Navbar() {
           />
           {/* Desktop Mega Menu for SEARCH PROJECTS */}
           <MegaMenu isOpen={isOpen} onClose={onClose} handlePriceClick={handlePriceClick} />
+          {/* Gradient divider: strong in center, fades toward edges */}
+          <Box
+            position="absolute"
+            left={0}
+            right={0}
+            bottom={0}
+            height="2px"
+            pointerEvents="none"
+            background="linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 25%, rgba(255,255,255,0.7) 75%, rgba(255,255,255,0) 100%)"
+          />
         </Box>
-      </Box>
-    </Wrapper>
-  );
-}
+      </Wrapper>
+    );
+  }
 
 const Wrapper = styled.section`
   font-family: 'Rubik', sans-serif;

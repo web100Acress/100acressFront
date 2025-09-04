@@ -113,7 +113,8 @@ export const clearApiBaseOverride = () => {
 // Test if the API is accessible
 export const testLiveApi = async () => {
   const baseUrl = getApiBase();
-  const testUrl = `${baseUrl.replace(/\/+$/, '')}/api/health`;
+
+  const testUrl = `${baseUrl.replace(/\/+$/, '')}/health`;
   
   try {
     const response = await fetch(testUrl, {
@@ -123,8 +124,26 @@ export const testLiveApi = async () => {
       mode: 'cors'
     });
     
-    const data = await response.json();
-    return { success: true, data };
+    // Try to parse JSON; if it fails, fall back to raw text
+    let data = null;
+    let raw = '';
+    try {
+      raw = await response.text();
+      data = raw ? JSON.parse(raw) : null;
+    } catch (_) {
+      // non-JSON response
+    }
+    
+    if (!response.ok) {
+      return {
+        success: false,
+        status: response.status,
+        data: data ?? raw,
+        message: `Health check failed with status ${response.status}`
+      };
+    }
+    
+    return { success: true, data: data ?? raw };
   } catch (error) {
     console.error('API test failed:', error);
     return { 

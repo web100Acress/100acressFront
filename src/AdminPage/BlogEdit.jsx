@@ -66,6 +66,7 @@ const BlogEdit = () => {
         `blog/update/${id}`,
         formData
       );
+      console.debug('[BlogEdit] Update response:', response?.data);
       if (response.status === 200) {
         message.destroy(toastKey);
         notification.success({
@@ -78,6 +79,7 @@ const BlogEdit = () => {
           const refreshed = await api.get(
             `blog/edit/${id}`
           );
+          console.debug('[BlogEdit] Refetched blog after update:', refreshed.data);
           const payload = refreshed.data;
           const safe = payload && typeof payload.data === 'object' && payload.data !== null ? payload.data : {};
           setViewDetails(prev => ({
@@ -280,8 +282,8 @@ const BlogEdit = () => {
                   <div className={`flex items-center justify-center h-32 w-32 overflow-hidden rounded-lg ${theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'} border`}>
                     {viewDetails.frontImage && viewDetails.frontImage.url ? (
                       <img src={viewDetails.frontImage.url} alt="blog_Image_preview" className="max-h-full max-w-full object-contain" id="previewImage" />
-                    ) : viewDetails.blog_Image && viewDetails.blog_Image.url ? (
-                      <img src={viewDetails.blog_Image.url} alt="blog_Image" className="max-h-full max-w-full object-contain" id="previewImage" />
+                    ) : viewDetails.blog_Image && (viewDetails.blog_Image.cdn_url || viewDetails.blog_Image.url) ? (
+                      <img src={(viewDetails.blog_Image.cdn_url || viewDetails.blog_Image.url)} alt="blog_Image" className="max-h-full max-w-full object-contain" id="previewImage" />
                     ) : (
                       <span className="text-gray-500 text-sm italic">No Blog Image</span>
                     )}
