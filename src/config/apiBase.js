@@ -113,7 +113,7 @@ export const clearApiBaseOverride = () => {
 // Test if the API is accessible
 export const testLiveApi = async () => {
   const baseUrl = getApiBase();
-  const testUrl = `${baseUrl.replace(/\/+$/, '')}/api/health`;
+  const testUrl = `${baseUrl.replace(/\/+$/, '')}/health`;
   
   try {
     const response = await fetch(testUrl, {
