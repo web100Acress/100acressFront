@@ -15,7 +15,7 @@ const BudgetPlotsInGurugraon = () => {
     <div data-aos="zoom-in-up" className="container" style={{ boxShadow: "0px 0px 0px 0px #0000001a" }}>
       <div className="flex items-center justify-between mx-3 sm:mx-4 lg:mx-4 xl:mx-14 md:mx-4 py-3 sm:py-5 lg:py-6 mb-3 sm:mb-4">
         <h2 className="text-3xl xl:text-4xl lg:text-3xl md:text-2xl sm:text-left font-extrabold mb-1 text-neutral-900">
-          <span className="bg-gradient-to-r from-[#f43f5e] to-[#dc2626] bg-clip-text text-transparent">Budget</span>
+          <span className="bg-gradient-to-r from-[#f43f5e] to-[#dc2626] bg-clip-text text-transparent">Best Budget</span>
           <span> Plots in Gurugram</span>
         </h2>
         <div className=" ml-2 hidden sm:block">

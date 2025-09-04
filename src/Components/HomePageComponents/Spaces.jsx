@@ -65,7 +65,7 @@ function SpacesAvailable() {
         {/* Header Section */}
         <div className="header-section" data-aos="fade-up">
           <h1 className="main-heading">
-            <span className="dream-text">Dream</span> Property In The Heart of{" "}
+            <span className="dream-text">Dream</span> Properties In The Heart of{" "}
             <span className="gurugram-text">Gurugram</span>
           </h1>
         </div>

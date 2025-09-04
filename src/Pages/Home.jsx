@@ -281,7 +281,7 @@ const Home = () => {
           content="100acress.com Gurgaon Fastest Growing Property Website, Buy Residential &amp; Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon"
         />
         <title>
-          Property in Gurgaon, Buy Luxury Flats in Gurugram, Real Estate India
+        100acress | The Best Real Estate Portal in Gurgaon
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
@@ -336,7 +336,7 @@ const Home = () => {
             <br />
           <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6 ">
             <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold">
-              {`${activeFilter}`} Properties in Gurugram
+              {`${activeFilter}`} Properties in Gurugram and Delhi NCR
             </h2>
           </div>
 
@@ -453,7 +453,7 @@ const Home = () => {
         <div ref={setRef("upcoming")} data-section="upcoming" style={{ height: "10px" }}></div>
         <div>
           {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={UpcomingProjects} title="Upcoming Projects " animation="fade-down" path={"/projects/upcoming-projects-in-gurgaon/"} />
+            <CommonProject data={UpcomingProjects} title="New Upcoming Housing Projects in Gurgaon 2025" animation="fade-down" path={"/projects/upcoming-projects-in-gurgaon/"} />
           )}
         </div>
 
@@ -461,7 +461,7 @@ const Home = () => {
         <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
         <div>
           {LuxuryAllProject.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Luxury Apartments For You" animation="fade-up" path={"/top-luxury-projects/"} />
+            <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Top Luxury Apartments For You" animation="fade-up" path={"/top-luxury-projects/"} />
           )}
         </div>
 
@@ -470,7 +470,7 @@ const Home = () => {
         <div ref={setRef("budget")} data-section="budget" style={{ height: "10px" }}></div>
         <div>
           {BudgetHomesProjects.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={BudgetHomesProjects} title="Budget Projects in Gurugram" animation="flip-left" />
+            <CommonProject data={BudgetHomesProjects} title="Best Budget Projects in Gurugram" animation="flip-left" />
           )}
         </div>
 
@@ -499,14 +499,14 @@ const Home = () => {
         <div ref={setRef("feature")} data-section="feature" style={{ height: "10px" }}></div>
         <div>
           {FeaturedProjects.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={FeaturedProjects.slice(0, 8)} title="Featured Projects" animation="flip-left" path="/projects-in-gurugram/" />
+            <CommonProject data={FeaturedProjects.slice(0, 8)} title="Top Featured Residential Projects in Gurugram" animation="flip-left" path="/projects-in-gurugram/" />
           )}
         </div>
 
         <div ref={setRef("delhi")} data-section="delhi" style={{ height: "10px" }}></div>
         <div>
           {ProjectinDelhi.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={ProjectinDelhi} title="Projects in Delhi" animation="zoom-out-left" path="/project-in-delhi/" />
+            <CommonProject data={ProjectinDelhi} title="Top Projects in Delhi" animation="zoom-out-left" path="/project-in-delhi/" />
           )}
         </div>
 
@@ -524,7 +524,7 @@ const Home = () => {
         <div ref={setRef("affordable")} data-section="affordable" style={{ height: "10px" }}></div>
         <div>
           {AffordableProjects.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={AffordableProjects.slice(0, 4)} title="Affordable Homes" animation="fade-up" path="/projects-in-gurugram/" />
+            <CommonProject data={AffordableProjects.slice(0, 4)} title="Affordable Homes in Gurgaon" animation="fade-up" path="/projects-in-gurugram/" />
           )}
         </div>
 
