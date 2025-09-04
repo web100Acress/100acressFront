@@ -1,84 +1,67 @@
-  import React, { useEffect, useRef, useState } from "react";
-  import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal, useToast } from "@chakra-ui/react";
-  import { SearchIcon } from "@chakra-ui/icons";
-  import { Link } from "react-router-dom";
-  import AuthModal from "../../Components/AuthModal";
-  import api from "../../config/apiClient";
+import React, { useEffect, useRef, useState } from "react";
+import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal, useToast } from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
+import { Link } from "react-router-dom";
+import AuthModal from "../../Components/AuthModal";
+import api from "../../config/apiClient";
 
-  export default function RightSection({
-    colorChange,
-    isSearchOpen,
-    setIsSearchOpen,
-    token,
-    avatarUrl,
-    userId,
-    onAvatarUpdated,
-    firstName,
-    isAdmin,
-    isBlogger,
-    go,
-    HandleUserLogout,
-    ShowLogOutMessage,
-    showModal,
-    showAuth,
-    setShowAuth,
-  }) {
-    const { isOpen: isAcctOpen, onOpen: onAcctOpen, onClose: onAcctClose } = useDisclosure();
-    const isMobile = useBreakpointValue({ base: true, md: false });
-    const fileInputRef = useRef(null);
-    const toast = useToast();
-    // Hide right-side content when user scrolls DOWN; show on scroll UP
-    const [hideRight, setHideRight] = useState(false);
-    const lastScrollY = useRef(0);
+export default function RightSection({
+  colorChange,
+  isSearchOpen,
+  setIsSearchOpen,
+  token,
+  avatarUrl,
+  userId,
+  onAvatarUpdated,
+  firstName,
+  isAdmin,
+  isBlogger,
+  go,
+  HandleUserLogout,
+  ShowLogOutMessage,
+  showModal,
+  showAuth,
+  setShowAuth,
+}) {
+  const { isOpen: isAcctOpen, onOpen: onAcctOpen, onClose: onAcctClose } = useDisclosure();
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const fileInputRef = useRef(null);
+  const toast = useToast();
+  // Hide right-side content when user scrolls DOWN; show on scroll UP
+  const [hideRight, setHideRight] = useState(false);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     // Always keep right section visible (disable scroll-hide behavior)
     setHideRight(false);
   }, [isMobile]);
 
+  const openFilePicker = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
 
-    const handleFileChange = async (e) => {
-      try {
-        const file = e.target.files && e.target.files[0];
-        if (!file || !userId) return;
+  const handleFileChange = async (e) => {
+    try {
+      const file = e.target.files && e.target.files[0];
+      if (!file || !userId) return;
 
-        // Client-side validation: images only, <= 5MB
-        const isImage = (file.type || '').toLowerCase().startsWith('image/');
-        const maxSize = 5 * 1024 * 1024;
-        if (!isImage) {
-          toast({ title: 'Only image files are allowed', status: 'error', duration: 3000, isClosable: true });
-          return;
-        }
-        if (file.size > maxSize) {
-          toast({ title: 'File too large (max 5MB)', status: 'error', duration: 3000, isClosable: true });
-          return;
-        }
-
-        // Ensure user is authenticated (Bearer is auto-added by api client from localStorage)
-        if (!token) {
-          toast({ title: 'Please log in to change your photo', status: 'warning', duration: 2500, isClosable: true });
-          return;
-        }
-
-        const form = new FormData();
-        form.append('avatar', file);
-        // Use centralized axios client (handles baseURL and Authorization)
-        const res = await api.post(`/users/${userId}/avatar`, form);
-        const data = res && res.data ? res.data : null;
-        const url = (data && data.data && data.data.avatarUrl) ? data.data.avatarUrl : '';
-        if (url && typeof onAvatarUpdated === 'function') onAvatarUpdated(url);
-        toast({ title: 'Profile photo updated', status: 'success', duration: 2500, isClosable: true });
-      } catch (err) {
-        console.error('Avatar upload error:', err);
-        const msg = (err && err.response && err.response.data && (err.response.data.message || err.response.data.error))
-          || err?.message
-          || 'Upload failed';
-        toast({ title: msg, status: 'error', duration: 3500, isClosable: true });
-      } finally {
-        // reset input to allow same file reselect
-        if (fileInputRef.current) fileInputRef.current.value = '';
+      // Client-side validation: images only, <= 5MB
+      const isImage = (file.type || '').toLowerCase().startsWith('image/');
+      const maxSize = 5 * 1024 * 1024;
+      if (!isImage) {
+        toast({ title: 'Only image files are allowed', status: 'error', duration: 3000, isClosable: true });
+        return;
+      }
+      if (file.size > maxSize) {
+        toast({ title: 'File too large (max 5MB)', status: 'error', duration: 3000, isClosable: true });
+        return;
       }
 
+      // Ensure user is authenticated (Bearer is auto-added by api client from localStorage)
+      if (!token) {
+        toast({ title: 'Please log in to change your photo', status: 'warning', duration: 2500, isClosable: true });
+        return;
+      }
 
       const form = new FormData();
       form.append('avatar', file);
@@ -173,67 +156,93 @@
                   <DrawerCloseButton />
                   <DrawerHeader borderBottomWidth="1px">{firstName || 'Account'}</DrawerHeader>
 
+                  <DrawerBody display="flex" flexDirection="column" justifyContent="space-between" p={0}>
+                    {/* Top Section */}
+                    <Box>
+                      <Box position="sticky" top={0} zIndex={0} bg="white" borderBottom="1px solid #eee">
+                        <Box px={4} py={3} color="#666" fontSize="12px">Signed in</Box>
+                      </Box>
 
-        <Box
-          opacity={{ base: hideRight ? 0 : 1, md: 1 }}
-          pointerEvents={{ base: hideRight ? 'none' : 'auto', md: 'auto' }}
-          transition="opacity 200ms ease"
-        >
-          {/* Hidden file input for avatar upload */}
-          <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} style={{ display: 'none' }} />
-          {token ? (
-            // Authenticated user: Drawer on mobile, Menu on desktop
-            isMobile ? (
-              <>
-                <Button onClick={() => (isAcctOpen ? onAcctOpen() : onAcctOpen())} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
-                  <Flex align="center" gap={2}>
-                    <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden">
-                      {avatarUrl ? (
-                        <Box
-                          as="img"
-                          src={avatarUrl}
-                          alt="Profile"
-                          w="100%"
-                          h="100%"
-                          objectFit="cover"
-                          onError={() => {
-                            toast({ title: 'Could not load profile image', status: 'error', duration: 2500, isClosable: true });
-                          }}
-                        />
-                      ) : (
-                        <Box as="span" lineHeight={0}>
+                      {/* View Profile */}
+                      <Button
+                        variant="ghost"
+                        w="90%"
+                        display="flex"
+                        flexDir="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        textAlign="center"
+                        py={3}
+                        px={4}
+                        minH={{ base: 14, md: 12 }}
+                        bg="white"
+                        borderWidth="1px"
+                        borderColor="#e5e7eb"
+                        rounded="xl"
+                        boxShadow="xs"
+                        transition="all 0.15s ease"
+                        _hover={{ bg: 'white', boxShadow: 'sm' }}
+                        _active={{ bg: 'white', boxShadow: 'xs' }}
+                        onClick={() => { onAcctClose(); go('/userdashboard/'); }}
+                        my={3}
+                        mx={3}
+                        position="relative"
+                        zIndex={1}
+                      >
+                        <Box as="span" lineHeight={0} mb={1}>
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
                             <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
                           </svg>
                         </Box>
-                      )}
-                    </Box>
-                  </Flex>
-                </Button>
-                <Drawer
-                  isOpen={isAcctOpen}
-                  placement="right"
-                  onClose={onAcctClose}
-                  size="xs"
-                  zIndex={15000}
-                >
-                  <DrawerOverlay />
-                  <DrawerContent maxW="260px">
-                    <DrawerCloseButton />
-                    <DrawerHeader borderBottomWidth="1px">{firstName || 'Account'}</DrawerHeader>
+                        <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Profile</Box>
+                      </Button>
 
-                    <DrawerBody display="flex" flexDirection="column" justifyContent="space-between" p={0}>
-                      {/* Top Section */}
-                      <Box>
-                        <Box position="sticky" top={0} zIndex={0} bg="white" borderBottom="1px solid #eee">
-                          <Box px={4} py={3} color="#666" fontSize="12px">Signed in</Box>
-                        </Box>
+                      {/* Removed Change Photo from sidebar menu as per requirement */}
 
-                        {/* View Profile */}
+                      {/* Admin */}
+                      {isAdmin && (
                         <Button
                           variant="ghost"
                           w="90%"
+                          display="flex"
+                          flexDir="column"
+                          justifyContent="center"
+                          alignItems="center"
+                          textAlign="center"
+                          py={3}
+                          px={4}
+                          minH={{ base: 14, md: 12 }}
+                          bg="white"
+                          borderWidth="1px"
+                          borderColor="#e5e7eb"
+                          rounded="lg"
+                          boxShadow="xs"
+                          transition="all 0.15s ease"
+                          _hover={{ bg: 'white', boxShadow: 'sm' }}
+                          _active={{ bg: 'white', boxShadow: 'xs' }}
+                          onClick={() => { onAcctClose(); go('/admin/'); }}
+                          my={3}
+                          mx={4}
+                          position="relative"
+                          zIndex={2}
+                          borderRadius="xl"
+                        >
+                          <Box as="span" lineHeight={0} mb={1}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </Box>
+                          <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Admin</Box>
+                        </Button>
+                      )}
+
+                      {/* Blogger */}
+                      {isBlogger && (
+                        <Button
+                          variant="ghost"
+                          w="100%"
                           display="flex"
                           flexDir="column"
                           justifyContent="center"
@@ -250,7 +259,7 @@
                           transition="all 0.15s ease"
                           _hover={{ bg: 'white', boxShadow: 'sm' }}
                           _active={{ bg: 'white', boxShadow: 'xs' }}
-                          onClick={() => { onAcctClose(); go('/userdashboard/'); }}
+                          onClick={() => { onAcctClose(); go('/seo/blogs'); }}
                           my={3}
                           mx={3}
                           position="relative"
@@ -258,454 +267,247 @@
                         >
                           <Box as="span" lineHeight={0} mb={1}>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                              <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                              <path d="M5 5h14v14H5z" stroke="#111" strokeWidth="1.6"/>
+                              <path d="M8 9h8M8 12h8M8 15h5" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
                             </svg>
                           </Box>
-                          <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Profile</Box>
+                          <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Blog</Box>
                         </Button>
-
-                        {/* Removed Change Photo from sidebar menu as per requirement */}
-
-                        {/* Admin */}
-                        {isAdmin && (
-                          <Button
-                            variant="ghost"
-                            w="90%"
-                            display="flex"
-                            flexDir="column"
-                            justifyContent="center"
-                            alignItems="center"
-                            textAlign="center"
-                            py={3}
-                            px={4}
-                            minH={{ base: 14, md: 12 }}
-                            bg="white"
-                            borderWidth="1px"
-                            borderColor="#e5e7eb"
-                            rounded="lg"
-                            boxShadow="xs"
-                            transition="all 0.15s ease"
-                            _hover={{ bg: 'white', boxShadow: 'sm' }}
-                            _active={{ bg: 'white', boxShadow: 'xs' }}
-                            onClick={() => { onAcctClose(); go('/admin/'); }}
-                            my={3}
-                            mx={4}
-                            position="relative"
-                            zIndex={2}
-                            borderRadius="xl"
-                          >
-                            <Box as="span" lineHeight={0} mb={1}>
-                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                                <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                            </Box>
-                            <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Admin</Box>
-                          </Button>
-                        )}
-
-                        {/* Blogger */}
-                        {isBlogger && (
-                          <Button
-                            variant="ghost"
-                            w="100%"
-                            display="flex"
-                            flexDir="column"
-                            justifyContent="center"
-                            alignItems="center"
-                            textAlign="center"
-                            py={3}
-                            px={4}
-                            minH={{ base: 14, md: 12 }}
-                            bg="white"
-                            borderWidth="1px"
-                            borderColor="#e5e7eb"
-                            rounded="xl"
-                            boxShadow="xs"
-                            transition="all 0.15s ease"
-                            _hover={{ bg: 'white', boxShadow: 'sm' }}
-                            _active={{ bg: 'white', boxShadow: 'xs' }}
-                            onClick={() => { onAcctClose(); go('/seo/blogs'); }}
-                            my={3}
-                            mx={3}
-                            position="relative"
-                            zIndex={1}
-                          >
-                            <Box as="span" lineHeight={0} mb={1}>
-                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M5 5h14v14H5z" stroke="#111" strokeWidth="1.6"/>
-                                <path d="M8 9h8M8 12h8M8 15h5" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
-                              </svg>
-                            </Box>
-                            <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Blog</Box>
-                          </Button>
-                        )}
-                      </Box>
-
-                      {/* Logout Button at Bottom */}
-                      <Box px={4} pb={3}>
-                        <Button
-                          colorScheme="red"
-                          w="100%"
-                          borderRadius="md"
-                          fontWeight="600"
-                          onClick={() => { onAcctClose(); HandleUserLogout(); ShowLogOutMessage(); }}
-                        >
-                          Log out
-                        </Button>
-                      </Box>
-                    </DrawerBody>
-                  </DrawerContent>
-                </Drawer>
-
-              </>
-            ) : (
-              <Menu placement="bottom-end" isLazy strategy="fixed">
-                <MenuButton
-                  as={Button}
-                  aria-label="Profile"
-                  variant="ghost"
-                  bg="transparent"
-                  _hover={{ bg: "transparent" }}
-                  px={2}
-                >
-                  <Flex align="center" gap={2}>
-                    <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden">
-                      {avatarUrl ? (
-                        <Box
-                          as="img"
-                          src={avatarUrl}
-                          alt="Profile"
-                          w="100%"
-                          h="100%"
-                          objectFit="cover"
-                        />
-                      ) : (
-                        <Box as="span" lineHeight={0}>
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                            <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                          </svg>
-                        </Box>
                       )}
                     </Box>
-                    {firstName && (
-                      <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" fontWeight="600" display={{ base: "none", xl: "inline" }}>
-                        {firstName}
+
+                    {/* Logout Button at Bottom */}
+                    <Box px={4} pb={3}>
+                      <Button
+                        colorScheme="red"
+                        w="100%"
+                        borderRadius="md"
+                        fontWeight="600"
+                        onClick={() => { onAcctClose(); HandleUserLogout(); ShowLogOutMessage(); }}
+                      >
+                        Log out
+                      </Button>
+                    </Box>
+                  </DrawerBody>
+                </DrawerContent>
+              </Drawer>
+
+            </>
+          ) : (
+            <Menu placement="bottom-end" isLazy strategy="fixed">
+              <MenuButton
+                as={Button}
+                aria-label="Profile"
+                variant="ghost"
+                bg="transparent"
+                _hover={{ bg: "transparent" }}
+                px={2}
+              >
+                <Flex align="center" gap={2}>
+                  <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden">
+                    {avatarUrl ? (
+                      <Box
+                        as="img"
+                        src={avatarUrl}
+                        alt="Profile"
+                        w="100%"
+                        h="100%"
+                        objectFit="cover"
+                      />
+                    ) : (
+                      <Box as="span" lineHeight={0}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                          <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
                       </Box>
                     )}
-                  </Flex>
-                </MenuButton>
-                <Portal>
-                  <MenuList
-                    p={1}
-                    minW="220px"
-                    maxH="60vh"
-                    overflowY="auto"
-                    zIndex={14000}
-                    border="1px solid #e5e7eb"
-                    boxShadow="lg"
-                    rounded="xl"
-                    bg="white"
+                  </Box>
+                  {firstName && (
+                    <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" fontWeight="600" display={{ base: "none", xl: "inline" }}>
+                      {firstName}
+                    </Box>
+                  )}
+                </Flex>
+              </MenuButton>
+              <Portal>
+                <MenuList
+                  p={1}
+                  minW="220px"
+                  maxH="60vh"
+                  overflowY="auto"
+                  zIndex={14000}
+                  border="1px solid #e5e7eb"
+                  boxShadow="lg"
+                  rounded="xl"
+                  bg="white"
+                >
+                  <Box px={3} pt={2} pb={2} color="#666" fontSize="12px">Signed in</Box>
+                  <Box h="1px" bg="#eee" />
+                  <MenuItem
+                    onClick={() => go('/userdashboard/')}
+                    fontSize="14px"
+                    py={2.5}
+                    _hover={{ bg: '#f9fafb' }}
                   >
-                    <Box px={3} pt={2} pb={2} color="#666" fontSize="12px">Signed in</Box>
-                    <Box h="1px" bg="#eee" />
+                    <Box as="span" lineHeight={0} mr={3}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
+                        <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
+                      </svg>
+                    </Box>
+                    View Profile
+                  </MenuItem>
+                  {/* Removed Change photo from dropdown menu */}
+                  {isAdmin && (
                     <MenuItem
-                      onClick={() => go('/userdashboard/')}
+                      onClick={() => go('/admin/')}
                       fontSize="14px"
                       py={2.5}
                       _hover={{ bg: '#f9fafb' }}
                     >
                       <Box as="span" lineHeight={0} mr={3}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
-                          <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
+                          <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                       </Box>
-                      View Profile
+                      Admin
                     </MenuItem>
-                    {/* Removed Change photo from dropdown menu */}
-                    {isAdmin && (
-                      <MenuItem
-                        onClick={() => go('/admin/')}
-                        fontSize="14px"
-                        py={2.5}
-                        _hover={{ bg: '#f9fafb' }}
-                      >
-                        <Box as="span" lineHeight={0} mr={3}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                            <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </Box>
-                        Admin
-                      </MenuItem>
-                    )}
-                    {isBlogger && (
-                      <MenuItem
-                        onClick={() => go('/seo/blogs')}
-                        fontSize="14px"
-                        py={2.5}
-                        _hover={{ bg: '#f9fafb' }}
-                      >
-                        <Box as="span" lineHeight={0} mr={3}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5 5h14v14H5z" stroke="#111" strokeWidth="1.6"/>
-                            <path d="M8 9h8M8 12h8M8 15h5" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
-                          </svg>
-                        </Box>
-                        Blog
-                      </MenuItem>
-                    )}
-                    <Box h="1px" bg="#eee" />
+                  )}
+                  {isBlogger && (
                     <MenuItem
-                      onClick={() => { HandleUserLogout(); ShowLogOutMessage(); }}
+                      onClick={() => go('/seo/blogs')}
                       fontSize="14px"
                       py={2.5}
-                      _hover={{ bg: '#fef2f2' }}
+                      _hover={{ bg: '#f9fafb' }}
                     >
                       <Box as="span" lineHeight={0} mr={3}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M16 17l5-5-5-5" stroke="#dc2626" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M21 12H9" stroke="#dc2626" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M13 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M5 5h14v14H5z" stroke="#111" strokeWidth="1.6"/>
+                          <path d="M8 9h8M8 12h8M8 15h5" stroke="#111" strokeWidth="1.6" strokeLinecap="round"/>
                         </svg>
                       </Box>
-                      Log out
+                      Blog
                     </MenuItem>
-                  </MenuList>
-                </Portal>
-              </Menu>
-            )
-          ) : (
-            <>
-              <Button onClick={showModal} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
-                <Flex align="center" gap={2}>
-                  <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center">
-                    <Box as="span" lineHeight={0}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                        <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                  )}
+                  <Box h="1px" bg="#eee" />
+                  <MenuItem
+                    onClick={() => { HandleUserLogout(); ShowLogOutMessage(); }}
+                    fontSize="14px"
+                    py={2.5}
+                    _hover={{ bg: '#fef2f2' }}
+                  >
+                    <Box as="span" lineHeight={0} mr={3}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 17l5-5-5-5" stroke="#dc2626" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M21 12H9" stroke="#dc2626" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M13 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </Box>
-                  </Box>
-                  <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" display={{ base: "none", xl: "inline" }}>Log in</Box>
-                </Flex>
-              </Button>
-              <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
-            </>
-          )}
-
-          {/* Mobile Post property CTA */}
-          {token ? (
-            <Link to="/postproperty/">
-              <IconButton
-                aria-label="Post property"
-                variant="outline"
-                size="sm"
-                borderColor="#e53e3e"
-                color={colorChange ? "white" : "#e53e3e"}
-                _hover={{ bg: colorChange ? "whiteAlpha.200" : "red.50" }}
-                display={{ base: "none", lg: "none" }}
-                borderRadius="full"
-                ml={{ base: 1, md: 2 }}
-                icon={
+                    Log out
+                  </MenuItem>
+                </MenuList>
+              </Portal>
+            </Menu>
+          )
+        ) : (
+          <>
+            <Button onClick={showModal} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
+              <Flex align="center" gap={2}>
+                <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center">
                   <Box as="span" lineHeight={0}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-5H9v5H4a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M16.5 8.5v-3M15 7h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                      <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                      <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
                     </svg>
                   </Box>
-                }
-              />
-            </Link>
-          ) : (
-            <Link to="/auth/signin/">
-              <IconButton
-                aria-label="Post property"
-                variant="outline"
-                size="sm"
-                borderColor="#e53e3e"
-                color={colorChange ? "white" : "#e53e3e"}
-                _hover={{ bg: colorChange ? "whiteAlpha.200" : "red.50" }}
-                display={{ base: "none", lg: "none" }}
-                borderRadius="full"
-                ml={{ base: 1, md: 2 }}
-                icon={
-                  <Box as="span" lineHeight={0}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-5H9v5H4a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M16.5 8.5v-3M15 7h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-                    </svg>
-                  </Box>
-                }
-              />
-            </Link>
-          )}
+                </Box>
+                <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" display={{ base: "none", xl: "inline" }}>Log in</Box>
+              </Flex>
+            </Button>
+            <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="register" />
+          </>
+        )}
 
-          {/* CSS for always rotating black and yellow border */}
-          <style>{`
-            .rotating-border-always {
-              position: relative;
-              display: inline-block;
-            }
-            
-            .rotating-border-always::before {
-              content: '';
-              position: absolute;
-              left: -2px;
-              top: -2px;
-              width: calc(100% + 4px);
-              height: calc(100% + 4px);
-              background: conic-gradient(from 0deg, 
-                #000 0deg, 
-                #FACC15 90deg, 
-                #000 180deg, 
-                #FACC15 270deg, 
-                #000 360deg
-              );
-              border-radius: calc(0.75rem + 2px);
-              animation: rotateColorBorder 2s linear infinite;
-              z-index: -1;
-            }
-            
-            .rotating-border-always::after {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
-              background: white;
-              border-radius: 0.75rem;
-              z-index: -1;
-            }
-            
-            @keyframes rotateColorBorder {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-            
-            .button-inner {
-              position: relative;
-              z-index: 1;
-            }
-          `}</style>
+        {/* Mobile Post property CTA */}
+        {token ? (
+          <Link to="/postproperty/">
+            <IconButton
+              aria-label="Post property"
+              variant="outline"
+              size="sm"
+              borderColor="#e53e3e"
+              color={colorChange ? "white" : "#e53e3e"}
+              _hover={{ bg: colorChange ? "whiteAlpha.200" : "red.50" }}
+              display={{ base: "none", lg: "none" }}
+              borderRadius="full"
+              ml={{ base: 1, md: 2 }}
+              icon={
+                <Box as="span" lineHeight={0}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-5H9v5H4a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M16.5 8.5v-3M15 7h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                  </svg>
+                </Box>
+              }
+            />
+          </Link>
+        ) : (
+          <Link to="/auth/login/">
+            <IconButton
+              aria-label="Post property"
+              variant="outline"
+              size="sm"
+              borderColor="#e53e3e"
+              color={colorChange ? "white" : "#e53e3e"}
+              _hover={{ bg: colorChange ? "whiteAlpha.200" : "red.50" }}
+              display={{ base: "none", lg: "none" }}
+              borderRadius="full"
+              ml={{ base: 1, md: 2 }}
+              icon={
+                <Box as="span" lineHeight={0}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-5H9v5H4a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M16.5 8.5v-3M15 7h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                  </svg>
+                </Box>
+              }
+            />
+          </Link>
+        )}
 
-          {/* Post property CTA with Always Rotating Black and Yellow Border */}
-          {token ? (
-            <div className="rotating-border-always">
-              <Link to="/postproperty/">
-                <Button 
-                  className="button-inner"
-                  size="sm" 
-                  variant="solid" 
-                  bg="white" 
-                  color="#111" 
-                  boxShadow="none" 
-                  _hover={{ 
-                    bg: 'white',
-                    transform: 'translateY(-1px)'
-                  }}
-                  _active={{
-                    transform: 'translateY(0)'
-                  }}
-                  fontWeight="700" 
-                  fontSize={{ base: '14px', md: '13px', xl: '13px' }} 
-                  letterSpacing="0.3px" 
-                  display={{ base: "none", md: "inline-flex" }} 
-                  gap={{ base: 3, md: 2, xl: 3 }} 
-                  alignItems="center" 
-                  borderRadius="xl" 
-                  px={{ base: 4, md: 3, xl: 4 }} 
-                  py={2} 
-                  ml={{ base: 2, md: 2 }}
-                  position="relative"
-                  zIndex={1}
-                  transition="all 0.3s ease"
-                  border="none"
-                >
-                  <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
-                    {/* icon intentionally hidden for md+ */}
-                  </Box>
-                  <Box as="span" display={{ base: 'none', md: 'inline' }}>Post Property</Box>
-                  <Box 
-                    as="span" 
-                    display={{ base: 'none', md: 'inline-flex' }} 
-                    bg="#FACC15" 
-                    color="#e53e3e" 
-                    px={3} 
-                    py={0.5} 
-                    fontSize="11px" 
-                    fontWeight="800" 
-                    lineHeight={1} 
-                    style={{ 
-                      clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' 
-                    }}
-                  >
-                    FREE
-                  </Box>
-                </Button>
-              </Link>
-            </div>
-          ) : (
-            <div className="rotating-border-always">
-              <Link to="/auth/signin/">
-                <Button 
-                  className="button-inner"
-                  size="sm" 
-                  variant="solid" 
-                  bg="white" 
-                  color="#111" 
-                  border="none" 
-                  boxShadow="none" 
-                  _hover={{ 
-                    bg: 'white',
-                    transform: 'translateY(-1px)'
-                  }}
-                  _active={{
-                    transform: 'translateY(0)'
-                  }}
-                  fontWeight="700" 
-                  fontSize={{ base: '14px', md: '13px', xl: '13px' }} 
-                  letterSpacing="0.3px" 
-                  display={{ base: "none", md: "inline-flex" }} 
-                  gap={{ base: 3, md: 2, xl: 3 }} 
-                  alignItems="center" 
-                  borderRadius="xl" 
-                  px={{ base: 4, md: 3, xl: 4 }} 
-                  py={2} 
-                  ml={{ base: 2, md: 2 }}
-                  position="relative"
-                  zIndex={1}
-                  transition="all 0.3s ease"
-                >
-                  <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
-                    {/* icon intentionally hidden for md+ */}
-                  </Box>
-                  <Box as="span" display={{ base: 'none', md: 'inline' }}>Post Property</Box>
-                  <Box 
-                    as="span" 
-                    display={{ base: 'none', md: 'inline-flex' }} 
-                    bg="#FACC15" 
-                    color="#e53e3e" 
-                    px={3} 
-                    py={0.5} 
-                    fontSize="11px" 
-                    fontWeight="800" 
-                    lineHeight={1} 
-                    style={{ 
-                      clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' 
-                    }}
-                  >
-                    FREE
-                  </Box>
-                </Button>
-              </Link>
-            </div>
-          )}
-        </Box>
-      </Flex>
-    );
-  }
+        {/* Post property CTA */}
+        {token ? (
+          <Link to="/postproperty/">
+            <Button size="sm" variant="solid" bg="white" color="#111" border="2px solid #e53e3e" boxShadow="sm" _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }} fontWeight="700" fontSize={{ base: '14px', md: '13px', xl: '13px' }} letterSpacing="0.3px" display={{ base: "none", md: "inline-flex" }} gap={{ base: 3, md: 2, xl: 3 }} alignItems="center" borderRadius="xl" px={{ base: 4, md: 3, xl: 4 }} py={2} ml={{ base: 2, md: 2 }}>
+              {/* Hide icon on tablet/laptop */}
+              <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
+                {/* icon intentionally hidden for md+ */}
+              </Box>
+              {/* Always show full label on md and up */}
+              <Box as="span" display={{ base: 'none', md: 'inline' }}>Post Property</Box>
+              <Box as="span" display={{ base: 'none', md: 'inline-flex' }} bg="#FACC15" color="#e53e3e" px={3} py={0.5} fontSize="11px" fontWeight="800" lineHeight={1} style={{ clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' }}>
+                FREE
+              </Box>
+            </Button>
+          </Link>
+        ) : (
+          <Link to="/auth/login/">
+            <Button size="sm" variant="solid" bg="white" color="#111" border="2px solid #e53e3e" boxShadow="sm" _hover={{ boxShadow: '0 0 0 3px rgba(229,62,62,0.15)', bg: 'white' }} fontWeight="700" fontSize={{ base: '14px', md: '13px', xl: '13px' }} letterSpacing="0.3px" display={{ base: "none", md: "inline-flex" }} gap={{ base: 3, md: 2, xl: 3 }} alignItems="center" borderRadius="xl" px={{ base: 4, md: 3, xl: 4 }} py={2} ml={{ base: 2, md: 2 }}>
+              {/* Hide icon on tablet/laptop */}
+              <Box as="span" display={{ base: 'none' }} color="#e53e3e" lineHeight={0}>
+                {/* icon intentionally hidden for md+ */}
+              </Box>
+              {/* Always show full label on md and up */}
+              <Box as="span" display={{ base: 'none', md: 'inline' }}>Post property</Box>
+              <Box as="span" display={{ base: 'none', md: 'inline-flex' }} bg="#FACC15" color="#e53e3e" px={3} py={0.5} fontSize="11px" fontWeight="800" lineHeight={1} style={{ clipPath: 'polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%)' }}>
+                FREE
+              </Box>
+            </Button>
+          </Link>
+        )}
+      </Box>
+    </Flex>
+  );
+}
