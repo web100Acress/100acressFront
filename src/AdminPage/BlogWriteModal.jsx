@@ -85,18 +85,29 @@ const BlogWriteModal = () => {
   const cropImgRef = useRef(null);
 
   const quillRef = useRef(null);
-  // Safe accessor for Quill instance: react-quill throws if called before mount
+  const quillInstance = useRef(null);
+  
+  // Initialize Quill instance
+  const handleQuillChange = (content/*, delta, source, editor */) => {
+    setDescription(content);
+    // Always cache the real Quill instance from the ref (editor param is UnprivilegedEditor)
+    try {
+      if (quillRef.current && typeof quillRef.current.getEditor === 'function') {
+        quillInstance.current = quillRef.current.getEditor();
+      }
+    } catch {}
+  };
+  
+  // Safe accessor for Quill instance
   const safeGetQuill = () => {
     try {
-      const inst = quillRef.current && typeof quillRef.current.getEditor === 'function'
-        ? quillRef.current.getEditor()
-        : null;
-      return inst || null;
-    } catch (e) {
-      // Editor not instantiated yet
-      return null;
-    }
+      if (quillRef.current && typeof quillRef.current.getEditor === 'function') {
+        return quillRef.current.getEditor();
+      }
+    } catch {}
+    return quillInstance.current || null;
   };
+  
   // Lightbox & preview helpers
   const [lightboxUrl, setLightboxUrl] = useState('');
   const [frontPreviewObjUrl, setFrontPreviewObjUrl] = useState('');
@@ -616,12 +627,20 @@ const BlogWriteModal = () => {
       return messageApi.error('Please select a featured image');
     }
 
+    // File size validation (10MB limit)
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    if (frontImage && frontImage.size > MAX_FILE_SIZE) {
+      return messageApi.error('Featured image exceeds maximum size of 10MB');
+    }
+
     // Authorization is handled by the axios interceptor and enforced by the backend.
 
     setIsSubmitting(true);
 
     try {
       const formDataAPI = new FormData();
+      
+      // Basic blog data
       formDataAPI.append('blog_Title', title.trim());
       formDataAPI.append('blog_Description', description);
       formDataAPI.append('blog_Category', categories);
@@ -633,9 +652,22 @@ const BlogWriteModal = () => {
       if (metaDescription) formDataAPI.append('metaDescription', metaDescription.trim());
       if (slug) formDataAPI.append('slug', slug.trim());
 
-      // Featured image: send file if chosen; if only preview URL (editing existing), backend may ignore
+      // Handle file upload with better error handling
       if (frontImage) {
-        formDataAPI.append('blog_Image', frontImage);
+        try {
+          // Validate file type
+          const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+          if (!validTypes.includes(frontImage.type)) {
+            throw new Error('Invalid file type. Please upload a JPG, PNG, or WebP image.');
+          }
+          
+          // Compress image if needed
+          const processedFile = await processImageFile(frontImage);
+          formDataAPI.append('blog_Image', processedFile);
+        } catch (fileError) {
+          console.error('File processing error:', fileError);
+          return messageApi.error(fileError.message || 'Error processing image');
+        }
       }
 
       if (blogToEdit) {
@@ -681,11 +713,31 @@ const BlogWriteModal = () => {
       messageApi.destroy('loadingNewBlog');
 
       let errorMessage = 'Error saving blog';
+      
+      // More detailed error handling
       if (error.response) {
-        errorMessage = error.response.data?.message || `Server error: ${error.response.status}`;
+        // Server responded with error status code
+        const { status, data } = error.response;
+        console.error('Server error response:', { status, data });
+        
+        if (status === 413) {
+          errorMessage = 'File too large. Please upload an image smaller than 10MB.';
+        } else if (status === 415) {
+          errorMessage = 'Unsupported file type. Please upload a JPG, PNG, or WebP image.';
+        } else if (data && data.message) {
+          errorMessage = data.message;
+        } else {
+          errorMessage = `Server error: ${status}`;
+        }
       } else if (error.request) {
-        errorMessage = 'Network error. Please check your connection.';
+        // Request was made but no response received
+        console.error('No response from server:', error.request);
+        errorMessage = 'Network error. Please check your connection and try again.';
+      } else if (error.message) {
+        // Other errors
+        errorMessage = error.message;
       }
+      
       messageApi.error(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -783,6 +835,84 @@ const BlogWriteModal = () => {
       root.removeEventListener('click', onClick);
     };
   }, []);
+
+  /**
+   * Process and compress image file before upload
+   * @param {File} file - The image file to process
+   * @returns {Promise<File>} - Processed file with reduced size
+   */
+  const processImageFile = (file) => {
+    return new Promise((resolve, reject) => {
+      // Skip processing for small files (<1MB) or non-image files
+      if (file.size < 1024 * 1024 || !file.type.startsWith('image/')) {
+        return resolve(file);
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          // Calculate new dimensions (max 2000px on the longest side)
+          const MAX_DIMENSION = 2000;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height && width > MAX_DIMENSION) {
+            height = Math.round((height * MAX_DIMENSION) / width);
+            width = MAX_DIMENSION;
+          } else if (height > MAX_DIMENSION) {
+            width = Math.round((width * MAX_DIMENSION) / height);
+            height = MAX_DIMENSION;
+          }
+
+          // Create canvas for resizing
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          
+          // Draw image with new dimensions
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convert to blob with quality based on file type
+          let quality = 0.8; // Default quality
+          let type = file.type;
+          
+          // Adjust quality based on file type
+          if (type === 'image/jpeg') {
+            quality = 0.7; // Slightly lower quality for JPEG
+          } else if (type === 'image/png') {
+            quality = 0.8;
+          } else if (type === 'image/webp') {
+            quality = 0.75;
+          }
+          
+          // Convert to blob
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) return reject(new Error('Canvas to blob conversion failed'));
+              
+              // Create new file with original name but new content
+              const processedFile = new File(
+                [blob],
+                file.name.replace(/\.[^.]+$/, '') + (type === 'image/jpeg' ? '.jpg' : '.webp'),
+                { type: type === 'image/jpeg' ? 'image/jpeg' : 'image/webp' }
+              );
+              
+              console.log(`Image compressed from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(blob.size / 1024 / 1024).toFixed(2)}MB`);
+              resolve(processedFile);
+            },
+            type === 'image/png' ? 'image/png' : 'image/jpeg',
+            quality
+          );
+        };
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsDataURL(file);
+    });
+  };
 
   // Cleanup featured preview object URL
   useEffect(() => {
@@ -1486,15 +1616,17 @@ const BlogWriteModal = () => {
               </div>
 
               <div className="border border-gray-200 rounded-xl overflow-hidden">
-                <ReactQuill
-                ref={quillRef}
-                theme="snow"
-                value={description}
-                onChange={setDescription}
-                className="h-64"
-                modules={quillModules}
-                formats={quillFormats}
-              />
+                <div className="quill-editor-container">
+                  <ReactQuill
+                    ref={quillRef}
+                    theme="snow"
+                    value={description}
+                    onChange={handleQuillChange}
+                    className="h-64"
+                    modules={quillModules}
+                    formats={quillFormats}
+                  />
+                </div>
               </div>
               <p className="text-xs text-gray-500">
                 Tip: Use the buttons above to insert images anywhere inside the content.

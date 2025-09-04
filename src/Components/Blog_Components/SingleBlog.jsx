@@ -3,7 +3,7 @@
 import React from "react";
 import styled from "styled-components";
 
-function SingleBlog() {
+function SingleBlog({ post }) {
   return (
     <Wrapper className='section'>
       <article className='postName article' id='postId'>
@@ -14,7 +14,7 @@ function SingleBlog() {
               
             </div>
             <h1 className='entry-title'>
-              Experience Unparalleled Comfort and Style at Oxirich Chintamani
+              {post?.blog_Title || 'Blog Post Title'}
             </h1>
             <div className='post-meta-wrapper post-meta-single post-meta-single-top'>
               <ul className='post-meta'>
@@ -58,7 +58,7 @@ function SingleBlog() {
                     </svg>{" "}
                   </span>
                   <span class='meta-text'>
-                    <span>July 18, 2023</span>
+                    <span>{new Date(post?.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) || 'Date not available'}</span>
                   </span>
                 </li>
                 <li className='post-category meta-wrapper'>
@@ -95,9 +95,9 @@ function SingleBlog() {
             <img
               width='1200'
               height='676'
-              src='https://www.100acress.com/blog/wp-content/uploads/2023/07/Oxirich-Chintamani-Sector-103-Gurgaon-1.jpg'
+              src={post?.blog_Image?.cdn_url || post?.blog_Image?.url || 'https://via.placeholder.com/1200x676'}
               className='attachment-post-thumbnail size-post-thumbnail wp-post-image amp-wp-enforced-sizes'
-              alt='Oxirich Chintamani Sector 103, Gurgaon'
+              alt={post?.blog_Title || 'Blog post image'}
               decoding='async'
               srcset='https://www.100acress.com/blog/wp-content/uploads/2023/07/Oxirich-Chintamani-Sector-103-Gurgaon-1.jpg 1200w, https://www.100acress.com/blog/wp-content/uploads/2023/07/Oxirich-Chintamani-Sector-103-Gurgaon-1-300x169.jpg 300w, https://www.100acress.com/blog/wp-content/uploads/2023/07/Oxirich-Chintamani-Sector-103-Gurgaon-1-1024x577.jpg 1024w, https://www.100acress.com/blog/wp-content/uploads/2023/07/Oxirich-Chintamani-Sector-103-Gurgaon-1-768x433.jpg 768w, https://www.100acress.com/blog/wp-content/uploads/2023/07/Oxirich-Chintamani-Sector-103-Gurgaon-1-150x85.jpg 150w'
               sizes='(max-width: 1200px) 100vw, 1200px'
