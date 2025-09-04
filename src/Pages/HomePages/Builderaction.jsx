@@ -78,12 +78,12 @@ const Builderaction = () => {
           
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-1">
             <span className="bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">
-              Best For You
+            Best Residential and Commercial Properties for You
             </span>
           </h2>
           
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-1">
-            Discover premium properties from India's most trusted developers
+          Explore verified properties, affordable homes, ready-to-move flats, under-construction apartments, and new residential projects from leading builders in India.
           </p>
           
           {/* Stats Bar */}

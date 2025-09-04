@@ -142,8 +142,7 @@ const PossessionProperty = () => {
           <div className="absolute -top-1 md:-top-2 left-1/2 transform -translate-x-1/2 w-12 md:w-16 h-0.5 md:h-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-full"></div>
         </div>
         <p className="text-xs md:text-sm lg:text-base text-gray-600 max-w-4xl mx-auto leading-relaxed">
-          Move in without delay, with possession effortlessly handled. 
-          Discover properties that align with your desired move-in timeframe.
+        Move into your dream home on time with ready-to-move flats and apartments. Explore properties that perfectly match your move-in plan for a smooth and stress-free experience.
         </p>
       </div>
 
