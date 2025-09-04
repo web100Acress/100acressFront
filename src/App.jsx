@@ -358,8 +358,8 @@ function App() {
                     <Route path="/blog/" element={<Blogging />} />
                     {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
                     <Route path="/blog/write" element={<BlogWrite />} />
-                    <Route path="/blog/:slug" element={<BlogView />} />
                     <Route path="/blog/:blogTitle/:id" element={<BlogView />} />
+                    <Route path="/blog/:slug" element={<BlogView />} />
                     <Route
                       path="/resetpassword/:token"
                       element={<ForgetPassword />}

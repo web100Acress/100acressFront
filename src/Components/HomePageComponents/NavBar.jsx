@@ -8,6 +8,7 @@ import { MdRocketLaunch } from "react-icons/md";
 import { GiSpectacles } from "react-icons/gi";
 import { GiVillage } from "react-icons/gi";
 import { HiBars3 } from "react-icons/hi2";
+import { FiUser } from "react-icons/fi";
 import { ABOUT, BLOG, KNOWABOUT, LOGIN, ROOT } from "../../lib/route";
 import { Link, Navigate } from "react-router-dom";
 import AuthModal from "../AuthModal";
@@ -16,6 +17,8 @@ import { RxCross2 } from "react-icons/rx";
 function FinalNavBar() {
   const [showNav, setShowNav] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  
   const URL="/projects"
 
   useEffect(() => {
@@ -26,18 +29,35 @@ function FinalNavBar() {
       
       
       <div className='Mflx'>
-      
-        <div className='1euNB' style={{cursor:"pointer"}}>
-          <Link to={ROOT}>
-            <img src="../../Images/mainLogo.png" alt='' width='200' loading="lazy"/>
-            
-            
-          </Link>
+
+        {/* Left: Hamburger (visible <=920px) */}
+        <div className='hdrLeft'>
+          <div
+            className='barDotMenu'
+            style={{ width: "fit-content", marginBottom: "5px", marginTop: "5px" }}
+          >
+            <HiBars3 size={28} color='white' onClick={() => setShowNav(!showNav)} />
+          </div>
         </div>
-        <div
-          className='barDotMenu'
-          style={{ width: "fit-content", marginBottom: "5px",marginTop: "5px" }}>
-          <HiBars3 size={35} color='white' onClick={() => setShowNav(!showNav)} />
+
+        {/* Center: Logo (always) */}
+        <div className='hdrCenter'>
+          <div className='1euNB' style={{ cursor: "pointer" }}>
+            <Link to={ROOT}>
+              <img src="../../Images/mainLogo.png" alt='' width='140' loading="lazy" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Right: Profile + Post Property (visible <=920px) */}
+        <div className='hdrRight'>
+          <button className='profBtn' aria-label='Profile/Login' onClick={() => setShowAuth(true)}>
+            <FiUser size={18} />
+          </button>
+          <div className='_6bnYTum' role="button" aria-label="List Property">
+            <span className='_lpText'>LIST PROPERTY</span>
+            <span className='_73exMP'>FREE</span>
+          </div>
         </div>
 
         {showNav && (
@@ -50,7 +70,7 @@ function FinalNavBar() {
             }}>
             <div className='d-flex align-items-center justify-content-between  pr-3'>
               <div className='1euNB'>
-                <img src="../../Images/mainLogo.png" alt='' width='200' loading="lazy"/>
+                <img src="../../Images/mainLogo.png" alt='' width='140' loading="lazy"/>
                 
               </div>
               <div
@@ -137,7 +157,7 @@ function FinalNavBar() {
           </div>
         )}
         <div className='NBflx'>
-          <ul className='ulfx _1grx' style={{marginTop:"8px"}}>
+          <ul className='ulfx _1grx' style={{marginTop:"2px"}}>
             <li className='pxrE el1'>
               <span className='pxrETXT'>
                 <a>Buy</a>
@@ -336,7 +356,6 @@ function FinalNavBar() {
     </Wrapper>
   );
 }
-
 export default FinalNavBar;
 const Wrapper = styled.section`
   position: sticky;
@@ -365,19 +384,32 @@ const Wrapper = styled.section`
     margin-bottom: 5px;
     margin-top: 0px;
     color:white;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .pxrETXT {
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .barDotMenu svg {
+    transition: color 0.3s ease-in-out;
   }
   .NBflx {
     display: flex;
     color: red;
     width: 100%;
   }
+  /* Nav text readability on image backgrounds */
+  .ulfx, .ulfx .linkEl { 
+    text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+  }
   /* Ensure right action links are visible on desktop (white header bg) */
   .NBflx ._2grx .linkEl {
-    color: #e53e3e !important;
+    color: #ffffff !important; /* transparent header over image */
     font-weight: 600;
   }
   .NBflx ._2grx .linkEl:hover {
-    color: #b91c1c !important;
+    color: #e5e7eb !important; /* light gray on hover */
   }
   /* Keep mobile drawer links white on red background */
   .MBflx ._2grx.flex-column .linkEl {
@@ -386,9 +418,12 @@ const Wrapper = styled.section`
   .Mflx {
     display: flex;
     align-items: center;
-    background:red;
-    padding: 0px 10px;
-    border-radius:0px 0px 10px 10px;
+    background: transparent !important; /* enforce transparent navbar */
+    padding: 0 12px !important; /* horizontal spacing */
+    border-radius: 0; /* remove rounded bottom so hero shows cleanly */
+    box-shadow: none;
+    min-height: var(--nav-h);
+    position: relative; /* for centered logo on mobile */
   }
   hr{
     color:black !important;
@@ -401,13 +436,14 @@ const Wrapper = styled.section`
   ._2grx {
     justify-content: flex-end;
     flex-grow: 1;
-    padding-right: 20px;
+    padding-right: 0; /* flush to right edge */
     margin-top: 8px;
   }
   .linkEl {
     color: inherit;
     display: inherit;
     align-items: inherit;
+    transition: color 0.3s ease-in-out;
   }
   ._1grx > li > ul {
     opacity: 0;
@@ -608,31 +644,47 @@ const Wrapper = styled.section`
     position: relative;
   }
   .barDotMenu {
-    display: none;
+    display: none; /* shown at <=920px */
   }
   .mob_view_sde {
     display: none;
   }
-  @media screen and (max-width: 1100px) and (min-width: 400px) {
-    .NBflx {
-      display: none;
-    }
-    .barDotMenu {
-      display: block;
-    }
-    .Mflx {
-      justify-content: space-between;
-    }
+  /* Mobile/tablet layout at <=920px */
+  .hdrLeft, .hdrCenter, .hdrRight { display: none; }
+  .profBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.8);
+    color: #fff;
+    width: 34px;
+    height: 34px;
+    border-radius: 9999px;
+    padding: 0;
+    transition: all 0.3s ease-in-out;
   }
-  @media screen and (max-width: 400px) {
-    .NBflx {
-      display: none;
-    }
-    .barDotMenu {
-      display: block;
-    }
+  @media screen and (max-width: 920px) {
+    .NBflx { display: none; }
+    .barDotMenu { display: block; }
+    /* Switch to 3-column grid for perfect alignment */
     .Mflx {
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      width: 100%;
+      padding: 0 10px !important;
+      min-height: 60px; /* slightly shorter navbar on mobile */
     }
+    .hdrLeft, .hdrCenter, .hdrRight { display: flex; align-items: center; }
+    .hdrLeft { grid-column: 1 / 2; justify-content: flex-start; }
+    .hdrCenter { grid-column: 2 / 3; justify-content: center; align-items: center; position: static; transform: none; }
+    .hdrRight { grid-column: 3 / 4; justify-content: flex-end; gap: 8px; }
+    /* Force smaller logo on mobile */
+    .hdrCenter img { width: 100px !important; height: auto !important; display: block; }
+    .profBtn { width: 32px; height: 32px; }
+    .barDotMenu svg { width: 26px; height: 26px; }
+    ._6bnYTum { padding: 6px 14px; }
+    :root { --nav-h: 60px; }
   }
 `;
