@@ -426,7 +426,7 @@ export default function RightSection({
                 <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" display={{ base: "none", xl: "inline" }}>Log in</Box>
               </Flex>
             </Button>
-            <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="register" />
+            <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
           </>
         )}
 

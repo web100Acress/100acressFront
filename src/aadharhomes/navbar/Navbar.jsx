@@ -550,8 +550,8 @@ export default function Navbar() {
         right="0"
         zIndex="9999"
         width="100%"
-        bg={isHome ? (colorChange ? "#e53e3e" : "transparent") : "#ffffff"}
-        boxShadow={isHome ? (colorChange ? "0 6px 18px rgba(0,0,0,0.12)" : "none") : "0 6px 18px rgba(0,0,0,0.08)"}
+        bg={colorChange ? "#e53e3e" : (isHome ? "transparent" : "#ffffff")}
+        boxShadow={colorChange ? "0 6px 18px rgba(0,0,0,0.12)" : (isHome ? "none" : "0 6px 18px rgba(0,0,0,0.08)")}
         transition="background-color 200ms ease, box-shadow 200ms ease"
       >
         <Box
