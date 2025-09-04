@@ -163,7 +163,7 @@ const ModernRecommendedSection = () => {
   if (!displayData || displayData.length === 0) {
     return (
       <SectionWrapper>
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-4">
           <div className="text-center">
             <h3 className="text-xl font-semibold text-gray-600 mb-4">Loading Recommended Properties...</h3>
             <Skeleton active />

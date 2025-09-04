@@ -1,29 +1,47 @@
-  import React, { useState, useEffect } from "react";
-  import styled from "styled-components";
-  import Search from "../../aadharhomes/Search";
-  import { Link } from "react-router-dom";
-  import { TopLocalitesIcon, LeftArrowIcon, RightArrowIcon } from "../../Assets/icons";
-  import Slider from "react-slick";
-  import Typewriter from "typewriter-effect";
-  import { imageSrc,phoneSrc} from "../../Pages/datafeed/Desiredorder";
-  import { useMediaQuery } from "@chakra-ui/react";
+import React, { useState, useEffect, useRef } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { Link } from 'react-router-dom';
+import { FiSearch, FiMic, FiMapPin, FiChevronRight, FiChevronLeft, FiCrosshair } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
+import Slider from 'react-slick';
+import { imageSrc, phoneSrc } from '../../Pages/datafeed/Desiredorder';
+import { useMediaQuery } from '@chakra-ui/react';
 
+function SearchBar() {
+  const [activeLink, setActiveLink] = useState("Buy");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const searchRef = useRef(null);
 
-  function SearchBar() {
-    const [activeLink, setActiveLink] = useState("Buy");
-    const [data, setData] = useState(null);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [currentindeximgae, setCurrentImageIndex] = useState(0);
+  const trendingSearches = [
+    "Luxury Apartments in Mumbai",
+    "Villas in Bangalore",
+    "Plots in Hyderabad",
+    "Commercial Space in Delhi",
+    "New Launch in Pune"
+  ];
 
-    const [isSmallerThan500] =  useMediaQuery("(max-width: 500px)");
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
+  const [isSmallerThan500] = useMediaQuery("(max-width: 500px)");
 
-    const handleLinkClick = (linkName) => {
-    
-      switch (linkName) {
-        case "Rent":
-          window.open(window.location.origin + "/buy-properties/best-resale-property-in-gurugram/", '_blank',);
-          break;
+  const handleLinkClick = (linkName) => {
+    setActiveLink(linkName);
+    switch (linkName) {
+      case "Rent":
+        window.open(window.location.origin + "/buy-properties/best-resale-property-in-gurugram/", '_blank');
+        break;
 
         case "New Launch":
           window.open(window.location.origin + "/projects-in-newlaunch/", '_blank',);
@@ -41,62 +59,80 @@
           window.open(window.location.origin + "/sco/plots/", '_blank',);
           break;
 
-      }
-      setActiveLink(linkName);
-      setData(`${linkName}`);
+    }
+  };
+
+  const handleSearch = () => {
+    const searchData = {
+      query: searchQuery,
+      collectionName: activeLink,
     };
+    const key = encodeURIComponent(JSON.stringify(searchData));
+    window.location.href = `/searchdata/${key}`;
+  };
 
-    const localities = [
-      { name: "Sohna Road", link: "/property-in-gurugram/sohna-road/" },
-      { name: "Golf Course Road", link: "/property-in-gurugram/golf-course/" },
-      { name: "MG Road", link: "/property-in-gurugram/mg-road/" },
-      { name: "Northern Peripheral Road", link: "/property-in-gurugram/northern-peripheral-road/" },
-      { name: "Dwarka Expressway", link: "/property-in-gurugram/dwarka-expressway/" },
-      { name: "New Gurgaon", link: "/property-in-gurugram/new-gurgaon/" },
-      { name: "Sohna", link: "/property-in-gurugram/sohna/" },
-      { name: "Southern Peripheral Road", link: "/property-in-gurugram/southern-peripheral-road/" },
-      { name: "NH-48", link: "/property-in-gurugram/nh-48/" },
-      { name: "Golf Course Extn Road", link: "/property-in-gurugram/golf-course-extn-road/" },
-    ];
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') handleSearch();
+  };
 
-    const itemsPerPage = 7;
-    const nextpage = 1;
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      console.warn('Geolocation is not supported by this browser.');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        // Optional: show coords in the input briefly
+        setSearchQuery(`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
 
-    const visibleLocalities = localities.slice(currentIndex, currentIndex + itemsPerPage);
+        // Navigate directly to results with current location so nearby properties show
+        const searchData = {
+          location: { lat: latitude, lng: longitude },
+          query: "",
+          collectionName: activeLink,
+          nearby: true,
+        };
+        const key = encodeURIComponent(JSON.stringify(searchData));
+        window.location.href = `/searchdata/${key}`;
+      },
+      (error) => {
+        console.warn('Unable to retrieve location:', error?.message || error);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  };
 
-    const handleNext = () => {
-      if (currentIndex + itemsPerPage < localities.length) {
-        setCurrentIndex((prev) => prev + nextpage);
-      }
-    };
+  const localities = [
+    { name: "Sohna Road", link: "/property-in-gurugram/sohna-road/" },
+    { name: "Golf Course Road", link: "/property-in-gurugram/golf-course/" },
+    { name: "MG Road", link: "/property-in-gurugram/mg-road/" },
+    { name: "Northern Peripheral Road", link: "/property-in-gurugram/northern-peripheral-road/" },
+    { name: "Dwarka Expressway", link: "/property-in-gurugram/dwarka-expressway/" },
+    { name: "New Gurgaon", link: "/property-in-gurugram/new-gurgaon/" },
+    { name: "Sohna", link: "/property-in-gurugram/sohna/" },
+    { name: "Southern Peripheral Road", link: "/property-in-gurugram/southern-peripheral-road/" },
+    { name: "NH-48", link: "/property-in-gurugram/nh-48/" },
+    { name: "Golf Course Extn Road", link: "/property-in-gurugram/golf-course-extn-road/" },
+  ];
 
-    const handlePrev = () => {
-      if (currentIndex > 0) {
-        setCurrentIndex((prev) => prev - nextpage);
-      }
-    };
+  const itemsPerPage = 7;
+  const nextpage = 1;
 
-    // useEffect(() => {
-    //   const updateImageSrc = () => {
-    //     if (window.innerWidth <= 600) {
-    //       setImageSrc(['../../Imgaes/mobile.png']);
-    //     } else if (window.innerWidth <= 1024) {
-    //       setImageSrc(['https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp']);
-    //     } else {
-    //       setImageSrc(['https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/t1.webp']);
-    //     }
-    //   };
+  const visibleLocalities = localities.slice(currentIndex, currentIndex + itemsPerPage);
 
-    //   updateImageSrc();
-    //   window.addEventListener('resize', updateImageSrc);
+  const handleNext = () => {
+    if (currentIndex + itemsPerPage < localities.length) {
+      setCurrentIndex((prev) => prev + nextpage);
+    }
+  };
 
-    //   return () => {
-    //     window.removeEventListener('resize', updateImageSrc);
-    //   };
-    // }, []);
-
-
-    const settings = {
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - nextpage);
+    }
+  };
+  const settings = {
       dots: false,
       infinite: true,
       speed: 600,
@@ -116,7 +152,7 @@
       ],
       customPaging: (i) => (
         <button
-          className={`rounded-full mt-4 mr-2 ${i === currentindeximgae ? 'bg-gray-800 h-2 w-5' : 'bg-gray-400 h-3 w-3'}`}
+          className={`rounded-full mt-4 mr-2 ${i === currentImageIndex ? 'bg-gray-800 h-2 w-5' : 'bg-gray-400 h-3 w-3'}`}
         ></button>
       ),
       afterChange: (index) => setCurrentImageIndex(index),
@@ -141,146 +177,323 @@
         },
       ],
       customPaging: (i) => (
-        <button
-          className={`rounded-full mt-4 mr-2 ${i === currentindeximgae ? 'bg-gray-800 h-2 w-5' : 'bg-gray-400 h-3 w-3'}`}
-        ></button>
-      ),
-      afterChange: (index) => setCurrentImageIndex(index),
-    };
-    const [flickerIndex, setFlickerIndex] = useState(0);
+      <button
+        className={`rounded-full mt-4 mr-2 ${i === currentImageIndex ? 'bg-gray-800 h-2 w-5' : 'bg-gray-400 h-3 w-3'}`}
+      ></button>
+    ),
+    afterChange: (index) => setCurrentImageIndex(index),
+  };
 
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setFlickerIndex((prevIndex) => (prevIndex + 1) % visibleLocalities.length);
-      }, 2000); 
+  const [flickerIndex, setFlickerIndex] = useState(0);
 
-      return () => clearInterval(interval); 
-    }, [visibleLocalities.length]);
-
-    return (
-      <Wrapper className="section" >
-        <div className="qsbWrapper pt-0 px-2 lg:px-10 xl:px-10 md:px-4 sm:px-10 mr-auto ml-auto lg:mr-auto lg:pb-0 md:pb-0 md:ml-auto md:mr-auto sm:mr-4 sm:ml-4 xs:py-1 lg:h-14 md:h-14 sm:h-8 -mt-16 md:-mt-32 lg:mb-0 sm:mb-0 mb-0 md:mb-4 lg:mt-0 " style={{ maxWidth: '860px' }}>
-        <div
-        className="sjdmkls w-full h-12 lg:h-8 md:h-8 text-center text-white text-2xl md:text-3xl mb-0 px-4 leading-tight bg-gradient-to-r from-[#FF9933] via-white to-[#138808] bg-clip-text text-transparent animate-gradient bg-[length:200%] bg-[0%_center] flex items-center justify-center"
-      >
-        <Typewriter
-          options={{
-            strings: [
-              '<span style="font-family: \'Playfair Display\', serif; font-weight: 600; letter-spacing: 0.5px;">Find Your Perfect Place to Call Home</span>',
-              '<span style="font-family: \'Playfair Display\', serif; font-weight: 600; letter-spacing: 0.5px;">Discover the Ideal Spot to Make Your Own</span>',
-              '<span style="font-family: \'Playfair Display\', serif; font-weight: 600; letter-spacing: 0.5px;">The Perfect Address Awaits—Claim It Now</span>'
-            ],
-            autoStart: true,
-            loop: true,
-            deleteSpeed: 50,
-            pauseFor: 2000,
-            cursor: ".",
-          }}
-        />
-        
-      </div>
-          <div className="SJDMls xl:h-12 lg:h-12 md:h-10 sm:h-8 lg:p-0 sm:p-0 md:p-0">
+  return (
+    <Wrapper>
+      <div className="w-full max-w-6xl mx-auto px-1 mt-2">
+        {/* Main Search Container */}
+        <div className="glass-container group w-full mx-auto p-6 rounded-3xl overflow-hidden border border-gray-100 -mt-4 sm:-mt-6 md:-mt-14 bg-white shadow-2xl">
+        {/* Category Tabs */}
+        <div className="tabs-container flex justify-center mb-1">
+          <div className="inline-flex p-1 bg-gray-100 rounded-xl">
             {["Buy", "Rent", "New Launch", "Commercial", "Plots", "SCO"].map((linkName) => (
-              <Link
+              <button
                 key={linkName}
-                className={`options hidden sm:block   hover:rounded-t-lg  cursor-pointer whitespace-nowrap ease-in-out ${activeLink === linkName
-                  ? "active bg-[#FFFFFF] rounded-t-lg"
-                  : "text-[#FFFFFF] hover:underline hover:bg-[#FAF9F6] hover:underline-offset-8"
-                  }`}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
+                  activeLink === linkName
+                    ? "bg-white text-black shadow-md"
+                    : "text-gray-600 hover:bg-white/50"
+                }`}
                 onClick={() => handleLinkClick(linkName)}
               >
                 {linkName}
-              </Link>
+              </button>
             ))}
           </div>
+        </div>
 
-          <div className="mb-0 ">
-            <Search data1={data} />
+        {/* Search Bar */}
+        <div 
+          ref={searchRef}
+          className={`search-bar flex items-center bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-full p-1 sm:p-0.5 shadow-lg transition-all duration-300 ${
+            isFocused ? 'ring-2 ring-white/50' : ''
+          }`}
+        >
+          <div className="flex items-center px-3 text-gray-500">
+            <FiMapPin className="w-5 h-5" />
           </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => {
+              setIsFocused(true);
+              setShowSuggestions(true);
+            }}
+            onBlur={() => setIsFocused(false)}
+            placeholder="Search by City, Locality, or Project"
+            className="flex-1 py-2 sm:py-3 px-2 bg-transparent outline-none text-gray-800 placeholder-gray-500"
+            onKeyDown={handleKeyDown}
+          />
+          <button
+            type="button"
+            onClick={handleUseCurrentLocation}
+            className="mobile-hidden p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+            aria-label="Use current location"
+            title="Use current location"
+          >
+            <FiCrosshair className="w-5 h-5" />
+          </button>
+          <button className="mobile-hidden p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors">
+            <FiMic className="w-5 h-5" />
+          </button>
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="search-btn flex items-center justify-center bg-gradient-to-r from-[#ff3b30] to-[#ff2d55] text-white px-0 py-0 sm:px-5 sm:py-2.5 rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-red-400/40"
+            onClick={handleSearch}
+            aria-label="Search"
+          >
+            <FiSearch className="mr-0 sm:mr-2 w-5 h-5" />
+            <span className="search-btn-text hidden sm:inline">Search</span>
+          </motion.button>
+        </div>
 
-          <div className=" flex justify-start mt-3 flex-nowrap w-160 md:w-112 lg:w-200 ">
-            <span className="text-[#FFFFFF] text-xs md:text-xs whitespace-nowrap mt-2">
-              <TopLocalitesIcon /> {!isSmallerThan500? `Top Localities:`: ""}
-            </span>
+        {/* Suggestions Dropdown */}
+        <AnimatePresence>
+          {showSuggestions && searchQuery && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="suggestions mt-2 bg-white bg-opacity-90 backdrop-blur-lg rounded-xl shadow-xl overflow-hidden"
+            >
+              {Array(5).fill(0).map((_, i) => (
+                <div key={i} className="p-3 hover:bg-gray-50 cursor-pointer transition-colors">
+                  <div className="flex items-center">
+                    <FiMapPin className="text-gray-400 mr-2" />
+                    <span>{searchQuery} Suggestion {i + 1}</span>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-            <div className=" flex flex-nowrap align-center ml-2 w-[330px] md:w-[600px] lg:w-[660px] scroll-smooth">
-              <button onClick={handlePrev} disabled={currentIndex === 0} className={`cursor-pointer mt-2 ${currentIndex === 0 ? 'opacity-50 pointer-events-none' : ''}`}>
-                <LeftArrowIcon />
-              </button>
-              <div className="flex space-x-2 flex-nowrap w-full md-w-96 overflow-x-auto no-scrollbar pt-2">
-                {visibleLocalities.map((locality, index) => (
-                  <Link to={locality.link} target="_blank" key={index} className="cvBMLN">
-                    <button
-                      className={`SDFEDVx text-white text-[10px] px-2 py-1 border border-[#9F9F9F] shadow-sm rounded-xl whitespace-nowrap snap-center hover:bg-white hover:text-black transition flex flex-nowrap overflow-x-auto hover:shadow-lg hover:scale-105 duration-500 ease-in-out ${flickerIndex === index ? 'moving-text' : ''
-                        }`}
-                    >
-                      {locality.name}
-                    </button>
-                  </Link>
+        {/* Top Localities (single row, overflow hidden, arrow navigation) */}
+        <div className="trending-searches mt-6 relative">
+          <div className="flex items-center gap-3">
+            
+            <button
+              type="button"
+              onClick={handlePrev}
+              className="nav-btn h-8 w-8 flex items-center justify-center shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 transition"
+            >
+              <FiChevronLeft />
+            </button>
+            {/* Viewport */}
+            <div className="relative flex-1 overflow-hidden">
+              <div className="flex flex-nowrap gap-2 whitespace-nowrap">
+                {visibleLocalities.map((loc) => (
+                  <a
+                    key={loc.name}
+                    href={loc.link}
+                    className="chip px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 text-xs sm:text-sm transition"
+                  >
+                    {loc.name}
+                  </a>
                 ))}
               </div>
-              <button onClick={handleNext} disabled={currentIndex + itemsPerPage >= localities.length} className={`cursor-pointer mt-2 ${currentIndex + itemsPerPage >= localities.length ? 'opacity-50 pointer-events-none' : ''}`}>
-                <RightArrowIcon />
-              </button>
             </div>
-          </div>
-
-          <div className="hidden md:block mt-2 lg:w-[750px] lg:h-[132px] md:h-[132px] md:w-[650px] mx-auto">
-            <Wrapper className="section">
-              <Slider {...settings}>
-                {imageSrc.map((src, index) => (
-                  <div key={index}>
-                    <img src={src.image} onClick={() => window.open(src.link, "_self")} alt={`Slide ${index}`} className="w-full h-auto cursor-pointer rounded-lg" loading="lazy"/>
-                  </div>
-                ))}
-              </Slider>
-            </Wrapper>
-          </div>
-          <div className="block sm:hidden w-[360px] h-[198px] mt-8">
-            <Wrapper className="section">
-              <Slider {...phonesettings}>
-                {phoneSrc.map((src, index) => (
-                  <div key={index}>
-                    <img
-                      src={src.image}
-                      alt={`Slide ${index}`}
-                      onClick={() => window.open(src.link, "_self")}
-                      class="w-full h-full object-cover rounded-lg cursor-pointer"
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
-              </Slider>
-            </Wrapper>
-
-
+            <button
+              type="button"
+              onClick={handleNext}
+              className="nav-btn h-8 w-8 flex items-center justify-center shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 transition"
+            >
+              <FiChevronRight />
+            </button>
           </div>
         </div>
-      </Wrapper>
-    );
+      </div>
+
+      {/* Removed bottom Top Localities chips section as requested */}
+    </div>
+
+    <div className="hidden md:block mt-2 lg:w-[750px] lg:h-[132px] md:h-[132px] md:w-[650px] mx-auto">
+      <div className="section pt-4 md:pt-6">
+        <Slider {...settings}>
+          {imageSrc.map((src, index) => (
+            <div key={index}>
+              <img 
+                src={src.image} 
+                onClick={() => window.open(src.link, "_self")} 
+                alt={`Slide ${index}`} 
+                className="w-full h-auto cursor-pointer rounded-lg" 
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </Slider>
+      </div>
+    </div>
+
+    <div className="block sm:hidden w-full max-w-[360px] h-[198px] mt-6 mx-auto">
+      <div className="section">
+        <Slider {...phonesettings}>
+          {phoneSrc.map((src, index) => (
+            <div key={index}>
+              <img
+                src={src.image}
+                alt={`Slide ${index}`}
+                onClick={() => window.open(src.link, "_self")}
+                className="w-full h-full object-contain rounded-lg cursor-pointer bg-white"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </Slider>
+      </div>
+    </div>
+  </Wrapper>
+  );
+}
+
+export default SearchBar;
+
+const pulse = keyframes`
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
   }
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+`;
 
-  export default SearchBar;
-
-  const Wrapper = styled.section`
-    font-weight: 400;
-    line-height: 1.5;
-
-    div {
-      box-sizing: border-box;
+const Wrapper = styled.section`
+  position: relative;
+  z-index: 10;
+  padding: 2rem 1rem;
+  /* Removed section-level background and blur to avoid outer glass effect */
+  width: 100%;
+  box-sizing: border-box;
+  
+  .glass-container {
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
+      transform: rotate(30deg);
+      pointer-events: none;
+    }
+  }
+  
+  .search-btn {
+    box-shadow: 0 4px 15px -5px rgba(239, 68, 68, 0.4);
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px -5px rgba(239, 68, 68, 0.6);
+    }
+    
+    &.pulse {
+      animation: ${pulse} 2s infinite;
+    }
+  }
+  
+  .suggestions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    margin-top: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 1rem 0.5rem;
+    
+    /* Hide category tabs on mobile */
+    .tabs-container {
+      display: none;
     }
 
-    /* Desktop and large screens */
-    @media screen and (min-width: 1024px) {
-      .qsbWrapper {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
+    /* Remove card look so it blends with background */
+    .glass-container {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      border-radius: 0 !important;
+      overflow: visible !important;
+      margin-top: 0 !important;
+    }
+    
+    .search-bar {
+      /* Keep row layout on mobile to avoid tall circular block */
+      flex-direction: row;
+      padding: 0.25rem 0.5rem;
+      border-radius: 1rem;
+      
+      input {
+        width: 100%;
+        margin: 0; /* no extra vertical spacing */
       }
     }
 
-    /* Tablet screens */
-    @media screen and (max-width: 1024px) {
+    /* Hide non-essential controls on small screens */
+    .mobile-hidden {
+      display: none;
+    }
+
+    /* Ensure at least 2–3 chips fit on one line */
+    .flex-nowrap { flex-wrap: nowrap !important; }
+    .nav-btn { width: 28px; height: 28px; }
+    .trending-searches .flex { gap: 0.5rem; }
+    .trending-searches .text-sm { font-size: 12px; }
+    .top-localities-label { display: none; }
+
+    /* Icon-only search button style on mobile */
+    .search-btn {
+      width: 40px;
+      height: 40px;
+      padding: 0 !important;
+      background: transparent !important;
+      background-image: none !important;
+      color: inherit;
+      box-shadow: none !important;
+    }
+    .search-btn:hover { box-shadow: none !important; background: transparent !important; }
+    .search-btn svg { color: #6b7280 !important; } /* gray-500 */
+  }
+  
+  @media (max-width: 480px) {
+    .tabs-container button {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+    }
+  }
+  line-height: 1.5;
+  font-weight: 400;
+
+  div {
+    box-sizing: border-box;
+  }
+
+  .qsbWrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  /* Tablet screens */
+  @media screen and (max-width: 1024px) {
       .SJDMls {
         width: 80%; /* Adjust width for tablet */
       }

@@ -45,7 +45,7 @@ const Karnal = () => {
         <link rel="canonical" href="https://www.100acress.com/project-in-karnal/" />
       </Helmet>
 
-      <section className="flex pt-2 flex-col items-center mt-16">
+      <section className="flex pt-2 flex-col items-center mt-2">
         <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em]">
           Projects in karnal
         </h1>

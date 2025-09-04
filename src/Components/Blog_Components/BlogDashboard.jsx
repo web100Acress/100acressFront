@@ -192,7 +192,9 @@ export default function BlogDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const res = await api.get(`blog/view?page=${currentPage}&limit=${pageSize}`);
+      // Use admin endpoint for admins to include drafts and all authors
+      const listPath = isAdmin ? `/blog/admin/view` : `/blog/view`;
+      const res = await api.get(`${listPath}?page=${currentPage}&limit=${pageSize}`);
       const fetchedBlogs = res.data.data || [];
       // Scope: if not Admin, show only my blogs
       const myBlogs = (isAdmin ? fetchedBlogs : fetchedBlogs.filter((b) => {
@@ -204,16 +206,18 @@ export default function BlogDashboard() {
         const idMatch = currentUserId && authorId && authorId === currentUserId;
         return nameMatch || emailMatch || idMatch;
       }));
-      
+      // If no blogs match current user (common when author fields are missing), show all as a fallback
+      const listToShow = (isAdmin || myBlogs.length > 0) ? myBlogs : fetchedBlogs;
+
       // Debug: Log the first blog to see the image structure
       if (fetchedBlogs.length > 0) {
         console.log('First blog data:', fetchedBlogs[0]);
         console.log('Blog image structure:', fetchedBlogs[0].blog_Image);
       }
-      
-      setBlogs(myBlogs);
+
+      setBlogs(listToShow);
       setTotalPages(res.data.totalPages || 1);
-      calculateAnalytics(myBlogs);
+      calculateAnalytics(listToShow);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -286,7 +290,7 @@ export default function BlogDashboard() {
     setPublishLoading(true);
     try {
       const res = await api.patch(
-        `blog/update/${blogId}`,
+        `/blog/update/${blogId}`,
         { isPublished: checked }
       );
       if (res.status >= 200 && res.status < 300) {
@@ -307,7 +311,7 @@ export default function BlogDashboard() {
     try {
       console.log('Attempting to delete blog with ID:', blogId);
       const response = await api.delete(
-        `blog/delete/${blogId}`
+        `/blog/delete/${blogId}`
       );
       
       console.log('Delete response:', response.data);
