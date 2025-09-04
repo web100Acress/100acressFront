@@ -1,4 +1,7 @@
+
   import React, { useEffect, useRef, useState } from "react";
+
+
 import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal, useToast } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
@@ -36,10 +39,12 @@ export default function RightSection({
     setHideRight(false);
   }, [isMobile]);
 
+
   const handleFileChange = async (e) => {
     try {
       const file = (e.target.files && e.target.files[0]) || null;
       if (!file || !userId) return;
+
 
       // Client-side validation: images only, <= 5MB
       const isImage = (file.type || '').toLowerCase().startsWith('image/');
@@ -423,7 +428,10 @@ export default function RightSection({
                 <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" display={{ base: "none", xl: "inline" }}>Log in</Box>
               </Flex>
             </Button>
+
             <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
+
+           
           </>
         )}
 
@@ -451,7 +459,9 @@ export default function RightSection({
             />
           </Link>
         ) : (
+
           <Link to="/auth/signin/">
+
             <IconButton
               aria-label="Post property"
               variant="outline"
@@ -473,6 +483,7 @@ export default function RightSection({
             />
           </Link>
         )}
+
 
         {/* CSS for always rotating black and yellow border */}
         <style>{`
@@ -634,6 +645,8 @@ export default function RightSection({
               </Button>
             </Link>
           </div>
+
+     
         )}
       </Box>
     </Flex>
