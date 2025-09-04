@@ -96,6 +96,11 @@ const FloatingShorts = ({ videoId = "" }) => {
   const isMobile = windowWidth < 640;
   const isTablet = windowWidth >= 640 && windowWidth < 1024;
 
+  // On mobile, default to full-card drag for better UX
+  useEffect(() => {
+    if (isMobile) setMoveMode(true);
+  }, [isMobile]);
+
   const dims = (() => {
     if (mini) {
       // very small thumb (approx 9:16)
@@ -195,6 +200,7 @@ const FloatingShorts = ({ videoId = "" }) => {
     userSelect: "none",
     willChange: "transform",
     WebkitUserDrag: "none",
+    touchAction: "none",
   };
 
   const btnBase = {
@@ -222,12 +228,13 @@ const FloatingShorts = ({ videoId = "" }) => {
     top: 0,
     left: 0,
     width: "100%",
-    height: 28,
+    height: isMobile ? 44 : isTablet ? 36 : 28,
     zIndex: 2,
     background: "linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.05))",
     cursor: dragState ? "grabbing" : "grab",
     WebkitTapHighlightColor: "transparent",
     WebkitUserDrag: "none",
+    touchAction: "none",
   };
 
   const overlayStyle = {
@@ -237,6 +244,7 @@ const FloatingShorts = ({ videoId = "" }) => {
     background: "transparent",
     cursor: dragState ? "grabbing" : "grab",
     WebkitUserDrag: "none",
+    touchAction: "none",
   };
 
   const frameWrapStyle = {
@@ -244,6 +252,7 @@ const FloatingShorts = ({ videoId = "" }) => {
     height: "100%",
     background: "#000",
     WebkitUserDrag: "none",
+    touchAction: "none",
   };
 
   const iframeStyle = {
