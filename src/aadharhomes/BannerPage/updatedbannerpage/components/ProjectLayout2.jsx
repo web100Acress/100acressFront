@@ -125,10 +125,19 @@ function ProjectLayout2() {
       />
 
       {/* Highlights */}
-      <HighlightsSection />
+      <HighlightsSection 
+        projectName={projectViewDetails?.projectName}
+        highlights={projectViewDetails?.highlight}
+        highlightImage={projectViewDetails?.highlightImage?.url}
+      />
 
       {/* Pricing Section */}
-      <PricingSection />
+      <PricingSection 
+        projectName={projectViewDetails?.projectName}
+        minPrice={projectViewDetails?.minPrice}
+        maxPrice={projectViewDetails?.maxPrice}
+        bhkDetails={projectViewDetails?.BhK_Details || []}
+      />
 
       {/* Amenities */}
       <section className="py-16 bg-black">
