@@ -192,31 +192,6 @@ function App() {
                   <Toaster position="top-right" />
                   <Sonner position="top-right" richColors />
                   
-                  {/* Login Modal */}
-                  {showLoginModal && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <button 
-                          onClick={() => setShowLoginModal(false)}
-                          className="float-right text-gray-500 hover:text-gray-700"
-                        >
-                          ✕
-                        </button>
-                        <LoginForm onSuccess={() => setShowLoginModal(false)} />
-                        <div className="mt-4 text-center">
-                          <button 
-                            onClick={() => {
-                              setShowLoginModal(false);
-                              setShowSignupModal(true);
-                            }}
-                            className="text-blue-600 hover:underline"
-                          >
-                            Don't have an account? Sign up
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
 
                   {/* Your existing routes */}
                   <Routes>

@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import Api_Service from "../../Redux/utils/Api_Service";
 import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
 import { AuthContext } from "../../AuthContext";
+import AuthModal from "../../Components/AuthModal";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -19,6 +20,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 const ModernRecommendedSection = () => {
+  const [showAuth, setShowAuth] = useState(false);
   const spotlight = useSelector(store => store?.project?.spotlight);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [favTick, setFavTick] = useState(0);
@@ -175,6 +177,11 @@ const ModernRecommendedSection = () => {
 
   return (
     <SectionWrapper>
+      <AuthModal 
+        open={showAuth} 
+        onClose={() => setShowAuth(false)} 
+        defaultView="Login" 
+      />
       <div className="w-full px-4 pt-0 pb-4">
         {/* Header Section */}
         <div className="text-center mb-2 sm:mb-4 px-2 pt-2">
@@ -261,6 +268,7 @@ const ModernRecommendedSection = () => {
                   formatLocation={formatLocation}
                   favTick={favTick}
                   isAuthenticated={isAuthenticated}
+                  onShowAuth={() => setShowAuth(true)}
                 />
               </SwiperSlide>
             ))}
@@ -285,13 +293,21 @@ const PropertyCard = ({
   formatPrice,
   formatLocation,
   favTick,
-  isAuthenticated
+  isAuthenticated,
+  onShowAuth
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    if (!isAuthenticated) {
+      // Show login popup
+      onShowAuth();
+      return;
+    }
+    
     const id = project?._id || project?.id || project?.slug;
     const snapshot = {
       title: project?.projectName,

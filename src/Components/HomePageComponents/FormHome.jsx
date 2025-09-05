@@ -226,10 +226,10 @@ const FormHome = () => {
             <div className="flex justify-start pt-2">
               <button
                 type="submit"
-                className={`w-full md:w-auto py-3 px-8 rounded-full font-bold shadow-md transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 
+                className={`w-full md:w-auto py-3 px-8 rounded-full font-bold shadow-md transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600 
                   ${isSubmitting
                     ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
-                    : 'bg-orange-600 text-white hover:bg-orange-700'
+                    : 'bg-red-600 text-white hover:bg-red-700'
                   }`}
                 disabled={isSubmitting}
               >
