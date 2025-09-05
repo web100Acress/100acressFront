@@ -65,7 +65,12 @@ const CommonProject = ({ data, title, path ,animation }) => {
     };
     
     if (!isAuthenticated) {
+      // Show login modal
       setShowAuth(true);
+      // Show toast notification
+      if (typeof window.toast === 'function') {
+        window.toast.info('Please login to save properties to your favorites');
+      }
       return;
     }
     toggleFavorite(id, snapshot, isAuthenticated);
@@ -212,7 +217,7 @@ const CommonProject = ({ data, title, path ,animation }) => {
             }
           </div>
           {/* Auth Modal for Login/Register */}
-          <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="register" />
+          <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="Login" />
         </>
       )}
     </>
