@@ -8,9 +8,9 @@ const ProjectHero = ({
   companyLogo = null,
   bottomInfo = {
     landArea: "14 Acre",
-    typology: "Luxury 3 & 4 BHK Residences",
-    startingPrice: "₹ 5.2 Cr",
-    highlight: "9 Acres of Land with Greenery"
+    possession: "Dec 2025",
+    aboutProject: "Premium residential project with modern amenities...",
+    price: "₹ 5.2 Cr"
   }
 }) => {
   return (
@@ -67,45 +67,51 @@ const ProjectHero = ({
       
       {/* Bottom Info Bar */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 w-full max-w-5xl px-4">
-        <div className="border-2 border-white/30 bg-black/40 backdrop-blur-sm">
-          <div className="grid grid-cols-2 lg:grid-cols-4">
+        <div className="border-2 border-yellow-400/60 bg-black/20 backdrop-blur-md rounded-lg shadow-2xl">
+          <div className="grid grid-cols-2 lg:grid-cols-4 relative">
             {/* Land Area */}
-            <div className="px-6 py-8 text-center border-r border-white/30 last:border-r-0">
-              <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-3">
+            <div className="px-4 py-6 text-center relative group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg rounded-l-lg">
+              <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-2 group-hover:text-yellow-400 transition-colors duration-300">
                 LAND AREA
               </div>
-              <div className="text-2xl font-bold text-white">
+              <div className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors duration-300">
                 {bottomInfo.landArea}
               </div>
+              {/* Gradient divider */}
+              <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-12 bg-gradient-to-b from-transparent via-yellow-400/80 to-transparent lg:block hidden"></div>
             </div>
             
-            {/* Typology */}
-            <div className="px-6 py-8 text-center border-r border-white/30 last:border-r-0">
-              <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-3">
-                TYPOLOGY
+            {/* Possession */}
+            <div className="px-4 py-6 text-center relative group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg">
+              <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-2 group-hover:text-yellow-400 transition-colors duration-300">
+                POSSESSION
               </div>
-              <div className="text-base font-bold text-white leading-tight">
-                {bottomInfo.typology}
+              <div className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors duration-300">
+                {bottomInfo.possession}
               </div>
+              {/* Gradient divider */}
+              <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-12 bg-gradient-to-b from-transparent via-yellow-400/80 to-transparent lg:block hidden"></div>
             </div>
             
-            {/* Starting Price */}
-            <div className="px-6 py-8 text-center border-r border-white/30 last:border-r-0">
-              <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-3">
-                STARTING PRICE
+            {/* About Project */}
+            <div className="px-4 py-6 text-center relative group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg flex-1 min-w-[200px]">
+              <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-2 group-hover:text-yellow-400 transition-colors duration-300">
+                ABOUT PROJECT
               </div>
-              <div className="text-2xl font-bold text-white">
-                {bottomInfo.startingPrice}
+              <div className="text-sm font-medium text-white leading-tight line-clamp-2 group-hover:text-yellow-300 transition-colors duration-300">
+                {bottomInfo.aboutProject}
               </div>
+              {/* Gradient divider */}
+              <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-px h-12 bg-gradient-to-b from-transparent via-yellow-400/80 to-transparent lg:block hidden"></div>
             </div>
             
-            {/* Highlight */}
-            <div className="px-6 py-8 text-center">
-              <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-3">
-                HIGHLIGHT
+            {/* Price */}
+            <div className="px-4 py-6 text-center group cursor-pointer transition-all duration-300 hover:bg-yellow-400/10 hover:scale-105 hover:shadow-lg rounded-r-lg">
+              <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-2 group-hover:text-yellow-400 transition-colors duration-300">
+                PRICE
               </div>
-              <div className="text-base font-bold text-white leading-tight">
-                {bottomInfo.highlight}
+              <div className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors duration-300">
+                {bottomInfo.price}
               </div>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { format } from 'date-fns';
 import ProjectHero from "./ProjectHero";
 import AboutSection from "./AboutSection";
 import HighlightsSection from './HighlightsSection';
@@ -76,15 +77,32 @@ function ProjectLayout2() {
     : projectViewDetails?.city || "";
   const phoneNumber = projectViewDetails?.mobileNumber || "+91 9810982010";
   const companyLogo = projectViewDetails?.logo?.url || null;
+  // Format price display based on min/max values
+  const formatPrice = () => {
+    if (!projectViewDetails?.minPrice && !projectViewDetails?.maxPrice) {
+      return 'Call For Price';
+    }
+    
+    if (projectViewDetails.minPrice < 1) {
+      return `${(projectViewDetails.minPrice * 100).toFixed()} L`;
+    }
+    
+    if (projectViewDetails.maxPrice) {
+      return `${projectViewDetails.minPrice} - ${projectViewDetails.maxPrice} Cr`;
+    }
+    
+    return `${projectViewDetails.minPrice} Cr`;
+  };
+
   const bottomInfo = {
-    landArea: projectViewDetails?.landArea || projectViewDetails?.Acres || "—",
-    typology: Array.isArray(projectViewDetails?.BhK_Details)
-      ? projectViewDetails.BhK_Details.map(b => b?.bhk_type).filter(Boolean).join(", ")
-      : projectViewDetails?.typology || "—",
-    startingPrice: projectViewDetails?.startingPrice || projectViewDetails?.price || "—",
-    highlight: Array.isArray(projectViewDetails?.highlight) && projectViewDetails.highlight[0]?.highlightTitle
-      ? projectViewDetails.highlight[0].highlightTitle
-      : projectViewDetails?.projectOverview || "—",
+    landArea: projectViewDetails?.totalLandArea ? `${projectViewDetails.totalLandArea} Acres` : "—",
+    possession: projectViewDetails?.possessionDate 
+      ? format(new Date(projectViewDetails.possessionDate), 'MMM yyyy')
+      : projectViewDetails?.project_Status || "—",
+    aboutProject: projectViewDetails?.project_discripation 
+      ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').substring(0, 60) + '...' 
+      : projectViewDetails?.projectOverview?.substring(0, 60) + '...' || "—",
+    price: formatPrice()
   };
 
   return (
@@ -99,8 +117,12 @@ function ProjectLayout2() {
         bottomInfo={bottomInfo}
       />
 
-      {/* About Project */}
-      <AboutSection />
+      {/* About Section */}
+      <AboutSection 
+        projectName={projectViewDetails?.projectName}
+        description={projectViewDetails?.project_discripation}
+        imageUrl={projectViewDetails?.projectGallery?.[0]?.url}
+      />
 
       {/* Highlights */}
       <HighlightsSection />
