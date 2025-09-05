@@ -7,8 +7,14 @@ import CommonInside from "../Utils/CommonInside";
 
 const SearchData = () => {
   const location = useLocation();
-  const encodedFormData = location.pathname.split("/searchdata/")[1];
-  const decodedFormData = JSON.parse(decodeURIComponent(encodedFormData));
+  // Safely extract and parse the encoded search payload from the URL
+  const encodedFormData = (location.pathname.split("/searchdata/")[1] || "").trim();
+  let decodedFormData = {};
+  try {
+    decodedFormData = encodedFormData ? JSON.parse(decodeURIComponent(encodedFormData)) : {};
+  } catch (e) {
+    decodedFormData = {};
+  }
 
   function getFormDataValues({ query, location, collectionName }) {
     return {
@@ -19,7 +25,11 @@ const SearchData = () => {
   }
 
   const { key1, key2, key3 } = getFormDataValues(decodedFormData);
-  const key = `${key1}${key2}`;
+  // Build a clean search key. Prefer explicit text query; do not append undefined.
+  const key = [
+    typeof key1 === 'string' ? key1 : '',
+    typeof key2 === 'string' ? key2 : ''
+  ].filter(Boolean).join(' ').trim();
 
   localStorage.setItem("myKey", key);
   const [searchData, setSearchData] = useState([]);
