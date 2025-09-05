@@ -335,9 +335,9 @@ const CareerWithUs = () => {
         {/* Stats Section */}
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 mb-20">
           {[
-            { number: "200+", label: "Team Members", icon: Users },
+            { number: "500+", label: "Team Members", icon: Users },
             { number: "50+", label: "Open Positions", icon: Briefcase },
-            { number: "1+", label: "Office Locations", icon: Building2 },
+            { number: "1", label: "Office Locations", icon: Building2 },
             { number: "24/7", label: "Support", icon: Clock }
           ].map((stat, index) => (
             <motion.div
@@ -530,11 +530,14 @@ const CareerWithUs = () => {
                       setSortBy('newest');
                       setCurrentPage(1);
                     }}
-                    className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-2xl transition-all duration-300"
-                    whileHover={{ scale: 1.02 }}
+                    className="w-full px-6 py-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 shadow-sm hover:shadow"
+                    whileHover={{ y: -1, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    Clear
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span>Clear</span>
                   </motion.button>
                 </div>
               </div>

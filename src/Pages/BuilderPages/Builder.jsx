@@ -134,8 +134,8 @@ const Builder = () => {
             <div className="container">
                <div className="flex items-center justify-between mx-3 lg:mx-3 xl:mx-14 md:mx-6 py-2">
                          <div className="flex items-center ">
-                           <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left">
-                             Top Real EstateDevelopers 
+                           <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-center sm:text-left font-bold">
+                             Top Real Estate Developers 
                            </h2>
                          </div>
                          {/* <div className="ml-2 hidden sm:block">
