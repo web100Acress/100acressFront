@@ -528,6 +528,22 @@ function MobileBottomNav() {
   const path = location.pathname || "/";
   const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
 
+  const [hideForNewBanner, setHideForNewBanner] = React.useState(() => {
+    if (typeof document === 'undefined') return false;
+    return document.body.classList.contains('newbanner-page');
+  });
+
+  React.useEffect(() => {
+    if (typeof document === 'undefined' || !document.body) return;
+    const update = () => setHideForNewBanner(document.body.classList.contains('newbanner-page'));
+    update();
+    const observer = new MutationObserver(() => update());
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  if (hideForNewBanner) return null;
+
   const isActive = (match) => {
     if (Array.isArray(match)) return match.some((m) => path.startsWith(m));
     return path === match || path.startsWith(match);
