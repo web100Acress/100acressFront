@@ -13,7 +13,7 @@ const TopSeoPlots = () => {
       <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6">
         <h2 
           className="text-xl pt-6 xl:text-4xl lg:text-3xl md:text-2xl sm:text-left"
-          style={{ fontFamily: 'Rubik, sans-serif' }}
+          style={{ fontFamily: 'Rubik, sans-serif', fontWeight: 'bold' }}
         >
           Top SCO Plots in Gurugram
         </h2>

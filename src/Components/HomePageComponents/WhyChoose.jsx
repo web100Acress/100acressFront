@@ -101,14 +101,14 @@ function WhyChoose() {
                 {expanded ? "Read less" : "Read more"}
               </button>
             )}
-            <p className="mt-8">
-              <span className="text-gray-600 font-medium">
-                Rajesh Aggarwal,{" "}
-              </span>
-              <span className="font-bold text-xl sm:text-2xl text-black">
-                Founder
-              </span>
-            </p>
+            <div className="mt-8 space-y-1">
+              <h3 className="text-xl font-semibold text-gray-800">
+                Rajesh Aggarwal
+              </h3>
+              <p className="text-lg text-gray-600">
+                Founder & CEO
+              </p>
+            </div>
           </div>
         </div>
 
