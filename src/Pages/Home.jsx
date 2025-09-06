@@ -30,8 +30,7 @@ import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
-// FloatingShorts is now rendered globally in App.jsx
-// import FloatingShorts from "../Components/FloatingShorts";
+import FloatingShorts from "../Components/FloatingShorts";
 
 const Home = () => {
   // const [showConfetti, setShowConfetti] = useState(true);
@@ -577,8 +576,8 @@ const Home = () => {
 
       <PossessionProperty />
       <BackToTopButton />
-      {/* FloatingShorts removed here; rendered globally in App.jsx */}
-      {/* <FloatingShorts /> */}
+      {/* Floating YouTube Shorts (Home page only) */}
+      <FloatingShorts />
 
       {/* <Footer /> */}
     </div> {/* Closing div for the blur container */}
