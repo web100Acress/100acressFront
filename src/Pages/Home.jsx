@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState, useContext } from "react";
 import PopupForm from "./HomePages/PopupForm";
 import Cities from "../Components/HomePageComponents/Cities";
 import FormHome from "../Components/HomePageComponents/FormHome";
@@ -17,7 +17,7 @@ import PossessionProperty from "../Components/PossessionProperty";
 import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
 import TopSeoPlots from "./TopSeoPlots";
 import { useMediaQuery } from "@chakra-ui/react";
-import { EyeIcon } from "lucide-react";
+import { EyeIcon, HomeIcon, MessageCircle, PhoneIcon, User as UserIcon, ArrowUpRight } from "lucide-react";
 import ModernRecommendedSection from "../Components/HomePageComponents/ModernRecommendedSection";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -28,6 +28,7 @@ import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
+import { AuthContext } from "../AuthContext";
 import FloatingShorts from "../Components/FloatingShorts";
 
 const Home = () => {
@@ -59,6 +60,150 @@ const Home = () => {
   // Auth modal state for sidebar card
   const [authOpen, setAuthOpen] = useState(false);
   const [authDefaultView, setAuthDefaultView] = useState("login");
+
+  // Sticky aside JS fallback (ensures fix-on-scroll even if CSS sticky is constrained)
+  const gridSectionRef = useRef(null);
+  const asideRef = useRef(null);
+  const asideInnerRef = useRef(null);
+  const [asideStyle, setAsideStyle] = useState({});
+  const [asideSpacerHeight, setAsideSpacerHeight] = useState(0);
+
+  // Quick enquiry form state
+  const [enquiryName, setEnquiryName] = useState("");
+  const [enquiryPhone, setEnquiryPhone] = useState("");
+  // Auth and Profile/analytics card state
+  const { isAuthenticated, user } = useContext(AuthContext) || {};
+  const [profileName, setProfileName] = useState("Guest");
+  const [recentViews, setRecentViews] = useState(0);
+  useEffect(() => {
+    try {
+      const hasToken = Boolean(localStorage.getItem('myToken') || sessionStorage.getItem('myToken'));
+      const deriveName = () => {
+        if (!hasToken && !isAuthenticated) return 'Guest';
+        if (user?.name || user?.username) return user?.name || user?.username;
+        // prefer app-specific keys: agentData / firstName
+        try {
+          const agentRaw = localStorage.getItem('agentData') || sessionStorage.getItem('agentData');
+          if (agentRaw) {
+            const agent = JSON.parse(agentRaw);
+            if (agent?.name) return agent.name;
+          }
+        } catch {}
+        const firstName = localStorage.getItem('firstName') || sessionStorage.getItem('firstName');
+        if (firstName) return firstName;
+        const direct = localStorage.getItem('userName') || localStorage.getItem('name') || localStorage.getItem('username') ||
+                       sessionStorage.getItem('userName') || sessionStorage.getItem('name') || sessionStorage.getItem('username');
+        if (direct) return direct;
+        // common JSON blobs
+        const candidateKeys = ['user', 'user_data', 'userInfo', 'auth_user', 'profile', 'currentUser'];
+        for (const k of candidateKeys) {
+          const raw = localStorage.getItem(k) || sessionStorage.getItem(k);
+          if (!raw) continue;
+          try {
+            const obj = JSON.parse(raw);
+            const nm = obj?.name || obj?.username || obj?.fullName || (obj?.firstName && obj?.lastName ? `${obj.firstName} ${obj.lastName}` : undefined);
+            if (nm) return nm;
+          } catch { /* ignore */ }
+        }
+        return 'Guest';
+      };
+
+      const loadCount = () => {
+        const raw = localStorage.getItem('viewed_projects');
+        const list = raw ? JSON.parse(raw) : [];
+        setRecentViews(Array.isArray(list) ? list.length : 0);
+      };
+
+      const computeAndSet = () => {
+        setProfileName(deriveName());
+        loadCount();
+      };
+
+      computeAndSet();
+      const handler = () => computeAndSet();
+      window.addEventListener('viewed-projects-changed', handler);
+      window.addEventListener('storage', handler);
+      window.addEventListener('auth-changed', handler);
+      return () => { window.removeEventListener('viewed-projects-changed', handler); window.removeEventListener('storage', handler); window.removeEventListener('auth-changed', handler); };
+    } catch (_) {}
+  }, [user, isAuthenticated]);
+
+  // Derived login flag for UI when AuthContext isn't present but storage has identity
+  const hasAnyToken = Boolean(
+    localStorage.getItem('myToken') || sessionStorage.getItem('myToken') ||
+    localStorage.getItem('token') || localStorage.getItem('accessToken') || localStorage.getItem('authToken') ||
+    sessionStorage.getItem('token') || sessionStorage.getItem('accessToken') || sessionStorage.getItem('authToken')
+  );
+  const loggedIn = Boolean(isAuthenticated) || hasAnyToken || (profileName && profileName !== 'Guest');
+  const handleEnquirySubmit = useCallback((e) => {
+    e.preventDefault();
+    const name = enquiryName.trim();
+    const phone = enquiryPhone.replace(/\D/g, "");
+    if (!name) {
+      if (typeof window.toast === 'function') window.toast.warn('Please enter your name');
+      return;
+    }
+    if (!/^\d{10,15}$/.test(phone)) {
+      if (typeof window.toast === 'function') window.toast.warn('Please enter a valid phone number');
+      return;
+    }
+    const target = '918500900100'; // default WhatsApp number
+    const msg = `Hi, my name is ${name}. I want to enquire about properties. My phone: ${phone}`;
+    const url = `https://wa.me/${target}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  }, [enquiryName, enquiryPhone]);
+
+  const handleScroll = useCallback(() => {
+    if (!gridSectionRef.current || !asideRef.current || !asideInnerRef.current) return;
+    const headerOffset = 96; // adjust to your header height
+    const gridRect = gridSectionRef.current.getBoundingClientRect();
+    const asideOuterRect = asideRef.current.getBoundingClientRect();
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const start = scrollTop + gridRect.top; // section start (absolute Y)
+    const end = start + gridRect.height;    // section end (absolute Y)
+    const asideWidth = asideOuterRect.width;
+    const asideLeft = asideOuterRect.left + window.scrollX;
+    const innerHeight = asideInnerRef.current.offsetHeight;
+
+    // Where should the inner stop (so it doesn't overflow past section end)?
+    const maxScrollForFixed = end - innerHeight - headerOffset;
+
+    // Preserve space to avoid layout shift
+    setAsideSpacerHeight(innerHeight);
+
+    if (scrollTop >= start - headerOffset && scrollTop <= maxScrollForFixed) {
+      // Fixed in viewport
+      setAsideStyle({
+        position: 'fixed',
+        top: `${headerOffset}px`,
+        left: `${asideLeft}px`,
+        width: `${asideWidth}px`,
+      });
+    } else if (scrollTop > maxScrollForFixed) {
+      // Stick to the bottom of the section
+      setAsideStyle({
+        position: 'absolute',
+        top: 'auto',
+        bottom: '0',
+        left: '0',
+        right: '0',
+        width: '100%'
+      });
+    } else {
+      // Normal flow at the top
+      setAsideStyle({ position: 'static', width: '100%' });
+    }
+  }, []);
+
+  useEffect(() => {
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [handleScroll]);
 
   const TrendingProjects = useSelector(store => store?.project?.trending) || [];
   const FeaturedProjects = useSelector(store => store?.project?.featured) || [];
@@ -328,13 +473,83 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Two-column layout: main content (4/5) + sticky sidebar (1/5) */}
-      <div className="max-w-[1250px] mx-auto px-4 grid grid-cols-1 lg:grid-cols-5 gap-6 relative">
+      {/* 80:20 layout from md+: main 80%, sticky aside 20% */}
+      <div ref={gridSectionRef} className="w-full max-w-7xl mx-auto px-4 grid grid-cols-1 lg:[grid-template-columns:4fr_1fr] gap-6 relative items-start overflow-visible">
+        {/* Sticky Aside (20%) */}
+        <aside ref={asideRef} className="hidden lg:block relative lg:col-start-2 lg:row-start-1" style={{ display: typeof window !== 'undefined' && window.innerHeight <= 624 ? 'none' : undefined }}>
+          {/* Spacer keeps original height when inner becomes fixed */}
+          <div style={{ height: asideSpacerHeight ? `${asideSpacerHeight}px` : undefined }} />
+          <div ref={asideInnerRef} style={asideStyle} className="space-y-4">
+            {/* Activity Card */}
+            <div className="rounded-2xl border border-gray-200 bg-white shadow-sm w-full">
+              <div className="p-4 md:p-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-semibold text-sm md:text-base">
+                    {profileName?.[0]?.toUpperCase() || 'U'}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-gray-900 font-semibold leading-tight truncate text-sm md:text-base">{profileName || 'User'}</div>
+                    <div className="text-xs md:text-sm text-gray-500">{loggedIn ? 'Buyer' : 'Guest'}</div>
+                  </div>
+                </div>
+                <div className="mt-4 md:mt-5 text-xs md:text-[13px] font-medium text-gray-700">Your Recent Activity</div>
+                <div className="mt-2 flex items-center justify-between">
+                  <div className="inline-flex items-center gap-2 px-3 md:px-4 py-2.5 md:py-3 rounded-xl bg-amber-50 border border-amber-100">
+                    <span className="text-xl md:text-2xl font-bold text-gray-900">{recentViews}</span>
+                    <ArrowUpRight size={16} className="text-amber-500" />
+                  </div>
+                  <div className="text-xs md:text-sm text-gray-600">Viewed</div>
+                </div>
+                <div className="mt-3 md:mt-4 flex justify-center">
+                  {loggedIn ? (
+                    <button type="button" onClick={() => { window.location.href = '/activity'; }} className="inline-flex px-4 md:px-5 py-2 md:py-2.5 rounded-lg bg-red-600 text-white text-sm md:text-base font-semibold hover:bg-red-700 transition shadow-sm">View Activity</button>
+                  ) : (
+                    <button type="button" onClick={() => { setAuthDefaultView('login'); setAuthOpen(true); }} className="inline-flex px-4 md:px-5 py-2 md:py-2.5 rounded-lg bg-red-600 text-white text-sm md:text-base font-semibold hover:bg-red-700 transition shadow-sm">Login / Register</button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Post Property - styled like reference with large image and floating CTA */}
+            <div className="rounded-2xl border border-gray-200 bg-white shadow-sm w-full overflow-hidden">
+              <div className="p-4 md:p-5 pb-8">
+                {/* Header */}
+                <div className="flex items-center justify-center gap-2 text-gray-900">
+                  <HomeIcon size={18} className="text-red-600" />
+                  <span className="font-bold text-sm md:text-base">Post Your Property</span>
+                </div>
+                {/* Subtitle */}
+                
+                {/* Image block with button immediately below */}
+                <div className="mt-3">
+                  <img
+                    src="/Images/POST%20PROPERITES%20BANNER.webp"
+                    alt="Post property illustration"
+                    className="w-full h-auto object-contain max-h-44 md:max-h-56"
+                    loading="lazy"
+                    onError={(e) => { e.currentTarget.src = '/Images/logo.png'; }}
+                  />
+                  <div className="mt-0 flex justify-center">
+                    <button
+                      onClick={() => { setAuthDefaultView('register'); setAuthOpen(true); }}
+                      className="inline-flex px-5 md:px-6 py-2.5 md:py-3 rounded-xl bg-red-600 text-white text-xs md:text-sm font-semibold shadow hover:bg-red-700"
+                    >
+                      Post Property, It's FREE
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Enquiry card removed as per request */}
+          </div>
+        </aside>
+
         {/* Main content */}
-        <div className="lg:col-span-4 relative z-0">
+        <div className="relative z-0 md:col-start-1 md:row-start-1">
           {TrendingProjects.length === 0 ? <CustomSkeleton /> : (
             <div data-aos="fade-up"
-              data-aos-duration="1000" className="py-0 mt-3 max-w-[1250px] mx-auto">
+              data-aos-duration="1000" className="py-0 mt-3 w-full">
                 <br />
               <div className="flex items-center justify-between mx-3 lg:mx-6 xl:mx-14 md:mx-6">
                 <h2 className="text-2xl xl:text-4xl lg:text-3xl md:text-2xl text-[#111] font-bold">
@@ -438,10 +653,11 @@ const Home = () => {
                 )}
               </div>
 
-              {/* Display Filtered Projects */}
+              {/* Display Filtered Projects (compact sizing) */}
               <CommonProject
                 data={displayedProjects}
                 animation="fade-up"
+                compact
               />
             </div>
           )
@@ -452,7 +668,7 @@ const Home = () => {
             <div ref={setRef("upcoming")} data-section="upcoming" style={{ height: "10px" }}></div>
             <div>
               {UpcomingProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={UpcomingProjects} title="New Upcoming Housing Projects in Gurgaon 2025" animation="fade-down" path={"/projects/upcoming-projects-in-gurgaon/"} />
+                <CommonProject data={UpcomingProjects} title="New Upcoming Housing Projects in Gurgaon 2025" animation="fade-down" path={"/projects/upcoming-projects-in-gurgaon/"} compact />
               )}
             </div>
 
@@ -460,7 +676,7 @@ const Home = () => {
             <div ref={setRef("luxury")} data-section="luxury" style={{ height: "10px" }}></div>
             <div>
               {LuxuryAllProject.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Top Luxury Apartments For You" animation="fade-up" path={"/top-luxury-projects/"} />
+                <CommonProject data={LuxuryAllProject.slice(0, 4)} title="Top Luxury Apartments For You" animation="fade-up" path={"/top-luxury-projects/"} compact />
               )}
             </div>
 
@@ -469,7 +685,7 @@ const Home = () => {
             <div ref={setRef("budget")} data-section="budget" style={{ height: "10px" }}></div>
             <div>
               {BudgetHomesProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={BudgetHomesProjects} title="Best Budget Projects in Gurugram" animation="flip-left" />
+                <CommonProject data={BudgetHomesProjects} title="Best Budget Projects in Gurugram" animation="flip-left" compact />
               )}
             </div>
 
@@ -477,7 +693,7 @@ const Home = () => {
             <div ref={setRef("SCO")} data-section="SCO" style={{ height: "10px" }}></div>
             <div>
               {SCOProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={SCOProjects.slice(0, 4)} title="SCO Projects in Gurugram" animation="flip-left" path="/sco/plots/" />
+                <CommonProject data={SCOProjects.slice(0, 4)} title="SCO Projects in Gurugram" animation="flip-left" path="/sco/plots/" compact />
               )}
             </div>
 
@@ -488,7 +704,7 @@ const Home = () => {
             <div ref={setRef("commercial")} data-section="commercial" style={{ height: "10px" }}></div>
             <div>
               {CommercialProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={CommercialProjects.slice(0, 4)} title="Commercial Projects in Delhi NCR" animation="fade-down" path="/projects/commercial/" />
+                <CommonProject data={CommercialProjects.slice(0, 4)} title="Commercial Projects in Delhi NCR" animation="fade-down" path="/projects/commercial/" compact />
               )}
             </div>
 
@@ -498,14 +714,14 @@ const Home = () => {
             <div ref={setRef("feature")} data-section="feature" style={{ height: "10px" }}></div>
             <div>
               {FeaturedProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={FeaturedProjects.slice(0, 8)} title="Top Featured Residential Projects in Gurugram" animation="flip-left" path="/projects-in-gurugram/" />
+                <CommonProject data={FeaturedProjects.slice(0, 8)} title="Top Featured Residential Projects in Gurugram" animation="flip-left" path="/projects-in-gurugram/" compact />
               )}
             </div>
 
             <div ref={setRef("delhi")} data-section="delhi" style={{ height: "10px" }}></div>
             <div>
               {ProjectinDelhi.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={ProjectinDelhi} title="Top Projects in Delhi" animation="zoom-out-left" path="/project-in-delhi/" />
+                <CommonProject data={ProjectinDelhi} title="Top Projects in Delhi" animation="zoom-out-left" path="/project-in-delhi/" compact />
               )}
             </div>
 
@@ -513,7 +729,7 @@ const Home = () => {
             <div ref={setRef("dubai")} data-section="dubai" style={{ height: "10px" }}></div>
             <div>
               {DubaiProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={DubaiProjects} title="Projects in Dubai" animation="zoom-out-left" path="/projects-in-dubai/" />
+                <CommonProject data={DubaiProjects} title="Projects in Dubai" animation="zoom-out-left" path="/projects-in-dubai/" compact />
               )}
             </div>
 
@@ -523,7 +739,7 @@ const Home = () => {
             <div ref={setRef("affordable")} data-section="affordable" style={{ height: "10px" }}></div>
             <div>
               {AffordableProjects.length === 0 ? <CustomSkeleton /> : (
-                <CommonProject data={AffordableProjects.slice(0, 4)} title="Affordable Homes in Gurgaon" animation="fade-up" path="/projects-in-gurugram/" />
+                <CommonProject data={AffordableProjects.slice(0, 4)} title="Affordable Homes in Gurgaon" animation="fade-up" path="/projects-in-gurugram/" compact />
               )}
             </div>
 
@@ -535,58 +751,6 @@ const Home = () => {
  
             {/* <Snapshot /> */}
         </div>
-        
-        {/* Sidebar */}
-        <aside className="lg:col-span-1 hidden lg:block">
-          <div className="sticky top-24 space-y-4 z-20">
-            {/* Login / Register Card */}
-            <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
-              <div className="p-5">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-6 h-6 text-gray-500"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.964 0a9 9 0 1 0-11.964 0m11.964 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-700 leading-none font-medium">Guest User</p>
-                    <p className="text-xs text-gray-400">You're not logged in</p>
-                  </div>
-                </div>
-                <div className="bg-gray-50 border border-gray-100 rounded-lg p-3 mb-4">
-                  <p className="text-[13px] font-medium text-gray-800">Your Recent Activity</p>
-                  <p className="text-xs text-gray-500 mt-1">No activity yet! Start browsing properties and track them from here.</p>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => { setAuthDefaultView('login'); setAuthOpen(true); }}
-                    className="flex-1 bg-black text-white px-3 py-2 rounded-md hover:bg-gray-800 transition"
-                  >
-                    Login
-                  </button>
-                  <button
-                    onClick={() => { setAuthDefaultView('register'); setAuthOpen(true); }}
-                    className="flex-1 bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-700 transition"
-                  >
-                    Register
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Post Property Card */}
-            <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100 bg-gradient-to-r from-[#e8f1ff] to-[#f0fff8]">
-              <div className="p-5">
-                <p className="text-gray-900 font-semibold leading-tight">Sell or rent faster at the right price!</p>
-                <p className="text-sm text-gray-600 mt-1">List your property now</p>
-                <button
-                  onClick={() => { setAuthDefaultView('register'); setAuthOpen(true); }}
-                  className="mt-4 w-full py-2.5 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition"
-                >
-                  Post Property, It's FREE
-                </button>
-              </div>
-            </div>
-          </div>
-        </aside>
        </div>
        {/* Close outer relative wrapper for grid section */}
        </div>

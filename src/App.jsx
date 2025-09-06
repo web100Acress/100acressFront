@@ -38,6 +38,7 @@ const Privacy = lazy(() => import("./Pages/Privacy"));
 const ContactUs = lazy(() => import("./Pages/ContactUs"));
 const SearchData = lazy(() => import("./Pages/SearchData"));
 const UserViewProperty = lazy(() => import("./Pages/UserViewProperty"));
+const Activity = lazy(() => import("./Pages/Activity"));
 const CareerWithUs = lazy(() => import("./Pages/CareerWithUs"));
 const UserEditProperty = lazy(() => import("./Pages/UserEditProperty"));
 const Blogging = lazy(() => import("./Pages/Blogging"));
@@ -330,6 +331,7 @@ function App() {
                       <Route path="/useredit/:id" element={<UserEdit />} />
                       <Route path="/viewallproperty" element={<ViewAllProperty />} />
                       <Route path="/contact-us/" element={<ContactUs />} />
+                      <Route path="/activity" element={<Activity />} />
                       <Route path="/career-with-us/" element={<CareerWithUs />} />
                       <Route path="/blog/" element={<Blogging />} />
                       {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
@@ -552,12 +554,17 @@ function MobileBottomNav() {
               <span className={`${isActive("/blog") ? "text-gray-900 font-semibold" : ""}`}>Blogs</span>
             </Link>
 
-            {/* Center CTA: Post Properties (was See/Buy) */}
+            {/* Center CTA: Contact (opens WhatsApp) */}
             <div className="flex flex-col items-center justify-center -mt-6">
-              <Link to={postTarget} className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg ring-4 ring-white">
-                <i className="fa-solid fa-plus text-lg"></i>
-              </Link>
-              <span className="mt-1 text-[11px]">Post Properties</span>
+              <a
+                href="https://wa.me/918500900100?text=Hi%2C%20I%20want%20to%20enquire%20about%20properties."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-600 text-white shadow-lg ring-4 ring-white"
+              >
+                <i className="fa-brands fa-whatsapp text-lg"></i>
+              </a>
+              <span className="mt-1 text-[11px]">Contact</span>
             </div>
 
             {/* Liked (was Shortlisted) */}
