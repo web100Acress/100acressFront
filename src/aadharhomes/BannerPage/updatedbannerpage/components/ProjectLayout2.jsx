@@ -4,7 +4,13 @@ import ProjectHero from "./ProjectHero";
 import AboutSection from "./AboutSection";
 import HighlightsSection from './HighlightsSection';
 import PricingSection from './PricingSection';
-import AboutBuilder from './AboutBuilder'
+import AboutBuilder from './AboutBuilder';
+import Gallery from './Gallery';
+import FloorPlan from './FloorPlan';
+import LocationSection from './LocationSection';
+import MasterPlan from './MasterPlan';
+import FAQSection from './FAQSection';
+import RelatedProjects from './RelatedProjects';
 import { useParams } from "react-router-dom";
 import api from "../../../../config/apiClient";
 
@@ -42,7 +48,6 @@ const Modal = ({ isOpen, onClose, children }) => {
 
 function ProjectLayout2() {
   const [isFloorPlanModalOpen, setIsFloorPlanModalOpen] = useState(false);
-  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
   const [projectViewDetails, setProjectViewDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -176,135 +181,49 @@ function ProjectLayout2() {
       </section>
 
       {/* Gallery */}
-      <section className="py-12 ">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading title="Gallery" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {Array.from({ length: 8 }).map((_, idx) => (
-              <div key={idx} className="bg-gray-700 h-28 rounded" />
-            ))}
-          </div>
-          <div className="mt-4">
-            <button
-              className="rounded-md border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800"
-              onClick={() => setIsGalleryModalOpen(true)}
-            >
-              Open Gallery Modal
-            </button>
-          </div>
-        </div>
-      </section>
+      <Gallery galleryImages={projectViewDetails?.projectGallery || []} />
 
       {/* Floor Plans */}
-      <section className="py-12 ">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading title="Floor Plans" />
-          {/* Carousel Placeholder */}
-          <div className="flex gap-4 overflow-x-auto pb-2">
-            <div className="bg-gray-700 h-48 w-64 rounded shrink-0" />
-            <div className="bg-gray-700 h-48 w-64 rounded shrink-0" />
-            <div className="bg-gray-700 h-48 w-64 rounded shrink-0" />
-          </div>
-          <div className="mt-4">
-            <button
-              className="rounded-md border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800"
-              onClick={() => setIsFloorPlanModalOpen(true)}
-            >
-              Open Floor Plan Modal
-            </button>
-          </div>
-        </div>
-      </section>
+      <FloorPlan 
+        floorPlans={projectViewDetails?.project_floorplan_Image || []} 
+        bhkDetails={projectViewDetails?.BhK_Details || []} 
+      />
 
-      {/* Location Map & Connectivity Info */}
-      <section className="py-12 ">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading title="Location Map & Connectivity" />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-gray-700 h-64 w-full rounded" />
-            <div>
-              <ul className="list-disc pl-6 text-gray-300 space-y-2">
-                <li>Connectivity point one (e.g., Metro Station - X km)</li>
-                <li>Business hub nearby (e.g., IT Park - X km)</li>
-                <li>Education institute (e.g., School/College - X km)</li>
-                <li>Entertainment (e.g., Mall/Cinema - X km)</li>
-                <li>Healthcare (e.g., Hospital - X km)</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Location Section */}
+      <LocationSection 
+        projectName={projectViewDetails?.projectName}
+        projectAddress={projectViewDetails?.projectAddress}
+        city={projectViewDetails?.city}
+        locationImage={projectViewDetails?.project_locationImage}
+        connectivityPoints={projectViewDetails?.projectRedefine_Connectivity || []}
+        businessPoints={projectViewDetails?.projectRedefine_Business || []}
+        educationPoints={projectViewDetails?.projectRedefine_Education || []}
+        entertainmentPoints={projectViewDetails?.projectRedefine_Entertainment || []}
+      />
 
       {/* Master Plan */}
-      <section className="py-12 ">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading title="Master Plan" />
-          <div className="bg-gray-700 h-96 w-full rounded" />
-        </div>
-      </section>
+      <MasterPlan 
+        projectName={projectViewDetails?.projectName}
+        masterPlanImage={projectViewDetails?.projectMaster_plan}
+      />
 
       {/* Builder Info */}
-      <AboutBuilder />
+      <AboutBuilder 
+        builderName={projectViewDetails?.builderName}
+        aboutDeveloper={projectViewDetails?.AboutDeveloper}
+      />
 
       {/* FAQs */}
-      <section className="py-12 ">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading title="FAQs" />
-          <div className="divide-y divide-gray-800 rounded border border-gray-700">
-            {[
-              "What is the project possession date?",
-              "What configurations are available?",
-              "Is financing available?",
-              "What are the maintenance charges?",
-            ].map((q, idx) => (
-              <details key={idx} className="group bg-gray-900">
-                <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium text-gray-200">
-                  {q}
-                  <span className="text-gray-400 group-open:hidden">+</span>
-                  <span className="text-gray-400 hidden group-open:inline">-</span>
-                </summary>
-                <div className="px-4 pb-4 text-sm text-gray-300">
-                  Placeholder answer text. Replace with the actual answer later.
-                </div>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FAQSection projectViewDetails={projectViewDetails} />
 
       {/* Related Projects */}
-      <section className="py-12 ">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading title="Related Projects" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 4 }).map((_, idx) => (
-              <div key={idx} className="rounded border border-gray-700 p-4 bg-gray-900">
-                <div className="bg-gray-700 h-32 w-full rounded mb-3" />
-                <div className="h-4 bg-gray-600 rounded w-2/3 mb-2" />
-                <div className="h-3 bg-gray-600 rounded w-1/2" />
-              </div>
-            ))}
-          </div>
-          <div className="mt-6">
-            <button className="rounded-md border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">
-              View More
-            </button>
-          </div>
-        </div>
-      </section>
+      <RelatedProjects 
+        builderName={projectViewDetails?.builderName}
+        currentProjectUrl={pUrl}
+      />
 
 
-      {/* Floor Plan Modal Placeholder */}
-      <Modal isOpen={isFloorPlanModalOpen} onClose={() => setIsFloorPlanModalOpen(false)}>
-        <div className="bg-gray-200 h-96 w-full rounded" />
-        <p className="mt-4 text-sm text-gray-700">Enlarged floor plan placeholder.</p>
-      </Modal>
 
-      {/* Gallery Modal Placeholder */}
-      <Modal isOpen={isGalleryModalOpen} onClose={() => setIsGalleryModalOpen(false)}>
-        <div className="bg-gray-200 h-96 w-full rounded" />
-        <p className="mt-4 text-sm text-gray-700">Enlarged gallery image placeholder.</p>
-      </Modal>
     </div>
   );
 }

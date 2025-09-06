@@ -1,144 +1,107 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const AboutBuilder = ({ 
-  builderName = "Max Estates",
-  description = [
-    "Max Estates is committed to creating sustainable, Grade A developments in Delhi NCR, with a strong emphasis on well-being and holistic living. Each project is thoughtfully designed to balance functionality, aesthetics, and environmental responsibility, fostering spaces that encourage collaboration, innovation, and community.",
-    "With developments spanning diverse asset classes and prime locations, Max Estates ensures a strategic mix of delivered, near-completion, and upcoming projects. Our vision is to become the most trusted and preferred real estate brand in the region, driven by the passion to elevate quality of life while setting new benchmarks in sustainable, wellness-focused urban development."
-  ],
-  onSubmit = (formData) => {
-    console.log('Form submitted:', formData);
+const AboutBuilder = ({ builderName = "", aboutDeveloper = "" }) => {
+  // Don't render if no builder information is available
+  if (!builderName && !aboutDeveloper) {
+    return null;
   }
-}) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    contact: '',
-    message: '',
-    authorized: false
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
 
   return (
-    <section className="bg-black py-16 px-6 md:px-20 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <svg className="w-full h-full" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 100L100 0L200 100L300 0L400 100V400H0V100Z" fill="white"/>
-          <path d="M0 200L100 100L200 200L300 100L400 200V400H0V200Z" fill="white"/>
-          <path d="M0 300L100 200L200 300L300 200L400 300V400H0V300Z" fill="white"/>
-        </svg>
+    <section className="py-20 bg-gradient-to-b from-black via-gray-900 to-black text-white relative overflow-hidden">
+      {/* Sophisticated Background Pattern */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 left-0 w-full h-full opacity-10">
+          <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-gradient-to-tl from-amber-400 to-amber-500 rounded-full blur-3xl"></div>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-500/5 to-transparent"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          {/* Left Column - Builder Content */}
-          <div>
-            {/* Section Title */}
-            <div className="mb-6">
-              <h2 className="text-orange-500 uppercase font-semibold tracking-wide text-xl mb-4">
-                ABOUT BUILDER
-              </h2>
-              <div className="border-t border-orange-500 w-24 mt-2"></div>
-            </div>
-
-            {/* Sub-heading */}
-            <h3 className="text-white text-2xl font-bold mb-6">
-              About {builderName}
-            </h3>
-
-            {/* Description Paragraphs */}
-            <div className="text-white/80 text-base leading-relaxed space-y-4">
-              {description.map((paragraph, index) => (
-                <p key={index}>
-                  {paragraph}
-                </p>
-              ))}
-            </div>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Premium Section Header */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-6">
+            <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
           </div>
+          <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-[0.2em] mb-4">
+            DEVELOPER
+          </h2>
+          <h3 className="text-white text-3xl md:text-4xl font-bold leading-tight mb-6 max-w-3xl mx-auto">
+            About {builderName || "the Developer"}
+          </h3>
+          <div className="w-24 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
+        </div>
 
-          {/* Right Column - Contact Form */}
-          <div>
-            <div className="border border-orange-500 p-8 bg-black/40">
-              <form onSubmit={handleSubmit}>
-                {/* Name Field */}
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="NAME"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="w-full bg-gray-900 text-white p-3 mb-4 border-b border-orange-500 focus:outline-none placeholder-gray-400"
-                  required
-                />
-
-                {/* Email Field */}
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="EMAIL ID"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full bg-gray-900 text-white p-3 mb-4 border-b border-orange-500 focus:outline-none placeholder-gray-400"
-                  required
-                />
-
-                {/* Contact Field */}
-                <input
-                  type="tel"
-                  name="contact"
-                  placeholder="CONTACT NO"
-                  value={formData.contact}
-                  onChange={handleInputChange}
-                  className="w-full bg-gray-900 text-white p-3 mb-4 border-b border-orange-500 focus:outline-none placeholder-gray-400"
-                  required
-                />
-
-                {/* Message Field */}
-                <textarea
-                  name="message"
-                  placeholder="MESSAGE"
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  rows="4"
-                  className="w-full bg-gray-900 text-white p-3 mb-4 border-b border-orange-500 focus:outline-none placeholder-gray-400 resize-none"
-                ></textarea>
-
-                {/* Checkbox */}
-                <div className="flex items-start gap-3 mb-6">
-                  <input
-                    type="checkbox"
-                    name="authorized"
-                    id="authorized"
-                    checked={formData.authorized}
-                    onChange={handleInputChange}
-                    className="mt-1 w-4 h-4 text-orange-500 bg-gray-900 border-orange-500 rounded focus:ring-orange-500"
+        {/* Developer Content */}
+        <div className="max-w-5xl mx-auto">
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
+            <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl p-8 md:p-12 border border-gray-700/50 backdrop-blur-sm">
+              
+              {/* Developer Description */}
+              {aboutDeveloper && (
+                <div className="prose prose-lg prose-invert max-w-none">
+                  <div 
+                    className="text-gray-300 leading-relaxed text-base md:text-lg"
+                    dangerouslySetInnerHTML={{ __html: aboutDeveloper }}
                   />
-                  <label htmlFor="authorized" className="text-xs text-white/70">
-                    I authorize company representatives to Call, SMS, Email or WhatsApp me about its products and offers. This consent overrides any registration for DNC/NDNC.
-                  </label>
+                </div>
+              )}
+
+              {/* Developer Highlights */}
+              <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center p-6 bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl border border-gray-700/50">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                  </div>
+                  <h4 className="text-white font-bold text-lg mb-2">Quality Assurance</h4>
+                  <p className="text-gray-400 text-sm">Premium construction standards</p>
                 </div>
 
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="mt-6 w-full bg-orange-500 text-black font-semibold py-3 uppercase hover:bg-orange-600 transition"
-                >
-                  SUBMIT NOW
-                </button>
-              </form>
+                <div className="text-center p-6 bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl border border-gray-700/50">
+                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h4 className="text-white font-bold text-lg mb-2">Timely Delivery</h4>
+                  <p className="text-gray-400 text-sm">On-time project completion</p>
+                </div>
+
+                <div className="text-center p-6 bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl border border-gray-700/50">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h4 className="text-white font-bold text-lg mb-2">Customer Focus</h4>
+                  <p className="text-gray-400 text-sm">Dedicated customer service</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="max-w-3xl mx-auto mt-12">
+          <div className="bg-gradient-to-r from-amber-600/10 to-amber-500/5 rounded-xl p-6 border border-amber-600/20">
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h5 className="text-amber-400 font-semibold mb-2">Trusted Developer</h5>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  {builderName} is a renowned real estate developer known for delivering premium 
+                  residential and commercial projects with exceptional quality and customer satisfaction.
+                </p>
+              </div>
             </div>
           </div>
         </div>
