@@ -11,7 +11,8 @@ const ProjectHero = ({
     possession: "Dec 2025",
     aboutProject: "Premium residential project with modern amenities...",
     price: "₹ 5.2 Cr"
-  }
+  },
+  onShowCallback = () => {}
 }) => {
   return (
     <div className="relative h-screen w-full overflow-hidden">
@@ -28,12 +29,14 @@ const ProjectHero = ({
       <div className="absolute top-0 left-0 right-0 z-20 px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           {/* Phone Number Button */}
-          <button className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-4 py-2 text-white hover:bg-white/20 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21L6.16 10.928c-.652.35-.974 1.089-.734 1.767C6.364 15.177 8.823 17.636 11.305 18.574c.678.24 1.417-.082 1.767-.734l1.541-4.064a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.948V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-            </svg>
-            <span className="text-sm font-medium">{phoneNumber}</span>
-          </button>
+          <a href={`tel:${phoneNumber}`}>
+            <button className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-4 py-2 text-white hover:bg-white/20 transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21L6.16 10.928c-.652.35-.974 1.089-.734 1.767C6.364 15.177 8.823 17.636 11.305 18.574c.678.24 1.417-.082 1.767-.734l1.541-4.064a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.948V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <span className="text-sm font-medium">{phoneNumber}</span>
+            </button>
+          </a>
           
           {/* Company Logo */}
           <div className="flex items-center justify-center">
@@ -47,26 +50,26 @@ const ProjectHero = ({
           </div>
           
           {/* Get in Touch Button */}
-          <button className="bg-white text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+          <button 
+            onClick={onShowCallback}
+            className="bg-white text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+          >
             Get in Touch
           </button>
         </div>
       </div>
       
-      {/* Main Banner Content */}
-      <div className="absolute inset-0 flex items-center justify-center z-10 px-4">
-        <div className="text-center text-white">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 tracking-wide">
+      {/* Bottom Section with Title, Location and Info Bar */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 w-full max-w-5xl px-4">
+        {/* Title and Location positioned above info bar */}
+        <div className="text-center text-white mb-6">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 tracking-wide text-white">
             {projectTitle}
           </h1>
-          <p className="text-xl sm:text-2xl lg:text-3xl font-light opacity-90">
+          <p className="text-base sm:text-lg font-light opacity-90 text-gray-200">
             {location}
           </p>
         </div>
-      </div>
-      
-      {/* Bottom Info Bar */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 w-full max-w-5xl px-4">
         <div className="border-2 border-yellow-400/60 bg-black/20 backdrop-blur-md rounded-lg shadow-2xl">
           <div className="grid grid-cols-2 lg:grid-cols-4 relative">
             {/* Land Area */}
@@ -116,6 +119,7 @@ const ProjectHero = ({
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

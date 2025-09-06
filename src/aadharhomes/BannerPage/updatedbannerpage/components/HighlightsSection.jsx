@@ -1,10 +1,6 @@
 import React from 'react';
 
-const HighlightsSection = ({ 
-  projectName = "",
-  highlights = [],
-  highlightImage = ""
-}) => {
+const HighlightsSection = ({ projectName, highlights, highlightImage, onShowCallback = () => {} }) => {
   const hasHighlights = highlights && Array.isArray(highlights) && highlights.length > 0;
 
   return (
@@ -57,9 +53,12 @@ const HighlightsSection = ({
               </div>
             )}
 
-            {/* View Details Button */}
-            <button className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold px-6 py-3 rounded-lg shadow-lg shadow-amber-600/25 hover:shadow-amber-700/30 transition-all duration-300 hover:scale-105">
-              <span>View Details</span>
+            {/* Get Details Button */}
+            <button 
+              onClick={onShowCallback}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold px-6 py-3 rounded-lg shadow-lg shadow-amber-600/25 hover:shadow-amber-700/30 transition-all duration-300 hover:scale-105"
+            >
+              <span>Get Details</span>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>

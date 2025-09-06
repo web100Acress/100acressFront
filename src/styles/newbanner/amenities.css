@@ -20,6 +20,7 @@
 .nb-amenity-icon { width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 9999px; background: linear-gradient(to right, #CFAF6E, #E5C78A); box-shadow: 0 10px 15px rgba(0,0,0,0.15); transition: transform .3s ease, box-shadow .3s ease; }
 .nb-amenity-card:hover .nb-amenity-icon { transform: scale(1.1); box-shadow: 0 20px 25px rgba(0,0,0,0.2); }
 .nb-amenity-svg { color: #ffffff; font-size: 1.5rem; }
+.nb-amenity-image { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
 .nb-amenity-text { position: relative; z-index: 1; text-align: center; }
 .nb-amenity-title { margin: 0; color: #1f2937; font-weight: 600; font-size: 0.95rem; line-height: 1.35; transition: color .3s ease; }

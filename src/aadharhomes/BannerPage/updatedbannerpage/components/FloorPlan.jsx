@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const FloorPlan = ({ floorPlans = [], bhkDetails = [] }) => {
+const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {} }) => {
   const [activeTab, setActiveTab] = useState(0);
 
   if (!floorPlans || floorPlans.length === 0 || !floorPlans.some(plan => plan && plan.url)) {
@@ -74,7 +74,10 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [] }) => {
 
           {/* Right Side: Buttons */}
           <div className="flex flex-col items-center lg:items-end">
-            <button className="bg-amber-500 text-black font-semibold px-8 py-3 rounded-lg hover:bg-amber-600 transition-colors duration-300 w-full lg:w-auto">
+            <button 
+              onClick={onShowCallback}
+              className="bg-amber-500 text-black font-semibold px-8 py-3 rounded-lg hover:bg-amber-600 transition-colors duration-300 w-full lg:w-auto"
+            >
               Get Details
             </button>
           </div>

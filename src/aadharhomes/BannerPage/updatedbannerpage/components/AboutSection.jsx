@@ -1,11 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const AboutSection = ({
-  title = "ABOUT PROJECT",
-  projectName = "",
-  description = "",
-  imageUrl = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1973&q=80"
-}) => {
+const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () => {} }) => {
   const sectionRef = useRef(null);
   const titleRef = useRef(null);
 
@@ -50,7 +45,7 @@ const AboutSection = ({
           {/* Content */}
           <div className="relative z-10">
             <h2 className="text-yellow-400 text-sm font-semibold uppercase tracking-widest mb-4">
-              {title}
+              About Project
             </h2>
             
             <h3 
@@ -80,8 +75,11 @@ const AboutSection = ({
               )}
             </div>
             
-            <button className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-5 py-2.5 rounded-md transition-colors shadow-lg shadow-yellow-500/10">
-              View Details
+            <button 
+              onClick={onShowCallback}
+              className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-5 py-2.5 rounded-md transition-colors shadow-lg shadow-yellow-500/10"
+            >
+              Get Details
             </button>
           </div>
         </div>

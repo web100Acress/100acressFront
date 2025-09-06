@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Api_Service from '../../../../Redux/utils/Api_Service';
+import FooterForm from './FooterForm';
 
-const RelatedProjects = ({ builderName = "", currentProjectUrl = "" }) => {
+
+const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallback = () => {} }) => {
   const [builderProjects, setBuilderProjects] = useState([]);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -36,7 +38,7 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "" }) => {
   const projectsToShow = showAllProjects ? builderProjects : builderProjects.slice(0, 4);
 
   const handleProjectClick = (project) => {
-    navigate(`/property-detail/${project.pUrl}`);
+    navigate(`/${project.project_url}/`);
   };
 
   // Don't render if no builder name or no projects
@@ -133,19 +135,28 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "" }) => {
                         </div>
 
                         {/* Price Range */}
-                        {project.minPrice && (
-                          <div className="flex items-center space-x-2 mb-4">
-                            <svg className="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                            </svg>
+                        <div className="flex items-center space-x-2 mb-4">
+                          
+                          {!project?.minPrice && !project?.maxPrice ? (
+                            <p className="text-emerald-400 font-semibold text-sm">₹ Reveal Soon</p>
+                          ) : (
                             <p className="text-emerald-400 font-semibold text-sm">
-                              ₹{project.minPrice} - ₹{project.maxPrice}
+                              <span className="mr-1">₹</span>
+                              {project.minPrice < 1 ? (
+                                <span>{(project.minPrice * 100).toFixed(2)} L</span>
+                              ) : (
+                                <span>{project.minPrice} Cr </span>
+                              )}
+                              - {project.maxPrice} Cr
                             </p>
-                          </div>
-                        )}
+                          )}
+                        </div>
 
                         {/* View Details Button */}
-                        <button className="w-full bg-gradient-to-r from-amber-600 to-amber-500 text-black font-semibold py-2 px-4 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all duration-300 transform group-hover:scale-105">
+                        <button 
+                          onClick={() => handleProjectClick(project)}
+                          className="w-full bg-gradient-to-r from-amber-600 to-amber-500 text-black font-semibold py-2 px-4 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all duration-300 transform group-hover:scale-105"
+                        >
                           View Details
                         </button>
                       </div>
@@ -197,6 +208,8 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "" }) => {
           </div>
         </div>
       </div>
+
+      <FooterForm builderName={builderName} />
     </section>
   );
 };

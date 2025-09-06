@@ -11,6 +11,7 @@ import LocationSection from './LocationSection';
 import MasterPlan from './MasterPlan';
 import FAQSection from './FAQSection';
 import RelatedProjects from './RelatedProjects';
+import CallbackModal from './CallbackModal';
 import { useParams } from "react-router-dom";
 import api from "../../../../config/apiClient";
 
@@ -51,7 +52,16 @@ function ProjectLayout2() {
   const [projectViewDetails, setProjectViewDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
   const { pUrl } = useParams();
+
+  const handleShowCallback = () => {
+    setIsCallbackModalOpen(true);
+  };
+
+  const handleCloseCallback = () => {
+    setIsCallbackModalOpen(false);
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -104,9 +114,11 @@ function ProjectLayout2() {
     possession: projectViewDetails?.possessionDate 
       ? format(new Date(projectViewDetails.possessionDate), 'MMM yyyy')
       : projectViewDetails?.project_Status || "—",
-    aboutProject: projectViewDetails?.project_discripation 
-      ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').substring(0, 60) + '...' 
-      : projectViewDetails?.projectOverview?.substring(0, 60) + '...' || "—",
+    aboutProject: projectViewDetails?.totalUnit 
+      ? `${projectViewDetails.type === "Residential Flats" && projectViewDetails.towerNumber ? `${projectViewDetails.towerNumber} Tower - ` : ""}${projectViewDetails.totalUnit} Unit`
+      : projectViewDetails?.project_discripation 
+        ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').substring(0, 60) + '...' 
+        : projectViewDetails?.projectOverview?.substring(0, 60) + '...' || "—",
     price: formatPrice()
   };
 
@@ -120,6 +132,7 @@ function ProjectLayout2() {
         phoneNumber={phoneNumber}
         companyLogo={companyLogo}
         bottomInfo={bottomInfo}
+        onShowCallback={handleShowCallback}
       />
 
       {/* About Section */}
@@ -127,6 +140,7 @@ function ProjectLayout2() {
         projectName={projectViewDetails?.projectName}
         description={projectViewDetails?.project_discripation}
         imageUrl={projectViewDetails?.projectGallery?.[0]?.url}
+        onShowCallback={handleShowCallback}
       />
 
       {/* Highlights */}
@@ -134,6 +148,7 @@ function ProjectLayout2() {
         projectName={projectViewDetails?.projectName}
         highlights={projectViewDetails?.highlight}
         highlightImage={projectViewDetails?.highlightImage?.url}
+        onShowCallback={handleShowCallback}
       />
 
       {/* Pricing Section */}
@@ -142,6 +157,7 @@ function ProjectLayout2() {
         minPrice={projectViewDetails?.minPrice}
         maxPrice={projectViewDetails?.maxPrice}
         bhkDetails={projectViewDetails?.BhK_Details || []}
+        onShowCallback={handleShowCallback}
       />
 
       {/* Amenities */}
@@ -186,7 +202,8 @@ function ProjectLayout2() {
       {/* Floor Plans */}
       <FloorPlan 
         floorPlans={projectViewDetails?.project_floorplan_Image || []} 
-        bhkDetails={projectViewDetails?.BhK_Details || []} 
+        bhkDetails={projectViewDetails?.BhK_Details || []}
+        onShowCallback={handleShowCallback}
       />
 
       {/* Location Section */}
@@ -220,10 +237,17 @@ function ProjectLayout2() {
       <RelatedProjects 
         builderName={projectViewDetails?.builderName}
         currentProjectUrl={pUrl}
+        onShowCallback={handleShowCallback}
       />
 
-
-
+      {/* Global Callback Modal */}
+      <CallbackModal 
+        isOpen={isCallbackModalOpen}
+        onClose={handleCloseCallback}
+        projectViewDetails={projectViewDetails}
+        projectTitle={projectTitle}
+        location={location}
+      />
     </div>
   );
 }
