@@ -238,7 +238,7 @@ export default function LeftSection({
               </>
             )}
 
-            {(forceHamburger || !hideResale) && (
+            {(forceHamburger || hideResale) && (
               <>
                 <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Resale</Box>
                 <Button as={Link} to="/buy-properties/best-resale-property-in-gurugram/" onClick={closeDrawer}
