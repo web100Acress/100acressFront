@@ -99,7 +99,6 @@ const ForgetPassword = () => {
                   <a
                     href="#"
                     className="text-red-600 font-medium inline-flex space-x-1 items-center"
-                    aria-label="Register for new account"
                   >
                     <button onClick={handleRegisterNow}>
                       <span>Register now </span>

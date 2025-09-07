@@ -13,8 +13,6 @@ import Api_Service from "../../Redux/utils/Api_Service";
 import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
 import { AuthContext } from "../../AuthContext";
 import AuthModal from "../../Components/AuthModal";
-import OptimizedImage from "../OptimizedImage";
-import { PropertyCardSkeleton } from "../PerformantLoadingSpinner";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -190,8 +188,8 @@ const ModernRecommendedSection = () => {
           <div className="inline-flex sm:inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-1 sm:mb-0">
             <div className="w-12 h-1 bg-gradient-to-r from-red-400 to-red-600 rounded-full hidden sm:block"></div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight tracking-tight">
-              <span className="block sm:inline">100acress</span>
-              <span className="text-red-600 sm:ml-2 block sm:inline">Recommended</span>
+              <span className="text-red-600 sm:ml-2 block sm:inline">100acress</span>
+              <span className="block sm:inline"> Recommended</span>
             </h2>
             <div className="w-12 h-1 bg-gradient-to-r from-red-600 to-red-400 rounded-full hidden sm:block"></div>
           </div>
@@ -262,7 +260,6 @@ const ModernRecommendedSection = () => {
               <SwiperSlide key={project._id || index} className="swiper-slide">
                 <PropertyCard
                   project={project}
-                  index={index}
                   isHovered={hoveredCard === project._id}
                   onHover={() => setHoveredCard(project._id)}
                   onLeave={() => setHoveredCard(null)}
@@ -289,7 +286,6 @@ const ModernRecommendedSection = () => {
 
 const PropertyCard = ({ 
   project, 
-  index,
   isHovered, 
   onHover, 
   onLeave,
@@ -394,18 +390,12 @@ const PropertyCard = ({
     >
       {/* Image Section */}
       <div className="image-container">
-        <OptimizedImage
+        <img
           src={project?.frontImage?.url || project?.thumbnailImage?.url}
-          alt={project?.projectName || 'Property image'}
-          width={400}
-          height={300}
+          alt={project?.projectName}
           className={`property-image ${imageLoaded ? 'loaded' : ''}`}
-          priority={index < 2}
-          lazy={index >= 2}
-          quality={80}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           onLoad={() => setImageLoaded(true)}
-          onError={() => setImageLoaded(false)}
+          loading="lazy"
         />
         
         {/* Overlay with gradient */}
@@ -415,8 +405,6 @@ const PropertyCard = ({
         <button
           onClick={handleShare}
           className="share-btn"
-          aria-label="Share property"
-          title="Share property"
         >
           <MdShare />
         </button>

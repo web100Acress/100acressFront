@@ -156,7 +156,7 @@ function BlogSection() {
         <div className="card-columns">
           {blogPosts.map((post) => (
             <div key={post.id} className="card">
-              <a href="#" aria-label="Read blog post">
+              <a href="#">
                 <img
                   className="card-img-top"
                   src={post.image}

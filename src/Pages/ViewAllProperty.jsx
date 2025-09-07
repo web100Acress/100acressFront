@@ -41,10 +41,10 @@ const ViewAllProperty = ({ category, title, imageSrc, tags }) => {
       <section className="">
   <div className="mx-auto grid max-w-screen-lg grid-cols-1 gap-5  sm:grid-cols-2 md:grid-cols-3 lg:gap-10">
     <article className="h-90 col-span-1 m-auto min-h-full cursor-pointer overflow-hidden rounded-lg pb-2 shadow-lg transition-transform duration-200 hover:translate-y-2">
-      <a href="#" className="block h-full w-full" aria-label="View property details">
+      <a href="#" className="block h-full w-full">
         <img
           className="max-h-40 w-full object-cover"
-          alt="Property listing - A Visit to Mount Abignale"
+          alt="featured image"
           src="https://images.unsplash.com/photo-1605146768851-eda79da39897?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzB8fGNhbmFkYSUyMGhvdXNlfGVufDB8fDB8fHww"
         />
         <div className="w-full bg-white p-4">
@@ -68,10 +68,10 @@ const ViewAllProperty = ({ category, title, imageSrc, tags }) => {
       </a>
     </article>
     <article className="h-90 col-span-1 m-auto min-h-full cursor-pointer overflow-hidden rounded-lg pb-2 shadow-lg transition-transform duration-200 hover:translate-y-2">
-      <a href="#" className="block h-full w-full" aria-label="View property details">
+      <a href="#" className="block h-full w-full">
         <img
           className="max-h-40 w-full object-cover"
-          alt="Property listing - Sunflowers garden home"
+          alt="featured image"
           src="https://images.unsplash.com/photo-1577915589428-13e8f1d5c552?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGNhbmFkYSUyMGhvdXNlfGVufDB8fDB8fHww"
         />
         <div className="w-full bg-white p-4">
@@ -95,10 +95,10 @@ const ViewAllProperty = ({ category, title, imageSrc, tags }) => {
       </a>
     </article>
     <article className="h-90 col-span-1 m-auto min-h-full cursor-pointer overflow-hidden rounded-lg pb-2 shadow-lg transition-transform duration-200 hover:translate-y-2">
-      <a href="#" className="block h-full w-full" aria-label="View property details">
+      <a href="#" className="block h-full w-full">
         <img
           className="max-h-40 w-full object-cover"
-          alt="Property listing - Ice Factory Pattern home"
+          alt="featured image"
           src="https://images.unsplash.com/photo-1577915589400-f00cebf8993c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2FuYWRhJTIwaG91c2V8ZW58MHx8MHx8fDA%3D"
         />
         <div className="w-full bg-white p-4">
