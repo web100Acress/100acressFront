@@ -1,4 +1,5 @@
 
+
   import React, { useEffect, useRef, useState } from "react";
   import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal, useToast } from "@chakra-ui/react";
   import { SearchIcon } from "@chakra-ui/icons";
@@ -6,6 +7,7 @@
   import AuthModal from "../../Components/AuthModal";
   import api from "../../config/apiClient";
   import { Button as MovingBorderButton } from "../../Components/ui/moving-border";
+
 
 export default function RightSection({
   colorChange,
