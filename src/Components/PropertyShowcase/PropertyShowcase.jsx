@@ -526,7 +526,7 @@ const ScrollContainer = styled.div`
     gap: var(--v-gap, 1.75rem);
     height: 100%;
     overflow-x: hidden;
-    overflow-y: auto; /* vertically scroll extra cards */
+    overflow-y: auto;
     flex-wrap: nowrap;
   }
 `;
