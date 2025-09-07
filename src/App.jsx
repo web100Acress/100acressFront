@@ -1,3 +1,28 @@
+// Sticky floating "List Property" button on mobile (right side)
+function MobileStickyListProperty() {
+  const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
+  const postTarget = token ? "/postproperty" : "/auth/signin";
+  return (
+    <div className="md:hidden fixed z-[10010]" style={{ right: 0, top: '45%' }}>
+      <Link
+        to={postTarget}
+        className="block bg-red-600 text-white font-extrabold tracking-wide shadow-lg"
+        style={{
+          writingMode: 'vertical-rl',
+          textOrientation: 'upright',
+          padding: '10px 6px',
+          borderRadius: '10px 0 0 10px',
+          transform: 'translateY(-50%)',
+          position: 'relative',
+          right: 0,
+          letterSpacing: '1px'
+        }}
+      >
+        LIST PROPERTY
+      </Link>
+    </div>
+  );
+}
 import React, { lazy, Suspense, useState, useEffect } from "react";
 import "./App.css";
 import { styled } from "styled-components";
@@ -38,6 +63,7 @@ const Privacy = lazy(() => import("./Pages/Privacy"));
 const ContactUs = lazy(() => import("./Pages/ContactUs"));
 const SearchData = lazy(() => import("./Pages/SearchData"));
 const UserViewProperty = lazy(() => import("./Pages/UserViewProperty"));
+const Activity = lazy(() => import("./Pages/Activity"));
 const CareerWithUs = lazy(() => import("./Pages/CareerWithUs"));
 const UserEditProperty = lazy(() => import("./Pages/UserEditProperty"));
 const Blogging = lazy(() => import("./Pages/Blogging"));
@@ -330,6 +356,7 @@ function App() {
                       <Route path="/useredit/:id" element={<UserEdit />} />
                       <Route path="/viewallproperty" element={<ViewAllProperty />} />
                       <Route path="/contact-us/" element={<ContactUs />} />
+                      <Route path="/activity" element={<Activity />} />
                       <Route path="/career-with-us/" element={<CareerWithUs />} />
                       <Route path="/blog/" element={<Blogging />} />
                       {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
@@ -491,6 +518,8 @@ function App() {
       </DataProvider>
       {/* Global mobile bottom navigation */}
       <MobileBottomNav />
+      {/* Global mobile sticky List Property button */}
+      <MobileStickyListProperty />
     </>
   );
 }
@@ -502,6 +531,22 @@ function MobileBottomNav() {
   const location = useLocation();
   const path = location.pathname || "/";
   const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
+
+  const [hideForNewBanner, setHideForNewBanner] = React.useState(() => {
+    if (typeof document === 'undefined') return false;
+    return document.body.classList.contains('newbanner-page');
+  });
+
+  React.useEffect(() => {
+    if (typeof document === 'undefined' || !document.body) return;
+    const update = () => setHideForNewBanner(document.body.classList.contains('newbanner-page'));
+    update();
+    const observer = new MutationObserver(() => update());
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  if (hideForNewBanner) return null;
 
   const isActive = (match) => {
     if (Array.isArray(match)) return match.some((m) => path.startsWith(m));
@@ -536,12 +581,15 @@ function MobileBottomNav() {
               <span className={`${isActive("/blog") ? "text-gray-900 font-semibold" : ""}`}>Blogs</span>
             </Link>
 
-            {/* Center CTA: Post Properties (was See/Buy) */}
+            {/* Center CTA: Contact (call by phone) */}
             <div className="flex flex-col items-center justify-center -mt-6">
-              <Link to={postTarget} className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg ring-4 ring-white">
-                <i className="fa-solid fa-plus text-lg"></i>
-              </Link>
-              <span className="mt-1 text-[11px]">Post Properties</span>
+              <a
+                href="tel:+918500900100"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg ring-4 ring-white"
+              >
+                <i className="fa-solid fa-phone text-lg"></i>
+              </a>
+              <span className="mt-1 text-[11px]">Contact</span>
             </div>
 
             {/* Liked (was Shortlisted) */}

@@ -19,7 +19,7 @@ const Builderaction = () => {
       link: "developers/adani-realty/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/adanireality.webp",
       backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/zcasashag5pnabbtk9ox",
-      subtitle: "Premium Developments",
+      subtitle: "Premium",
       rating: 4.8,
       projects: 15
     },
@@ -160,27 +160,7 @@ const Builderaction = () => {
                     </p>
                   </div>
 
-                  {/* Features List */}
-                  <div className="mb-6 space-y-2">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <svg className="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      RERA Approved Projects
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <svg className="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Premium Amenities
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <svg className="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Prime Locations
-                    </div>
-                  </div>
+                  
 
                   {/* CTA Button */}
                   <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-500 to-red-600 p-[1px] group-hover:from-red-600 group-hover:to-red-700 transition-all duration-300">
@@ -188,9 +168,7 @@ const Builderaction = () => {
                       <div className="text-white font-semibold text-sm group-hover:scale-105 transition-transform duration-300">
                         View All Projects
                       </div>
-                      <div className="text-white/90 text-xs mt-0.5">
-                        Explore Collection →
-                      </div>
+                      
                     </div>
                   </div>
                 </div>

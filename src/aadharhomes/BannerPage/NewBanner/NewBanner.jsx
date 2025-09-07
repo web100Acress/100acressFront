@@ -59,6 +59,17 @@ const NewBanner = () => {
   const pUrlRef = useRef(pUrl);
   const navigate = useNavigate();
 
+  // Flag body with a class so global UI (e.g., mobile bottom nav) can adjust on NewBanner pages
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.classList.add('newbanner-page');
+    }
+    return () => {
+      if (typeof document !== 'undefined') {
+        document.body.classList.remove('newbanner-page');
+      }
+    };
+  }, []);
 
   function debouncedHandleSubmit(func,timeout=500){
     let timer;
@@ -1715,13 +1726,13 @@ const items =text.map((item, index) => ({
                                         {project.city}, {project.state}
                                       </h5>
                                       {
-                                        !project?.minPrice && !project?.maxPrice ? <span className="text-lg font-bold text-gray-900 text-center">₹ Reveal Soon</span> :(
+                                        !project?.minPrice || !project?.maxPrice ? <span className="text-lg font-bold text-gray-900 text-center">₹ Reveal Soon</span> :(
                                           <span className="text-lg font-bold text-gray-900 text-center">
                                           <span className="mr-1">₹</span>
                                           {project.minPrice < 1 ? (
-                                            <span>{(project.minPrice * 100).toFixed(2)} L</span>
+                                            <span style={{ fontFamily: "Abril Fatface" }}>{(project.minPrice * 100).toFixed()} L{" "}</span>
                                           ) : (
-                                            <span>{project.minPrice} Cr </span>
+                                            <span className='font-AbrialFatFace' >{project.minPrice} Cr {" "}</span>
                                           )}
                                           - {project.maxPrice} Cr
                                         </span>
@@ -1962,16 +1973,6 @@ const Wrapper = styled.section`
 
   .dd-m-phone i {
     font-size: 24px; /* Adjust icon size as needed */
-  }
-
-  .Carousel {
-    max-height: 600px; /* Set your desired maximum height */
-  }
-
-  @media screen and (max-width: 768px) {
-    .Carousel {
-      max-height: 300px; /* Adjust for smaller screens */
-    }
   }
 
   .pdf-dwn a {
