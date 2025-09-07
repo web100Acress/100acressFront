@@ -9,7 +9,7 @@ import { message } from "antd"; // Assuming Ant Design message is available
 const Projects = () => {
   const [viewAll, setViewAll] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(25);
+  const [rowsPerPage] = useState(50);
   const [searchTerm, setSearchTerm] = useState("");
 
   const [messageApi, contextHolder] = message.useMessage(); // For Ant Design messages
@@ -34,7 +34,7 @@ const Projects = () => {
         const tokenRaw = localStorage.getItem("myToken") || "";
         const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
         const res = await axios.get(
-          `${base}/project/viewAll/data`,
+          `${base}/project/viewAll/data?sort=-createdAt`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -44,7 +44,9 @@ const Projects = () => {
         );
         const payload = res.data;
         const rows = Array.isArray(payload?.data) ? payload.data : (Array.isArray(payload) ? payload : []);
-        setViewAll(rows);
+        // Sort by creation date in descending order (newest first)
+        const sortedRows = [...rows].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setViewAll(sortedRows);
       } catch (error) {
         console.error("Error fetching projects:", error);
         messageApi.open({
@@ -285,22 +287,42 @@ const Projects = () => {
             </tbody>
           </table>
           <div className="pagination-container">
+            <button
+              onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
+              className="pagination-button"
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
             {Array.from(
-              { length: Math.ceil(filteredProjects.length / rowsPerPage) },
-              (_, index) => (
-                <button
-                  key={index}
-                  onClick={() => paginate(index + 1)}
-                  className={`pagination-button ${
-                    currentPage === index + 1
-                      ? "pagination-active"
-                      : ""
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              )
+              { length: Math.min(3, Math.ceil(filteredProjects.length / 50)) },
+              (_, index) => {
+                // Show current page and 1 page before/after
+                const pageNumber = Math.min(
+                  Math.max(1, currentPage - 1) + index,
+                  Math.ceil(filteredProjects.length / 50)
+                );
+                if (pageNumber > Math.ceil(filteredProjects.length / 50)) return null;
+                return (
+                  <button
+                    key={index}
+                    onClick={() => paginate(pageNumber)}
+                    className={`pagination-button ${
+                      currentPage === pageNumber ? "pagination-active" : ""
+                    }`}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              }
             )}
+            <button
+              onClick={() => paginate(currentPage < Math.ceil(filteredProjects.length / 50) ? currentPage + 1 : currentPage)}
+              className="pagination-button"
+              disabled={currentPage === Math.ceil(filteredProjects.length / 50)}
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>

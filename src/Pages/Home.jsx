@@ -568,6 +568,22 @@ const Home = () => {
                 </h2>
               </div>
 
+
+        <div ref={setRef("delhi")} data-section="delhi" style={{ height: "10px" }}></div>
+        <div>
+          {ProjectinDelhi.length === 0 ? <CustomSkeleton /> : (
+            <CommonProject data={ProjectinDelhi} title="Top Projects in Delhi" animation="zoom-out-left" path="/project-in-delhi/" />
+          )}
+        </div>
+
+        {/* Projects in Dubai */}
+        {/* <div ref={setRef("dubai")} data-section="dubai" style={{ height: "10px" }}></div>
+        <div>
+          {DubaiProjects.length === 0 ? <CustomSkeleton /> : (
+            <CommonProject data={DubaiProjects} title="Projects in Dubai" animation="zoom-out-left" path="/projects-in-dubai/" />
+          )}
+        </div> */}
+
               {/* Filter Buttons */}
               <div className="flex items-center justify-start gap-3 mx-3 lg:mx-6 xl:ml-14 md:mx-6 pt-2 overflow-x-auto no-scrollbar">
                 
@@ -663,6 +679,7 @@ const Home = () => {
                   </div>
                 )}
               </div>
+
 
               {/* Display Filtered Projects (compact sizing) */}
               <CommonProject
