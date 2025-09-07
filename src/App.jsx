@@ -12,8 +12,10 @@ import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
 import LazyLoad from "react-lazyload";
 import "animate.css";
-import LoadingSpinner from "./Components/LoadingSpinner";
+import PerformantLoadingSpinner from "./Components/PerformantLoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
+import ResourcePreloader from "./Components/ResourcePreloader";
+import CriticalCSS from "./Components/CriticalCSS";
 import LoginForm from "./Components/LoginForm";
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
@@ -188,7 +190,9 @@ function App() {
           <TooltipProvider>
             <QueryClientProvider client={queryClient}>
               <ErrorBoundary>
-                <Suspense fallback={<LoadingSpinner />}>
+                <CriticalCSS />
+                <ResourcePreloader />
+                <Suspense fallback={<PerformantLoadingSpinner />}>
                   <Toaster position="top-right" />
                   <Sonner position="top-right" richColors />
                   

@@ -1,7 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { getFavoritesData, subscribe as favSubscribe } from "../Utils/favorites";
+import React, { useState, useEffect, useMemo } from 'react';
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { FaHeart, FaEye, FaMapMarkerAlt, FaBed, FaBath, FaRulerCombined, FaShare, FaPhone } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToFavorites, removeFromFavorites } from '../Redux/slice/FavoritesSlice';
+import { addToViewed } from '../Redux/slice/ViewedSlice';
+import { Link } from 'react-router-dom';
+import Navbar from '../aadharhomes/navbar/Navbar';
+import LuxuryFooter from '../Components/Actual_Components/LuxuryFooter';
+import Api_Service from '../Redux/utils/Api_Service';
 
 function readJSON(key, fallback) {
   try {
@@ -10,6 +17,24 @@ function readJSON(key, fallback) {
   } catch (_) {
     return fallback;
   }
+}
+
+function getFavoritesData() {
+  try {
+    return readJSON('favoriteProjects', {});
+  } catch (_) {
+    return {};
+  }
+}
+
+function favSubscribe(callback) {
+  const handler = () => callback();
+  window.addEventListener('storage', handler);
+  window.addEventListener('favorites-changed', handler);
+  return () => {
+    window.removeEventListener('storage', handler);
+    window.removeEventListener('favorites-changed', handler);
+  };
 }
 
 const Card = ({ item }) => {
@@ -58,9 +83,16 @@ const Section = ({ title, items }) => (
 );
 
 export default function Activity() {
-  const trending = useSelector((s) => s?.project?.trending) || [];
+  const spotlight = useSelector((s) => s?.project?.spotlight) || [];
   const [viewed, setViewed] = useState(() => readJSON('viewed_projects', []));
   const [favData, setFavData] = useState(() => getFavoritesData());
+  const [activeTab, setActiveTab] = useState('viewed');
+  const { getSpotlight } = Api_Service();
+
+  // Fetch spotlight data on component mount
+  useEffect(() => {
+    getSpotlight();
+  }, [getSpotlight]);
 
   useEffect(() => {
     const updateViewed = () => setViewed(readJSON('viewed_projects', []));
@@ -84,9 +116,9 @@ export default function Activity() {
   }, [favData]);
 
   const recommended = useMemo(() => {
-    if (Array.isArray(trending) && trending.length > 0) {
+    if (Array.isArray(spotlight) && spotlight.length > 0) {
       // Map to the lightweight shape that Card expects
-      return trending.slice(0, 8).map((p) => ({
+      return spotlight.slice(0, 8).map((p) => ({
         id: p?._id || p?.id || p?.slug,
         title: p?.projectName,
         image: p?.frontImage?.url || p?.thumbnailImage?.url,
@@ -97,14 +129,14 @@ export default function Activity() {
             const min = p?.minPrice ?? p?.price;
             const max = p?.maxPrice ?? null;
             if (!min && !max) return '';
-            if (min && max) return `${min} - ${max} Cr`;
-            return min ? `${min} Cr` : '';
+            if (min && max) return `₹${min} - ${max} Cr`;
+            return min ? `₹${min} Cr` : '';
           } catch { return ''; }
         })(),
       }));
     }
     return [];
-  }, [trending]);
+  }, [spotlight]);
 
   // Normalize viewed list into Card shape (may not have images)
   const viewedItems = useMemo(() => {
@@ -119,13 +151,95 @@ export default function Activity() {
   }, [viewed]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold text-gray-900">Your Activity</h1>
-      <p className="text-gray-600">Recent viewed, liked, and recommended properties</p>
+    <ActivityWrapper>
+      <Navbar />
+      <div className="mt-20">
+        <h1>My Activity</h1>
+        <div className="tabs">
+          <button 
+            className={activeTab === 'viewed' ? 'active' : ''} 
+            onClick={() => setActiveTab('viewed')}
+          >
+            Recently Viewed ({viewedItems.length})
+          </button>
+          <button 
+            className={activeTab === 'liked' ? 'active' : ''} 
+            onClick={() => setActiveTab('liked')}
+          >
+            Liked Properties ({likedList.length})
+          </button>
+          <button 
+            className={activeTab === 'recommended' ? 'active' : ''} 
+            onClick={() => setActiveTab('recommended')}
+          >
+            Recommended ({recommended.length})
+          </button>
+        </div>
 
-      <Section title="Recently Viewed" items={viewedItems} />
-      <Section title="Liked Properties" items={likedList} />
-      <Section title="Recommended for You" items={recommended} />
-    </div>
+        <div className="content">
+          {activeTab === 'viewed' && (
+            <Section title="Recently Viewed Properties" items={viewedItems} />
+          )}
+          {activeTab === 'liked' && (
+            <Section title="Liked Properties" items={likedList} />
+          )}
+          {activeTab === 'recommended' && (
+            <Section title="Recommended Properties" items={recommended} />
+          )}
+        </div>
+      </div>
+      <LuxuryFooter />
+    </ActivityWrapper>
   );
 }
+
+const ActivityWrapper = styled.div`
+  min-height: 100vh;
+  background-color: #f8fafc;
+  
+  .mt-20 {
+    margin-top: 5rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 2rem;
+  }
+  
+  .tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .tabs button {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    color: #64748b;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  
+  .tabs button:hover {
+    color: #e53e3e;
+  }
+  
+  .tabs button.active {
+    color: #e53e3e;
+    border-bottom-color: #e53e3e;
+  }
+  
+  .content {
+    margin-top: 1rem;
+  }
+`;
