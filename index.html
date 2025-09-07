@@ -26,41 +26,77 @@
   <meta name="twitter:site" content="@100acressdotcom" />
   <meta name="twitter:image" content="https://www.100acress.com/Images/mainog.png" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Gluten:wght@100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
-    rel="stylesheet">
-  <script type="module" src="/src/index.jsx"></script>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1XY9M6DY08"></script>
+  <!-- DNS prefetch only - no preloads to avoid warnings -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+
+  <!-- Load fonts with fallbacks and error handling -->
   <script>
-    window.addEventListener('DOMContentLoaded', function () {
+    // Load fonts with error handling to prevent 404s
+    function loadFont(family, weights, fallback = 'sans-serif') {
+      const link = document.createElement('link');
+      link.href = `https://fonts.googleapis.com/css2?family=${family}:wght@${weights}&display=swap`;
+      link.rel = 'stylesheet';
+      link.onerror = function() {
+        console.warn(`Failed to load font: ${family}. Using fallback: ${fallback}`);
+        // Set fallback font in CSS
+        const style = document.createElement('style');
+        style.textContent = `* { font-family: ${fallback} !important; }`;
+        document.head.appendChild(style);
+      };
+      document.head.appendChild(link);
+    }
+
+    // Load critical fonts immediately
+    loadFont('Rubik', '400;500;600', 'system-ui, -apple-system, sans-serif');
+    
+    // Load non-critical fonts after page load
+    window.addEventListener('load', function() {
+      loadFont('Poppins', '400;500;600;700', 'system-ui, -apple-system, sans-serif');
+    });
+  </script>
+  
+  <!-- Fallback for no-JS users -->
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </noscript>
+
+  <!-- Defer analytics to not block rendering -->
+  <script>
+    window.addEventListener('load', function () {
+      // Load Google Analytics after page load
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-1XY9M6DY08';
+      document.head.appendChild(script);
+
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       gtag('js', new Date());
       gtag('config', 'G-1XY9M6DY08');
     });
   </script>
-  <!-- Meta Pixel Code -->
+
+  <!-- Defer Facebook Pixel -->
   <script>
-    !function (f, b, e, v, n, t, s) {
-      if (f.fbq) return; n = f.fbq = function () {
-        n.callMethod ?
-        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-      };
-      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-      n.queue = []; t = b.createElement(e); t.async = !0;
-      t.src = v; s = b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t, s)
-    }(window, document, 'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '982711101921963');
-    fbq('track', 'PageView');
+    window.addEventListener('load', function () {
+      !function (f, b, e, v, n, t, s) {
+        if (f.fbq) return; n = f.fbq = function () {
+          n.callMethod ?
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+        };
+        if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+        n.queue = []; t = b.createElement(e); t.async = !0;
+        t.src = v; s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s)
+      }(window, document, 'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '982711101921963');
+      fbq('track', 'PageView');
+    });
   </script>
-<!-- End Meta Pixel Code -->
+  <!-- End Meta Pixel Code -->
+
   <!-- *schema Organization* -->
   <script type="application/ld+json">
   {
@@ -68,7 +104,7 @@
     "@type": "Organization",
     "name": "100acress.com",
     "description": " 100acress.com Gurgaon Fastest Growing Property Website, Buy Residential & Commercial Property in Gurgaon. Flats in Gurgaon. Real Estate in Gurgaon",
-   "url": "https://www.100acress.com/",
+    "url": "https://www.100acress.com/",
     "logo": "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp",
     "contactPoint": {
       "@type": "ContactPoint",
@@ -76,7 +112,7 @@
       "contactType": "customer service",
       "contactOption": "TollFree",
       "areaServed": "IN",
-      "availableLanguage": ["en","Hindi"]
+      "availableLanguage": ["en", "Hindi"]
     },
     "sameAs": [
       "https://www.facebook.com/100Acress",
@@ -88,90 +124,95 @@
   }
   </script>
 
-
   <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "name": "100acress.com",
-  "image": "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp",
-  "@id": "https://www.100acress.com/about-us/",
-  "url": "https://www.100acress.com/",
-  "telephone": "8500900100",
-  "address": {
-  "@type": "PostalAddress",
-  "streetAddress": "ILD Trade Centre, 806, Sector 47",
-  "addressLocality": "Gurugram",
-  "addressRegion": "Haryana",
-  "postalCode": "122001",
-  "addressCountry": "IN"
-},
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 28.424924,
-    "longitude": 77.0389642
-  },
-  "openingHoursSpecification": {
-    "@type": "OpeningHoursSpecification",
-    "dayOfWeek": [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday"
-    ],
-    "opens": "10:00",
-    "closes": "07:00"
-  } 
-}
-</script>
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "100acress.com",
+    "image": "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp",
+    "@id": "https://www.100acress.com/about-us/",
+    "url": "https://www.100acress.com/",
+    "telephone": "8500900100",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "ILD Trade Centre, 806, Sector 47",
+      "addressLocality": "Gurugram",
+      "addressRegion": "Haryana",
+      "postalCode": "122001",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 28.424924,
+      "longitude": 77.0389642
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "10:00",
+      "closes": "07:00"
+    }
+  }
+  </script>
 </head>
 
-
 <body>
-  <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=982711101921963&ev=PageView&noscript=1" /></noscript>
-
+  <noscript>
+    <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=982711101921963&ev=PageView&noscript=1" />
+  </noscript>
 
   <div id="root"></div>
 
+  <!-- Main app script -->
   <script type="module" src="/src/index.jsx"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+  <!-- Defer jQuery and Slick -->
   <script>
-    console.log('jQuery before slick:', typeof window.jQuery, window.jQuery ? 'OK' : 'NOT OK');
+    window.addEventListener('load', function () {
+      var jquery = document.createElement('script');
+      jquery.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
+      jquery.onload = function () {
+        var slick = document.createElement('script');
+        slick.src = 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js';
+        document.head.appendChild(slick);
+      };
+      document.head.appendChild(jquery);
+    });
   </script>
 
-  <script type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
+  <!-- Defer LinkedIn tracking -->
+  <script>
+    window.addEventListener('load', function () {
+      _linkedin_partner_id = "7381604";
+      window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+      window._linkedin_data_partner_ids.push(_linkedin_partner_id);
 
-  <!-- adde new -->
-
-  <script type="text/javascript">
-    _linkedin_partner_id = "7381604";
-    window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
-    window._linkedin_data_partner_ids.push(_linkedin_partner_id);
-  </script>
-  <script type="text/javascript">
-    (function (l) {
-      if (!l) {
-        window.lintrk = function (a, b) { window.lintrk.q.push([a, b]) };
-        window.lintrk.q = []
-      }
-      var s = document.getElementsByTagName("script")[0];
-      var b = document.createElement("script");
-      b.type = "text/javascript"; b.async = true;
-      b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
-      s.parentNode.insertBefore(b, s);
-    })(window.lintrk);
+      (function (l) {
+        if (!l) {
+          window.lintrk = function (a, b) { window.lintrk.q.push([a, b]) };
+          window.lintrk.q = []
+        }
+        var s = document.getElementsByTagName("script")[0];
+        var b = document.createElement("script");
+        b.type = "text/javascript"; b.async = true;
+        b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+        s.parentNode.insertBefore(b, s);
+      })(window.lintrk);
+    });
   </script>
   <noscript>
     <img height="1" width="1" style="display:none;" alt=""
       src="https://px.ads.linkedin.com/collect/?pid=7381604&fmt=gif" />
   </noscript>
-
 
 
 </body>

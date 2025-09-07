@@ -295,7 +295,7 @@ const PossessionProperty = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
                       <div className="absolute bottom-4 left-4 right-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                          <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
                             {item.badge}
                           </span>
                           <span className="text-white text-sm font-medium">

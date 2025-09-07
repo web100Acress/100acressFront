@@ -242,7 +242,11 @@ function SearchBar() {
           >
             <FiCrosshair className="w-5 h-5" />
           </button>
-          <button className="mobile-hidden p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors">
+          <button 
+            className="mobile-hidden p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+            aria-label="Voice search"
+            title="Voice search"
+          >
             <FiMic className="w-5 h-5" />
           </button>
           <motion.button 
@@ -286,6 +290,8 @@ function SearchBar() {
               type="button"
               onClick={handlePrev}
               className="nav-btn h-8 w-8 flex items-center justify-center shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 transition"
+              aria-label="Previous suggestions"
+              title="Previous suggestions"
             >
               <FiChevronLeft />
             </button>
@@ -307,6 +313,8 @@ function SearchBar() {
               type="button"
               onClick={handleNext}
               className="nav-btn h-8 w-8 flex items-center justify-center shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 transition"
+              aria-label="Next suggestions"
+              title="Next suggestions"
             >
               <FiChevronRight />
             </button>

@@ -1,35 +1,37 @@
-import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState, useContext } from "react";
-import PopupForm from "./HomePages/PopupForm";
-import Cities from "../Components/HomePageComponents/Cities";
-import FormHome from "../Components/HomePageComponents/FormHome";
-import WhyChoose from "../Components/HomePageComponents/WhyChoose";
-import SpacesAvailable from "../Components/HomePageComponents/Spaces";
-import SearchBar from "../Components/HomePageComponents/SearchBar";
-import styled from "styled-components";
-import OurServices from "../Components/HomePageComponents/ourServices";
+import React, { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, useContext } from "react";
 import { Helmet } from "react-helmet";
-// import Footer from "../Components/Actual_Components/Footer";
-import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
-import AuthModal from "../Components/AuthModal";
-import { Link } from "react-router-dom";
-import BackToTopButton from "./BackToTopButton";
-import PossessionProperty from "../Components/PossessionProperty";
-import BudgetPlotsInGurugraon from "./BudgetPlotsInGurugraon";
-import TopSeoPlots from "./TopSeoPlots";
 import { useMediaQuery } from "@chakra-ui/react";
-import { EyeIcon, HomeIcon, MessageCircle, PhoneIcon, User as UserIcon, ArrowUpRight } from "lucide-react";
-import ModernRecommendedSection from "../Components/HomePageComponents/ModernRecommendedSection";
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-import Builder from "./BuilderPages/Builder";
-import CustomSkeleton from "../Utils/CustomSkeleton";
-import CommonProject from "../Utils/CommonProject";
-import Builderaction from "./HomePages/Builderaction";
-import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
-import Chatbot from "../Components/HomePageComponents/Chatbot";
+import { Link } from "react-router-dom";
+import { ArrowUpRight, Eye, Home as HomeIcon } from "lucide-react";
+import styled from "styled-components";
 import { AuthContext } from "../AuthContext";
-import FloatingShorts from "../Components/FloatingShorts";
+import Api_Service from "../Redux/utils/Api_Service";
+import { PropertyCardSkeleton } from "../Components/PerformantLoadingSpinner";
+
+// Critical components (loaded immediately)
+import SearchBar from "../Components/HomePageComponents/SearchBar";
+import FormHome from "../Components/HomePageComponents/FormHome";
+
+// Lazy load non-critical components
+const PopupForm = lazy(() => import("./HomePages/PopupForm"));
+const Cities = lazy(() => import("../Components/HomePageComponents/Cities"));
+const WhyChoose = lazy(() => import("../Components/HomePageComponents/WhyChoose"));
+const SpacesAvailable = lazy(() => import("../Components/HomePageComponents/Spaces"));
+const OurServices = lazy(() => import("../Components/HomePageComponents/ourServices"));
+const LuxuryFooter = lazy(() => import("../Components/Actual_Components/LuxuryFooter"));
+const AuthModal = lazy(() => import("../Components/AuthModal"));
+const BackToTopButton = lazy(() => import("./BackToTopButton"));
+const PossessionProperty = lazy(() => import("../Components/PossessionProperty"));
+const BudgetPlotsInGurugraon = lazy(() => import("./BudgetPlotsInGurugraon"));
+const TopSeoPlots = lazy(() => import("./TopSeoPlots"));
+const ModernRecommendedSection = lazy(() => import("../Components/HomePageComponents/ModernRecommendedSection"));
+const Builder = lazy(() => import("./BuilderPages/Builder"));
+const CommonProject = lazy(() => import("../Utils/CommonProject"));
+const Builderaction = lazy(() => import("./HomePages/Builderaction"));
+const Chatbot = lazy(() => import("../Components/HomePageComponents/Chatbot"));
+const FloatingShorts = lazy(() => import("../Components/FloatingShorts"));
+const CustomSkeleton = lazy(() => import("../Utils/CustomSkeleton"));
 
 const Home = () => {
   // const [showConfetti, setShowConfetti] = useState(true);
@@ -37,6 +39,15 @@ const Home = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    // Initialize AOS only when needed
+    import('aos').then((AOS) => {
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+      });
+    });
   }, []);
 
   // Shorts ID is now fetched directly by FloatingShorts via backend polling.
@@ -350,15 +361,15 @@ const Home = () => {
     }
   }, [activeFilter, memoizedProjects, path]);
 
-  useEffect(() => {
-    AOS.init();
-  }, []);
+  // AOS initialization moved to the main useEffect above to avoid duplicate calls
 
   useEffect(() => {
-    setTimeout(() => {
-      AOS.refresh();
-    }, 100);
-
+    // Only refresh AOS if it's already initialized
+    import('aos').then((AOS) => {
+      setTimeout(() => {
+        AOS.refresh();
+      }, 100);
+    });
   }, [activeFilter]);
 
   useEffect(() => {
@@ -474,9 +485,9 @@ const Home = () => {
       </div>
 
       {/* 80:20 layout from md+: main 80%, sticky aside 20% */}
-      <div ref={gridSectionRef} className="w-full max-w-7xl mx-auto px-4 grid grid-cols-1 lg:[grid-template-columns:4fr_1fr] gap-6 relative items-start overflow-visible">
+      <div ref={gridSectionRef} className="w-full max-w-7xl mx-auto px-4 grid grid-cols-1 xl:[grid-template-columns:4fr_1fr] gap-6 relative items-start overflow-visible">
         {/* Sticky Aside (20%) */}
-        <aside ref={asideRef} className="hidden lg:block relative lg:col-start-2 lg:row-start-1" style={{ display: typeof window !== 'undefined' && window.innerHeight <= 624 ? 'none' : undefined }}>
+        <aside ref={asideRef} className="hidden xl:block relative xl:col-start-2 xl:row-start-1" style={{ display: typeof window !== 'undefined' && window.innerHeight <= 624 ? 'none' : undefined }}>
           {/* Spacer keeps original height when inner becomes fixed */}
           <div style={{ height: asideSpacerHeight ? `${asideSpacerHeight}px` : undefined }} />
           <div ref={asideInnerRef} style={asideStyle} className="space-y-4">
@@ -645,7 +656,7 @@ const Home = () => {
                   <div className="ml-auto hidden sm:block">
                     <Link to={path} target="_top">
                       <span className="flex items-center text-white text-sm px-3 py-1 rounded-full bg-black shadow-lg hover:bg-gray-800 transition-all duration-300">
-                        <EyeIcon />
+                        <Eye />
                         <span className="ml-2">View All</span>
                       </span>
                     </Link>

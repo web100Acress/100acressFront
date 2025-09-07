@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState, useCallback } from 'react'
 import { LocationRedIcon, PropertyIcon, RupeeIcon, ShareFrameIcon } from '../Assets/icons';
-import Aos from 'aos';
+import AOS from 'aos';
 import { Link } from 'react-router-dom';
 import { EyeIcon } from 'lucide-react';
 import CustomSkeleton from './CustomSkeleton';
@@ -54,7 +54,7 @@ const CommonProject = ({ data, title, path ,animation, compact = false }) => {
   }, []);
 
   useEffect(() => {
-    Aos.init();
+    AOS.init();
   }, []);
 
   // Hydrate favorites once and subscribe for cross-component updates
