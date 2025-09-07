@@ -1,3 +1,28 @@
+// Sticky floating "List Property" button on mobile (right side)
+function MobileStickyListProperty() {
+  const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
+  const postTarget = token ? "/postproperty" : "/auth/signin";
+  return (
+    <div className="md:hidden fixed z-[10010]" style={{ right: 0, top: '45%' }}>
+      <Link
+        to={postTarget}
+        className="block bg-red-600 text-white font-extrabold tracking-wide shadow-lg"
+        style={{
+          writingMode: 'vertical-rl',
+          textOrientation: 'upright',
+          padding: '10px 6px',
+          borderRadius: '10px 0 0 10px',
+          transform: 'translateY(-50%)',
+          position: 'relative',
+          right: 0,
+          letterSpacing: '1px'
+        }}
+      >
+        LIST PROPERTY
+      </Link>
+    </div>
+  );
+}
 import React, { lazy, Suspense, useState, useEffect } from "react";
 import "./App.css";
 import { styled } from "styled-components";
@@ -12,10 +37,8 @@ import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
 import LazyLoad from "react-lazyload";
 import "animate.css";
-import PerformantLoadingSpinner from "./Components/PerformantLoadingSpinner";
+import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
-import ResourcePreloader from "./Components/ResourcePreloader";
-import CriticalCSS from "./Components/CriticalCSS";
 import LoginForm from "./Components/LoginForm";
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
@@ -190,9 +213,7 @@ function App() {
           <TooltipProvider>
             <QueryClientProvider client={queryClient}>
               <ErrorBoundary>
-                <CriticalCSS />
-                <ResourcePreloader />
-                <Suspense fallback={<PerformantLoadingSpinner />}>
+                <Suspense fallback={<LoadingSpinner />}>
                   <Toaster position="top-right" />
                   <Sonner position="top-right" richColors />
                   
@@ -497,6 +518,8 @@ function App() {
       </DataProvider>
       {/* Global mobile bottom navigation */}
       <MobileBottomNav />
+      {/* Global mobile sticky List Property button */}
+      <MobileStickyListProperty />
     </>
   );
 }
@@ -558,15 +581,13 @@ function MobileBottomNav() {
               <span className={`${isActive("/blog") ? "text-gray-900 font-semibold" : ""}`}>Blogs</span>
             </Link>
 
-            {/* Center CTA: Contact (opens WhatsApp) */}
+            {/* Center CTA: Contact (call by phone) */}
             <div className="flex flex-col items-center justify-center -mt-6">
               <a
-                href="https://wa.me/918500900100?text=Hi%2C%20I%20want%20to%20enquire%20about%20properties."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-600 text-white shadow-lg ring-4 ring-white"
+                href="tel:+918500900100"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg ring-4 ring-white"
               >
-                <i className="fa-brands fa-whatsapp text-lg"></i>
+                <i className="fa-solid fa-phone text-lg"></i>
               </a>
               <span className="mt-1 text-[11px]">Contact</span>
             </div>

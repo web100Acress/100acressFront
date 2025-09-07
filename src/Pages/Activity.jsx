@@ -38,28 +38,82 @@ function favSubscribe(callback) {
 }
 
 const Card = ({ item }) => {
-  const title = item?.title || "Property";
-  const url = item?.url || "#";
-  const image = item?.image || item?.thumbnail || "";
-  const city = item?.city || "";
-  const priceText = item?.priceText || "";
+  // Normalize incoming shapes from favorites/viewed/spotlight
+  const title = item?.title || item?.projectName || "Property";
+  const url = item?.url || (item?.project_url ? `/${item.project_url}/` : "#");
+  const image =
+    item?.image?.url || item?.image ||
+    item?.img ||
+    item?.image_url || item?.imageUrl ||
+    item?.frontImage?.url ||
+    (typeof item?.frontImage === 'string' ? item.frontImage : undefined) ||
+    item?.front_image || item?.frontImageUrl || item?.frontImageURL ||
+    item?.thumbnailImage?.url ||
+    item?.thumbnailImageUrl || item?.thumbnailImageURL ||
+    item?.thumbnail?.url ||
+    item?.thumbnail ||
+    item?.thumbnailUrl || item?.thumbnailURL ||
+    item?.cover || item?.coverImage || item?.cover_image ||
+    item?.photo || item?.picture ||
+    (Array.isArray(item?.images) && (item.images[0]?.url || (typeof item.images[0] === 'string' ? item.images[0] : undefined))) ||
+    (Array.isArray(item?.gallery) && (item.gallery[0]?.url || (typeof item.gallery[0] === 'string' ? item.gallery[0] : undefined))) ||
+    "";
+  const city = item?.city || item?.location || "";
+  const priceText =
+    item?.priceText ||
+    (() => {
+      const min = item?.minPrice ?? item?.price;
+      const max = item?.maxPrice ?? null;
+      if (!min && !max) return "";
+      if (min && max) return `₹${min} - ${max} Cr`;
+      return min ? `₹${min} Cr` : "";
+    })();
+  const beds = item?.beds || item?.bedrooms || item?.bhk || null;
+  const baths = item?.baths || item?.bathrooms || null;
+  const area = item?.area || item?.size || item?.superArea || null;
+
   return (
     <article className="group overflow-hidden rounded-2xl border border-gray-100 text-black shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_28px_rgba(0,0,0,0.10)] transition-all duration-300 ease-out h-full flex flex-col bg-white">
-      <Link to={url} target="_top" className="block">
+      <Link to={url} target="_top" className="block relative">
         <div className="overflow-hidden rounded-t-2xl">
           {image ? (
-            <img src={image} alt={title} className="w-full aspect-[4/3] object-cover group-hover:scale-[1.03] transition-transform" loading="lazy" />
+            <img
+              src={image}
+              alt={title}
+              className="w-full aspect-[4/3] object-cover group-hover:scale-[1.03] transition-transform"
+              loading="lazy"
+            />
           ) : (
             <div className="w-full aspect-[4/3] bg-gray-100 flex items-center justify-center text-gray-400">No Image</div>
           )}
         </div>
+        {priceText ? (
+          <div className="absolute bottom-2 left-2 bg-orange-500/95 text-white text-[12px] font-semibold px-3 py-1 rounded-full backdrop-blur">
+            {priceText}
+          </div>
+        ) : null}
       </Link>
-      <div className="p-3 flex-1 flex flex-col gap-2">
-        <h3 className="text-[15px] font-semibold text-gray-900 truncate" title={title}>{title}</h3>
-        {city ? <div className="text-[12px] text-gray-600 truncate">{city}</div> : null}
-        {priceText ? <div className="text-[13px] font-medium text-gray-800">{priceText}</div> : null}
-        <div className="mt-auto">
-          <Link to={url} target="_top" className="inline-flex items-center justify-center rounded-full bg-red-600 text-white text-[12px] px-4 py-2 hover:bg-red-700 transition">View</Link>
+
+      <div className="p-4 flex-1 flex flex-col gap-2">
+        <h3 className="text-[15px] font-semibold text-gray-900 line-clamp-2" title={title}>{title}</h3>
+        {city ? <div className="text-[12px] text-gray-600 truncate flex items-center gap-1"><FaMapMarkerAlt className="text-orange-500" />{city}</div> : null}
+
+        {(beds || baths || area) ? (
+          <div className="mt-1 grid grid-cols-3 gap-2 text-[11px] text-gray-700">
+            {beds ? (
+              <div className="flex items-center gap-1"><FaBed className="text-gray-500" />{beds} Beds</div>
+            ) : <span />}
+            {baths ? (
+              <div className="flex items-center gap-1"><FaBath className="text-gray-500" />{baths} Baths</div>
+            ) : <span />}
+            {area ? (
+              <div className="flex items-center gap-1 justify-end sm:justify-start"><FaRulerCombined className="text-gray-500" />{area}</div>
+            ) : <span />}
+          </div>
+        ) : null}
+
+        <div className="mt-auto pt-2 flex items-center gap-2">
+          <Link to={url} target="_top" className="inline-flex flex-1 items-center justify-center rounded-full bg-red-600 text-white text-[12px] px-4 py-2 hover:bg-red-700 transition">View</Link>
         </div>
       </div>
     </article>
@@ -121,7 +175,7 @@ export default function Activity() {
       return spotlight.slice(0, 8).map((p) => ({
         id: p?._id || p?.id || p?.slug,
         title: p?.projectName,
-        image: p?.frontImage?.url || p?.thumbnailImage?.url,
+        image: p?.image?.url || p?.frontImage?.url || p?.thumbnailImage?.url || (Array.isArray(p?.images) ? (p.images[0]?.url || (typeof p.images[0] === 'string' ? p.images[0] : undefined)) : undefined),
         url: p?.project_url ? `/${p.project_url}/` : '#',
         city: p?.city,
         priceText: (() => {
@@ -138,15 +192,42 @@ export default function Activity() {
     return [];
   }, [spotlight]);
 
-  // Normalize viewed list into Card shape (may not have images)
+  // Normalize viewed list into Card shape, with robust image fallbacks
   const viewedItems = useMemo(() => {
     return (viewed || []).map((v) => ({
-      id: v.id,
-      title: v.title,
-      url: v.url || '#',
-      image: v.image || '',
-      city: v.city || '',
-      priceText: v.priceText || ''
+      id: v.id || v._id || v.slug,
+      title: v.title || v.projectName,
+      url: v.url || (v.project_url ? `/${v.project_url}/` : '#'),
+      image:
+        v.image?.url || v.image ||
+        v.img ||
+        v.image_url || v.imageUrl ||
+        v.frontImage?.url ||
+        (typeof v.frontImage === 'string' ? v.frontImage : undefined) ||
+        v.front_image || v.frontImageUrl || v.frontImageURL ||
+        v.thumbnailImage?.url ||
+        v.thumbnailImageUrl || v.thumbnailImageURL ||
+        v.thumbnail?.url ||
+        v.thumbnail ||
+        v.thumbnailUrl || v.thumbnailURL ||
+        v.cover || v.coverImage || v.cover_image ||
+        v.photo || v.picture ||
+        (Array.isArray(v.images) && (v.images[0]?.url || (typeof v.images[0] === 'string' ? v.images[0] : undefined))) ||
+        (Array.isArray(v.gallery) && (v.gallery[0]?.url || (typeof v.gallery[0] === 'string' ? v.gallery[0] : undefined))) ||
+        '',
+      city: v.city || v.location || '',
+      priceText:
+        v.priceText ||
+        (() => {
+          const min = v?.minPrice ?? v?.price;
+          const max = v?.maxPrice ?? null;
+          if (!min && !max) return '';
+          if (min && max) return `₹${min} - ${max} Cr`;
+          return min ? `₹${min} Cr` : '';
+        })(),
+      beds: v.beds || v.bedrooms || v.bhk,
+      baths: v.baths || v.bathrooms,
+      area: v.area || v.size || v.superArea,
     }));
   }, [viewed]);
 

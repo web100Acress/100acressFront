@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectCoverflow } from 'swiper/modules';
 import { MdArrowForward, MdArrowBack } from 'react-icons/md';
 import styled from "styled-components";
-import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
+import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../utils/favorites";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -112,22 +112,10 @@ function ModernCarousel({ AllProjects = [] }) {
         </Swiper>
 
         {/* Custom Navigation Buttons */}
-        <div 
-          className="swiper-button-prev custom-nav-btn"
-          role="button"
-          tabIndex="0"
-          aria-label="Previous slide"
-          title="Previous slide"
-        >
+        <div className="swiper-button-prev custom-nav-btn">
           <MdArrowBack />
         </div>
-        <div 
-          className="swiper-button-next custom-nav-btn"
-          role="button"
-          tabIndex="0"
-          aria-label="Next slide"
-          title="Next slide"
-        >
+        <div className="swiper-button-next custom-nav-btn">
           <MdArrowForward />
         </div>
       </div>

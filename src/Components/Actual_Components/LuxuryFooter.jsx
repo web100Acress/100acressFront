@@ -407,7 +407,6 @@ const LuxuryFooter = () => {
                       className="text-white hover:text-white/90 transition-colors duration-300 relative group hover:underline underline-offset-4 decoration-white"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      aria-label={`View ${link}`}
                     >
                       {link}
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>

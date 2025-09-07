@@ -11,19 +11,18 @@ const RelatedProject = () => {
           <a
             href="#"
             className="relative flex h-48 overflow-hidden rounded-t-lg"
-            aria-label="View Nike Air MX Super 2500 product details"
           >
             <img
               className="object-cover w-full"
               src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
-              alt="Nike Air MX Super 2500 Red sneakers"
+              alt="product image"
             />
             <span className="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-sm font-medium text-white">
               39% OFF
             </span>
           </a>
           <div className="p-4">
-            <a href="#" aria-label="View Nike Air MX Super 2500 product details">
+            <a href="#">
               <h5 className="text-lg font-semibold tracking-tight text-gray-900">
                 Nike Air MX Super 2500 - Red
               </h5>
@@ -34,7 +33,6 @@ const RelatedProject = () => {
             <a
               href="#"
               className="mt-4 flex items-center justify-center rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
-              aria-label="Add Nike Air MX Super 2500 to cart"
             >
               Add to cart
             </a>

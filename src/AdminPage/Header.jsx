@@ -43,17 +43,17 @@ const Header = ({ toggleSidebar }) => {
           <div className="absolute mt-3 right-0 bg-white border text-black-600 border-gray-200 rounded shadow-md">
           <ul className='text-justify font-50 m-0 p-0 pt-2 pb-2'>
             <li className="p-2 px-4 hover:bg-gray-200 cursor-pointer">
-              <a href="#" className="block" aria-label="Change Email">
+              <a href="#" className="block">
                 ChangeEmail
               </a>
             </li>
             <li className="p-2 px-4 hover:bg-gray-200 cursor-pointer">
-              <a href="#" className="block" aria-label="Change Password">
+              <a href="#" className="block">
                 ChangePassword
               </a>
             </li>
             <li className="p-2 px-4 hover:bg-gray-200 cursor-pointer">
-              <a href="#" className="block" aria-label="Sign Out">
+              <a href="#" className="block">
                 Sign Out
               </a>
             </li>
