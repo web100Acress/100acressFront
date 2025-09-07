@@ -1,7 +1,5 @@
 
-  import React, { useEffect, useRef, useState } from "react";
-
-
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal, useToast } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
@@ -485,48 +483,45 @@ export default function RightSection({
         )}
 
 
-        {/* CSS for always rotating black and yellow border */}
+        {/* CSS for always rotating black and yellow border (scoped uniquely) */}
         <style>{`
-          .rotating-border-always {
+          .post-cta-rotating-border {
             position: relative;
             display: inline-block;
-          }
-          
-          .rotating-border-always::before {
-            content: '';
-            position: absolute;
-            left: -2px;
-            top: -2px;
-            width: calc(100% + 4px);
-            height: calc(100% + 4px);
-            background: conic-gradient(from 0deg, 
-              #000 0deg, 
-              #FACC15 90deg, 
-              #000 180deg, 
-              #FACC15 270deg, 
-              #000 360deg
-            );
-            border-radius: calc(0.75rem + 2px);
-            animation: rotateColorBorder 2s linear infinite;
-            z-index: -1;
-          }
-          
-          .rotating-border-always::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: white;
             border-radius: 0.75rem;
-            z-index: -1;
+            isolation: isolate;
           }
           
-          @keyframes rotateColorBorder {
+          .post-cta-rotating-border::before {
+            content: '';
+            position: absolute;
+            inset: -2px; /* ring thickness outward */
+            padding: 2px; /* ring width */
+            border-radius: calc(0.75rem + 2px);
+            background: #000; /* solid black ring */
+            /* Mask center so only border ring is visible */
+            -webkit-mask:
+              linear-gradient(#000 0 0) content-box,
+              linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            z-index: 0;
+            pointer-events: none;
+            will-change: transform;
+          }
+
+          /* Rotate the ring only on hover */
+          .post-cta-rotating-border:hover::before {
+            animation: postCtaRotate 2s linear infinite;
+          }
+          
+          /* ::after not needed; Button provides inner background */
+          
+          @keyframes postCtaRotate {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
           }
+          
           
           .button-inner {
             position: relative;
@@ -534,9 +529,9 @@ export default function RightSection({
           }
         `}</style>
 
-        {/* Post property CTA with Always Rotating Black and Yellow Border */}
+        {/* Post property CTA with Always Rotating Black and Yellow Border (scoped class) */}
         {token ? (
-          <div className="rotating-border-always">
+          <div className="post-cta-rotating-border">
             <Link to="/postproperty/">
               <Button 
                 className="button-inner"
@@ -591,7 +586,7 @@ export default function RightSection({
             </Link>
           </div>
         ) : (
-          <div className="rotating-border-always">
+          <div className="post-cta-rotating-border">
             <Link to="/auth/signin/">
               <Button 
                 className="button-inner"
