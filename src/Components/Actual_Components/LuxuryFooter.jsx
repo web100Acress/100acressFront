@@ -20,6 +20,26 @@ const LuxuryFooter = () => {
   const [icPhone, setIcPhone] = useState("");
   const [icSubmitting, setIcSubmitting] = useState(false);
 
+  // EMI Calculator state
+  const [loanAmount, setLoanAmount] = useState("");
+  const [interestRate, setInterestRate] = useState("");
+  const [loanTenure, setLoanTenure] = useState("");
+  const [emi, setEmi] = useState(0);
+
+  // EMI Calculator function
+  const calculateEMI = () => {
+    const principal = parseFloat(loanAmount);
+    const rate = parseFloat(interestRate) / 12 / 100;
+    const tenure = parseFloat(loanTenure) * 12;
+    
+    if (principal && rate && tenure) {
+      const emiValue = (principal * rate * Math.pow(1 + rate, tenure)) / (Math.pow(1 + rate, tenure) - 1);
+      setEmi(Math.round(emiValue));
+    } else {
+      setEmi(0);
+    }
+  };
+
   const handleInstantCallSubmit = async (e) => {
     e.preventDefault();
     if (icSubmitting) return;
@@ -222,7 +242,7 @@ const LuxuryFooter = () => {
               variants={itemVariants}
             >
               <h3 className="text-xl font-semibold text-gray-800 relative pb-2">
-                Instant Call
+                EMI Calculator
                 <span className="absolute -bottom-0.5 left-0 w-12 h-0.5 bg-gradient-to-r from-red-600 to-red-400 rounded-full"></span>
               </h3>
               <div className="space-y-4">
@@ -387,6 +407,7 @@ const LuxuryFooter = () => {
                       className="text-white hover:text-white/90 transition-colors duration-300 relative group hover:underline underline-offset-4 decoration-white"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
+                      aria-label={`View ${link}`}
                     >
                       {link}
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>

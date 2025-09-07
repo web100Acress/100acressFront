@@ -13,6 +13,8 @@ import Api_Service from "../../Redux/utils/Api_Service";
 import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
 import { AuthContext } from "../../AuthContext";
 import AuthModal from "../../Components/AuthModal";
+import OptimizedImage from "../OptimizedImage";
+import { PropertyCardSkeleton } from "../PerformantLoadingSpinner";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -260,6 +262,7 @@ const ModernRecommendedSection = () => {
               <SwiperSlide key={project._id || index} className="swiper-slide">
                 <PropertyCard
                   project={project}
+                  index={index}
                   isHovered={hoveredCard === project._id}
                   onHover={() => setHoveredCard(project._id)}
                   onLeave={() => setHoveredCard(null)}
@@ -286,6 +289,7 @@ const ModernRecommendedSection = () => {
 
 const PropertyCard = ({ 
   project, 
+  index,
   isHovered, 
   onHover, 
   onLeave,
@@ -390,12 +394,18 @@ const PropertyCard = ({
     >
       {/* Image Section */}
       <div className="image-container">
-        <img
+        <OptimizedImage
           src={project?.frontImage?.url || project?.thumbnailImage?.url}
-          alt={project?.projectName}
+          alt={project?.projectName || 'Property image'}
+          width={400}
+          height={300}
           className={`property-image ${imageLoaded ? 'loaded' : ''}`}
+          priority={index < 2}
+          lazy={index >= 2}
+          quality={80}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           onLoad={() => setImageLoaded(true)}
-          loading="lazy"
+          onError={() => setImageLoaded(false)}
         />
         
         {/* Overlay with gradient */}
@@ -405,6 +415,8 @@ const PropertyCard = ({
         <button
           onClick={handleShare}
           className="share-btn"
+          aria-label="Share property"
+          title="Share property"
         >
           <MdShare />
         </button>
@@ -457,15 +469,15 @@ const PropertyCard = ({
 
 // Styled Components
 const SectionWrapper = styled.section`
-  background: #ffffff; /* Solid white background on all viewports */
+  background: transparent; /* Remove background color */
   position: relative;
   overflow: hidden;
   margin-top: 0;
-  padding-top: 36px; /* desktop/tablet: visible gap from hero */
+  padding-top: 20px; /* Reduce padding to make cards shorter */
 
-  /* Ensure inner container also renders on white */
+  /* Remove container background */
   .container {
-    background: #ffffff;
+    background: transparent;
   }
 
   .carousel-container {
@@ -473,9 +485,9 @@ const SectionWrapper = styled.section`
     overflow: visible;
     width: 100%;
     max-width: none; /* Remove max-width constraint for full width */
-    height: 450px;
+    height: 350px; /* Reduce height to make cards shorter */
     margin: 0;
-    background: #ffffff; /* Ensure container remains white as well */
+    background: transparent; /* Remove background */
     border-radius: 0; /* avoid showing page bg at rounded edges */
   }
 
@@ -654,8 +666,8 @@ const CardWrapper = styled.div`
   cursor: pointer;
   margin: 0 5px;
   position: relative;
-  min-height: 400px;
-  max-height: 400px;
+  min-height: 300px; /* Reduce card height */
+  max-height: 300px; /* Reduce card height */
   height: 100%;
   aspect-ratio: 16/9;
   max-width: 580px;

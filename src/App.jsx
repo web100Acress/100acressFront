@@ -12,10 +12,11 @@ import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
 import LazyLoad from "react-lazyload";
 import "animate.css";
-import LoadingSpinner from "./Components/LoadingSpinner";
+import PerformantLoadingSpinner from "./Components/PerformantLoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
+import ResourcePreloader from "./Components/ResourcePreloader";
+import CriticalCSS from "./Components/CriticalCSS";
 import LoginForm from "./Components/LoginForm";
-import FloatingShorts from "./Components/FloatingShorts";
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
 // Lazy load all main page components
@@ -39,6 +40,7 @@ const Privacy = lazy(() => import("./Pages/Privacy"));
 const ContactUs = lazy(() => import("./Pages/ContactUs"));
 const SearchData = lazy(() => import("./Pages/SearchData"));
 const UserViewProperty = lazy(() => import("./Pages/UserViewProperty"));
+const Activity = lazy(() => import("./Pages/Activity"));
 const CareerWithUs = lazy(() => import("./Pages/CareerWithUs"));
 const UserEditProperty = lazy(() => import("./Pages/UserEditProperty"));
 const Blogging = lazy(() => import("./Pages/Blogging"));
@@ -188,7 +190,9 @@ function App() {
           <TooltipProvider>
             <QueryClientProvider client={queryClient}>
               <ErrorBoundary>
-                <Suspense fallback={<LoadingSpinner />}>
+                <CriticalCSS />
+                <ResourcePreloader />
+                <Suspense fallback={<PerformantLoadingSpinner />}>
                   <Toaster position="top-right" />
                   <Sonner position="top-right" richColors />
                   
@@ -331,6 +335,7 @@ function App() {
                       <Route path="/useredit/:id" element={<UserEdit />} />
                       <Route path="/viewallproperty" element={<ViewAllProperty />} />
                       <Route path="/contact-us/" element={<ContactUs />} />
+                      <Route path="/activity" element={<Activity />} />
                       <Route path="/career-with-us/" element={<CareerWithUs />} />
                       <Route path="/blog/" element={<Blogging />} />
                       {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
@@ -490,8 +495,6 @@ function App() {
           </TooltipProvider>
         </AuthProvider>
       </DataProvider>
-      {/* Global floating draggable YouTube Shorts */}
-      <FloatingShorts />
       {/* Global mobile bottom navigation */}
       <MobileBottomNav />
     </>
@@ -505,6 +508,22 @@ function MobileBottomNav() {
   const location = useLocation();
   const path = location.pathname || "/";
   const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
+
+  const [hideForNewBanner, setHideForNewBanner] = React.useState(() => {
+    if (typeof document === 'undefined') return false;
+    return document.body.classList.contains('newbanner-page');
+  });
+
+  React.useEffect(() => {
+    if (typeof document === 'undefined' || !document.body) return;
+    const update = () => setHideForNewBanner(document.body.classList.contains('newbanner-page'));
+    update();
+    const observer = new MutationObserver(() => update());
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  if (hideForNewBanner) return null;
 
   const isActive = (match) => {
     if (Array.isArray(match)) return match.some((m) => path.startsWith(m));
@@ -539,12 +558,17 @@ function MobileBottomNav() {
               <span className={`${isActive("/blog") ? "text-gray-900 font-semibold" : ""}`}>Blogs</span>
             </Link>
 
-            {/* Center CTA: Post Properties (was See/Buy) */}
+            {/* Center CTA: Contact (opens WhatsApp) */}
             <div className="flex flex-col items-center justify-center -mt-6">
-              <Link to={postTarget} className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg ring-4 ring-white">
-                <i className="fa-solid fa-plus text-lg"></i>
-              </Link>
-              <span className="mt-1 text-[11px]">Post Properties</span>
+              <a
+                href="https://wa.me/918500900100?text=Hi%2C%20I%20want%20to%20enquire%20about%20properties."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-600 text-white shadow-lg ring-4 ring-white"
+              >
+                <i className="fa-brands fa-whatsapp text-lg"></i>
+              </a>
+              <span className="mt-1 text-[11px]">Contact</span>
             </div>
 
             {/* Liked (was Shortlisted) */}

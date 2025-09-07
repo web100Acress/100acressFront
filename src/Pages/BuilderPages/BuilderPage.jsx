@@ -267,7 +267,7 @@ const BuilderPage = React.memo(() => {
     <div>
       <Helmet>
         <title>
-          {formattedBuilderName} Projects in Gurugram – {formattedBuilderName} Luxury Homes
+          {formattedBuilderName} Projects in Gurugram – Luxury Homes
         </title>
         <meta
           name="description"

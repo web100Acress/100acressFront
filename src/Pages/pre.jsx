@@ -135,19 +135,19 @@ const Index = () => {
             <div>
               <h3 className="font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Properties</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Agents</a></li>
+                <li><a href="#" className="hover:text-white transition-colors" aria-label="View Properties">Properties</a></li>
+                <li><a href="#" className="hover:text-white transition-colors" aria-label="View Agents">Agents</a></li>
                 <li><Link to="/qr-generator" className="hover:text-white transition-colors">QR Generator</Link></li>
-                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors" aria-label="About Us">About Us</a></li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold mb-4">Services</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Buy Property</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Rent Property</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Sell Property</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Property Valuation</a></li>
+                <li><a href="#" className="hover:text-white transition-colors" aria-label="Buy Property">Buy Property</a></li>
+                <li><a href="#" className="hover:text-white transition-colors" aria-label="Rent Property">Rent Property</a></li>
+                <li><a href="#" className="hover:text-white transition-colors" aria-label="Sell Property">Sell Property</a></li>
+                <li><a href="#" className="hover:text-white transition-colors" aria-label="Property Valuation">Property Valuation</a></li>
               </ul>
             </div>
             <div>
