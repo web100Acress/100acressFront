@@ -76,6 +76,12 @@ const BlogWriteModal = () => {
   const [newBlog, setNewBlog] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
+
+  // Related projects state
+  const [relatedProjects, setRelatedProjects] = useState([]);
+  const [allProjects, setAllProjects] = useState([]);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(false);
+
   // Cropper state for inline content images
   const [showCropper, setShowCropper] = useState(false);
   const [rawImageUrl, setRawImageUrl] = useState('');
@@ -197,6 +203,9 @@ const BlogWriteModal = () => {
             setMetaTitle(b.metaTitle || '');
             setMetaDescription(b.metaDescription || '');
             setSlug(b.slug || slugify(b.blog_Title || ''));
+            
+            // Load related projects if they exist
+            setRelatedProjects(Array.isArray(b.relatedProjects) ? b.relatedProjects : []);
           } else {
             console.log('Blog not found');
           }
@@ -433,6 +442,49 @@ const BlogWriteModal = () => {
     loadCategories();
   }, []);
 
+  // Load all projects for dropdown
+  useEffect(() => {
+    const loadAllProjects = async () => {
+      try {
+        setIsLoadingProjects(true);
+        const response = await api.get('/blog/search-projects?limit=100');
+        if (response.data && response.data.data) {
+          console.log('[BlogWriteModal] Projects loaded:', response.data.data.length);
+          console.log('[BlogWriteModal] Sample project:', response.data.data[0]);
+          setAllProjects(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        message.error('Failed to load projects');
+      } finally {
+        setIsLoadingProjects(false);
+      }
+    };
+    loadAllProjects();
+  }, []);
+
+  // Related projects management functions
+  const addRelatedProject = (project) => {
+    const exists = relatedProjects.find(p => p.project_url === project.project_url);
+    if (!exists && relatedProjects.length < 5) {
+      setRelatedProjects(prev => [...prev, {
+        project_url: project.project_url,
+        projectName: project.projectName,
+        thumbnail: project.thumbnail
+      }]);
+      messageApi.success(`Added "${project.projectName}" to related projects`);
+    } else if (exists) {
+      messageApi.warning('Project already added');
+    } else {
+      messageApi.warning('Maximum 5 related projects allowed');
+    }
+  };
+
+  const removeRelatedProject = (projectUrl) => {
+    setRelatedProjects(prev => prev.filter(p => p.project_url !== projectUrl));
+    messageApi.success('Project removed from related projects');
+  };
+
   /** Handle image URL input */
   const handleImageUrlChange = (e) => {
     const url = e.target.value;
@@ -652,17 +704,36 @@ const BlogWriteModal = () => {
       if (metaDescription) formDataAPI.append('metaDescription', metaDescription.trim());
       if (slug) formDataAPI.append('slug', slug.trim());
 
+      // Related projects
+      if (relatedProjects.length > 0) {
+        formDataAPI.append('relatedProjects', JSON.stringify(relatedProjects));
+      }
+
       // Handle file upload with better error handling
       if (frontImage) {
         try {
           // Validate file type
-          const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+          const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
           if (!validTypes.includes(frontImage.type)) {
-            throw new Error('Invalid file type. Please upload a JPG, PNG, or WebP image.');
+            throw new Error('Invalid file type. Please upload a JPG, PNG, WebP, GIF, or SVG image.');
           }
           
-          // Compress image if needed
-          const processedFile = await processImageFile(frontImage);
+          // Validate file size (10MB limit)
+          const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+          if (frontImage.size > MAX_FILE_SIZE) {
+            throw new Error('File size exceeds 10MB limit. Please choose a smaller image.');
+          }
+          
+          // Process image if needed (compression/resizing)
+          let processedFile;
+          try {
+            processedFile = await processImageFile(frontImage);
+          } catch (processError) {
+            console.warn('Image processing failed, using original file:', processError);
+            // Fallback to original file if processing fails
+            processedFile = frontImage;
+          }
+          
           formDataAPI.append('blog_Image', processedFile);
         } catch (fileError) {
           console.error('File processing error:', fileError);
@@ -744,6 +815,10 @@ const BlogWriteModal = () => {
     }
   };
 
+  // Add missing state variables
+  const [projectSearchTerm, setProjectSearchTerm] = useState('');
+  const [projectSearchResults, setProjectSearchResults] = useState([]);
+
   const resetForm = () => {
     setTitle('');
     setDescription('');
@@ -755,6 +830,9 @@ const BlogWriteModal = () => {
     setMetaDescription('');
     setSlug('');
     setSlugTouched(false);
+    setRelatedProjects([]);
+    setProjectSearchTerm('');
+    setProjectSearchResults([]);
   };
 
   // Quill toolbar config (no default image button; we add our own handlers)
@@ -843,74 +921,126 @@ const BlogWriteModal = () => {
    */
   const processImageFile = (file) => {
     return new Promise((resolve, reject) => {
-      // Skip processing for small files (<1MB) or non-image files
-      if (file.size < 1024 * 1024 || !file.type.startsWith('image/')) {
-        return resolve(file);
-      }
+      try {
+        // Skip processing for small files (<1MB) or non-image files
+        if (file.size < 1024 * 1024 || !file.type.startsWith('image/')) {
+          return resolve(file);
+        }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          // Calculate new dimensions (max 2000px on the longest side)
-          const MAX_DIMENSION = 2000;
-          let width = img.width;
-          let height = img.height;
-          
-          if (width > height && width > MAX_DIMENSION) {
-            height = Math.round((height * MAX_DIMENSION) / width);
-            width = MAX_DIMENSION;
-          } else if (height > MAX_DIMENSION) {
-            width = Math.round((width * MAX_DIMENSION) / height);
-            height = MAX_DIMENSION;
-          }
+        // Skip processing for SVG files
+        if (file.type === 'image/svg+xml') {
+          return resolve(file);
+        }
 
-          // Create canvas for resizing
-          const canvas = document.createElement('canvas');
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          
-          // Draw image with new dimensions
-          ctx.drawImage(img, 0, 0, width, height);
-          
-          // Convert to blob with quality based on file type
-          let quality = 0.8; // Default quality
-          let type = file.type;
-          
-          // Adjust quality based on file type
-          if (type === 'image/jpeg') {
-            quality = 0.7; // Slightly lower quality for JPEG
-          } else if (type === 'image/png') {
-            quality = 0.8;
-          } else if (type === 'image/webp') {
-            quality = 0.75;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const img = new Image();
+            img.onload = () => {
+              try {
+                // Calculate new dimensions (max 2000px on the longest side)
+                const MAX_DIMENSION = 2000;
+                let width = img.width;
+                let height = img.height;
+                
+                if (width > height && width > MAX_DIMENSION) {
+                  height = Math.round((height * MAX_DIMENSION) / width);
+                  width = MAX_DIMENSION;
+                } else if (height > MAX_DIMENSION) {
+                  width = Math.round((width * MAX_DIMENSION) / height);
+                  height = MAX_DIMENSION;
+                }
+
+                // Create canvas for resizing
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                
+                if (!ctx) {
+                  return reject(new Error('Canvas context not available'));
+                }
+                
+                // Set canvas properties for better quality
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                
+                // Draw image with new dimensions
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Convert to blob with quality based on file type
+                let quality = 0.8; // Default quality
+                let outputType = file.type;
+                
+                // Adjust quality and type based on file type
+                if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+                  quality = 0.85;
+                  outputType = 'image/jpeg';
+                } else if (file.type === 'image/png') {
+                  quality = 0.9;
+                  outputType = 'image/png';
+                } else if (file.type === 'image/webp') {
+                  quality = 0.8;
+                  outputType = 'image/webp';
+                } else {
+                  // Convert unknown formats to JPEG
+                  quality = 0.85;
+                  outputType = 'image/jpeg';
+                }
+                
+                // Convert to blob
+                canvas.toBlob(
+                  (blob) => {
+                    try {
+                      if (!blob) {
+                        return reject(new Error('Canvas to blob conversion failed'));
+                      }
+                      
+                      // Create new file with original name but new content
+                      const fileExtension = outputType === 'image/png' ? '.png' : 
+                                          outputType === 'image/webp' ? '.webp' : '.jpg';
+                      const baseName = file.name.replace(/\.[^.]+$/, '');
+                      const processedFile = new File(
+                        [blob],
+                        baseName + fileExtension,
+                        { type: outputType }
+                      );
+                      
+                      console.log(`Image compressed from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(blob.size / 1024 / 1024).toFixed(2)}MB`);
+                      resolve(processedFile);
+                    } catch (blobError) {
+                      console.error('Error creating processed file:', blobError);
+                      reject(new Error('Failed to create processed file'));
+                    }
+                  },
+                  outputType,
+                  quality
+                );
+              } catch (canvasError) {
+                console.error('Error processing image with canvas:', canvasError);
+                reject(new Error('Failed to process image'));
+              }
+            };
+            img.onerror = (imgError) => {
+              console.error('Error loading image:', imgError);
+              reject(new Error('Failed to load image for processing'));
+            };
+            img.src = e.target.result;
+          } catch (imgError) {
+            console.error('Error setting up image processing:', imgError);
+            reject(new Error('Failed to set up image processing'));
           }
-          
-          // Convert to blob
-          canvas.toBlob(
-            (blob) => {
-              if (!blob) return reject(new Error('Canvas to blob conversion failed'));
-              
-              // Create new file with original name but new content
-              const processedFile = new File(
-                [blob],
-                file.name.replace(/\.[^.]+$/, '') + (type === 'image/jpeg' ? '.jpg' : '.webp'),
-                { type: type === 'image/jpeg' ? 'image/jpeg' : 'image/webp' }
-              );
-              
-              console.log(`Image compressed from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(blob.size / 1024 / 1024).toFixed(2)}MB`);
-              resolve(processedFile);
-            },
-            type === 'image/png' ? 'image/png' : 'image/jpeg',
-            quality
-          );
         };
-        img.onerror = () => reject(new Error('Failed to load image'));
-        img.src = e.target.result;
-      };
-      reader.onerror = () => reject(new Error('Failed to read file'));
-      reader.readAsDataURL(file);
+        reader.onerror = (readerError) => {
+          console.error('Error reading file:', readerError);
+          reject(new Error('Failed to read file'));
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error('Error in processImageFile:', error);
+        // Fallback: return original file if processing fails
+        resolve(file);
+      }
     });
   };
 
@@ -1451,6 +1581,111 @@ const BlogWriteModal = () => {
                     </button>
                   </>
                 )}
+              </div>
+            </div>
+
+            {/* Related Projects Section */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <LinkIcon className="w-5 h-5 text-indigo-600" />
+                <label className="text-lg font-semibold text-gray-900">
+                  Related Projects
+                </label>
+                <span className="text-sm text-gray-500">({relatedProjects.length}/5)</span>
+              </div>
+              
+              <div className="bg-gray-50 rounded-xl p-4">
+                <div className="space-y-3">
+                  {/* Project dropdown */}
+                  <div className="relative">
+                    <select
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+                      onChange={(e) => {
+                        const selectedProject = allProjects.find(p => p.project_url === e.target.value);
+                        if (selectedProject) {
+                          addRelatedProject(selectedProject);
+                          e.target.value = ''; // Reset dropdown
+                        }
+                      }}
+                      disabled={isLoadingProjects || relatedProjects.length >= 5}
+                    >
+                      <option value="">
+                        {isLoadingProjects 
+                          ? 'Loading projects...' 
+                          : relatedProjects.length >= 5 
+                            ? 'Maximum 5 projects allowed'
+                            : 'Select a project to add...'}
+                      </option>
+                      {allProjects
+                        .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
+                        .map((project, index) => (
+                          <option key={index} value={project.project_url}>
+                            {project.projectName || 'Unnamed Project'} - {project.builderName || 'Unknown Builder'}{project.location ? ` (${project.location})` : ''}
+                          </option>
+                        ))
+                      }
+                    </select>
+                    {isLoadingProjects && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-indigo-600"></div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <p className="text-sm text-gray-600">
+                    Select from {allProjects.length} available projects
+                  </p>
+
+                  {/* Selected related projects */}
+                  {relatedProjects.length > 0 && (
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-gray-700">Selected Projects:</h4>
+                      <div className="space-y-2">
+                        {relatedProjects.map((project, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg"
+                          >
+                            <div className="flex items-center space-x-3">
+                              {project.thumbnail && (
+                                <img
+                                  src={project.thumbnail}
+                                  alt={project.projectName}
+                                  className="w-10 h-10 object-cover rounded-lg"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-gray-900 truncate">
+                                  {project.projectName}
+                                </p>
+                                <p className="text-xs text-indigo-600 truncate">
+                                  /{project.project_url}
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => removeRelatedProject(project.project_url)}
+                              className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"
+                              title="Remove project"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {relatedProjects.length === 0 && (
+                    <p className="text-sm text-gray-500 text-center py-4">
+                      Select projects from the dropdown to add as related content for this blog post
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 

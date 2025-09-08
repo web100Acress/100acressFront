@@ -268,7 +268,7 @@ const ProjectEdit = () => {
 
 
 
-  const handleDeleteUser = async (index) => {
+  const handleDeleteFloorPlanImage = async (index) => {
     const IndexNumber = index;
     try {
       const response = await api.delete(
@@ -278,35 +278,67 @@ const ProjectEdit = () => {
       if (response.status >= 200 && response.status < 300) {
         window.location.reload();
       } else {
-        console.error("Failed to delete user. Server returned an error.");
+        console.error("Failed to delete floor plan image. Server returned an error.");
       }
     } catch (error) {
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
         if (error.response.status === 401) {
-          console.log("Unauthorized: You don't have permission to delete this user.");
-          alert("You are not authorized to delete this user.");
+          console.log("Unauthorized: You don't have permission to delete this image.");
+          alert("You are not authorized to delete this image.");
         } else {
-          console.error("An error occurred while deleting user:", error.response.status);
+          console.error("An error occurred while deleting floor plan image:", error.response.status);
         }
       } else if (error.request) {
-        // The request was made but no response was received
         console.error("No response received from the server.");
       } else {
-        // Something happened in setting up the request that triggered an error
         console.error("Error in request setup:", error.message);
       }
     }
   };
 
-  const deleteFloorPlanImage = (id) => {
+  const handleDeleteGalleryImage = async (index) => {
+    const IndexNumber = index;
+    try {
+      const response = await api.delete(
+        `/galleryImage/${id}/${IndexNumber}`,
+        {}
+      );
+      if (response.status >= 200 && response.status < 300) {
+        window.location.reload();
+      } else {
+        console.error("Failed to delete gallery image. Server returned an error.");
+      }
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          console.log("Unauthorized: You don't have permission to delete this image.");
+          alert("You are not authorized to delete this image.");
+        } else {
+          console.error("An error occurred while deleting gallery image:", error.response.status);
+        }
+      } else if (error.request) {
+        console.error("No response received from the server.");
+      } else {
+        console.error("Error in request setup:", error.message);
+      }
+    }
+  };
+
+  const deleteFloorPlanImage = (index) => {
     const confirmDeletion = window.confirm(
-      "Are you sure you want to delete this user?"
+      "Are you sure you want to delete this floor plan image?"
     );
     if (confirmDeletion) {
-      handleDeleteUser(id);
-      // window.location.reload();
+      handleDeleteFloorPlanImage(index);
+    }
+  };
+
+  const deleteGalleryImage = (index) => {
+    const confirmDeletion = window.confirm(
+      "Are you sure you want to delete this gallery image?"
+    );
+    if (confirmDeletion) {
+      handleDeleteGalleryImage(index);
     }
   };
 
@@ -488,7 +520,7 @@ const ProjectEdit = () => {
               {projectGallery && Array.isArray(projectGallery) && projectGallery.length > 0 &&
                           projectGallery.map((image, index) => (
                   <article key={index} className="relative w-full aspect-video overflow-hidden rounded-lg shadow-md group cursor-pointer">
-                    <MdOutlineDeleteOutline onClick={() => deleteFloorPlanImage(index)} size={30} className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors z-10" />
+                    <MdOutlineDeleteOutline onClick={() => deleteGalleryImage(index)} size={30} className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors z-10" />
                     <img src={image.url} alt={`Image ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
                             </article>
                           ))}
