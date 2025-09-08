@@ -188,8 +188,8 @@ const ModernRecommendedSection = () => {
           <div className="inline-flex sm:inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-1 sm:mb-0">
             <div className="w-12 h-1 bg-gradient-to-r from-red-400 to-red-600 rounded-full hidden sm:block"></div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight tracking-tight">
-              <span className="block sm:inline">100acress</span>
-              <span className="text-red-600 sm:ml-2 block sm:inline">Recommended</span>
+              <span className="text-red-600 sm:ml-2 block sm:inline">100acress</span>
+              <span className="block sm:inline"> Recommended</span>
             </h2>
             <div className="w-12 h-1 bg-gradient-to-r from-red-600 to-red-400 rounded-full hidden sm:block"></div>
           </div>
@@ -457,15 +457,15 @@ const PropertyCard = ({
 
 // Styled Components
 const SectionWrapper = styled.section`
-  background: #ffffff; /* Solid white background on all viewports */
+  background: transparent; /* Remove background color */
   position: relative;
   overflow: hidden;
   margin-top: 0;
-  padding-top: 36px; /* desktop/tablet: visible gap from hero */
+  padding-top: 20px; /* Reduce padding to make cards shorter */
 
-  /* Ensure inner container also renders on white */
+  /* Remove container background */
   .container {
-    background: #ffffff;
+    background: transparent;
   }
 
   .carousel-container {
@@ -473,9 +473,9 @@ const SectionWrapper = styled.section`
     overflow: visible;
     width: 100%;
     max-width: none; /* Remove max-width constraint for full width */
-    height: 450px;
+    height: 350px; /* Reduce height to make cards shorter */
     margin: 0;
-    background: #ffffff; /* Ensure container remains white as well */
+    background: transparent; /* Remove background */
     border-radius: 0; /* avoid showing page bg at rounded edges */
   }
 
@@ -654,8 +654,8 @@ const CardWrapper = styled.div`
   cursor: pointer;
   margin: 0 5px;
   position: relative;
-  min-height: 400px;
-  max-height: 400px;
+  min-height: 300px; /* Reduce card height */
+  max-height: 300px; /* Reduce card height */
   height: 100%;
   aspect-ratio: 16/9;
   max-width: 580px;

@@ -1,3 +1,28 @@
+// Sticky floating "List Property" button on mobile (right side)
+function MobileStickyListProperty() {
+  const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
+  const postTarget = token ? "/postproperty" : "/auth/signin";
+  return (
+    <div className="md:hidden fixed z-[10010]" style={{ right: 0, top: '45%' }}>
+      <Link
+        to={postTarget}
+        className="block bg-red-600 text-white font-extrabold tracking-wide shadow-lg"
+        style={{
+          writingMode: 'vertical-rl',
+          textOrientation: 'upright',
+          padding: '10px 6px',
+          borderRadius: '10px 0 0 10px',
+          transform: 'translateY(-50%)',
+          position: 'relative',
+          right: 0,
+          letterSpacing: '1px'
+        }}
+      >
+        LIST PROPERTY
+      </Link>
+    </div>
+  );
+}
 import React, { lazy, Suspense, useState, useEffect } from "react";
 import "./App.css";
 import { styled } from "styled-components";
@@ -38,6 +63,7 @@ const Privacy = lazy(() => import("./Pages/Privacy"));
 const ContactUs = lazy(() => import("./Pages/ContactUs"));
 const SearchData = lazy(() => import("./Pages/SearchData"));
 const UserViewProperty = lazy(() => import("./Pages/UserViewProperty"));
+const Activity = lazy(() => import("./Pages/Activity"));
 const CareerWithUs = lazy(() => import("./Pages/CareerWithUs"));
 const UserEditProperty = lazy(() => import("./Pages/UserEditProperty"));
 const Blogging = lazy(() => import("./Pages/Blogging"));
@@ -193,191 +219,192 @@ function App() {
                   <Sonner position="top-right" richColors />
                   
 
-                {/* Your existing routes */}
-                <Routes>
-                  <Route element={<PublicRoute />}>
-                    <Route index element={<Home />} />
-                    <Route
-                      path="/postproperty"
-                      element={
-                        token !== null ? (
-                          <NewSellProperty />
-                        ) : (
-                          <Navigate to="/auth/signin" />
-                        )
-                      }
-                    />
-                    <Route path="/auth/" element={<SignUp />}>
-                      <Route path="signup/">
-                        <Route index element={<SignupForm />} />
-                        <Route
-                          path="email-verification/"
-                          element={<EmailVerification />}
-                        />
-                        <Route
-                          path="otp-verification/"
-                          element={<OTPVerification />}
-                        />
+                  {/* Your existing routes */}
+                  <Routes>
+                    <Route element={<PublicRoute />}>
+                      <Route index element={<Home />} />
+                      <Route
+                        path="/postproperty"
+                        element={
+                          token !== null ? (
+                            <NewSellProperty />
+                          ) : (
+                            <Navigate to="/auth/signin" />
+                          )
+                        }
+                      />
+                      <Route path="/auth/" element={<SignUp />}>
+                        <Route path="signup/">
+                          <Route index element={<SignupForm />} />
+                          <Route
+                            path="email-verification/"
+                            element={<EmailVerification />}
+                          />
+                          <Route
+                            path="otp-verification/"
+                            element={<OTPVerification />}
+                          />
+                        </Route>
+                        <Route path="signin/" element={<SignIn />} />
                       </Route>
-                      <Route path="signin/" element={<SignIn />} />
+                      <Route path="/privacy-policy/" element={<Privacy />} />
+                      <Route
+                        path="/terms-and-conditions/"
+                        element={<TermsAndConditions />}
+                      />
+                      <Route path="/projects-in-gurugram/" element={<Properties />} />
+                      <Route
+                        path="/projects-in-gurugram/budget"
+                        element={<BudgetPrice />}
+                      />
+                      <Route
+                        path="/budget-properties/"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/projects-in-gurugram/property-ready-to-move/"
+                        element={<ReadyToMoveProject />}
+                      />
+                      <Route
+                        path="/projects-in-gurugram/property-possession-after-2026/"
+                        element={<PossessionAfter2028 />}
+                      />
+                      <Route
+                        path="/projects-in-gurugram/property-possession-in-2024/"
+                        element={<Navigate to="/projects-in-gurugram/property-ready-to-move/" replace />}
+                      />
+                      <Route
+                        path="/projects-in-gurugram/property-possession-in-2024"
+                        element={<Navigate to="/projects-in-gurugram/property-ready-to-move/" replace />}
+                      />
+                      <Route
+                        path="/developers/:builderName"
+                        element={<BuilderPage />}
+                      />
+                      <Route
+                        path="/projects-in-gurugram/property-possession-in-2025/"
+                        element={<Possessionin2025 />}
+                      />
+                      <Route
+                        path="/projects-in-gurugram/property-possession-in-2026/"
+                        element={<Possessionin2026 />}
+                      />
+                      <Route
+                        path="/rental-properties/best-rental-property-in-gurugram/"
+                        element={<RentPropViewCard />}
+                      />
+                      <Route
+                        path="/buy-properties/best-resale-property-in-gurugram/"
+                        element={<BuyPropViewCard />}
+                      />
+                      <Route path="/about-us/" element={<About />} />
+                      <Route
+                        path="/rental-properties/:pUrl/:id/"
+                        element={<RentViewDetails />}
+                      />
+                      <Route
+                        path="/buy-properties/:pUrl/:id/"
+                        element={<BuyViewDetails />}
+                      />
+                      <Route path="/propviewcard" element={<PropViewCardPro />} />
+                      <Route
+                        path="/property/residential/"
+                        element={<ResidentialProjects />}
+                      />
+                      <Route
+                        path="/projects/upcoming-projects-in-gurgaon/"
+                        element={<UpComingProjects />}
+                      />
+                      <Route
+                        path="/projects/commercial/"
+                        element={<CommercialProject />}
+                      />
+                      <Route path="/sco/plots/" element={<ScoPlotsInGurugramPage />} />
+                      <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} />
+                      <Route
+                        path="/projects/independentfloors/"
+                        element={<BuilderIndependentFloor />}
+                      />
+                      <Route path="/project-in-delhi/" element={<DelhiProject />} />
+                      <Route path="/project-in-noida/" element={<NoidaProject />} />
+                      <Route path="/project-in-panipat/" element={<PanipatProject />} />
+                      <Route path="/project-in-panchkula/" element={<Panchkula />} />
+                      <Route path="/project-in-kasauli/" element={<KasauliProject />} />
+                      <Route path="/projects-in-sonipat/" element={<Sonipat />} />
+                      <Route path="/projects-in-karnal/" element={<Karnal />} />
+                      <Route path="/projects-in-jalandhar/" element={<Jalandhar />} />
+                      <Route path="/project-in-ayodhya/" element={<Ayodhya />} />
+                      <Route path="/project-in-mumbai/" element={<Mumbai />} />
+                      <Route path="/projects-in-dubai/" element={<Dubai />} />
+                      <Route path="/projects-in-pushkar/" element={<Pushkar />} />
+                  <Route path="/qr-generator" element={<QRGeneratorPage />} />
+                      <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
+                      <Route
+                        path="/project-in-underconstruction/"
+                        element={<UnderConstruction />}
+                      />
+                      <Route path="/projects-in-newlaunch/" element={<NewLaunch />} />
+                      <Route path="/project-in-goa/" element={<GoaProject />} />
+                      <Route path="/plots-in-gurugram/" element={<PlotsInGurugramPage />} />
+                      <Route path="/projects/villas/" element={<LuxuryVillasForSalePage />} />
+                      <Route path="/news-and-articals/" element={<NewsandArtical />} />
+                      <Route
+                        path="/userdashboard/"
+                        element={
+                          token !== null ? <UserDashBoard /> : <Navigate to="/" />
+                        }
+                      />
+                      <Route path="/useredit/:id" element={<UserEdit />} />
+                      <Route path="/viewallproperty" element={<ViewAllProperty />} />
+                      <Route path="/contact-us/" element={<ContactUs />} />
+                      <Route path="/activity" element={<Activity />} />
+                      <Route path="/career-with-us/" element={<CareerWithUs />} />
+                      <Route path="/blog/" element={<Blogging />} />
+                      {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
+                      <Route path="/blog/write" element={<BlogWrite />} />
+                      <Route path="/blog/:blogTitle/:id" element={<BlogView />} />
+                      <Route path="/blog/:slug" element={<BlogView />} />
+                      <Route
+                        path="/resetpassword/:token"
+                        element={<ForgetPassword />}
+                      />
+                      <Route path="/forgetpassword" element={<ResetEmailPassword />} />
+                      <Route path="/knowabouts" element={<PropertyKnow />} />
+                      <Route path="/:pUrl/" element={<NewBanner />} />
+                      <Route
+                        path="/userviewproperty/:id"
+                        element={<UserViewProperty />}
+                      />
+                      <Route path="/usereditproperty" element={<UserEditProperty />} />
+                      <Route
+                        path="/property-in-gurugram/:location"
+                        element={<GurugramPrimeLocation />}
+                      />
+                      <Route path="*" element={<PageNotFound />} />
+                      <Route path="/contactmainpage" element={<ContactPage />} />
+                      <Route path="/searchdata/:key" element={<SearchData />} />
+                      <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
+                      <Route path="/orris-plots-gurugram/" element={<Orris />} />
+                      <Route path="/jms-plots-gurugram/" element={<Jms />} />
+                      <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
+                      <Route path="/rof-plots-gurugram/" element={<Rof />} />
+                      <Route
+                        path="/signatureglobal-plots-gurugram/"
+                        element={<SignatureGlobal />}
+                      />
+                      <Route
+                        path="/emaar-india-sco-plots-gurugram/"
+                        element={<EmaarIndia />}
+                      />
+                      <Route
+                        path="/m3m-india-sco-plots-gurugram/"
+                        element={<M3mIndia />}
+                      />
+                      <Route
+                        path="/microtek-infra-sco-plots-gurugram/"
+                        element={<Microtek />}
+                      />
                     </Route>
-                    <Route path="/privacy-policy/" element={<Privacy />} />
-                    <Route
-                      path="/terms-and-conditions/"
-                      element={<TermsAndConditions />}
-                    />
-                    <Route path="/projects-in-gurugram/" element={<Properties />} />
-                    <Route
-                      path="/projects-in-gurugram/budget"
-                      element={<BudgetPrice />}
-                    />
-                    <Route
-                      path="/budget-properties/"
-                      element={<GlobalBudgetPrice />}
-                    />
-                    <Route
-                      path="/projects-in-gurugram/property-ready-to-move/"
-                      element={<ReadyToMoveProject />}
-                    />
-                    <Route
-                      path="/projects-in-gurugram/property-possession-after-2026/"
-                      element={<PossessionAfter2028 />}
-                    />
-                    <Route
-                      path="/projects-in-gurugram/property-possession-in-2024/"
-                      element={<Navigate to="/projects-in-gurugram/property-ready-to-move/" replace />}
-                    />
-                    <Route
-                      path="/projects-in-gurugram/property-possession-in-2024"
-                      element={<Navigate to="/projects-in-gurugram/property-ready-to-move/" replace />}
-                    />
-                    <Route
-                      path="/developers/:builderName"
-                      element={<BuilderPage />}
-                    />
-                    <Route
-                      path="/projects-in-gurugram/property-possession-in-2025/"
-                      element={<Possessionin2025 />}
-                    />
-                    <Route
-                      path="/projects-in-gurugram/property-possession-in-2026/"
-                      element={<Possessionin2026 />}
-                    />
-                    <Route
-                      path="/rental-properties/best-rental-property-in-gurugram/"
-                      element={<RentPropViewCard />}
-                    />
-                    <Route
-                      path="/buy-properties/best-resale-property-in-gurugram/"
-                      element={<BuyPropViewCard />}
-                    />
-                    <Route path="/about-us/" element={<About />} />
-                    <Route
-                      path="/rental-properties/:pUrl/:id/"
-                      element={<RentViewDetails />}
-                    />
-                    <Route
-                      path="/buy-properties/:pUrl/:id/"
-                      element={<BuyViewDetails />}
-                    />
-                    <Route path="/propviewcard" element={<PropViewCardPro />} />
-                    <Route
-                      path="/property/residential/"
-                      element={<ResidentialProjects />}
-                    />
-                    <Route
-                      path="/projects/upcoming-projects-in-gurgaon/"
-                      element={<UpComingProjects />}
-                    />
-                    <Route
-                      path="/projects/commercial/"
-                      element={<CommercialProject />}
-                    />
-                    <Route path="/sco/plots/" element={<ScoPlotsInGurugramPage />} />
-                    <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} />
-                    <Route
-                      path="/projects/independentfloors/"
-                      element={<BuilderIndependentFloor />}
-                    />
-                    <Route path="/project-in-delhi/" element={<DelhiProject />} />
-                    <Route path="/project-in-noida/" element={<NoidaProject />} />
-                    <Route path="/project-in-panipat/" element={<PanipatProject />} />
-                    <Route path="/project-in-panchkula/" element={<Panchkula />} />
-                    <Route path="/project-in-kasauli/" element={<KasauliProject />} />
-                    <Route path="/projects-in-sonipat/" element={<Sonipat />} />
-                    <Route path="/projects-in-karnal/" element={<Karnal />} />
-                    <Route path="/projects-in-jalandhar/" element={<Jalandhar />} />
-                    <Route path="/project-in-ayodhya/" element={<Ayodhya />} />
-                    <Route path="/project-in-mumbai/" element={<Mumbai />} />
-                    <Route path="/projects-in-dubai/" element={<Dubai />} />
-                    <Route path="/projects-in-pushkar/" element={<Pushkar />} />
-                <Route path="/qr-generator" element={<QRGeneratorPage />} />
-                    <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
-                    <Route
-                      path="/project-in-underconstruction/"
-                      element={<UnderConstruction />}
-                    />
-                    <Route path="/projects-in-newlaunch/" element={<NewLaunch />} />
-                    <Route path="/project-in-goa/" element={<GoaProject />} />
-                    <Route path="/plots-in-gurugram/" element={<PlotsInGurugramPage />} />
-                    <Route path="/projects/villas/" element={<LuxuryVillasForSalePage />} />
-                    <Route path="/news-and-articals/" element={<NewsandArtical />} />
-                    <Route
-                      path="/userdashboard/"
-                      element={
-                        token !== null ? <UserDashBoard /> : <Navigate to="/" />
-                      }
-                    />
-                    <Route path="/useredit/:id" element={<UserEdit />} />
-                    <Route path="/viewallproperty" element={<ViewAllProperty />} />
-                    <Route path="/contact-us/" element={<ContactUs />} />
-                    <Route path="/career-with-us/" element={<CareerWithUs />} />
-                    <Route path="/blog/" element={<Blogging />} />
-                    {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
-                    <Route path="/blog/write" element={<BlogWrite />} />
-                    <Route path="/blog/:blogTitle/:id" element={<BlogView />} />
-                    <Route path="/blog/:slug" element={<BlogView />} />
-                    <Route
-                      path="/resetpassword/:token"
-                      element={<ForgetPassword />}
-                    />
-                    <Route path="/forgetpassword" element={<ResetEmailPassword />} />
-                    <Route path="/knowabouts" element={<PropertyKnow />} />
-                    <Route path="/:pUrl/" element={<ProjectLayout2 />} />
-                    <Route
-                      path="/userviewproperty/:id"
-                      element={<UserViewProperty />}
-                    />
-                    <Route path="/usereditproperty" element={<UserEditProperty />} />
-                    <Route
-                      path="/property-in-gurugram/:location"
-                      element={<GurugramPrimeLocation />}
-                    />
-                    <Route path="*" element={<PageNotFound />} />
-                    <Route path="/contactmainpage" element={<ContactPage />} />
-                    <Route path="/searchdata/:key" element={<SearchData />} />
-                    <Route path="/bptp-plots-gurugram/" element={<Bptp />} />
-                    <Route path="/orris-plots-gurugram/" element={<Orris />} />
-                    <Route path="/jms-plots-gurugram/" element={<Jms />} />
-                    <Route path="/top-luxury-projects/" element={<LuxuryProject />} />
-                    <Route path="/rof-plots-gurugram/" element={<Rof />} />
-                    <Route
-                      path="/signatureglobal-plots-gurugram/"
-                      element={<SignatureGlobal />}
-                    />
-                    <Route
-                      path="/emaar-india-sco-plots-gurugram/"
-                      element={<EmaarIndia />}
-                    />
-                    <Route
-                      path="/m3m-india-sco-plots-gurugram/"
-                      element={<M3mIndia />}
-                    />
-                    <Route
-                      path="/microtek-infra-sco-plots-gurugram/"
-                      element={<Microtek />}
-                    />
-                  </Route>
 
                     {/* Admin Routing */}
                     <Route path="/admin" element={<PrivateRoute />}>
@@ -492,6 +519,8 @@ function App() {
       </DataProvider>
       {/* Global mobile bottom navigation */}
       <MobileBottomNav />
+      {/* Global mobile sticky List Property button */}
+      <MobileStickyListProperty />
     </>
   );
 }
@@ -503,6 +532,22 @@ function MobileBottomNav() {
   const location = useLocation();
   const path = location.pathname || "/";
   const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
+
+  const [hideForNewBanner, setHideForNewBanner] = React.useState(() => {
+    if (typeof document === 'undefined') return false;
+    return document.body.classList.contains('newbanner-page');
+  });
+
+  React.useEffect(() => {
+    if (typeof document === 'undefined' || !document.body) return;
+    const update = () => setHideForNewBanner(document.body.classList.contains('newbanner-page'));
+    update();
+    const observer = new MutationObserver(() => update());
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  if (hideForNewBanner) return null;
 
   const isActive = (match) => {
     if (Array.isArray(match)) return match.some((m) => path.startsWith(m));
@@ -537,12 +582,15 @@ function MobileBottomNav() {
               <span className={`${isActive("/blog") ? "text-gray-900 font-semibold" : ""}`}>Blogs</span>
             </Link>
 
-            {/* Center CTA: Post Properties (was See/Buy) */}
+            {/* Center CTA: Contact (call by phone) */}
             <div className="flex flex-col items-center justify-center -mt-6">
-              <Link to={postTarget} className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg ring-4 ring-white">
-                <i className="fa-solid fa-plus text-lg"></i>
-              </Link>
-              <span className="mt-1 text-[11px]">Post Properties</span>
+              <a
+                href="tel:+918500900100"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg ring-4 ring-white"
+              >
+                <i className="fa-solid fa-phone text-lg"></i>
+              </a>
+              <span className="mt-1 text-[11px]">Contact</span>
             </div>
 
             {/* Liked (was Shortlisted) */}
