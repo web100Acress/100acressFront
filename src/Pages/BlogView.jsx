@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../config/apiClient";
+import { API_ROUTES } from "../Redux/utils/Constant_Service";
+
 import { DataContext } from "../MyContext";
 import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
@@ -11,7 +13,8 @@ import useIsMobile from '../hooks/useIsMobile';
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
   const [data, setData] = useState({});
-  const [recentBlogs,setRecentBlogs]=useState([]);
+  const [trendingProjects, setTrendingProjects] = useState([]);
+
   const [loadError, setLoadError] = useState("");
   const { id, slug } = useParams();
   const location = useLocation();
@@ -29,6 +32,7 @@ const BlogView = () => {
   const history = useNavigate();
   const isMobile = useIsMobile ? useIsMobile() : false;
   const [showMobileEnquiry, setShowMobileEnquiry] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   // Safe image fallback for broken S3 URLs
   const FALLBACK_IMG = "/Images/blog.avif";
@@ -60,6 +64,34 @@ const BlogView = () => {
     } catch (error) {
       console.error('Error in image fallback:', error);
     }
+  };
+
+  // Navigate to project detail from Trending Projects
+  const navigateProject = (proj) => {
+    try {
+      if (!proj) return;
+      // Prefer canonical project_url used by NewBanner route
+      const raw = proj.project_url || proj.pUrl || proj.slug || proj.url || proj.projectSlug || '';
+      let slug = raw;
+      // If raw looks like a full URL, extract the last path segment
+      if (slug && /^(https?:)?\/\//i.test(slug)) {
+        try {
+          const u = new URL(slug, window.location.origin);
+          const parts = u.pathname.split('/').filter(Boolean);
+          slug = parts[parts.length - 1] || '';
+        } catch (_) { /* ignore */ }
+      }
+      if (!slug) {
+        const name = proj.projectName || proj.name || proj.title || '';
+        slug = name
+          ? String(name).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+          : '';
+      }
+      if (!slug) return;
+      const path = `/${slug}/`;
+      history(path);
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
+    } catch (_) { /* noop */ }
   };
 
   const resetData = () => {
@@ -98,9 +130,9 @@ const BlogView = () => {
 
   const handleBlogSubmitQueryData = async (e) => {
     e.preventDefault();
-    const { name, email, mobile, message } = blogQuery;
-    if (!name || !email || !mobile || !message) {
-      setResponseMessage("Please fill out all fields.");
+    const { name, mobile } = blogQuery;
+    if (!name || !mobile) {
+      setResponseMessage("Please enter your name and phone number.");
       return;
     }
 
@@ -184,7 +216,9 @@ const BlogView = () => {
       _id: obj._id || '',
       // SEO fields (handle multiple possible keys)
       metaTitle: obj.metaTitle || obj.meta_Title || obj.seoTitle || '',
-      metaDescription: obj.metaDescription || obj.meta_Description || obj.seoDescription || obj.meta_desc || ''
+      metaDescription: obj.metaDescription || obj.meta_Description || obj.seoDescription || obj.meta_desc || '',
+      // Related projects
+      relatedProjects: Array.isArray(obj.relatedProjects) ? obj.relatedProjects : []
     };
   };
 
@@ -231,6 +265,8 @@ const BlogView = () => {
           try {
             console.log('[BlogView] Raw blog_Image from API:', response.data.data?.blog_Image);
             console.log('[BlogView] Normalized image:', normalized.blog_Image);
+            console.log('[BlogView] Raw relatedProjects from API:', response.data.data?.relatedProjects);
+            console.log('[BlogView] Normalized relatedProjects:', normalized.relatedProjects);
           } catch (_) {}
           setData(normalized);
         } else {
@@ -246,20 +282,20 @@ const BlogView = () => {
     fetchBlogData();
   }, [id, slug, location.search]);
 
-  // Fetch recent blogs for sidebar
+  // Fetch trending projects for sidebar
   useEffect(() => {
-    const fetchRecentBlogs = async () => {
+    const fetchTrending = async () => {
       try {
-        const response = await api.get('blog/view?limit=5&sort=-createdAt');
-        if (response.data && response.data.data) {
-          setRecentBlogs(response.data.data);
-        }
+        const url = `${API_ROUTES.projectsBase()}/trending`;
+        const res = await api.get(url, { timeout: 15000 });
+        const list = res?.data?.data || [];
+        setTrendingProjects(Array.isArray(list) ? list.slice(0, 5) : []);
       } catch (error) {
-        console.error("Error fetching recent blogs:", error);
+        console.error("Error fetching trending projects:", error);
+        setTrendingProjects([]);
       }
     };
-
-    fetchRecentBlogs();
+    fetchTrending();
   }, []);
 
   const createSanitizedHTML = (dirtyHTML) => ({
@@ -283,6 +319,7 @@ const BlogView = () => {
     blog_Image,
     metaTitle,
     metaDescription,
+    relatedProjects,
   } = data;
 
   // Ref to post-process content images (fix lazy attrs, http->https, fallback on error)
@@ -330,6 +367,27 @@ const BlogView = () => {
   const params = new URLSearchParams(location.search || '');
   const idQuery = params.get('id');
   const canonicalUrl = `${domainNoSlash}${location.pathname}${idQuery ? `?id=${encodeURIComponent(idQuery)}` : ''}`;
+
+  const shareTitle = encodeURIComponent((data.metaTitle || blog_Title || '100acress Blog').trim());
+  const shareUrl = encodeURIComponent(canonicalUrl);
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(canonicalUrl);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 1500);
+    } catch (e) {
+      // Fallback
+      const input = document.createElement('input');
+      input.value = canonicalUrl;
+      document.body.appendChild(input);
+      input.select();
+      try { document.execCommand('copy'); } catch (_) {}
+      document.body.removeChild(input);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 1500);
+    }
+  };
 
   // Compute title and description
   const fallbackTitle = `${blog_Title || ''} ${blog_Category || ''}`.trim();
@@ -403,7 +461,51 @@ const BlogView = () => {
             <Link to="/blog/" className="text-primaryRed hover:underline">Blogs</Link>
             {' > '} {blog_Category || 'Blog'}
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-[#1e3a8a] leading-tight mb-4">{blog_Title}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#1e3a8a] leading-tight mb-3">{blog_Title}</h1>
+          {/* Share bar under title */}
+          <div className="flex items-center gap-3 mb-4">
+            <a
+              href={`https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}`}
+              target="_blank" rel="noopener noreferrer"
+              className="inline-flex w-10 h-10 items-center justify-center rounded-full border border-blue-500 text-[#1e90ff] hover:bg-blue-50"
+              aria-label="Share on Twitter"
+            >
+              <i className="fa-brands fa-twitter"></i>
+            </a>
+            <a
+              href={`https://wa.me/?text=${shareTitle}%20${shareUrl}`}
+              target="_blank" rel="noopener noreferrer"
+              className="inline-flex w-10 h-10 items-center justify-center rounded-full border border-green-500 text-green-600 hover:bg-green-50"
+              aria-label="Share on WhatsApp"
+            >
+              <i className="fa-brands fa-whatsapp"></i>
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
+              target="_blank" rel="noopener noreferrer"
+              className="inline-flex w-10 h-10 items-center justify-center rounded-full border border-blue-600 text-blue-700 hover:bg-blue-50"
+              aria-label="Share on Facebook"
+            >
+              <i className="fa-brands fa-facebook-f"></i>
+            </a>
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
+              target="_blank" rel="noopener noreferrer"
+              className="inline-flex w-10 h-10 items-center justify-center rounded-full border border-sky-600 text-sky-700 hover:bg-sky-50"
+              aria-label="Share on LinkedIn"
+            >
+              <i className="fa-brands fa-linkedin-in"></i>
+            </a>
+            <button
+              type="button"
+              onClick={copyLink}
+              className="inline-flex w-10 h-10 items-center justify-center rounded-full border border-gray-400 text-gray-700 hover:bg-gray-50"
+              title={copiedLink ? 'Copied!' : 'Copy link'}
+              aria-label="Copy link"
+            >
+              <i className="fa-solid fa-link"></i>
+            </button>
+          </div>
           {(blog_Image?.display || FALLBACK_IMG) && (
             <div className="relative w-full h-[500px] mb-6">
               {blog_Image?.display ? (
@@ -444,38 +546,129 @@ const BlogView = () => {
 
         {/* Sidebar */}
         <div className="w-full md:w-1/3 flex flex-col gap-8">
-          {/* Recent Posts */}
+          {/* Related Projects */}
+          {relatedProjects && relatedProjects.length > 0 && (
+            <div className="bg-white rounded-2xl shadow-xl p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Related Projects</h3>
+              <div className="space-y-2">
+                {relatedProjects.map((project, idx) => {
+                  const name = project?.projectName || 'Project';
+                  const url = project?.project_url || '';
+                  const thumbnail = project?.thumbnail || '';
+                  const img = thumbnail || FALLBACK_IMG;
+                  
+                  const handleProjectClick = () => {
+                    try {
+                      if (!url) return;
+                      // Navigate to project using the project_url
+                      let slug = url;
+                      // If url looks like a full URL, extract the last path segment
+                      if (slug && /^(https?:)?\/\//i.test(slug)) {
+                        try {
+                          const u = new URL(slug, window.location.origin);
+                          const parts = u.pathname.split('/').filter(Boolean);
+                          slug = parts[parts.length - 1] || '';
+                        } catch (_) { /* ignore */ }
+                      }
+                      if (!slug) return;
+                      const path = `/${slug}/`;
+                      history(path);
+                      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
+                    } catch (_) { /* noop */ }
+                  };
+
+                  return (
+                    <div
+                      key={idx}
+                      className="group p-2 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200 flex items-center gap-2 cursor-pointer"
+                      role="button"
+                      tabIndex={0}
+                      onClick={handleProjectClick}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleProjectClick(); } }}
+                      title={name}
+                    >
+                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-100 to-indigo-200 flex-shrink-0 flex items-center justify-center">
+                        <img
+                          src={img}
+                          className="w-12 h-12 rounded-lg object-cover"
+                          alt={name}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextElementSibling.style.display = 'flex';
+                          }}
+                          referrerPolicy="no-referrer"
+                          crossOrigin="anonymous"
+                        />
+                        <div className="hidden w-full h-full rounded-lg bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center">
+                          <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
+                          {name}
+                        </h4>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Trending Projects */}
           <div className="bg-white rounded-2xl shadow-xl p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Recent Posts</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Trending Projects</h3>
             <div className="space-y-2">
-              {recentBlogs.length > 0 && recentBlogs.map((blog, index) => (
-                <div
-                  key={index}
-                  onClick={() => handleBlogView(blog.blog_Title, blog._id, blog.slug)}
-                  className="group cursor-pointer p-2 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200 flex items-center gap-2"
-                >
-                  <img 
-                    src={(() => {
-                      const u = blog.blog_Image?.cdn_url || blog.blog_Image?.url || '';
-                      return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
-                    })()} 
-                    className="w-12 h-12 rounded-lg object-cover flex-shrink-0" 
-                    alt={blog.blog_Title}
-                    onError={onImgError}
-                    referrerPolicy="no-referrer"
-                    crossOrigin="anonymous"
-                    data-alt-src={(blog.blog_Image?.cdn_url && blog.blog_Image?.url && blog.blog_Image.cdn_url !== blog.blog_Image.url) ? (blog.blog_Image.cdn_url) : ''}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
-                      {blog.blog_Title}
-                    </h4>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {blog.blog_Category}
-                    </p>
+              {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
+                const name = p?.projectName || p?.name || p?.title || 'Project';
+                const category = p?.category || p?.projectType || '';
+                const img = (() => {
+                  // Prefer explicit thumbnail-like fields first
+                  const t1 = p?.thumbnailImage?.url || p?.thumbnail?.url || p?.thumb?.url || '';
+                  const t2 = p?.thumbnailImage || p?.thumbnail || p?.thumb || '';
+                  const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
+                  const fMain = p?.frontImage?.url || '';
+                  const c1 = p?.cardImage?.url || p?.cardImage || '';
+                  const b1 = p?.bannerImage?.url || p?.bannerImage || '';
+                  const any = p?.image || p?.project_Image || '';
+                  const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
+                  const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
+                  return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
+                })();
+                return (
+                  <div
+                    key={idx}
+                    className="group p-2 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200 flex items-center gap-2 cursor-pointer"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigateProject(p)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
+                    title={name}
+                  >
+                    <img
+                      src={img}
+                      className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                      alt={name}
+                      onError={onImgError}
+                      referrerPolicy="no-referrer"
+                      crossOrigin="anonymous"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
+                        {name}
+                      </h4>
+                      {category && (
+                        <p className="text-xs text-gray-500 mt-1">{category}</p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
+              {trendingProjects.length === 0 && (
+                <div className="text-sm text-gray-400">No trending projects found.</div>
+              )}
             </div>
           </div>
           {/* Enquiry Form: Desktop/Tablet only */}
@@ -501,21 +694,6 @@ const BlogView = () => {
                 <div className="relative mb-2">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </span>
-                  <input
-                    name="email"
-                    value={blogQuery.email}
-                    onChange={handleBlogQueryChange}
-                    placeholder="Email Address *"
-                    className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 shadow-sm"
-                    type="email"
-                  />
-                </div>
-                <div className="relative mb-2">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                   </span>
@@ -527,21 +705,6 @@ const BlogView = () => {
                     className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 shadow-sm"
                     type="tel"
                   />
-                </div>
-                <div className="relative mb-2">
-                  <span className="absolute left-4 top-4 text-white/80">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                  </span>
-                  <textarea
-                    name="message"
-                    value={blogQuery.message}
-                    onChange={handleBlogQueryChange}
-                    placeholder="Your Message *"
-                    rows="4"
-                    className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 resize-none shadow-sm"
-                  ></textarea>
                 </div>
                 {responseMessage && (
                   <div className={`text-sm p-3 rounded-lg ${
@@ -605,21 +768,6 @@ const BlogView = () => {
                    <div className="relative mb-2">
                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80">
                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                       </svg>
-                     </span>
-                     <input
-                       name="email"
-                       value={blogQuery.email}
-                       onChange={handleBlogQueryChange}
-                       placeholder="Email Address *"
-                       className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 shadow-sm"
-                       type="email"
-                     />
-                   </div>
-                   <div className="relative mb-2">
-                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80">
-                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                        </svg>
                      </span>
@@ -631,21 +779,6 @@ const BlogView = () => {
                        className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 shadow-sm"
                        type="tel"
                      />
-                   </div>
-                   <div className="relative mb-2">
-                     <span className="absolute left-4 top-4 text-white/80">
-                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                       </svg>
-                     </span>
-                     <textarea
-                       name="message"
-                       value={blogQuery.message}
-                       onChange={handleBlogQueryChange}
-                       placeholder="Your Message *"
-                       rows="4"
-                       className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 resize-none shadow-sm"
-                     ></textarea>
                    </div>
                    {responseMessage && (
                      <div className={`text-sm p-3 rounded-lg ${
