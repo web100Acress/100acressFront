@@ -11,7 +11,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
   const activeBhkDetails = bhkDetails[activeTab];
 
   return (
-    <section className="py-16 bg-black text-white relative overflow-hidden">
+    <section className="py-12 bg-black text-white relative overflow-hidden">
       {/* Background decorative lines */}
       <div className="absolute top-0 right-0 -z-0 opacity-20">
         <svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,13 +27,13 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-10 relative">
         <div className="text-center mb-8">
-          <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">
-            FLOOR PLANS
-          </h2>
-          <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-2">
-            Master & Floor Plan
-          </h3>
-          <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-4"></div>
+          <div className="flex items-center justify-center mb-4">
+            <div className="h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent flex-1 max-w-20"></div>
+            <span className="text-amber-400 text-sm font-semibold uppercase tracking-widest mx-4">Premium Features</span>
+            <div className="h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent flex-1 max-w-20"></div>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Floor Plan</h2>
+          <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto"></div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">

@@ -20,10 +20,16 @@ import api from "../../../../config/apiClient";
 // Tailwind CSS required. All content is placeholder/dummy for later wiring.
 
 const SectionHeading = ({ title, subtitle }) => (
-  <div className="mb-6">
-    <h2 className="text-2xl font-semibold text-yellow-500">{title}</h2>
+  <div className="text-center mb-8">
+    <div className="flex items-center justify-center mb-4">
+      <div className="h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent flex-1 max-w-20"></div>
+      <span className="text-amber-400 text-sm font-semibold uppercase tracking-widest mx-4">Premium Features</span>
+      <div className="h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent flex-1 max-w-20"></div>
+    </div>
+    <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{title}</h2>
+    <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto"></div>
     {subtitle ? (
-      <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
+      <p className="text-gray-400 mt-4 max-w-2xl mx-auto">{subtitle}</p>
     ) : null}
   </div>
 );
@@ -161,10 +167,10 @@ function ProjectLayout2() {
       />
 
       {/* Amenities */}
-      <section className="py-16 bg-black">
+      <section className="py-12 bg-black">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading title="Amenities" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { name: "MULTIPURPOSE COURT", image: "/amenities_image/multipurpose-court-new-img.webp" },
               { name: "TODDLERS' PLAY AREA", image: "/amenities_image/kidsplayarea-img-amenity.webp" },

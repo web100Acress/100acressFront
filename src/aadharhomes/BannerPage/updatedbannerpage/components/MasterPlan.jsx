@@ -21,7 +21,7 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null }) => {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-black via-gray-900 to-black text-white relative overflow-hidden">
+    <section className="py-12 bg-gradient-to-b from-black via-gray-900 to-black text-white relative overflow-hidden">
       {/* Sophisticated Background Pattern */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-full h-full opacity-10">
