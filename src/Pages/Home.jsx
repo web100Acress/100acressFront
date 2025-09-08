@@ -534,7 +534,7 @@ const Home = () => {
                       onClick={() => { setAuthDefaultView('register'); setAuthOpen(true); }}
                       className="inline-flex px-5 md:px-6 py-2.5 md:py-3 rounded-xl bg-red-600 text-white text-xs md:text-sm font-semibold shadow hover:bg-red-700"
                     >
-                      Post Property, It's FREE
+                      Post Property FREE
                     </button>
                   </div>
                 </div>
