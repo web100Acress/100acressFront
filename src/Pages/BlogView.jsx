@@ -216,7 +216,9 @@ const BlogView = () => {
       _id: obj._id || '',
       // SEO fields (handle multiple possible keys)
       metaTitle: obj.metaTitle || obj.meta_Title || obj.seoTitle || '',
-      metaDescription: obj.metaDescription || obj.meta_Description || obj.seoDescription || obj.meta_desc || ''
+      metaDescription: obj.metaDescription || obj.meta_Description || obj.seoDescription || obj.meta_desc || '',
+      // Related projects
+      relatedProjects: Array.isArray(obj.relatedProjects) ? obj.relatedProjects : []
     };
   };
 
@@ -263,6 +265,8 @@ const BlogView = () => {
           try {
             console.log('[BlogView] Raw blog_Image from API:', response.data.data?.blog_Image);
             console.log('[BlogView] Normalized image:', normalized.blog_Image);
+            console.log('[BlogView] Raw relatedProjects from API:', response.data.data?.relatedProjects);
+            console.log('[BlogView] Normalized relatedProjects:', normalized.relatedProjects);
           } catch (_) {}
           setData(normalized);
         } else {
@@ -315,6 +319,7 @@ const BlogView = () => {
     blog_Image,
     metaTitle,
     metaDescription,
+    relatedProjects,
   } = data;
 
   // Ref to post-process content images (fix lazy attrs, http->https, fallback on error)
@@ -541,6 +546,77 @@ const BlogView = () => {
 
         {/* Sidebar */}
         <div className="w-full md:w-1/3 flex flex-col gap-8">
+          {/* Related Projects */}
+          {relatedProjects && relatedProjects.length > 0 && (
+            <div className="bg-white rounded-2xl shadow-xl p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Related Projects</h3>
+              <div className="space-y-2">
+                {relatedProjects.map((project, idx) => {
+                  const name = project?.projectName || 'Project';
+                  const url = project?.project_url || '';
+                  const thumbnail = project?.thumbnail || '';
+                  const img = thumbnail || FALLBACK_IMG;
+                  
+                  const handleProjectClick = () => {
+                    try {
+                      if (!url) return;
+                      // Navigate to project using the project_url
+                      let slug = url;
+                      // If url looks like a full URL, extract the last path segment
+                      if (slug && /^(https?:)?\/\//i.test(slug)) {
+                        try {
+                          const u = new URL(slug, window.location.origin);
+                          const parts = u.pathname.split('/').filter(Boolean);
+                          slug = parts[parts.length - 1] || '';
+                        } catch (_) { /* ignore */ }
+                      }
+                      if (!slug) return;
+                      const path = `/${slug}/`;
+                      history(path);
+                      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
+                    } catch (_) { /* noop */ }
+                  };
+
+                  return (
+                    <div
+                      key={idx}
+                      className="group p-2 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200 flex items-center gap-2 cursor-pointer"
+                      role="button"
+                      tabIndex={0}
+                      onClick={handleProjectClick}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleProjectClick(); } }}
+                      title={name}
+                    >
+                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-100 to-indigo-200 flex-shrink-0 flex items-center justify-center">
+                        <img
+                          src={img}
+                          className="w-12 h-12 rounded-lg object-cover"
+                          alt={name}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextElementSibling.style.display = 'flex';
+                          }}
+                          referrerPolicy="no-referrer"
+                          crossOrigin="anonymous"
+                        />
+                        <div className="hidden w-full h-full rounded-lg bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center">
+                          <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
+                          {name}
+                        </h4>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Trending Projects */}
           <div className="bg-white rounded-2xl shadow-xl p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-2">Trending Projects</h3>
