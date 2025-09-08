@@ -232,12 +232,7 @@ const ProjectEdit = () => {
       }
       const response = await api.post(
         `/project/Update/${id}`,
-        fromData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        fromData
       );
 
       if (response.status === 200) {
