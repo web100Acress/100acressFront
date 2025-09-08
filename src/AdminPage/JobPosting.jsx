@@ -374,15 +374,15 @@ const JobPosting = () => {
         )}
 
         {applicantsOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm">
-            <div className="bg-white p-6 rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-2/3">
-              <div className="flex items-center justify-between mb-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] flex flex-col">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
                 <h2 className="text-2xl font-bold text-gray-800">
                   Applicants {selectedOpening ? `- ${truncate(selectedOpening.jobTitle, 40)}` : ""}
                 </h2>
                 <button
                   onClick={closeApplicants}
-                  className="text-gray-500 hover:text-gray-800 transition duration-300"
+                  className="text-gray-500 hover:text-gray-800 transition duration-300 p-1 hover:bg-gray-100 rounded-full"
                 >
                   <RxCross2 size={24} />
                 </button>
@@ -434,10 +434,10 @@ const JobPosting = () => {
                   </button>
                 </div>
               </div>
-              <div className="bg-white rounded-md border border-gray-200 overflow-hidden">
+              <div className="flex-1 overflow-auto">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm text-left text-gray-600">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
+                    <thead className="sticky top-0 z-10 text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
                       <tr>
                         <th className="px-6 py-3">#</th>
                         <th className="px-6 py-3">Candidate Name</th>

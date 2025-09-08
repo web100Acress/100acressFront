@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 const ProjectHero = ({
   backgroundImage = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1973&q=80",
@@ -14,12 +14,19 @@ const ProjectHero = ({
   },
   onShowCallback = () => {}
 }) => {
+  // Memoize background image style to prevent re-renders
+  const backgroundStyle = useMemo(() => ({
+    backgroundImage: `url(${backgroundImage})`,
+    contentVisibility: 'auto',
+    containIntrinsicSize: '100vw 100vh'
+  }), [backgroundImage]);
+
   return (
     <div className="relative h-screen w-full overflow-hidden">
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
+        style={backgroundStyle}
       />
       
       {/* Dark Gradient Overlay */}
@@ -70,7 +77,7 @@ const ProjectHero = ({
       </div>
       
       {/* Bottom Section with Title, Location and Info Bar */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 w-full max-w-5xl px-4">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 w-full max-w-5xl px-4" style={{ contentVisibility: 'auto' }}>
         {/* Title and Location positioned above info bar */}
         <div className="text-center text-white mb-3">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 tracking-wide text-white">

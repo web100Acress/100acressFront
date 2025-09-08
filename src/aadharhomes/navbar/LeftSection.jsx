@@ -64,10 +64,10 @@ export default function LeftSection({
       />
       <Drawer placement="left" isOpen={isDrawerOpen} onClose={closeDrawer} size="xs" motionPreset="slideInLeft" closeOnOverlayClick>
         <DrawerOverlay />
-        <DrawerContent borderRightRadius={{ base: 0, md: 8 }}>
+        <DrawerContent borderRightRadius={{ base: 0, md: 8 }} h="100vh">
           <DrawerCloseButton />
           <DrawerHeader borderBottomWidth="1px">Explore</DrawerHeader>
-          <DrawerBody p={3} overflowY="auto">
+          <DrawerBody p={3} overflowY="auto" pb={6}>
             {(forceHamburger || hideCity) && (
               <>
                 <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 2 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>City</Box>
@@ -250,6 +250,8 @@ export default function LeftSection({
                 </Button>
               </>
             )}
+            {/* Spacer so last items remain visible above mobile bottom nav */}
+            <Box h={{ base: 16, md: 0 }} />
           </DrawerBody>
         </DrawerContent>
       </Drawer>

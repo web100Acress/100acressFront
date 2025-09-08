@@ -1,0 +1,60 @@
+.container {
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    margin: 0 0 0 16px;
+    padding: 1px;
+    
+  }
+  
+  .svg-border {
+    position: absolute;
+    top: 50%;
+    left: 51%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    width: 280px;
+    
+  }
+  
+  .neon {
+    filter: url(#neon);
+  }
+  
+  body {
+    background-color: #0a0a0a;
+    color: white;
+  }
+  
+  .text-content {
+    position: relative;
+    z-index: 2;
+    padding: 7px 33px;
+    background: white;
+    color: #111;
+    font-weight: bold;
+    border-radius: 8px; /* Corrected to match SVG's rx/ry */
+    white-space: nowrap;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Adjusted for better spacing */
+    text-decoration: none;
+    margin-left: -30px;
+    
+  }
+  
+  .free-text {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-left: 2px;
+    clip-path: polygon(10% 0%, 100% 0%, 100% 100%, 10% 100%, 0% 50%); /* Corrected clip-path for flag shape */
+  } 
+
+  

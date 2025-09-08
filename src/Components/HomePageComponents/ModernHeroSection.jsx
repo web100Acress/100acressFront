@@ -310,6 +310,8 @@ const HeroWrapper = styled.section`
   flex-direction: column;
   align-items: stretch;
   overflow: hidden;
+  padding-top: 64px; /* Height of the navbar */
+  margin-top: -64px; /* Pull up to account for navbar fixed positioning */
 
   /* New: top hero background image strip (340px tall) */
   .top-hero-bg {

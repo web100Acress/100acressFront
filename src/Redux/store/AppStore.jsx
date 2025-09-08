@@ -11,6 +11,8 @@ import PossessionReducer from "../slice/PossessionSlice.jsx";
 import ProjectOverviewReducer from "../slice/ProjectOverviewSlice.jsx";
 import PriceBasedReducer from "../slice/PriceBasedSlice.jsx";
 import projectOrderReducer from "../slice/ProjectOrderSlice.jsx";
+import favoritesReducer from "../slice/FavoritesSlice.jsx";
+import viewedReducer from "../slice/ViewedSlice.jsx";
 
 const AppStore = configureStore({
     reducer: {
@@ -26,6 +28,8 @@ const AppStore = configureStore({
         ProjectOverview : ProjectOverviewReducer,
         PriceBased : PriceBasedReducer,
         projectOrder: projectOrderReducer,
+        favorites: favoritesReducer,
+        viewed: viewedReducer,
     },
     devTools: process.env.NODE_ENV !== 'production',
 });

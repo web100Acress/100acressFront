@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { Skeleton } from 'antd';
-import Aos from 'aos';
+import * as AOS from 'aos';
 
 const ProjectsSkeleton = () => {
 
     useEffect(() => {
-      Aos.init();
+      AOS.init();
     }, []);
   return (
     <div data-aos="zoom-in-down" className="py-3">
