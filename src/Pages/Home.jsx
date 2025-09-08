@@ -419,7 +419,7 @@ const Home = () => {
   
 
   return (
-    <Wrapper className="section" style={{ overflowX: "hidden" }}>
+    <Wrapper className="section">
       <Helmet>
         <meta
           name="description"
@@ -447,7 +447,7 @@ const Home = () => {
 
         <Link to="/experion-the-trillion/" className="block relative w-full group" target="_self" aria-label="Experion The Trillion">
           
-          <div className="hero-strip-99 transform transition-transform duration-500 ease-out group-hover:scale-[1.02] cursor-pointer" aria-hidden="true" />
+          <div className="hero-strip-99 transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer" aria-hidden="true" style={{ backfaceVisibility: 'hidden' }} />
         </Link>
     </div>
 
@@ -796,36 +796,33 @@ const Home = () => {
  export default Home;
  
  const Wrapper = styled.div`
-   /* Neutral background */
-   background: #ffffff;
+  /* Neutral background */
+  background: #ffffff;
+  position: relative;
+  z-index: 1;
  
    
    .hero-strip-99 {
-     width: 100%;
-     height: 340px;
-     background-image: url("https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/experion-the-trillion-banner.webp");
-     background-repeat: no-repeat;
-     background-position: center center; /* keep image centered */
-     background-size: auto 100%; /* fit height exactly; crop sides on small screens */
-     margin-top: 0; /* navbar is fixed and overlays this strip */
-     position: relative; /* for gradient overlay */
-   }
+    width: 100%;
+    height: 340px;
+    background-image: url("../Images/experion-the-trillion-banner.jpg");
+    background-repeat: no-repeat;
+    background-position: center center; /* keep image centered */
+    background-size: auto 100%; /* fit height exactly; crop sides on small screens */
+    margin-top: 76px; /* match header height (60 + 8 + 8 padding) */
+    position: relative; /* for gradient overlay */
+    overflow: hidden; /* avoid secondary scrollbar when scaled */
+  }
  
-   /* Top fade to white to blend with transparent navbar */
-   .hero-strip-99::before {
-     content: "";
-     position: absolute;
-     left: 0;
-     right: 0;
-     top: 0;
-     height: 72px; /* fade height */
-     pointer-events: none;
-     background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 28%, rgba(255,255,255,0.4) 56%, rgba(255,255,255,0) 100%);
-   }
+   /* Remove top fade overlay */
+  .hero-strip-99::before {
+    content: none;
+    display: none;
+  }
  
    @media (max-width: 640px) {
      .hero-strip-99 {
-       margin-top: 0;
+       margin-top: 72px; /* ensure no overlap on small screens */
      }
    }
  
