@@ -503,9 +503,11 @@ const ScrollContainer = styled.div`
   @media (min-width: 992px) {
     flex-direction: column;
     gap: var(--v-gap, 1.75rem);
+
     height: auto;
     overflow-x: visible;
     overflow-y: visible; /* vertically expand instead of inner scroll */
+
     flex-wrap: nowrap;
   }
 `;

@@ -558,12 +558,12 @@ const Home = () => {
               </div>
 
 
-        <div ref={setRef("delhi")} data-section="delhi" style={{ height: "10px" }}></div>
+        {/* <div ref={setRef("delhi")} data-section="delhi" style={{ height: "10px" }}></div>
         <div>
           {ProjectinDelhi.length === 0 ? <CustomSkeleton /> : (
             <CommonProject data={ProjectinDelhi} title="Top Projects in Delhi" animation="zoom-out-left" path="/project-in-delhi/" />
           )}
-        </div>
+        </div> */}
 
         {/* Projects in Dubai */}
         {/* <div ref={setRef("dubai")} data-section="dubai" style={{ height: "10px" }}></div>
