@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 
-const FAQSection = ({ projectViewDetails = {} }) => {
+const FAQSection = ({ projectViewDetails = {}, onShowCallback = () => {} }) => {
   const [openIndex, setOpenIndex] = useState(null);
 
   const formatDate = (dateString) => {
@@ -97,7 +97,7 @@ const FAQSection = ({ projectViewDetails = {} }) => {
 
         {/* FAQ Content */}
         <div className="max-w-4xl mx-auto">
-          <div className="space-y-4">
+          <div className="space-y-3">
             {faqs.map((faq, index) => (
               <div 
                 key={index}
@@ -109,13 +109,13 @@ const FAQSection = ({ projectViewDetails = {} }) => {
                   {/* Question */}
                   <button
                     onClick={() => toggleFAQ(index)}
-                    className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-800/30 transition-colors duration-300"
+                    className="w-full px-5 py-3 text-left flex items-center justify-between hover:bg-gray-800/30 transition-colors duration-300"
                   >
-                    <h4 className="text-white font-semibold text-base md:text-lg pr-4">
+                    <h4 className="text-white font-semibold text-sm md:text-base pr-4 leading-tight">
                       {faq.title}?
                     </h4>
-                    <div className={`flex-shrink-0 w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''}`}>
-                      <svg className="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className={`flex-shrink-0 w-6 h-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''}`}>
+                      <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </div>
@@ -123,9 +123,9 @@ const FAQSection = ({ projectViewDetails = {} }) => {
 
                   {/* Answer */}
                   <div className={`overflow-hidden transition-all duration-300 ${openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                    <div className="px-6 pb-5">
-                      <div className="w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent mb-4"></div>
-                      <p className="text-gray-300 leading-relaxed text-sm md:text-base">
+                    <div className="px-5 pb-3">
+                      <div className="w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent mb-3"></div>
+                      <p className="text-gray-300 leading-relaxed text-sm">
                         {faq.content}
                       </p>
                     </div>
@@ -137,20 +137,42 @@ const FAQSection = ({ projectViewDetails = {} }) => {
         </div>
 
         {/* Contact CTA */}
-        <div className="max-w-3xl mx-auto mt-12">
-          <div className="bg-gradient-to-r from-amber-600/10 to-amber-500/5 rounded-xl p-6 border border-amber-600/20">
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
-                <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-              </div>
-              <div>
-                <h5 className="text-amber-400 font-semibold mb-2">Still Have Questions?</h5>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  Our expert team is here to help you with any additional questions about {projectViewDetails?.projectName}. 
-                  Contact us for personalized assistance and detailed project information.
-                </p>
+        <div className="max-w-4xl mx-auto mt-12">
+          <div className="relative group">
+            {/* Glow Effect */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-all duration-700"></div>
+            
+            <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl p-6 md:p-8 border border-gray-700/50 backdrop-blur-sm">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-4 md:space-y-0 md:space-x-6">
+                
+                {/* Left Content */}
+                <div className="flex items-start space-x-4 flex-1">
+                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h5 className="text-amber-400 font-bold mb-2 text-lg">Still Have Questions?</h5>
+                    <p className="text-gray-300 text-sm md:text-base leading-relaxed">
+                      Our expert team is here to help you with any additional questions about {projectViewDetails?.projectName}. 
+                      Get personalized assistance and detailed project information.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right Action Button */}
+                <div className="flex-shrink-0 w-full md:w-auto">
+                  <button 
+                    onClick={onShowCallback}
+                    className="w-full md:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-semibold px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-amber-500/25 flex items-center justify-center space-x-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <span>Contact Us</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

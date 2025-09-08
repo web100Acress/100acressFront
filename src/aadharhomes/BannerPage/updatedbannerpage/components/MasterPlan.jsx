@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const MasterPlan = ({ projectName = "", masterPlanImage = null }) => {
+const MasterPlan = ({ projectName = "", masterPlanImage = null, onShowCallback = () => {} }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImageUnlocked, setIsImageUnlocked] = useState(false);
 
   const openModal = () => {
-    if (masterPlanImage?.url) {
+    if (masterPlanImage?.url && isImageUnlocked) {
       setIsModalOpen(true);
       document.body.style.overflow = 'hidden';
     }
@@ -13,6 +14,32 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null }) => {
   const closeModal = () => {
     setIsModalOpen(false);
     document.body.style.overflow = 'auto';
+  };
+
+  // Check localStorage for image unlock status on component mount
+  useEffect(() => {
+    if (projectName) {
+      const unlockKey = `masterplan_unlocked_${projectName}`;
+      const isUnlocked = localStorage.getItem(unlockKey) === 'true';
+      console.log('MasterPlan unlock check:', { projectName, unlockKey, isUnlocked });
+      setIsImageUnlocked(isUnlocked);
+    } else {
+      // If no project name, default to locked
+      setIsImageUnlocked(false);
+    }
+  }, [projectName]);
+
+  // Handle form submission success - unlock images
+  const handleFormSuccess = () => {
+    const unlockKey = `masterplan_unlocked_${projectName}`;
+    localStorage.setItem(unlockKey, 'true');
+    setIsImageUnlocked(true);
+  };
+
+  // Handle get details button click
+  const handleGetDetails = () => {
+    console.log('MasterPlan Get Details clicked');
+    onShowCallback(handleFormSuccess);
   };
 
   // Don't render if no master plan image is available
@@ -50,7 +77,7 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null }) => {
 
         {/* Master Plan Image Card */}
         <div className="max-w-5xl mx-auto">
-          <div className="relative group cursor-pointer" onClick={openModal}>
+          <div className="relative group" onClick={isImageUnlocked ? openModal : undefined}>
             <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
             <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700/50 backdrop-blur-sm">
               
@@ -59,23 +86,48 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null }) => {
                 <img
                   src={masterPlanImage.url}
                   alt={`Master Plan of ${projectName}`}
-                  className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-105"
+                  className={`w-full h-auto object-contain transition-all duration-500 ${
+                    isImageUnlocked 
+                      ? 'cursor-pointer group-hover:scale-105' 
+                      : 'blur-lg'
+                  }`}
                 />
                 
-                {/* Overlay with zoom icon */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-amber-500 rounded-full p-3">
-                    <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                    </svg>
+                {/* Blur Overlay with Get Details Button */}
+                {!isImageUnlocked && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
+                    <button
+                      onClick={handleGetDetails}
+                      className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-amber-500/30 flex items-center gap-3 z-20"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      <span>Get Details to View</span>
+                    </button>
                   </div>
-                </div>
+                )}
+                
+                {/* Zoom icon overlay for unlocked images */}
+                {isImageUnlocked && (
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-amber-500 rounded-full p-3">
+                      <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                      </svg>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Click to Expand Text */}
               <div className="mt-4 text-center">
                 <p className="text-gray-400 text-sm font-medium">
-                  Click to view full-size master plan
+                  {isImageUnlocked 
+                    ? "Click to view full-size master plan" 
+                    : "Submit your details to unlock master plan"
+                  }
                 </p>
               </div>
             </div>

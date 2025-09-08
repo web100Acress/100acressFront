@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const LocationSection = ({ 
-  projectName = "Sample Project",
-  projectAddress = "Sample Address",
-  city = "Sample City",
+  projectName = "",
+  projectAddress = "",
+  city = "",
   locationImage,
   connectivityPoints = [],
   businessPoints = [],
   educationPoints = [],
   entertainmentPoints = [],
-  projectViewDetails = null
+  projectViewDetails = null,
+  onShowCallback = () => {}
 }) => {
   const [activeTab, setActiveTab] = useState('connectivity');
   const [isMounted, setIsMounted] = useState(false);
@@ -76,7 +77,7 @@ const LocationSection = ({
       className="flex items-start space-x-3 group"
     >
       <div className={`w-2 h-2 ${color.split(' ')[2]} rounded-full mt-2 flex-shrink-0 transition-transform duration-300 group-hover:scale-125`}></div>
-      <p className="text-gray-300 text-sm md:text-base leading-relaxed transition-colors duration-300 group-hover:text-white">
+      <p className="text-gray-300 text-sm md:text-base leading-relaxed transition-colors duration-300 group-hover:text-white clamp-3">
         {point}
       </p>
     </motion.div>
@@ -94,8 +95,7 @@ const LocationSection = ({
   const handleEmail = () => {
     // eslint-disable-next-line no-console
     console.log("Opening contact form (Get in touch)");
-    // For now, just show an alert - this can be connected to a contact modal later
-    alert("Contact form will be opened here.");
+    onShowCallback();
   };
 
   const handleShare = async () => {
@@ -134,10 +134,10 @@ const LocationSection = ({
           initial={{ opacity: 0, y: 20 }}
           animate={isMounted ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-8 md:mb-10"
+          className="text-center mb-6 md:mb-10"
         >
           <motion.div 
-            className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-5"
+            className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-2"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -146,7 +146,7 @@ const LocationSection = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </motion.div>
-          <h2 className="text-amber-400 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] mb-3">
+          <h2 className="text-amber-400 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] mb-1">
             LOCATION & CONNECTIVITY
           </h2>
           <h3 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-4 max-w-4xl mx-auto">
@@ -262,7 +262,7 @@ const LocationSection = ({
                         {tab.points.slice(0, 4).map((point, i) => (
                           <div key={i} className="flex items-center space-x-3 group">
                             <div className={`w-2 h-2 ${tab.color.split(' ')[2]} rounded-full flex-shrink-0`}></div>
-                            <p className="text-sm md:text-base text-gray-200 leading-snug font-medium">{point}</p>
+                            <p className="text-sm md:text-base text-gray-200 leading-snug font-medium clamp-3">{point}</p>
                           </div>
                         ))}
                         {tab.points.length > 4 && (
@@ -289,7 +289,7 @@ const LocationSection = ({
                       </svg>
                       <span>Email</span>
                     </button>
-                    <button className="flex items-center justify-center space-x-1.5 px-2 py-1.5 bg-gray-800/50 hover:bg-gray-700/70 rounded-lg border border-gray-700/50 transition-colors duration-300 text-xs">
+                    <button onClick={onShowCallback} className="flex items-center justify-center space-x-1.5 px-2 py-1.5 bg-gray-800/50 hover:bg-gray-700/70 rounded-lg border border-gray-700/50 transition-colors duration-300 text-xs">
                       <svg className="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -374,6 +374,13 @@ const LocationSection = ({
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: rgba(255, 255, 255, 0.3);
+        }
+        /* Clamp to ~3 lines with ellipsis */
+        .clamp-3 {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
       `}</style>
     </section>

@@ -51,14 +51,17 @@ function ProjectLayout2() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
+  const [callbackSuccessHandler, setCallbackSuccessHandler] = useState(null);
   const { pUrl } = useParams();
 
-  const handleShowCallback = () => {
+  const handleShowCallback = (successCallback = null) => {
+    setCallbackSuccessHandler(() => successCallback);
     setIsCallbackModalOpen(true);
   };
 
   const handleCloseCallback = () => {
     setIsCallbackModalOpen(false);
+    setCallbackSuccessHandler(null);
   };
 
   useEffect(() => {
@@ -156,6 +159,7 @@ function ProjectLayout2() {
         maxPrice={projectViewDetails?.maxPrice}
         bhkDetails={projectViewDetails?.BhK_Details || []}
         onShowCallback={handleShowCallback}
+        projectViewDetails={projectViewDetails}
       />
 
       {/* Amenities */}
@@ -215,12 +219,14 @@ function ProjectLayout2() {
         educationPoints={projectViewDetails?.projectRedefine_Education || []}
         entertainmentPoints={projectViewDetails?.projectRedefine_Entertainment || []}
         projectViewDetails={projectViewDetails}
+        onShowCallback={handleShowCallback}
       />
 
       {/* Master Plan */}
       <MasterPlan 
         projectName={projectViewDetails?.projectName}
         masterPlanImage={projectViewDetails?.projectMaster_plan}
+        onShowCallback={handleShowCallback}
       />
 
       {/* Builder Info */}
@@ -230,7 +236,10 @@ function ProjectLayout2() {
       />
 
       {/* FAQs */}
-      <FAQSection projectViewDetails={projectViewDetails} />
+      <FAQSection 
+        projectViewDetails={projectViewDetails} 
+        onShowCallback={handleShowCallback}
+      />
 
       {/* Related Projects */}
       <RelatedProjects 
@@ -246,6 +255,7 @@ function ProjectLayout2() {
         projectViewDetails={projectViewDetails}
         projectTitle={projectTitle}
         location={location}
+        onSuccess={callbackSuccessHandler}
       />
     </div>
   );

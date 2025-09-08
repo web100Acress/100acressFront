@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { message } from 'antd';
 import api from '../../../../config/apiClient';
 
-const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle = "", location = "" }) => {
+const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle = "", location = "", onSuccess = null }) => {
   const [sideDetails, setSideDetails] = useState({ name: '', mobile: '', email: '' });
   const [sideButtonText, setSideButtonText] = useState('Submit');
   const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +45,10 @@ const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle 
       message.success('Callback Requested Successfully');
       resetData();
       onClose();
+      // Call success callback if provided (for unlocking images)
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       message.error('Failed to submit request. Please try again.');
       setSideButtonText('Submit');

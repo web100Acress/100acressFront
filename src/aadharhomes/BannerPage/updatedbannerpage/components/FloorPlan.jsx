@@ -1,7 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {} }) => {
   const [activeTab, setActiveTab] = useState(0);
+  const [isImageUnlocked, setIsImageUnlocked] = useState(false);
+
+  // Check localStorage for image unlock status on component mount
+  useEffect(() => {
+    const unlockKey = `floorplan_unlocked_${bhkDetails[0]?.bhk_type || 'default'}`;
+    const isUnlocked = localStorage.getItem(unlockKey) === 'true';
+    setIsImageUnlocked(isUnlocked);
+  }, [bhkDetails]);
+
+  // Handle form submission success - unlock images
+  const handleFormSuccess = () => {
+    const unlockKey = `floorplan_unlocked_${bhkDetails[0]?.bhk_type || 'default'}`;
+    localStorage.setItem(unlockKey, 'true');
+    setIsImageUnlocked(true);
+  };
+
+  // Handle get details button click
+  const handleGetDetails = () => {
+    onShowCallback(handleFormSuccess);
+  };
 
   if (!floorPlans || floorPlans.length === 0 || !floorPlans.some(plan => plan && plan.url)) {
     return null; // Don't render if no floor plans are available or no valid URLs
@@ -54,13 +74,33 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
               ))}
             </div>
 
-            <div className="bg-gray-800/50 p-3 rounded-lg border border-gray-700 mb-4">
+            <div className="bg-gray-800/50 p-3 rounded-lg border border-gray-700 mb-4 relative">
               {activePlan && (
-                <img 
-                  src={activePlan.url} 
-                  alt={`Floor plan for ${activeBhkDetails?.bhk_type}`}
-                  className="w-full h-auto object-contain rounded-md max-h-[400px]"
-                />
+                <>
+                  <img 
+                    src={activePlan.url} 
+                    alt={`Floor plan for ${activeBhkDetails?.bhk_type}`}
+                    className={`w-full h-auto object-contain rounded-md max-h-[400px] transition-all duration-500 ${
+                      isImageUnlocked ? '' : 'blur-md'
+                    }`}
+                  />
+                  
+                  {/* Blur Overlay with Get Details Button */}
+                  {!isImageUnlocked && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-md">
+                      <button
+                        onClick={handleGetDetails}
+                        className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-amber-500/30 flex items-center gap-2"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span>Get Details to View</span>
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
@@ -70,7 +110,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
           {/* Right Side: Buttons */}
           <div className="flex flex-col items-center lg:items-end">
             <button 
-              onClick={onShowCallback}
+              onClick={handleGetDetails}
               className="bg-amber-500 text-black font-semibold px-8 py-3 rounded-lg hover:bg-amber-600 transition-colors duration-300 w-full lg:w-auto"
             >
               Get Details

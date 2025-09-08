@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onShowCallback = () => {} }) => {
+const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onShowCallback = () => {}, projectViewDetails = null }) => {
   const hasBhkDetails = bhkDetails && Array.isArray(bhkDetails) && bhkDetails.length > 0;
+  // Dynamic phone number (same logic style as ProjectHero/LocationSection)
+  const phoneNumber = useMemo(() => {
+    return projectViewDetails?.mobileNumber || '+91 9810982010';
+  }, [projectViewDetails]);
   
   const formatPrice = (price) => {
     if (!price) return null;
@@ -57,7 +61,7 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
                       Area (Sq.ft.)
                     </th>
                     <th scope="col" className="px-6 py-4 text-right text-xs font-medium text-amber-400 uppercase tracking-wider">
-                      View
+                      Contact
                     </th>
                   </tr>
                 </thead>
@@ -73,12 +77,12 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <button 
                           onClick={onShowCallback}
-                          className="text-amber-500 hover:text-amber-400 transition-colors duration-200"
+                          className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-amber-600 text-black font-semibold hover:bg-amber-500 transition-colors duration-200 shadow hover:shadow-amber-500/20"
                         >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                           </svg>
+                          <span>Contact</span>
                         </button>
                       </td>
                     </tr>
@@ -97,19 +101,31 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
           )}
 
           {/* Contact for Details */}
-          <div className="mt-8 text-center">
-            <p className="text-gray-400 mb-4">
+          <div className="mt-10 text-center">
+            <p className="text-gray-300 mb-3 text-sm md:text-base">
               For detailed pricing and availability, please contact our sales team
             </p>
-            <a 
-              href="tel:+919876543210" 
-              className="inline-flex items-center gap-2 text-amber-400 hover:text-white transition-colors duration-200"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              <span>+91 98765 43210</span>
-            </a>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <a 
+                href={`tel:${phoneNumber}`}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-amber-500/40 text-amber-400 hover:text-black hover:bg-amber-500 transition-colors duration-200 font-medium"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <span className="font-semibold">{phoneNumber}</span>
+              </a>
+
+              <button 
+                onClick={onShowCallback}
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold hover:from-amber-600 hover:to-amber-700 transition-colors duration-200 shadow hover:shadow-amber-500/25"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span>Get in Touch</span>
+              </button>
+            </div>
           </div>
 
         </div>
