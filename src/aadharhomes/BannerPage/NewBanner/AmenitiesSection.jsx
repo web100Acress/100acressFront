@@ -72,16 +72,9 @@ const AmenitiesSection = ({ projectName, Amenities = [] }) => {
   return (
     <div className="nb-amenities-section">
       <div className="nb-section-header nb-amenities-header">
-        <div className="nb-section-lines">
-          <div className="nb-section-line"></div>
-          <span className="nb-section-subtitle">Project Facilities</span>
-          <div className="nb-section-line"></div>
-        </div>
         <h2 className="nb-section-title nb-amenities-title">
-          {projectName}
-          <span className="nb-amenities-subtitle">Amenities</span>
+          {projectName} <span className="nb-amenities-subtitle">Amenities</span>
         </h2>
-        <div className="nb-section-underline"></div>
       </div>
       <div className="nb-amenities-grid">
         {items.map((project, idx) => {

@@ -20,11 +20,9 @@ import api from "../../../../config/apiClient";
 // Tailwind CSS required. All content is placeholder/dummy for later wiring.
 
 const SectionHeading = ({ title, subtitle }) => (
-  <div className="mb-6">
-    <h2 className="text-2xl font-semibold text-yellow-500">{title}</h2>
-    {subtitle ? (
-      <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
-    ) : null}
+  <div className="text-center mb-4">
+    <h2 className="text-2xl md:text-3xl font-bold text-white tracking-wide">{title}</h2>
+    <div className="w-16 h-0.5 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-2"></div>
   </div>
 );
 
@@ -161,10 +159,10 @@ function ProjectLayout2() {
       />
 
       {/* Amenities */}
-      <section className="py-16 bg-black">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="pt-0 pb-4 bg-black">
+        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <SectionHeading title="Amenities" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
               { name: "MULTIPURPOSE COURT", image: "/amenities_image/multipurpose-court-new-img.webp" },
               { name: "TODDLERS' PLAY AREA", image: "/amenities_image/kidsplayarea-img-amenity.webp" },
@@ -216,6 +214,7 @@ function ProjectLayout2() {
         businessPoints={projectViewDetails?.projectRedefine_Business || []}
         educationPoints={projectViewDetails?.projectRedefine_Education || []}
         entertainmentPoints={projectViewDetails?.projectRedefine_Entertainment || []}
+        projectViewDetails={projectViewDetails}
       />
 
       {/* Master Plan */}

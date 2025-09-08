@@ -21,7 +21,7 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null }) => {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-black via-gray-900 to-black text-white relative overflow-hidden">
+    <section className="py-12 bg-gradient-to-b from-black via-gray-900 to-black text-white relative overflow-hidden">
       {/* Sophisticated Background Pattern */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-full h-full opacity-10">
@@ -33,26 +33,26 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null }) => {
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Premium Section Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-6">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-4">
             <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-[0.2em] mb-4">
+          <h2 className="text-amber-400 text-xs font-semibold uppercase tracking-[0.2em] mb-2">
             MASTER PLAN
           </h2>
-          <h3 className="text-white text-3xl md:text-4xl font-bold leading-tight mb-6 max-w-3xl mx-auto">
+          <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-3 max-w-3xl mx-auto">
             Master Plan of {projectName}
           </h3>
-          <div className="w-24 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
+          <div className="w-16 h-0.5 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
         </div>
 
         {/* Master Plan Image Card */}
         <div className="max-w-5xl mx-auto">
           <div className="relative group cursor-pointer" onClick={openModal}>
             <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
-            <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700/50 backdrop-blur-sm">
+            <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700/50 backdrop-blur-sm">
               
               {/* Image Container */}
               <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-600/30">
@@ -73,7 +73,7 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null }) => {
               </div>
 
               {/* Click to Expand Text */}
-              <div className="mt-6 text-center">
+              <div className="mt-4 text-center">
                 <p className="text-gray-400 text-sm font-medium">
                   Click to view full-size master plan
                 </p>
@@ -83,11 +83,11 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null }) => {
         </div>
 
         {/* Additional Info */}
-        <div className="max-w-3xl mx-auto mt-12">
-          <div className="bg-gradient-to-r from-amber-600/10 to-amber-500/5 rounded-xl p-6 border border-amber-600/20">
+        <div className="max-w-3xl mx-auto mt-4">
+            <div className="bg-gradient-to-r from-amber-600/10 to-amber-500/5 rounded-xl p-4 border border-amber-600/20">
             <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
-                <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
+                <svg className="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>

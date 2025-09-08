@@ -56,9 +56,6 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
                     <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">
                       Area (Sq.ft.)
                     </th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">
-                      Configuration
-                    </th>
                     <th scope="col" className="px-6 py-4 text-right text-xs font-medium text-amber-400 uppercase tracking-wider">
                       View
                     </th>
@@ -72,11 +69,6 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-base text-amber-400">{item.bhk_Area || 'N/A'}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-300">
-                          {item.bhk_type ? `${item.bhk_type} Apartment` : 'Details available on request'}
-                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <button 

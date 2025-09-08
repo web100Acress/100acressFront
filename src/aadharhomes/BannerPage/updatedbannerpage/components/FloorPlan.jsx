@@ -11,7 +11,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
   const activeBhkDetails = bhkDetails[activeTab];
 
   return (
-    <section className="py-16 bg-black text-white relative overflow-hidden">
+    <section className="py-10 bg-black text-white relative overflow-hidden">
       {/* Background decorative lines */}
       <div className="absolute top-0 right-0 -z-0 opacity-20">
         <svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -26,7 +26,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-10 relative">
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">
             FLOOR PLANS
           </h2>
@@ -39,7 +39,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
           {/* Left Side: Image and Super Area */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex items-center gap-4 mb-4">
               {bhkDetails.map((bhk, index) => (
                 <button 
                   key={index}
@@ -54,7 +54,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
               ))}
             </div>
 
-            <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700 mb-6">
+            <div className="bg-gray-800/50 p-3 rounded-lg border border-gray-700 mb-4">
               {activePlan && (
                 <img 
                   src={activePlan.url} 
@@ -64,12 +64,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
               )}
             </div>
 
-            <div>
-              <h4 className="text-amber-500 text-sm uppercase tracking-widest mb-1">Super Area</h4>
-              <p className="text-white text-lg font-semibold">
-                {activeBhkDetails?.bhk_Area || 'N/A'}
-              </p>
-            </div>
+            
           </div>
 
           {/* Right Side: Buttons */}
