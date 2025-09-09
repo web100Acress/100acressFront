@@ -166,6 +166,7 @@ const JobPostingEdit = lazy(() => import("./AdminPage/JobPostingEdit"));
 const InsertProject = lazy(() => import("./AdminPage/InsertProject"));
 const AllListedProperties = lazy(() => import("./AdminPage/AllListedProperties"));
 const BlogViewAdmin = lazy(() => import("./AdminPage/BlogViewAdmin"));
+const BlogEnquiries = lazy(() => import("./AdminPage/BlogEnquiries"));
 const SeoPrivateRoute = lazy(() => import("./Components/Blog_Components/SeoPrivateRoute"));
 const BlogManagement = lazy(() => import("./Components/Blog_Components/BlogManagement"));
 const BlogDashboard = lazy(() => import("./Components/Blog_Components/BlogDashboard"));
@@ -431,6 +432,7 @@ function App() {
                       <Route path="contact" element={<LazyLoad><AdminContact /></LazyLoad>} />
                       <Route path="editProject" element={<LazyLoad><EditProject /></LazyLoad>} />
                       <Route path="enquiries" element={<LazyLoad><Enquiries /></LazyLoad>} />
+                      <Route path="blog-enquiries" element={<LazyLoad><BlogEnquiries /></LazyLoad>} />
                       <Route path="header" element={<LazyLoad><Header /></LazyLoad>} />
                       <Route path="Projects/property" element={<LazyLoad><Projects /></LazyLoad>} />
                       <Route path="resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />

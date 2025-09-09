@@ -33,6 +33,31 @@ const BlogView = () => {
   const isMobile = useIsMobile ? useIsMobile() : false;
   const [showMobileEnquiry, setShowMobileEnquiry] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  // People are searching (unique phrasing and links)
+  const peopleSearch = [
+    { label: 'Flats in Gurgaon', url: '/buy-properties-in-gurgaon' },
+    { label: 'Flats in Delhi', url: '/buy-properties-in-delhi' },
+    { label: 'Flats for sale in Bangalore', url: '/buy-properties-in-bangalore' },
+    { label: 'Flats in Mumbai', url: '/buy-properties-in-mumbai' },
+    { label: 'Flats for sale in Chennai', url: '/buy-properties-in-chennai' },
+    { label: 'Flats in Pune', url: '/buy-properties-in-pune' },
+    { label: 'Flats in Kolkata', url: '/buy-properties-in-kolkata' },
+    { label: 'Flats in Greater Noida', url: '/buy-properties-in-greater-noida' },
+  ];
+  const popularTools = [
+    { label: 'Post your property', url: '/postproperty' },
+    { label: 'Apply for Home Loan', url: '/loan/apply' },
+    { label: 'EMI Calculator', url: '/loan/emi-calculator' },
+    { label: 'Rent Receipt', url: '/tools/rent-receipt' },
+  ];
+  // Lead capture popup modal
+  const [showLeadModal, setShowLeadModal] = useState(false);
+  const [leadProjectInfo, setLeadProjectInfo] = useState({
+    name: '',
+    thumbnail: '',
+    minPrice: null,
+    maxPrice: null,
+  });
 
   // Safe image fallback for broken S3 URLs
   const FALLBACK_IMG = "/Images/blog.avif";
@@ -138,13 +163,25 @@ const BlogView = () => {
 
     setButtonText("Submitting...");
     try {
-      await api.post(
-        `contact_Insert`,
-        blogQuery
-      );
-      setResponseMessage("Data submitted successfully");
+      // Build payload with blog and related project context
+      const firstProject = Array.isArray(relatedProjects) && relatedProjects.length > 0 ? relatedProjects[0] : null;
+      const payload = {
+        ...blogQuery,
+        blogId: data?._id,
+        blogTitle: data?.blog_Title,
+        blogSlug: data?.slug,
+        source: 'blog-modal',
+        project: firstProject ? {
+          project_url: firstProject.project_url || '',
+          projectName: firstProject.projectName || '',
+          thumbnail: firstProject.thumbnail || ''
+        } : undefined
+      };
+      await api.post(`blog/enquiry`, payload);
+      setResponseMessage("Enquiry submitted successfully");
       resetData();
       setButtonText("Submit");
+      try { setShowLeadModal(false); } catch (_) {}
     } catch (error) {
       if (error.response) {
         console.error("Server error:", error.response.data);
@@ -281,6 +318,61 @@ const BlogView = () => {
     // Trigger fetch on id, slug, or query changes
     fetchBlogData();
   }, [id, slug, location.search]);
+
+  // Timed popup: show 3s after blog successfully loads (every refresh)
+  useEffect(() => {
+    if (!data || !data._id) return; // wait until blog is loaded
+    const t = setTimeout(() => {
+      setShowLeadModal(true);
+    }, 3000);
+    return () => clearTimeout(t);
+  }, [data?._id]);
+
+  // When modal opens, fetch price/details for the first related project (if available)
+  useEffect(() => {
+    const loadLeadProject = async () => {
+      try {
+        if (!showLeadModal) return;
+        const rp = Array.isArray(relatedProjects) && relatedProjects.length > 0 ? relatedProjects[0] : null;
+        if (!rp || !rp.project_url) return;
+        const url = `${API_ROUTES.projectsBase()}/View/${encodeURIComponent(rp.project_url)}`;
+        const res = await api.get(url);
+        const p = res?.data?.data || {};
+        const thumb = p?.thumbnailImage?.cdn_url || p?.thumbnailImage?.url || rp.thumbnail || FALLBACK_IMG;
+        setLeadProjectInfo({
+          name: p?.projectName || rp.projectName || 'Project',
+          thumbnail: /^data:image\/svg\+xml/i.test(thumb) ? FALLBACK_IMG : (thumb || FALLBACK_IMG),
+          minPrice: typeof p?.minPrice === 'number' ? p.minPrice : null,
+          maxPrice: typeof p?.maxPrice === 'number' ? p.maxPrice : null,
+        });
+      } catch (e) {
+        // fallback to existing rp data
+        const rp = Array.isArray(relatedProjects) && relatedProjects.length > 0 ? relatedProjects[0] : null;
+        if (rp) {
+          setLeadProjectInfo({
+            name: rp.projectName || 'Project',
+            thumbnail: rp.thumbnail || FALLBACK_IMG,
+            minPrice: null,
+            maxPrice: null,
+          });
+        }
+      }
+    };
+    loadLeadProject();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showLeadModal]);
+
+  const formatINRShort = (n) => {
+    if (typeof n !== 'number' || isNaN(n)) return null;
+    // Convert to Lakhs/Crores simple formatter
+    if (n >= 10000000) {
+      return `₹ ${(n / 10000000).toFixed(2)} Cr`;
+    }
+    if (n >= 100000) {
+      return `₹ ${(n / 100000).toFixed(2)} Lakh`;
+    }
+    return `₹ ${n.toLocaleString('en-IN')}`;
+  };
 
   // Fetch trending projects for sidebar
   useEffect(() => {
@@ -454,9 +546,54 @@ const BlogView = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 px-4 pb-12">
-        {/* Main Blog Content */}
-        <div className="w-full md:w-2/3 bg-white rounded-2xl shadow-xl p-8">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 px-4 pb-12">
+        {/* Left: Sticky Enquiry (desktop); stacked first on mobile */}
+        <aside className="w-full md:col-span-3 md:col-start-1">
+          {/* Sticky on desktop; naturally stacked on mobile */}
+          <div className="md:sticky md:top-24">
+              <h3 className="text-base font-semibold text-gray-800 mb-4">Enquire Now</h3>
+              <form className="space-y-4" onSubmit={handleBlogSubmitQueryData}>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Name</label>
+                  <input
+                    name="name"
+                    value={blogQuery.name}
+                    onChange={handleBlogQueryChange}
+                    placeholder="Your Name"
+                    className="w-full px-0 py-2 bg-transparent border-b border-gray-300 focus:border-gray-900 focus:outline-none text-gray-900 placeholder-gray-400"
+                    type="text"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Phone</label>
+                  <input
+                    name="mobile"
+                    value={blogQuery.mobile}
+                    onChange={handleBlogQueryChange}
+                    placeholder="Phone Number"
+                    className="w-full px-0 py-2 bg-transparent border-b border-gray-300 focus:border-gray-900 focus:outline-none text-gray-900 placeholder-gray-400"
+                    type="tel"
+                    required
+                  />
+                </div>
+                {responseMessage && (
+                  <div className={`text-xs p-2 rounded ${
+                    responseMessage.includes('successfully') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                  }`}>{responseMessage}</div>
+                )}
+                <button
+                  type="submit"
+                  className="w-full py-2.5 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors"
+                >
+                  {buttonText}
+                </button>
+              </form>
+            </div>
+        </aside>
+
+        {/* Center: Main Blog Content */}
+        <div className="w-full md:col-span-6 md:col-start-4 bg-white rounded-2xl shadow-xl p-8">
           <div className="mb-4 text-sm text-gray-500">
             <Link to="/blog/" className="text-primaryRed hover:underline">Blogs</Link>
             {' > '} {blog_Category || 'Blog'}
@@ -544,12 +681,70 @@ const BlogView = () => {
           ></div>
         </div>
 
-        {/* Sidebar */}
-        <div className="w-full md:w-1/3 flex flex-col gap-8">
-          {/* Related Projects */}
+        {/* Right Sidebar */}
+        <div className="w-full md:col-span-3 md:col-start-10 md:sticky md:top-24 self-start h-fit">
+          <div className="flex flex-col min-h-[calc(100vh-6rem)] gap-8">
+          {/* Trending Projects FIRST (top cluster) */}
+          <div className="p-0">
+            <h3 className="text-xl font-bold text-gray-900 mb-3">Trending Projects</h3>
+            <div className="space-y-2">
+              {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
+                const name = p?.projectName || p?.name || p?.title || 'Project';
+                const category = p?.category || p?.projectType || '';
+                const img = (() => {
+                  // Prefer explicit thumbnail-like fields first
+                  const t1 = p?.thumbnailImage?.url || p?.thumbnail?.url || p?.thumb?.url || '';
+                  const t2 = p?.thumbnailImage || p?.thumbnail || p?.thumb || '';
+                  const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
+                  const fMain = p?.frontImage?.url || '';
+                  const c1 = p?.cardImage?.url || p?.cardImage || '';
+                  const b1 = p?.bannerImage?.url || p?.bannerImage || '';
+                  const any = p?.image || p?.project_Image || '';
+                  const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
+                  const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
+                  return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
+                })();
+                return (
+                  <div
+                    key={idx}
+                    className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigateProject(p)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
+                    title={name}
+                  >
+                    <img
+                      src={img}
+                      className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                      alt={name}
+                      onError={onImgError}
+                      referrerPolicy="no-referrer"
+                      crossOrigin="anonymous"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
+                        {name}
+                      </h4>
+                      {category && (
+                        <p className="text-xs text-gray-500 mt-1">{category}</p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+              {trendingProjects.length === 0 && (
+                <div className="text-sm text-gray-400">No trending projects found.</div>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom cluster: Related + Lists pinned to bottom when space allows */}
+          <div className="mt-auto space-y-8">
+          {/* Related Projects NEXT */}
           {relatedProjects && relatedProjects.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Related Projects</h3>
+            <div className="p-0">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Related Projects</h3>
               <div className="space-y-2">
                 {relatedProjects.map((project, idx) => {
                   const name = project?.projectName || 'Project';
@@ -580,7 +775,7 @@ const BlogView = () => {
                   return (
                     <div
                       key={idx}
-                      className="group p-2 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200 flex items-center gap-2 cursor-pointer"
+                      className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed"
                       role="button"
                       tabIndex={0}
                       onClick={handleProjectClick}
@@ -616,193 +811,125 @@ const BlogView = () => {
               </div>
             </div>
           )}
-
-          {/* Trending Projects */}
-          <div className="bg-white rounded-2xl shadow-xl p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Trending Projects</h3>
-            <div className="space-y-2">
-              {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
-                const name = p?.projectName || p?.name || p?.title || 'Project';
-                const category = p?.category || p?.projectType || '';
-                const img = (() => {
-                  // Prefer explicit thumbnail-like fields first
-                  const t1 = p?.thumbnailImage?.url || p?.thumbnail?.url || p?.thumb?.url || '';
-                  const t2 = p?.thumbnailImage || p?.thumbnail || p?.thumb || '';
-                  const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
-                  const fMain = p?.frontImage?.url || '';
-                  const c1 = p?.cardImage?.url || p?.cardImage || '';
-                  const b1 = p?.bannerImage?.url || p?.bannerImage || '';
-                  const any = p?.image || p?.project_Image || '';
-                  const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
-                  const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
-                  return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
-                })();
-                return (
-                  <div
-                    key={idx}
-                    className="group p-2 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200 flex items-center gap-2 cursor-pointer"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigateProject(p)}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
-                    title={name}
-                  >
-                    <img
-                      src={img}
-                      className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-                      alt={name}
-                      onError={onImgError}
-                      referrerPolicy="no-referrer"
-                      crossOrigin="anonymous"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
-                        {name}
-                      </h4>
-                      {category && (
-                        <p className="text-xs text-gray-500 mt-1">{category}</p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-              {trendingProjects.length === 0 && (
-                <div className="text-sm text-gray-400">No trending projects found.</div>
-              )}
-            </div>
+          {/* People are searching */}
+          <div className="p-0">
+            <h3 className="text-xl font-bold text-gray-900 mb-3">What people are exploring</h3>
+            <ul className="space-y-2">
+              {peopleSearch.map((item, idx) => (
+                <li key={idx}>
+                  <Link to={item.url} className="text-sm text-gray-700 hover:text-primaryRed hover:underline">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
-          {/* Enquiry Form: Desktop/Tablet only */}
-          {!isMobile && (
-            <div className="bg-gradient-to-br from-[#1E526B] to-[#496573] rounded-2xl shadow-xl p-6 text-white sticky top-24">
-              <h3 className="text-xl font-bold mb-6 text-center">Enquire Now</h3>
-              <form className="space-y-4">
-                <div className="relative mb-2">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </span>
-                  <input
-                    name="name"
-                    onChange={handleBlogQueryChange}
-                    value={blogQuery.name}
-                    placeholder="Your Name *"
-                    className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 shadow-sm"
-                    type="text"
-                  />
-                </div>
-                <div className="relative mb-2">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                  </span>
-                  <input
-                    name="mobile"
-                    value={blogQuery.mobile}
-                    onChange={handleBlogQueryChange}
-                    placeholder="Phone Number *"
-                    className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 shadow-sm"
-                    type="tel"
-                  />
-                </div>
-                {responseMessage && (
-                  <div className={`text-sm p-3 rounded-lg ${
-                    responseMessage.includes("successfully") 
-                      ? "bg-green-500/20 text-green-100" 
-                      : "bg-red-500/20 text-red-100"
-                  }`}>
-                    {responseMessage}
-                  </div>
-                )}
-                <button
-                  onClick={handleBlogSubmitQueryData}
-                  className="w-full py-3 px-6 bg-primaryRed text-white font-bold rounded-xl shadow-md hover:bg-red-700 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primaryRed/50 text-lg"
-                >
-                  {buttonText}
-                </button>
-              </form>
-            </div>
-          )}
+
+          {/* Popular tools */}
+          <div className="p-0">
+            <h3 className="text-xl font-bold text-gray-900 mb-3">Popular on our site</h3>
+            <ul className="space-y-2">
+              {popularTools.map((item, idx) => (
+                <li key={idx}>
+                  <Link to={item.url} className="text-sm text-gray-700 hover:text-primaryRed hover:underline">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          </div>
         </div>
-       {/* Mobile Enquiry Vertical Tab and Panel */}
-       {isMobile && (
-         <>
-           {/* Vertical Tab */}
-           <button
-             className="fixed top-1/2 right-0 z-50 bg-primaryRed text-white font-bold text-sm px-2 py-3 rounded-l-xl shadow-lg transform -translate-y-1/2 tracking-widest"
-             style={{writingMode: 'vertical-rl', textOrientation: 'mixed', letterSpacing: '0.1em', borderTopLeftRadius: '12px', borderBottomLeftRadius: '12px'}}
-             onClick={() => setShowMobileEnquiry(true)}
-           >
-             ENQUIRE
-           </button>
-           {/* Slide-in Panel */}
-           {showMobileEnquiry && (
-             <div className="fixed inset-0 z-50 flex justify-end">
-               <div className="fixed inset-0 bg-black bg-opacity-40" onClick={() => setShowMobileEnquiry(false)}></div>
-               <div className="relative w-full max-w-sm bg-gradient-to-br from-[#1E526B] to-[#496573] text-white p-6 h-full overflow-y-auto animate-slideInRight">
-                 <button
-                   className="absolute top-4 right-4 text-white text-2xl"
-                   onClick={() => setShowMobileEnquiry(false)}
-                   aria-label="Close"
-                 >
-                   &times;
-                 </button>
-                 <h3 className="text-xl font-bold mb-6 text-center">Enquire Now</h3>
-                 <form className="space-y-4">
-                   <div className="relative mb-2">
-                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80">
-                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                       </svg>
-                     </span>
-                     <input
-                       name="name"
-                       onChange={handleBlogQueryChange}
-                       value={blogQuery.name}
-                       placeholder="Your Name *"
-                       className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 shadow-sm"
-                       type="text"
-                     />
-                   </div>
-                   <div className="relative mb-2">
-                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80">
-                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                       </svg>
-                     </span>
-                     <input
-                       name="mobile"
-                       value={blogQuery.mobile}
-                       onChange={handleBlogQueryChange}
-                       placeholder="Phone Number *"
-                       className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 shadow-sm"
-                       type="tel"
-                     />
-                   </div>
-                   {responseMessage && (
-                     <div className={`text-sm p-3 rounded-lg ${
-                       responseMessage.includes("successfully") 
-                         ? "bg-green-500/20 text-green-100" 
-                         : "bg-red-500/20 text-red-100"
-                     }`}>
-                       {responseMessage}
-                     </div>
-                   )}
-                   <button
-                     onClick={handleBlogSubmitQueryData}
-                     className="w-full py-3 px-6 bg-primaryRed text-white font-bold rounded-xl shadow-md hover:bg-red-700 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primaryRed/50 text-lg"
-                   >
-                     {buttonText}
-                   </button>
-                 </form>
-               </div>
-             </div>
-           )}
-         </>
-       )}
+        </div>
+        {/* End Sidebar */}
       </div>
-      <Footer />
+
+      {/* Timed Lead Modal (3s after load) */}
+      {showLeadModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="absolute inset-0 bg-black/40" onClick={() => setShowLeadModal(false)} />
+          <div className="relative w-full max-w-md mx-4 bg-white rounded-2xl shadow-2xl p-6 animate-fadeIn">
+            <button
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+              aria-label="Close"
+              onClick={() => setShowLeadModal(false)}
+            >
+              ×
+            </button>
+            {/* Featured Related Project Card */}
+            {Array.isArray(relatedProjects) && relatedProjects.length > 0 && (
+              <div className="mb-5 flex items-center gap-3 p-3 border border-gray-200 rounded-xl bg-gray-50">
+                <img
+                  src={leadProjectInfo.thumbnail || FALLBACK_IMG}
+                  alt={leadProjectInfo.name || 'Project'}
+                  className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                  onError={(e) => { e.currentTarget.src = FALLBACK_IMG; }}
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold text-gray-900 truncate">{leadProjectInfo.name || 'Project'}</div>
+                  <div className="text-sm text-gray-600">
+                    {(() => {
+                      const min = leadProjectInfo.minPrice;
+                      const max = leadProjectInfo.maxPrice;
+                      if (typeof min === 'number' && typeof max === 'number' && max >= min) {
+                        return `${formatINRShort(min)} - ${formatINRShort(max)}`;
+                      }
+                      if (typeof min === 'number') return `${formatINRShort(min)}`;
+                      if (typeof max === 'number') return `${formatINRShort(max)}`;
+                      return 'Price on Request';
+                    })()}
+                  </div>
+                </div>
+              </div>
+            )}
+            <h3 className="text-xl font-bold text-gray-900 mb-1 text-center">Get Project Details</h3>
+            <p className="text-sm text-gray-500 mb-5 text-center">Enter your name and phone number. Our team will contact you shortly.</p>
+            <form className="space-y-4" onSubmit={handleBlogSubmitQueryData}>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input
+                  name="name"
+                  value={blogQuery.name}
+                  onChange={handleBlogQueryChange}
+                  placeholder="Your Name"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  type="text"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <input
+                  name="mobile"
+                  value={blogQuery.mobile}
+                  onChange={handleBlogQueryChange}
+                  placeholder="Phone Number"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  type="tel"
+                  required
+                />
+              </div>
+              {responseMessage && (
+                <div className={`text-sm p-3 rounded-lg ${
+                  responseMessage.includes('successfully') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                }`}>
+                  {responseMessage}
+                </div>
+              )}
+              <button
+                type="submit"
+                className="w-full py-3 px-6 bg-primaryRed text-white font-bold rounded-xl shadow-md hover:bg-red-700 transition-all duration-200"
+              >
+                {buttonText}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
