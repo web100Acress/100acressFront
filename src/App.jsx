@@ -109,7 +109,6 @@ const NewLaunch = lazy(() => import("./Pages/NewLaunch"));
 const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
 const SignatureGlobal = lazy(() => import("./Pages/SignatureGlobal"));
 const DlfSco = lazy(() => import("./Pages/DlfSco"));
-const NewBanner = lazy(() => import("./aadharhomes/BannerPage/NewBanner/NewBanner"));
 const ProjectLayout2 = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/ProjectLayout2"));
 const Possessionin2026 = lazy(() => import("./Pages/Possessionin2026"));
 const BuilderPage = lazy(() => import("./Pages/BuilderPages/BuilderPage"));
@@ -370,7 +369,7 @@ function App() {
                       />
                       <Route path="/forgetpassword" element={<ResetEmailPassword />} />
                       <Route path="/knowabouts" element={<PropertyKnow />} />
-                      <Route path="/:pUrl/" element={<NewBanner />} />
+                      <Route path="/:pUrl/" element={<ProjectLayout2 />} />
                       <Route
                         path="/userviewproperty/:id"
                         element={<UserViewProperty />}
