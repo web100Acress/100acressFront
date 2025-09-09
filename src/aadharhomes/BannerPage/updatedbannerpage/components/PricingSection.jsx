@@ -49,47 +49,82 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
           </div>
 
           {hasBhkDetails ? (
-            /* Table Layout for BHK Details */
-            <div className="overflow-x-auto rounded-lg border border-gray-700">
-              <table className="min-w-full divide-y divide-gray-700">
-                <thead className="bg-gradient-to-r from-amber-900/30 to-amber-800/20">
-                  <tr>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">
-                      Unit Type
-                    </th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-amber-400 uppercase tracking-wider">
-                      Area (Sq.ft.)
-                    </th>
-                    <th scope="col" className="px-6 py-4 text-right text-xs font-medium text-amber-400 uppercase tracking-wider">
-                      Contact
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-700">
-                  {bhkDetails.map((item, index) => (
-                    <tr key={index} className="hover:bg-gray-800/50 transition-colors duration-200">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-base font-medium text-white">{item.bhk_type || `Unit ${index + 1}`}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-base text-amber-400">{item.bhk_Area || 'N/A'}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
-                        <button 
-                          onClick={onShowCallback}
-                          className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-amber-600 text-black font-semibold hover:bg-amber-500 transition-colors duration-200 shadow hover:shadow-amber-500/20"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                          </svg>
-                          <span>Contact</span>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <>
+              {/* Desktop/Tablet: Table Layout (md and up) */}
+              <div className="hidden md:block">
+                <div className="rounded-lg border border-gray-700 max-w-4xl mx-auto">
+                  <table className="w-full divide-y divide-gray-700">
+                    <thead className="bg-gradient-to-r from-amber-900/30 to-amber-800/20">
+                      <tr>
+                        <th scope="col" className="px-6 py-4 text-center text-xs font-medium text-amber-400 uppercase tracking-wider">
+                          Unit Type
+                        </th>
+                        <th scope="col" className="px-6 py-4 text-center text-xs font-medium text-amber-400 uppercase tracking-wider">
+                          Area (Sq.ft.)
+                        </th>
+                        <th scope="col" className="px-6 py-4 text-center text-xs font-medium text-amber-400 uppercase tracking-wider">
+                          Contact
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-700">
+                      {bhkDetails.map((item, index) => (
+                        <tr key={index} className="hover:bg-gray-800/50 transition-colors duration-200">
+                          <td className="px-6 py-4 text-center">
+                            <div className="text-base font-medium text-white">{item.bhk_type || `Unit ${index + 1}`}</div>
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            <div className="text-base text-amber-400">{item.bhk_Area || 'N/A'}</div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex justify-center">
+                              <button
+                                onClick={onShowCallback}
+                                className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-amber-600 text-black font-semibold hover:bg-amber-500 transition-colors duration-200 shadow hover:shadow-amber-500/20"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                <span>Contact</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Mobile: Card Layout (no horizontal overflow) */}
+              <div className="md:hidden space-y-4 max-w-md mx-auto">
+                {bhkDetails.map((item, index) => (
+                  <div key={index} className="rounded-xl border border-gray-700 bg-gray-900/50 p-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <div className="text-sm text-gray-400">Unit Type</div>
+                        <div className="text-lg font-semibold text-white">{item.bhk_type || `Unit ${index + 1}`}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm text-gray-400">Area</div>
+                        <div className="text-lg font-semibold text-amber-400">{item.bhk_Area || 'N/A'}</div>
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <button
+                        onClick={onShowCallback}
+                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-amber-600 text-black font-semibold hover:bg-amber-500 transition-colors duration-200 shadow hover:shadow-amber-500/20"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span>Contact</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           ) : (
             /* Fallback Content */
             <div className="text-center mb-8">
