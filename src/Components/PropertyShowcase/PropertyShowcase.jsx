@@ -458,7 +458,7 @@ const OtherProperties = styled.div`
   
   @media (min-width: 992px) {
     padding: 0;
-    height: 100%; /* Match featured column height */
+    height: auto; /* Let content define height to avoid inner scrollbar */
     --v-gap: 1.75rem; /* vertical gap between small cards (keep in sync with ScrollContainer) */
   }
 `;
@@ -481,31 +481,10 @@ const ScrollContainer = styled.div`
     flex-direction: column;
     gap: 1rem;
     overflow-x: visible;
-    overflow-y: auto;
-    height: 100%;
+    overflow-y: visible; /* remove inner scrolling on desktop */
+    height: auto;
     padding: 0;
     margin: 0;
-    scrollbar-width: thin;
-    scrollbar-color: #c8a45c #f1f1f1;
-    
-    &::-webkit-scrollbar {
-      display: block;
-      width: 6px;
-    }
-    
-    &::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 3px;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      background: #c8a45c;
-      border-radius: 3px;
-      
-      &:hover {
-        background: #a88a4a;
-      }
-    }
   }
   
   @media (max-width: 991px) {
@@ -524,9 +503,11 @@ const ScrollContainer = styled.div`
   @media (min-width: 992px) {
     flex-direction: column;
     gap: var(--v-gap, 1.75rem);
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto; /* vertically scroll extra cards */
+
+    height: auto;
+    overflow-x: visible;
+    overflow-y: visible; /* vertically expand instead of inner scroll */
+
     flex-wrap: nowrap;
   }
 `;
@@ -762,6 +743,10 @@ const ScrollButton = styled.button`
     ${({ direction }) => (direction === 'left' ? 'left: 10px;' : 'right: 10px;')}
     width: 40px;
     height: 40px;
+  }
+
+  @media (min-width: 992px) {
+    display: none; /* hide arrows on desktop since inner scrolling is removed */
   }
 `;
 

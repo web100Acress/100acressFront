@@ -28,7 +28,7 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
   };
 
   return (
-    <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+    <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       {/* Luxury Dark Card Container */}
       <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-800 shadow-[0_20px_60px_rgba(0,0,0,0.4)] border border-amber-900/30">
         

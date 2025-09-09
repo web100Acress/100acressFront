@@ -60,12 +60,110 @@ const Blogging = () => {
     const fetchAllBlogs = async () => {
       setLoading(true);
       try {
-        const res = await api.get(`blog/view?page=1&limit=1000`);
-        setAllBlogs(res.data.data || []);
+        const extractList = (payload) => {
+          // Fast-path known locations
+          const pools = [
+            payload?.data,
+            payload?.results,
+            payload?.items,
+            payload?.docs,
+            payload?.blogs,
+            payload?.rows,
+            payload?.list,
+            payload?.data?.data,
+            payload?.data?.results,
+            payload?.data?.items,
+            payload?.data?.docs,
+            payload?.data?.blogs,
+            payload?.data?.rows,
+            payload?.data?.list,
+            payload,
+          ];
+          for (const p of pools) if (Array.isArray(p)) return p;
+          // Deep search up to depth 8 to find first array in object
+          const seen = new Set();
+          const stack = [{ obj: payload, depth: 0 }];
+          while (stack.length) {
+            const { obj, depth } = stack.pop();
+            if (!obj || typeof obj !== 'object') continue;
+            if (seen.has(obj)) continue;
+            seen.add(obj);
+            for (const key in obj) {
+              const val = obj[key];
+              if (Array.isArray(val)) return val;
+              if (val && typeof val === 'object' && depth < 8) {
+                stack.push({ obj: val, depth: depth + 1 });
+              }
+            }
+          }
+          return [];
+        };
+
+        const tryFetch = async (url) => {
+          const r = await api.get(url, { timeout: 12000 });
+          const list = extractList(r?.data);
+          try { console.debug('[Blogging] fetched', url, 'items:', Array.isArray(list) ? list.length : 0); } catch(_) {}
+          return list;
+        };
+
+        // Try a series of lightweight, public endpoints first (avoid heavy limits)
+        const urls = [
+          'blog/view?limit=50&sort=-createdAt',
+          'blog/view?limit=100&sort=-createdAt',
+          'blog/view?page=1&limit=50',
+          'blog/view',
+        ];
+
+        let rawList = [];
+        for (const u of urls) {
+          try {
+            rawList = await tryFetch(u);
+            if (rawList && rawList.length) break;
+          } catch (_) { /* keep trying */ }
+        }
+        // Final fallbacks: retry recent blogs endpoint with varying limits
+        if (!rawList.length) {
+          try {
+            rawList = await tryFetch('blog/view?limit=50&sort=-createdAt');
+          } catch (_) {}
+        }
+        if (!rawList.length) {
+          try {
+            rawList = await tryFetch('blog/view?limit=100&sort=-createdAt');
+          } catch (_) {}
+        }
+        if (!rawList.length) {
+          try {
+            rawList = await tryFetch('blog/view');
+          } catch (_) {}
+        }
+        // Absolute last resort: use admin list and filter client-side (endpoint is public per routes)
+        if (!rawList.length) {
+          try {
+            rawList = await tryFetch('blog/admin/view?limit=200&sort=-createdAt');
+          } catch (_) {}
+        }
+        if (!rawList.length) {
+          try {
+            rawList = await tryFetch('blog/admin/view?limit=1000&sort=-createdAt');
+          } catch (_) {}
+        }
+
+        // Public page should show only published posts when flag exists; otherwise include all
+        let list = rawList.filter(b => (typeof b?.isPublished === 'boolean' ? b.isPublished : true));
+        // If filtering by published removes everything (e.g., flag missing or all drafts), show raw list to avoid empty state
+        if (list.length === 0 && rawList.length > 0) {
+          list = rawList;
+        }
+        if (!list.length) {
+          try { console.warn('[Blogging] No blogs loaded after all attempts'); } catch(_) {}
+        }
+        setAllBlogs(list);
       } catch (error) {
         setAllBlogs([]);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchAllBlogs();
   }, []);
@@ -291,8 +389,11 @@ const Blogging = () => {
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
         {loading ? (
           <div className="col-span-full text-center py-10 text-gray-400 text-lg">Loading...</div>
-        ) : paginatedBlogs.length === 0 ? (
+        ) : allBlogs.length === 0 ? (
           <div className="col-span-full text-center py-10 text-gray-400 text-lg">No blogs found.</div>
+        ) : paginatedBlogs.length === 0 ? (
+          // When there is a featured post but no additional posts to list, do not show an empty message
+          null
         ) : (
           <>
             {paginatedBlogs.map((blog) => (

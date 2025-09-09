@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, Text, SimpleGrid, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 
 // Custom rounded hamburger icon
 const RoundedHamburgerIcon = ({ boxSize = 5, color = "currentColor" }) => (
@@ -31,6 +32,40 @@ export default function LeftSection({
 }) {
   const { isOpen: isDrawerOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
   const location = useLocation();
+  // Controlled open states for hover-driven menus
+  const [isCityOpen, setIsCityOpen] = useState(false);
+  const [isBudgetOpen, setIsBudgetOpen] = useState(false);
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const [isTypeOpen, setIsTypeOpen] = useState(false);
+  // Small close-delay timers for smoother hover-out
+  const cityTimer = useRef(null);
+  const budgetTimer = useRef(null);
+  const statusTimer = useRef(null);
+  const typeTimer = useRef(null);
+
+  const clearTimer = (ref) => { if (ref.current) { clearTimeout(ref.current); ref.current = null; } };
+  const closeWithDelay = (ref, closer, delay = 140) => {
+    clearTimer(ref);
+    ref.current = setTimeout(() => { closer(false); ref.current = null; }, delay);
+  };
+
+  const menuMotion = {
+    initial: { opacity: 0, y: 8, scale: 0.98 },
+    animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] } },
+  };
+  useEffect(() => {
+    // Prevent page (body) from scrolling when drawer is open to avoid double scrollbars
+    try {
+      if (isDrawerOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    } catch {}
+    return () => {
+      try { document.body.style.overflow = ''; } catch {}
+    };
+  }, [isDrawerOpen]);
   useEffect(() => {
     // Close drawer on route change
     if (isDrawerOpen) closeDrawer();
@@ -64,10 +99,10 @@ export default function LeftSection({
       />
       <Drawer placement="left" isOpen={isDrawerOpen} onClose={closeDrawer} size="xs" motionPreset="slideInLeft" closeOnOverlayClick>
         <DrawerOverlay />
-        <DrawerContent borderRightRadius={{ base: 0, md: 8 }}>
+        <DrawerContent borderRightRadius={{ base: 0, md: 8 }} h="100vh">
           <DrawerCloseButton />
           <DrawerHeader borderBottomWidth="1px">Explore</DrawerHeader>
-          <DrawerBody p={3} overflowY="auto">
+          <DrawerBody p={3} overflowY="auto" pb={6}>
             {(forceHamburger || hideCity) && (
               <>
                 <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 2 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>City</Box>
@@ -250,6 +285,8 @@ export default function LeftSection({
                 </Button>
               </>
             )}
+            {/* Spacer so last items remain visible above mobile bottom nav */}
+            <Box h={{ base: 16, md: 0 }} />
           </DrawerBody>
         </DrawerContent>
       </Drawer>
@@ -269,7 +306,7 @@ export default function LeftSection({
       </Box>
 
       {/* City selector (desktop/tablet) */}
-      <Menu placement="bottom-start">
+      <Menu placement="bottom-start" isOpen={isCityOpen}>
         <MenuButton
           as={Button}
           size="sm"
@@ -293,13 +330,23 @@ export default function LeftSection({
           borderRight={{ base: 'none', md: 'none' }}
           borderRadius={0}
           py={0}
+          onMouseEnter={() => { clearTimer(cityTimer); setIsCityOpen(true); }}
+          onMouseLeave={() => closeWithDelay(cityTimer, setIsCityOpen)}
         >
           <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
             <Text lineHeight="1" color={colorChange ? "white" : "#e53e3e"} fontSize="16px" m={0} p={0}>City</Text>
             <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
           </Flex>
         </MenuButton>
-        <MenuList p={3} minW="320px">
+        <MenuList
+          as={motion.div}
+          p={3}
+          minW="320px"
+          initial={menuMotion.initial}
+          animate={menuMotion.animate}
+          onMouseEnter={() => { clearTimer(cityTimer); setIsCityOpen(true); }}
+          onMouseLeave={() => closeWithDelay(cityTimer, setIsCityOpen)}
+        >
           <Box fontWeight="700" fontSize="12px" color="#e53e3e" textTransform="uppercase" mb={2}>Top Cities</Box>
           <SimpleGrid columns={3} spacing={2}>
             {CITY_OPTIONS.map((c) => (
@@ -327,7 +374,7 @@ export default function LeftSection({
       </Menu>
 
       {/* Budget */}
-      <Menu placement="bottom-start">
+      <Menu placement="bottom-start" isOpen={isBudgetOpen}>
         <MenuButton
           as={Button}
           size="sm"
@@ -351,13 +398,23 @@ export default function LeftSection({
           height="auto"
           minH="unset"
           py={0}
+          onMouseEnter={() => { clearTimer(budgetTimer); setIsBudgetOpen(true); }}
+          onMouseLeave={() => closeWithDelay(budgetTimer, setIsBudgetOpen)}
         >
           <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
             <Text color={colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Budget</Text>
             <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
           </Flex>
         </MenuButton>
-        <MenuList p={2} minW="220px">
+        <MenuList
+          as={motion.div}
+          p={2}
+          minW="220px"
+          initial={menuMotion.initial}
+          animate={menuMotion.animate}
+          onMouseEnter={() => { clearTimer(budgetTimer); setIsBudgetOpen(true); }}
+          onMouseLeave={() => closeWithDelay(budgetTimer, setIsBudgetOpen)}
+        >
           <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</MenuItem>
           <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</MenuItem>
           <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</MenuItem>
@@ -368,7 +425,7 @@ export default function LeftSection({
       </Menu>
 
       {/* Project Status */}
-      <Menu placement="bottom-start">
+      <Menu placement="bottom-start" isOpen={isStatusOpen}>
         <MenuButton
           as={Button}
           size="sm"
@@ -392,13 +449,23 @@ export default function LeftSection({
           height="auto"
           minH="unset"
           py={0}
+          onMouseEnter={() => { clearTimer(statusTimer); setIsStatusOpen(true); }}
+          onMouseLeave={() => closeWithDelay(statusTimer, setIsStatusOpen)}
         >
           <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
             <Text color={colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Project Status</Text>
             <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
           </Flex>
         </MenuButton>
-        <MenuList p={2} minW="240px">
+        <MenuList
+          as={motion.div}
+          p={2}
+          minW="240px"
+          initial={menuMotion.initial}
+          animate={menuMotion.animate}
+          onMouseEnter={() => { clearTimer(statusTimer); setIsStatusOpen(true); }}
+          onMouseLeave={() => closeWithDelay(statusTimer, setIsStatusOpen)}
+        >
           <MenuItem as={Link} to="/projects/upcoming-projects-in-gurgaon/">Upcoming Projects</MenuItem>
           <MenuItem as={Link} to="/projects-in-newlaunch/">New Launch Projects</MenuItem>
           <MenuItem as={Link} to="/project-in-underconstruction/">Under Construction</MenuItem>
@@ -407,7 +474,7 @@ export default function LeftSection({
       </Menu>
 
       {/* Project Type */}
-      <Menu placement="bottom-start">
+      <Menu placement="bottom-start" isOpen={isTypeOpen}>
         <MenuButton
           as={Button}
           size="sm"
@@ -427,13 +494,23 @@ export default function LeftSection({
           height="auto"
           minH="unset"
           py={0}
+          onMouseEnter={() => { clearTimer(typeTimer); setIsTypeOpen(true); }}
+          onMouseLeave={() => closeWithDelay(typeTimer, setIsTypeOpen)}
         >
           <Flex alignItems="center" gap={0} lineHeight="1" display="inline-flex" sx={{ 'svg': { display: 'inline-block', verticalAlign: 'middle' } }}>
             <Text color={colorChange ? "white" : "#e53e3e"} lineHeight="1" fontSize="16px" m={0} p={0}>Project Type</Text>
             <ChevronDownIcon boxSize="1em" color={colorChange ? "white" : "#e53e3e"} m={0} p={0} />
           </Flex>
         </MenuButton>
-        <MenuList p={2} minW="240px">
+        <MenuList
+          as={motion.div}
+          p={2}
+          minW="240px"
+          initial={menuMotion.initial}
+          animate={menuMotion.animate}
+          onMouseEnter={() => { clearTimer(typeTimer); setIsTypeOpen(true); }}
+          onMouseLeave={() => closeWithDelay(typeTimer, setIsTypeOpen)}
+        >
           <MenuItem as={Link} to="/sco/plots/">SCO Plots</MenuItem>
           <MenuItem as={Link} to="/projects/villas/">Luxury Villas</MenuItem>
           <MenuItem as={Link} to="/plots-in-gurugram/">Plots In Gurugram</MenuItem>
