@@ -107,14 +107,64 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
             
           </div>
 
-          {/* Right Side: Buttons */}
+          {/* Right Side: CTA Block */}
           <div className="flex flex-col items-center lg:items-end">
-            <button 
-              onClick={handleGetDetails}
-              className="bg-amber-500 text-black font-semibold px-8 py-3 rounded-lg hover:bg-amber-600 transition-colors duration-300 w-full lg:w-auto"
-            >
-              Get Details
-            </button>
+            <div className="relative group w-full lg:w-80">
+              {/* Glow Effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-all duration-700"></div>
+              
+              <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700/50 backdrop-blur-sm">
+                {/* Header */}
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h4M9 7h6m-6 4h6m-2 4h2" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="text-amber-400 font-bold text-lg">Floor Plan Details</h4>
+                    <p className="text-gray-400 text-sm">Get comprehensive information</p>
+                  </div>
+                </div>
+
+                {/* Features List */}
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                    <span className="text-gray-300 text-sm">High-resolution floor plans</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                    <span className="text-gray-300 text-sm">Detailed room dimensions</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                    <span className="text-gray-300 text-sm">3D visualization available</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                    <span className="text-gray-300 text-sm">Customization options</span>
+                  </div>
+                </div>
+
+                {/* CTA Button */}
+                <button 
+                  onClick={handleGetDetails}
+                  className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-semibold px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg hover:shadow-amber-500/25 flex items-center justify-center space-x-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  <span>Get Detailed Plans</span>
+                </button>
+
+                {/* Additional Info */}
+                <p className="text-xs text-gray-400 text-center mt-3 leading-relaxed">
+                  Unlock detailed floor plans and get personalized assistance from our experts
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
