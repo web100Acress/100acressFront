@@ -47,7 +47,7 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
   }
 
   return (
-    <section className="py-12 bg-gradient-to-b from-black via-gray-900 to-black text-white relative overflow-hidden">
+    <section className="py-12 md:py-16 bg-gradient-to-b from-black via-gray-900 to-black text-white relative overflow-hidden">
       {/* Sophisticated Background Pattern */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-full h-full opacity-10">
@@ -59,16 +59,16 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Premium Section Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-6">
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-4">
             <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
           </div>
-          <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-[0.2em] mb-4">
+          <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-[0.2em] mb-2">
             RELATED PROJECTS
           </h2>
-          <h3 className="text-white text-3xl md:text-4xl font-bold leading-tight mb-6 max-w-3xl mx-auto">
+          <h3 className="text-white text-3xl md:text-4xl font-bold leading-tight mb-4 max-w-3xl mx-auto">
             Properties by {builderName}
           </h3>
           <div className="w-24 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
@@ -189,7 +189,7 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
         )}
 
         {/* Additional Info */}
-        <div className="max-w-3xl mx-auto mt-12">
+        {/* <div className="max-w-3xl mx-auto mt-12">
           <div className="bg-gradient-to-r from-amber-600/10 to-amber-500/5 rounded-xl p-6 border border-amber-600/20">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
@@ -206,7 +206,7 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <FooterForm builderName={builderName} />
