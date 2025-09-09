@@ -59,38 +59,17 @@ const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle 
         address: projectViewDetails.projectAddress || location || "Callback Modal",
       });
       
-      console.log('API Response:', response.data);
-      console.log('API Status:', response.status);
-      
-      // Check if the response indicates success (even if status is not 200)
-      if (response.status >= 200 && response.status < 300) {
-        message.success('Callback Requested Successfully');
-        resetData();
-        onClose();
-        // Call success callback if provided (for unlocking images)
-        if (onSuccess) {
-          onSuccess();
-        }
-      } else {
-        throw new Error(`Unexpected status: ${response.status}`);
+      // If we reach here, the request was successful
+      message.success('Callback Requested Successfully');
+      resetData();
+      onClose();
+      // Call success callback if provided (for unlocking images)
+      if (onSuccess) {
+        onSuccess();
       }
     } catch (error) {
       console.error('CallbackModal API Error:', error);
-      console.error('Error Response:', error.response?.data);
-      console.error('Error Status:', error.response?.status);
-      
-      // Only show error if it's a real failure (not a success with different status)
-      if (error.response?.status >= 400 || !error.response) {
-        message.error('Failed to submit request. Please try again.');
-      } else {
-        // If status is 2xx but caught as error, treat as success
-        message.success('Callback Requested Successfully');
-        resetData();
-        onClose();
-        if (onSuccess) {
-          onSuccess();
-        }
-      }
+      message.error('Failed to submit request. Please try again.');
     } finally {
       setIsLoading(false);
       setSideButtonText('Submit');
