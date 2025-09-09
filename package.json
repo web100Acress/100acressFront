@@ -52,6 +52,7 @@
     "react-loader-spinner": "^5.4.5",
     "react-modal": "^3.16.1",
     "react-multi-carousel": "^2.8.4",
+    "react-phone-number-input": "^3.4.12",
     "react-quill": "2.0.0",
     "react-redux": "^9.2.0",
     "react-responsive-carousel": "^3.2.23",
