@@ -38,14 +38,14 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
         <div className="relative p-8 lg:p-12">
           
           {/* Section Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-4">
             <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">
               UNIT SPECIFICATIONS
             </h2>
             <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-2">
               {projectName ? `${projectName} - Unit Details` : "Available Units"}
             </h3>
-            <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-4"></div>
+            <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-2"></div>
           </div>
 
           {hasBhkDetails ? (

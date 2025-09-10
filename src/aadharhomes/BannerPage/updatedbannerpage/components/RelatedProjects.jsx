@@ -85,7 +85,7 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
         ) : (
           <>
             {/* Projects Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {projectsToShow.map((project, index) => (
                 <div 
                   key={index}
@@ -166,12 +166,12 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
               ))}
             </div>
 
-            {/* Show More Button */}
+            {/* View All Button - Moved Below Properties */}
             {builderProjects.length > 4 && (
-              <div className="text-center">
+              <div className="text-center mt-8">
                 <button
                   onClick={() => setShowAllProjects(!showAllProjects)}
-                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-amber-600 to-amber-500 text-black font-semibold px-8 py-3 rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all duration-300"
+                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-bold px-8 py-3 rounded-lg border-2 border-yellow-400 shadow-[0_4px_15px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_20px_rgba(212,175,55,0.5)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 transform"
                 >
                   <span>{showAllProjects ? 'Show Less' : 'View All Projects'}</span>
                   <svg 

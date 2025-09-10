@@ -79,76 +79,79 @@ const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-75 p-4">
-      <div className="relative w-full max-w-md mx-auto overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 shadow-2xl border border-amber-500/20">
-        <div className="bg-gradient-to-r from-amber-600 to-amber-500 px-6 py-4 text-center text-black relative">
-          <p className="font-bold text-xl mb-0 text-center tracking-wider">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center backdrop-blur-sm bg-black/60 p-4">
+      <div className="relative w-full max-w-lg mx-auto overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-black shadow-2xl shadow-orange-500/20 border border-orange-500/20 animate-in fade-in-0 zoom-in-95 duration-300">
+        <div className="bg-gradient-to-r from-orange-500 to-yellow-500 px-6 py-3 text-center text-black relative">
+          <p className="font-semibold text-lg mb-0 text-center tracking-wider">
             Instant Callback
           </p>
           <button
-            className="text-black text-2xl absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer hover:text-gray-800 transition-colors"
+            className="text-black text-xl absolute top-1/2 right-5 transform -translate-y-1/2 cursor-pointer hover:rotate-90 transition-transform duration-300"
             onClick={onClose}
           >
             ✖
           </button>
         </div>
 
-        <form onSubmit={sideSubmitDetails} className="space-y-5 px-6 py-6">
+        <form onSubmit={sideSubmitDetails} className="space-y-6 px-8 py-8">
           {/* Name Field */}
-          <div className="relative">
-            <svg className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <input
-              className="peer w-full pl-12 pr-4 py-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-amber-500 border border-gray-600 outline-none placeholder-transparent transition-all duration-300"
-              type="text"
-              name="name"
-              placeholder="Name"
-              onChange={handleChangeSide}
-              value={sideDetails.name}
-              required
-            />
-            <span className="absolute left-9 -top-2 px-2 bg-gray-800 text-amber-400 text-sm transition-all duration-300 transform scale-75 pointer-events-none peer-placeholder-shown:top-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-gray-400 peer-focus:-top-2 peer-focus:bg-gray-800 peer-focus:text-amber-400">
-              Full Name *
-            </span>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-white">
+              Full Name <span className="text-orange-400">*</span>
+            </label>
+            <div className="relative">
+              <svg className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <input
+                className="w-full h-12 pl-12 pr-4 rounded-xl bg-white/5 backdrop-blur-md border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none transition-all duration-300"
+                type="text"
+                name="name"
+                placeholder="Enter your full name"
+                onChange={handleChangeSide}
+                value={sideDetails.name}
+                required
+              />
+            </div>
           </div>
-
 
           {/* Mobile Field */}
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-amber-400">
-              Mobile Number *
+            <label className="block text-sm font-medium text-white">
+              Mobile Number <span className="text-orange-400">*</span>
             </label>
-            <CountryCodeSelector
-              selectedCountryCode={sideDetails.countryCode}
-              onCountryCodeChange={handleCountryCodeChange}
-              phoneNumber={sideDetails.mobile}
-              onPhoneNumberChange={handlePhoneNumberChange}
-              placeholder="Enter phone number"
-              className="w-full"
-            />
+            <div className="h-12 overflow-hidden">
+              <CountryCodeSelector
+                selectedCountryCode={sideDetails.countryCode}
+                onCountryCodeChange={handleCountryCodeChange}
+                phoneNumber={sideDetails.mobile}
+                onPhoneNumberChange={handlePhoneNumberChange}
+                placeholder="Enter phone number"
+                className="w-full [&>div>div>button]:!h-12 [&>div>div>button]:!py-3 [&>div>input]:!h-12 [&>div>input]:!py-3"
+              />
+            </div>
           </div>
 
-
-          <p className='text-xs text-gray-400 leading-relaxed mt-4'>* Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
 
           {/* Submit Button */}
           <div className="flex justify-center pt-4">
             <button
               type="submit"
               disabled={isLoading}
-              className="group w-full rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 px-8 py-3 font-bold text-black border-2 border-transparent outline-none relative overflow-hidden transition-all duration-300 hover:from-amber-500 hover:to-amber-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="group w-full rounded-xl bg-gradient-to-r from-orange-500 to-yellow-500 px-8 py-3 font-bold text-black border-2 border-transparent outline-none relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 hover:from-orange-400 hover:to-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               <span className="relative inline-block transition-all duration-300">
                 {sideButtonText}
               </span>
               {!isLoading && (
-                <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               )}
             </button>
           </div>
+
+          <p className='text-xs text-gray-400 leading-relaxed pt-2'>* Your information will be kept strictly confidential and will not be shared, sold, or otherwise disclosed.</p>
         </form>
       </div>
     </div>
