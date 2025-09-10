@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import InsightsSidebar from "../components/InsightsSidebar";
 import LocationPrompt from "../components/LocationPrompt";
@@ -30,6 +30,12 @@ export default function PriceTrends() {
   const [Charts, setCharts] = useState(null);
   const [seriesMap, setSeriesMap] = useState({}); // { City: [{x,y}, ...] }
   const [seriesLoading, setSeriesLoading] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerAnimating, setDrawerAnimating] = useState(false); // for slide transitions
+  const [drawerData, setDrawerData] = useState(null);
+  const [drawerRestored, setDrawerRestored] = useState(false);
+  const [compareFlash, setCompareFlash] = useState(false);
+  const deskDrawerRef = useRef(null);
 
   // Real-estate themed city images
   const cityImages = useMemo(() => ({
@@ -56,6 +62,19 @@ export default function PriceTrends() {
     ];
     return base;
   }, []);
+
+  // Persist page size in localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('pt_page_size');
+      if (saved) setPageSize(Number(saved) || 10);
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    try { localStorage.setItem('pt_page_size', String(pageSize)); } catch {}
+  }, [pageSize]);
 
   // Fetch localities from API (fallback to mock)
   const fetchLocalities = async () => {
@@ -90,6 +109,14 @@ export default function PriceTrends() {
     }
   };
 
+  const resetFilters = () => {
+    setZone('All Zones');
+    setType('Apartment');
+    setDuration('5y');
+    setSort('recommended');
+    setPage(1);
+  };
+
   // Sort + filter client-side (when using mock or when API has no sorting)
   const filtered = useMemo(() => {
     const items = (localities || mockLocalities).filter((r) => (zone === "All Zones" ? true : r.zone.toLowerCase().includes(zone.toLowerCase())));
@@ -101,6 +128,18 @@ export default function PriceTrends() {
     });
     return sorted;
   }, [localities, mockLocalities, zone, sort]);
+
+  // Summary stats (median price, avg 5Y change, avg yield) from filtered list
+  const summary = useMemo(() => {
+    const items = filtered;
+    if (!items || items.length === 0) return { median: 0, avgChange: 0, avgYield: 0 };
+    const rates = items.map(r => r.rate).sort((a,b)=>a-b);
+    const mid = Math.floor(rates.length/2);
+    const median = rates.length % 2 ? rates[mid] : Math.round((rates[mid-1] + rates[mid]) / 2);
+    const avgChange = (items.reduce((s, r)=> s + (r.change5y||0), 0) / items.length).toFixed(1);
+    const avgYield = (items.reduce((s, r)=> s + (r.yield||0), 0) / items.length).toFixed(1);
+    return { median, avgChange, avgYield };
+  }, [filtered]);
 
   const allCities = useMemo(() => [
     "Bangalore","Mumbai","Delhi","Pune","Chennai","Hyderabad","Kolkata","Navi Mumbai","Gurgaon","Noida",
@@ -169,6 +208,25 @@ export default function PriceTrends() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city, zone, type, duration, sort, page]);
 
+  // Persist compareMode and selectedCities in sessionStorage and restore
+  useEffect(() => {
+    try {
+      const payload = { compareMode, selectedCities };
+      sessionStorage.setItem('pt_compare', JSON.stringify(payload));
+    } catch {}
+  }, [compareMode, selectedCities]);
+
+  useEffect(() => {
+    try {
+      const s = sessionStorage.getItem('pt_compare');
+      if (!s) return;
+      const saved = JSON.parse(s);
+      if (saved && typeof saved.compareMode === 'boolean') setCompareMode(saved.compareMode);
+      if (saved && Array.isArray(saved.selectedCities)) setSelectedCities(saved.selectedCities);
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Refetch when key parameters change
   useEffect(() => {
     if (!showPicker && city) fetchLocalities();
@@ -235,8 +293,103 @@ export default function PriceTrends() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [compareMode, selectedCities, duration, showPicker]);
 
+  // Brief highlight when compare is entered
+  useEffect(() => {
+    if (compareMode) {
+      setCompareFlash(true);
+      const t = setTimeout(() => setCompareFlash(false), 1200);
+      return () => clearTimeout(t);
+    }
+  }, [compareMode]);
+
+  const [activeLocality, setActiveLocality] = useState(null);
+  const [alertSubscribed, setAlertSubscribed] = useState(false);
+
+  const handlePriceAlert = () => {
+    try {
+      const key = `pt_alert_${city}_${drawerData?.locality || ''}`;
+      const next = !alertSubscribed;
+      setAlertSubscribed(next);
+      sessionStorage.setItem(key, next ? '1' : '0');
+    } catch {}
+  };
+
+  // Drawer helpers with animation
+  const openDrawer = (data) => {
+    setDrawerData(data);
+    setActiveLocality(data?.locality || null);
+    setDrawerOpen(true);
+    // next frame to allow transition from translate to 0
+    requestAnimationFrame(() => setDrawerAnimating(true));
+  };
+  const closeDrawer = () => {
+    setDrawerAnimating(false);
+    setTimeout(() => setDrawerOpen(false), 200);
+    // keep highlight briefly after close
+    setTimeout(() => setActiveLocality(null), 900);
+  };
+
+  // Persist drawer state
+  useEffect(() => {
+    try {
+      const payload = {
+        open: drawerOpen,
+        locality: drawerData?.locality || null,
+        city,
+      };
+      sessionStorage.setItem('pt_drawer', JSON.stringify(payload));
+    } catch {}
+  }, [drawerOpen, drawerData, city]);
+
+  // Restore drawer once localities are present
+  useEffect(() => {
+    if (drawerRestored) return;
+    try {
+      const s = sessionStorage.getItem('pt_drawer');
+      if (!s) return;
+      const saved = JSON.parse(s);
+      if (saved && saved.open && saved.city === city) {
+        const items = (localities || mockLocalities) || [];
+        const found = items.find(r => r.locality === saved.locality);
+        if (found) openDrawer(found);
+      }
+    } catch {}
+    setDrawerRestored(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localities, city]);
+
+  // ESC to close drawer
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape' && drawerOpen) closeDrawer();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [drawerOpen]);
+
+  // Click outside to close on desktop only (no backdrop)
+  useEffect(() => {
+    const handler = (e) => {
+      if (!drawerOpen) return;
+      if (window.matchMedia('(min-width: 768px)').matches) {
+        const withinDrawer = deskDrawerRef.current && deskDrawerRef.current.contains(e.target);
+        const isMoreBtn = !!(e.target.closest && e.target.closest('[data-pt-more]'));
+        if (!withinDrawer && !isMoreBtn) {
+          closeDrawer();
+        }
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [drawerOpen]);
+
   return (
     <React.Fragment>
+      {/* Local styles for small animations */}
+      <style>{`
+        @keyframes pt-slide-in { from { transform: translateX(6px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .pt-slide-in { animation: pt-slide-in 0.3s ease-out; }
+      `}</style>
       <InsightsSidebar />
       <LocationPrompt />
       <div className="max-w-screen-xl mx-auto px-4 md:px-6 md:pl-[260px]" style={{ marginTop: "calc(var(--nav-h, 64px) + 16px)" }}>
@@ -259,103 +412,222 @@ export default function PriceTrends() {
         ) : (
           <>
             {compareMode && selectedCities.length>=2 ? (
-              <PriceTrendsCompare
-                duration={duration}
-                Charts={Charts}
-                seriesMap={seriesMap}
-                seriesLoading={seriesLoading}
-                selectedCities={selectedCities}
-                setCompareMode={setCompareMode}
-                cityImages={cityImages}
-              />
+              <div className={`rounded-xl ${compareFlash ? 'ring-2 ring-amber-400 shadow-[0_0_0_4px_rgba(251,191,36,0.35)]' : ''} transition-all duration-500`}>
+                <PriceTrendsCompare
+                  duration={duration}
+                  Charts={Charts}
+                  seriesMap={seriesMap}
+                  seriesLoading={seriesLoading}
+                  selectedCities={selectedCities}
+                  setCompareMode={setCompareMode}
+                  cityImages={cityImages}
+                />
+              </div>
             ) : (
-              <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Property Rates in {city}</h1>
-                <div className="text-sm text-gray-600">Top localities, price trends and rental yields</div>
+              <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex w-10 h-10 rounded-full bg-gray-100 items-center justify-center">
+                    <svg viewBox="0 0 24 24" className="w-5 h-5 text-gray-600" fill="currentColor"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z"/></svg>
+                  </span>
+                  <div>
+                    <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">Property Rates in {city}</h1>
+                    <div className="text-sm text-gray-600">Top localities, price trends and rental yields</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button onClick={()=>{ setShowPicker(true); setCompareMode(false); }} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Change city</button>
+                  <button onClick={downloadCSV} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Download CSV</button>
+                </div>
               </header>
             )}
 
-            {/* Filters row */}
-            <section className="flex flex-wrap gap-3 items-center bg-white border rounded-xl p-4 shadow-sm mb-6">
-              <div className="font-semibold text-gray-800">Select Zone</div>
-              <select value={zone} onChange={(e)=>{ setZone(e.target.value); setPage(1); }} className="border rounded-lg px-3 py-2">
-                <option>All Zones</option>
-                <option>South</option>
-                <option>East</option>
-                <option>North</option>
-                <option>West</option>
-              </select>
-              <div className="font-semibold text-gray-800 ml-4">Property Type</div>
-              <select value={type} onChange={(e)=>{ setType(e.target.value); setPage(1); }} className="border rounded-lg px-3 py-2">
-                <option>Apartment</option>
-                <option>Plots/Land</option>
-                <option>Builder Floor</option>
-              </select>
-              <div className="font-semibold text-gray-800 ml-4">Duration</div>
-              <div className="inline-flex gap-1">
-                {["1y","3y","5y","Max"].map((d)=>(
-                  <button key={d} onClick={()=>{ setDuration(d); setPage(1); }} className={`px-3 py-1.5 rounded-full border ${duration===d?"bg-gray-900 text-white border-gray-900":"bg-white text-gray-700"}`}>{d === "1y"?"1 year":d === "3y"?"3 years":d === "5y"?"5 years":"Max"}</button>
-                ))}
-              </div>
-              <div className="ml-auto flex items-center gap-2">
-                <span className="text-sm text-gray-700">Sort:</span>
-                <select value={sort} onChange={(e)=>{ setSort(e.target.value); setPage(1); }} className="border rounded-lg px-3 py-2">
-                  <option value="recommended">Recommended</option>
-                  <option value="price_desc">Price High</option>
-                  <option value="price_asc">Price Low</option>
-                  <option value="yield_desc">Yield High</option>
-                </select>
-                <button onClick={downloadCSV} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Download CSV</button>
-              </div>
-            </section>
+            {/* Drawer for locality details: mobile bottom sheet + desktop side drawer */}
+            {drawerOpen && (
+              <>
+                {/* Backdrop only on mobile; keep desktop clickable */}
+                <div className={`fixed inset-0 z-40 transition-opacity duration-300 ease-out md:hidden ${drawerAnimating ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundColor: 'rgba(0,0,0,0.3)' }} onClick={closeDrawer} />
+                {/* Mobile bottom sheet */}
+                <aside className={`fixed bottom-0 left-0 right-0 h-[70vh] bg-white z-50 shadow-2xl rounded-t-2xl overflow-hidden md:hidden flex flex-col transform transition-transform duration-300 ease-out ${drawerAnimating ? 'translate-y-0' : 'translate-y-full'}`}>
+                  <div className="p-4 border-b flex items-center justify-between relative">
+                    <span className="absolute left-1/2 -top-2 -translate-x-1/2 w-12 h-1.5 bg-gray-300 rounded-full" aria-hidden="true" />
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-gray-500">Locality</div>
+                      <h3 className="text-lg font-bold text-gray-900">{drawerData?.locality}</h3>
+                      <div className="text-xs text-gray-500">{drawerData?.zone} • {type}</div>
+                    </div>
+                    <button onClick={closeDrawer} className="px-3 py-1.5 rounded-md border text-sm hover:bg-gray-50 inline-flex items-center gap-2" aria-label="Close details">
+                      <svg viewBox="0 0 24 24" className="w-4 h-4" stroke="currentColor" strokeWidth="2" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                      Close
+                    </button>
+                  </div>
+                  <div className="p-4 space-y-4 overflow-auto">
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-xs text-gray-500">Price</div>
+                        <div className="text-base font-semibold">₹{drawerData?.rate?.toLocaleString()}/ sq.ft</div>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-xs text-gray-500">5Y Change</div>
+                        <div className="text-base font-semibold text-emerald-600">▲ {drawerData?.change5y}%</div>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-xs text-gray-500">Yield</div>
+                        <div className="text-base font-semibold">{drawerData?.yield}%</div>
+                      </div>
+                    </div>
+                    <div className="border rounded-xl p-3">
+                      <div className="text-sm font-semibold mb-2">Trend</div>
+                      <svg viewBox="0 0 240 80" className="w-full h-20">
+                        <path d={makeSpark(drawerData?.rate||100, drawerData?.change5y||0).replaceAll('64','240').replaceAll('24','80')} fill="none" stroke="#2563eb" strokeWidth="2" />
+                      </svg>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button onClick={()=>{
+                        const u = `/listings?city=${encodeURIComponent(city)}&locality=${encodeURIComponent(drawerData?.locality||'')}&zone=${encodeURIComponent(zone)}&type=${encodeURIComponent(type)}`;
+                        navigate(u);
+                        closeDrawer();
+                      }} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">View listings</button>
+                      <button onClick={()=>{
+                        setCompareMode(true);
+                        setSelectedCities((list)=> list.includes(city) ? list : [...list, city]);
+                        closeDrawer();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Compare this city</button>
+                      <button className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Share</button>
+                    </div>
+                    {/* Engagement extras */}
+                    <div className="mt-2 grid grid-cols-1 gap-3">
+                      <div className="flex items-center gap-2 text-xs text-gray-700 bg-gray-50 border rounded-lg px-3 py-2">
+                        <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        <span><strong>214 buyers</strong> viewed {drawerData?.locality} this week</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2 text-xs">
+                        <span className="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">Great connectivity</span>
+                        <span className="px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100">High ROI micro-market</span>
+                        <span className="px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-100">Popular rental hub</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-3 border rounded-lg p-3">
+                        <div>
+                          <div className="text-sm font-semibold">Price alerts</div>
+                          <div className="text-xs text-gray-600">Get notified if rates change in {drawerData?.locality}</div>
+                        </div>
+                        <button onClick={handlePriceAlert} className={`px-3 py-1.5 rounded-lg text-sm border ${alertSubscribed ? 'bg-gray-900 text-white border-gray-900' : 'bg-white hover:bg-gray-50'}`}>{alertSubscribed ? 'Subscribed' : 'Notify me'}</button>
+                      </div>
+                      <button onClick={()=>{
+                        const u = `/projects?city=${encodeURIComponent(city)}&locality=${encodeURIComponent(drawerData?.locality||'')}`;
+                        navigate(u);
+                        closeDrawer();
+                      }} className="w-full px-3 py-2 rounded-lg border bg-gray-900 text-white text-sm hover:bg-gray-800">Explore projects in {drawerData?.locality}</button>
+                    </div>
+                  </div>
+                </aside>
+                {/* Desktop/Tablet side drawer */}
+                <aside ref={deskDrawerRef} className={`hidden md:flex fixed top-0 right-0 h-full md:w-[360px] lg:w-[420px] bg-white z-50 shadow-2xl flex-col transform transition-transform duration-300 ease-out ${drawerAnimating ? 'translate-x-0' : 'translate-x-full'}`}>
+                  <div className="p-4 border-b flex items-center justify-between">
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-gray-500">Locality</div>
+                      <h3 className="text-lg font-bold text-gray-900">{drawerData?.locality}</h3>
+                      <div className="text-xs text-gray-500">{drawerData?.zone} • {type}</div>
+                    </div>
+                    <button onClick={closeDrawer} className="px-3 py-1.5 rounded-md border text-sm hover:bg-gray-50">Close</button>
+                  </div>
+                  <div className="p-4 space-y-4 overflow-auto">
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-xs text-gray-500">Price</div>
+                        <div className="text-base font-semibold">₹{drawerData?.rate?.toLocaleString()}/ sq.ft</div>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-xs text-gray-500">5Y Change</div>
+                        <div className="text-base font-semibold text-emerald-600">▲ {drawerData?.change5y}%</div>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-xs text-gray-500">Yield</div>
+                        <div className="text-base font-semibold">{drawerData?.yield}%</div>
+                      </div>
+                    </div>
+                    <div className="border rounded-xl p-3">
+                      <div className="text-sm font-semibold mb-2">Trend</div>
+                      <svg viewBox="0 0 240 80" className="w-full h-20">
+                        <path d={makeSpark(drawerData?.rate||100, drawerData?.change5y||0).replaceAll('64','240').replaceAll('24','80')} fill="none" stroke="#2563eb" strokeWidth="2" />
+                      </svg>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button onClick={()=>{
+                        const u = `/listings?city=${encodeURIComponent(city)}&locality=${encodeURIComponent(drawerData?.locality||'')}&zone=${encodeURIComponent(zone)}&type=${encodeURIComponent(type)}`;
+                        navigate(u);
+                        setDrawerOpen(false);
+                      }} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">View listings</button>
+                      <button className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Share</button>
+                    </div>
+                  </div>
+                </aside>
+              </>
+            )}
 
             {/* Localities list */}
             <section className="bg-white border rounded-xl p-4 shadow-sm">
-              <ul className="divide-y">
-                {loading
-                  ? Array.from({length: pageSize}).map((_,i)=> (
-                      <li key={i} className="py-3 flex items-center gap-3 animate-pulse">
-                        <span className="inline-flex w-10 h-10 rounded-full bg-gray-200" />
-                        <div className="flex-1">
-                          <div className="h-3 bg-gray-200 rounded w-40" />
-                          <div className="mt-1 h-2 bg-gray-200 rounded w-24" />
-                        </div>
-                        <div className="w-24">
-                          <div className="h-3 bg-gray-200 rounded" />
-                          <div className="mt-1 h-2 bg-gray-200 rounded" />
-                        </div>
-                        <div className="w-24 h-4 bg-gray-200 rounded" />
-                        <div className="ml-2 w-12 h-6 bg-gray-200 rounded" />
-                      </li>
-                    ))
-                  : filtered.slice((page-1)*pageSize, (page)*pageSize).map((r)=> (
-                  <li key={r.locality} className="py-3 flex items-center gap-3">
-                    <span className="inline-flex w-10 h-10 rounded-full bg-gray-100 items-center justify-center">
-                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-gray-600" fill="currentColor"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z"/></svg>
-                    </span>
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900">{r.locality}</div>
-                      <div className="text-xs text-gray-500">{r.zone} • {type}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-extrabold text-gray-900">₹{r.rate.toLocaleString()}/ sq.ft</div>
-                      <div className="text-xs text-emerald-600">▲ {r.change5y}% in 5Y</div>
-                    </div>
-                    <div className="w-24 text-right text-xs text-gray-600">Rental Yield {r.yield}%</div>
-                    <svg viewBox="0 0 64 24" className="ml-2" width="64" height="24">
-                      <path d={makeSpark(r.rate, r.change5y)} fill="none" stroke="#22c55e" strokeWidth="2" />
-                    </svg>
-                    <button className="ml-2 px-2 py-1 rounded-md border text-xs">More</button>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-4 flex items-center justify-between text-sm">
-                <div className="text-gray-600">Page {page}{typeof totalCount==='number' ? ` • ${Math.min(page*pageSize, totalCount)} of ${totalCount}` : ''}</div>
-                <div className="flex items-center gap-2">
-                  <button disabled={page===1} onClick={()=>setPage(p=>Math.max(1,p-1))} className={`px-3 py-1 rounded border ${page===1? 'opacity-50 cursor-not-allowed':'hover:bg-gray-50'}`}>Prev</button>
-                  <button disabled={typeof totalCount==='number' ? (page*pageSize)>=totalCount : (page*pageSize)>=filtered.length} onClick={()=>setPage(p=>p+1)} className={`px-3 py-1 rounded border ${ (typeof totalCount==='number' ? (page*pageSize)>=totalCount : (page*pageSize)>=filtered.length)? 'opacity-50 cursor-not-allowed':'hover:bg-gray-50'}`}>Next</button>
+              {(!loading && (filtered.length===0)) ? (
+                <div className="py-12 text-center">
+                  <div className="mx-auto w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" className="w-6 h-6 text-gray-500" fill="currentColor"><path d="M10 18h4v-2h-4v2zm-7 4h18v-2H3v2zM3 2v2h18V2H3zm3 7h12v2H6V9zm0 4h12v2H6v-2z"/></svg>
+                  </div>
+                  <h3 className="mt-3 text-lg font-semibold text-gray-900">No localities found</h3>
+                  <p className="mt-1 text-sm text-gray-600">Try changing filters or reset to default.</p>
+                  <div className="mt-3 flex items-center justify-center gap-2">
+                    <button onClick={resetFilters} className="px-4 py-2 rounded-lg border hover:bg-gray-50 text-sm">Reset filters</button>
+                    <button onClick={()=>setShowPicker(true)} className="px-4 py-2 rounded-lg border hover:bg-gray-50 text-sm">Change city</button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <>
+                  <ul className="divide-y">
+                    {loading
+                      ? Array.from({length: pageSize}).map((_,i)=> (
+                          <li key={i} className="py-4 flex items-center gap-4 animate-pulse">
+                            <span className="inline-flex w-10 h-10 rounded-full bg-gray-200" />
+                            <div className="flex-1">
+                              <div className="h-3 bg-gray-200 rounded w-48" />
+                              <div className="mt-2 h-2 bg-gray-200 rounded w-28" />
+                            </div>
+                            <div className="w-28">
+                              <div className="h-3 bg-gray-200 rounded" />
+                              <div className="mt-2 h-2 bg-gray-200 rounded" />
+                            </div>
+                            <div className="w-24 h-4 bg-gray-200 rounded" />
+                            <div className="ml-3 w-14 h-7 bg-gray-200 rounded" />
+                          </li>
+                        ))
+                      : filtered.slice((page-1)*pageSize, (page)*pageSize).map((r)=> (
+                      <li key={r.locality} className={`py-4 flex flex-wrap md:flex-nowrap items-center gap-3 md:gap-4 ${activeLocality===r.locality ? 'pt-slide-in' : ''}`}>
+                        <span className={`inline-flex w-9 h-9 md:w-10 md:h-10 rounded-full items-center justify-center ${activeLocality===r.locality ? 'bg-blue-50 text-blue-600 ring-2 ring-blue-200' : 'bg-gray-100'}`}>
+                          <svg viewBox="0 0 24 24" className="w-5 h-5 text-gray-600" fill="currentColor"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z"/></svg>
+                        </span>
+                        <div className={`min-w-0 flex-1 ${activeLocality===r.locality ? 'text-blue-700' : ''}`}>
+                          <div className={`font-semibold ${activeLocality===r.locality ? 'text-blue-700' : 'text-gray-900'}`}>{r.locality}</div>
+                          <div className="text-xs text-gray-500">{r.zone} • {type}</div>
+                        </div>
+                        <div className="ml-auto text-right w-full sm:w-auto">
+                          <div className="font-extrabold text-gray-900">₹{r.rate.toLocaleString()}/ sq.ft</div>
+                          <div className="text-xs text-emerald-600">▲ {r.change5y}% in 5Y</div>
+                        </div>
+                        <div className="w-full sm:w-28 text-left sm:text-right text-xs text-gray-600">Rental Yield {r.yield}%</div>
+                        <svg viewBox="0 0 64 24" className="ml-2 hidden md:block" width="64" height="24">
+                          <path d={makeSpark(r.rate, r.change5y)} fill="none" stroke="#22c55e" strokeWidth="2" />
+                        </svg>
+                        <button data-pt-more onClick={()=> openDrawer(r)} className={`ml-2 w-full xs:w-auto sm:w-auto px-3 py-1.5 rounded-md border text-xs ${activeLocality===r.locality ? 'bg-blue-600 text-white border-blue-600' : 'hover:bg-gray-50'}`}>More</button>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm">
+                    <div className="text-gray-600 w-full sm:w-auto">Page {page}{typeof totalCount==='number' ? ` • ${Math.min(page*pageSize, totalCount)} of ${totalCount}` : ''}</div>
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                      <button disabled={page===1} onClick={()=>setPage(p=>Math.max(1,p-1))} className={`flex-1 sm:flex-none px-3 py-1.5 rounded border ${page===1? 'opacity-50 cursor-not-allowed':'hover:bg-gray-50'}`}>Prev</button>
+                      <button disabled={typeof totalCount==='number' ? (page*pageSize)>=totalCount : (page*pageSize)>=filtered.length} onClick={()=>setPage(p=>p+1)} className={`flex-1 sm:flex-none px-3 py-1.5 rounded border ${ (typeof totalCount==='number' ? (page*pageSize)>=totalCount : (page*pageSize)>=filtered.length)? 'opacity-50 cursor-not-allowed':'hover:bg-gray-50'}`}>Next</button>
+                    </div>
+                  </div>
+                </>
+              )}
             </section>
           </>
         )}

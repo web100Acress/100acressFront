@@ -14,6 +14,10 @@ import RightSection from "./RightSection";
 import SearchBarOverlay from "./SearchBarOverlay";
 import MegaMenu from "./MegaMenu";
 import InsightsMega from "./InsightsMega";
+// import CityMega from "./CityMega.jsx";
+// import BudgetMega from "./BudgetMega.jsx";
+// import StatusMega from "./StatusMega.jsx";
+// import TypeMega from "./TypeMega.jsx";
 // import { SpacerComponent } from "./SpacerComponent"; // unused spacer
 import { getApiBase } from "../../config/apiBase";
 
@@ -46,6 +50,10 @@ export default function Navbar() {
   const [showAuth, setShowAuth] = useState(false);
   const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
   const insightsDisclosure = useDisclosure();
+  const cityDisclosure = useDisclosure();
+  const budgetDisclosure = useDisclosure();
+  const statusDisclosure = useDisclosure();
+  const typeDisclosure = useDisclosure();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   // Navbar Search state (reuse hero search technique)
@@ -599,6 +607,18 @@ export default function Navbar() {
             onOpenInsights={insightsDisclosure.onOpen}
             onCloseInsights={insightsDisclosure.onClose}
             isInsightsOpen={insightsDisclosure.isOpen}
+            onOpenCityMega={cityDisclosure.onOpen}
+            onCloseCityMega={cityDisclosure.onClose}
+            isCityMegaOpen={cityDisclosure.isOpen}
+            onOpenBudgetMega={budgetDisclosure.onOpen}
+            onCloseBudgetMega={budgetDisclosure.onClose}
+            isBudgetMegaOpen={budgetDisclosure.isOpen}
+            onOpenStatusMega={statusDisclosure.onOpen}
+            onCloseStatusMega={statusDisclosure.onClose}
+            isStatusMegaOpen={statusDisclosure.isOpen}
+            onOpenTypeMega={typeDisclosure.onOpen}
+            onCloseTypeMega={typeDisclosure.onClose}
+            isTypeMegaOpen={typeDisclosure.isOpen}
           />
           </Box>
 
@@ -647,6 +667,10 @@ export default function Navbar() {
           {/* Desktop Mega Menu for SEARCH PROJECTS */}
           <MegaMenu isOpen={isOpen} onClose={onClose} handlePriceClick={handlePriceClick} />
           <InsightsMega isOpen={insightsDisclosure.isOpen} onClose={insightsDisclosure.onClose} />
+          {/* <CityMega isOpen={cityDisclosure.isOpen} onClose={cityDisclosure.onClose} cityOptions={CITY_OPTIONS} CityIcons={CityIcons} onSelectCity={handleCitySelect} />
+          <BudgetMega isOpen={budgetDisclosure.isOpen} onClose={budgetDisclosure.onClose} onRange={handlePriceClick} />
+          <StatusMega isOpen={statusDisclosure.isOpen} onClose={statusDisclosure.onClose} />
+          <TypeMega isOpen={typeDisclosure.isOpen} onClose={typeDisclosure.onClose} /> */}
 
           {/* Gradient divider: strong in center, fades toward edges */}
           <Box
