@@ -47,11 +47,8 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-10 relative">
         <div className="text-center mb-6">
-          <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">
-            FLOOR PLANS
-          </h2>
           <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-2">
-            Master & Floor Plan
+            Floor Plan
           </h3>
           <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-500 rounded-full mx-auto mt-4"></div>
         </div>
@@ -96,7 +93,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
-                        <span>Get Details to View</span>
+                        <span>Click to View</span>
                       </button>
                     </div>
                   )}
