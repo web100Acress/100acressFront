@@ -13,6 +13,7 @@ import FAQSection from './FAQSection';
 import RelatedProjects from './RelatedProjects';
 import CallbackModal from './CallbackModal';
 import FooterForm from './FooterForm';
+import { Helmet } from 'react-helmet-async';
 import { useParams } from "react-router-dom";
 import api from "../../../../config/apiClient";
 
@@ -126,6 +127,30 @@ function ProjectLayout2() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* SEO Meta */}
+      <Helmet>
+        <title>{projectTitle ? `${projectTitle}${location ? `, ${location}` : ''} | 100acress` : 'Project Details | 100acress'}</title>
+        <meta name="description" content={(projectViewDetails?.project_discripation ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').slice(0, 160) : `Explore details, pricing, floor plans and location for ${projectTitle}${location ? ` in ${location}` : ''} on 100acress.`)} />
+        {typeof window !== 'undefined' && window.location?.href && (
+          <link rel="canonical" href={window.location.href} />
+        )}
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={projectTitle ? `${projectTitle}${location ? `, ${location}` : ''} | 100acress` : 'Project Details | 100acress'} />
+        <meta property="og:description" content={(projectViewDetails?.project_discripation ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').slice(0, 200) : `Explore details, pricing, floor plans and location for ${projectTitle}${location ? ` in ${location}` : ''} on 100acress.`)} />
+        {backgroundImage && <meta property="og:image" content={backgroundImage} />}
+        {typeof window !== 'undefined' && window.location?.href && (
+          <meta property="og:url" content={window.location.href} />
+        )}
+        <meta property="og:site_name" content="100acress" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={projectTitle ? `${projectTitle}${location ? `, ${location}` : ''} | 100acress` : 'Project Details | 100acress'} />
+        <meta name="twitter:description" content={(projectViewDetails?.project_discripation ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').slice(0, 200) : `Explore details, pricing, floor plans and location for ${projectTitle}${location ? ` in ${location}` : ''} on 100acress.`)} />
+        {backgroundImage && <meta name="twitter:image" content={backgroundImage} />}
+      </Helmet>
       {/* Hero Section */}
       <ProjectHero
         backgroundImage={backgroundImage}

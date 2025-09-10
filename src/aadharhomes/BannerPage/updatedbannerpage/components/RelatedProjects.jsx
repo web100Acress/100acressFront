@@ -9,6 +9,7 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [expandedNames, setExpandedNames] = useState(new Set());
   const navigate = useNavigate();
   const { getProjectbyBuilder } = Api_Service();
 
@@ -42,6 +43,21 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
 
   const handleProjectClick = (project) => {
     navigate(`/${project.project_url}/`);
+  };
+
+  const toggleProjectName = (projectIndex, e) => {
+    e.stopPropagation(); // Prevent navigation when clicking on name
+    const newExpandedNames = new Set(expandedNames);
+    if (newExpandedNames.has(projectIndex)) {
+      newExpandedNames.delete(projectIndex);
+    } else {
+      newExpandedNames.add(projectIndex);
+    }
+    setExpandedNames(newExpandedNames);
+  };
+
+  const isProjectNameExpanded = (projectIndex) => {
+    return expandedNames.has(projectIndex);
   };
 
   // Always render the section; fetch will be skipped if builderName is missing
@@ -120,7 +136,13 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
 
                       {/* Project Details */}
                       <div className="p-6">
-                        <h4 className="text-white font-bold text-lg mb-2 group-hover:text-amber-400 transition-colors duration-300">
+                        <h4 
+                          className={`text-white font-bold text-lg mb-2 group-hover:text-amber-400 transition-colors duration-300 cursor-pointer ${
+                            isProjectNameExpanded(index) ? '' : 'truncate'
+                          }`}
+                          onClick={(e) => toggleProjectName(index, e)}
+                          title={project.projectName}
+                        >
                           {project.projectName}
                         </h4>
                         

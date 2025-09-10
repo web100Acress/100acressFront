@@ -21,24 +21,50 @@ const ProjectHero = ({
     containIntrinsicSize: '100vw 100vh'
   }), [backgroundImage]);
 
+  // Basic JSON-LD structured data describing the project hero entity
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Residence",
+    name: projectTitle,
+    image: backgroundImage,
+    telephone: phoneNumber,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: location
+    },
+    url: typeof window !== 'undefined' && window.location ? window.location.href : undefined
+  };
+
   return (
-    <div className="relative h-screen w-full overflow-hidden">
+    <header role="banner" className="relative h-screen w-full overflow-hidden">
+      {/* Structured data for search engines */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={backgroundStyle}
+      />
+      {/* Accessible image for SEO without changing visual BG */}
+      <img
+        src={backgroundImage}
+        alt={`${projectTitle} in ${location}`}
+        fetchpriority="high"
+        loading="eager"
+        width="1973"
+        height="1100"
+        className="sr-only"
       />
       
       {/* Dark Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
       
       {/* Top Bar - Glassy Navbar */}
-      <div className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 py-3 bg-black/20 backdrop-blur-md border-b border-white/10 transition-colors duration-300">
+      <div className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 py-3 bg-black/20 backdrop-blur-md border-b border-white/10 transition-colors duration-300" aria-label="Project top navigation">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           {/* Company Logo - Leftmost */}
           <div className="flex items-center">
             {companyLogo ? (
-              <img src={companyLogo} alt="Company Logo" className="h-10 w-auto" />
+              <img src={companyLogo} alt={`${projectTitle} developer logo`} className="h-10 w-auto" />
             ) : (
               <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-6 py-2">
                 <span className="text-white font-bold text-lg">LOGO</span>
@@ -52,12 +78,13 @@ const ProjectHero = ({
             <button 
               onClick={onShowCallback}
               className="hidden sm:block bg-white text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+              aria-label={`Open contact form for ${projectTitle}`}
             >
               Get in Touch
             </button>
             
             {/* Phone Number Button - Luxury Golden Design */}
-            <a href={`tel:${phoneNumber}`}>
+            <a href={`tel:${phoneNumber}`} aria-label={`Call ${phoneNumber}`} rel="nofollow">
               <div className="flex items-center bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full shadow-[0_4px_15px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_20px_rgba(212,175,55,0.5)] transition-all duration-300 transform hover:scale-105 border-2 border-yellow-400 pr-4 gap-3">
                 {/* Circular phone icon */}
                 <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-2 border-white rounded-full flex items-center justify-center flex-shrink-0 shadow-[0_3px_8px_rgba(212,175,55,0.5)]">
@@ -76,6 +103,14 @@ const ProjectHero = ({
       
       {/* Bottom Section with Title, Location and Info Bar */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 w-full max-w-5xl px-4" style={{ contentVisibility: 'auto' }}>
+        {/* Breadcrumbs kept for accessibility but hidden visually */}
+        <nav className="sr-only" aria-label="Breadcrumb">
+          <ol>
+            <li>Home</li>
+            <li>{location}</li>
+            <li>{projectTitle}</li>
+          </ol>
+        </nav>
         {/* Title and Location positioned above info bar */}
         <div className="text-center text-white mb-3">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 tracking-wide text-white">
@@ -136,7 +171,7 @@ const ProjectHero = ({
         </div>
 
       </div>
-    </div>
+    </header>
   );
 };
 

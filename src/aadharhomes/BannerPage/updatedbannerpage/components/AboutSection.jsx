@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () => {} }) => {
   const sectionRef = useRef(null);
@@ -23,8 +23,10 @@ const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () 
     return () => observer.disconnect();
   }, []);
 
+  const [expanded, setExpanded] = useState(false);
+
   return (
-    <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <section id="about" role="region" aria-labelledby="about-heading" className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       {/* Luxury Rounded Card Container with Circular Accents */}
       <div className="relative rounded-3xl overflow-hidden ring-1 ring-yellow-400/20 bg-gradient-to-br from-black via-gray-900 to-gray-800 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
         {/* Circular golden ambient accents */}
@@ -44,8 +46,8 @@ const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () 
           
           {/* Content */}
           <div className="relative z-10">
-            <h2 className="text-yellow-400 text-sm font-semibold uppercase tracking-widest mb-4">
-              About Project
+            <h2 id="about-heading" className="text-yellow-400 text-sm font-semibold uppercase tracking-widest mb-4">
+              About {projectName || 'Project'}
             </h2>
             
             <h3 
@@ -53,17 +55,11 @@ const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () 
               className="text-white text-3xl md:text-4xl lg:text-5xl font-bold leading-tight shimmer-on-hover cursor-pointer"
             >
               {projectName || "Modern Living"}
-              {!projectName && (
-                <>
-                  <br />
-                  <span className="text-yellow-400">Redefined</span>
-                </>
-              )}
             </h3>
             {/* Animated gold underline */}
             <div className="mt-2 h-[3px] rounded-full gold-underline w-28 sm:w-36" />
             
-            <div className="text-white/90 text-sm md:text-base leading-relaxed mt-4 mb-2 overflow-hidden max-h-[220px] md:max-h-[260px]">
+            <div className={`text-white/90 text-sm md:text-base leading-relaxed mt-4 mb-2 ${expanded ? '' : 'overflow-hidden max-h-[220px] md:max-h-[260px]'}`}>
               {description ? (
                 <div dangerouslySetInnerHTML={{ __html: description }} />
               ) : (
@@ -74,10 +70,24 @@ const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () 
                 </div>
               )}
             </div>
+
+            {/* Read more / less toggle */}
+            <div className="mt-1">
+              <button
+                type="button"
+                onClick={() => setExpanded(!expanded)}
+                className="text-yellow-400 hover:text-yellow-300 text-sm font-semibold underline underline-offset-4"
+                aria-expanded={expanded}
+                aria-controls="about-description"
+              >
+                {expanded ? 'Show Less' : 'Read More'}
+              </button>
+            </div>
             
             <button 
               onClick={onShowCallback}
               className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-5 py-2.5 rounded-md transition-colors shadow-lg shadow-yellow-500/10"
+              aria-label={`Get details for ${projectName || 'this project'}`}
             >
               Get Details
             </button>
@@ -91,7 +101,9 @@ const AboutSection = ({ projectName, description, imageUrl, onShowCallback = () 
             <div className="relative h-full rounded-[28px] overflow-hidden ring-1 ring-yellow-400/30 shadow-[0_10px_40px_rgba(250,204,21,0.10)]">
               <img 
                 src={imageUrl} 
-                alt="About us" 
+                alt={`${projectName || 'Project'} overview`} 
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700 ease-out"
               />
               {/* Subtle golden gradient overlay for luxury tint */}
