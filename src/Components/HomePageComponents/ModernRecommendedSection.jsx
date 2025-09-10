@@ -6,7 +6,9 @@ import { Pagination, Autoplay, Navigation } from 'swiper/modules';
 import { 
   MdLocationPin, 
   MdShare,
-  MdArrowForward
+  MdArrowForward,
+  MdFavoriteBorder,
+  MdFavorite
 } from 'react-icons/md';
 import styled from 'styled-components';
 import Api_Service from "../../Redux/utils/Api_Service";
@@ -416,7 +418,11 @@ const PropertyCard = ({
           aria-label="Toggle wishlist"
           title={isFav ? 'Remove from wishlist' : 'Add to wishlist'}
         >
-          {isFav ? <span style={{color:'#ef4444'}}>❤️</span> : <span>🤍</span>}
+          {isFav ? (
+            <MdFavorite size={20} color="#ef4444" />
+          ) : (
+            <MdFavoriteBorder size={20} color="#6b7280" />
+          )}
         </button>
 
         {/* Price Badge */}
@@ -717,7 +723,7 @@ const CardWrapper = styled.div`
       right: 16px;
       width: 40px;
       height: 40px;
-      background: rgba(255, 255, 255, 0.9);
+      background: #f3f4f6; /* neutral light gray */
       border: none;
       border-radius: 50%;
       display: flex;
@@ -726,13 +732,14 @@ const CardWrapper = styled.div`
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 10;
-      color: #6b7280;
+      color: #6b7280; /* icon color */
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 
       &:hover {
-        background: white;
+        background: #ffffff;
         transform: scale(1.1);
         color: #dc2626;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
       }
     }
 
@@ -742,7 +749,7 @@ const CardWrapper = styled.div`
       right: 64px; /* to the left of share */
       width: 40px;
       height: 40px;
-      background: rgba(255, 255, 255, 0.9);
+      background: #f3f4f6; /* neutral light gray */
       border: none;
       border-radius: 50%;
       display: flex;
@@ -751,13 +758,14 @@ const CardWrapper = styled.div`
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 10;
-      color: #6b7280;
+      color: #6b7280; /* default icon color */
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 
       &:hover {
-        background: white;
+        background: #ffffff;
         transform: scale(1.1);
         color: #ef4444;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
       }
     }
 

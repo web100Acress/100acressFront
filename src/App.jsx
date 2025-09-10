@@ -124,6 +124,12 @@ const ViewAllProperty = lazy(() => import("./Pages/ViewAllProperty"));
 const BlogWriteModal = lazy(() => import("./AdminPage/BlogWriteModal"));
 const Dubai = lazy(() => import("./Pages/ProjectCities/Dubai"));
 const GlobalBudgetPrice = lazy(() => import("./Pages/GlobalBudgetPrice"));
+const PriceTrends = lazy(() => import("./analytics/pages/PriceTrends"));
+// Analytics pages (MVP scaffold)
+const MarketAnalytics = lazy(() => import("./analytics/pages/MarketAnalytics"));
+const LocationIntelligence = lazy(() => import("./analytics/pages/LocationIntelligence"));
+const InvestmentInsights = lazy(() => import("./analytics/pages/InvestmentInsights"));
+const AnalyticsHome = lazy(() => import("./analytics/pages/AnalyticsHome"));
 
 // Admin components (already lazy loaded)
 const Addnew = lazy(() => import("./AdminPage/Addnew"));
@@ -339,6 +345,12 @@ function App() {
                       <Route path="/projects-in-pushkar/" element={<Pushkar />} />
                   <Route path="/qr-generator" element={<QRGeneratorPage />} />
                       <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
+                      {/* Analytics (public) */}
+                      <Route path="/analytics" element={<AnalyticsHome />} />
+                      <Route path="/analytics/price-trends" element={<PriceTrends />} />
+                      <Route path="/analytics/market" element={<MarketAnalytics />} />
+                      <Route path="/analytics/location" element={<LocationIntelligence />} />
+                      <Route path="/analytics/investment" element={<InvestmentInsights />} />
                       <Route
                         path="/project-in-underconstruction/"
                         element={<UnderConstruction />}

@@ -68,7 +68,9 @@ const Enquiries = () => {
       if (Array.isArray(payload?.data)) rows = payload.data;
       else if (Array.isArray(payload?.users)) rows = payload.users;
       else if (Array.isArray(payload)) rows = payload;
-      setData(rows);
+      // Frontend-only filter: hide footer instant call leads from admin UI
+      const filteredRows = rows.filter((r) => !(/footer\s*instant\s*call/i.test((r?.projectName || '').trim())));
+      setData(filteredRows);
       setTotal(payload?.total || payload?.data?.[0]?.totalCount || 0);
       setCurrentPage(page);
     } catch (error) {
@@ -302,7 +304,9 @@ const Enquiries = () => {
 
             {data.length !== 0 ? (
               <tbody className="table-body">
-                {data.map((item, index) => (
+                {data
+                  .filter((r) => !(/footer\s*instant\s*call/i.test((r?.projectName || '').trim())))
+                  .map((item, index) => (
                   <tr key={index} className="table-row">
                     <td className="table-cell">
                       {index + 1 + (currentPage - 1) * pageSize}
