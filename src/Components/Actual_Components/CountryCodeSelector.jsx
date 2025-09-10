@@ -66,10 +66,10 @@ const CountryCodeSelector = ({
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             disabled={disabled}
-            className="flex items-center px-3 py-4 bg-gray-800/70 border border-gray-600 border-r-0 rounded-l-xl text-white hover:bg-gray-700/70 focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center px-2 md:px-3 py-3 md:py-4 bg-gray-800/70 border border-gray-600 border-r-0 rounded-l-xl text-white hover:bg-gray-700/70 focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span className="text-lg mr-1">{selectedCountry.flag}</span>
-            <span className="text-sm font-medium mr-1">{selectedCountry.code}</span>
+            <span className="text-base md:text-lg mr-1">{selectedCountry.flag}</span>
+            <span className="text-xs md:text-sm font-medium mr-1">{selectedCountry.code}</span>
             <svg 
               className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} 
               fill="none" 
@@ -106,7 +106,7 @@ const CountryCodeSelector = ({
           onChange={handlePhoneChange}
           placeholder={placeholder}
           disabled={disabled}
-          className="flex-1 px-4 py-4 bg-gray-800/70 border border-gray-600 rounded-r-xl text-white focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 px-4 py-3 md:py-4 bg-gray-800/70 border border-gray-600 rounded-r-xl text-white focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
         />
       </div>
 
