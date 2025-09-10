@@ -97,17 +97,41 @@ export default function RightSection({
             <>
               <Button onClick={() => (isAcctOpen ? onAcctClose() : onAcctOpen())} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
                 <Flex align="center" gap={2}>
-                  <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden">
+                  <Box as="span" border="1px solid rgba(0,0,0,0.1)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden" bg="gray.100">
                     {avatarUrl ? (
-                      <Box as="img" src={avatarUrl} alt="Profile" w="100%" h="100%" objectFit="cover" />
-                    ) : (
-                      <Box as="span" lineHeight={0}>
+                      <Box 
+                        as="img" 
+                        src={avatarUrl.includes('http') ? avatarUrl : `${process.env.REACT_APP_API_URL || ''}${avatarUrl}`} 
+                        alt={firstName || 'Profile'} 
+                        w="100%" 
+                        h="100%" 
+                        objectFit="cover"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <Box 
+                      as="span" 
+                      display={!avatarUrl ? 'flex' : 'none'} 
+                      alignItems="center" 
+                      justifyContent="center" 
+                      w="100%" 
+                      h="100%" 
+                      bg="blue.500" 
+                      color="white"
+                      fontSize="sm"
+                      fontWeight="bold"
+                    >
+                      {firstName ? firstName.charAt(0).toUpperCase() : 
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                          <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                          <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                          <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                         </svg>
-                      </Box>
-                    )}
+                      }
+                    </Box>
                   </Box>
                 </Flex>
               </Button>
@@ -129,6 +153,14 @@ export default function RightSection({
                           </svg>
                         </Box>
                         <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Profile</Box>
+                      </Button>
+                      <Button variant="ghost" w="90%" display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center" py={3} px={4} minH={{ base: 14, md: 12 }} bg="white" borderWidth="1px" borderColor="#e5e7eb" rounded="xl" boxShadow="xs" transition="all 0.15s ease" _hover={{ bg: 'white', boxShadow: 'sm' }} _active={{ bg: 'white', boxShadow: 'xs' }} onClick={() => { onAcctClose(); go('/activity'); }} my={3} mx={3} position="relative" zIndex={1}>
+                        <Box as="span" lineHeight={0} mb={1}>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </Box>
+                        <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Activity</Box>
                       </Button>
                       {isAdmin && (
                         <Button variant="ghost" w="90%" display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center" py={3} px={4} minH={{ base: 14, md: 12 }} bg="white" borderWidth="1px" borderColor="#e5e7eb" rounded="lg" boxShadow="xs" transition="all 0.15s ease" _hover={{ bg: 'white', boxShadow: 'sm' }} _active={{ bg: 'white', boxShadow: 'xs' }} onClick={() => { onAcctClose(); go('/admin/'); }} my={3} mx={4} position="relative" zIndex={2} borderRadius="xl">
@@ -168,17 +200,41 @@ export default function RightSection({
             <Menu placement="bottom-end" isLazy strategy="fixed">
               <MenuButton as={Button} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
                 <Flex align="center" gap={2}>
-                  <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden">
+                  <Box as="span" border="1px solid rgba(0,0,0,0.1)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden" bg="gray.100">
                     {avatarUrl ? (
-                      <Box as="img" src={avatarUrl} alt="Profile" w="100%" h="100%" objectFit="cover" />
-                    ) : (
-                      <Box as="span" lineHeight={0}>
+                      <Box 
+                        as="img" 
+                        src={avatarUrl.includes('http') ? avatarUrl : `${process.env.REACT_APP_API_URL || ''}${avatarUrl}`} 
+                        alt={firstName || 'Profile'} 
+                        w="100%" 
+                        h="100%" 
+                        objectFit="cover"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <Box 
+                      as="span" 
+                      display={!avatarUrl ? 'flex' : 'none'} 
+                      alignItems="center" 
+                      justifyContent="center" 
+                      w="100%" 
+                      h="100%" 
+                      bg="blue.500" 
+                      color="white"
+                      fontSize="sm"
+                      fontWeight="bold"
+                    >
+                      {firstName ? firstName.charAt(0).toUpperCase() : 
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                          <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                          <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                          <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                         </svg>
-                      </Box>
-                    )}
+                      }
+                    </Box>
                   </Box>
                   {firstName && (
                     <Box as="span" color={colorChange ? "white" : "#111"} fontSize="14px" fontWeight="600" display={{ base: "none", xl: "inline" }}>
@@ -199,6 +255,14 @@ export default function RightSection({
                       </svg>
                     </Box>
                     View Profile
+                  </MenuItem>
+                  <MenuItem onClick={() => go('/activity')} fontSize="14px" py={2.5} _hover={{ bg: '#f9fafb' }}>
+                    <Box as="span" lineHeight={0} mr={3}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </Box>
+                    Activity
                   </MenuItem>
                   {isAdmin && (
                     <MenuItem onClick={() => go('/admin/')} fontSize="14px" py={2.5} _hover={{ bg: '#f9fafb' }}>
@@ -241,11 +305,11 @@ export default function RightSection({
           <>
             <Button onClick={showModal} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
               <Flex align="center" gap={2}>
-                <Box as="span" border="1px solid rgba(0,0,0,0.35)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center">
-                  <Box as="span" lineHeight={0}>
+                <Box as="span" border="1px solid rgba(0,0,0,0.1)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" bg="gray.100">
+                  <Box as="span" lineHeight={0} color="gray.500">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-                      <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
+                      <path d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                      <path d="M4 20.25c1.9-3.3 5.2-4.75 8-4.75s6.1 1.45 8 4.75" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                     </svg>
                   </Box>
                 </Box>
