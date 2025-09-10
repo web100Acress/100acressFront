@@ -2,11 +2,6 @@
 function MobileStickyListProperty() {
   const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
   const postTarget = token ? "/postproperty" : "/auth/signin";
-  const location = useLocation();
-  const path = location?.pathname || "/";
-  const isProjectSlug = /^\/[A-Za-z0-9-]+\/$/.test(path);
-  const isNewBanner = typeof document !== 'undefined' && document.body?.classList?.contains('newbanner-page');
-  if (isProjectSlug || isNewBanner) return null;
   return (
     <div className="md:hidden fixed z-[10010]" style={{ right: 0, top: '45%' }}>
       <Link
@@ -190,6 +185,15 @@ const ShortsSettings = lazy(() => import("./AdminPage/ShortsSettings"));
 const queryClient = new QueryClient();
 
 function App() {
+  const location = useLocation();
+  const currentPath = location?.pathname || "/";
+  // Consider dynamic project pages like '/experion-the-trillion/' etc. (single segment with trailing slash)
+  const singleSegment = /^\/[A-Za-z0-9-]+\/?$/.test(currentPath);
+  const blockedPrefixes = [
+    'blog', 'auth', 'projects', 'project', 'property', 'loan', 'contact-us', 'userdashboard', 'admin', 'emi-calculator', 'postproperty', 'news-and-articals', 'searchdata', 'developers', 'privacy-policy', 'terms-and-conditions', 'qr-generator'
+  ];
+  const hasBlockedPrefix = blockedPrefixes.some((p) => currentPath.startsWith(`/${p}`));
+  const isProjectPage = singleSegment && !hasBlockedPrefix && currentPath !== '/';
   const token = localStorage.getItem("myToken");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignupModal, setShowSignupModal] = useState(false);
@@ -535,10 +539,10 @@ function App() {
           </TooltipProvider>
         </AuthProvider>
       </DataProvider>
-      {/* Global mobile bottom navigation */}
-      <MobileBottomNav />
-      {/* Global mobile sticky List Property button */}
-      <MobileStickyListProperty />
+      {/* Global mobile bottom navigation (hidden on project pages) */}
+      {!isProjectPage && <MobileBottomNav />}
+      {/* Global mobile sticky List Property button (hidden on project pages) */}
+      {!isProjectPage && <MobileStickyListProperty />}
     </>
   );
 }
@@ -566,8 +570,6 @@ function MobileBottomNav() {
   }, []);
 
   if (hideForNewBanner) return null;
-  const isProjectSlug = /^\/[A-Za-z0-9-]+\/$/.test(path);
-  if (isProjectSlug) return null;
 
   const isActive = (match) => {
     if (Array.isArray(match)) return match.some((m) => path.startsWith(m));
