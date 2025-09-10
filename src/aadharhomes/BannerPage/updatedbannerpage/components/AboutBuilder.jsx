@@ -86,7 +86,7 @@ const AboutBuilder = ({ builderName = "", aboutDeveloper = "" }) => {
           </div>
         </div>
 
-        {/* Trust Indicators */}
+        {/* Trust Indicators
         <div className="max-w-3xl mx-auto mt-8">
           <div className="bg-gradient-to-r from-amber-600/10 to-amber-500/5 rounded-xl p-6 border border-amber-600/20">
             <div className="flex items-start space-x-4">
@@ -104,7 +104,8 @@ const AboutBuilder = ({ builderName = "", aboutDeveloper = "" }) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
+        {/* uncomment this section to show the trusted sectio if wanted in future for my future developer friend's */}
       </div>
     </section>
   );

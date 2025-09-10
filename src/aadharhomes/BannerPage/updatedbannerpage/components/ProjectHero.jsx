@@ -116,7 +116,7 @@ const ProjectHero = ({
               <div className="text-xs font-medium text-white/80 uppercase tracking-widest mb-2 group-hover:text-yellow-400 transition-colors duration-300">
                 ABOUT PROJECT
               </div>
-              <div className="text-sm font-medium text-white leading-tight line-clamp-2 group-hover:text-yellow-300 transition-colors duration-300">
+              <div className="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors duration-300">
                 {bottomInfo.aboutProject}
               </div>
               {/* Gradient divider */}

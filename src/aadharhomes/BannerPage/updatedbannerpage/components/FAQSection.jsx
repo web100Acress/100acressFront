@@ -109,9 +109,9 @@ const FAQSection = ({ projectViewDetails = {}, onShowCallback = () => {} }) => {
                   {/* Question */}
                   <button
                     onClick={() => toggleFAQ(index)}
-                    className="w-full px-4 py-2.5 text-left flex items-center justify-between hover:bg-gray-800/30 transition-colors duration-200"
+                    className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-800/30 transition-colors duration-200"
                   >
-                    <h4 className="text-white font-medium text-sm pr-3 leading-snug">
+                    <h4 className="text-white font-semibold text-base md:text-lg pr-3 leading-snug">
                       {faq.title}?
                     </h4>
                     <div className={`flex-shrink-0 w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center transition-transform duration-200 ${openIndex === index ? 'rotate-180' : ''}`}>
@@ -125,7 +125,7 @@ const FAQSection = ({ projectViewDetails = {}, onShowCallback = () => {} }) => {
                   <div className={`overflow-hidden transition-all duration-200 ${openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
                     <div className="px-4 pb-2">
                       <div className="w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent mb-2"></div>
-                      <p className="text-gray-300 leading-normal text-xs md:text-sm">
+                      <p className="text-gray-300 leading-relaxed text-sm md:text-base">
                         {faq.content}
                       </p>
                     </div>

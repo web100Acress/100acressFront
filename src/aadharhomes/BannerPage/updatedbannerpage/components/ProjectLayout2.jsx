@@ -12,6 +12,7 @@ import MasterPlan from './MasterPlan';
 import FAQSection from './FAQSection';
 import RelatedProjects from './RelatedProjects';
 import CallbackModal from './CallbackModal';
+import FooterForm from './FooterForm';
 import { useParams } from "react-router-dom";
 import api from "../../../../config/apiClient";
 
@@ -235,11 +236,7 @@ function ProjectLayout2() {
         aboutDeveloper={projectViewDetails?.AboutDeveloper}
       />
 
-      {/* FAQs */}
-      <FAQSection 
-        projectViewDetails={projectViewDetails} 
-        onShowCallback={handleShowCallback}
-      />
+      
 
       {/* Related Projects */}
       <RelatedProjects 
@@ -247,6 +244,22 @@ function ProjectLayout2() {
         currentProjectUrl={pUrl}
         onShowCallback={handleShowCallback}
       />
+      
+      {/* FAQs */}
+      <FAQSection 
+        projectViewDetails={projectViewDetails} 
+        onShowCallback={handleShowCallback}
+      />
+
+      {/* Footer Form */}
+      <FooterForm 
+        builderName={projectViewDetails?.builderName}
+        projectViewDetails={projectViewDetails}
+        projectTitle={projectTitle}
+        location={location}
+      />
+      
+      
 
       {/* Global Callback Modal */}
       <CallbackModal 

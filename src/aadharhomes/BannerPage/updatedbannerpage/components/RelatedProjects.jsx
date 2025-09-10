@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Api_Service from '../../../../Redux/utils/Api_Service';
-import FooterForm from './FooterForm';
+ 
 
 
 const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallback = () => {} }) => {
@@ -35,16 +35,16 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
     fetchBuilderProjects();
   }, [builderName, currentProjectUrl, getProjectbyBuilder]);
 
+  // Debug log to help trace why section may not show
+  console.debug('RelatedProjects:', { builderName, currentProjectUrl, count: builderProjects.length });
+
   const projectsToShow = showAllProjects ? builderProjects : builderProjects.slice(0, 4);
 
   const handleProjectClick = (project) => {
     navigate(`/${project.project_url}/`);
   };
 
-  // Don't render if no builder name or no projects
-  if (!builderName || builderProjects.length === 0) {
-    return null;
-  }
+  // Always render the section; fetch will be skipped if builderName is missing
 
   return (
     <section className="py-12 md:py-16 bg-gradient-to-b from-black via-gray-900 to-black text-white relative overflow-hidden">
@@ -124,12 +124,12 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
                           {project.projectName}
                         </h4>
                         
-                        <div className="flex items-center space-x-2 mb-3">
-                          <svg className="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex items-start space-x-2 mb-3">
+                          <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                           </svg>
-                          <p className="text-gray-400 text-sm">
+                          <p className="text-gray-400 text-sm truncate">
                             {project.projectAddress}, {project.city}
                           </p>
                         </div>
@@ -165,6 +165,13 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
                 </div>
               ))}
             </div>
+
+            {/* Empty state when no projects found */}
+            {builderProjects.length === 0 && (
+              <div className="text-center text-gray-400 mt-6">
+                No related projects found for {builderName}.
+              </div>
+            )}
 
             {/* View All Button - Moved Below Properties */}
             {builderProjects.length > 4 && (
@@ -208,8 +215,6 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
           </div>
         </div> */}
       </div>
-
-      <FooterForm builderName={builderName} />
     </section>
   );
 };
