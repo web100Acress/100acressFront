@@ -75,7 +75,7 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start lg:items-center">
           
           {/* Left Side - Credible Text Content */}
-          <div className="space-y-6 md:space-y-8 order-2 lg:order-1">
+          <div className="space-y-6 md:space-y-8">
             <div className="space-y-6">
               <div className="inline-flex items-center px-4 py-2 bg-amber-500/10 rounded-full border border-amber-500/20">
                 <i className="fa-solid fa-award text-amber-400 mr-2"></i>
@@ -156,7 +156,7 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
           </div>
 
           {/* Right Side - Contact Form */}
-          <div className="order-1 lg:order-2 lg:pl-8">
+          <div className="lg:pl-8">
             <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-gray-700/50 shadow-2xl">
               <div className="text-center mb-6">
                 <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Get Started Today</h3>

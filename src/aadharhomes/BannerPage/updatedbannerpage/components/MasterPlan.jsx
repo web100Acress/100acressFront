@@ -104,7 +104,7 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null, onShowCallback =
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
-                      <span>Get Details to View</span>
+                      <span>Click to View</span>
                     </button>
                   </div>
                 )}
@@ -135,7 +135,7 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null, onShowCallback =
         </div>
 
         {/* Additional Info */}
-        <div className="max-w-3xl mx-auto mt-4">
+        {/* <div className="max-w-3xl mx-auto mt-4">
             <div className="bg-gradient-to-r from-amber-600/10 to-amber-500/5 rounded-xl p-4 border border-amber-600/20">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
@@ -152,7 +152,8 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null, onShowCallback =
               </div>
             </div>
           </div>
-        </div>
+        </div> */} 
+        {/* uncomment this section to show additional info */}
       </div>
 
       {/* Full Screen Modal */}

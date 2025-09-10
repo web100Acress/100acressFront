@@ -12,6 +12,12 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
     return price < 1 ? `${(price * 100).toFixed()} L` : `${price} Cr`;
   };
 
+  const formatBhkPrice = (price) => {
+    if (!price) return "Price on Request";
+    if (typeof price === 'string') return price;
+    return price < 1 ? `₹ ${(price * 100).toFixed()} L` : `₹ ${price} Cr`;
+  };
+
   const getPriceDisplay = () => {
     if (!minPrice && !maxPrice) return "Call For Price";
     if (minPrice && maxPrice) {
@@ -63,7 +69,7 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
                           Area (Sq.ft.)
                         </th>
                         <th scope="col" className="px-6 py-4 text-center text-xs font-medium text-amber-400 uppercase tracking-wider">
-                          Contact
+                          Price
                         </th>
                       </tr>
                     </thead>
@@ -76,17 +82,9 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
                           <td className="px-6 py-4 text-center">
                             <div className="text-base text-amber-400">{item.bhk_Area || 'N/A'}</div>
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="flex justify-center">
-                              <button
-                                onClick={onShowCallback}
-                                className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-amber-600 text-black font-semibold hover:bg-amber-500 transition-colors duration-200 shadow hover:shadow-amber-500/20"
-                              >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                </svg>
-                                <span>Contact</span>
-                              </button>
+                          <td className="px-6 py-4 text-center">
+                            <div className="text-base font-semibold text-amber-400">
+                              {formatBhkPrice(item.bhk_price || item.price)}
                             </div>
                           </td>
                         </tr>
@@ -100,26 +98,21 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
               <div className="md:hidden space-y-4 max-w-md mx-auto">
                 {bhkDetails.map((item, index) => (
                   <div key={index} className="rounded-xl border border-gray-700 bg-gray-900/50 p-4">
-                    <div className="flex items-start justify-between gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                       <div>
                         <div className="text-sm text-gray-400">Unit Type</div>
                         <div className="text-lg font-semibold text-white">{item.bhk_type || `Unit ${index + 1}`}</div>
                       </div>
-                      <div className="text-right">
+                      <div>
                         <div className="text-sm text-gray-400">Area</div>
                         <div className="text-lg font-semibold text-amber-400">{item.bhk_Area || 'N/A'}</div>
                       </div>
-                    </div>
-                    <div className="mt-4">
-                      <button
-                        onClick={onShowCallback}
-                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-amber-600 text-black font-semibold hover:bg-amber-500 transition-colors duration-200 shadow hover:shadow-amber-500/20"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        <span>Contact</span>
-                      </button>
+                      <div>
+                        <div className="text-sm text-gray-400">Price</div>
+                        <div className="text-lg font-semibold text-amber-400">
+                          {formatBhkPrice(item.bhk_price || item.price)}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
