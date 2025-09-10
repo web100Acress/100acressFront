@@ -519,7 +519,6 @@ const BlogView = () => {
         }
         if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
         if (!img.getAttribute('referrerpolicy')) img.setAttribute('referrerpolicy', 'no-referrer');
-        if (!img.getAttribute('crossorigin')) img.setAttribute('crossorigin', 'anonymous');
         // Upgrade insecure URLs when possible
         const src = img.getAttribute('src') || '';
         if (/^http:\/\//i.test(src)) {
@@ -698,7 +697,6 @@ const BlogView = () => {
                             onError={onImgError}
                             loading="lazy"
                             referrerPolicy="no-referrer"
-                            crossOrigin="anonymous"
                           />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -760,7 +758,6 @@ const BlogView = () => {
                       alt={name}
                       onError={onImgError}
                       referrerPolicy="no-referrer"
-                      crossOrigin="anonymous"
                     />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
