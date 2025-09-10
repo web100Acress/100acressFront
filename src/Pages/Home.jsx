@@ -800,8 +800,26 @@ const Home = () => {
   background: #ffffff;
   position: relative;
   z-index: 1;
-
+  width: 100%;
+  overflow: hidden; 
+  
+  /* Container for content that needs to be full width */
+  .content-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: visible;
+    position: relative;
+  }
  
+   /* Suppress nested vertical scrollbars within Home page only */
+  & *[style*="overflow-y: auto"],
+  & *[style*="overflow-y:auto"],
+  & *[class*="overflow-y-auto"],
+  & *[class*="overflow-y-scroll"] {
+    overflow-y: visible !important;
+    max-height: none !important;
+  }
+
    
    .hero-strip-99 {
     width: 100%;
@@ -887,7 +905,7 @@ const Home = () => {
      height: auto;
      position: fixed;
      border-radius: 15px 0 15px 0;
-     right: 0;
+     right: 0; /* keep container within viewport */
      top: 400px;
      top: 40vh;
      z-index: 10000;
@@ -906,7 +924,7 @@ const Home = () => {
      -webkit-transform: rotate(-270deg) translate(0, -20px);
      transform: rotate(-270deg) translate(0, -20px);
      position: relative;
-     right: -40px;
+     right: 0; /* avoid pushing outside viewport */
      transition: position 0.2s, right 0.2s;
      background: rgb(251, 183, 39);
      background: red;
