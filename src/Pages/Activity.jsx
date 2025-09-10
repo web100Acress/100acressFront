@@ -72,19 +72,71 @@ const Card = ({ item }) => {
   const baths = item?.baths || item?.bathrooms || null;
   const area = item?.area || item?.size || item?.superArea || null;
 
+  // Helper function to get the correct image URL
+  const getImageUrl = (img) => {
+    if (!img) return null;
+    
+    // If it's an object with a url property
+    if (img && typeof img === 'object' && img.url) {
+      return getImageUrl(img.url);
+    }
+    
+    // If it's a string
+    if (typeof img === 'string') {
+      // If it's already a full URL or data URL, return as is
+      if (img.startsWith('http') || img.startsWith('data:image') || img.startsWith('blob:')) {
+        return img;
+      }
+      // Handle relative paths
+      if (img.startsWith('/')) {
+        return `${window.location.origin}${img}`;
+      }
+      // If it's a relative path without leading slash
+      return `${window.location.origin}/${img}`;
+    }
+    
+    return null;
+  };
+
+  const imageUrl = getImageUrl(image);
+  const [imgSrc, setImgSrc] = useState(imageUrl);
+  const [imgError, setImgError] = useState(false);
+
+  // Handle image loading errors
+  const handleImageError = (e) => {
+    console.error('Error loading image:', e.target.src);
+    setImgError(true);
+    setImgSrc(null);
+  };
+  
+  // Log image URL for debugging
+  useEffect(() => {
+    console.log('Image URL:', {
+      original: image,
+      processed: imageUrl,
+      imgSrc
+    });
+  }, [image, imageUrl, imgSrc]);
+
   return (
     <article className="group overflow-hidden rounded-2xl border border-gray-100 text-black shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_28px_rgba(0,0,0,0.10)] transition-all duration-300 ease-out h-full flex flex-col bg-white">
       <Link to={url} target="_top" className="block relative">
-        <div className="overflow-hidden rounded-t-2xl">
-          {image ? (
+        <div className="overflow-hidden rounded-t-2xl bg-gray-50">
+          {imgSrc ? (
             <img
-              src={image}
+              src={imgSrc}
               alt={title}
               className="w-full aspect-[4/3] object-cover group-hover:scale-[1.03] transition-transform"
               loading="lazy"
+              onError={handleImageError}
             />
           ) : (
-            <div className="w-full aspect-[4/3] bg-gray-100 flex items-center justify-center text-gray-400">No Image</div>
+            <div className="w-full aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center text-gray-400 p-4 text-center">
+              <svg className="w-12 h-12 mb-2 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <span className="text-sm">No image available</span>
+            </div>
           )}
         </div>
         {priceText ? (
@@ -171,11 +223,27 @@ export default function Activity() {
 
   const recommended = useMemo(() => {
     if (Array.isArray(spotlight) && spotlight.length > 0) {
+      // Helper function to find the first valid image from various possible sources
+      const findImageSource = (item) => {
+        const sources = [
+          item.image?.url,
+          item.image,
+          item.frontImage?.url,
+          item.thumbnailImage?.url,
+          ...(Array.isArray(item.images) ? item.images.map(img => 
+            typeof img === 'string' ? img : img?.url
+          ) : [])
+        ];
+        
+        // Return the first truthy value
+        return sources.find(src => Boolean(src));
+      };
+      
       // Map to the lightweight shape that Card expects
       return spotlight.slice(0, 8).map((p) => ({
         id: p?._id || p?.id || p?.slug,
         title: p?.projectName,
-        image: p?.image?.url || p?.frontImage?.url || p?.thumbnailImage?.url || (Array.isArray(p?.images) ? (p.images[0]?.url || (typeof p.images[0] === 'string' ? p.images[0] : undefined)) : undefined),
+        image: findImageSource(p),
         url: p?.project_url ? `/${p.project_url}/` : '#',
         city: p?.city,
         priceText: (() => {
@@ -194,41 +262,62 @@ export default function Activity() {
 
   // Normalize viewed list into Card shape, with robust image fallbacks
   const viewedItems = useMemo(() => {
-    return (viewed || []).map((v) => ({
-      id: v.id || v._id || v.slug,
-      title: v.title || v.projectName,
-      url: v.url || (v.project_url ? `/${v.project_url}/` : '#'),
-      image:
-        v.image?.url || v.image ||
-        v.img ||
-        v.image_url || v.imageUrl ||
-        v.frontImage?.url ||
-        (typeof v.frontImage === 'string' ? v.frontImage : undefined) ||
-        v.front_image || v.frontImageUrl || v.frontImageURL ||
-        v.thumbnailImage?.url ||
-        v.thumbnailImageUrl || v.thumbnailImageURL ||
-        v.thumbnail?.url ||
-        v.thumbnail ||
-        v.thumbnailUrl || v.thumbnailURL ||
-        v.cover || v.coverImage || v.cover_image ||
-        v.photo || v.picture ||
-        (Array.isArray(v.images) && (v.images[0]?.url || (typeof v.images[0] === 'string' ? v.images[0] : undefined))) ||
-        (Array.isArray(v.gallery) && (v.gallery[0]?.url || (typeof v.gallery[0] === 'string' ? v.gallery[0] : undefined))) ||
-        '',
-      city: v.city || v.location || '',
-      priceText:
-        v.priceText ||
-        (() => {
+    return (viewed || []).map((v) => {
+      // Helper function to find the first valid image from various possible sources
+      const findImageSource = (item) => {
+        const sources = [
+          item.image?.url,
+          item.image,
+          item.img,
+          item.image_url,
+          item.imageUrl,
+          item.frontImage?.url,
+          typeof item.frontImage === 'string' ? item.frontImage : undefined,
+          item.front_image,
+          item.frontImageUrl,
+          item.frontImageURL,
+          item.thumbnailImage?.url,
+          item.thumbnailImageUrl,
+          item.thumbnailImageURL,
+          item.thumbnail?.url,
+          item.thumbnail,
+          item.thumbnailUrl,
+          item.thumbnailURL,
+          item.cover,
+          item.coverImage,
+          item.cover_image,
+          item.photo,
+          item.picture,
+          ...(Array.isArray(item.images) ? item.images.map(img => 
+            typeof img === 'string' ? img : img?.url
+          ) : []),
+          ...(Array.isArray(item.gallery) ? item.gallery.map(img => 
+            typeof img === 'string' ? img : img?.url
+          ) : [])
+        ];
+        
+        // Return the first truthy value
+        return sources.find(src => Boolean(src));
+      };
+      
+      return {
+        id: v.id || v._id || v.slug,
+        title: v.title || v.projectName,
+        url: v.url || (v.project_url ? `/${v.project_url}/` : '#'),
+        image: findImageSource(v),
+        city: v.city || v.location || '',
+        priceText: v.priceText || (() => {
           const min = v?.minPrice ?? v?.price;
           const max = v?.maxPrice ?? null;
           if (!min && !max) return '';
           if (min && max) return `₹${min} - ${max} Cr`;
           return min ? `₹${min} Cr` : '';
         })(),
-      beds: v.beds || v.bedrooms || v.bhk,
-      baths: v.baths || v.bathrooms,
-      area: v.area || v.size || v.superArea,
-    }));
+        beds: v.beds || v.bedrooms || v.bhk,
+        baths: v.baths || v.bathrooms,
+        area: v.area || v.size || v.superArea
+      };
+    });
   }, [viewed]);
 
   return (

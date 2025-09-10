@@ -118,10 +118,11 @@ const FloatingShorts = ({ videoId = "" }) => {
       : { w: 240, h: 426 };
   })();
 
-  // Initialize to bottom-right with a margin when size or window changes
+  // Initialize to bottom-left on mobile/tablet, bottom-right on desktop, with a margin when size or window changes
   useEffect(() => {
     const margin = isMobile ? 8 : 16;
-    const x = Math.max(0, windowWidth - dims.w - margin);
+    const defaultLeft = isMobile || isTablet;
+    const x = defaultLeft ? margin : Math.max(0, windowWidth - dims.w - margin);
     const y = Math.max(0, windowHeight - dims.h - (isMobile ? 80 : 96));
     setPos((p) => ({ x: p.x === 0 && p.y === 0 ? x : Math.min(p.x, windowWidth - dims.w), y: p.y === 0 ? y : Math.min(p.y, windowHeight - dims.h) }));
     dragPosRef.current = { x, y };
