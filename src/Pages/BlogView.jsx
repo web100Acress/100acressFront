@@ -644,7 +644,7 @@ const BlogView = () => {
             {/* Related Projects moved to the left sidebar (TOP) */}
             {relatedProjects && relatedProjects.length > 0 && (
               <div className="mb-3">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Related Projects</h3>
+                <h3 className="text-xl font-bold mb-3 px-3 py-2 rounded-lg text-white bg-gradient-to-r from-red-500 to-red-600 shadow-sm">Related Projects</h3>
                 <div className="space-y-2">
                   {relatedProjects.map((project, idx) => {
                     const name = project?.projectName || 'Project';
@@ -683,7 +683,7 @@ const BlogView = () => {
                     return (
                       <div
                         key={idx}
-                        className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-500 rounded-lg hover:border-red-600"
+                        className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-500 rounded-lg hover:border-red-600 bg-white shadow-sm transition duration-300 hover:[box-shadow:0_4px_12px_rgba(239,68,68,0.4)] hover:-translate-y-0.5"
                         role="button"
                         tabIndex={0}
                         onClick={handleProjectClick}
@@ -727,7 +727,7 @@ const BlogView = () => {
 
             {/* Trending Projects below Related (hidden on mobile; shown in its own section under content) */}
             <div className="hidden md:block">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Trending Projects</h3>
+            <h3 className="text-xl font-bold mb-3 px-3 py-2 rounded-lg text-white bg-gradient-to-r from-red-500 to-red-600 shadow-sm">Trending Projects</h3>
             <div className="space-y-2">
               {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
                 const name = p?.projectName || p?.name || p?.title || 'Project';
@@ -747,7 +747,7 @@ const BlogView = () => {
                 return (
                   <div
                     key={idx}
-                    className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-200 rounded-lg hover:border-red-400"
+                    className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-500 rounded-lg hover:border-red-600 bg-white shadow-sm transition duration-300 hover:[box-shadow:0_4px_12px_rgba(239,68,68,0.4)] hover:-translate-y-0.5"
                     role="button"
                     tabIndex={0}
                     onClick={() => navigateProject(p)}
@@ -904,7 +904,7 @@ const BlogView = () => {
 
         {/* Mobile-only Trending below blog content */}
         <div className="md:hidden w-full mt-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-3">Trending Projects</h3>
+          <h3 className="text-xl font-bold mb-3 px-3 py-2 rounded-lg text-white bg-gradient-to-r from-red-500 to-red-600 shadow-sm">Trending Projects</h3>
           <div className="space-y-2">
             {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
               const name = p?.projectName || p?.name || p?.title || 'Project';
@@ -924,7 +924,7 @@ const BlogView = () => {
               return (
                 <div
                   key={idx}
-                  className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-200 rounded-lg hover:border-red-400"
+                  className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-500 rounded-lg hover:border-red-600 bg-white shadow-sm transition duration-300 hover:[box-shadow:0_4px_12px_rgba(239,68,68,0.4)] hover:-translate-y-0.5"
                   role="button"
                   tabIndex={0}
                   onClick={() => navigateProject(p)}

@@ -39,21 +39,6 @@ const Home = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Ensure no horizontal scrollbar on Home (handles fixed/rotated elements)
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-    const html = document.documentElement;
-    const body = document.body;
-    const prevHtml = html.style.overflowX;
-    const prevBody = body.style.overflowX;
-    html.style.overflowX = 'hidden';
-    body.style.overflowX = 'hidden';
-    return () => {
-      html.style.overflowX = prevHtml;
-      body.style.overflowX = prevBody;
-    };
-  }, []);
-
   // Shorts ID is now fetched directly by FloatingShorts via backend polling.
 
   const sectionsRef = useRef({});
@@ -815,16 +800,8 @@ const Home = () => {
   background: #ffffff;
   position: relative;
   z-index: 1;
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden; /* Prevent accidental horizontal scroll on mobile */
 
-  /* Also ensure any nested section wrapper cannot overflow horizontally */
-  &.section {
-    max-width: 100vw;
-    overflow-x: hidden;
-  }
-
+ 
    
    .hero-strip-99 {
     width: 100%;
