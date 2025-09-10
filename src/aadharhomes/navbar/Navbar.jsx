@@ -13,9 +13,9 @@ import CenterLogo from "./CenterLogo";
 import RightSection from "./RightSection";
 import SearchBarOverlay from "./SearchBarOverlay";
 import MegaMenu from "./MegaMenu";
+import InsightsMega from "./InsightsMega";
+// import { SpacerComponent } from "./SpacerComponent"; // unused spacer
 import { getApiBase } from "../../config/apiBase";
-
-// const SpacerComponent = () => <Box width="60px" />; // unused spacer
 
 export default function Navbar() {
   const history = useNavigate();
@@ -45,6 +45,8 @@ export default function Navbar() {
   // const [isModalOpen, setIsModalOpen] = useState(false); // removed old user menu modal state
   const [showAuth, setShowAuth] = useState(false);
   const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
+  const insightsDisclosure = useDisclosure();
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   // Navbar Search state (reuse hero search technique)
   const [formData, setFormData] = useState({ location: "", query: "", collectionName: "" });
@@ -57,8 +59,6 @@ export default function Navbar() {
     'Search "Commercial Space For Sale In Gurgaon"',
   ];
   const [currentPlaceholder, setCurrentPlaceholder] = useState(placeholders[0]);
-  
-  
 
   // Staged responsiveness: hide Resale (earlier to save space for CTA) → Rental → Project Type → Project Status → Budget → City → finally force hamburger
   const [isCompactTablet, setIsCompactTablet] = useState(false);
@@ -596,6 +596,9 @@ export default function Navbar() {
             hideCity={hideCity}
             showHamburgerOnDesktop={showHamburger}
             forceHamburger={isCompactTablet}
+            onOpenInsights={insightsDisclosure.onOpen}
+            onCloseInsights={insightsDisclosure.onClose}
+            isInsightsOpen={insightsDisclosure.isOpen}
           />
           </Box>
 
@@ -643,6 +646,8 @@ export default function Navbar() {
           />
           {/* Desktop Mega Menu for SEARCH PROJECTS */}
           <MegaMenu isOpen={isOpen} onClose={onClose} handlePriceClick={handlePriceClick} />
+          <InsightsMega isOpen={insightsDisclosure.isOpen} onClose={insightsDisclosure.onClose} />
+
           {/* Gradient divider: strong in center, fades toward edges */}
           <Box
             position="absolute"

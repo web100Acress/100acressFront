@@ -88,10 +88,10 @@ export const phoneSrc = [
 
 export const budgetPlots = [
   {
-    title: "Signature FarukhNagar", link: "/signature-farukhnagar-plots/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/faruknagar.webp"
+    title: "Reliance Met City", link: "/reliance-met-city/", image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/reliance-met-city.webp"
   },
   {
-    title: "Signature Sidhrawali / NH-8", link: "/signature-global-plots/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/colors.jpg"
+    title: "Signature Sidhrawali", link: "/signature-global-plots/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/colors.jpg"
   },
   {
     title: "BPTP Limited", link: "/bptp-plots-gurugram/", image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/budgetplots/bptp.webp"

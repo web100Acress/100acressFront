@@ -113,6 +113,26 @@ export default function MegaMenu({ isOpen, onClose, handlePriceClick }) {
                   <Link to="/rental-properties/best-rental-property-in-gurugram/">Rental Properties</Link>
                 </Flex>
               </Box>
+
+              {/* Insights (highlighted button) */}
+              <Box minW="200px" display="flex" alignItems="flex-start">
+                <Link to="/analytics">
+                  <Box
+                    as="span"
+                    bg="#e53e3e"
+                    color="white"
+                    px={4}
+                    py={2}
+                    borderRadius="md"
+                    fontWeight="700"
+                    boxShadow="0 6px 16px rgba(229,62,62,0.25)"
+                    _hover={{ bg: '#c53030', boxShadow: '0 8px 20px rgba(197,48,48,0.35)' }}
+                    _active={{ transform: 'translateY(1px)' }}
+                  >
+                    Insights
+                  </Box>
+                </Link>
+              </Box>
             </Flex>
           </Box>
         </Box>
