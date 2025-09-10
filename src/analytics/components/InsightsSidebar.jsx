@@ -106,12 +106,12 @@ export default function InsightsSidebar() {
   const item = (to, label, icon, showLabel = true) => (
     <Link
       to={to}
-      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition ${isActive(to) ? 'bg-blue-50 text-blue-700' : 'text-gray-800'}`}
+      className={`flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition ${isActive(to) ? 'bg-blue-50 text-blue-700' : 'text-gray-800'}`}
       onClick={() => setMobileOpen(false)}
       aria-label={!showLabel ? label : undefined}
       title={!showLabel ? label : undefined}
     >
-      <span className="w-7 h-7 text-gray-500 flex items-center justify-center">{icon}</span>
+      <span className="w-6 h-6 text-gray-500">{icon}</span>
       {showLabel && <span className="font-medium text-sm">{label}</span>}
     </Link>
   );
@@ -170,7 +170,7 @@ export default function InsightsSidebar() {
 
           {/* Menu */}
           <nav className="p-3 overflow-y-auto">
-            <div className="space-y-2">
+            <div className="space-y-1">
               {item('/analytics/price-trends', 'Price Trends', (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
               ), true)}
@@ -213,7 +213,7 @@ export default function InsightsSidebar() {
 
           {/* Menu */}
           <nav className="p-3 overflow-y-auto">
-            <div className="space-y-2">
+            <div className="space-y-1">
               {item('/analytics/price-trends', 'Price Trends', (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
               ), !collapsed)}

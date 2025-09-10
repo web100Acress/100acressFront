@@ -220,7 +220,10 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
                     onChange={handleFormChange}
                     required
                   />
-                  <span className="absolute left-10 md:left-12 top-3 md:top-4 px-2 bg-gray-800/70 text-gray-400 text-xs md:text-sm transition-all duration-300 transform origin-left pointer-events-none peer-placeholder-shown:top-3 md:peer-placeholder-shown:top-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent peer-focus:top-1 peer-focus:scale-75 peer-focus:bg-gray-800/70 peer-focus:text-amber-400">
+                  <span className="absolute left-10 md:left-12 top-3 md:top-4 px-2 bg-gray-800/70 text-gray-400 text-xs md:text-sm transition-all duration-300 transform origin-left pointer-events-none
+                  peer-placeholder-shown:top-3 md:peer-placeholder-shown:top-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:bg-transparent
+                  peer-focus:top-1 peer-focus:scale-75 peer-focus:bg-gray-800/70 peer-focus:text-amber-400
+                  peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:scale-75 peer-[:not(:placeholder-shown)]:bg-gray-800/70 peer-[:not(:placeholder-shown)]:text-gray-400">
                     Full Name
                   </span>
                 </div>
