@@ -69,6 +69,22 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
     }
   }, [isSubmitting, footerFormData, builderName]);
 
+  // Phone number logic: backend number determines footer display
+  const getFooterPhoneNumbers = () => {
+    const backendNumber = projectViewDetails?.mobileNumber;
+    
+    if (backendNumber === 9811750130) {
+      return { dialNumber: '8527134491', displayNumber: '+91 8527-134-491' };
+    } else if (backendNumber === 9355990063) {
+      return { dialNumber: '9315375335', displayNumber: '+91 9315-375-335' };
+    } else {
+      // Fallback to default
+      return { dialNumber: '8527134491', displayNumber: '+91 8527-134-491' };
+    }
+  };
+  
+  const { dialNumber, displayNumber } = getFooterPhoneNumbers();
+
   return (
     <div className="bg-gradient-to-b from-gray-900 to-black py-8 md:py-16 border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -89,10 +105,35 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
                 </span>
               </h2>
               
-              <p className="text-gray-300 text-base md:text-lg leading-relaxed">
-                Connect with our certified real estate experts and get personalized assistance for your dream property. 
-                We provide comprehensive market insights and exclusive deals.
-              </p>
+            </div>
+
+            {/* Call Now Section - Moved from bottom */}
+            <div className="p-4 md:p-6 bg-gradient-to-r from-amber-500/10 to-amber-600/5 rounded-2xl border border-amber-500/20">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1v3.61a1 1 0 01-.91 1A16 16 0 014 5.92 1 1 0 015 5h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.24 1.01l-2.32 2.23z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex-1 text-center sm:text-left">
+                  <h4 className="text-white font-semibold text-lg mb-1">Need Immediate Assistance?</h4>
+                  <p className="text-gray-300 text-sm">Call our property experts directly</p>
+                </div>
+                <div className="flex-shrink-0">
+                  <a
+                    href={`tel:${dialNumber}`}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold hover:from-amber-600 hover:to-amber-700 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-amber-500/20 text-sm"
+                    aria-label={`Call ${displayNumber}`}
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1v3.61a1 1 0 01-.91 1A16 16 0 014 5.92 1 1 0 015 5h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.24 1.01l-2.32 2.23z"/>
+                    </svg>
+                    <span className="text-sm">{displayNumber}</span>
+                  </a>
+                </div>
+              </div>
             </div>
 
             {/* Trust Indicators */}
@@ -139,7 +180,7 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
             </div>
 
             {/* Statistics */}
-            <div className="flex items-center justify-center sm:justify-start space-x-4 sm:space-x-8 pt-4">
+            {/* <div className="flex items-center justify-center sm:justify-start space-x-4 sm:space-x-8 pt-4">
               <div className="text-center">
                 <div className="text-xl md:text-2xl font-bold text-amber-400">10K+</div>
                 <div className="text-gray-400 text-xs md:text-sm">Happy Clients</div>
@@ -152,15 +193,17 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
                 <div className="text-xl md:text-2xl font-bold text-blue-400">15+</div>
                 <div className="text-gray-400 text-xs md:text-sm">Years Experience</div>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Right Side - Contact Form */}
           <div className="lg:pl-8">
             <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-gray-700/50 shadow-2xl">
-              <div className="text-center mb-6">
-                <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Get Started Today</h3>
-                <p className="text-gray-400 text-sm md:text-base">Fill out the form and we'll contact you shortly</p>
+              <div className="mb-6">
+                <div className="text-center md:text-left">
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Get Started Today</h3>
+                  <p className="text-gray-400 text-sm md:text-base">Fill out the form and we'll contact you shortly</p>
+                </div>
               </div>
 
               <form onSubmit={handleFormSubmit} className="space-y-4 md:space-y-6">

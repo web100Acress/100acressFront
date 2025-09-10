@@ -1,11 +1,22 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onShowCallback = () => {}, projectViewDetails = null }) => {
   const hasBhkDetails = bhkDetails && Array.isArray(bhkDetails) && bhkDetails.length > 0;
-  // Dynamic phone number (same logic style as ProjectHero/LocationSection)
-  const phoneNumber = useMemo(() => {
-    return projectViewDetails?.mobileNumber || '+91 9810982010';
-  }, [projectViewDetails]);
+  // Phone number logic: backend number determines footer display
+  const getFooterPhoneNumbers = () => {
+    const backendNumber = projectViewDetails?.mobileNumber;
+    
+    if (backendNumber === 9811750130) {
+      return { dialNumber: '8527134491', displayNumber: '+91 8527-134-491' };
+    } else if (backendNumber === 9355990063) {
+      return { dialNumber: '9315375335', displayNumber: '+91 9315-375-335' };
+    } else {
+      // Fallback to default
+      return { dialNumber: '8527134491', displayNumber: '+91 8527-134-491' };
+    }
+  };
+  
+  const { dialNumber, displayNumber } = getFooterPhoneNumbers();
   
   const formatPrice = (price) => {
     if (!price) return null;
@@ -94,23 +105,30 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
                 </div>
               </div>
 
-              {/* Mobile: Card Layout (no horizontal overflow) */}
-              <div className="md:hidden space-y-4 max-w-md mx-auto">
+              {/* Mobile: Card Layout (improved design) */}
+              <div className="md:hidden space-y-3 max-w-sm mx-auto">
                 {bhkDetails.map((item, index) => (
-                  <div key={index} className="rounded-xl border border-gray-700 bg-gray-900/50 p-4">
-                    <div className="grid grid-cols-3 gap-4">
-                      <div>
-                        <div className="text-sm text-gray-400">Unit Type</div>
-                        <div className="text-lg font-semibold text-white">{item.bhk_type || `Unit ${index + 1}`}</div>
+                  <div key={index} className="relative group">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-600 to-amber-400 rounded-xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
+                    <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl border border-gray-700/50 p-4 space-y-3">
+                      
+                      {/* Unit Type - Full width header */}
+                      <div className="text-center pb-2 border-b border-gray-700/50">
+                        <div className="text-xs text-amber-400 uppercase tracking-wider font-medium mb-1">Unit Type</div>
+                        <div className="text-xl font-bold text-white">{item.bhk_type || `Unit ${index + 1}`}</div>
                       </div>
-                      <div>
-                        <div className="text-sm text-gray-400">Area</div>
-                        <div className="text-lg font-semibold text-amber-400">{item.bhk_Area || 'N/A'}</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-gray-400">Price</div>
-                        <div className="text-lg font-semibold text-amber-400">
-                          {formatBhkPrice(item.bhk_price || item.price)}
+                      
+                      {/* Area and Price - Side by side */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="text-center">
+                          <div className="text-xs text-gray-400 uppercase tracking-wider font-medium mb-1">Area</div>
+                          <div className="text-base font-semibold text-amber-400">{item.bhk_Area || 'N/A'}</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-xs text-gray-400 uppercase tracking-wider font-medium mb-1">Price</div>
+                          <div className="text-base font-semibold text-amber-400 break-words">
+                            {formatBhkPrice(item.bhk_price || item.price)}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -135,13 +153,13 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
             </p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
               <a 
-                href={`tel:${phoneNumber}`}
+                href={`tel:${dialNumber}`}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-amber-500/40 text-amber-400 hover:text-black hover:bg-amber-500 transition-colors duration-200 font-medium"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <span className="font-semibold">{phoneNumber}</span>
+                <span className="font-semibold">{displayNumber}</span>
               </a>
 
               <button 
