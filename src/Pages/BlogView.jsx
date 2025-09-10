@@ -675,14 +675,15 @@ const BlogView = () => {
                     const priceLine = (() => {
                       const a = typeof meta.minPrice === 'number' ? formatINRShort(meta.minPrice) : null;
                       const b = typeof meta.maxPrice === 'number' ? formatINRShort(meta.maxPrice) : null;
-                      if (a && b) return `${a} - ${b}`;
-                      return a || b || '';
+                      if (a && b) return `${a} - ${b} Cr`;
+                      if (a || b) return `${a || b} Cr`;
+                      return '';
                     })();
 
                     return (
                       <div
                         key={idx}
-                        className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed"
+                        className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-500 rounded-lg hover:border-red-600"
                         role="button"
                         tabIndex={0}
                         onClick={handleProjectClick}
@@ -724,7 +725,8 @@ const BlogView = () => {
               </div>
             )}
 
-            {/* Trending Projects below Related */}
+            {/* Trending Projects below Related (hidden on mobile; shown in its own section under content) */}
+            <div className="hidden md:block">
             <h3 className="text-xl font-bold text-gray-900 mb-3">Trending Projects</h3>
             <div className="space-y-2">
               {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
@@ -745,7 +747,7 @@ const BlogView = () => {
                 return (
                   <div
                     key={idx}
-                    className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed"
+                    className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-200 rounded-lg hover:border-red-400"
                     role="button"
                     tabIndex={0}
                     onClick={() => navigateProject(p)}
@@ -775,7 +777,7 @@ const BlogView = () => {
                         {(() => {
                           const a = typeof p?.minPrice === 'number' ? formatINRShort(p.minPrice) : null;
                           const b = typeof p?.maxPrice === 'number' ? formatINRShort(p.maxPrice) : null;
-                          const price = a && b ? `${a} - ${b}` : (a || b || '');
+                          const price = a && b ? `${a} - ${b} Cr` : (a || b ? `${a || b} Cr` : '');
                           return price ? <span>{(p?.location || p?.city || category) ? ' • ' : ''}{price}</span> : null;
                         })()}
                       </div>
@@ -786,6 +788,7 @@ const BlogView = () => {
               {trendingProjects.length === 0 && (
                 <div className="text-sm text-gray-400">No trending projects found.</div>
               )}
+            </div>
             </div>
           </div>
         </aside>
@@ -899,8 +902,72 @@ const BlogView = () => {
           )}
         </div>
 
-        {/* Right Sidebar */}
-        <div ref={sidebarRef} className="w-full md:col-span-3 md:col-start-10 md:sticky md:top-24 self-start">
+        {/* Mobile-only Trending below blog content */}
+        <div className="md:hidden w-full mt-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-3">Trending Projects</h3>
+          <div className="space-y-2">
+            {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
+              const name = p?.projectName || p?.name || p?.title || 'Project';
+              const category = p?.category || p?.projectType || '';
+              const img = (() => {
+                const t1 = p?.thumbnailImage?.url || p?.thumbnail?.url || p?.thumb?.url || '';
+                const t2 = p?.thumbnailImage || p?.thumbnail || p?.thumb || '';
+                const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
+                const fMain = p?.frontImage?.url || '';
+                const c1 = p?.cardImage?.url || p?.cardImage || '';
+                const b1 = p?.bannerImage?.url || p?.bannerImage || '';
+                const any = p?.image || p?.project_Image || '';
+                const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
+                const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
+                return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
+              })();
+              return (
+                <div
+                  key={idx}
+                  className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-200 rounded-lg hover:border-red-400"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => navigateProject(p)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
+                  title={name}
+                >
+                  <img
+                    src={img}
+                    className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                    alt={name}
+                    onError={onImgError}
+                    referrerPolicy="no-referrer"
+                    crossOrigin="anonymous"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
+                      {name}
+                    </h4>
+                    <div className="text-xs text-gray-500 mt-1 line-clamp-1">
+                      {(p?.location || p?.city) ? (
+                        <span>{p.location || p.city}</span>
+                      ) : (
+                        category ? <span>{category}</span> : null
+                      )}
+                      {(() => {
+                        const a = typeof p?.minPrice === 'number' ? formatINRShort(p.minPrice) : null;
+                        const b = typeof p?.maxPrice === 'number' ? formatINRShort(p.maxPrice) : null;
+                        const price = a && b ? `${a} - ${b}` : (a || b || '');
+                        return price ? <span>{(p?.location || p?.city || category) ? ' • ' : ''}{price}</span> : null;
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {trendingProjects.length === 0 && (
+              <div className="text-sm text-gray-400">No trending projects found.</div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Sidebar (hidden on mobile for cleaner layout) */}
+        <div ref={sidebarRef} className="hidden md:block w-full md:col-span-3 md:col-start-10 md:sticky md:top-24 self-start">
           <div className="flex flex-col gap-8">
           {/* Trending moved to left column */}
 
@@ -943,10 +1010,10 @@ const BlogView = () => {
       {false && showLeadModal && (<></>)}
 
       {/* Floating Enquiry Widget (bottom-right) */}
-      <div className="fixed right-4 bottom-4 z-[10050]">
+      <div className="fixed right-3 bottom-20 md:bottom-4 z-[10050]">
         {/* Panel */}
         {showFloatingEnquiry && (
-          <div className="w-[280px] sm:w-[300px] md:w-[320px] rounded-2xl shadow-2xl border border-gray-200 bg-white overflow-hidden mb-3">
+          <div className="w-[260px] xs:w-[280px] sm:w-[300px] md:w-[320px] rounded-2xl shadow-2xl border border-gray-200 bg-white overflow-hidden mb-3">
             <div className="px-4 py-3 flex items-center justify-between bg-gray-50 border-b">
               <div className="font-semibold text-gray-900">Enquire Now</div>
               <button
@@ -979,17 +1046,6 @@ const BlogView = () => {
                   onChange={handleBlogQueryChange}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Phone Number"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-600 mb-1">Email (optional)</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={blogQuery.email}
-                  onChange={handleBlogQueryChange}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="you@example.com"
                 />
               </div>
               {responseMessage && (
