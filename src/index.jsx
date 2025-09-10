@@ -11,6 +11,7 @@ import AppStore from "./Redux/store/AppStore";
 // import { EnquiryProvider } from "./Context/enquiryContext";
 import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter, useLocation } from "react-router-dom";
+import { HelmetProvider } from 'react-helmet-async';
 import CustomSkeleton from "../src/Utils/CustomSkeleton";
 import { initAxios } from "./config/axiosSetup";
 
@@ -32,16 +33,18 @@ const ScrollToTop = ({ children }) => {
 
 root.render(
   <>
-  <Provider store={AppStore}>
-    <ChakraProvider>
-      <BrowserRouter>
-        <ScrollToTop>
-          <Suspense fallback={<div><CustomSkeleton/></div>}>
-            <App />
-          </Suspense>
-        </ScrollToTop>
-      </BrowserRouter>
-    </ChakraProvider>
-  </Provider>
+    <Provider store={AppStore}>
+      <ChakraProvider>
+        <HelmetProvider>
+          <BrowserRouter>
+            <ScrollToTop>
+              <Suspense fallback={<div><CustomSkeleton/></div>}>
+                <App />
+              </Suspense>
+            </ScrollToTop>
+          </BrowserRouter>
+        </HelmetProvider>
+      </ChakraProvider>
+    </Provider>
   </>
 );

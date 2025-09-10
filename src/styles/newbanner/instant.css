@@ -9,7 +9,7 @@
 .nb-instant-title { font-size: clamp(1.15rem, 3.6vw, 1.5rem); font-weight: 700; color: #111827; margin: 0 0 clamp(6px, 1.8vw, 8px); }
 .nb-instant-subtitle { color: #4b5563; margin: 0; font-size: clamp(0.9rem, 2.8vw, 1rem); }
 .nb-instant-form { display: flex; flex-direction: column; gap: clamp(10px, 3vw, 16px); }
-.nb-instant-input { width: 100%; padding: clamp(10px, 2.6vw, 12px) clamp(12px, 3.2vw, 16px); border: 1px solid #d1d5db; border-radius: 10px; outline: none; transition: box-shadow 150ms ease, border-color 150ms ease; font-size: 16px; background: #fff; box-sizing: border-box; }
+.nb-instant-input { width: 100%; padding: clamp(10px, 2.6vw, 12px) clamp(12px, 3.2vw, 16px); border: 1px solid #d1d5db; border-radius: 10px; outline: none; transition: box-shadow 150ms ease, border-color 150ms ease; font-size: 16px; background: #fff; box-sizing: border-box; background-image: none; }
 .nb-instant-input:focus { box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.35); border-color: #D4AF37; }
 .nb-instant-submit { width: 100%; background: linear-gradient(to right, #CFAF6E, #E5C78A); color: #fff; font-weight: 700; padding: clamp(10px, 2.6vw, 12px); border-radius: 10px; transition: box-shadow 300ms ease, background 200ms ease; box-shadow: 0 12px 28px rgba(0,0,0,0.16); font-size: 16px; }
 .nb-instant-submit:hover { box-shadow: 0 16px 36px rgba(0,0,0,0.2); background: linear-gradient(to right, #B8985A, #D4B373); }

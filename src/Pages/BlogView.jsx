@@ -14,6 +14,9 @@ const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
   const [data, setData] = useState({});
   const [trendingProjects, setTrendingProjects] = useState([]);
+  // Cache for related project thumbnails and meta resolved from project details
+  const [relatedThumbs, setRelatedThumbs] = useState({});
+  const [relatedMeta, setRelatedMeta] = useState({}); // key: project_url -> { location, minPrice, maxPrice }
 
   const [loadError, setLoadError] = useState("");
   const { id, slug } = useParams();
@@ -33,6 +36,37 @@ const BlogView = () => {
   const isMobile = useIsMobile ? useIsMobile() : false;
   const [showMobileEnquiry, setShowMobileEnquiry] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  // Sidebar sticky
+  const containerRef = useRef(null);
+  const sidebarRef = useRef(null);
+  // People are searching (unique phrasing and links)
+  const peopleSearch = [
+    { label: 'Projects in Gurugram', url: '/projects-in-gurugram' },
+    { label: 'Projects in Delhi', url: '/project-in-delhi' },
+    { label: 'Projects in Noida', url: '/project-in-noida' },
+    { label: 'Property under 1 Cr', url: '/budget-properties' },
+    { label: 'Upcoming Projects', url: '/upcoming-projects-in-gurgaon' },
+    { label: 'New Launch Projects', url: '/projects-in-newlaunch' },
+    { label: 'SEO Plots', url: '/sco/plots' },
+    { label: 'Commercial Projects', url: '/projects/commercial/' },
+  ];
+  const popularTools = [
+    { label: 'Post Property', url: '/postproperty' },
+    { label: 'EMI Calculator', url: '/emi-calculator/' },
+    { label: 'Rent Property', url: '/rental-properties/best-rental-property-in-gurugram' },
+    { label: 'Resale Property', url: '/buy-properties/best-resale-property-in-gurugram' },
+  ];
+  // Lead capture popup modal
+  const [showLeadModal, setShowLeadModal] = useState(false);
+  const [leadProjectInfo, setLeadProjectInfo] = useState({
+    name: '',
+    thumbnail: '',
+    minPrice: null,
+    maxPrice: null,
+  });
+
+  // Floating enquiry (bottom-right) collapsible
+  const [showFloatingEnquiry, setShowFloatingEnquiry] = useState(true);
 
   // Safe image fallback for broken S3 URLs
   const FALLBACK_IMG = "/Images/blog.avif";
@@ -63,6 +97,25 @@ const BlogView = () => {
       }
     } catch (error) {
       console.error('Error in image fallback:', error);
+    }
+  };
+
+  // Helper to pick best image from a project payload (same strategy as Trending)
+  const pickProjectImage = (p) => {
+    try {
+      if (!p || typeof p !== 'object') return '';
+      const t1 = p?.thumbnailImage?.cdn_url || p?.thumbnailImage?.url || '';
+      const t2 = p?.thumbnail?.cdn_url || p?.thumbnail?.url || p?.thumb?.url || '';
+      const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
+      const fMain = p?.frontImage?.url || '';
+      const c1 = p?.cardImage?.url || p?.cardImage || '';
+      const b1 = p?.bannerImage?.url || p?.bannerImage || '';
+      const any = p?.image || p?.project_Image || '';
+      const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
+      const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
+      return /^data:image\/svg\+xml/i.test(u) ? '' : (u || '');
+    } catch (_) {
+      return '';
     }
   };
 
@@ -138,13 +191,25 @@ const BlogView = () => {
 
     setButtonText("Submitting...");
     try {
-      await api.post(
-        `contact_Insert`,
-        blogQuery
-      );
-      setResponseMessage("Data submitted successfully");
+      // Build payload with blog and related project context
+      const firstProject = Array.isArray(relatedProjects) && relatedProjects.length > 0 ? relatedProjects[0] : null;
+      const payload = {
+        ...blogQuery,
+        blogId: data?._id,
+        blogTitle: data?.blog_Title,
+        blogSlug: data?.slug,
+        source: 'blog-modal',
+        project: firstProject ? {
+          project_url: firstProject.project_url || '',
+          projectName: firstProject.projectName || '',
+          thumbnail: firstProject.thumbnail || ''
+        } : undefined
+      };
+      await api.post(`blog/enquiry`, payload);
+      setResponseMessage("Enquiry submitted successfully");
       resetData();
       setButtonText("Submit");
+      try { setShowLeadModal(false); } catch (_) {}
     } catch (error) {
       if (error.response) {
         console.error("Server error:", error.response.data);
@@ -204,22 +269,25 @@ const BlogView = () => {
     // Choose display URL: prefer CDN, then S3/url; ignore placeholders
     normalizedImage.display = normalizedImage.cdn_url || normalizedImage.url || '';
 
-    return {
-      blog_Title: obj.blog_Title || '',
-      blog_Description: obj.blog_Description || '',
-      author: obj.author || '',
-      blog_Category: obj.blog_Category || '',
-      published_Date: obj.published_Date || obj.createdAt || '',
-      blog_Image: normalizedImage,
-      createdAt: obj.createdAt || '',
-      slug: obj.slug || '',
-      _id: obj._id || '',
-      // SEO fields (handle multiple possible keys)
-      metaTitle: obj.metaTitle || obj.meta_Title || obj.seoTitle || '',
-      metaDescription: obj.metaDescription || obj.meta_Description || obj.seoDescription || obj.meta_desc || '',
-      // Related projects
-      relatedProjects: Array.isArray(obj.relatedProjects) ? obj.relatedProjects : []
-    };
+      return {
+        blog_Title: obj.blog_Title || '',
+        blog_Description: obj.blog_Description || '',
+        author: obj.author || '',
+        blog_Category: obj.blog_Category || '',
+        published_Date: obj.published_Date || obj.createdAt || '',
+        blog_Image: normalizedImage,
+        createdAt: obj.createdAt || '',
+        slug: obj.slug || '',
+        _id: obj._id || '',
+        // SEO fields (handle multiple possible keys)
+        metaTitle: obj.metaTitle || obj.meta_Title || obj.seoTitle || '',
+        metaDescription: obj.metaDescription || obj.meta_Description || obj.seoDescription || obj.meta_desc || '',
+        // Related projects
+        relatedProjects: Array.isArray(obj.relatedProjects) ? obj.relatedProjects : [],
+        // FAQs
+        enableFAQ: !!obj.enableFAQ,
+        faqs: Array.isArray(obj.faqs) ? obj.faqs : []
+      };
   };
 
   // Fetch blog data when component mounts
@@ -282,6 +350,119 @@ const BlogView = () => {
     fetchBlogData();
   }, [id, slug, location.search]);
 
+  // Preload thumbnails for related projects (if missing)
+  useEffect(() => {
+    const loadThumbs = async () => {
+      try {
+        const list = Array.isArray(data?.relatedProjects) ? data.relatedProjects : [];
+        if (list.length === 0) return;
+        const updates = {};
+        const metaUpdates = {};
+        await Promise.all(
+          list.map(async (rp) => {
+            try {
+              const url = rp?.project_url || '';
+              if (!url) return;
+              // Determine if we need to fetch details (for image and/or meta)
+              const hasThumbInCache = !!relatedThumbs[url];
+              const hasThumbInline = !!(rp?.thumbnail && typeof rp.thumbnail === 'string' && rp.thumbnail.trim());
+              const hasMetaInCache = !!relatedMeta[url];
+              if (hasThumbInCache && hasThumbInline && hasMetaInCache) {
+                // Nothing to fetch
+                return;
+              }
+              const apiUrl = `${API_ROUTES.projectsBase()}/View/${encodeURIComponent(url)}`;
+              const res = await api.get(apiUrl, { timeout: 15000 });
+              const p = res?.data?.data || {};
+              const picked = pickProjectImage(p);
+              const thumb = picked || (typeof rp?.thumbnail === 'string' ? rp.thumbnail : '');
+              if (!hasThumbInCache && thumb && !/^data:image\/svg\+xml/i.test(thumb)) {
+                updates[url] = thumb;
+              }
+              // Capture location and price meta (cover more field variants)
+              const loc = p?.location || p?.city || p?.projectLocation || p?.project_location || p?.address || p?.projectAddress || p?.area || p?.sector || '';
+              const minP = typeof p?.minPrice === 'number' ? p.minPrice
+                           : typeof p?.price?.min === 'number' ? p.price.min
+                           : typeof p?.startingPrice === 'number' ? p.startingPrice
+                           : null;
+              const maxP = typeof p?.maxPrice === 'number' ? p.maxPrice
+                           : typeof p?.price?.max === 'number' ? p.price.max
+                           : null;
+              if (!hasMetaInCache) {
+                metaUpdates[url] = { location: loc, minPrice: minP, maxPrice: maxP };
+              }
+            } catch (_) { /* ignore per-item error */ }
+          })
+        );
+        if (Object.keys(updates).length) {
+          setRelatedThumbs((prev) => ({ ...prev, ...updates }));
+        }
+        if (Object.keys(metaUpdates).length) {
+          setRelatedMeta((prev) => ({ ...prev, ...metaUpdates }));
+        }
+      } catch (_) { /* ignore */ }
+    };
+    loadThumbs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.relatedProjects]);
+
+  // Timed popup disabled as requested
+  // useEffect(() => {
+  //   if (!data || !data._id) return; // wait until blog is loaded
+  //   const t = setTimeout(() => {
+  //     setShowLeadModal(true);
+  //   }, 3000);
+  //   return () => clearTimeout(t);
+  // }, [data?._id]);
+
+  // When modal opens, fetch price/details for the first related project (if available)
+  useEffect(() => {
+    const loadLeadProject = async () => {
+      try {
+        if (!showLeadModal) return;
+        const rp = Array.isArray(relatedProjects) && relatedProjects.length > 0 ? relatedProjects[0] : null;
+        if (!rp || !rp.project_url) return;
+        const url = `${API_ROUTES.projectsBase()}/View/${encodeURIComponent(rp.project_url)}`;
+        const res = await api.get(url);
+        const p = res?.data?.data || {};
+        const thumb = p?.thumbnailImage?.cdn_url || p?.thumbnailImage?.url || rp.thumbnail || FALLBACK_IMG;
+        setLeadProjectInfo({
+          name: p?.projectName || rp.projectName || 'Project',
+          thumbnail: /^data:image\/svg\+xml/i.test(thumb) ? FALLBACK_IMG : (thumb || FALLBACK_IMG),
+          minPrice: typeof p?.minPrice === 'number' ? p.minPrice : null,
+          maxPrice: typeof p?.maxPrice === 'number' ? p.maxPrice : null,
+        });
+      } catch (e) {
+        // fallback to existing rp data
+        const rp = Array.isArray(relatedProjects) && relatedProjects.length > 0 ? relatedProjects[0] : null;
+        if (rp) {
+          setLeadProjectInfo({
+            name: rp.projectName || 'Project',
+            thumbnail: rp.thumbnail || FALLBACK_IMG,
+            minPrice: null,
+            maxPrice: null,
+          });
+        }
+      }
+    };
+    loadLeadProject();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showLeadModal]);
+
+  // Removed bottom-pinning behavior; using pure CSS sticky instead
+
+  const formatINRShort = (n) => {
+    if (typeof n !== 'number' || isNaN(n)) return null;
+    // Convert to Lakhs/Crores simple formatter
+    if (n >= 10000000) {
+      return `₹ ${(n / 10000000).toFixed(2)} Cr`;
+    }
+    if (n >= 100000) {
+      return `₹ ${(n / 100000).toFixed(2)} Lakh`;
+    }
+    return `₹ ${n.toLocaleString('en-IN')}`;
+  };
+
   // Fetch trending projects for sidebar
   useEffect(() => {
     const fetchTrending = async () => {
@@ -320,6 +501,8 @@ const BlogView = () => {
     metaTitle,
     metaDescription,
     relatedProjects,
+    enableFAQ,
+    faqs,
   } = data;
 
   // Ref to post-process content images (fix lazy attrs, http->https, fallback on error)
@@ -454,9 +637,164 @@ const BlogView = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 px-4 pb-12">
-        {/* Main Blog Content */}
-        <div className="w-full md:w-2/3 bg-white rounded-2xl shadow-xl p-8">
+      <div ref={containerRef} className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 px-4 pb-12 relative">
+        {/* Left Sidebar: show Related Projects first, then Trending */}
+        <aside className="w-full md:col-span-3 md:col-start-1">
+          <div className="mt-0 p-0 md:sticky md:top-24">
+            {/* Related Projects moved to the left sidebar (TOP) */}
+            {relatedProjects && relatedProjects.length > 0 && (
+              <div className="mb-3">
+                <h3 className="text-xl font-bold mb-3 px-3 py-2 rounded-lg text-white bg-gradient-to-r from-red-500 to-red-600 shadow-sm">Related Projects</h3>
+                <div className="space-y-2">
+                  {relatedProjects.map((project, idx) => {
+                    const name = project?.projectName || 'Project';
+                    const url = project?.project_url || '';
+                    const thumbnail = project?.thumbnail || '';
+                    const img = (relatedThumbs[url] || thumbnail || FALLBACK_IMG);
+
+                    const handleProjectClick = () => {
+                      try {
+                        if (!url) return;
+                        let slug = url;
+                        if (slug && /^(https?:)?\/\//i.test(slug)) {
+                          try {
+                            const u = new URL(slug, window.location.origin);
+                            const parts = u.pathname.split('/').filter(Boolean);
+                            slug = parts[parts.length - 1] || '';
+                          } catch (_) { /* ignore */ }
+                        }
+                        if (!slug) return;
+                        const path = `/${slug}/`;
+                        history(path);
+                        try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
+                      } catch (_) { /* noop */ }
+                    };
+
+                    // compose meta
+                    const meta = relatedMeta[url] || {};
+                    const priceLine = (() => {
+                      const a = typeof meta.minPrice === 'number' ? formatINRShort(meta.minPrice) : null;
+                      const b = typeof meta.maxPrice === 'number' ? formatINRShort(meta.maxPrice) : null;
+                      if (a && b) return `${a} - ${b} Cr`;
+                      if (a || b) return `${a || b} Cr`;
+                      return '';
+                    })();
+
+                    return (
+                      <div
+                        key={idx}
+                        className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-500 rounded-lg hover:border-red-600 bg-white shadow-sm transition duration-300 hover:[box-shadow:0_4px_12px_rgba(239,68,68,0.4)] hover:-translate-y-0.5"
+                        role="button"
+                        tabIndex={0}
+                        onClick={handleProjectClick}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleProjectClick(); } }}
+                        title={name}
+                      >
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-100 to-indigo-200 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                          <img
+                            src={img}
+                            className="w-12 h-12 rounded-lg object-cover"
+                            alt={name}
+                            onError={onImgError}
+                            loading="lazy"
+                            referrerPolicy="no-referrer"
+                            crossOrigin="anonymous"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
+                            {name}
+                          </h4>
+                          {(() => {
+                            // Fallback location from project if meta not loaded yet
+                            const fallbackLoc = project?.location || project?.city || '';
+                            const showLoc = meta?.location || fallbackLoc || '';
+                            return (showLoc || priceLine) ? (
+                            <div className="text-[11px] text-gray-500 mt-0.5 line-clamp-1">
+                              {showLoc && <span>{showLoc}</span>}
+                              {showLoc && priceLine ? <span> • </span> : null}
+                              {priceLine && <span>{priceLine}</span>}
+                            </div>
+                            ) : null;
+                          })()}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Trending Projects below Related (hidden on mobile; shown in its own section under content) */}
+            <div className="hidden md:block">
+            <h3 className="text-xl font-bold mb-3 px-3 py-2 rounded-lg text-white bg-gradient-to-r from-red-500 to-red-600 shadow-sm">Trending Projects</h3>
+            <div className="space-y-2">
+              {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
+                const name = p?.projectName || p?.name || p?.title || 'Project';
+                const category = p?.category || p?.projectType || '';
+                const img = (() => {
+                  const t1 = p?.thumbnailImage?.url || p?.thumbnail?.url || p?.thumb?.url || '';
+                  const t2 = p?.thumbnailImage || p?.thumbnail || p?.thumb || '';
+                  const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
+                  const fMain = p?.frontImage?.url || '';
+                  const c1 = p?.cardImage?.url || p?.cardImage || '';
+                  const b1 = p?.bannerImage?.url || p?.bannerImage || '';
+                  const any = p?.image || p?.project_Image || '';
+                  const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
+                  const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
+                  return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
+                })();
+                return (
+                  <div
+                    key={idx}
+                    className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-500 rounded-lg hover:border-red-600 bg-white shadow-sm transition duration-300 hover:[box-shadow:0_4px_12px_rgba(239,68,68,0.4)] hover:-translate-y-0.5"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigateProject(p)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
+                    title={name}
+                  >
+                    <img
+                      src={img}
+                      className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                      alt={name}
+                      onError={onImgError}
+                      referrerPolicy="no-referrer"
+                      crossOrigin="anonymous"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
+                        {name}
+                      </h4>
+                      <div className="text-xs text-gray-500 mt-1 line-clamp-1">
+                        {/* Prefer location if available */}
+                        {p?.location || p?.city ? (
+                          <span>{p.location || p.city}</span>
+                        ) : (
+                          category ? <span>{category}</span> : null
+                        )}
+                        {/* Price */}
+                        {(() => {
+                          const a = typeof p?.minPrice === 'number' ? formatINRShort(p.minPrice) : null;
+                          const b = typeof p?.maxPrice === 'number' ? formatINRShort(p.maxPrice) : null;
+                          const price = a && b ? `${a} - ${b} Cr` : (a || b ? `${a || b} Cr` : '');
+                          return price ? <span>{(p?.location || p?.city || category) ? ' • ' : ''}{price}</span> : null;
+                        })()}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              {trendingProjects.length === 0 && (
+                <div className="text-sm text-gray-400">No trending projects found.</div>
+              )}
+            </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* Center: Main Blog Content */}
+        <div className="w-full md:col-span-6 md:col-start-4 bg-white rounded-2xl shadow-xl p-8">
           <div className="mb-4 text-sm text-gray-500">
             <Link to="/blog/" className="text-primaryRed hover:underline">Blogs</Link>
             {' > '} {blog_Category || 'Blog'}
@@ -507,12 +845,12 @@ const BlogView = () => {
             </button>
           </div>
           {(blog_Image?.display || FALLBACK_IMG) && (
-            <div className="relative w-full h-[500px] mb-6">
+            <div className="relative w-full mb-2 overflow-hidden">
               {blog_Image?.display ? (
                 <img
                   src={blog_Image.display}
                   alt={blog_Title || 'Blog post image'}
-                  className="w-full h-full object-contain rounded-xl"
+                  className="w-full h-auto block rounded-xl"
                   onError={onImgError}
                   loading="lazy"
                   referrerPolicy="no-referrer"
@@ -542,266 +880,203 @@ const BlogView = () => {
             ref={contentRef}
             dangerouslySetInnerHTML={createSanitizedHTML(blog_Description)}
           ></div>
-        </div>
-
-        {/* Sidebar */}
-        <div className="w-full md:w-1/3 flex flex-col gap-8">
-          {/* Related Projects */}
-          {relatedProjects && relatedProjects.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Related Projects</h3>
-              <div className="space-y-2">
-                {relatedProjects.map((project, idx) => {
-                  const name = project?.projectName || 'Project';
-                  const url = project?.project_url || '';
-                  const thumbnail = project?.thumbnail || '';
-                  const img = thumbnail || FALLBACK_IMG;
-                  
-                  const handleProjectClick = () => {
-                    try {
-                      if (!url) return;
-                      // Navigate to project using the project_url
-                      let slug = url;
-                      // If url looks like a full URL, extract the last path segment
-                      if (slug && /^(https?:)?\/\//i.test(slug)) {
-                        try {
-                          const u = new URL(slug, window.location.origin);
-                          const parts = u.pathname.split('/').filter(Boolean);
-                          slug = parts[parts.length - 1] || '';
-                        } catch (_) { /* ignore */ }
-                      }
-                      if (!slug) return;
-                      const path = `/${slug}/`;
-                      history(path);
-                      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
-                    } catch (_) { /* noop */ }
-                  };
-
-                  return (
+          {/* FAQ Section inside main blog card */}
+          {enableFAQ && Array.isArray(faqs) && faqs.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h3>
+              <div className="divide-y divide-gray-200 rounded-2xl bg-white shadow-sm">
+                {faqs.map((f, idx) => (
+                  <details key={idx} className="group p-4 open:bg-gray-50">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
+                      <span className="font-medium text-gray-900">Q. {f?.question || ''}</span>
+                      <span className="text-gray-500 group-open:rotate-180 transition-transform">▾</span>
+                    </summary>
                     <div
-                      key={idx}
-                      className="group p-2 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200 flex items-center gap-2 cursor-pointer"
-                      role="button"
-                      tabIndex={0}
-                      onClick={handleProjectClick}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleProjectClick(); } }}
-                      title={name}
-                    >
-                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-100 to-indigo-200 flex-shrink-0 flex items-center justify-center">
-                        <img
-                          src={img}
-                          className="w-12 h-12 rounded-lg object-cover"
-                          alt={name}
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                            e.target.nextElementSibling.style.display = 'flex';
-                          }}
-                          referrerPolicy="no-referrer"
-                          crossOrigin="anonymous"
-                        />
-                        <div className="hidden w-full h-full rounded-lg bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center">
-                          <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                          </svg>
-                        </div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
-                          {name}
-                        </h4>
-                      </div>
-                    </div>
-                  );
-                })}
+                      className="mt-3 prose max-w-none prose-p:my-2 prose-a:text-primaryRed prose-img:rounded"
+                      dangerouslySetInnerHTML={createSanitizedHTML(f?.answer || '')}
+                    ></div>
+                  </details>
+                ))}
               </div>
             </div>
           )}
+        </div>
 
-          {/* Trending Projects */}
-          <div className="bg-white rounded-2xl shadow-xl p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Trending Projects</h3>
-            <div className="space-y-2">
-              {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
-                const name = p?.projectName || p?.name || p?.title || 'Project';
-                const category = p?.category || p?.projectType || '';
-                const img = (() => {
-                  // Prefer explicit thumbnail-like fields first
-                  const t1 = p?.thumbnailImage?.url || p?.thumbnail?.url || p?.thumb?.url || '';
-                  const t2 = p?.thumbnailImage || p?.thumbnail || p?.thumb || '';
-                  const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
-                  const fMain = p?.frontImage?.url || '';
-                  const c1 = p?.cardImage?.url || p?.cardImage || '';
-                  const b1 = p?.bannerImage?.url || p?.bannerImage || '';
-                  const any = p?.image || p?.project_Image || '';
-                  const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
-                  const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
-                  return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
-                })();
-                return (
-                  <div
-                    key={idx}
-                    className="group p-2 rounded-xl hover:bg-gray-50 transition-all duration-200 border border-transparent hover:border-gray-200 flex items-center gap-2 cursor-pointer"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigateProject(p)}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
-                    title={name}
-                  >
-                    <img
-                      src={img}
-                      className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-                      alt={name}
-                      onError={onImgError}
-                      referrerPolicy="no-referrer"
-                      crossOrigin="anonymous"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
-                        {name}
-                      </h4>
-                      {category && (
-                        <p className="text-xs text-gray-500 mt-1">{category}</p>
+        {/* Mobile-only Trending below blog content */}
+        <div className="md:hidden w-full mt-6">
+          <h3 className="text-xl font-bold mb-3 px-3 py-2 rounded-lg text-white bg-gradient-to-r from-red-500 to-red-600 shadow-sm">Trending Projects</h3>
+          <div className="space-y-2">
+            {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
+              const name = p?.projectName || p?.name || p?.title || 'Project';
+              const category = p?.category || p?.projectType || '';
+              const img = (() => {
+                const t1 = p?.thumbnailImage?.url || p?.thumbnail?.url || p?.thumb?.url || '';
+                const t2 = p?.thumbnailImage || p?.thumbnail || p?.thumb || '';
+                const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
+                const fMain = p?.frontImage?.url || '';
+                const c1 = p?.cardImage?.url || p?.cardImage || '';
+                const b1 = p?.bannerImage?.url || p?.bannerImage || '';
+                const any = p?.image || p?.project_Image || '';
+                const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
+                const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
+                return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
+              })();
+              return (
+                <div
+                  key={idx}
+                  className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed border border-red-500 rounded-lg hover:border-red-600 bg-white shadow-sm transition duration-300 hover:[box-shadow:0_4px_12px_rgba(239,68,68,0.4)] hover:-translate-y-0.5"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => navigateProject(p)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
+                  title={name}
+                >
+                  <img
+                    src={img}
+                    className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                    alt={name}
+                    onError={onImgError}
+                    referrerPolicy="no-referrer"
+                    crossOrigin="anonymous"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
+                      {name}
+                    </h4>
+                    <div className="text-xs text-gray-500 mt-1 line-clamp-1">
+                      {(p?.location || p?.city) ? (
+                        <span>{p.location || p.city}</span>
+                      ) : (
+                        category ? <span>{category}</span> : null
                       )}
+                      {(() => {
+                        const a = typeof p?.minPrice === 'number' ? formatINRShort(p.minPrice) : null;
+                        const b = typeof p?.maxPrice === 'number' ? formatINRShort(p.maxPrice) : null;
+                        const price = a && b ? `${a} - ${b}` : (a || b || '');
+                        return price ? <span>{(p?.location || p?.city || category) ? ' • ' : ''}{price}</span> : null;
+                      })()}
                     </div>
                   </div>
-                );
-              })}
-              {trendingProjects.length === 0 && (
-                <div className="text-sm text-gray-400">No trending projects found.</div>
-              )}
-            </div>
+                </div>
+              );
+            })}
+            {trendingProjects.length === 0 && (
+              <div className="text-sm text-gray-400">No trending projects found.</div>
+            )}
           </div>
-          {/* Enquiry Form: Desktop/Tablet only */}
-          {!isMobile && (
-            <div className="bg-gradient-to-br from-[#1E526B] to-[#496573] rounded-2xl shadow-xl p-6 text-white sticky top-24">
-              <h3 className="text-xl font-bold mb-6 text-center">Enquire Now</h3>
-              <form className="space-y-4">
-                <div className="relative mb-2">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </span>
-                  <input
-                    name="name"
-                    onChange={handleBlogQueryChange}
-                    value={blogQuery.name}
-                    placeholder="Your Name *"
-                    className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 shadow-sm"
-                    type="text"
-                  />
-                </div>
-                <div className="relative mb-2">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                  </span>
-                  <input
-                    name="mobile"
-                    value={blogQuery.mobile}
-                    onChange={handleBlogQueryChange}
-                    placeholder="Phone Number *"
-                    className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 shadow-sm"
-                    type="tel"
-                  />
-                </div>
-                {responseMessage && (
-                  <div className={`text-sm p-3 rounded-lg ${
-                    responseMessage.includes("successfully") 
-                      ? "bg-green-500/20 text-green-100" 
-                      : "bg-red-500/20 text-red-100"
-                  }`}>
-                    {responseMessage}
-                  </div>
-                )}
-                <button
-                  onClick={handleBlogSubmitQueryData}
-                  className="w-full py-3 px-6 bg-primaryRed text-white font-bold rounded-xl shadow-md hover:bg-red-700 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primaryRed/50 text-lg"
-                >
-                  {buttonText}
-                </button>
-              </form>
-            </div>
-          )}
         </div>
-       {/* Mobile Enquiry Vertical Tab and Panel */}
-       {isMobile && (
-         <>
-           {/* Vertical Tab */}
-           <button
-             className="fixed top-1/2 right-0 z-50 bg-primaryRed text-white font-bold text-sm px-2 py-3 rounded-l-xl shadow-lg transform -translate-y-1/2 tracking-widest"
-             style={{writingMode: 'vertical-rl', textOrientation: 'mixed', letterSpacing: '0.1em', borderTopLeftRadius: '12px', borderBottomLeftRadius: '12px'}}
-             onClick={() => setShowMobileEnquiry(true)}
-           >
-             ENQUIRE
-           </button>
-           {/* Slide-in Panel */}
-           {showMobileEnquiry && (
-             <div className="fixed inset-0 z-50 flex justify-end">
-               <div className="fixed inset-0 bg-black bg-opacity-40" onClick={() => setShowMobileEnquiry(false)}></div>
-               <div className="relative w-full max-w-sm bg-gradient-to-br from-[#1E526B] to-[#496573] text-white p-6 h-full overflow-y-auto animate-slideInRight">
-                 <button
-                   className="absolute top-4 right-4 text-white text-2xl"
-                   onClick={() => setShowMobileEnquiry(false)}
-                   aria-label="Close"
-                 >
-                   &times;
-                 </button>
-                 <h3 className="text-xl font-bold mb-6 text-center">Enquire Now</h3>
-                 <form className="space-y-4">
-                   <div className="relative mb-2">
-                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80">
-                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                       </svg>
-                     </span>
-                     <input
-                       name="name"
-                       onChange={handleBlogQueryChange}
-                       value={blogQuery.name}
-                       placeholder="Your Name *"
-                       className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 shadow-sm"
-                       type="text"
-                     />
-                   </div>
-                   <div className="relative mb-2">
-                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80">
-                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                       </svg>
-                     </span>
-                     <input
-                       name="mobile"
-                       value={blogQuery.mobile}
-                       onChange={handleBlogQueryChange}
-                       placeholder="Phone Number *"
-                       className="w-full pl-12 pr-4 py-3 bg-white/20 border border-white/40 rounded-xl text-white placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-white/60 focus:border-white/60 transition-all duration-200 shadow-sm"
-                       type="tel"
-                     />
-                   </div>
-                   {responseMessage && (
-                     <div className={`text-sm p-3 rounded-lg ${
-                       responseMessage.includes("successfully") 
-                         ? "bg-green-500/20 text-green-100" 
-                         : "bg-red-500/20 text-red-100"
-                     }`}>
-                       {responseMessage}
-                     </div>
-                   )}
-                   <button
-                     onClick={handleBlogSubmitQueryData}
-                     className="w-full py-3 px-6 bg-primaryRed text-white font-bold rounded-xl shadow-md hover:bg-red-700 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primaryRed/50 text-lg"
-                   >
-                     {buttonText}
-                   </button>
-                 </form>
-               </div>
-             </div>
-           )}
-         </>
-       )}
+
+        {/* Right Sidebar (hidden on mobile for cleaner layout) */}
+        <div ref={sidebarRef} className="hidden md:block w-full md:col-span-3 md:col-start-10 md:sticky md:top-24 self-start">
+          <div className="flex flex-col gap-8">
+          {/* Trending moved to left column */}
+
+          {/* Right sidebar sections */}
+        <div className="space-y-8">
+          {/* People are searching */}
+          <div className="p-0">
+            <h3 className="text-xl font-bold text-gray-900 mb-3">What people are exploring</h3>
+            <ul className="space-y-2">
+              {peopleSearch.map((item, idx) => (
+                <li key={idx}>
+                  <Link to={item.url} className="text-sm text-gray-700 hover:text-primaryRed hover:underline">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Popular tools */}
+          <div className="p-0">
+            <h3 className="text-xl font-bold text-gray-900 mb-3">Popular on our site</h3>
+            <ul className="space-y-2">
+              {popularTools.map((item, idx) => (
+                <li key={idx}>
+                  <Link to={item.url} className="text-sm text-gray-700 hover:text-primaryRed hover:underline">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          </div>
+        </div>
+        </div>
+        {/* End Sidebar */}
       </div>
+
+      {/* Lead capture modal disabled */}
+      {false && showLeadModal && (<></>)}
+
+      {/* Floating Enquiry Widget (bottom-right) */}
+      <div className="fixed right-3 bottom-20 md:bottom-4 z-[10050]">
+        {/* Panel */}
+        {showFloatingEnquiry && (
+          <div className="w-[260px] xs:w-[280px] sm:w-[300px] md:w-[320px] rounded-2xl shadow-2xl border border-gray-200 bg-white overflow-hidden mb-3">
+            <div className="px-4 py-3 flex items-center justify-between bg-gray-50 border-b">
+              <div className="font-semibold text-gray-900">Enquire Now</div>
+              <button
+                type="button"
+                onClick={() => setShowFloatingEnquiry(false)}
+                className="text-gray-500 hover:text-gray-700"
+                aria-label="Collapse enquiry"
+              >
+                <span aria-hidden>▾</span>
+              </button>
+            </div>
+            <form onSubmit={handleBlogSubmitQueryData} className="p-4 space-y-3">
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={blogQuery.name}
+                  onChange={handleBlogQueryChange}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Your Name"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">Mobile</label>
+                <input
+                  type="tel"
+                  name="mobile"
+                  value={blogQuery.mobile}
+                  onChange={handleBlogQueryChange}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Phone Number"
+                />
+              </div>
+              {responseMessage && (
+                <p className="text-xs text-red-600">{responseMessage}</p>
+              )}
+              <button
+                type="submit"
+                className="w-full rounded-lg bg-red-600 text-white font-semibold py-2 hover:bg-red-700 transition"
+                disabled={buttonText !== 'Submit'}
+              >
+                {buttonText}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* Toggle Button (hidden when panel is open) */}
+        {!showFloatingEnquiry && (
+          <button
+            type="button"
+            onClick={() => setShowFloatingEnquiry(true)}
+            className="flex items-center gap-2 rounded-full bg-red-600 text-white shadow-lg px-4 py-2 hover:bg-red-700"
+            aria-expanded={showFloatingEnquiry}
+          >
+            <span className="inline-block w-2 h-2 rounded-full bg-white animate-pulse"></span>
+            <span>Enquire now</span>
+          </button>
+        )}
+      </div>
+
+      {/* Page Footer */}
       <Footer />
     </div>
   );

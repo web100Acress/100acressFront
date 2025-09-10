@@ -800,6 +800,7 @@ const Home = () => {
   background: #ffffff;
   position: relative;
   z-index: 1;
+
  
    
    .hero-strip-99 {

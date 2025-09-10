@@ -29,6 +29,9 @@ export default function LeftSection({
   hideCity = false,
   showHamburgerOnDesktop = false,
   forceHamburger = false,
+  onOpenInsights,
+  onCloseInsights,
+  isInsightsOpen,
 }) {
   const { isOpen: isDrawerOpen, onOpen: openDrawer, onClose: closeDrawer } = useDisclosure();
   const location = useLocation();
@@ -42,11 +45,16 @@ export default function LeftSection({
   const budgetTimer = useRef(null);
   const statusTimer = useRef(null);
   const typeTimer = useRef(null);
+  const insightsTimer = useRef(null);
 
   const clearTimer = (ref) => { if (ref.current) { clearTimeout(ref.current); ref.current = null; } };
   const closeWithDelay = (ref, closer, delay = 140) => {
     clearTimer(ref);
     ref.current = setTimeout(() => { closer(false); ref.current = null; }, delay);
+  };
+  const closeFnWithDelay = (ref, fn, delay = 140) => {
+    clearTimer(ref);
+    ref.current = setTimeout(() => { try { fn(); } finally { ref.current = null; } }, delay);
   };
 
   const menuMotion = {
@@ -282,6 +290,14 @@ export default function LeftSection({
                   py={3} px={4} minH={{ base: 14, md: 12 }}
                   borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                   <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Resale Properties</Text>
+                </Button>
+                {/* Insights in drawer */}
+                <Button as={Link} to="/analytics" onClick={closeDrawer}
+                  w="100%" variant="solid" bg="#e53e3e" color="white"
+                  display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center"
+                  py={3} px={4} minH={{ base: 12, md: 12 }}
+                  _hover={{ bg: '#c53030' }} _active={{ bg: '#9b2c2c' }} rounded="md" boxShadow="0 6px 16px rgba(229,62,62,0.25)">
+                  <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="800">Insights</Text>
                 </Button>
               </>
             )}
@@ -531,6 +547,32 @@ export default function LeftSection({
           Resale
         </Button>
       </Link>
+      {/* Insights (highlighted + opens mega dropdown on hover) */}
+      {/* <Link to="/analytics"
+        onMouseEnter={() => { if (onOpenInsights) { clearTimer(insightsTimer); onOpenInsights(); } }}
+        onMouseLeave={() => { if (onCloseInsights) closeFnWithDelay(insightsTimer, onCloseInsights); }}
+      >
+        <Button
+          size="sm"
+          variant="solid"
+          bg="#e53e3e"
+          color="white"
+          _hover={{ bg: '#c53030' }}
+          _active={{ bg: '#9b2c2c' }}
+          px={3}
+          fontWeight="800"
+          fontSize="15px"
+          borderRadius="md"
+          boxShadow="0 6px 16px rgba(229,62,62,0.25)"
+          ml={{ base: 0, md: 1 }}
+          display={{ base: "none", md: "inline-flex" }}
+          onMouseEnter={() => { if (onOpenInsights) { clearTimer(insightsTimer); onOpenInsights(); } }}
+          onMouseLeave={() => { if (onCloseInsights) closeFnWithDelay(insightsTimer, onCloseInsights); }}
+        >
+          Insights
+        </Button>
+      </Link> */}
     </Flex>
   );
 }
+

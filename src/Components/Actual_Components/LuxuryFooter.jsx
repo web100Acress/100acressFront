@@ -218,8 +218,10 @@ const LuxuryFooter = () => {
                     { label: "Our Services", href: "/#our-services" },
                     { label: "Luxury Properties", href: "/top-luxury-projects/" },
                     { label: "Blog", href: "/blog/" },
+                    { label: "EMI Calculator", href: "/emi-calculator/" },
                     { label: "Career", href: "/career-with-us/"},
                     { label: "Contact", href: "/contact-us/" },
+                    
                   ].map((link, index) => (
                     <motion.a
                       key={index}
@@ -242,7 +244,7 @@ const LuxuryFooter = () => {
               variants={itemVariants}
             >
               <h3 className="text-xl font-semibold text-gray-800 relative pb-2">
-                EMI Calculator
+                Instant Callback
                 <span className="absolute -bottom-0.5 left-0 w-12 h-0.5 bg-gradient-to-r from-red-600 to-red-400 rounded-full"></span>
               </h3>
               <div className="space-y-4">

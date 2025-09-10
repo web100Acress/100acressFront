@@ -109,7 +109,7 @@ const NewLaunch = lazy(() => import("./Pages/NewLaunch"));
 const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
 const SignatureGlobal = lazy(() => import("./Pages/SignatureGlobal"));
 const DlfSco = lazy(() => import("./Pages/DlfSco"));
-const NewBanner = lazy(() => import("./aadharhomes/BannerPage/NewBanner/NewBanner"));
+const ProjectLayout2 = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/ProjectLayout2"));
 const Possessionin2026 = lazy(() => import("./Pages/Possessionin2026"));
 const BuilderPage = lazy(() => import("./Pages/BuilderPages/BuilderPage"));
 const OTPVerification = lazy(() => import("./Components/OTPVerification"));
@@ -123,6 +123,12 @@ const ViewAllProperty = lazy(() => import("./Pages/ViewAllProperty"));
 const BlogWriteModal = lazy(() => import("./AdminPage/BlogWriteModal"));
 const Dubai = lazy(() => import("./Pages/ProjectCities/Dubai"));
 const GlobalBudgetPrice = lazy(() => import("./Pages/GlobalBudgetPrice"));
+const PriceTrends = lazy(() => import("./analytics/pages/PriceTrends"));
+// Analytics pages (MVP scaffold)
+const MarketAnalytics = lazy(() => import("./analytics/pages/MarketAnalytics"));
+const LocationIntelligence = lazy(() => import("./analytics/pages/LocationIntelligence"));
+const InvestmentInsights = lazy(() => import("./analytics/pages/InvestmentInsights"));
+const AnalyticsHome = lazy(() => import("./analytics/pages/AnalyticsHome"));
 
 // Admin components (already lazy loaded)
 const Addnew = lazy(() => import("./AdminPage/Addnew"));
@@ -166,6 +172,7 @@ const JobPostingEdit = lazy(() => import("./AdminPage/JobPostingEdit"));
 const InsertProject = lazy(() => import("./AdminPage/InsertProject"));
 const AllListedProperties = lazy(() => import("./AdminPage/AllListedProperties"));
 const BlogViewAdmin = lazy(() => import("./AdminPage/BlogViewAdmin"));
+const BlogEnquiries = lazy(() => import("./AdminPage/BlogEnquiries"));
 const SeoPrivateRoute = lazy(() => import("./Components/Blog_Components/SeoPrivateRoute"));
 const BlogManagement = lazy(() => import("./Components/Blog_Components/BlogManagement"));
 const BlogDashboard = lazy(() => import("./Components/Blog_Components/BlogDashboard"));
@@ -178,6 +185,15 @@ const ShortsSettings = lazy(() => import("./AdminPage/ShortsSettings"));
 const queryClient = new QueryClient();
 
 function App() {
+  const location = useLocation();
+  const currentPath = location?.pathname || "/";
+  // Consider dynamic project pages like '/experion-the-trillion/' etc. (single segment with trailing slash)
+  const singleSegment = /^\/[A-Za-z0-9-]+\/?$/.test(currentPath);
+  const blockedPrefixes = [
+    'blog', 'auth', 'projects', 'project', 'property', 'loan', 'contact-us', 'userdashboard', 'admin', 'emi-calculator', 'postproperty', 'news-and-articals', 'searchdata', 'developers', 'privacy-policy', 'terms-and-conditions', 'qr-generator'
+  ];
+  const hasBlockedPrefix = blockedPrefixes.some((p) => currentPath.startsWith(`/${p}`));
+  const isProjectPage = singleSegment && !hasBlockedPrefix && currentPath !== '/';
   const token = localStorage.getItem("myToken");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignupModal, setShowSignupModal] = useState(false);
@@ -338,6 +354,12 @@ function App() {
                       <Route path="/projects-in-pushkar/" element={<Pushkar />} />
                   <Route path="/qr-generator" element={<QRGeneratorPage />} />
                       <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
+                      {/* Analytics (public) */}
+                      <Route path="/analytics" element={<AnalyticsHome />} />
+                      <Route path="/analytics/price-trends" element={<PriceTrends />} />
+                      <Route path="/analytics/market" element={<MarketAnalytics />} />
+                      <Route path="/analytics/location" element={<LocationIntelligence />} />
+                      <Route path="/analytics/investment" element={<InvestmentInsights />} />
                       <Route
                         path="/project-in-underconstruction/"
                         element={<UnderConstruction />}
@@ -369,7 +391,7 @@ function App() {
                       />
                       <Route path="/forgetpassword" element={<ResetEmailPassword />} />
                       <Route path="/knowabouts" element={<PropertyKnow />} />
-                      <Route path="/:pUrl/" element={<NewBanner />} />
+                      <Route path="/:pUrl/" element={<ProjectLayout2 />} />
                       <Route
                         path="/userviewproperty/:id"
                         element={<UserViewProperty />}
@@ -431,6 +453,7 @@ function App() {
                       <Route path="contact" element={<LazyLoad><AdminContact /></LazyLoad>} />
                       <Route path="editProject" element={<LazyLoad><EditProject /></LazyLoad>} />
                       <Route path="enquiries" element={<LazyLoad><Enquiries /></LazyLoad>} />
+                      <Route path="blog-enquiries" element={<LazyLoad><BlogEnquiries /></LazyLoad>} />
                       <Route path="header" element={<LazyLoad><Header /></LazyLoad>} />
                       <Route path="Projects/property" element={<LazyLoad><Projects /></LazyLoad>} />
                       <Route path="resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />
@@ -516,10 +539,10 @@ function App() {
           </TooltipProvider>
         </AuthProvider>
       </DataProvider>
-      {/* Global mobile bottom navigation */}
-      <MobileBottomNav />
-      {/* Global mobile sticky List Property button */}
-      <MobileStickyListProperty />
+      {/* Global mobile bottom navigation (hidden on project pages) */}
+      {!isProjectPage && <MobileBottomNav />}
+      {/* Global mobile sticky List Property button (hidden on project pages) */}
+      {!isProjectPage && <MobileStickyListProperty />}
     </>
   );
 }

@@ -81,6 +81,13 @@ const BlogWriteModal = () => {
   const [relatedProjects, setRelatedProjects] = useState([]);
   const [allProjects, setAllProjects] = useState([]);
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
+  // Project search state
+  const [projectSearchTerm, setProjectSearchTerm] = useState('');
+  const [projectSearchResults, setProjectSearchResults] = useState([]);
+  
+  // FAQ state (no UI changes)
+  const [enableFAQ, setEnableFAQ] = useState(false);
+  const [faqs, setFaqs] = useState([{ question: '', answer: '' }]);
 
   // Cropper state for inline content images
   const [showCropper, setShowCropper] = useState(false);
@@ -206,6 +213,13 @@ const BlogWriteModal = () => {
             
             // Load related projects if they exist
             setRelatedProjects(Array.isArray(b.relatedProjects) ? b.relatedProjects : []);
+            
+            // Load FAQs
+            setEnableFAQ(!!b.enableFAQ);
+            setFaqs(Array.isArray(b.faqs) && b.faqs.length
+              ? b.faqs.map(x => ({ question: x.question || '', answer: x.answer || '' }))
+              : [{ question: '', answer: '' }]
+            );
           } else {
             console.log('Blog not found');
           }
@@ -442,17 +456,47 @@ const BlogWriteModal = () => {
     loadCategories();
   }, []);
 
-  // Load all projects for dropdown
+  // Load all projects for dropdown (paginate in batches of 100)
   useEffect(() => {
     const loadAllProjects = async () => {
       try {
         setIsLoadingProjects(true);
-        const response = await api.get('/blog/search-projects?limit=100');
-        if (response.data && response.data.data) {
-          console.log('[BlogWriteModal] Projects loaded:', response.data.data.length);
-          console.log('[BlogWriteModal] Sample project:', response.data.data[0]);
-          setAllProjects(response.data.data);
+        const limit = 100;
+        const strategies = [
+          // page based
+          (state) => `/blog/search-projects?limit=${limit}&page=${state.page}`,
+          // skip based
+          (state) => `/blog/search-projects?limit=${limit}&skip=${state.skip}`,
+          // offset based
+          (state) => `/blog/search-projects?limit=${limit}&offset=${state.skip}`,
+        ];
+        let all = [];
+        let success = false;
+        for (let s = 0; s < strategies.length && !success; s++) {
+          let page = 1;
+          let skip = 0;
+          let lastFirstId = null;
+          all = [];
+          for (let attempts = 0; attempts < 60; attempts++) {
+            const url = strategies[s]({ page, skip });
+            const res = await api.get(url);
+            const list = Array.isArray(res?.data?.data) ? res.data.data : [];
+            if (!list.length) break;
+            const firstId = list[0]?._id || list[0]?.id || JSON.stringify(list[0]);
+            if ((page > 1 || skip > 0) && firstId && firstId === lastFirstId) {
+              break; // repeating batch
+            }
+            lastFirstId = firstId;
+            all = all.concat(list);
+            if (list.length < limit) break; // last page
+            page += 1;
+            skip += limit;
+          }
+          // If we got more than one page, consider success
+          if (all.length > limit) success = true;
         }
+        console.log('[BlogWriteModal] Projects loaded (total):', all.length);
+        setAllProjects(all);
       } catch (error) {
         console.error('Error fetching projects:', error);
         message.error('Failed to load projects');
@@ -462,6 +506,53 @@ const BlogWriteModal = () => {
     };
     loadAllProjects();
   }, []);
+
+  // Debounced server-side search across all pages (when user types 2+ chars)
+  useEffect(() => {
+    const t = setTimeout(async () => {
+      try {
+        const q = (projectSearchTerm || '').trim();
+        if (q.length < 2) {
+          setProjectSearchResults([]);
+          return;
+        }
+        setIsLoadingProjects(true);
+        const limit = 100;
+        const strategies = [
+          (state) => `/blog/search-projects?limit=${limit}&q=${encodeURIComponent(q)}&page=${state.page}`,
+          (state) => `/blog/search-projects?limit=${limit}&q=${encodeURIComponent(q)}&skip=${state.skip}`,
+          (state) => `/blog/search-projects?limit=${limit}&q=${encodeURIComponent(q)}&offset=${state.skip}`,
+        ];
+        let results = [];
+        for (let s = 0; s < strategies.length; s++) {
+          let page = 1;
+          let skip = 0;
+          let lastFirstId = null;
+          results = [];
+          for (let attempts = 0; attempts < 60; attempts++) {
+            const url = strategies[s]({ page, skip });
+            const res = await api.get(url);
+            const list = Array.isArray(res?.data?.data) ? res.data.data : [];
+            if (!list.length) break;
+            const firstId = list[0]?._id || list[0]?.id || JSON.stringify(list[0]);
+            if ((page > 1 || skip > 0) && firstId && firstId === lastFirstId) break;
+            lastFirstId = firstId;
+            results = results.concat(list);
+            if (list.length < limit) break;
+            page += 1;
+            skip += limit;
+          }
+          if (results.length) break; // stop on first strategy that works
+        }
+        setProjectSearchResults(results);
+      } catch (err) {
+        console.error('Project search failed', err);
+      } finally {
+        setIsLoadingProjects(false);
+      }
+    }, 350);
+    return () => clearTimeout(t);
+  }, [projectSearchTerm]);
 
   // Related projects management functions
   const addRelatedProject = (project) => {
@@ -708,6 +799,15 @@ const BlogWriteModal = () => {
       if (relatedProjects.length > 0) {
         formDataAPI.append('relatedProjects', JSON.stringify(relatedProjects));
       }
+      
+      // FAQs
+      formDataAPI.append('enableFAQ', enableFAQ);
+      if (faqs && faqs.some(f => (f.question || '').trim() && (f.answer || '').trim())) {
+        const cleaned = faqs
+          .map(f => ({ question: (f.question || '').trim(), answer: (f.answer || '').trim() }))
+          .filter(f => f.question && f.answer);
+        if (cleaned.length) formDataAPI.append('faqs', JSON.stringify(cleaned));
+      }
 
       // Handle file upload with better error handling
       if (frontImage) {
@@ -815,9 +915,7 @@ const BlogWriteModal = () => {
     }
   };
 
-  // Add missing state variables
-  const [projectSearchTerm, setProjectSearchTerm] = useState('');
-  const [projectSearchResults, setProjectSearchResults] = useState([]);
+  // (moved projectSearchTerm and projectSearchResults declarations above)
 
   const resetForm = () => {
     setTitle('');
@@ -833,6 +931,8 @@ const BlogWriteModal = () => {
     setRelatedProjects([]);
     setProjectSearchTerm('');
     setProjectSearchResults([]);
+    setEnableFAQ(false);
+    setFaqs([{ question: '', answer: '' }]);
   };
 
   // Quill toolbar config (no default image button; we add our own handlers)
@@ -1601,29 +1701,33 @@ const BlogWriteModal = () => {
                     <select
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
                       onChange={(e) => {
-                        const selectedProject = allProjects.find(p => p.project_url === e.target.value);
-                        if (selectedProject) {
-                          addRelatedProject(selectedProject);
-                          e.target.value = ''; // Reset dropdown
-                        }
-                      }}
-                      disabled={isLoadingProjects || relatedProjects.length >= 5}
-                    >
-                      <option value="">
-                        {isLoadingProjects 
-                          ? 'Loading projects...' 
-                          : relatedProjects.length >= 5 
-                            ? 'Maximum 5 projects allowed'
-                            : 'Select a project to add...'}
-                      </option>
-                      {allProjects
+                        const idx = Number(e.target.value);
+                        const source = projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects;
+                        const list = source
+                          .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
+                          .filter(p => {
+                            const q = (projectSearchTerm || '').trim().toLowerCase();
+                            if (!q) return true;
+                            const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
+                            return hay.includes(q);
+                          });
+                        if (!Number.isNaN(idx) && list[idx]) addRelatedProject(list[idx]);
+                        e.target.value = '';
+                      }} defaultValue="" style={{ width:'100%', padding:'10px 12px' }}>
+                      <option value="" disabled>{isLoadingProjects ? 'Loading projects...' : 'Select a project to add'}</option>
+                      {(projectSearchTerm.trim().length >= 2 ? projectSearchResults : allProjects)
                         .filter(project => !relatedProjects.find(rp => rp.project_url === project.project_url))
-                        .map((project, index) => (
-                          <option key={index} value={project.project_url}>
-                            {project.projectName || 'Unnamed Project'} - {project.builderName || 'Unknown Builder'}{project.location ? ` (${project.location})` : ''}
+                        .filter(p => {
+                          const q = (projectSearchTerm || '').trim().toLowerCase();
+                          if (!q) return true;
+                          const hay = `${p.projectName || ''} ${p.builderName || ''} ${p.location || ''} ${p.city || ''}`.toLowerCase();
+                          return hay.includes(q);
+                        })
+                        .map((p, idx) => (
+                          <option key={p.project_url || `${p.projectName}-${idx}`} value={idx}>
+                            {(p.projectName || p.project_url || `Project ${idx+1}`)}{p.builderName ? ` — ${p.builderName}` : ''}
                           </option>
-                        ))
-                      }
+                        ))}
                     </select>
                     {isLoadingProjects && (
                       <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -1678,12 +1782,6 @@ const BlogWriteModal = () => {
                         ))}
                       </div>
                     </div>
-                  )}
-
-                  {relatedProjects.length === 0 && (
-                    <p className="text-sm text-gray-500 text-center py-4">
-                      Select projects from the dropdown to add as related content for this blog post
-                    </p>
                   )}
                 </div>
               </div>
@@ -1866,6 +1964,75 @@ const BlogWriteModal = () => {
               <p className="text-xs text-gray-500">
                 Tip: Use the buttons above to insert images anywhere inside the content.
               </p>
+            </div>
+
+            {/* FAQ Section (moved below Blog Content) */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <label className="text-lg font-semibold text-gray-900">FAQs</label>
+                  <span className="text-sm text-gray-500">(Optional)</span>
+                </div>
+                <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={enableFAQ}
+                    onChange={(e)=>setEnableFAQ(e.target.checked)}
+                  />
+                  Enable FAQ section
+                </label>
+              </div>
+
+              {enableFAQ && (
+                <div className="space-y-3">
+                  {faqs.map((f, idx) => (
+                    <div key={idx} className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                      <div className="grid grid-cols-1 lg:grid-cols-10 gap-3 items-start">
+                        <div className="lg:col-span-4">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Question</label>
+                          <input
+                            type="text"
+                            value={f.question}
+                            onChange={(e)=>setFaqs(prev=>prev.map((x,i)=> i===idx ? { ...x, question:e.target.value } : x))}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="Enter question"
+                          />
+                        </div>
+                        <div className="lg:col-span-5">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Answer</label>
+                          <textarea
+                            rows={3}
+                            value={f.answer}
+                            onChange={(e)=>setFaqs(prev=>prev.map((x,i)=> i===idx ? { ...x, answer:e.target.value } : x))}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="Enter answer"
+                          />
+                        </div>
+                        <div className="lg:col-span-1 flex lg:justify-end">
+                          <button
+                            type="button"
+                            onClick={()=>setFaqs(prev=>prev.filter((_,i)=>i!==idx))}
+                            className="px-3 py-2 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
+                            title="Remove FAQ"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={()=>setFaqs(prev=>[...prev, { question:'', answer:'' }])}
+                      className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
+                    >
+                      Add FAQ
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Actions */}
