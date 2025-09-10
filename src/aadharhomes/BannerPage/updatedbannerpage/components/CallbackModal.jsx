@@ -120,14 +120,14 @@ const CallbackModal = ({ isOpen, onClose, projectViewDetails = {}, projectTitle 
             <label className="block text-sm font-medium text-white">
               Mobile Number <span className="text-orange-400">*</span>
             </label>
-            <div className="h-12 overflow-hidden">
+            <div className="h-auto">
               <CountryCodeSelector
                 selectedCountryCode={sideDetails.countryCode}
                 onCountryCodeChange={handleCountryCodeChange}
                 phoneNumber={sideDetails.mobile}
                 onPhoneNumberChange={handlePhoneNumberChange}
                 placeholder="Enter phone number"
-                className="w-full [&>div>div>button]:!h-12 [&>div>div>button]:!py-3 [&>div>input]:!h-12 [&>div>input]:!py-3"
+                className="w-full [&>div>div>button]:!h-12 [&>div>div>button]:!py-2 [&>div>input]:!h-12 [&>div>input]:!py-2"
               />
             </div>
           </div>
