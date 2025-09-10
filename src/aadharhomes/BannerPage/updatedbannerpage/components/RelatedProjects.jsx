@@ -84,26 +84,6 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
           </div>
         ) : (
           <>
-            {/* View All Button - Moved Up */}
-            {builderProjects.length > 4 && (
-              <div className="text-center mb-8">
-                <button
-                  onClick={() => setShowAllProjects(!showAllProjects)}
-                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-bold px-8 py-3 rounded-lg border-2 border-yellow-400 shadow-[0_4px_15px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_20px_rgba(212,175,55,0.5)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 transform"
-                >
-                  <span>{showAllProjects ? 'Show Less' : 'View All Projects'}</span>
-                  <svg 
-                    className={`w-4 h-4 transition-transform duration-300 ${showAllProjects ? 'rotate-180' : ''}`} 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-              </div>
-            )}
-
             {/* Projects Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {projectsToShow.map((project, index) => (
@@ -185,6 +165,26 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
                 </div>
               ))}
             </div>
+
+            {/* View All Button - Moved Below Properties */}
+            {builderProjects.length > 4 && (
+              <div className="text-center mt-8">
+                <button
+                  onClick={() => setShowAllProjects(!showAllProjects)}
+                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-bold px-8 py-3 rounded-lg border-2 border-yellow-400 shadow-[0_4px_15px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_20px_rgba(212,175,55,0.5)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 transform"
+                >
+                  <span>{showAllProjects ? 'Show Less' : 'View All Projects'}</span>
+                  <svg 
+                    className={`w-4 h-4 transition-transform duration-300 ${showAllProjects ? 'rotate-180' : ''}`} 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </>
         )}
 
