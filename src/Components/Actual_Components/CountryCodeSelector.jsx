@@ -59,7 +59,7 @@ const CountryCodeSelector = ({
 
   return (
     <div className={`relative ${className}`}>
-      <div className="flex">
+      <div className="flex w-full">
         {/* Country Code Dropdown */}
         <div className="relative">
           <button
@@ -82,7 +82,7 @@ const CountryCodeSelector = ({
 
           {/* Dropdown Menu */}
           {isDropdownOpen && (
-            <div className="absolute top-full left-0 z-50 w-64 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl max-h-60 overflow-y-auto">
+            <div className="absolute top-full left-0 z-50 w-full sm:w-64 max-w-[calc(100vw-2rem)] mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl max-h-60 overflow-y-auto">
               {countryCodes.map((country) => (
                 <button
                   key={country.code}
@@ -106,7 +106,7 @@ const CountryCodeSelector = ({
           onChange={handlePhoneChange}
           placeholder={placeholder}
           disabled={disabled}
-          className="flex-1 px-4 py-3 md:py-4 bg-gray-800/70 border border-gray-600 rounded-r-xl text-white focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
+          className="flex-1 min-w-0 px-4 py-3 md:py-4 bg-gray-800/70 border border-gray-600 rounded-r-xl text-white focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
         />
       </div>
 
