@@ -109,6 +109,23 @@ export default function PriceTrends() {
     }
   };
 
+  const toggleSaveLocality = () => {
+    try {
+      const key = `pt_save_${city}_${drawerData?.locality || ''}`;
+      const next = !savedLocality;
+      setSavedLocality(next);
+      sessionStorage.setItem(key, next ? '1' : '0');
+    } catch {}
+  };
+
+  const calcEmi = (P, r, years) => {
+    const i = (r/12) / 100;
+    const n = years * 12;
+    if (!P || !i || !n) return 0;
+    const emi = P * i * Math.pow(1+i, n) / (Math.pow(1+i, n) - 1);
+    return Math.round(emi);
+  };
+
   const resetFilters = () => {
     setZone('All Zones');
     setType('Apartment');
@@ -304,6 +321,13 @@ export default function PriceTrends() {
 
   const [activeLocality, setActiveLocality] = useState(null);
   const [alertSubscribed, setAlertSubscribed] = useState(false);
+  const [savedLocality, setSavedLocality] = useState(false);
+  const [miniName, setMiniName] = useState("");
+  const [miniPhone, setMiniPhone] = useState("");
+  const [miniSubmitted, setMiniSubmitted] = useState(false);
+  const [emiPrincipal, setEmiPrincipal] = useState(0);
+  const [emiRate, setEmiRate] = useState(8.5);
+  const [emiYears, setEmiYears] = useState(20);
 
   const handlePriceAlert = () => {
     try {
@@ -318,6 +342,17 @@ export default function PriceTrends() {
   const openDrawer = (data) => {
     setDrawerData(data);
     setActiveLocality(data?.locality || null);
+    // restore toggles and set defaults for EMI based on locality price
+    try {
+      const alertKey = `pt_alert_${city}_${data?.locality || ''}`;
+      const saveKey = `pt_save_${city}_${data?.locality || ''}`;
+      setAlertSubscribed(sessionStorage.getItem(alertKey) === '1');
+      setSavedLocality(sessionStorage.getItem(saveKey) === '1');
+    } catch {}
+    // estimate principal as 1000 sq.ft * rate
+    const est = (data?.rate || 10000) * 1000;
+    setEmiPrincipal(est);
+    setMiniName(""); setMiniPhone(""); setMiniSubmitted(false);
     setDrawerOpen(true);
     // next frame to allow transition from translate to 0
     requestAnimationFrame(() => setDrawerAnimating(true));
@@ -518,6 +553,58 @@ export default function PriceTrends() {
                         navigate(u);
                         closeDrawer();
                       }} className="w-full px-3 py-2 rounded-lg border bg-gray-900 text-white text-sm hover:bg-gray-800">Explore projects in {drawerData?.locality}</button>
+                      {/* Limited-time nudge */}
+                      <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                        <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M12 8v5h5v2h-7V8z"/></svg>
+                        <span><strong>2 price drops</strong> reported this week in {drawerData?.locality}</span>
+                      </div>
+                      {/* Save locality */}
+                      <button onClick={toggleSaveLocality} className={`w-full px-3 py-2 rounded-lg border text-sm ${savedLocality ? 'bg-blue-600 text-white border-blue-600' : 'bg-white hover:bg-gray-50'}`}>{savedLocality ? 'Saved to watchlist' : 'Save this locality'}</button>
+                      {/* Nearby highlights */}
+                      <div className="flex flex-wrap gap-2 text-xs">
+                        <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 border">5 mins to Metro</span>
+                        <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 border">10 mins to Mall</span>
+                        <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 border">15 mins to IT Park</span>
+                      </div>
+                      {/* Quick callback mini-form */}
+                      <div className="border rounded-xl p-3">
+                        <div className="text-sm font-semibold mb-2">Request a quick callback</div>
+                        <div className="grid grid-cols-1 gap-2">
+                          <input value={miniName} onChange={(e)=>setMiniName(e.target.value)} placeholder="Your name" className="px-3 py-2 rounded-lg border" />
+                          <input value={miniPhone} onChange={(e)=>setMiniPhone(e.target.value)} placeholder="Phone number" className="px-3 py-2 rounded-lg border" />
+                          <button onClick={()=>{ setMiniSubmitted(true); }} className="px-3 py-2 rounded-lg border bg-gray-900 text-white text-sm hover:bg-gray-800">{miniSubmitted? 'We\'ll call you shortly' : 'Request callback'}</button>
+                        </div>
+                      </div>
+                      {/* EMI mini widget */}
+                      <div className="border rounded-xl p-3">
+                        <div className="text-sm font-semibold mb-2">Estimate EMI</div>
+                        <div className="grid grid-cols-3 gap-2 text-xs">
+                          <div className="col-span-3">
+                            <label className="block text-gray-600 mb-1">Principal (₹)</label>
+                            <input type="number" value={emiPrincipal} onChange={(e)=>setEmiPrincipal(Number(e.target.value)||0)} className="w-full px-2 py-1.5 rounded border" />
+                          </div>
+                          <div>
+                            <label className="block text-gray-600 mb-1">Rate %</label>
+                            <input type="number" step="0.1" value={emiRate} onChange={(e)=>setEmiRate(Number(e.target.value)||0)} className="w-full px-2 py-1.5 rounded border" />
+                          </div>
+                          <div>
+                            <label className="block text-gray-600 mb-1">Years</label>
+                            <input type="number" value={emiYears} onChange={(e)=>setEmiYears(Number(e.target.value)||0)} className="w-full px-2 py-1.5 rounded border" />
+                          </div>
+                          <div className="flex items-end">
+                            <div className="text-gray-600">/mo</div>
+                          </div>
+                        </div>
+                        <div className="mt-2 text-lg font-bold">₹{calcEmi(emiPrincipal, emiRate, emiYears).toLocaleString()}</div>
+                      </div>
+                      {/* Testimonials */}
+                      <div className="border rounded-xl p-3">
+                        <div className="text-sm font-semibold mb-2">What buyers say</div>
+                        <div className="space-y-2 text-xs text-gray-700">
+                          <div className="p-2 rounded bg-gray-50 border">“Good rental demand and clean surroundings.” — Raj, {city}</div>
+                          <div className="p-2 rounded bg-gray-50 border">“Connectivity is great, prices trending up.” — Asha, {city}</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </aside>
