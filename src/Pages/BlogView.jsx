@@ -14,6 +14,9 @@ const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
   const [data, setData] = useState({});
   const [trendingProjects, setTrendingProjects] = useState([]);
+  // Cache for related project thumbnails and meta resolved from project details
+  const [relatedThumbs, setRelatedThumbs] = useState({});
+  const [relatedMeta, setRelatedMeta] = useState({}); // key: project_url -> { location, minPrice, maxPrice }
 
   const [loadError, setLoadError] = useState("");
   const { id, slug } = useParams();
@@ -33,22 +36,25 @@ const BlogView = () => {
   const isMobile = useIsMobile ? useIsMobile() : false;
   const [showMobileEnquiry, setShowMobileEnquiry] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  // Sidebar sticky
+  const containerRef = useRef(null);
+  const sidebarRef = useRef(null);
   // People are searching (unique phrasing and links)
   const peopleSearch = [
-    { label: 'Flats in Gurgaon', url: '/buy-properties-in-gurgaon' },
-    { label: 'Flats in Delhi', url: '/buy-properties-in-delhi' },
-    { label: 'Flats for sale in Bangalore', url: '/buy-properties-in-bangalore' },
-    { label: 'Flats in Mumbai', url: '/buy-properties-in-mumbai' },
-    { label: 'Flats for sale in Chennai', url: '/buy-properties-in-chennai' },
-    { label: 'Flats in Pune', url: '/buy-properties-in-pune' },
-    { label: 'Flats in Kolkata', url: '/buy-properties-in-kolkata' },
-    { label: 'Flats in Greater Noida', url: '/buy-properties-in-greater-noida' },
+    { label: 'Projects in Gurugram', url: '/projects-in-gurugram' },
+    { label: 'Projects in Delhi', url: '/project-in-delhi' },
+    { label: 'Projects in Noida', url: '/project-in-noida' },
+    { label: 'Property under 1 Cr', url: '/budget-properties' },
+    { label: 'Upcoming Projects', url: '/upcoming-projects-in-gurgaon' },
+    { label: 'New Launch Projects', url: '/projects-in-newlaunch' },
+    { label: 'SEO Plots', url: '/sco/plots' },
+    { label: 'Commercial Projects', url: '/projects/commercial/' },
   ];
   const popularTools = [
-    { label: 'Post your property', url: '/postproperty' },
-    { label: 'Apply for Home Loan', url: '/loan/apply' },
-    { label: 'EMI Calculator', url: '/loan/emi-calculator' },
-    { label: 'Rent Receipt', url: '/tools/rent-receipt' },
+    { label: 'Post Property', url: '/postproperty' },
+    { label: 'EMI Calculator', url: '/emi-calculator/' },
+    { label: 'Rent Property', url: '/rental-properties/best-rental-property-in-gurugram' },
+    { label: 'Resale Property', url: '/buy-properties/best-resale-property-in-gurugram' },
   ];
   // Lead capture popup modal
   const [showLeadModal, setShowLeadModal] = useState(false);
@@ -58,6 +64,9 @@ const BlogView = () => {
     minPrice: null,
     maxPrice: null,
   });
+
+  // Floating enquiry (bottom-right) collapsible
+  const [showFloatingEnquiry, setShowFloatingEnquiry] = useState(true);
 
   // Safe image fallback for broken S3 URLs
   const FALLBACK_IMG = "/Images/blog.avif";
@@ -88,6 +97,25 @@ const BlogView = () => {
       }
     } catch (error) {
       console.error('Error in image fallback:', error);
+    }
+  };
+
+  // Helper to pick best image from a project payload (same strategy as Trending)
+  const pickProjectImage = (p) => {
+    try {
+      if (!p || typeof p !== 'object') return '';
+      const t1 = p?.thumbnailImage?.cdn_url || p?.thumbnailImage?.url || '';
+      const t2 = p?.thumbnail?.cdn_url || p?.thumbnail?.url || p?.thumb?.url || '';
+      const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
+      const fMain = p?.frontImage?.url || '';
+      const c1 = p?.cardImage?.url || p?.cardImage || '';
+      const b1 = p?.bannerImage?.url || p?.bannerImage || '';
+      const any = p?.image || p?.project_Image || '';
+      const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
+      const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
+      return /^data:image\/svg\+xml/i.test(u) ? '' : (u || '');
+    } catch (_) {
+      return '';
     }
   };
 
@@ -241,22 +269,25 @@ const BlogView = () => {
     // Choose display URL: prefer CDN, then S3/url; ignore placeholders
     normalizedImage.display = normalizedImage.cdn_url || normalizedImage.url || '';
 
-    return {
-      blog_Title: obj.blog_Title || '',
-      blog_Description: obj.blog_Description || '',
-      author: obj.author || '',
-      blog_Category: obj.blog_Category || '',
-      published_Date: obj.published_Date || obj.createdAt || '',
-      blog_Image: normalizedImage,
-      createdAt: obj.createdAt || '',
-      slug: obj.slug || '',
-      _id: obj._id || '',
-      // SEO fields (handle multiple possible keys)
-      metaTitle: obj.metaTitle || obj.meta_Title || obj.seoTitle || '',
-      metaDescription: obj.metaDescription || obj.meta_Description || obj.seoDescription || obj.meta_desc || '',
-      // Related projects
-      relatedProjects: Array.isArray(obj.relatedProjects) ? obj.relatedProjects : []
-    };
+      return {
+        blog_Title: obj.blog_Title || '',
+        blog_Description: obj.blog_Description || '',
+        author: obj.author || '',
+        blog_Category: obj.blog_Category || '',
+        published_Date: obj.published_Date || obj.createdAt || '',
+        blog_Image: normalizedImage,
+        createdAt: obj.createdAt || '',
+        slug: obj.slug || '',
+        _id: obj._id || '',
+        // SEO fields (handle multiple possible keys)
+        metaTitle: obj.metaTitle || obj.meta_Title || obj.seoTitle || '',
+        metaDescription: obj.metaDescription || obj.meta_Description || obj.seoDescription || obj.meta_desc || '',
+        // Related projects
+        relatedProjects: Array.isArray(obj.relatedProjects) ? obj.relatedProjects : [],
+        // FAQs
+        enableFAQ: !!obj.enableFAQ,
+        faqs: Array.isArray(obj.faqs) ? obj.faqs : []
+      };
   };
 
   // Fetch blog data when component mounts
@@ -319,14 +350,70 @@ const BlogView = () => {
     fetchBlogData();
   }, [id, slug, location.search]);
 
-  // Timed popup: show 3s after blog successfully loads (every refresh)
+  // Preload thumbnails for related projects (if missing)
   useEffect(() => {
-    if (!data || !data._id) return; // wait until blog is loaded
-    const t = setTimeout(() => {
-      setShowLeadModal(true);
-    }, 3000);
-    return () => clearTimeout(t);
-  }, [data?._id]);
+    const loadThumbs = async () => {
+      try {
+        const list = Array.isArray(data?.relatedProjects) ? data.relatedProjects : [];
+        if (list.length === 0) return;
+        const updates = {};
+        const metaUpdates = {};
+        await Promise.all(
+          list.map(async (rp) => {
+            try {
+              const url = rp?.project_url || '';
+              if (!url) return;
+              // Determine if we need to fetch details (for image and/or meta)
+              const hasThumbInCache = !!relatedThumbs[url];
+              const hasThumbInline = !!(rp?.thumbnail && typeof rp.thumbnail === 'string' && rp.thumbnail.trim());
+              const hasMetaInCache = !!relatedMeta[url];
+              if (hasThumbInCache && hasThumbInline && hasMetaInCache) {
+                // Nothing to fetch
+                return;
+              }
+              const apiUrl = `${API_ROUTES.projectsBase()}/View/${encodeURIComponent(url)}`;
+              const res = await api.get(apiUrl, { timeout: 15000 });
+              const p = res?.data?.data || {};
+              const picked = pickProjectImage(p);
+              const thumb = picked || (typeof rp?.thumbnail === 'string' ? rp.thumbnail : '');
+              if (!hasThumbInCache && thumb && !/^data:image\/svg\+xml/i.test(thumb)) {
+                updates[url] = thumb;
+              }
+              // Capture location and price meta (cover more field variants)
+              const loc = p?.location || p?.city || p?.projectLocation || p?.project_location || p?.address || p?.projectAddress || p?.area || p?.sector || '';
+              const minP = typeof p?.minPrice === 'number' ? p.minPrice
+                           : typeof p?.price?.min === 'number' ? p.price.min
+                           : typeof p?.startingPrice === 'number' ? p.startingPrice
+                           : null;
+              const maxP = typeof p?.maxPrice === 'number' ? p.maxPrice
+                           : typeof p?.price?.max === 'number' ? p.price.max
+                           : null;
+              if (!hasMetaInCache) {
+                metaUpdates[url] = { location: loc, minPrice: minP, maxPrice: maxP };
+              }
+            } catch (_) { /* ignore per-item error */ }
+          })
+        );
+        if (Object.keys(updates).length) {
+          setRelatedThumbs((prev) => ({ ...prev, ...updates }));
+        }
+        if (Object.keys(metaUpdates).length) {
+          setRelatedMeta((prev) => ({ ...prev, ...metaUpdates }));
+        }
+      } catch (_) { /* ignore */ }
+    };
+    loadThumbs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.relatedProjects]);
+
+  // Timed popup disabled as requested
+  // useEffect(() => {
+  //   if (!data || !data._id) return; // wait until blog is loaded
+  //   const t = setTimeout(() => {
+  //     setShowLeadModal(true);
+  //   }, 3000);
+  //   return () => clearTimeout(t);
+  // }, [data?._id]);
 
   // When modal opens, fetch price/details for the first related project (if available)
   useEffect(() => {
@@ -361,6 +448,8 @@ const BlogView = () => {
     loadLeadProject();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showLeadModal]);
+
+  // Removed bottom-pinning behavior; using pure CSS sticky instead
 
   const formatINRShort = (n) => {
     if (typeof n !== 'number' || isNaN(n)) return null;
@@ -412,6 +501,8 @@ const BlogView = () => {
     metaTitle,
     metaDescription,
     relatedProjects,
+    enableFAQ,
+    faqs,
   } = data;
 
   // Ref to post-process content images (fix lazy attrs, http->https, fallback on error)
@@ -546,50 +637,157 @@ const BlogView = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 px-4 pb-12">
-        {/* Left: Sticky Enquiry (desktop); stacked first on mobile */}
+      <div ref={containerRef} className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 px-4 pb-12 relative">
+        {/* Left Sidebar: show Related Projects first, then Trending */}
         <aside className="w-full md:col-span-3 md:col-start-1">
-          {/* Sticky on desktop; naturally stacked on mobile */}
-          <div className="md:sticky md:top-24">
-              <h3 className="text-base font-semibold text-gray-800 mb-4">Enquire Now</h3>
-              <form className="space-y-4" onSubmit={handleBlogSubmitQueryData}>
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Name</label>
-                  <input
-                    name="name"
-                    value={blogQuery.name}
-                    onChange={handleBlogQueryChange}
-                    placeholder="Your Name"
-                    className="w-full px-0 py-2 bg-transparent border-b border-gray-300 focus:border-gray-900 focus:outline-none text-gray-900 placeholder-gray-400"
-                    type="text"
-                    required
-                  />
+          <div className="mt-0 p-0 md:sticky md:top-24">
+            {/* Related Projects moved to the left sidebar (TOP) */}
+            {relatedProjects && relatedProjects.length > 0 && (
+              <div className="mb-3">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Related Projects</h3>
+                <div className="space-y-2">
+                  {relatedProjects.map((project, idx) => {
+                    const name = project?.projectName || 'Project';
+                    const url = project?.project_url || '';
+                    const thumbnail = project?.thumbnail || '';
+                    const img = (relatedThumbs[url] || thumbnail || FALLBACK_IMG);
+
+                    const handleProjectClick = () => {
+                      try {
+                        if (!url) return;
+                        let slug = url;
+                        if (slug && /^(https?:)?\/\//i.test(slug)) {
+                          try {
+                            const u = new URL(slug, window.location.origin);
+                            const parts = u.pathname.split('/').filter(Boolean);
+                            slug = parts[parts.length - 1] || '';
+                          } catch (_) { /* ignore */ }
+                        }
+                        if (!slug) return;
+                        const path = `/${slug}/`;
+                        history(path);
+                        try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
+                      } catch (_) { /* noop */ }
+                    };
+
+                    // compose meta
+                    const meta = relatedMeta[url] || {};
+                    const priceLine = (() => {
+                      const a = typeof meta.minPrice === 'number' ? formatINRShort(meta.minPrice) : null;
+                      const b = typeof meta.maxPrice === 'number' ? formatINRShort(meta.maxPrice) : null;
+                      if (a && b) return `${a} - ${b}`;
+                      return a || b || '';
+                    })();
+
+                    return (
+                      <div
+                        key={idx}
+                        className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed"
+                        role="button"
+                        tabIndex={0}
+                        onClick={handleProjectClick}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleProjectClick(); } }}
+                        title={name}
+                      >
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-100 to-indigo-200 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                          <img
+                            src={img}
+                            className="w-12 h-12 rounded-lg object-cover"
+                            alt={name}
+                            onError={onImgError}
+                            loading="lazy"
+                            referrerPolicy="no-referrer"
+                            crossOrigin="anonymous"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
+                            {name}
+                          </h4>
+                          {(() => {
+                            // Fallback location from project if meta not loaded yet
+                            const fallbackLoc = project?.location || project?.city || '';
+                            const showLoc = meta?.location || fallbackLoc || '';
+                            return (showLoc || priceLine) ? (
+                            <div className="text-[11px] text-gray-500 mt-0.5 line-clamp-1">
+                              {showLoc && <span>{showLoc}</span>}
+                              {showLoc && priceLine ? <span> • </span> : null}
+                              {priceLine && <span>{priceLine}</span>}
+                            </div>
+                            ) : null;
+                          })()}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Phone</label>
-                  <input
-                    name="mobile"
-                    value={blogQuery.mobile}
-                    onChange={handleBlogQueryChange}
-                    placeholder="Phone Number"
-                    className="w-full px-0 py-2 bg-transparent border-b border-gray-300 focus:border-gray-900 focus:outline-none text-gray-900 placeholder-gray-400"
-                    type="tel"
-                    required
-                  />
-                </div>
-                {responseMessage && (
-                  <div className={`text-xs p-2 rounded ${
-                    responseMessage.includes('successfully') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-                  }`}>{responseMessage}</div>
-                )}
-                <button
-                  type="submit"
-                  className="w-full py-2.5 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors"
-                >
-                  {buttonText}
-                </button>
-              </form>
+              </div>
+            )}
+
+            {/* Trending Projects below Related */}
+            <h3 className="text-xl font-bold text-gray-900 mb-3">Trending Projects</h3>
+            <div className="space-y-2">
+              {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
+                const name = p?.projectName || p?.name || p?.title || 'Project';
+                const category = p?.category || p?.projectType || '';
+                const img = (() => {
+                  const t1 = p?.thumbnailImage?.url || p?.thumbnail?.url || p?.thumb?.url || '';
+                  const t2 = p?.thumbnailImage || p?.thumbnail || p?.thumb || '';
+                  const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
+                  const fMain = p?.frontImage?.url || '';
+                  const c1 = p?.cardImage?.url || p?.cardImage || '';
+                  const b1 = p?.bannerImage?.url || p?.bannerImage || '';
+                  const any = p?.image || p?.project_Image || '';
+                  const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
+                  const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
+                  return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
+                })();
+                return (
+                  <div
+                    key={idx}
+                    className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigateProject(p)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
+                    title={name}
+                  >
+                    <img
+                      src={img}
+                      className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                      alt={name}
+                      onError={onImgError}
+                      referrerPolicy="no-referrer"
+                      crossOrigin="anonymous"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
+                        {name}
+                      </h4>
+                      <div className="text-xs text-gray-500 mt-1 line-clamp-1">
+                        {/* Prefer location if available */}
+                        {p?.location || p?.city ? (
+                          <span>{p.location || p.city}</span>
+                        ) : (
+                          category ? <span>{category}</span> : null
+                        )}
+                        {/* Price */}
+                        {(() => {
+                          const a = typeof p?.minPrice === 'number' ? formatINRShort(p.minPrice) : null;
+                          const b = typeof p?.maxPrice === 'number' ? formatINRShort(p.maxPrice) : null;
+                          const price = a && b ? `${a} - ${b}` : (a || b || '');
+                          return price ? <span>{(p?.location || p?.city || category) ? ' • ' : ''}{price}</span> : null;
+                        })()}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              {trendingProjects.length === 0 && (
+                <div className="text-sm text-gray-400">No trending projects found.</div>
+              )}
             </div>
+          </div>
         </aside>
 
         {/* Center: Main Blog Content */}
@@ -644,12 +842,12 @@ const BlogView = () => {
             </button>
           </div>
           {(blog_Image?.display || FALLBACK_IMG) && (
-            <div className="relative w-full h-[500px] mb-6">
+            <div className="relative w-full mb-2 overflow-hidden">
               {blog_Image?.display ? (
                 <img
                   src={blog_Image.display}
                   alt={blog_Title || 'Blog post image'}
-                  className="w-full h-full object-contain rounded-xl"
+                  className="w-full h-auto block rounded-xl"
                   onError={onImgError}
                   loading="lazy"
                   referrerPolicy="no-referrer"
@@ -679,138 +877,35 @@ const BlogView = () => {
             ref={contentRef}
             dangerouslySetInnerHTML={createSanitizedHTML(blog_Description)}
           ></div>
-        </div>
-
-        {/* Right Sidebar */}
-        <div className="w-full md:col-span-3 md:col-start-10 md:sticky md:top-24 self-start h-fit">
-          <div className="flex flex-col min-h-[calc(100vh-6rem)] gap-8">
-          {/* Trending Projects FIRST (top cluster) */}
-          <div className="p-0">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Trending Projects</h3>
-            <div className="space-y-2">
-              {trendingProjects.length > 0 && trendingProjects.map((p, idx) => {
-                const name = p?.projectName || p?.name || p?.title || 'Project';
-                const category = p?.category || p?.projectType || '';
-                const img = (() => {
-                  // Prefer explicit thumbnail-like fields first
-                  const t1 = p?.thumbnailImage?.url || p?.thumbnail?.url || p?.thumb?.url || '';
-                  const t2 = p?.thumbnailImage || p?.thumbnail || p?.thumb || '';
-                  const fThumb = p?.frontImage?.thumbnail?.url || p?.frontImage?.thumb?.url || '';
-                  const fMain = p?.frontImage?.url || '';
-                  const c1 = p?.cardImage?.url || p?.cardImage || '';
-                  const b1 = p?.bannerImage?.url || p?.bannerImage || '';
-                  const any = p?.image || p?.project_Image || '';
-                  const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
-                  const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
-                  return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
-                })();
-                return (
-                  <div
-                    key={idx}
-                    className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigateProject(p)}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateProject(p); } }}
-                    title={name}
-                  >
-                    <img
-                      src={img}
-                      className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-                      alt={name}
-                      onError={onImgError}
-                      referrerPolicy="no-referrer"
-                      crossOrigin="anonymous"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
-                        {name}
-                      </h4>
-                      {category && (
-                        <p className="text-xs text-gray-500 mt-1">{category}</p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-              {trendingProjects.length === 0 && (
-                <div className="text-sm text-gray-400">No trending projects found.</div>
-              )}
-            </div>
-          </div>
-
-          {/* Bottom cluster: Related + Lists pinned to bottom when space allows */}
-          <div className="mt-auto space-y-8">
-          {/* Related Projects NEXT */}
-          {relatedProjects && relatedProjects.length > 0 && (
-            <div className="p-0">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Related Projects</h3>
-              <div className="space-y-2">
-                {relatedProjects.map((project, idx) => {
-                  const name = project?.projectName || 'Project';
-                  const url = project?.project_url || '';
-                  const thumbnail = project?.thumbnail || '';
-                  const img = thumbnail || FALLBACK_IMG;
-                  
-                  const handleProjectClick = () => {
-                    try {
-                      if (!url) return;
-                      // Navigate to project using the project_url
-                      let slug = url;
-                      // If url looks like a full URL, extract the last path segment
-                      if (slug && /^(https?:)?\/\//i.test(slug)) {
-                        try {
-                          const u = new URL(slug, window.location.origin);
-                          const parts = u.pathname.split('/').filter(Boolean);
-                          slug = parts[parts.length - 1] || '';
-                        } catch (_) { /* ignore */ }
-                      }
-                      if (!slug) return;
-                      const path = `/${slug}/`;
-                      history(path);
-                      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
-                    } catch (_) { /* noop */ }
-                  };
-
-                  return (
+          {/* FAQ Section inside main blog card */}
+          {enableFAQ && Array.isArray(faqs) && faqs.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h3>
+              <div className="divide-y divide-gray-200 rounded-2xl bg-white shadow-sm">
+                {faqs.map((f, idx) => (
+                  <details key={idx} className="group p-4 open:bg-gray-50">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
+                      <span className="font-medium text-gray-900">Q. {f?.question || ''}</span>
+                      <span className="text-gray-500 group-open:rotate-180 transition-transform">▾</span>
+                    </summary>
                     <div
-                      key={idx}
-                      className="group p-2 flex items-center gap-2 cursor-pointer hover:text-primaryRed"
-                      role="button"
-                      tabIndex={0}
-                      onClick={handleProjectClick}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleProjectClick(); } }}
-                      title={name}
-                    >
-                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-100 to-indigo-200 flex-shrink-0 flex items-center justify-center">
-                        <img
-                          src={img}
-                          className="w-12 h-12 rounded-lg object-cover"
-                          alt={name}
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                            e.target.nextElementSibling.style.display = 'flex';
-                          }}
-                          referrerPolicy="no-referrer"
-                          crossOrigin="anonymous"
-                        />
-                        <div className="hidden w-full h-full rounded-lg bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center">
-                          <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                          </svg>
-                        </div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
-                          {name}
-                        </h4>
-                      </div>
-                    </div>
-                  );
-                })}
+                      className="mt-3 prose max-w-none prose-p:my-2 prose-a:text-primaryRed prose-img:rounded"
+                      dangerouslySetInnerHTML={createSanitizedHTML(f?.answer || '')}
+                    ></div>
+                  </details>
+                ))}
               </div>
             </div>
           )}
+        </div>
+
+        {/* Right Sidebar */}
+        <div ref={sidebarRef} className="w-full md:col-span-3 md:col-start-10 md:sticky md:top-24 self-start">
+          <div className="flex flex-col gap-8">
+          {/* Trending moved to left column */}
+
+          {/* Right sidebar sections */}
+        <div className="space-y-8">
           {/* People are searching */}
           <div className="p-0">
             <h3 className="text-xl font-bold text-gray-900 mb-3">What people are exploring</h3>
@@ -844,92 +939,89 @@ const BlogView = () => {
         {/* End Sidebar */}
       </div>
 
-      {/* Timed Lead Modal (3s after load) */}
-      {showLeadModal && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="absolute inset-0 bg-black/40" onClick={() => setShowLeadModal(false)} />
-          <div className="relative w-full max-w-md mx-4 bg-white rounded-2xl shadow-2xl p-6 animate-fadeIn">
-            <button
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-              aria-label="Close"
-              onClick={() => setShowLeadModal(false)}
-            >
-              ×
-            </button>
-            {/* Featured Related Project Card */}
-            {Array.isArray(relatedProjects) && relatedProjects.length > 0 && (
-              <div className="mb-5 flex items-center gap-3 p-3 border border-gray-200 rounded-xl bg-gray-50">
-                <img
-                  src={leadProjectInfo.thumbnail || FALLBACK_IMG}
-                  alt={leadProjectInfo.name || 'Project'}
-                  className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
-                  onError={(e) => { e.currentTarget.src = FALLBACK_IMG; }}
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="font-semibold text-gray-900 truncate">{leadProjectInfo.name || 'Project'}</div>
-                  <div className="text-sm text-gray-600">
-                    {(() => {
-                      const min = leadProjectInfo.minPrice;
-                      const max = leadProjectInfo.maxPrice;
-                      if (typeof min === 'number' && typeof max === 'number' && max >= min) {
-                        return `${formatINRShort(min)} - ${formatINRShort(max)}`;
-                      }
-                      if (typeof min === 'number') return `${formatINRShort(min)}`;
-                      if (typeof max === 'number') return `${formatINRShort(max)}`;
-                      return 'Price on Request';
-                    })()}
-                  </div>
-                </div>
-              </div>
-            )}
-            <h3 className="text-xl font-bold text-gray-900 mb-1 text-center">Get Project Details</h3>
-            <p className="text-sm text-gray-500 mb-5 text-center">Enter your name and phone number. Our team will contact you shortly.</p>
-            <form className="space-y-4" onSubmit={handleBlogSubmitQueryData}>
+      {/* Lead capture modal disabled */}
+      {false && showLeadModal && (<></>)}
+
+      {/* Floating Enquiry Widget (bottom-right) */}
+      <div className="fixed right-4 bottom-4 z-[10050]">
+        {/* Panel */}
+        {showFloatingEnquiry && (
+          <div className="w-[280px] sm:w-[300px] md:w-[320px] rounded-2xl shadow-2xl border border-gray-200 bg-white overflow-hidden mb-3">
+            <div className="px-4 py-3 flex items-center justify-between bg-gray-50 border-b">
+              <div className="font-semibold text-gray-900">Enquire Now</div>
+              <button
+                type="button"
+                onClick={() => setShowFloatingEnquiry(false)}
+                className="text-gray-500 hover:text-gray-700"
+                aria-label="Collapse enquiry"
+              >
+                <span aria-hidden>▾</span>
+              </button>
+            </div>
+            <form onSubmit={handleBlogSubmitQueryData} className="p-4 space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <label className="block text-xs text-gray-600 mb-1">Name</label>
                 <input
+                  type="text"
                   name="name"
                   value={blogQuery.name}
                   onChange={handleBlogQueryChange}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Your Name"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  type="text"
-                  required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <label className="block text-xs text-gray-600 mb-1">Mobile</label>
                 <input
+                  type="tel"
                   name="mobile"
                   value={blogQuery.mobile}
                   onChange={handleBlogQueryChange}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Phone Number"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  type="tel"
-                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">Email (optional)</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={blogQuery.email}
+                  onChange={handleBlogQueryChange}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="you@example.com"
                 />
               </div>
               {responseMessage && (
-                <div className={`text-sm p-3 rounded-lg ${
-                  responseMessage.includes('successfully') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-                }`}>
-                  {responseMessage}
-                </div>
+                <p className="text-xs text-red-600">{responseMessage}</p>
               )}
               <button
                 type="submit"
-                className="w-full py-3 px-6 bg-primaryRed text-white font-bold rounded-xl shadow-md hover:bg-red-700 transition-all duration-200"
+                className="w-full rounded-lg bg-red-600 text-white font-semibold py-2 hover:bg-red-700 transition"
+                disabled={buttonText !== 'Submit'}
               >
                 {buttonText}
               </button>
             </form>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Toggle Button (hidden when panel is open) */}
+        {!showFloatingEnquiry && (
+          <button
+            type="button"
+            onClick={() => setShowFloatingEnquiry(true)}
+            className="flex items-center gap-2 rounded-full bg-red-600 text-white shadow-lg px-4 py-2 hover:bg-red-700"
+            aria-expanded={showFloatingEnquiry}
+          >
+            <span className="inline-block w-2 h-2 rounded-full bg-white animate-pulse"></span>
+            <span>Enquire now</span>
+          </button>
+        )}
+      </div>
+
+      {/* Page Footer */}
+      <Footer />
     </div>
   );
 };
