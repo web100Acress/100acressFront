@@ -2,6 +2,11 @@
 function MobileStickyListProperty() {
   const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
   const postTarget = token ? "/postproperty" : "/auth/signin";
+  const location = useLocation();
+  const path = location?.pathname || "/";
+  const isProjectSlug = /^\/[A-Za-z0-9-]+\/$/.test(path);
+  const isNewBanner = typeof document !== 'undefined' && document.body?.classList?.contains('newbanner-page');
+  if (isProjectSlug || isNewBanner) return null;
   return (
     <div className="md:hidden fixed z-[10010]" style={{ right: 0, top: '45%' }}>
       <Link
@@ -561,6 +566,8 @@ function MobileBottomNav() {
   }, []);
 
   if (hideForNewBanner) return null;
+  const isProjectSlug = /^\/[A-Za-z0-9-]+\/$/.test(path);
+  if (isProjectSlug) return null;
 
   const isActive = (match) => {
     if (Array.isArray(match)) return match.some((m) => path.startsWith(m));
