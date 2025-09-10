@@ -800,7 +800,16 @@ const Home = () => {
   background: #ffffff;
   position: relative;
   z-index: 1;
- 
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden; /* Prevent accidental horizontal scroll on mobile */
+
+  /* Also ensure any nested section wrapper cannot overflow horizontally */
+  &.section {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
    
    .hero-strip-99 {
     width: 100%;
