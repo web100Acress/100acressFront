@@ -39,6 +39,21 @@ const Home = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Ensure no horizontal scrollbar on Home (handles fixed/rotated elements)
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtml = html.style.overflowX;
+    const prevBody = body.style.overflowX;
+    html.style.overflowX = 'hidden';
+    body.style.overflowX = 'hidden';
+    return () => {
+      html.style.overflowX = prevHtml;
+      body.style.overflowX = prevBody;
+    };
+  }, []);
+
   // Shorts ID is now fetched directly by FloatingShorts via backend polling.
 
   const sectionsRef = useRef({});
