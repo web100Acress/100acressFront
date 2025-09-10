@@ -131,7 +131,7 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
           {/* Contact for Details */}
           <div className="mt-10 text-center">
             <p className="text-gray-300 mb-3 text-sm md:text-base">
-              For detailed pricing and availability, please contact our sales team
+              For detailed pricing and availability, please contact our team.
             </p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
               <a 
