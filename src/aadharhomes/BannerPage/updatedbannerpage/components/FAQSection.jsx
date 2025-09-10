@@ -68,7 +68,7 @@ const FAQSection = ({ projectViewDetails = {}, onShowCallback = () => {} }) => {
   }
 
   return (
-    <section className="py-12 bg-gradient-to-b from-black via-gray-900 to-black text-white relative overflow-hidden">
+    <section className="py-6 md:py-8 bg-gradient-to-b from-black via-gray-900 to-black text-white relative overflow-hidden">
       {/* Sophisticated Background Pattern */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-full h-full opacity-10">
@@ -80,24 +80,24 @@ const FAQSection = ({ projectViewDetails = {}, onShowCallback = () => {} }) => {
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Premium Section Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-6">
-            <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="text-center mb-4">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full mb-3">
+            <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-[0.2em] mb-4">
+          <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-[0.2em] mb-2">
             FREQUENTLY ASKED QUESTIONS
           </h2>
-          <h3 className="text-white text-3xl md:text-4xl font-bold leading-tight mb-6 max-w-3xl mx-auto">
+          <h3 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-3 max-w-3xl mx-auto">
             Everything You Need to Know
           </h3>
-          <div className="w-24 h-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
+          <div className="w-20 h-0.5 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full mx-auto"></div>
         </div>
 
         {/* FAQ Content */}
-        <div className="max-w-4xl mx-auto">
-          <div className="space-y-3">
+        <div className="max-w-4xl mx-auto mt-4">
+          <div className="space-y-2">
             {faqs.map((faq, index) => (
               <div 
                 key={index}
@@ -109,12 +109,12 @@ const FAQSection = ({ projectViewDetails = {}, onShowCallback = () => {} }) => {
                   {/* Question */}
                   <button
                     onClick={() => toggleFAQ(index)}
-                    className="w-full px-5 py-3 text-left flex items-center justify-between hover:bg-gray-800/30 transition-colors duration-300"
+                    className="w-full px-4 py-2.5 text-left flex items-center justify-between hover:bg-gray-800/30 transition-colors duration-200"
                   >
-                    <h4 className="text-white font-semibold text-sm md:text-base pr-4 leading-tight">
+                    <h4 className="text-white font-medium text-sm pr-3 leading-snug">
                       {faq.title}?
                     </h4>
-                    <div className={`flex-shrink-0 w-6 h-6 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''}`}>
+                    <div className={`flex-shrink-0 w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center transition-transform duration-200 ${openIndex === index ? 'rotate-180' : ''}`}>
                       <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
@@ -122,10 +122,10 @@ const FAQSection = ({ projectViewDetails = {}, onShowCallback = () => {} }) => {
                   </button>
 
                   {/* Answer */}
-                  <div className={`overflow-hidden transition-all duration-300 ${openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                    <div className="px-5 pb-3">
-                      <div className="w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent mb-3"></div>
-                      <p className="text-gray-300 leading-relaxed text-sm">
+                  <div className={`overflow-hidden transition-all duration-200 ${openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                    <div className="px-4 pb-2">
+                      <div className="w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent mb-2"></div>
+                      <p className="text-gray-300 leading-normal text-xs md:text-sm">
                         {faq.content}
                       </p>
                     </div>
@@ -137,24 +137,24 @@ const FAQSection = ({ projectViewDetails = {}, onShowCallback = () => {} }) => {
         </div>
 
         {/* Contact CTA */}
-        <div className="max-w-4xl mx-auto mt-12">
+        <div className="max-w-4xl mx-auto mt-6">
           <div className="relative group">
             {/* Glow Effect */}
             <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-all duration-700"></div>
             
-            <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl p-6 md:p-8 border border-gray-700/50 backdrop-blur-sm">
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-4 md:space-y-0 md:space-x-6">
+            <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl p-4 md:p-5 border border-gray-700/50 backdrop-blur-sm">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between space-y-3 md:space-y-0 md:space-x-6">
                 
                 {/* Left Content */}
-                <div className="flex items-start space-x-4 flex-1">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
-                    <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-start space-x-3 flex-1">
+                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                   </div>
                   <div>
-                    <h5 className="text-amber-400 font-bold mb-2 text-lg">Still Have Questions?</h5>
-                    <p className="text-gray-300 text-sm md:text-base leading-relaxed">
+                    <h5 className="text-amber-400 font-bold mb-1 text-sm">Still Have Questions?</h5>
+                    <p className="text-gray-300 text-xs leading-relaxed">
                       Our expert team is here to help you with any additional questions about {projectViewDetails?.projectName}. 
                       Get personalized assistance and detailed project information.
                     </p>
@@ -165,9 +165,9 @@ const FAQSection = ({ projectViewDetails = {}, onShowCallback = () => {} }) => {
                 <div className="flex-shrink-0 w-full md:w-auto">
                   <button 
                     onClick={onShowCallback}
-                    className="w-full md:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-semibold px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-amber-500/25 flex items-center justify-center space-x-2"
+                    className="w-full md:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-semibold text-sm px-4 py-2 rounded-md transition-all duration-200 transform hover:scale-[1.02] hover:shadow-md hover:shadow-amber-500/20 flex items-center justify-center space-x-1.5"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     <span>Contact Us</span>

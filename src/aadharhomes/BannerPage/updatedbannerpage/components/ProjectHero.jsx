@@ -32,8 +32,8 @@ const ProjectHero = ({
       {/* Dark Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
       
-      {/* Top Bar */}
-      <div className="absolute top-0 left-0 right-0 z-20 px-4 sm:px-6 lg:px-8 py-4">
+      {/* Top Bar - Glassy Navbar */}
+      <div className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 py-3 bg-black/20 backdrop-blur-md border-b border-white/10 transition-colors duration-300">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           {/* Company Logo - Leftmost */}
           <div className="flex items-center">
@@ -56,20 +56,18 @@ const ProjectHero = ({
               Get in Touch
             </button>
             
-            {/* Phone Number Button - Enhanced design */}
+            {/* Phone Number Button - Luxury Golden Design */}
             <a href={`tel:${phoneNumber}`}>
-              <div className="relative flex items-center bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)] hover:shadow-[0_6px_25px_rgba(0,0,0,0.2)] transition-all duration-300 transform hover:scale-105 border border-gray-100">
+              <div className="flex items-center bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-full shadow-[0_4px_15px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_20px_rgba(212,175,55,0.5)] transition-all duration-300 transform hover:scale-105 border-2 border-yellow-400 pr-4 gap-3">
                 {/* Circular phone icon */}
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-inner">
+                <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 border-2 border-white rounded-full flex items-center justify-center flex-shrink-0 shadow-[0_3px_8px_rgba(212,175,55,0.5)]">
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                    <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1v3.61a1 1 0 01-.91 1A16 16 0 014 5.92 1 1 0 015 5h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.24 1.01l-2.32 2.23z"/>
                   </svg>
                 </div>
                 
-                {/* Phone number section */}
-                <div className="bg-gray-800 text-white px-3 py-2 h-10 flex items-center rounded-r-full ml-[-2px] shadow-inner">
-                  <span className="text-lg font-semibold tracking-tight whitespace-nowrap">{phoneNumber}</span>
-                </div>
+                {/* Phone number text */}
+                <span className="text-white text-lg font-semibold tracking-wide whitespace-nowrap" style={{ textShadow: '0px 0px 5px rgba(0, 0, 0, 0.3)' }}>{phoneNumber}</span>
               </div>
             </a>
           </div>
