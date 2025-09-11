@@ -89,6 +89,24 @@ const BuilderPage = React.memo(() => {
       )
     : builderProjects;
 
+  // Fetch Property Order for this builder's query name and cache IDs for ordering
+  const [propOrderIds, setPropOrderIds] = useState([]);
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      if (!query) { setPropOrderIds([]); return; }
+      try {
+        const orderDoc = await getPropertyOrder(query);
+        const ids = Array.isArray(orderDoc?.customOrder) ? orderDoc.customOrder : [];
+        if (!cancelled) setPropOrderIds(ids);
+      } catch (e) {
+        if (!cancelled) setPropOrderIds([]);
+      }
+    };
+    run();
+    return () => { cancelled = true; };
+  }, [query, getPropertyOrder]);
+
   // Apply Property Order if available, otherwise Project Order/Random
   const orderedProjects = useMemo(() => {
     // Important: use canonical query (e.g., 'Godrej Properties') as key for Redux order
@@ -122,7 +140,7 @@ const BuilderPage = React.memo(() => {
       hasCustomOrderDefined,
       randomSeed
     );
-  }, [filteredBuilderProjects, builderName, query, buildersWithCustomOrder, customOrders, randomSeeds]);
+  }, [filteredBuilderProjects, builderName, query, buildersWithCustomOrder, customOrders, randomSeeds, propOrderIds]);
   console.log('🔍 builderProjects:', builderProjects);
   console.log('🔍 filteredBuilderProjects:', filteredBuilderProjects);
   console.log('🔍 orderedProjects:', orderedProjects);
@@ -233,23 +251,7 @@ const BuilderPage = React.memo(() => {
     }
   }, [query, getProjectbyBuilder]);
 
-  // Fetch Property Order for this builder's query name and cache IDs for ordering
-  const [propOrderIds, setPropOrderIds] = useState([]);
-  useEffect(() => {
-    let cancelled = false;
-    const run = async () => {
-      if (!query) { setPropOrderIds([]); return; }
-      try {
-        const orderDoc = await getPropertyOrder(query);
-        const ids = Array.isArray(orderDoc?.customOrder) ? orderDoc.customOrder : [];
-        if (!cancelled) setPropOrderIds(ids);
-      } catch (e) {
-        if (!cancelled) setPropOrderIds([]);
-      }
-    };
-    run();
-    return () => { cancelled = true; };
-  }, [query, getPropertyOrder]);
+  
 
   // Sync project orders from server on component mount
   useEffect(() => {
