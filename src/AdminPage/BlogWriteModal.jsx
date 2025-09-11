@@ -1696,6 +1696,28 @@ const BlogWriteModal = () => {
               
               <div className="bg-gray-50 rounded-xl p-4">
                 <div className="space-y-3">
+                  {/* Project search */}
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={projectSearchTerm}
+                      onChange={(e) => setProjectSearchTerm(e.target.value)}
+                      placeholder="Search projects by name, builder, location..."
+                      className="w-full px-4 py-2 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                    />
+                    {/* Clear button */}
+                    {projectSearchTerm && (
+                      <button
+                        type="button"
+                        onClick={() => setProjectSearchTerm('')}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 px-2"
+                        title="Clear search"
+                      >
+                        <span aria-hidden>×</span>
+                      </button>
+                    )}
+                  </div>
+
                   {/* Project dropdown */}
                   <div className="relative">
                     <select
@@ -1737,7 +1759,9 @@ const BlogWriteModal = () => {
                   </div>
                   
                   <p className="text-sm text-gray-600">
-                    Select from {allProjects.length} available projects
+                    {projectSearchTerm.trim().length >= 2
+                      ? `Showing ${projectSearchResults.length} result${projectSearchResults.length === 1 ? '' : 's'} for "${projectSearchTerm}"`
+                      : `Select from ${allProjects.length} available projects`}
                   </p>
 
                   {/* Selected related projects */}
