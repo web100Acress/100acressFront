@@ -11,7 +11,7 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
   const [error, setError] = useState(null);
   const [expandedNames, setExpandedNames] = useState(new Set());
   const navigate = useNavigate();
-  const { getProjectbyBuilder } = Api_Service();
+  const { getProjectbyBuilder, getPropertyOrder } = Api_Service();
 
   useEffect(() => {
     const fetchBuilderProjects = async () => {
@@ -21,10 +21,24 @@ const RelatedProjects = ({ builderName = "", currentProjectUrl = "", onShowCallb
       try {
         const fetchedResult = await getProjectbyBuilder(builderName, 0);
         let list = Array.isArray(fetchedResult) ? fetchedResult : [];
-        
         // Filter out current project
         list = list.filter(project => project.pUrl !== currentProjectUrl);
-        
+
+        // Try to apply saved Property Order
+        try {
+          const orderDoc = await getPropertyOrder(builderName);
+          const ids = Array.isArray(orderDoc?.customOrder) ? orderDoc.customOrder : [];
+          if (ids.length > 0) {
+            const byId = new Map(list.map(p => [String(p._id || p.id), p]));
+            const idsStr = ids.map(String);
+            const ordered = [
+              ...idsStr.filter(id => byId.has(id)).map(id => byId.get(id)),
+              ...list.filter(p => !idsStr.includes(String(p._id || p.id)))
+            ];
+            list = ordered;
+          }
+        } catch (_) {}
+
         setBuilderProjects(list);
       } catch (err) {
         setError(err);
