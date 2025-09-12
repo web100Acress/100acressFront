@@ -112,6 +112,25 @@ function ProjectLayout2() {
     return `${projectViewDetails.minPrice} Cr`;
   };
 
+  // Helper function to determine if property is residential
+  const isResidentialProperty = () => {
+    if (!projectViewDetails?.type) return false;
+    
+    const residentialTypes = [
+      "Residential Flats",
+      "Residential",
+      "Apartment",
+      "Villa",
+      "Independent House",
+      "Builder Floor",
+      "Residential Plot"
+    ];
+    
+    return residentialTypes.some(type => 
+      projectViewDetails.type.toLowerCase().includes(type.toLowerCase())
+    );
+  };
+
   const bottomInfo = {
     landArea: projectViewDetails?.totalLandArea ? `${projectViewDetails.totalLandArea} Acres` : "—",
     possession: projectViewDetails?.possessionDate 
@@ -188,41 +207,43 @@ function ProjectLayout2() {
         projectViewDetails={projectViewDetails}
       />
 
-      {/* Amenities */}
-      <section className="pt-0 pb-4 bg-black">
-        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-          <SectionHeading title="Amenities" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { name: "MULTIPURPOSE COURT", image: "/amenities_image/multipurpose-court-new-img.webp" },
-              { name: "TODDLERS' PLAY AREA", image: "/amenities_image/kidsplayarea-img-amenity.webp" },
-              { name: "SWIMMING POOL", image: "/amenities_image/swimming-pool-new-img.webp" },
-              { name: "BILLIARD ROOM", image: "/amenities_image/billiard_room.webp" },
-              { name: "KIDS PLAY AREA", image: "/amenities_image/kids-play-area.webp" },
-              { name: "BASKETBALL COURT", image: "/amenities_image/basketball.webp" },
-              { name: "SENIOR CITIZEN GARDEN", image: "/amenities_image/senior_citizen.webp" },
-              { name: "WATER FEATURE", image: "/amenities_image/water_feature-new-img.webp" },
-              { name: "DECK SEATING", image: "/amenities_image/deck_seating.webp" },
-              { name: "GREENS", image: "/amenities_image/greens.webp" },
-              { name: "GYMNASIUM", image: "/amenities_image/gym-new-img.webp" },
-              { name: "LAWN", image: "/amenities_image/lawn.webp" }
-            ].map((amenity, idx) => (
-              <div key={idx} className="text-center">
-                <div className="relative overflow-hidden rounded-lg mb-4 aspect-[4/3]">
-                  <img 
-                    src={amenity.image} 
-                    alt={amenity.name}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  />
+      {/* Amenities - Only show for residential properties */}
+      {isResidentialProperty() && (
+        <section className="pt-0 pb-4 bg-black">
+          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <SectionHeading title="Amenities" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[
+                { name: "MULTIPURPOSE COURT", image: "/amenities_image/multipurpose-court-new-img.webp" },
+                { name: "TODDLERS' PLAY AREA", image: "/amenities_image/kidsplayarea-img-amenity.webp" },
+                { name: "SWIMMING POOL", image: "/amenities_image/swimming-pool-new-img.webp" },
+                { name: "BILLIARD ROOM", image: "/amenities_image/billiard_room.webp" },
+                { name: "KIDS PLAY AREA", image: "/amenities_image/kids-play-area.webp" },
+                { name: "BASKETBALL COURT", image: "/amenities_image/basketball.webp" },
+                { name: "SENIOR CITIZEN GARDEN", image: "/amenities_image/senior_citizen.webp" },
+                { name: "WATER FEATURE", image: "/amenities_image/water_feature-new-img.webp" },
+                { name: "DECK SEATING", image: "/amenities_image/deck_seating.webp" },
+                { name: "GREENS", image: "/amenities_image/greens.webp" },
+                { name: "GYMNASIUM", image: "/amenities_image/gym-new-img.webp" },
+                { name: "LAWN", image: "/amenities_image/lawn.webp" }
+              ].map((amenity, idx) => (
+                <div key={idx} className="text-center">
+                  <div className="relative overflow-hidden rounded-lg mb-4 aspect-[4/3]">
+                    <img 
+                      src={amenity.image} 
+                      alt={amenity.name}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <h3 className="text-white text-sm font-medium tracking-wide uppercase">
+                    {amenity.name}
+                  </h3>
                 </div>
-                <h3 className="text-white text-sm font-medium tracking-wide uppercase">
-                  {amenity.name}
-                </h3>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Gallery */}
       <Gallery galleryImages={projectViewDetails?.projectGallery || []} />
