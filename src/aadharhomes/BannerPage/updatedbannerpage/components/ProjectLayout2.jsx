@@ -150,58 +150,26 @@ function ProjectLayout2() {
     
     return (
       <Helmet>
-        <title>{projectViewDetails?.meta_title || `${projectTitle}${location ? `, ${location}` : ''} | 100acress`}</title>
+        <title>{projectViewDetails?.meta_title}</title>
         <meta
           name="description"
-          content={projectViewDetails.meta_description || 
-            (projectViewDetails?.project_discripation 
-              ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').slice(0, 160)
-              : `Explore details, pricing, floor plans and location for ${projectTitle}${location ? ` in ${location}` : ''} on 100acress.`
-            )
-          }
+          content={projectViewDetails.meta_description}
         />
-        
-        {/* Open Graph */}
-        <meta property="og:title" content={projectViewDetails?.meta_title || `${projectTitle}${location ? `, ${location}` : ''} | 100acress`} />
+        <meta property="og:title" content={projectViewDetails?.meta_title} />
         <meta property="og:site_name" content="100acress.com" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content={backgroundImage || projectViewDetails?.frontImage?.url} />
-        <meta property="og:url" content={typeof window !== 'undefined' ? window.location.href : 'https://www.100acress.com/'} />
-        <meta 
-          property="og:description" 
-          content={projectViewDetails.meta_description || 
-            (projectViewDetails?.project_discripation 
-              ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').slice(0, 200)
-              : `Explore details, pricing, floor plans and location for ${projectTitle}${location ? ` in ${location}` : ''} on 100acress.`
-            )
-          } 
-        />
-        
-        {/* Twitter */}
-        <meta name="twitter:title" content={projectViewDetails?.meta_title || `${projectTitle}${location ? `, ${location}` : ''} | 100acress`} />
-        <meta 
-          name="twitter:description" 
-          content={projectViewDetails.meta_description || 
-            (projectViewDetails?.project_discripation 
-              ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').slice(0, 200)
-              : `Explore details, pricing, floor plans and location for ${projectTitle}${location ? ` in ${location}` : ''} on 100acress.`
-            )
-          } 
-        />
-        <meta property="twitter:url" content={typeof window !== 'undefined' ? window.location.href : 'https://www.100acress.com/'} />
-        <meta property="twitter:image" content={backgroundImage || projectViewDetails?.frontImage?.url} />
+        <meta property="og:image" content={projectViewDetails?.frontImage?.url} />
+        <meta property="og:url" content="https://www.100acress.com/" />
+        <meta property="og:description" content={projectViewDetails.meta_description} />
+        <meta name="twitter:title" content={projectViewDetails?.meta_title} />
+        <meta name="twitter:description" content={projectViewDetails.meta_description} />
+        <meta property="twitter:url" content="https://www.100acress.com/" />
+        <meta property="twitter:image" content={projectViewDetails?.frontImage?.url} />
         <meta name="twitter:card" content="summary" />
-        
-        {/* Canonical URL */}
         <link
           rel="canonical"
-          href={projectViewDetails?.project_url 
-            ? `https://www.100acress.com/${projectViewDetails.project_url}/`
-            : (typeof window !== 'undefined' ? window.location.href : 'https://www.100acress.com/')
-          }
+          href={`https://www.100acress.com/${projectViewDetails.project_url}/`}
         />
-        
-        {/* Additional SEO Meta */}
         <meta name="robots" content="index, follow" />
         {projectViewDetails?.keywords && (
           <meta name="keywords" content={projectViewDetails.keywords} />
