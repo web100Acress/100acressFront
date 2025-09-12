@@ -9,6 +9,7 @@ import { Helmet } from "react-helmet";
 import DOMPurify from 'dompurify';
 import "./BlogView.css";
 import useIsMobile from '../hooks/useIsMobile';
+import { ThumbsUp, Share2, MessageCircle } from 'lucide-react';
 
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
@@ -67,6 +68,40 @@ const BlogView = () => {
 
   // Floating enquiry (bottom-right) collapsible
   const [showFloatingEnquiry, setShowFloatingEnquiry] = useState(true);
+  // Engagement state
+  const [likes, setLikes] = useState(0);
+  const [shares, setShares] = useState(0);
+  const [commentsCount, setCommentsCount] = useState(0);
+  const [comments, setComments] = useState([]);
+  const [commentName, setCommentName] = useState('');
+  const [commentMsg, setCommentMsg] = useState('');
+  const [likeLoading, setLikeLoading] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [shareLoading, setShareLoading] = useState(false);
+
+  // Resolve current user identity for like key scoping
+  const getUserIdentity = () => {
+    try {
+      const raw = window.localStorage.getItem('agentData');
+      if (!raw) return 'anon';
+      const obj = JSON.parse(raw);
+      const id = (obj?._id || '').toString().trim();
+      const email = (obj?.email || '').toString().trim().toLowerCase();
+      return id || email || 'anon';
+    } catch (_) { return 'anon'; }
+  };
+  const likeKeyFor = (blogId) => `blog_like_${blogId}_${getUserIdentity()}`;
+  const getUserIdentityDetails = () => {
+    try {
+      const raw = window.localStorage.getItem('agentData');
+      if (!raw) return { userId: '', email: '' };
+      const obj = JSON.parse(raw);
+      return {
+        userId: (obj?._id || '').toString(),
+        email: (obj?.email || '').toString().toLowerCase()
+      };
+    } catch (_) { return { userId: '', email: '' }; }
+  };
 
   // Safe image fallback for broken S3 URLs
   const FALLBACK_IMG = "/Images/blog.avif";
@@ -276,6 +311,7 @@ const BlogView = () => {
         blog_Category: obj.blog_Category || '',
         published_Date: obj.published_Date || obj.createdAt || '',
         blog_Image: normalizedImage,
+        views: typeof obj.views === 'number' ? obj.views : 0,
         createdAt: obj.createdAt || '',
         slug: obj.slug || '',
         _id: obj._id || '',
@@ -326,7 +362,8 @@ const BlogView = () => {
           return;
         }
 
-        const response = await api.get(`blog/view/${effectiveId}`);
+        // Increment view count atomically on page load
+        const response = await api.get(`blog/view/${effectiveId}?countView=1`);
         if ((response.status === 200 || response.status === 201) && response.data && response.data.data) {
           const normalized = normalizeBlog(response.data.data);
           // Debug: log image fields to diagnose missing image
@@ -337,6 +374,21 @@ const BlogView = () => {
             console.log('[BlogView] Normalized relatedProjects:', normalized.relatedProjects);
           } catch (_) {}
           setData(normalized);
+          // Fetch engagement
+          try {
+            const eg = await api.get(`blog/${normalized._id}/engagement`);
+            const e = eg?.data?.data || {};
+            setLikes(e.likes || 0);
+            setShares(e.shares || 0);
+            setCommentsCount(e.commentsCount || 0);
+            setComments(Array.isArray(e.comments) ? e.comments.slice(-5).reverse() : []);
+            // Initialize liked state from localStorage (scoped per-user)
+            try {
+              const key = likeKeyFor(normalized._id);
+              const flag = window.localStorage.getItem(key);
+              setLiked(flag === '1');
+            } catch (_) {}
+          } catch (_) {}
         } else {
           setLoadError("Blog not found");
         }
@@ -498,6 +550,7 @@ const BlogView = () => {
     blog_Category,
     published_Date,
     blog_Image,
+    views,
     metaTitle,
     metaDescription,
     relatedProjects,
@@ -519,7 +572,6 @@ const BlogView = () => {
         }
         if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
         if (!img.getAttribute('referrerpolicy')) img.setAttribute('referrerpolicy', 'no-referrer');
-        if (!img.getAttribute('crossorigin')) img.setAttribute('crossorigin', 'anonymous');
         // Upgrade insecure URLs when possible
         const src = img.getAttribute('src') || '';
         if (/^http:\/\//i.test(src)) {
@@ -698,7 +750,6 @@ const BlogView = () => {
                             onError={onImgError}
                             loading="lazy"
                             referrerPolicy="no-referrer"
-                            crossOrigin="anonymous"
                           />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -760,7 +811,6 @@ const BlogView = () => {
                       alt={name}
                       onError={onImgError}
                       referrerPolicy="no-referrer"
-                      crossOrigin="anonymous"
                     />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold text-gray-900 group-hover:text-primaryRed transition-colors duration-200 line-clamp-2 text-sm">
@@ -793,7 +843,7 @@ const BlogView = () => {
           </div>
         </aside>
 
-        {/* Center: Main Blog Content */}
+        {/* Top Performing Blog */}
         <div className="w-full md:col-span-6 md:col-start-4 bg-white rounded-2xl shadow-xl p-8">
           <div className="mb-4 text-sm text-gray-500">
             <Link to="/blog/" className="text-primaryRed hover:underline">Blogs</Link>
@@ -801,7 +851,41 @@ const BlogView = () => {
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-[#1e3a8a] leading-tight mb-3">{blog_Title}</h1>
           {/* Share bar under title */}
-          <div className="flex items-center gap-3 mb-4">
+          <div className="share-bar flex items-center gap-3 mb-4">
+            {/* Like button (toggle) */}
+            {data?._id && (
+              <button
+                type="button"
+                disabled={likeLoading}
+                onClick={async () => {
+                  if (!data?._id) return;
+                  try {
+                    setLikeLoading(true);
+                    const key = `blog_like_${data._id}`;
+                    const ident = getUserIdentityDetails();
+                    if (!liked) {
+                      const r = await api.post(`blog/${data._id}/like`, ident);
+                      const d = r?.data?.data || {};
+                      setLikes(typeof d.likes === 'number' ? d.likes : (likes + 1));
+                      setLiked(true);
+                      try { window.localStorage.setItem(key, '1'); } catch (_) {}
+                    } else {
+                      const r = await api.post(`blog/${data._id}/unlike`, ident);
+                      const d = r?.data?.data || {};
+                      setLikes(typeof d.likes === 'number' ? d.likes : Math.max(0, likes - 1));
+                      setLiked(false);
+                      try { window.localStorage.setItem(key, '0'); } catch (_) {}
+                    }
+                  } catch (_) {}
+                  finally { setLikeLoading(false); }
+                }}
+                className={`inline-flex items-center px-3 h-10 rounded-full disabled:opacity-50 ${liked ? 'bg-green-600 text-white border border-green-600' : 'border border-green-500 text-green-600 hover:bg-green-50'}`}
+                aria-label={liked ? 'Unlike this blog' : 'Like this blog'}
+                title={liked ? 'Unlike' : 'Like'}
+              >
+                <ThumbsUp size={18} />
+              </button>
+            )}
             <a
               href={`https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}`}
               target="_blank" rel="noopener noreferrer"
@@ -834,15 +918,21 @@ const BlogView = () => {
             >
               <i className="fa-brands fa-linkedin-in"></i>
             </a>
-            <button
-              type="button"
-              onClick={copyLink}
-              className="inline-flex w-10 h-10 items-center justify-center rounded-full border border-gray-400 text-gray-700 hover:bg-gray-50"
-              title={copiedLink ? 'Copied!' : 'Copy link'}
-              aria-label="Copy link"
-            >
-              <i className="fa-solid fa-link"></i>
-            </button>
+            <div className="relative flex items-center gap-2">
+              <button
+                type="button"
+                onClick={copyLink}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copyLink(); } }}
+                className="inline-flex w-10 h-10 items-center justify-center rounded-full border border-gray-400 text-gray-700 hover:bg-gray-50 cursor-pointer"
+                title={copiedLink ? 'Copied!' : 'Copy link'}
+                aria-label="Copy link"
+              >
+                <i className="fa-solid fa-link"></i>
+              </button>
+              {copiedLink && (
+                <span className="copy-toast">Link copied</span>
+              )}
+            </div>
           </div>
           {(blog_Image?.display || FALLBACK_IMG) && (
             <div className="relative w-full mb-2 overflow-hidden">
@@ -880,7 +970,8 @@ const BlogView = () => {
             ref={contentRef}
             dangerouslySetInnerHTML={createSanitizedHTML(blog_Description)}
           ></div>
-          {/* FAQ Section inside main blog card */}
+
+          {/* FAQ Section */}
           {enableFAQ && Array.isArray(faqs) && faqs.length > 0 && (
             <div className="mt-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h3>
@@ -898,6 +989,80 @@ const BlogView = () => {
                   </details>
                 ))}
               </div>
+            </div>
+          )}
+          {/* Comments Section moved below FAQ */}
+          {data?._id && (
+            <div className="mt-8 p-6 bg-gray-50 rounded-lg">
+              <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center gap-2">
+                <MessageCircle size={20} />
+                Comments ({commentsCount})
+              </h3>
+              {/* Add Comment Form */}
+              <div className="mb-6 p-4 bg-white rounded-lg border">
+                <h4 className="font-semibold mb-3 text-gray-700">Leave a Comment</h4>
+                <div className="space-y-3">
+                  <input
+                    type="text"
+                    placeholder="Your name (optional)"
+                    value={commentName}
+                    onChange={(e) => setCommentName(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <textarea
+                    placeholder="Write your comment here..."
+                    value={commentMsg}
+                    onChange={(e) => setCommentMsg(e.target.value)}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    onClick={async () => {
+                      if (!commentMsg.trim()) return;
+                      try {
+                        const payload = { name: commentName || 'Anonymous', message: commentMsg.trim() };
+                        const r = await api.post(`blog/${data._id}/comment`, payload);
+                        const d = r?.data?.data || {};
+                        setCommentsCount(d.commentsCount || 0);
+                        setComments(Array.isArray(d.comments) ? d.comments.slice(-5).reverse() : []);
+                        setCommentName('');
+                        setCommentMsg('');
+                      } catch (err) {
+                        console.error('Comment error:', err);
+                      }
+                    }}
+                    disabled={!commentMsg.trim()}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Post Comment
+                  </button>
+                </div>
+              </div>
+              {/* Display Comments */}
+              {comments.length > 0 ? (
+                <div className="space-y-4">
+                  {comments.map((comment, idx) => (
+                    <div key={idx} className="p-4 bg-white rounded-lg border">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-semibold text-gray-700">{comment.name || 'Anonymous'}</span>
+                        <span className="text-sm text-gray-500">
+                          {new Date(comment.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-gray-600">{comment.message}</p>
+                    </div>
+                  ))}
+                  {commentsCount > 5 && (
+                    <div className="text-center">
+                      <button className="text-blue-600 hover:text-blue-700 font-medium">
+                        View all {commentsCount} comments
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-center py-4">No comments yet. Be the first to comment!</p>
+              )}
             </div>
           )}
         </div>

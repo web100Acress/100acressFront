@@ -267,6 +267,21 @@ export default function LeftSection({
               </>
             )}
 
+            {/* Activity Option */}
+            {(forceHamburger) && (
+              <>
+                <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Activity</Box>
+                <Button as={Link} to="/activity" onClick={closeDrawer}
+                  w="100%" variant="ghost" display="flex" flexDir="column"
+                  justifyContent="center" alignItems="center" textAlign="center"
+                  py={3} px={4} minH={{ base: 14, md: 12 }}
+                  borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                  <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">View Activity</Text>
+                </Button>
+                <Box h="1px" bg="#eee" my={2} />
+              </>
+            )}
+
             {(forceHamburger || hideRental) && (
               <>
                 <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Rental</Box>

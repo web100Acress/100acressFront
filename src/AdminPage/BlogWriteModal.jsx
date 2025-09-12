@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Quill from 'quill';
 import api from '../config/apiClient';
   import ReactQuill from 'react-quill';
@@ -21,6 +21,14 @@ import {
   Plus,
   Tag,
   Link as LinkIcon,
+  Copy,
+  Check,
+  Monitor,
+  Smartphone,
+  MessageSquare,
+  History,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
 
 const initialCategories = [
@@ -50,6 +58,12 @@ const BlogWriteModal = () => {
   const navigate = useNavigate();
   // Auth is handled by the shared axios client interceptor
   const [messageApi, contextHolder] = message.useMessage();
+  // Configure global message behavior: auto-dismiss and limit stacking
+  useEffect(() => {
+    try {
+      message.config({ duration: 2, maxCount: 3 });
+    } catch {}
+  }, []);
 
   // Core fields
   const [title, setTitle] = useState('');
@@ -76,6 +90,7 @@ const BlogWriteModal = () => {
   const [newBlog, setNewBlog] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
+  const [views, setViews] = useState(0);
 
   // Related projects state
   const [relatedProjects, setRelatedProjects] = useState([]);
@@ -84,6 +99,10 @@ const BlogWriteModal = () => {
   // Project search state
   const [projectSearchTerm, setProjectSearchTerm] = useState('');
   const [projectSearchResults, setProjectSearchResults] = useState([]);
+  // Auto-suggest state
+  const [autoSuggestEnabled, setAutoSuggestEnabled] = useState(true);
+  const [suggestedProjects, setSuggestedProjects] = useState([]);
+  const [contentKeywords, setContentKeywords] = useState([]);
   
   // FAQ state (no UI changes)
   const [enableFAQ, setEnableFAQ] = useState(false);
@@ -99,6 +118,43 @@ const BlogWriteModal = () => {
 
   const quillRef = useRef(null);
   const quillInstance = useRef(null);
+  // Throttle repeated featured-image load errors
+  const lastImageErrorRef = useRef({ url: null, ts: 0 });
+  const [frontImageError, setFrontImageError] = useState(false);
+  const [frontTriedProxy, setFrontTriedProxy] = useState(false);
+  const originalFrontUrlRef = useRef('');
+
+  // Helper to normalize image URLs from API (handle relative paths)
+  const normalizeImageUrl = (u) => {
+    if (!u) return '';
+    try {
+      // If already absolute (http/https/data), leave as is
+      if (/^(https?:)?\/\//i.test(u) || /^data:/i.test(u)) return u;
+      // If starts with '/', prefix current origin
+      if (u.startsWith('/')) return `${window.location.origin}${u}`;
+      // Otherwise return as is
+      return u;
+    } catch { return u; }
+  };
+
+  // Extract a usable image URL from various blog_Image shapes
+  const extractBlogImageUrl = (img) => {
+    try {
+      const toHttps = (val) => {
+        if (!val) return '';
+        if (/^\/\//.test(val)) return 'https:' + val;
+        if (/^http:\/\//i.test(val)) return val.replace(/^http:\/\//i, 'https://');
+        return val;
+      };
+      if (!img) return '';
+      if (typeof img === 'string') return normalizeImageUrl(toHttps(img));
+      if (typeof img === 'object') {
+        const candidate = img.display || img.cdn_url || img.url || img.Location || '';
+        return normalizeImageUrl(toHttps(candidate));
+      }
+      return '';
+    } catch { return ''; }
+  };
   
   // Initialize Quill instance
   const handleQuillChange = (content/*, delta, source, editor */) => {
@@ -110,6 +166,17 @@ const BlogWriteModal = () => {
       }
     } catch {}
   };
+
+  // Drag & Drop Featured Image
+  const onFeaturedDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const file = e.dataTransfer?.files?.[0];
+    if (file) {
+      handleFileChange({ target: { files: [file] } });
+    }
+  };
+  const onFeaturedDragOver = (e) => { e.preventDefault(); };
   
   // Safe accessor for Quill instance
   const safeGetQuill = () => {
@@ -133,6 +200,69 @@ const BlogWriteModal = () => {
   const [gridWithTitles, setGridWithTitles] = useState(true);
   const [gridUseFrameTitle, setGridUseFrameTitle] = useState(true);
 
+  // Preview & SEO states
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewMode, setPreviewMode] = useState('desktop'); // 'desktop' | 'mobile'
+  const [seoScore, setSeoScore] = useState({ score: 0, label: 'Low', color: '#ef4444', details: {} });
+  const [seoInsights, setSeoInsights] = useState([]); // {severity:'good'|'warn'|'error', text:string, section?:string}
+  const [showSeoDetails, setShowSeoDetails] = useState(true);
+
+  // Plagiarism/Similarity states
+  const [plagScore, setPlagScore] = useState(0); // 0-100 highest similarity vs corpus
+  const [plagMatches, setPlagMatches] = useState([]); // [{title, slug, score}]
+  const [plagLoading, setPlagLoading] = useState(false);
+  const [plagError, setPlagError] = useState('');
+  const [plagCorpus, setPlagCorpus] = useState([]); // cached blog corpus
+
+  // AI-likeness states
+  const [aiScore, setAiScore] = useState(0); // 0-100 higher means more likely AI-style
+  const [aiSignals, setAiSignals] = useState([]); // list of text signals
+
+  // Editor fullscreen state
+  const [editorFullscreen, setEditorFullscreen] = useState(false);
+
+  // Load plagiarism corpus once on mount
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await api.get(`/blog/admin/view?limit=1000`);
+        const list = Array.isArray(res?.data?.data) ? res.data.data : [];
+        const corpus = list.map(b => ({
+          id: b._id,
+          title: b.blog_Title || b.title || '',
+          slug: b.slug || '',
+          html: b.blog_Description || b.description || ''
+        })).filter(x => x.id && x.html);
+        if (alive) setPlagCorpus(corpus);
+      } catch (err) {
+        if (alive) setPlagError('Could not load blog corpus for similarity check');
+      }
+    })();
+    return () => { alive = false; };
+  }, []);
+
+  // Slug copy feedback
+  const [slugCopied, setSlugCopied] = useState(false);
+
+  // Meta helper
+  const titleKeywords = useMemo(() => {
+    const words = (title || '').toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length >= 4);
+    const uniq = Array.from(new Set(words));
+    return uniq.slice(0, 6);
+  }, [title]);
+
+  // FAQ UI helpers
+  const [collapsedFaqs, setCollapsedFaqs] = useState([false]);
+  const dragIndexRef = useRef(null);
+
+  // Autosave & version history
+  const draftKey = useMemo(() => `blogDraft:${id || 'new'}`, [id]);
+  const historyKey = useMemo(() => `blogDraftHistory:${id || 'new'}`, [id]);
+  const [hasRestorable, setHasRestorable] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [historyList, setHistoryList] = useState([]);
+
   // Register extra fonts in Quill
   const fontWhitelist = [
     'inter','roboto','poppins','montserrat','lato','open-sans','raleway','nunito','merriweather','playfair','source-sans','ubuntu','work-sans','rubik','mulish','josefin','quicksand','dm-sans','pt-serif','arimo'
@@ -147,6 +277,257 @@ const BlogWriteModal = () => {
       setSlug(slugify(title));
     }
   }, [title, slugTouched]);
+
+  // Compute SEO score and detailed insights when inputs change
+  useEffect(() => {
+    const computeSeo = () => {
+      const html = description || '';
+      const temp = document.createElement('div');
+      temp.innerHTML = html;
+      const plainText = temp.textContent || temp.innerText || '';
+      const textNorm = plainText.replace(/\s+/g, ' ').trim();
+      const wordCount = textNorm ? textNorm.split(/\s+/).length : 0;
+      const h1s = Array.from(temp.querySelectorAll('h1'));
+      const h2s = Array.from(temp.querySelectorAll('h2'));
+      const imgs = Array.from(temp.querySelectorAll('img'));
+      const links = Array.from(temp.querySelectorAll('a'));
+
+      const insights = [];
+      let score = 0;
+      const details = {};
+
+      // Title length
+      if (title.length >= 30 && title.length <= 65) { score += 10; details.title = 'Good'; insights.push({severity:'good', text:`Title length is optimal (${title.length} chars)`, section:'Title'}); }
+      else if (title.length > 0) { score += 6; details.title = 'Ok'; insights.push({severity:'warn', text:`Title length ${title.length}. Aim for 30–65 chars.`, section:'Title'}); }
+      else { insights.push({severity:'error', text:'Title is missing', section:'Title'}); }
+
+      // Meta Title presence (using same metaTitle as title if needed)
+      if (metaTitle && metaTitle.length) { score += 4; insights.push({severity:'good', text:'Meta title present', section:'Meta'}); }
+      else insights.push({severity:'warn', text:'Meta title missing (recommended)', section:'Meta'});
+
+      // Meta Description length
+      if (metaDescription.length >= 120 && metaDescription.length <= 165) { score += 14; details.meta = 'Optimal'; insights.push({severity:'good', text:`Meta description optimal (${metaDescription.length}/160)`, section:'Meta'}); }
+      else if (metaDescription.length >= 80) { score += 9; details.meta = 'Ok'; insights.push({severity:'warn', text:`Meta description ${metaDescription.length}. Aim for 120–165 chars.`, section:'Meta'}); }
+      else { insights.push({severity:'error', text:'Meta description too short or missing', section:'Meta'}); }
+
+      // Slug
+      if (slug && slugAvailable !== false) { score += 6; details.slug = 'Ok'; }
+      else insights.push({severity:'error', text:'Slug is invalid or taken', section:'Slug'});
+
+      // Headings
+      if (h1s.length === 1) { score += 8; details.h1 = '1 H1'; insights.push({severity:'good', text:'Exactly one H1 found', section:'Headings'}); }
+      else if (h1s.length > 1) { score += 3; insights.push({severity:'warn', text:`${h1s.length} H1s found. Use only one.`, section:'Headings'}); }
+      else { insights.push({severity:'warn', text:'No H1 found. Add a primary heading.', section:'Headings'}); }
+      if (h2s.length >= 2) { score += 6; details.h2 = 'Has H2s'; insights.push({severity:'good', text:`${h2s.length} H2s found`, section:'Headings'}); }
+      else { insights.push({severity:'warn', text:'Add at least two H2 subheadings', section:'Headings'}); }
+
+      // Content length
+      if (wordCount >= 1000) { score += 14; details.length = '1000+'; insights.push({severity:'good', text:`Strong content length (${wordCount} words)`, section:'Content'}); }
+      else if (wordCount >= 600) { score += 10; details.length = '600+'; insights.push({severity:'good', text:`Good content length (${wordCount} words)`, section:'Content'}); }
+      else if (wordCount >= 300) { score += 6; details.length = '300+'; insights.push({severity:'warn', text:`Consider writing more content (currently ${wordCount} words)`, section:'Content'}); }
+      else { insights.push({severity:'error', text:'Very low content length (<300 words)', section:'Content'}); }
+
+      // Readability (avg sentence length)
+      const sentences = textNorm.split(/[.!?]+\s/).filter(Boolean);
+      const avgWords = sentences.length ? Math.round(wordCount / sentences.length) : 0;
+      if (avgWords >= 10 && avgWords <= 24) { score += 10; details.readability = 'Good'; insights.push({severity:'good', text:`Readable sentence length (avg ${avgWords} words)`, section:'Readability'}); }
+      else if (avgWords > 0) { score += 5; details.readability = 'Ok'; insights.push({severity:'warn', text:`Average sentence length ${avgWords}. Aim for 10–24.`, section:'Readability'}); }
+
+      // Images: count + alt attributes (content images)
+      if (imgs.length > 0) { score += 4; insights.push({severity:'good', text:`${imgs.length} images in content`, section:'Images'}); }
+      const missingAlt = imgs.filter(im => !(im.getAttribute('alt') || '').trim()).length;
+      if (missingAlt > 0) insights.push({severity:'warn', text:`${missingAlt}/${imgs.length} images missing alt text`, section:'Images'});
+      // Width/height attributes hint
+      const missingDims = imgs.filter(im => !im.getAttribute('width') || !im.getAttribute('height')).length;
+      if (missingDims > 0) insights.push({severity:'warn', text:`${missingDims}/${imgs.length} images missing width/height attributes (CLS hint)`, section:'Images'});
+      // Featured image presence
+      if (frontImagePreview) { score += 4; insights.push({severity:'good', text:'Featured image set', section:'Images'}); }
+
+      // Links: internal/external
+      const linkCount = links.length;
+      if (linkCount === 0) insights.push({severity:'warn', text:'No links in content. Add internal/external references.', section:'Links'});
+      else if (linkCount < 3) insights.push({severity:'warn', text:`Only ${linkCount} link(s) found. Consider adding more.`, section:'Links'});
+      else { score += 4; insights.push({severity:'good', text:`Good linking (${linkCount} links)`, section:'Links'}); }
+
+      // FAQs quality
+      if (enableFAQ) {
+        const validFaqs = (faqs || []).filter(f => (f.question||'').trim() && (f.answer||'').trim());
+        if (validFaqs.length >= 2) { score += 6; insights.push({severity:'good', text:`${validFaqs.length} valid FAQs`, section:'FAQ'}); }
+        else insights.push({severity:'warn', text:'Add at least 2 well-formed FAQs (Q & A)', section:'FAQ'});
+      }
+
+      // Keyword presence in H1/H2/intro/alt
+      const kMain = titleKeywords[0];
+      if (kMain) {
+        const intro = textNorm.slice(0, 150).toLowerCase();
+        const hasKInH1 = h1s.some(h => (h.textContent||'').toLowerCase().includes(kMain));
+        const hasKInH2 = h2s.some(h => (h.textContent||'').toLowerCase().includes(kMain));
+        const hasKInIntro = intro.includes(kMain);
+        const hasKInAlts = imgs.some(im => (im.getAttribute('alt')||'').toLowerCase().includes(kMain));
+        let kwScore = 0;
+        if (hasKInH1) kwScore += 3;
+        if (hasKInH2) kwScore += 2;
+        if (hasKInIntro) kwScore += 3;
+        if (hasKInAlts) kwScore += 2;
+        score += kwScore;
+        if (kwScore >= 6) insights.push({severity:'good', text:`Primary keyword appears in key places (H1/H2/intro/images)`, section:'Keywords'});
+        else insights.push({severity:'warn', text:`Use primary keyword in H1/H2/intro/image alts for better relevance`, section:'Keywords'});
+      }
+
+      // Cap to 100 and set color/label
+      score = Math.min(100, Math.round(score));
+      const color = score >= 85 ? '#16a34a' : score >= 65 ? '#f59e0b' : '#ef4444';
+      const label = score >= 85 ? 'Great' : score >= 65 ? 'Okay' : 'Low';
+      setSeoScore({ score, color, label, details });
+      setSeoInsights(insights);
+    };
+    computeSeo();
+  }, [title, metaTitle, metaDescription, slug, slugAvailable, description, titleKeywords, frontImagePreview, enableFAQ, faqs]);
+
+  // AI-likeness heuristic (offline approximation)
+  useEffect(() => {
+    const html = description || '';
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    const plain = `${title ? title + '. ' : ''}${temp.textContent || temp.innerText || ''}`.toLowerCase().replace(/\s+/g, ' ').trim();
+    if (!plain || plain.split(' ').length < 50) {
+      setAiScore(0);
+      setAiSignals([]);
+      return;
+    }
+    const tokens = plain.split(/[^a-z0-9']+/).filter(Boolean);
+    const tokenCount = tokens.length;
+    const unique = new Set(tokens);
+    const diversity = unique.size / tokenCount; // lower -> more AI-like
+    const sentences = plain.split(/[.!?]+\s/).filter(Boolean);
+    const lens = sentences.map(s => s.split(/\s+/).filter(Boolean).length);
+    const avg = lens.reduce((a,b)=>a+b,0) / (lens.length || 1);
+    const variance = lens.reduce((a,b)=>a + Math.pow(b-avg,2), 0) / (lens.length || 1);
+    const burstiness = Math.sqrt(variance); // lower -> more uniform -> AI-like
+    // Function words ratio
+    const functionWords = new Set(['the','is','are','was','were','of','and','to','in','for','with','on','that','this','as','by','at','from','it','an','a','or','be','can','will','has','have']);
+    const funcCount = tokens.filter(t => functionWords.has(t)).length;
+    const funcRatio = funcCount / (tokenCount || 1);
+    // Repetition via bigram frequency
+    const bigrams = [];
+    for (let i=0;i<tokens.length-1;i++) bigrams.push(tokens[i] + ' ' + tokens[i+1]);
+    const bgFreq = new Map();
+    for (const bg of bigrams) bgFreq.set(bg, (bgFreq.get(bg)||0)+1);
+    const maxBg = Math.max(0, ...Array.from(bgFreq.values()));
+    // Punctuation variety (more variety tends to human)
+    const puncts = (description.match(/[,:;()\-—]/g) || []).length;
+    const punctRatio = puncts / (tokenCount || 1);
+
+    // Scoring: 0..100 higher = more AI-like
+    let score = 0;
+    // Diversity: <=0.35 very AI-like; >=0.6 human-like
+    if (diversity <= 0.35) score += 30; else if (diversity <= 0.45) score += 18; else if (diversity <= 0.55) score += 10; else score += 2;
+    // Burstiness: <=4 very uniform; >=10 varied
+    if (burstiness <= 4) score += 25; else if (burstiness <= 7) score += 14; else if (burstiness <= 10) score += 6; else score += 1;
+    // Bigram repetition: high repetition -> AI-like
+    if (maxBg >= 6) score += 16; else if (maxBg >= 4) score += 10; else if (maxBg >= 3) score += 6;
+    // Function words high ratio -> generic AI-ish style
+    if (funcRatio >= 0.35) score += 12; else if (funcRatio >= 0.28) score += 8; else if (funcRatio >= 0.22) score += 4;
+    // Low punctuation variety -> AI-like
+    if (punctRatio <= 0.01) score += 6; else if (punctRatio <= 0.02) score += 3;
+
+    score = Math.max(0, Math.min(100, Math.round(score)));
+    setAiScore(score);
+    const signals = [];
+    signals.push({ label: 'Lexical diversity', value: diversity.toFixed(2), hint: diversity <= 0.45 ? 'Low diversity (AI-like)' : 'Diversity OK' });
+    signals.push({ label: 'Avg sentence length', value: Math.round(avg), hint: avg >= 14 ? 'Longer sentences' : 'Short sentences' });
+    signals.push({ label: 'Sentence burstiness', value: burstiness.toFixed(1), hint: burstiness <= 6 ? 'Uniform (AI-like)' : 'Varied (human-like)' });
+    signals.push({ label: 'Max bigram freq', value: maxBg, hint: maxBg >= 4 ? 'Repetitive phrases' : 'OK' });
+    signals.push({ label: 'Function word ratio', value: (funcRatio*100).toFixed(1)+'%', hint: funcRatio >= 0.28 ? 'High (generic style)' : 'OK' });
+    setAiSignals(signals);
+  }, [title, description]);
+
+  // Plagiarism checker (local similarity via 3-gram Jaccard against existing blogs)
+  useEffect(() => {
+    let cancel = false;
+    const run = async () => {
+      const html = description || '';
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      const text = `${title || ''} ${tmp.textContent || tmp.innerText || ''}`.toLowerCase().replace(/\s+/g, ' ').trim();
+      if (!text || text.split(' ').length < 30) {
+        setPlagScore(0);
+        setPlagMatches([]);
+        setPlagLoading(false);
+        return;
+      }
+      if (!plagCorpus || plagCorpus.length === 0) {
+        setPlagLoading(false);
+        return;
+      }
+      try {
+        setPlagLoading(true);
+        setPlagError('');
+        // build shingles for current text
+        const toShingles = (t, n=3) => {
+          const tokens = t.split(/[^a-z0-9]+/).filter(Boolean).slice(0, 1200);
+          const out = new Set();
+          for (let i=0;i<=tokens.length-n;i++) out.add(tokens.slice(i,i+n).join(' '));
+          return out;
+        };
+        const curSet = toShingles(text, 3);
+        const jaccard = (a, b) => {
+          let inter = 0;
+          for (const v of a) { if (b.has(v)) inter++; }
+          const union = a.size + b.size - inter;
+          return union > 0 ? inter / union : 0;
+        };
+        // Limit corpus and shallow prefilter by simple keyword presence to reduce cost
+        const candidates = plagCorpus.slice(0, 250);
+        const topTokens = Array.from(curSet).slice(0, 50); // sample shingles
+        const quickHas = (s) => {
+          let c = 0;
+          for (let i=0;i<topTokens.length;i+=5) { // stride to reduce ops
+            if (s.includes(topTokens[i])) c++;
+            if (c >= 2) return true;
+          }
+          return false;
+        };
+
+        const matches = [];
+        for (const b of candidates) {
+          if (blogId && b.id === blogId) continue; // skip self when editing
+          const d = document.createElement('div');
+          d.innerHTML = b.html || '';
+          const other = `${b.title || ''} ${d.textContent || d.innerText || ''}`.toLowerCase().replace(/\s+/g, ' ').trim();
+          if (!other) continue;
+          // heuristic: cap tokens to 4000 characters to speed up
+          const otherTrim = other.slice(0, 12000);
+          if (!quickHas(otherTrim)) continue;
+          const setB = toShingles(otherTrim, 3);
+          const sim = jaccard(curSet, setB);
+          if (sim > 0) {
+            matches.push({ id: b.id, title: b.title, slug: b.slug, score: sim });
+          }
+        }
+        matches.sort((a,b)=>b.score-a.score);
+        const top = matches.slice(0, 5);
+        const best = top[0]?.score || 0;
+        if (!cancel) {
+          setPlagMatches(top.map(x => ({...x, percent: Math.round(x.score*100)})));
+          setPlagScore(Math.round(best*100));
+        }
+      } catch (err) {
+        if (!cancel) {
+          setPlagScore(0);
+          setPlagMatches([]);
+          setPlagError('Similarity analysis failed');
+        }
+      } finally {
+        if (!cancel) setPlagLoading(false);
+      }
+    };
+    // Add a timeout guard to avoid indefinite checking UI
+    const timer = setTimeout(() => {
+      if (!cancel) run();
+    }, 900);
+    return () => { cancel = true; clearTimeout(timer); };
+  }, [title, description, blogId, plagCorpus.length]);
 
   // Debounced slug uniqueness check (fetch admin list and check client-side)
   useEffect(() => {
@@ -199,9 +580,14 @@ const BlogWriteModal = () => {
             setTitle(b.blog_Title || '');
             setDescription(b.blog_Description || '');
             setFrontImage(null);
-            setFrontImagePreview(b.blog_Image || '');
+            const extracted = extractBlogImageUrl(b.blog_Image);
+            originalFrontUrlRef.current = extracted;
+            setFrontImagePreview(extracted);
+            setFrontImageError(false);
+            setFrontTriedProxy(false);
             setCategories(b.blog_Category || '');
             setAuthor(b.author || 'Admin');
+            setViews(typeof b.views === 'number' ? b.views : 0);
             setBlogId(b._id || '');
             setBlogToEdit(true);
             setNewBlog(false);
@@ -248,6 +634,40 @@ const BlogWriteModal = () => {
   
     fetchBlog();
   }, [id]);
+
+  // Autosave & history load
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(draftKey);
+      setHasRestorable(!!raw);
+      const histRaw = localStorage.getItem(historyKey);
+      if (histRaw) setHistoryList(JSON.parse(histRaw));
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Debounced autosave on key fields
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try {
+        const snapshot = {
+          ts: Date.now(),
+          title, description, frontImagePreview, categories,
+          metaTitle, metaDescription, slug, relatedProjects, enableFAQ, faqs,
+          author
+        };
+        localStorage.setItem(draftKey, JSON.stringify(snapshot));
+        // Append to history (max 10)
+        const hist = JSON.parse(localStorage.getItem(historyKey) || '[]');
+        hist.push({ ts: snapshot.ts, title: snapshot.title, metaTitle: snapshot.metaTitle });
+        while (hist.length > 10) hist.shift();
+        localStorage.setItem(historyKey, JSON.stringify(hist));
+        setHistoryList(hist);
+        setHasRestorable(true);
+      } catch {}
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [draftKey, historyKey, title, description, frontImagePreview, categories, metaTitle, metaDescription, slug, relatedProjects, enableFAQ, faqs, author]);
 
   // Convert the next 4 standalone images (from cursor) into a grid with inline styles
   const convertNextImagesToGrid = () => {
@@ -553,6 +973,103 @@ const BlogWriteModal = () => {
     }, 350);
     return () => clearTimeout(t);
   }, [projectSearchTerm]);
+
+  // Extract keywords from title + description + category
+  useEffect(() => {
+    const plain = (description || '').replace(/<[^>]+>/g, ' ').toLowerCase();
+    const text = `${title || ''} ${categories || ''} ${plain}`.toLowerCase();
+    const tokens = text.split(/[^a-z0-9]+/).filter(Boolean);
+    const stop = new Set(['the','and','for','with','from','that','this','your','you','are','our','was','were','have','has','had','in','on','of','to','a','an','by','is','it','as','or','at','be','can','will','we','us','they','their','them']);
+    const freq = new Map();
+    for (const t of tokens) {
+      if (t.length < 3) continue;
+      if (stop.has(t)) continue;
+      freq.set(t, (freq.get(t) || 0) + 1);
+    }
+    // Sort by frequency and keep top 15
+    const top = Array.from(freq.entries()).sort((a,b) => b[1]-a[1]).slice(0, 15).map(([w]) => w);
+    setContentKeywords(top);
+  }, [title, description, categories]);
+
+  // Rank all projects by TF-IDF with field weighting and compute suggestions
+  useEffect(() => {
+    if (!autoSuggestEnabled) { setSuggestedProjects([]); return; }
+    if (!allProjects?.length) { setSuggestedProjects([]); return; }
+    const selectedSet = new Set(relatedProjects.map(p => p.project_url));
+    const terms = Array.from(new Set(contentKeywords));
+    if (terms.length === 0) { setSuggestedProjects([]); return; }
+
+    const N = allProjects.length;
+    // Document frequency per term across combined fields
+    const df = new Map();
+    for (const t of terms) df.set(t, 0);
+    for (const proj of allProjects) {
+      const fields = [proj.projectName, proj.builderName, proj.location, proj.city].map(x => (x || '').toLowerCase());
+      const joined = fields.join(' ');
+      for (const t of terms) {
+        if (joined.includes(t)) {
+          df.set(t, (df.get(t) || 0) + 1);
+        }
+      }
+    }
+    const idf = new Map();
+    for (const t of terms) {
+      const dft = df.get(t) || 0;
+      // Smoothing: log( (N + 1) / (df + 1) ) + 1
+      idf.set(t, Math.log((N + 1) / (dft + 1)) + 1);
+    }
+
+    // Field weights
+    const W_NAME = 3.0;      // projectName
+    const W_BUILDER = 2.0;   // builderName
+    const W_LOCATION = 1.6;  // location
+    const W_CITY = 1.3;      // city
+    const CAT_BOOST = 1.15;  // small multiplicative boost if category name appears
+
+    const safeIncludesCount = (haystack, needle) => {
+      if (!needle || !haystack) return 0;
+      let i = 0, c = 0;
+      while (true) {
+        const idx = haystack.indexOf(needle, i);
+        if (idx === -1) break;
+        c += 1;
+        i = idx + needle.length;
+      }
+      return c;
+    };
+
+    const scoreProject = (p) => {
+      const name = (p.projectName || '').toLowerCase();
+      const builder = (p.builderName || '').toLowerCase();
+      const loc = (p.location || '').toLowerCase();
+      const city = (p.city || '').toLowerCase();
+      let score = 0;
+      for (const t of terms) {
+        const tf_name = safeIncludesCount(name, t);
+        const tf_builder = safeIncludesCount(builder, t);
+        const tf_loc = safeIncludesCount(loc, t);
+        const tf_city = safeIncludesCount(city, t);
+        const idf_t = idf.get(t) || 1;
+        score += (tf_name * W_NAME + tf_builder * W_BUILDER + tf_loc * W_LOCATION + tf_city * W_CITY) * idf_t;
+      }
+      // Category boost (light): if exact category token appears anywhere in fields
+      const cat = (categories || '').toLowerCase();
+      if (cat) {
+        const hay = `${name} ${builder} ${loc} ${city}`;
+        if (hay.includes(cat)) score *= CAT_BOOST;
+      }
+      return score;
+    };
+
+    const ranked = allProjects
+      .filter(p => !selectedSet.has(p.project_url))
+      .map(p => ({ p, s: scoreProject(p) }))
+      .filter(x => x.s > 0)
+      .sort((a,b) => b.s - a.s)
+      .slice(0, 10)
+      .map(x => x.p);
+    setSuggestedProjects(ranked);
+  }, [autoSuggestEnabled, allProjects, contentKeywords, relatedProjects, categories]);
 
   // Related projects management functions
   const addRelatedProject = (project) => {
@@ -933,6 +1450,7 @@ const BlogWriteModal = () => {
     setProjectSearchResults([]);
     setEnableFAQ(false);
     setFaqs([{ question: '', answer: '' }]);
+    setCollapsedFaqs([false]);
   };
 
   // Quill toolbar config (no default image button; we add our own handlers)
@@ -1373,7 +1891,93 @@ const BlogWriteModal = () => {
           .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="large"]::before { content: 'Large'; }
           .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="huge"]::before { content: 'Huge'; }
           /* Let labels reflect the currently selected value (default Quill behavior) */
+          /* Fullscreen editor layout: wrapper takes full viewport, editor flexes */
+          .editor-fs-wrap{ height:100dvh; display:flex; flex-direction:column; }
+          .editor-fs{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0; overflow:auto; }
+          .editor-fs .ql-toolbar{ flex:0 0 auto; position: sticky; top: 0; z-index: 10; background:#fff; box-shadow: 0 1px 0 0 rgba(0,0,0,0.06); }
+          .editor-fs .ql-container{ flex:1 1 auto; height:auto; min-height:0; }
+          .editor-fs .ql-editor{ min-height:100%; padding-bottom:24px; }
+
+          /* Normal editor box polish: let outer box own the border & radius */
+          .quill-box{ overflow:visible; }
+          .quill-box .ql-toolbar.ql-snow{ border:none; border-bottom:1px solid #e5e7eb; border-radius:0; position: sticky; top: 0; z-index: 5; background:#fff; }
+          /* Auto height; allow outer resizable wrapper to control scroll */
+          .quill-box .ql-container.ql-snow{ border:none; height:auto; max-height:none; overflow:visible; }
+          .quill-box .ql-editor{ min-height:16rem; padding-bottom:48px; }
+
+          /* User-resizable area for the normal editor */
+          .editor-resize{ resize: vertical; overflow:auto; min-height:16rem; max-height:75vh; }
         `}</style>
+        {/* Top bar: SEO score, preview toggle, restore */}
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">SEO Score:</span>
+            <span className="px-2.5 py-1 rounded-full text-white text-sm" style={{ backgroundColor: seoScore.color }}>
+              {seoScore.score} · {seoScore.label}
+            </span>
+          </div>
+        {/* Two-column section: left = SEO Insights, right = actions */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+          <div>
+            {seoInsights?.length > 0 && (
+              <div className="bg-white rounded-xl border border-gray-100 shadow p-4 h-full">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="font-semibold text-gray-900">SEO Insights</div>
+                  <button type="button" className="text-sm text-gray-600 hover:text-gray-800" onClick={()=>setShowSeoDetails(v=>!v)}>
+                    {showSeoDetails ? 'Hide' : 'Show'} details
+                  </button>
+                </div>
+                {showSeoDetails && (
+                  <ul className="space-y-1 max-h-56 overflow-auto pr-1">
+                    {seoInsights.map((it, i) => (
+                      <li key={i} className="text-sm flex items-start gap-2">
+                        <span className={`mt-1 inline-block w-2 h-2 rounded-full ${it.severity==='good'?'bg-emerald-500':it.severity==='warn'?'bg-yellow-500':'bg-red-500'}`}></span>
+                        <span className="text-gray-800">
+                          {it.text}
+                          {it.section && <span className="ml-2 text-xs text-gray-500">[{it.section}]</span>}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="bg-white rounded-xl border border-gray-100 shadow p-4 flex flex-wrap items-center gap-2 justify-end lg:justify-start">
+            <button type="button" onClick={() => setShowPreview(v=>!v)} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50">
+              {showPreview ? 'Hide Preview' : 'Show Preview'}
+            </button>
+            {hasRestorable && (
+              <button type="button" onClick={() => {
+                try {
+                  const raw = localStorage.getItem(draftKey);
+                  if (!raw) return;
+                  const s = JSON.parse(raw);
+                  setTitle(s.title || '');
+                  setDescription(s.description || '');
+                  setFrontImagePreview(s.frontImagePreview || '');
+                  setCategories(s.categories || '');
+                  setMetaTitle(s.metaTitle || '');
+                  setMetaDescription(s.metaDescription || '');
+                  setSlug(s.slug || '');
+                  setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
+                  setEnableFAQ(!!s.enableFAQ);
+                  setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{question:'',answer:''}]);
+                  setAuthor(s.author || author);
+                  messageApi.success('Draft restored');
+                } catch {}
+              }} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                <History className="w-4 h-4" /> Restore Draft
+              </button>
+            )}
+            {historyList?.length > 0 && (
+              <button type="button" onClick={() => setShowHistory(true)} className="px-3 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                <History className="w-4 h-4" /> History
+              </button>
+            )}
+          </div>
+        </div>
+        </div>
         {/* Load fonts */}
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@300;400;700&family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&family=Raleway:wght@300;400;700&family=Nunito:wght@300;400;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;700&family=Ubuntu:wght@300;400;700&family=Work+Sans:wght@300;400;700&family=Rubik:wght@300;400;700&family=Mulish:wght@300;400;700&family=Josefin+Sans:wght@300;400;700&family=Quicksand:wght@300;400;700&family=DM+Sans:wght@300;400;700&family=PT+Serif:wght@400;700&family=Arimo:wght@400;700&display=swap" />
         {/* Header */}
@@ -1398,6 +2002,11 @@ const BlogWriteModal = () => {
                 </p>
               </div>
             </div>
+            {blogToEdit && (
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700 border border-gray-200" title="Total views (all time)">Views: {views}</span>
+              </div>
+            )}
             <button
               onClick={() => navigate('/seo/blogs')}
               className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200"
@@ -1508,6 +2117,20 @@ const BlogWriteModal = () => {
                   >
                     Reset
                   </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(`/blog/${slug}`);
+                        setSlugCopied(true);
+                        setTimeout(()=>setSlugCopied(false), 1200);
+                      } catch {}
+                    }}
+                    className="px-3 text-sm bg-gray-100 hover:bg-gray-200 border-l border-gray-200 flex items-center gap-1"
+                    title="Copy full slug URL"
+                  >
+                    {slugCopied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />} Copy
+                  </button>
                 </div>
                 <p className="text-xs text-gray-500">Auto-generates from title; you can edit it.</p>
                 {slug && (
@@ -1546,7 +2169,28 @@ const BlogWriteModal = () => {
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 h-[52px]"
                   placeholder="Up to ~160 characters"
                 />
-                <div className="text-xs text-gray-500 text-right">{metaDescription.length}/160</div>
+                <div className="flex items-center justify-between text-xs">
+                  <div className="text-gray-600 flex items-center gap-2">
+                    <span>Suggestions:</span>
+                    {titleKeywords.length ? (
+                      <div className="flex flex-wrap gap-1">
+                        {titleKeywords.map((k, i) => (
+                          <button key={k+i} type="button" className="px-2 py-0.5 rounded-full bg-gray-100 hover:bg-gray-200" onClick={()=>setMetaDescription((v)=> (v ? (v+` ${k}`) : k).slice(0,160))}>{k}</button>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">Type a clear title to get keyword suggestions</span>
+                    )}
+                  </div>
+                  {(() => {
+                    const len = metaDescription.length;
+                    const optimal = len >= 120 && len <= 165;
+                    const ok = len >= 80 && !optimal;
+                    const color = optimal ? 'text-green-600' : ok ? 'text-yellow-600' : 'text-red-600';
+                    const label = optimal ? 'Optimal' : ok ? 'Okay' : 'Too short';
+                    return <div className={`${color}`}>{len}/160 • {label}</div>;
+                  })()}
+                </div>
               </div>
             </div>
 
@@ -1559,32 +2203,93 @@ const BlogWriteModal = () => {
                 </label>
               </div>
 
-              {frontImagePreview && (
-                <div className="relative group mb-4">
-                  <img
-                    src={frontImagePreview}
-                    alt="Featured preview"
-                    className="w-full h-64 object-cover rounded-xl shadow-lg"
-                    onClick={() => setLightboxUrl(frontImagePreview)}
-                    onError={(e) => {
-                      // If image fails to load, clear the preview
-                      setFrontImagePreview('');
-                      setFrontImage(null);
-                      messageApi.error('Failed to load image. Please try another one.');
-                    }}
-                    title="Click to view full size"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-xl flex items-center justify-center cursor-pointer">
-                    <div className="opacity-0 group-hover:opacity-100 transition-all duration-200 bg-white bg-opacity-80 p-3 rounded-full">
-                      <Upload className="w-6 h-6 text-gray-700" />
-                    </div>
+              {/* Two-column layout: left = preview, right = change image + URL */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Left: Featured preview (with graceful fallback) */}
+                <div>
+                  <div className="relative rounded-xl overflow-hidden border border-gray-200 bg-white">
+                    {frontImagePreview ? (
+                      <div className="relative">
+                        {(() => {
+                          let isXO = false;
+                          try {
+                            const u = new URL(frontImagePreview, window.location.origin);
+                            isXO = u.origin !== window.location.origin;
+                          } catch {}
+                          return (
+                            <img
+                              src={frontImagePreview}
+                              alt="Featured preview"
+                              className="w-full h-64 object-cover"
+                              style={{ backgroundColor: 'transparent' }}
+                              onClick={() => setLightboxUrl(frontImagePreview)}
+                              {...(isXO ? { crossOrigin: 'anonymous', referrerPolicy: 'no-referrer' } : {})}
+                              onLoad={() => { setFrontImageError(false); }}
+                              onError={(e) => {
+                                const now = Date.now();
+                                const url = e?.target?.src || frontImagePreview || '';
+                                const { url: lastUrl, ts } = lastImageErrorRef.current || {};
+                                if (!(url && lastUrl === url && now - ts < 10000)) {
+                                  lastImageErrorRef.current = { url, ts: now };
+                                  messageApi.open({ key: 'frontImageError', type: 'warning', content: 'Could not load featured image. Applying a safe preview...', duration: 2 });
+                                }
+                                if (!frontTriedProxy) {
+                                  try {
+                                    const src = originalFrontUrlRef.current || frontImagePreview || url;
+                                    const stripProto = (u) => (u || '').replace(/^https?:\/\//i, '');
+                                    const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(stripProto(src))}`;
+                                    setFrontImagePreview(proxied);
+                                    setFrontTriedProxy(true);
+                                    setFrontImageError(false);
+                                    return;
+                                  } catch {}
+                                }
+                                setFrontImageError(true);
+                              }}
+                              title="Click to view full size"
+                            />
+                          );
+                        })()}
+                        {frontImageError && (
+                          <div className="absolute bottom-2 left-2 right-2 bg-white/90 backdrop-blur rounded-lg p-2 border border-amber-200 shadow-sm flex flex-wrap items-center gap-2">
+                            <span className="text-xs text-amber-800">Image failed to load.</span>
+                            <button type="button" className="text-xs px-2 py-1 rounded bg-amber-600 text-white hover:bg-amber-700" onClick={() => {
+                              setFrontImageError(false);
+                              const base = (originalFrontUrlRef.current || frontImagePreview || '').split('?')[0];
+                              setFrontImagePreview(base ? `${base}?t=${Date.now()}` : base);
+                            }}>Retry</button>
+                            <a href={originalFrontUrlRef.current || frontImagePreview} target="_blank" rel="noreferrer" className="text-xs px-2 py-1 rounded border border-gray-300 hover:bg-gray-50">Open</a>
+                            <button type="button" className="text-xs px-2 py-1 rounded border border-gray-300 hover:bg-gray-50" onClick={() => {
+                              try {
+                                const stripProto = (u) => (u || '').replace(/^https?:\/\//i, '');
+                                const src = originalFrontUrlRef.current || frontImagePreview;
+                                const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(stripProto(src))}`;
+                                setFrontImagePreview(proxied);
+                                setFrontTriedProxy(true);
+                                setFrontImageError(false);
+                              } catch {}
+                            }}>Use Proxy</button>
+                            {frontTriedProxy && (
+                              <button type="button" className="text-xs px-2 py-1 rounded border border-gray-300 hover:bg-gray-50" onClick={() => {
+                                setFrontImagePreview(originalFrontUrlRef.current || frontImagePreview);
+                                setFrontImageError(false);
+                              }}>Restore Original</button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="h-64 flex items-center justify-center text-gray-400 text-sm">No image selected</div>
+                    )}
                   </div>
                 </div>
-              )}
 
-              <div className="space-y-4">
-                {/* File Upload Option */}
-                <div className="relative border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
+                {/* Right: Change Image uploader + URL input */}
+                <div className="space-y-4">
+                  {/* File Upload Option */}
+                  <div className="relative border-2 border-dashed border-gray-300 rounded-xl p-6 text-center"
+                       onDragOver={onFeaturedDragOver}
+                       onDrop={onFeaturedDrop}>
                   <input
                     type="file"
                     id="featured-image-upload"
@@ -1602,42 +2307,43 @@ const BlogWriteModal = () => {
                       {frontImagePreview ? 'or drag and drop a new image' : 'Drag and drop or click to browse'}
                     </p>
                   </div>
-                </div>
-
-                {/* OR Divider */}
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300"></div>
                   </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">OR</span>
-                  </div>
-                </div>
 
-                {/* URL Input */}
-                <div>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Paste image URL here"
-                    onPaste={async (e) => {
-                      try {
-                        const pastedText = e.clipboardData.getData('text/plain');
-                        if (pastedText) {
-                          e.preventDefault(); // Prevent default paste behavior
-                          e.target.value = pastedText; // Manually set the input value
-                          handleImageUrlChange({ target: { value: pastedText } });
+                  {/* OR Divider */}
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-2 bg-white text-gray-500">OR</span>
+                    </div>
+                  </div>
+
+                  {/* URL Input */}
+                  <div>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Paste image URL here"
+                      onPaste={async (e) => {
+                        try {
+                          const pastedText = e.clipboardData.getData('text/plain');
+                          if (pastedText) {
+                            e.preventDefault(); // Prevent default paste behavior
+                            e.target.value = pastedText; // Manually set the input value
+                            handleImageUrlChange({ target: { value: pastedText } });
+                          }
+                        } catch (err) {
+                          console.error('Error handling paste:', err);
                         }
-                      } catch (err) {
-                        console.error('Error handling paste:', err);
-                      }
-                    }}
-                    onChange={handleImageUrlChange}
-                    value={frontImage || ''}
-                  />
-                  <p className="mt-1 text-xs text-gray-500">
-                    Paste direct image URL (e.g., https://example.com/image.jpg)
-                  </p>
+                      }}
+                      onChange={handleImageUrlChange}
+                      value={frontImage || ''}
+                    />
+                    <p className="mt-1 text-xs text-gray-500">
+                      Paste direct image URL (e.g., https://example.com/image.jpg)
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -1693,9 +2399,76 @@ const BlogWriteModal = () => {
                 </label>
                 <span className="text-sm text-gray-500">({relatedProjects.length}/5)</span>
               </div>
-              
+
               <div className="bg-gray-50 rounded-xl p-4">
                 <div className="space-y-3">
+                  {/* Auto-suggest toggle + quick add */}
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+                      <input type="checkbox" checked={autoSuggestEnabled} onChange={(e)=>setAutoSuggestEnabled(e.target.checked)} />
+                      Auto-suggest from content
+                    </label>
+                    {autoSuggestEnabled && suggestedProjects.length > 0 && (
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="text-gray-600">Suggestions: {suggestedProjects.length}</span>
+                        <button
+                          type="button"
+                          className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
+                          onClick={() => {
+                            const toAdd = suggestedProjects.slice(0, Math.max(0, 5 - relatedProjects.length));
+                            toAdd.forEach(addRelatedProject);
+                          }}
+                          disabled={relatedProjects.length >= 5}
+                        >
+                          Add Top {Math.min(3, suggestedProjects.length)}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Suggestions grid */}
+                  {autoSuggestEnabled && suggestedProjects.length > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {suggestedProjects.slice(0, 6).map((p, idx) => (
+                        <div key={(p.project_url||'')+idx} className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+                          <div className="flex items-center gap-3 min-w-0">
+                            {p.thumbnail && (
+                              <img src={p.thumbnail} alt={p.projectName||''} className="w-10 h-10 rounded object-cover" onError={(e)=>{e.target.style.display='none'}} />
+                            )}
+                            <div className="min-w-0">
+                              <div className="text-sm font-medium text-gray-900 truncate">{p.projectName || 'Project'}</div>
+                              <div className="text-xs text-gray-500 truncate">{p.builderName || p.city || p.location || ''}</div>
+                            </div>
+                          </div>
+                          <button type="button" className="px-2 py-1 text-sm rounded bg-indigo-600 text-white hover:bg-indigo-700"
+                            onClick={()=>addRelatedProject(p)} disabled={relatedProjects.length>=5}>Add</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Project search */}
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={projectSearchTerm}
+                      onChange={(e) => setProjectSearchTerm(e.target.value)}
+                      placeholder="Search projects by name, builder, location..."
+                      className="w-full px-4 py-2 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                    />
+                    {/* Clear button */}
+                    {projectSearchTerm && (
+                      <button
+                        type="button"
+                        onClick={() => setProjectSearchTerm('')}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 px-2"
+                        title="Clear search"
+                      >
+                        <span aria-hidden>×</span>
+                      </button>
+                    )}
+                  </div>
+
                   {/* Project dropdown */}
                   <div className="relative">
                     <select
@@ -1737,7 +2510,9 @@ const BlogWriteModal = () => {
                   </div>
                   
                   <p className="text-sm text-gray-600">
-                    Select from {allProjects.length} available projects
+                    {projectSearchTerm.trim().length >= 2
+                      ? `Showing ${projectSearchResults.length} result${projectSearchResults.length === 1 ? '' : 's'} for "${projectSearchTerm}"`
+                      : `Select from ${allProjects.length} available projects`}
                   </p>
 
                   {/* Selected related projects */}
@@ -1941,32 +2716,105 @@ const BlogWriteModal = () => {
 
             {/* Content Editor */}
             <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <Edit3 className="w-5 h-5 text-orange-600" />
-                <label className="text-lg font-semibold text-gray-900">
-                  Blog Content
-                </label>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Edit3 className="w-5 h-5 text-orange-600" />
+                  <label className="text-lg font-semibold text-gray-900">
+                    Blog Content
+                  </label>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setEditorFullscreen(true)}
+                  className="px-2 py-1 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 flex items-center gap-1"
+                  title="Open editor in full screen"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                  <span className="hidden sm:inline">Full screen</span>
+                </button>
               </div>
 
-              <div className="border border-gray-200 rounded-xl overflow-hidden">
-                <div className="quill-editor-container">
+              {!editorFullscreen && (
+                <div className="quill-box border border-gray-200 rounded-xl mb-4 bg-white shadow-sm">
+                  <div className="quill-editor-container editor-resize">
+                    <ReactQuill
+                      ref={quillRef}
+                      theme="snow"
+                      value={description}
+                      onChange={handleQuillChange}
+                      className=""
+                      modules={quillModules}
+                      formats={quillFormats}
+                    />
+                  </div>
+                </div>
+              )}
+              
+            </div>
+
+            {editorFullscreen && (
+              <div className="fixed inset-0 z-[5000] bg-white editor-fs-wrap">
+                <div className="flex items-center justify-between px-3 py-2 border-b">
+                  <div className="font-medium text-gray-800 truncate">Editing: {title || 'Untitled'}</div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setEditorFullscreen(false)}
+                      className="px-2 py-1 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 flex items-center gap-1"
+                      title="Exit full screen"
+                    >
+                      <Minimize2 className="w-4 h-4" />
+                      <span className="hidden sm:inline">Exit</span>
+                    </button>
+                  </div>
+                </div>
+                <div className="editor-fs">
                   <ReactQuill
-                    ref={quillRef}
                     theme="snow"
                     value={description}
                     onChange={handleQuillChange}
-                    className="h-64"
+                    className=""
                     modules={quillModules}
                     formats={quillFormats}
                   />
                 </div>
               </div>
-              <p className="text-xs text-gray-500">
-                Tip: Use the buttons above to insert images anywhere inside the content.
-              </p>
-            </div>
+            )}
 
-            {/* FAQ Section (moved below Blog Content) */}
+            {/* Live Preview */}
+            {showPreview && (
+              <div className="bg-white border border-gray-200 rounded-xl p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                    <span className="font-medium">Preview</span>
+                    <span className="text-gray-400">(updates in real-time)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button type="button" onClick={() => setPreviewMode('desktop')} className={`px-2.5 py-1.5 rounded-lg border ${previewMode==='desktop' ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-700'}`}>
+                      <Monitor className="w-4 h-4 inline mr-1" /> Desktop
+                    </button>
+                    <button type="button" onClick={() => setPreviewMode('mobile')} className={`px-2.5 py-1.5 rounded-lg border ${previewMode==='mobile' ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-300 text-gray-700'}`}>
+                      <Smartphone className="w-4 h-4 inline mr-1" /> Mobile
+                    </button>
+                  </div>
+                </div>
+                <div className="flex justify-center">
+                  <div className={`rounded-xl border border-gray-200 shadow-sm overflow-hidden ${previewMode==='mobile' ? 'w-[390px]' : 'w-full'} max-w-[1024px]`}>
+                    {/* Featured image */}
+                    {frontImagePreview && (
+                      <img src={frontImagePreview} alt="preview" className="w-full max-h-72 object-cover" />
+                    )}
+                    <div className="p-4 sm:p-6">
+                      <h1 className="text-2xl sm:text-3xl font-bold mb-2">{title || 'Your blog title'}</h1>
+                      <div className="text-gray-500 text-sm mb-4">/{slug || 'my-custom-slug'}</div>
+                      <article className="prose max-w-none prose-img:rounded-lg prose-headings:scroll-mt-24" dangerouslySetInnerHTML={{ __html: description || '<p>Start writing content...</p>' }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* FAQ Section (collapsible + drag reorder) */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
@@ -1986,49 +2834,103 @@ const BlogWriteModal = () => {
               {enableFAQ && (
                 <div className="space-y-3">
                   {faqs.map((f, idx) => (
-                    <div key={idx} className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                      <div className="grid grid-cols-1 lg:grid-cols-10 gap-3 items-start">
-                        <div className="lg:col-span-4">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Question</label>
-                          <input
-                            type="text"
-                            value={f.question}
-                            onChange={(e)=>setFaqs(prev=>prev.map((x,i)=> i===idx ? { ...x, question:e.target.value } : x))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="Enter question"
-                          />
+                    <div key={idx} className="bg-gray-50 border border-gray-200 rounded-xl"
+                         draggable
+                         onDragStart={() => { dragIndexRef.current = idx; }}
+                         onDragOver={(e) => e.preventDefault()}
+                         onDrop={() => {
+                           const from = dragIndexRef.current;
+                           const to = idx;
+                           if (from === null || from === to) return;
+                           setFaqs(prev => {
+                             const arr = [...prev];
+                             const [m] = arr.splice(from, 1);
+                             arr.splice(to, 0, m);
+                             return arr;
+                           });
+                           setCollapsedFaqs(prev => {
+                             const arr = [...prev];
+                             const [m] = arr.splice(from, 1);
+                             arr.splice(to, 0, m);
+                             return arr;
+                           });
+                         }}>
+                      <div className="flex items-center justify-between p-3 border-b border-gray-200">
+                        <div className="flex items-center gap-2">
+                          <span className="cursor-move text-gray-400" title="Drag to reorder">⋮⋮</span>
+                          <span className="text-sm font-medium text-gray-800">FAQ #{idx+1}</span>
                         </div>
-                        <div className="lg:col-span-5">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Answer</label>
-                          <textarea
-                            rows={3}
-                            value={f.answer}
-                            onChange={(e)=>setFaqs(prev=>prev.map((x,i)=> i===idx ? { ...x, answer:e.target.value } : x))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="Enter answer"
-                          />
-                        </div>
-                        <div className="lg:col-span-1 flex lg:justify-end">
+                        <div className="flex items-center gap-2">
+                          <button type="button" className="text-gray-600 text-sm" onClick={() => setCollapsedFaqs(prev => {
+                            const arr = [...prev];
+                            arr[idx] = !arr[idx];
+                            return arr;
+                          })}>{collapsedFaqs[idx] ? 'Expand' : 'Collapse'}</button>
                           <button
                             type="button"
-                            onClick={()=>setFaqs(prev=>prev.filter((_,i)=>i!==idx))}
-                            className="px-3 py-2 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
+                            onClick={()=>{
+                              setFaqs(prev=>prev.filter((_,i)=>i!==idx));
+                              setCollapsedFaqs(prev=>prev.filter((_,i)=>i!==idx));
+                            }}
+                            className="px-3 py-1 text-sm rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
                             title="Remove FAQ"
                           >
                             Remove
                           </button>
                         </div>
                       </div>
+                      {!collapsedFaqs[idx] && (
+                        <div className="p-4">
+                          <div className="grid grid-cols-1 lg:grid-cols-10 gap-3 items-start">
+                            <div className="lg:col-span-4">
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Question</label>
+                              <input
+                                type="text"
+                                value={f.question}
+                                onChange={(e)=>setFaqs(prev=>prev.map((x,i)=> i===idx ? { ...x, question:e.target.value } : x))}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="Enter question"
+                              />
+                            </div>
+                            <div className="lg:col-span-6">
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Answer</label>
+                              <textarea
+                                rows={3}
+                                value={f.answer}
+                                onChange={(e)=>setFaqs(prev=>prev.map((x,i)=> i===idx ? { ...x, answer:e.target.value } : x))}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="Enter answer"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
 
-                  <div className="flex justify-end">
+                  <div className="flex justify-between">
                     <button
                       type="button"
                       onClick={()=>setFaqs(prev=>[...prev, { question:'', answer:'' }])}
                       className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
                     >
                       Add FAQ
+                    </button>
+                    <button
+                      type="button"
+                      onClick={()=>{
+                        const topic = (title || categories || 'real estate').toLowerCase();
+                        const base = [
+                          { q: `What is ${topic}?`, a: `An overview of ${topic} and why it matters.` },
+                          { q: `How to choose the best ${topic}?`, a: `Key factors to consider when selecting ${topic}.` },
+                          { q: `Common mistakes in ${topic}`, a: `Avoid these pitfalls when dealing with ${topic}.` },
+                        ];
+                        setFaqs(prev => [...prev, ...base]);
+                        setCollapsedFaqs(prev => [...prev, false, false, false]);
+                      }}
+                      className="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 flex items-center gap-2"
+                    >
+                      <MessageSquare className="w-4 h-4" /> Add Suggested FAQs
                     </button>
                   </div>
                 </div>
@@ -2079,6 +2981,51 @@ const BlogWriteModal = () => {
             </div>
           </form>
         </div>
+        {/* History modal */}
+        {showHistory && (
+          <div className="fixed inset-0 bg-black/50 z-[4000] flex items-center justify-center" onClick={()=>setShowHistory(false)}>
+            <div className="bg-white rounded-xl shadow-xl p-4 w-[92vw] max-w-[520px]" onClick={(e)=>e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-2">
+                <div className="font-semibold">Draft History</div>
+                <button className="text-gray-600" onClick={()=>setShowHistory(false)}><X className="w-5 h-5"/></button>
+              </div>
+              {historyList?.length ? (
+                <div className="max-h-[60vh] overflow-auto divide-y">
+                  {historyList.map((h, i) => (
+                    <div key={i} className="py-2 flex items-center justify-between">
+                      <div className="text-sm">
+                        <div className="font-medium">{h.title || 'Untitled'}</div>
+                        <div className="text-gray-500">{new Date(h.ts).toLocaleString()}</div>
+                      </div>
+                      <button className="px-3 py-1.5 rounded-lg border border-gray-300 hover:bg-gray-50" onClick={()=>{
+                        try {
+                          const raw = localStorage.getItem(draftKey);
+                          if (!raw) return;
+                          const s = JSON.parse(raw);
+                          setTitle(s.title || '');
+                          setDescription(s.description || '');
+                          setFrontImagePreview(s.frontImagePreview || '');
+                          setCategories(s.categories || '');
+                          setMetaTitle(s.metaTitle || '');
+                          setMetaDescription(s.metaDescription || '');
+                          setSlug(s.slug || '');
+                          setRelatedProjects(Array.isArray(s.relatedProjects) ? s.relatedProjects : []);
+                          setEnableFAQ(!!s.enableFAQ);
+                          setFaqs(Array.isArray(s.faqs) && s.faqs.length ? s.faqs : [{question:'',answer:''}]);
+                          setAuthor(s.author || author);
+                          messageApi.success('Draft restored');
+                          setShowHistory(false);
+                        } catch {}
+                      }}>Restore</button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-sm text-gray-600">No history yet.</div>
+              )}
+            </div>
+          </div>
+        )}
         {/* Lightbox Overlay */}
         {lightboxUrl && (
           <div
