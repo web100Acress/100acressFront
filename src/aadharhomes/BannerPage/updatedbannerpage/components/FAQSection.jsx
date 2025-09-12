@@ -20,7 +20,7 @@ const FAQSection = ({ projectViewDetails = {}, onShowCallback = () => {} }) => {
     if (projectViewDetails?.projectName) {
       faqs.push({
         title: `What is the exact Location of ${projectViewDetails.projectName}`,
-        content: `${projectViewDetails.projectName} is strategically located in ${projectViewDetails?.projectAddress}, ${projectViewDetails?.city}. A well-connected and rapidly developing ${projectViewDetails?.projectOverview || 'residential'} hub.`
+        content: `${projectViewDetails.projectName} is strategically located in ${projectViewDetails?.projectAddress}, ${projectViewDetails?.city}. A well-connected and rapidly developing non hub.`
       });
     }
 
