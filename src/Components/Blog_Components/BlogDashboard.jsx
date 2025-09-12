@@ -238,18 +238,25 @@ export default function BlogDashboard() {
   };
 
   const calculateAnalytics = (blogData) => {
+    const getCommentCount = (b) => (
+      typeof b?.commentsCount === 'number'
+        ? b.commentsCount
+        : (Array.isArray(b?.comments) ? b.comments.length : (b?.comments || 0))
+    );
     const totalViews = blogData.reduce((sum, blog) => sum + (blog.views || 0), 0);
     const totalLikes = blogData.reduce((sum, blog) => sum + (blog.likes || 0), 0);
     const totalShares = blogData.reduce((sum, blog) => sum + (blog.shares || 0), 0);
-    const totalComments = blogData.reduce((sum, blog) => sum + (blog.comments || 0), 0);
+    const totalComments = blogData.reduce((sum, blog) => sum + getCommentCount(blog), 0);
     
     const publishedBlogs = blogData.filter(blog => blog.isPublished);
     const draftBlogs = blogData.filter(blog => !blog.isPublished);
     const averageViews = publishedBlogs.length > 0 ? totalViews / publishedBlogs.length : 0;
     
     const topPerformingBlog = blogData.reduce((top, blog) => {
-      const blogScore = (blog.views || 0) + (blog.likes || 0) * 2 + (blog.shares || 0) * 3 + (blog.comments || 0) * 1;
-      const topScore = (top?.views || 0) + (top?.likes || 0) * 2 + (top?.shares || 0) * 3 + (top?.comments || 0) * 1;
+      const blogScore = (blog.views || 0) + (blog.likes || 0) * 2 + (blog.shares || 0) * 3 + getCommentCount(blog) * 1;
+      const topScore = (top?.views || 0) + (top?.likes || 0) * 2 + (top?.shares || 0) * 3 + (
+        top ? getCommentCount(top) : 0
+      ) * 1;
       return blogScore > topScore ? blog : top;
     }, null);
 
@@ -574,8 +581,8 @@ export default function BlogDashboard() {
       key: 'engagement',
       width: 200,
       sorter: (a, b) => {
-        const scoreA = (a.likes || 0) + (a.shares || 0) + (a.comments || 0);
-        const scoreB = (b.likes || 0) + (b.shares || 0) + (b.comments || 0);
+        const scoreA = (a.likes || 0) + (a.shares || 0) + (a.commentsCount || 0);
+        const scoreB = (b.likes || 0) + (b.shares || 0) + (b.commentsCount || 0);
         return scoreA - scoreB;
       },
       render: (_, record) => (
@@ -592,10 +599,10 @@ export default function BlogDashboard() {
               <span className="text-sm font-medium">{record.shares || 0}</span>
             </div>
           </Tooltip>
-          <Tooltip title={`${record.comments || 0} Comments`}>
+          <Tooltip title={`${record.commentsCount || 0} Comments`}>
             <div className="flex items-center space-x-1 text-red-600">
               <MessageCircle size={16} />
-              <span className="text-sm font-medium">{record.comments || 0}</span>
+              <span className="text-sm font-medium">{record.commentsCount || 0}</span>
             </div>
           </Tooltip>
         </div>
