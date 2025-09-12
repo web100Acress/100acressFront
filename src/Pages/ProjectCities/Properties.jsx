@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
 import ProjectSearching from "../ProjectSearching";
 import CommonInside from "../../Utils/CommonInside";
@@ -11,6 +11,7 @@ const Properties = () => {
   const {getProjectbyState} = Api_service();
   const gurugramProject = useSelector(store => store?.stateproject?.gurugram);
   const [filtereddata,setFilteredData] = useState([]);
+  const [search, setSearch] = useState("");
   const [datafromsearch,setDatafromsearch] = useState({});
   function handleDatafromSearch(data){
     setFilteredData(data);
@@ -27,7 +28,7 @@ const Properties = () => {
 
 
   return (
-    <div >
+    <div>
         <Helmet>
         <meta
           name="description"
@@ -56,23 +57,48 @@ const Properties = () => {
       </Helmet>
     
 
-      <section className="flex flex-col items-center bg-white mt-4">
-      <h1 className="mb-2 p-1 text-center text-2xl sm:text-xl md:text-2xl lg:text-3xl text-red-600 font-bold tracking-[0.1em]">
-          Projects in Gurugram
-        </h1>
+      <main className="mt-14">
+        {/* Page header (Resale/Rental theme) */}
+        <section className="flex flex-col items-center pt-4 px-4">
+          <div className="text-center max-w-4xl">
+            <h1 className="text-3xl md:text-4xl font-bold text-[#D32F2F] mb-2">Best Projects in Gurugram</h1>
+            <div className="w-16 h-1 mx-auto bg-[#D32F2F] rounded mb-2"></div>
+            <p className="text-gray-500 text-base md:text-lg">Value, Location, and Comfort — Discover premium projects in prime Gurugram locations.</p>
+          </div>
+        </section>
 
-        <h2 className="text-sm mb-0 text-center sm:text-xl md:text-xl lg:text-sm font-normal lg:mx-20 md:mx-10 mx-5 sm:mx-4 tracking-[0.1em]">
-          Gurugram is transforming with major enterprises, including new housing
-          complexes, commercial space, and infrastructure improvements. These
-          developments focus on improving connectivity by developing networks
-          and modern amenities, to enhance the standard of urban living and
-          encourage investment from businesses in the rapidly growing city.
-        </h2>
-        <ProjectSearching searchdata={gurugramProject} sendDatatoparent={handleDatafromSearch} city={city}/>
-        <CommonInside
-        Actualdata={filtereddata.length === 0 ? datafromsearch?.gurugramProject : filtereddata}
-        />
-      </section>
+        {/* Top search bar (Resale style) */}
+        <section className="flex items-center justify-center mb-6 px-4">
+          <input
+            type="text"
+            placeholder="Search projects by name or city..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full max-w-3xl px-5 py-3 rounded-full border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D32F2F] text-base bg-white"
+          />
+        </section>
+
+        {/* Filter ribbon (sticky) */}
+        <section className="max-w-7xl mx-auto w-full">
+          <ProjectSearching searchdata={gurugramProject} sendDatatoparent={handleDatafromSearch} city={city}/>
+        </section>
+
+        {/* Results grid */}
+        <section className="max-w-7xl mx-auto w-full px-4">
+          {(() => {
+            const base = filtereddata.length === 0 ? (datafromsearch?.gurugramProject || []) : filtereddata;
+            const searched = search
+              ? base.filter(item =>
+                  (item.projectName || "").toLowerCase().includes(search.toLowerCase()) ||
+                  (item.city || "").toLowerCase().includes(search.toLowerCase())
+                )
+              : base;
+            return (
+              <CommonInside Actualdata={searched} />
+            );
+          })()}
+        </section>
+      </main>
       <Footer />
     </div>
   );

@@ -45,3 +45,30 @@
   margin-left: 2em !important; 
 }
 
+/* Share/copy UI helpers */
+.copy-toast {
+  position: absolute;
+  right: -4px;
+  top: -8px;
+  transform: translateY(-100%);
+  background: #111827; /* gray-900 */
+  color: #fff;
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+  z-index: 20;
+}
+
+/* Make sure share buttons are clickable if inside any overflow/relative blocks */
+.blog-view .share-bar,
+.blog-view .share-bar * {
+  pointer-events: auto;
+}
+.blog-view .share-bar a,
+.blog-view .share-bar button {
+  position: relative;
+  z-index: 1;
+}

@@ -42,23 +42,28 @@ const ProjectSearching = ({searchdata,sendDatatoparent,city}) => {
 
   return (
     <>
-      <div className="hidden lg:flex items-center px-10 bg-gray-200  justify-center rounded-full mt-4">
-        <div className="w-full">
-        <div className={`grid grid-cols-1 ${city === "Gurugram" ? "lg:grid-cols-6" : "lg:grid-cols-5"} md:grid-cols-1 sm:grid-cols-1 gap-4 pt-6 mb-4`}>
-            <div className="relative">
-              <input
-                type="text"
-                className="border-[1px] border-[#C13B44] rounded-3xl outline-none p-2 pr-6 w-full"
-                placeholder="Project"
-                value={project}
-                onChange={(e) => setProject(e.target.value)}
-              />
-              <i className="fas fa-search text-gray-500 absolute right-4 top-1/2 transform -translate-y-1/2" />
+      {/* Desktop filter ribbon */}
+      <div className="hidden lg:block px-4 mt-4">
+        <div className="sticky top-16 z-30 w-full bg-white/70 supports-[backdrop-filter]:bg-white/60 backdrop-blur border border-gray-200 shadow-sm rounded-2xl">
+          <div className="grid grid-cols-6 gap-3 items-center px-4 py-3">
+            {/* Project search */}
+            <div className="col-span-1">
+              <div className="relative">
+                <input
+                  type="text"
+                  className="w-full rounded-full border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+                  placeholder="Project"
+                  value={project}
+                  onChange={(e) => setProject(e.target.value)}
+                />
+                <i className="fas fa-search text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+              </div>
             </div>
 
-            <div className="relative hidden lg:block">
+            {/* Location */}
+            <div className="col-span-1">
               <select
-                className="border-[1px] border-[#C13B44] rounded-3xl outline-none p-2 pr-8 w-full"
+                className="w-full rounded-full border border-gray-300 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               >
@@ -69,40 +74,38 @@ const ProjectSearching = ({searchdata,sendDatatoparent,city}) => {
                 <option value="Golf Course Road">Golf Course Road</option>
                 <option value="MG Road">MG Road</option>
                 <option value="Sohna">Sohna</option>
-                <option value="Southern Peripheral Road">
-                  Southern Peripheral Road
-                </option>
+                <option value="Southern Peripheral Road">Southern Peripheral Road</option>
                 <option value="NH-48">NH-48</option>
-                <option value="Golf Course Extn Road">
-                  Golf Course Extn Road
-                </option>
+                <option value="Golf Course Extn Road">Golf Course Extn Road</option>
                 <option value="New Gurgaon">New Gurgaon</option>
-                <option value="Northern Peripheral Road">
-                  Northern Peripheral Road
-                </option>
+                <option value="Northern Peripheral Road">Northern Peripheral Road</option>
                 <option value="Dwarka Expressway">Dwarka Expressway</option>
               </select>
             </div>
-            {city === "Gurugram" && (<div className="relative hidden lg:block">
-              <select
-                className="border-[1px] border-[#C13B44] rounded-3xl outline-none p-2 pr-8 w-full"
-                value={projectstatus}
-                onChange={(e) => setProjectstatus(e.target.value)}
-              >
-                <option value="" disabled hidden>
-                  Project Status
-                </option>
-                <option value="comingsoon">Upcoming Projects</option>
-                <option value="newlaunch">New Launch Projects</option>
-                <option value="underconstruction">Under Constructions</option>
-                <option value="readytomove">Ready To Move</option>
-                
-              </select>
-            </div>)}
 
-            <div className="relative sm:col-span-1 hidden lg:block">
+            {/* Project Status (only for Gurugram) */}
+            {city === "Gurugram" && (
+              <div className="col-span-1">
+                <select
+                  className="w-full rounded-full border border-gray-300 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+                  value={projectstatus}
+                  onChange={(e) => setProjectstatus(e.target.value)}
+                >
+                  <option value="" disabled hidden>
+                    Project Status
+                  </option>
+                  <option value="comingsoon">Upcoming Projects</option>
+                  <option value="newlaunch">New Launch Projects</option>
+                  <option value="underconstruction">Under Constructions</option>
+                  <option value="readytomove">Ready To Move</option>
+                </select>
+              </div>
+            )}
+
+            {/* Project Type */}
+            <div className="col-span-1">
               <select
-                className="border-[1px] border-[#C13B44] rounded-3xl outline-none p-2 pr-8 w-full"
+                className="w-full rounded-full border border-gray-300 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
                 value={projectType}
                 onChange={(e) => setProjectType(e.target.value)}
               >
@@ -122,9 +125,10 @@ const ProjectSearching = ({searchdata,sendDatatoparent,city}) => {
               </select>
             </div>
 
-            <div className="relative sm:col-span-1 hidden lg:block">
+            {/* Price */}
+            <div className="col-span-1">
               <select
-                className="border-[1px] border-[#C13B44] rounded-3xl outline-none p-2 pr-8 w-full"
+                className="w-full rounded-full border border-gray-300 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
                 onChange={handlePriceChange}
                 value={
                   minPrice === "" && maxPrice === ""
@@ -144,15 +148,15 @@ const ProjectSearching = ({searchdata,sendDatatoparent,city}) => {
               </select>
             </div>
 
-            <div className="relative sm:col-span-1 hidden lg:block">
-            <button
-              className="p-1 lg:col-span-1 bg-black rounded-3xl text-white text-xl w-full"
-              onClick={handleSearch}
+            {/* Search */}
+            <div className="col-span-1">
+              <button
+                className="w-full rounded-full bg-black text-white text-sm font-semibold py-2.5 hover:bg-gray-900 transition shadow"
+                onClick={handleSearch}
               >
-              Search
-            </button>
-              </div>
-            
+                Search
+              </button>
+            </div>
           </div>
         </div>
       </div>
