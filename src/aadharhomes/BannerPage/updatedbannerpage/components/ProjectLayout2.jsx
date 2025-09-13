@@ -144,32 +144,62 @@ function ProjectLayout2() {
     price: formatPrice()
   };
 
+  // Only render meta tags when project data is loaded
+  const renderMetaTags = () => {
+    if (!projectViewDetails) return null;
+    
+    return (
+      <Helmet>
+        <title>{projectViewDetails?.meta_title}</title>
+        <meta
+          name="description"
+          content={projectViewDetails.meta_description}
+        />
+        <meta property="og:title" content={projectViewDetails?.meta_title} />
+        <meta property="og:site_name" content="100acress.com" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={projectViewDetails?.frontImage?.url} />
+        <meta property="og:url" content="https://www.100acress.com/" />
+        <meta property="og:description" content={projectViewDetails.meta_description} />
+        <meta name="twitter:title" content={projectViewDetails?.meta_title} />
+        <meta name="twitter:description" content={projectViewDetails.meta_description} />
+        <meta property="twitter:url" content="https://www.100acress.com/" />
+        <meta property="twitter:image" content={projectViewDetails?.frontImage?.url} />
+        <meta name="twitter:card" content="summary" />
+        <link
+          rel="canonical"
+          href={`https://www.100acress.com/${projectViewDetails.project_url}/`}
+        />
+        <meta name="robots" content="index, follow" />
+        {projectViewDetails?.keywords && (
+          <meta name="keywords" content={projectViewDetails.keywords} />
+        )}
+      </Helmet>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-amber-500 mb-2">Error Loading Project</h2>
+          <p className="text-gray-300">Sorry, we couldn't load the project details. Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* SEO Meta */}
-      <Helmet>
-        <title>{projectTitle ? `${projectTitle}${location ? `, ${location}` : ''} | 100acress` : 'Project Details | 100acress'}</title>
-        <meta name="description" content={(projectViewDetails?.project_discripation ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').slice(0, 160) : `Explore details, pricing, floor plans and location for ${projectTitle}${location ? ` in ${location}` : ''} on 100acress.`)} />
-        {typeof window !== 'undefined' && window.location?.href && (
-          <link rel="canonical" href={window.location.href} />
-        )}
-
-        {/* Open Graph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={projectTitle ? `${projectTitle}${location ? `, ${location}` : ''} | 100acress` : 'Project Details | 100acress'} />
-        <meta property="og:description" content={(projectViewDetails?.project_discripation ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').slice(0, 200) : `Explore details, pricing, floor plans and location for ${projectTitle}${location ? ` in ${location}` : ''} on 100acress.`)} />
-        {backgroundImage && <meta property="og:image" content={backgroundImage} />}
-        {typeof window !== 'undefined' && window.location?.href && (
-          <meta property="og:url" content={window.location.href} />
-        )}
-        <meta property="og:site_name" content="100acress" />
-
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={projectTitle ? `${projectTitle}${location ? `, ${location}` : ''} | 100acress` : 'Project Details | 100acress'} />
-        <meta name="twitter:description" content={(projectViewDetails?.project_discripation ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').slice(0, 200) : `Explore details, pricing, floor plans and location for ${projectTitle}${location ? ` in ${location}` : ''} on 100acress.`)} />
-        {backgroundImage && <meta name="twitter:image" content={backgroundImage} />}
-      </Helmet>
+      {renderMetaTags()}
       {/* Hero Section */}
       <ProjectHero
         backgroundImage={backgroundImage}
