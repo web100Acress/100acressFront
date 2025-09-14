@@ -141,18 +141,7 @@ const BuilderPage = React.memo(() => {
       randomSeed
     );
   }, [filteredBuilderProjects, builderName, query, buildersWithCustomOrder, customOrders, randomSeeds, propOrderIds]);
-  console.log('🔍 builderProjects:', builderProjects);
-  console.log('🔍 filteredBuilderProjects:', filteredBuilderProjects);
-  console.log('🔍 orderedProjects:', orderedProjects);
-  console.log('🔍 builderName from URL:', builderName);
-  console.log('🔍 query value:', query);
-  console.log('🔍 hasCustomOrder:', hasCustomOrder(builderName, buildersWithCustomOrder));
-  console.log('🔍 customOrder:', getCustomOrder(builderName, customOrders));
-  console.log('🔍 Redux customOrders:', customOrders);
-  console.log('🔍 Redux buildersWithCustomOrder:', buildersWithCustomOrder);
-  console.log('🔍 Builder name for Redux lookup:', builderName);
-  console.log('🔍 Available builder keys in customOrders:', Object.keys(customOrders));
-  console.log('🔍 Available builder keys in buildersWithCustomOrder:', Object.keys(buildersWithCustomOrder));
+  
 
   const handleShare = (project) => {
     if (navigator.share) {
