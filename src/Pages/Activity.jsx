@@ -41,23 +41,39 @@ const Card = ({ item }) => {
   // Normalize incoming shapes from favorites/viewed/spotlight
   const title = item?.title || item?.projectName || "Property";
   const url = item?.url || (item?.project_url ? `/${item.project_url}/` : "#");
-  const image =
-    item?.image?.url || item?.image ||
-    item?.img ||
-    item?.image_url || item?.imageUrl ||
-    item?.frontImage?.url ||
-    (typeof item?.frontImage === 'string' ? item.frontImage : undefined) ||
-    item?.front_image || item?.frontImageUrl || item?.frontImageURL ||
-    item?.thumbnailImage?.url ||
-    item?.thumbnailImageUrl || item?.thumbnailImageURL ||
-    item?.thumbnail?.url ||
-    item?.thumbnail ||
-    item?.thumbnailUrl || item?.thumbnailURL ||
-    item?.cover || item?.coverImage || item?.cover_image ||
-    item?.photo || item?.picture ||
-    (Array.isArray(item?.images) && (item.images[0]?.url || (typeof item.images[0] === 'string' ? item.images[0] : undefined))) ||
-    (Array.isArray(item?.gallery) && (item.gallery[0]?.url || (typeof item.gallery[0] === 'string' ? item.gallery[0] : undefined))) ||
-    "";
+  // Build ordered image candidate list (thumbnail first)
+  const buildCandidates = (it) => {
+    const raw = [
+      // Prefer explicit thumbnail fields
+      it?.thumbnailImage?.cdn_url, it?.thumbnailImage?.url,
+      it?.thumbnail?.cdn_url, it?.thumbnail?.url,
+      it?.thumbnail, it?.thumbnailUrl, it?.thumbnailURL,
+      it?.thumbnailImageUrl, it?.thumbnailImageURL,
+      // Then front/card/banner
+      it?.frontImage?.thumbnail?.cdn_url, it?.frontImage?.thumbnail?.url,
+      it?.frontImage?.cdn_url, it?.frontImage?.url,
+      typeof it?.frontImage === 'string' ? it.frontImage : undefined,
+      it?.front_image, it?.frontImageUrl, it?.frontImageURL,
+      it?.cardImage?.cdn_url, it?.cardImage?.url, it?.cardImage,
+      it?.bannerImage?.cdn_url, it?.bannerImage?.url, it?.bannerImage,
+      // Generic image fields
+      it?.image?.cdn_url, it?.image?.url, it?.image,
+      it?.img,
+      it?.image_url, it?.imageUrl,
+      it?.cover, it?.coverImage, it?.cover_image,
+      it?.photo, it?.picture,
+      ...(Array.isArray(it?.images) ? it.images.map((img) => (typeof img === 'string' ? img : (img?.cdn_url || img?.url))) : []),
+      ...(Array.isArray(it?.gallery) ? it.gallery.map((img) => (typeof img === 'string' ? img : (img?.cdn_url || img?.url))) : []),
+    ];
+    // Normalize, filter blanks/placeholders, de-duplicate
+    const seen = new Set();
+    const list = raw
+      .map((u) => (typeof u === 'string' ? u.trim() : ''))
+      .filter((u) => u && !/^data:image\/svg\+xml/i.test(u))
+      .filter((u) => { if (seen.has(u)) return false; seen.add(u); return true; });
+    return list;
+  };
+  const imageCandidates = buildCandidates(item);
   const city = item?.city || item?.location || "";
   const priceText =
     item?.priceText ||
@@ -77,15 +93,22 @@ const Card = ({ item }) => {
     if (!img) return null;
     
     // If it's an object with a url property
-    if (img && typeof img === 'object' && img.url) {
-      return getImageUrl(img.url);
+    if (img && typeof img === 'object') {
+      if (img.cdn_url) return getImageUrl(img.cdn_url);
+      if (img.url) return getImageUrl(img.url);
+      return null;
     }
     
     // If it's a string
     if (typeof img === 'string') {
       // If it's already a full URL or data URL, return as is
       if (img.startsWith('http') || img.startsWith('data:image') || img.startsWith('blob:')) {
-        return img;
+        // Upgrade to https if http
+        return img.startsWith('http://') ? img.replace(/^http:\/\//i, 'https://') : img;
+      }
+      // Protocol-relative URLs
+      if (img.startsWith('//')) {
+        return `https:${img}`;
       }
       // Handle relative paths
       if (img.startsWith('/')) {
@@ -98,25 +121,37 @@ const Card = ({ item }) => {
     return null;
   };
 
-  const imageUrl = getImageUrl(image);
-  const [imgSrc, setImgSrc] = useState(imageUrl);
+  const imageUrl = getImageUrl(imageCandidates[0]);
+  const FALLBACK_IMG = '/Images/blog.avif';
+  const [imgIndex, setImgIndex] = useState(0);
+  const [imgSrc, setImgSrc] = useState(imageUrl || FALLBACK_IMG);
   const [imgError, setImgError] = useState(false);
 
   // Handle image loading errors
-  const handleImageError = (e) => {
-    console.error('Error loading image:', e.target.src);
-    setImgError(true);
-    setImgSrc(null);
+  const handleImageError = () => {
+    try {
+      const nextIdx = imgIndex + 1;
+      if (nextIdx < imageCandidates.length) {
+        setImgIndex(nextIdx);
+        const nextUrl = getImageUrl(imageCandidates[nextIdx]) || FALLBACK_IMG;
+        setImgSrc(nextUrl);
+        return;
+      }
+      if (!imgError && imgSrc !== FALLBACK_IMG) {
+        setImgError(true);
+        setImgSrc(FALLBACK_IMG);
+      }
+    } catch (_) {}
   };
   
   // Log image URL for debugging
   useEffect(() => {
-    console.log('Image URL:', {
-      original: image,
-      processed: imageUrl,
-      imgSrc
-    });
-  }, [image, imageUrl, imgSrc]);
+    // When item changes, reset to first candidate
+    setImgIndex(0);
+    const first = getImageUrl(imageCandidates[0]) || FALLBACK_IMG;
+    setImgSrc(first);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item]);
 
   return (
     <article className="group overflow-hidden rounded-2xl border border-gray-100 text-black shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_28px_rgba(0,0,0,0.10)] transition-all duration-300 ease-out h-full flex flex-col bg-white">

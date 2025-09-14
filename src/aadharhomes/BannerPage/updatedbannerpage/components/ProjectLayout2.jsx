@@ -14,7 +14,7 @@ import RelatedProjects from './RelatedProjects';
 import CallbackModal from './CallbackModal';
 import FooterForm from './FooterForm';
 import { Helmet } from 'react-helmet-async';
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../../../../config/apiClient";
 
 
@@ -55,6 +55,7 @@ function ProjectLayout2() {
   const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
   const [callbackSuccessHandler, setCallbackSuccessHandler] = useState(null);
   const { pUrl } = useParams();
+  const navigate = useNavigate();
 
   const handleShowCallback = (successCallback = null) => {
     setCallbackSuccessHandler(() => successCallback);
@@ -73,11 +74,16 @@ function ProjectLayout2() {
         setLoading(true);
         const response = await api.get(`project/View/${pUrl}`);
         const projectData = response?.data?.dataview?.[0] || null;
-        if (isMounted) {
-          setProjectViewDetails(projectData);
+        if (!projectData) {
+          // If no project found for this slug, redirect to home
+          navigate('/', { replace: true });
+          return;
         }
+        if (isMounted) setProjectViewDetails(projectData);
       } catch (err) {
         if (isMounted) setError(err);
+        // On error (e.g., 404), redirect to home
+        navigate('/', { replace: true });
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -112,45 +118,109 @@ function ProjectLayout2() {
     return `${projectViewDetails.minPrice} Cr`;
   };
 
+  // Helper function to determine if property is residential
+  const isResidentialProperty = () => {
+    if (!projectViewDetails?.type) return false;
+    
+    const residentialTypes = [
+      "Residential Flats",
+      "Residential",
+      "Apartment",
+      "Villa",
+      "Independent House",
+      "Builder Floor",
+      "Residential Plot"
+    ];
+    
+    return residentialTypes.some(type => 
+      projectViewDetails.type.toLowerCase().includes(type.toLowerCase())
+    );
+  };
+
+  // Safe summary for About section to avoid showing "undefined..."
+  const getAboutSummary = () => {
+    if (projectViewDetails?.totalUnit) {
+      const towerPrefix = projectViewDetails.type === "Residential Flats" && projectViewDetails.towerNumber
+        ? `${projectViewDetails.towerNumber} Tower - `
+        : "";
+      return `${towerPrefix}${projectViewDetails.totalUnit} Unit`;
+    }
+    if (projectViewDetails?.project_discripation) {
+      return projectViewDetails.project_discripation
+        .replace(/<[^>]*>/g, '')
+        .substring(0, 60) + '...';
+    }
+    if (projectViewDetails?.projectOverview) {
+      return projectViewDetails.projectOverview.substring(0, 60) + '...';
+    }
+    return '—';
+  };
+
   const bottomInfo = {
     landArea: projectViewDetails?.totalLandArea ? `${projectViewDetails.totalLandArea} Acres` : "—",
     possession: projectViewDetails?.possessionDate 
       ? format(new Date(projectViewDetails.possessionDate), 'MMM yyyy')
       : projectViewDetails?.project_Status || "—",
-    aboutProject: projectViewDetails?.totalUnit 
-      ? `${projectViewDetails.type === "Residential Flats" && projectViewDetails.towerNumber ? `${projectViewDetails.towerNumber} Tower - ` : ""}${projectViewDetails.totalUnit} Unit`
-      : projectViewDetails?.project_discripation 
-        ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').substring(0, 60) + '...' 
-        : projectViewDetails?.projectOverview?.substring(0, 60) + '...' || "—",
+    aboutProject: getAboutSummary(),
     price: formatPrice()
   };
 
+  // Only render meta tags when project data is loaded
+  const renderMetaTags = () => {
+    if (!projectViewDetails) return null;
+    
+    return (
+      <Helmet>
+        <title>{projectViewDetails?.meta_title}</title>
+        <meta
+          name="description"
+          content={projectViewDetails.meta_description}
+        />
+        <meta property="og:title" content={projectViewDetails?.meta_title} />
+        <meta property="og:site_name" content="100acress.com" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={projectViewDetails?.frontImage?.url} />
+        <meta property="og:url" content="https://www.100acress.com/" />
+        <meta property="og:description" content={projectViewDetails.meta_description} />
+        <meta name="twitter:title" content={projectViewDetails?.meta_title} />
+        <meta name="twitter:description" content={projectViewDetails.meta_description} />
+        <meta property="twitter:url" content="https://www.100acress.com/" />
+        <meta property="twitter:image" content={projectViewDetails?.frontImage?.url} />
+        <meta name="twitter:card" content="summary" />
+        <link
+          rel="canonical"
+          href={`https://www.100acress.com/${projectViewDetails.project_url}/`}
+        />
+        <meta name="robots" content="index, follow" />
+        {projectViewDetails?.keywords && (
+          <meta name="keywords" content={projectViewDetails.keywords} />
+        )}
+      </Helmet>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-amber-500 mb-2">Error Loading Project</h2>
+          <p className="text-gray-300">Sorry, we couldn't load the project details. Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* SEO Meta */}
-      <Helmet>
-        <title>{projectTitle ? `${projectTitle}${location ? `, ${location}` : ''} | 100acress` : 'Project Details | 100acress'}</title>
-        <meta name="description" content={(projectViewDetails?.project_discripation ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').slice(0, 160) : `Explore details, pricing, floor plans and location for ${projectTitle}${location ? ` in ${location}` : ''} on 100acress.`)} />
-        {typeof window !== 'undefined' && window.location?.href && (
-          <link rel="canonical" href={window.location.href} />
-        )}
-
-        {/* Open Graph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={projectTitle ? `${projectTitle}${location ? `, ${location}` : ''} | 100acress` : 'Project Details | 100acress'} />
-        <meta property="og:description" content={(projectViewDetails?.project_discripation ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').slice(0, 200) : `Explore details, pricing, floor plans and location for ${projectTitle}${location ? ` in ${location}` : ''} on 100acress.`)} />
-        {backgroundImage && <meta property="og:image" content={backgroundImage} />}
-        {typeof window !== 'undefined' && window.location?.href && (
-          <meta property="og:url" content={window.location.href} />
-        )}
-        <meta property="og:site_name" content="100acress" />
-
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={projectTitle ? `${projectTitle}${location ? `, ${location}` : ''} | 100acress` : 'Project Details | 100acress'} />
-        <meta name="twitter:description" content={(projectViewDetails?.project_discripation ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').slice(0, 200) : `Explore details, pricing, floor plans and location for ${projectTitle}${location ? ` in ${location}` : ''} on 100acress.`)} />
-        {backgroundImage && <meta name="twitter:image" content={backgroundImage} />}
-      </Helmet>
+      {renderMetaTags()}
       {/* Hero Section */}
       <ProjectHero
         backgroundImage={backgroundImage}
@@ -188,41 +258,43 @@ function ProjectLayout2() {
         projectViewDetails={projectViewDetails}
       />
 
-      {/* Amenities */}
-      <section className="pt-0 pb-4 bg-black">
-        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-          <SectionHeading title="Amenities" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { name: "MULTIPURPOSE COURT", image: "/amenities_image/multipurpose-court-new-img.webp" },
-              { name: "TODDLERS' PLAY AREA", image: "/amenities_image/kidsplayarea-img-amenity.webp" },
-              { name: "SWIMMING POOL", image: "/amenities_image/swimming-pool-new-img.webp" },
-              { name: "BILLIARD ROOM", image: "/amenities_image/billiard_room.webp" },
-              { name: "KIDS PLAY AREA", image: "/amenities_image/kids-play-area.webp" },
-              { name: "BASKETBALL COURT", image: "/amenities_image/basketball.webp" },
-              { name: "SENIOR CITIZEN GARDEN", image: "/amenities_image/senior_citizen.webp" },
-              { name: "WATER FEATURE", image: "/amenities_image/water_feature-new-img.webp" },
-              { name: "DECK SEATING", image: "/amenities_image/deck_seating.webp" },
-              { name: "GREENS", image: "/amenities_image/greens.webp" },
-              { name: "GYMNASIUM", image: "/amenities_image/gym-new-img.webp" },
-              { name: "LAWN", image: "/amenities_image/lawn.webp" }
-            ].map((amenity, idx) => (
-              <div key={idx} className="text-center">
-                <div className="relative overflow-hidden rounded-lg mb-4 aspect-[4/3]">
-                  <img 
-                    src={amenity.image} 
-                    alt={amenity.name}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  />
+      {/* Amenities - Only show for residential properties */}
+      {isResidentialProperty() && (
+        <section className="pt-0 pb-4 bg-black">
+          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <SectionHeading title="Amenities" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[
+                { name: "MULTIPURPOSE COURT", image: "/amenities_image/multipurpose-court-new-img.webp" },
+                { name: "TODDLERS' PLAY AREA", image: "/amenities_image/kidsplayarea-img-amenity.webp" },
+                { name: "SWIMMING POOL", image: "/amenities_image/swimming-pool-new-img.webp" },
+                { name: "BILLIARD ROOM", image: "/amenities_image/billiard_room.webp" },
+                { name: "KIDS PLAY AREA", image: "/amenities_image/kids-play-area.webp" },
+                { name: "BASKETBALL COURT", image: "/amenities_image/basketball.webp" },
+                { name: "SENIOR CITIZEN GARDEN", image: "/amenities_image/senior_citizen.webp" },
+                { name: "WATER FEATURE", image: "/amenities_image/water_feature-new-img.webp" },
+                { name: "DECK SEATING", image: "/amenities_image/deck_seating.webp" },
+                { name: "GREENS", image: "/amenities_image/greens.webp" },
+                { name: "GYMNASIUM", image: "/amenities_image/gym-new-img.webp" },
+                { name: "LAWN", image: "/amenities_image/lawn.webp" }
+              ].map((amenity, idx) => (
+                <div key={idx} className="text-center">
+                  <div className="relative overflow-hidden rounded-lg mb-4 aspect-[4/3]">
+                    <img 
+                      src={amenity.image} 
+                      alt={amenity.name}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <h3 className="text-white text-sm font-medium tracking-wide uppercase">
+                    {amenity.name}
+                  </h3>
                 </div>
-                <h3 className="text-white text-sm font-medium tracking-wide uppercase">
-                  {amenity.name}
-                </h3>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Gallery */}
       <Gallery galleryImages={projectViewDetails?.projectGallery || []} />

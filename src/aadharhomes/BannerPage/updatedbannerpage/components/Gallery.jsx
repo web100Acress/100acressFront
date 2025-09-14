@@ -1,20 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 const Gallery = ({ galleryImages = [] }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const openModal = (imageUrl) => {
+  const openModal = (imageUrl, index = 0) => {
     setSelectedImage(imageUrl);
+    setCurrentImageIndex(index);
     setIsModalOpen(true);
     document.body.style.overflow = 'hidden';
   };
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setSelectedImage(null);
     document.body.style.overflow = 'auto';
-  };
+  }, []);
+
+  const navigateImage = useCallback((direction) => {
+    setCurrentImageIndex(prevIndex => {
+      let newIndex;
+      if (direction === 'prev') {
+        newIndex = prevIndex > 0 ? prevIndex - 1 : galleryImages.length - 1;
+      } else {
+        newIndex = prevIndex < galleryImages.length - 1 ? prevIndex + 1 : 0;
+      }
+      setSelectedImage(galleryImages[newIndex]?.url);
+      return newIndex;
+    });
+  }, [galleryImages]);
+
+  const handleKeyDown = useCallback((e) => {
+    if (!isModalOpen) return;
+    
+    switch (e.key) {
+      case 'ArrowLeft':
+        navigateImage('prev');
+        break;
+      case 'ArrowRight':
+        navigateImage('next');
+        break;
+      case 'Escape':
+        closeModal();
+        break;
+      default:
+        break;
+    }
+  }, [isModalOpen, navigateImage, closeModal]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   if (!galleryImages || galleryImages.length === 0) {
     return null; // Don't render anything if there are no images
@@ -43,7 +83,7 @@ const Gallery = ({ galleryImages = [] }) => {
                 src={visibleImages[0].url}
                 alt="Gallery image 1"
                 className="w-full h-full object-cover rounded-lg cursor-pointer transition-transform duration-300 hover:scale-105"
-                onClick={() => openModal(visibleImages[0].url)}
+                onClick={() => openModal(visibleImages[0].url, galleryImages.findIndex(img => img.url === visibleImages[0].url))}
               />
             )}
           </div>
@@ -54,7 +94,7 @@ const Gallery = ({ galleryImages = [] }) => {
                   src={image.url}
                   alt={`Gallery image ${index + 2}`}
                   className="w-full h-full object-cover rounded-lg cursor-pointer transition-transform duration-300 hover:scale-105"
-                  onClick={() => openModal(image.url)}
+                  onClick={() => openModal(image.url, galleryImages.findIndex(img => img.url === image.url))}
                 />
               )}
             </div>
@@ -64,7 +104,7 @@ const Gallery = ({ galleryImages = [] }) => {
         {remainingImagesCount > 0 && (
           <div className="mt-6 text-center">
             <button
-              onClick={() => openModal(galleryImages[5]?.url)} // Open modal with the 6th image
+              onClick={() => openModal(galleryImages[5]?.url, 5)} // Open modal with the 6th image
               className="bg-amber-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-amber-700 transition-colors"
             >
               Show All Photos ({remainingImagesCount}+)
@@ -82,11 +122,36 @@ const Gallery = ({ galleryImages = [] }) => {
             &times;
           </button>
           <div className="relative w-full h-full max-w-6xl max-h-full flex items-center justify-center">
-            <img
-              src={selectedImage}
-              alt="Full screen gallery"
-              className="max-w-full max-h-full object-contain"
-            />
+            <button 
+              onClick={(e) => { e.stopPropagation(); navigateImage('prev'); }}
+              className="absolute left-4 md:left-8 text-white bg-black bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 z-10 transition-all"
+              aria-label="Previous image"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 md:h-10 md:w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <div className="relative w-full h-full flex items-center justify-center">
+              <img
+                src={selectedImage}
+                alt={`Gallery image ${currentImageIndex + 1}`}
+                className="max-w-full max-h-full object-contain"
+              />
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+                {currentImageIndex + 1} / {galleryImages.length}
+              </div>
+            </div>
+            
+            <button 
+              onClick={(e) => { e.stopPropagation(); navigateImage('next'); }}
+              className="absolute right-4 md:right-8 text-white bg-black bg-opacity-50 hover:bg-opacity-75 rounded-full p-2 z-10 transition-all"
+              aria-label="Next image"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 md:h-10 md:w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
       )}

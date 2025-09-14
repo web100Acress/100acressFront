@@ -45,7 +45,8 @@ import LoginForm from "./Components/LoginForm";
 // Lazy load all main page components
 const Home = lazy(() => import("./Pages/Home"));
 const EMICalculatorPage = lazy(() => import("./Pages/EMICalculatorPage"));
-const Properties = lazy(() => import("./Pages/ProjectCities/Properties"));
+// Deprecated: Properties page has been replaced by dynamic CityProjects template
+// const Properties = lazy(() => import("./Pages/ProjectCities/Properties"));
 const PropertyKnow = lazy(() => import("./Components/KnowAbouts/PropertyKnow"));
 const PageNotFound = lazy(() => import("./Pages/PageNotFound"));
 const SignUp = lazy(() => import("./aadharhomes/SignUp"));
@@ -80,18 +81,19 @@ const UserEdit = lazy(() => import("./Components/HomePageComponents/UserEdit"));
 const BlogView = lazy(() => import("./Pages/BlogView"));
 const BlogInsights = lazy(() => import("./Pages/BlogInsights"));
 const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation"));
-const DelhiProject = lazy(() => import("./Pages/ProjectCities/DelhiProject"));
-const NoidaProject = lazy(() => import("./Pages/ProjectCities/NoidaProject"));
-const GoaProject = lazy(() => import("./Pages/ProjectCities/GoaProject"));
-const PanipatProject = lazy(() => import("./Pages/ProjectCities/PanipatProject"));
-const Pushkar = lazy(() => import("./Pages/ProjectCities/Pushkar"));
+// Per-city pages are now handled by CityProjects; imports removed
+// const DelhiProject = lazy(() => import("./Pages/ProjectCities/DelhiProject"));
+// const NoidaProject = lazy(() => import("./Pages/ProjectCities/NoidaProject"));
+// const GoaProject = lazy(() => import("./Pages/ProjectCities/GoaProject"));
+// const PanipatProject = lazy(() => import("./Pages/ProjectCities/PanipatProject"));
+// const Pushkar = lazy(() => import("./Pages/ProjectCities/Pushkar"));
 const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
 const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
 const ReadyToMoveProject = lazy(() => import("./Pages/ReadyToMoveProject"));
 const VillasProjects = lazy(() => import("./Components/HomePageComponents/VillasProjects"));
 const LuxuryVillasForSalePage = lazy(() => import("./Pages/LuxuryVillasForSalePage"));
 const ScoPlotsInGurugramPage = lazy(() => import("./Pages/ScoPlotsInGurugramPage"));
-const Panchkula = lazy(() => import("./Pages/ProjectCities/Panchkula"));
+// const Panchkula = lazy(() => import("./Pages/ProjectCities/Panchkula"));
 const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
 const Bptp = lazy(() => import("./Pages/Bptp"));
 const Orris = lazy(() => import("./Pages/Orris"));
@@ -102,12 +104,12 @@ const M3mIndia = lazy(() => import("./Pages/M3mIndia"));
 const Microtek = lazy(() => import("./Pages/Microtek"));
 const Possessionin2024 = lazy(() => import("./Pages/Possessionin2024"));
 const Possessionin2025 = lazy(() => import("./Pages/Possessionin2025"));
-const Mumbai = lazy(() => import("./Pages/ProjectCities/Mumbai"));
-const KasauliProject = lazy(() => import("./Pages/ProjectCities/KasauliProject"));
-const Sonipat = lazy(() => import("./Pages/ProjectCities/Sonipat"));
+// const Mumbai = lazy(() => import("./Pages/ProjectCities/Mumbai"));
+// const KasauliProject = lazy(() => import("./Pages/ProjectCities/KasauliProject"));
+// const Sonipat = lazy(() => import("./Pages/ProjectCities/Sonipat"));
 const UnderConstruction = lazy(() => import("./Pages/UnderConstruction"));
 const NewLaunch = lazy(() => import("./Pages/NewLaunch"));
-const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
+// const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
 const SignatureGlobal = lazy(() => import("./Pages/SignatureGlobal"));
 const DlfSco = lazy(() => import("./Pages/DlfSco"));
 const ProjectLayout2 = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/ProjectLayout2"));
@@ -116,15 +118,15 @@ const BuilderPage = lazy(() => import("./Pages/BuilderPages/BuilderPage"));
 const OTPVerification = lazy(() => import("./Components/OTPVerification"));
 const SignupForm = lazy(() => import("./Components/SignupForm"));
 const EmailVerification = lazy(() => import("./Components/EmailVerification"));
-const Karnal = lazy(() => import("./Pages/ProjectCities/Karnal"));
-const Jalandhar = lazy(() => import("./Pages/ProjectCities/Jalandhar"));
+// const Jalandhar = lazy(() => import("./Pages/ProjectCities/Jalandhar"));
 const LuxuryProject = lazy(() => import("./Pages/BuilderPages/LuxuryProjects"));
 const ForgetPassword = lazy(() => import("./Pages/ForgetPassword"));
 const ViewAllProperty = lazy(() => import("./Pages/ViewAllProperty"));
 const BlogWriteModal = lazy(() => import("./AdminPage/BlogWriteModal"));
-const Dubai = lazy(() => import("./Pages/ProjectCities/Dubai"));
+// const Dubai = lazy(() => import("./Pages/ProjectCities/Dubai"));
 const GlobalBudgetPrice = lazy(() => import("./Pages/GlobalBudgetPrice"));
 const PriceTrends = lazy(() => import("./analytics/pages/PriceTrends"));
+const CityProjects = lazy(() => import("./Pages/ProjectCities/CityProjects"));
 // Analytics pages (MVP scaffold)
 const MarketAnalytics = lazy(() => import("./analytics/pages/MarketAnalytics"));
 const LocationIntelligence = lazy(() => import("./analytics/pages/LocationIntelligence"));
@@ -270,7 +272,7 @@ function App() {
                         path="/terms-and-conditions/"
                         element={<TermsAndConditions />}
                       />
-                      <Route path="/projects-in-gurugram/" element={<Properties />} />
+                      <Route path="/projects-in-gurugram/" element={<CityProjects />} />
                       <Route
                         path="/projects-in-gurugram/budget"
                         element={<BudgetPrice />}
@@ -343,18 +345,21 @@ function App() {
                         path="/projects/independentfloors/"
                         element={<BuilderIndependentFloor />}
                       />
-                      <Route path="/project-in-delhi/" element={<DelhiProject />} />
-                      <Route path="/project-in-noida/" element={<NoidaProject />} />
-                      <Route path="/project-in-panipat/" element={<PanipatProject />} />
-                      <Route path="/project-in-panchkula/" element={<Panchkula />} />
-                      <Route path="/project-in-kasauli/" element={<KasauliProject />} />
-                      <Route path="/projects-in-sonipat/" element={<Sonipat />} />
-                      <Route path="/projects-in-karnal/" element={<Karnal />} />
-                      <Route path="/projects-in-jalandhar/" element={<Jalandhar />} />
-                      <Route path="/project-in-ayodhya/" element={<Ayodhya />} />
-                      <Route path="/project-in-mumbai/" element={<Mumbai />} />
-                      <Route path="/projects-in-dubai/" element={<Dubai />} />
-                      <Route path="/projects-in-pushkar/" element={<Pushkar />} />
+                      <Route path="/project-in-delhi/" element={<CityProjects />} />
+                      <Route path="/project-in-noida/" element={<CityProjects />} />
+                      <Route path="/project-in-panipat/" element={<CityProjects />} />
+                      <Route path="/project-in-panchkula/" element={<CityProjects />} />
+                      <Route path="/project-in-kasauli/" element={<CityProjects />} />
+                      <Route path="/projects-in-sonipat/" element={<CityProjects />} />
+                      <Route path="/projects-in-karnal/" element={<CityProjects />} />
+                      <Route path="/projects-in-jalandhar/" element={<CityProjects />} />
+                      <Route path="/project-in-ayodhya/" element={<CityProjects />} />
+                      <Route path="/project-in-mumbai/" element={<CityProjects />} />
+                      <Route path="/projects-in-dubai/" element={<CityProjects />} />
+                      {/* Dynamic city projects route (generic template). Keep after specific routes to avoid conflicts. */}
+                      <Route path="/projects-in-:citySlug/" element={<CityProjects />} />
+                      <Route path="/project-in-:citySlug/" element={<CityProjects />} />
+                      <Route path="/projects-in-pushkar/" element={<CityProjects />} />
                   <Route path="/qr-generator" element={<QRGeneratorPage />} />
                       <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
                       {/* Analytics (public) */}
@@ -368,7 +373,7 @@ function App() {
                         element={<UnderConstruction />}
                       />
                       <Route path="/projects-in-newlaunch/" element={<NewLaunch />} />
-                      <Route path="/project-in-goa/" element={<GoaProject />} />
+                      <Route path="/project-in-goa/" element={<CityProjects />} />
                       <Route path="/plots-in-gurugram/" element={<PlotsInGurugramPage />} />
                       <Route path="/projects/villas/" element={<LuxuryVillasForSalePage />} />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />

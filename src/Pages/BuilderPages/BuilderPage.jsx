@@ -16,7 +16,7 @@ const BuilderPage = React.memo(() => {
     const [loading, setLoading] = useState(true);
     const [isSynced, setIsSynced] = useState(false);
     const [favoriteIds, setFavoriteIds] = useState([]);
-    const {getProjectbyBuilder} = Api_Service();
+    const {getProjectbyBuilder, getPropertyOrder} = Api_Service();
     
     // Memoize sync function to prevent infinite re-renders
     const memoizedSyncProjectOrders = useCallback(() => {
@@ -89,37 +89,59 @@ const BuilderPage = React.memo(() => {
       )
     : builderProjects;
 
-  // Order projects based on custom order or random order
+  // Fetch Property Order for this builder's query name and cache IDs for ordering
+  const [propOrderIds, setPropOrderIds] = useState([]);
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      if (!query) { setPropOrderIds([]); return; }
+      try {
+        const orderDoc = await getPropertyOrder(query);
+        const ids = Array.isArray(orderDoc?.customOrder) ? orderDoc.customOrder : [];
+        if (!cancelled) setPropOrderIds(ids);
+      } catch (e) {
+        if (!cancelled) setPropOrderIds([]);
+      }
+    };
+    run();
+    return () => { cancelled = true; };
+  }, [query, getPropertyOrder]);
+
+  // Apply Property Order if available, otherwise Project Order/Random
   const orderedProjects = useMemo(() => {
-    const hasCustomOrderDefined = hasCustomOrder(builderName, buildersWithCustomOrder);
-    const customOrder = getCustomOrder(builderName, customOrders);
-    const randomSeed = getRandomSeed(builderName, randomSeeds);
+    // Important: use canonical query (e.g., 'Godrej Properties') as key for Redux order
+    const keyForOrder = query || builderName;
+    const hasCustomOrderDefined = hasCustomOrder(keyForOrder, buildersWithCustomOrder);
+    const customOrder = getCustomOrder(keyForOrder, customOrders);
+    const randomSeed = getRandomSeed(keyForOrder, randomSeeds);
     
     console.log('🔍 BuilderPage - hasCustomOrderDefined:', hasCustomOrderDefined);
     console.log('🔍 BuilderPage - customOrder:', customOrder);
     console.log('🔍 BuilderPage - randomSeed:', randomSeed);
     console.log('🔍 BuilderPage - filteredBuilderProjects length:', filteredBuilderProjects.length);
     
+    // First, try to apply Property Order if we've fetched it (stored in state below)
+    // We'll use a closure-captured variable propOrderIds if defined via effect
+    if (Array.isArray(propOrderIds) && propOrderIds.length > 0) {
+      const byId = new Map((filteredBuilderProjects || []).map(p => [String(p._id || p.id), p]));
+      const idsStr = propOrderIds.map(String);
+      const ordered = [
+        ...idsStr.filter(id => byId.has(id)).map(id => byId.get(id)),
+        ...(filteredBuilderProjects || []).filter(p => !idsStr.includes(String(p._id || p.id)))
+      ];
+      return ordered;
+    }
+
+    // Otherwise, use Project Order/Random logic
     return orderProjects(
-      filteredBuilderProjects, 
-      builderName, 
-      customOrder, 
-      hasCustomOrderDefined, 
+      filteredBuilderProjects,
+      keyForOrder,
+      customOrder,
+      hasCustomOrderDefined,
       randomSeed
     );
-  }, [filteredBuilderProjects, builderName, buildersWithCustomOrder, customOrders, randomSeeds]);
-  console.log('🔍 builderProjects:', builderProjects);
-  console.log('🔍 filteredBuilderProjects:', filteredBuilderProjects);
-  console.log('🔍 orderedProjects:', orderedProjects);
-  console.log('🔍 builderName from URL:', builderName);
-  console.log('🔍 query value:', query);
-  console.log('🔍 hasCustomOrder:', hasCustomOrder(builderName, buildersWithCustomOrder));
-  console.log('🔍 customOrder:', getCustomOrder(builderName, customOrders));
-  console.log('🔍 Redux customOrders:', customOrders);
-  console.log('🔍 Redux buildersWithCustomOrder:', buildersWithCustomOrder);
-  console.log('🔍 Builder name for Redux lookup:', builderName);
-  console.log('🔍 Available builder keys in customOrders:', Object.keys(customOrders));
-  console.log('🔍 Available builder keys in buildersWithCustomOrder:', Object.keys(buildersWithCustomOrder));
+  }, [filteredBuilderProjects, builderName, query, buildersWithCustomOrder, customOrders, randomSeeds, propOrderIds]);
+  
 
   const handleShare = (project) => {
     if (navigator.share) {
@@ -217,6 +239,8 @@ const BuilderPage = React.memo(() => {
       Promise.resolve(getProjectbyBuilder(query, 0)).finally(() => setLoading(false));
     }
   }, [query, getProjectbyBuilder]);
+
+  
 
   // Sync project orders from server on component mount
   useEffect(() => {

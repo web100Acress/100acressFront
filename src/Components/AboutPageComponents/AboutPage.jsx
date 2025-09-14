@@ -20,25 +20,7 @@ const About = () => {
             About 100acress.com 
           </h3>
           <p className="text-gray-500 text-lg  text-justify">
-            100acress.com Gurgaon is an honoured real estate company that
-            strongly believes in providing customer delight and value for its
-            hard-earned money was founded in the year 2000 and is being
-            skillfully led by our director Mr Rajesh Agrawal. So far we have
-            been successful in gaining top reviews from our clients in diverse
-            jobs such as Booking/ Sale/ Leasing Of Residential/ Commercial
-            Properties In Gurgaon And Delhi/NCR which makes us a trustworthy and
-            efficient real estate company in Gurgaon.Our team of highly skilled
-            professionals works with genuine sellers so that it can make the
-            best deals for our potential buyer who are looking for residential,
-            commercial, or any real estate investment, we try to maintain long
-            term relationship by providing their dream home and insists on
-            providing the value for their money by opening all the details of
-            the project and showing them similar projects too under the same
-            price segments in order to make them able for making better
-            decisions.100acress.com is actively making services for searching,
-            renting out, selling, financing (mortgaging), and many more such
-            services at the best price to fulfil clients’ demands by engaging
-            through a large circle of people with every possible transparency.
+            100acress.com is one of the trusted names in real estate in Gurgaon and Delhi NCR. Since the year 2000, we have been helping people find their dream homes, offices, and the right investments in property. Our company is guided by our director, Mr. Rajesh Agrawal, and a team of experienced professionals who always put customers first. We believe that buying a home or property is not just a deal—it’s an emotion. That’s why we work with honest sellers, share complete details of every project, and even suggest similar options in the same budget so that our clients can make the best decision. At 100acress.com, you can easily buy, sell, rent, lease, or even finance properties. Whether it’s a luxury apartment, a family home, a modern office, or a smart investment, we make the journey simple, transparent, and stress-free. Our focus is always on giving value for money and creating long-term relationships with our clients.
           </p>
 
           <div className="flex items-center pt-2 px-1">
@@ -53,19 +35,9 @@ const About = () => {
           </div>
 
           <p className="text-gray-500 text-lg text-justify">
-            Our company works with moral values which are respecting clients’
-            investment, determined efforts to make every possibility available,
-            and preserved efforts to grant the best services to our clients. We
-            learn with our clients to enhance our servicer quality, make
-            ourselves better every day. And provide the best results of their
-            investments which they desire. all the transparency of the work will
-            be made which you require.The real estate industry is making rapid
-            growth and We aim to become one of the most admired, influential,
-            and reliable service provider companies in the real estate industry
-            by winning our customers' trust. With our ultimate passion,
-            performance, and skilled abilities we aspire to enhance our
-            standards in Gurgaon and Delhi NCR. In catering excellent service to
-            our customers, making confident.
+            At 100acress.com, we treat every customer&rsquo;s investment with the same care as our own. Honesty, trust, and transparency are at the heart of everything we do. Instead of just showing you what is available, we guide you towards the right options that truly fit your needs and budget. Our aim is to give you the best deals without any stress, while making the entire journey simple and smooth.
+
+            What makes us different is our focus on long-term relationships, not just one-time deals. We believe buying a home or property is a life-changing decision, so we provide complete details, multiple choices, and genuine advice. Our team works hard to save your time and money, making sure you always feel confident before making a decision. We continue to learn, improve, and grow every day so that our clients always receive the finest service in Gurgaon and Delhi NCR. With our passion and commitment, we aim to become your first choice in real estate.
           </p>
 
           <div className="flex items-center pt-6 px-1">
@@ -80,14 +52,7 @@ const About = () => {
           </div>
           <div>
             <p className="text-gray-500 text-lg text-justify">
-              Our expert team is working on making secure and smooth all legal
-              and mandatory transactions of our housing and commercial projects
-              to ensure real and value for money products. We provide every
-              piece of information and quick browsing facilities about the
-              undertakings so that our client does not get any harm and can
-              trust us. Our team aims to enlarge our circle of people to avail
-              best deals and multiple choices along with getting a significant
-              status in the real estate domain.
+              Over the years, 100acress.com has earned the love, trust, and confidence of thousands of happy families, investors, and business owners. Our success is not only measured in deals closed but also in the smiles and satisfaction of our clients. We make sure that every legal process, paperwork, and transaction is handled with complete safety and transparency, so our clients never have to worry about hidden issues. We are proud to be recognized as a reliable and customer-friendly real estate company in Gurgaon and Delhi NCR. Our team gives clear information, quick support, and multiple choices, so that every buyer and investor feels secure in their decisions. These values have helped us gain respect and recognition in the real estate industry. With every new client we serve, we strengthen our promise to deliver value for money, luxury living, and long-term trust. At 100acress.com, awards are important, but the biggest reward is the faith our customers place in us.
             </p>
           </div>
         </div>
