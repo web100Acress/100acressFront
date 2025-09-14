@@ -11,10 +11,55 @@ import 'tippy.js/animations/scale.css';
 
 const Blog = () => {
   const [viewAll, setViewAll] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [searchTerm, setSearchTerm] = useState(""); // text search
+  const [authorFilter, setAuthorFilter] = useState("ALL"); // dropdown filter
+  const [authors, setAuthors] = useState([]); // unique authors for filter
+  const [authorStats, setAuthorStats] = useState({}); // author -> { streakDays }
   const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
 
   // Token is injected by api client interceptors; no local handling needed here
+
+  // Build per-author daily posting streak (consecutive days up to today)
+  const buildAuthorStats = (rows) => {
+    try {
+      const stats = {};
+      const byAuthor = {};
+      (rows || []).forEach((r) => {
+        const a = (r.author || '').toString().trim();
+        if (!a) return;
+        if (!byAuthor[a]) byAuthor[a] = new Set();
+        const dt = r.createdAt || r.published_Date || r.updatedAt;
+        if (!dt) return;
+        const d = new Date(dt);
+        if (isNaN(d.getTime())) return;
+        const key = d.toISOString().slice(0, 10); // YYYY-MM-DD
+        byAuthor[a].add(key);
+      });
+
+      const today = new Date();
+      const toKey = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate()).toISOString().slice(0, 10);
+
+      Object.keys(byAuthor).forEach((a) => {
+        let streak = 0;
+        const dates = byAuthor[a];
+        const cur = new Date(today);
+        // Count backward consecutive days present in dates
+        while (streak < 30) { // cap at 30
+          const key = toKey(cur);
+          if (dates.has(key)) {
+            streak += 1;
+            cur.setDate(cur.getDate() - 1);
+          } else {
+            break;
+          }
+        }
+        stats[a] = { streakDays: streak };
+      });
+      return stats;
+    } catch (_) {
+      return {};
+    }
+  };
 
   // Function to fetch all blog data
   const fetchBlogData = async (search = "") => {
@@ -42,6 +87,12 @@ const Blog = () => {
         // Display all blogs
         setViewAll(allBlogs);
       }
+
+      // Build unique authors list from ALL data (not just filtered)
+      const uniqueAuthors = Array.from(new Set((allBlogsRaw || []).map(r => (r.author || '').toString().trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b));
+      setAuthors(["ALL", ...uniqueAuthors]);
+      // Build author streak stats
+      setAuthorStats(buildAuthorStats(allBlogsRaw));
     } catch (error) {
       console.error("Error fetching blog data:", error);
       messageApi.open({
@@ -65,8 +116,12 @@ const Blog = () => {
     fetchBlogData();
   }, []); // Fetch all data on component mount
 
-  // No need for frontend filtering anymore since it's handled in fetchBlogData
-  const filteredBlogs = viewAll;
+  // Apply author filter on top of current viewAll (which may already be search-filtered)
+  const filteredBlogs = viewAll.filter((row) => {
+    if (authorFilter === 'ALL') return true;
+    const a = (row.author || '').toString().trim();
+    return a.toLowerCase() === authorFilter.toLowerCase();
+  });
 
   const handleDeleteUser = async (id) => {
     messageApi.open({
@@ -144,6 +199,20 @@ const Blog = () => {
               </Tippy>
               <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             </div>
+            {/* Author filter */}
+            <div className="relative">
+              <Tippy content={<span>Filter by author</span>} animation="scale" theme="light-border">
+                <select
+                  className="min-w-[180px] pl-3 pr-8 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-200 shadow-sm bg-white"
+                  value={authorFilter}
+                  onChange={(e) => setAuthorFilter(e.target.value)}
+                >
+                  {authors.map((a) => (
+                    <option key={a} value={a}>{a === 'ALL' ? 'All Authors' : a}</option>
+                  ))}
+                </select>
+              </Tippy>
+            </div>
             <Tippy content={<span>Add a new blog post</span>} animation="scale" theme="light-border">
               <Link
                 to={"/blog/write"}
@@ -165,6 +234,8 @@ const Blog = () => {
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Author</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Posted On</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Consistency</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                   <th scope="col" className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
                 </tr>
@@ -174,6 +245,13 @@ const Blog = () => {
                   filteredBlogs.map((item, index) => {
                     const serialNumber = index + 1;
                     const id = item._id; // Use item._id for unique key and actions
+                    const postedOn = (() => {
+                      const dt = item.createdAt || item.published_Date || item.updatedAt;
+                      return dt ? new Date(dt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+                    })();
+                    const aName = (item.author || '').toString().trim();
+                    const streak = authorStats[aName]?.streakDays || 0;
+                    const isConsistent = streak >= 3; // threshold: 3-day streak
                     return (
                       <tr
                         key={id} // Use unique ID for key
@@ -185,6 +263,12 @@ const Blog = () => {
                           <span className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full shadow-sm">{item.blog_Category}</span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{item.author}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{postedOn}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${isConsistent ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-700'}`}>
+                            {isConsistent ? `Consistent (Streak ${streak})` : `Streak ${streak}`}
+                          </span>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${
                             item.isPublished 

@@ -656,12 +656,15 @@ const CardWrapper = styled.div`
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, box-shadow;
   cursor: pointer;
   margin: 0 5px;
   position: relative;
   min-height: 300px; /* Reduce card height */
   max-height: 300px; /* Reduce card height */
+
   height: 100%;
   aspect-ratio: 16/9;
   max-width: 580px;
@@ -696,7 +699,9 @@ const CardWrapper = styled.div`
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity 420ms cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform, opacity;
       opacity: 0;
       
       &.loaded {
@@ -714,7 +719,7 @@ const CardWrapper = styled.div`
         rgba(0, 0, 0, 0.3) 100%
       );
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .share-btn {
@@ -882,7 +887,7 @@ const CardWrapper = styled.div`
   }
 
   &:hover .image-container .property-image {
-    transform: scale(1.1);
+    transform: scale(1.06);
   }
 
   &:hover .image-container .image-overlay {
@@ -970,6 +975,18 @@ const CardWrapper = styled.div`
     .view-details-btn {
       font-size: 12px;
       padding: 5px 10px;
+    }
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+    .image-container .property-image,
+    .image-container .image-overlay,
+    .view-details-btn,
+    .share-btn,
+    .wishlist-btn {
+      transition: none !important;
     }
   }
 `;
