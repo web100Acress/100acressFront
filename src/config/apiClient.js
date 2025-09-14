@@ -15,13 +15,18 @@ const getBaseUrl = () => {
 
 // Create axios instance with defaults
 const api = axios.create({
-  baseURL: getBaseUrl(),
+  // Ensure trailing slash so joining with 'path' works correctly
+  baseURL: (() => {
+    const b = getBaseUrl();
+    return b.endsWith('/') ? b : `${b}/`;
+  })(),
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  withCredentials: true,
+  // Do NOT send credentials by default; enable per request when token exists
+  withCredentials: false,
   crossDomain: true,
   // Add this to handle CORS credentials properly
   withXSRFToken: true,
@@ -35,8 +40,9 @@ api.interceptors.request.use(
     const token = localStorage.getItem('myToken') || localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token.replace(/^"|"$/g, '')}`;
+      // Only send credentials when we actually authenticate
+      config.withCredentials = true;
     }
-
 
     // If sending FormData, let the browser set the proper multipart boundaries
     if (config.data instanceof FormData) {
@@ -44,6 +50,13 @@ api.interceptors.request.use(
         delete config.headers['Content-Type'];
       } catch (_) {}
 
+    }
+    // Normalize base join: keep absolute URLs untouched
+    const url = typeof config.url === 'string' ? config.url : '';
+    if (url && !/^https?:\/\//i.test(url)) {
+      // Ensure instance baseURL has trailing slash, and do not duplicate slashes
+      const base = (api.defaults.baseURL || '').replace(/\/+$/, '');
+      config.baseURL = url.startsWith('/') ? base : `${base}/`;
     }
     
     // Add cache-busting parameter for GET requests

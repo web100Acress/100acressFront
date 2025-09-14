@@ -107,7 +107,7 @@ export const budgetPlots = [
 export const Recommendedreordered = [
 
   "ROF Pravasa",
-  "Experion One 42",
+  "Signature Global Cloverdale SPR",
   "Indiabulls Heights",
   "Experion The Trillion",
 ];

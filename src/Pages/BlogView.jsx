@@ -71,6 +71,7 @@ const BlogView = () => {
   // Engagement state
   const [likes, setLikes] = useState(0);
   const [shares, setShares] = useState(0);
+  const [views, setViews] = useState(0);
   const [commentsCount, setCommentsCount] = useState(0);
   const [comments, setComments] = useState([]);
   const [commentName, setCommentName] = useState('');
@@ -362,19 +363,26 @@ const BlogView = () => {
           return;
         }
 
-        // Increment view count atomically on page load
-        const response = await api.get(`blog/view/${effectiveId}?countView=1`);
-        if ((response.status === 200 || response.status === 201) && response.data && response.data.data) {
-          const normalized = normalizeBlog(response.data.data);
-          // Debug: log image fields to diagnose missing image
-          try {
-            console.log('[BlogView] Raw blog_Image from API:', response.data.data?.blog_Image);
-            console.log('[BlogView] Normalized image:', normalized.blog_Image);
-            console.log('[BlogView] Raw relatedProjects from API:', response.data.data?.relatedProjects);
-            console.log('[BlogView] Normalized relatedProjects:', normalized.relatedProjects);
-          } catch (_) {}
+        // First get blog data without counting view
+        const blogResponse = await api.get(`blog/view/${effectiveId}`);
+        if ((blogResponse.status === 200 || blogResponse.status === 201) && blogResponse.data && blogResponse.data.data) {
+          const normalized = normalizeBlog(blogResponse.data.data);
           setData(normalized);
-          // Fetch engagement
+          
+          // Set initial views from blog data
+          setViews(normalized.views || 0);
+          
+          // Now increment view count in background
+          try {
+            const viewResponse = await api.get(`blog/view/${effectiveId}?countView=1`);
+            if (viewResponse.data?.data?.views) {
+              setViews(viewResponse.data.data.views);
+            }
+          } catch (viewErr) {
+            console.warn('[BlogView] View count increment failed:', viewErr);
+          }
+          
+          // Fetch engagement data
           try {
             const eg = await api.get(`blog/${normalized._id}/engagement`);
             const e = eg?.data?.data || {};
@@ -382,6 +390,10 @@ const BlogView = () => {
             setShares(e.shares || 0);
             setCommentsCount(e.commentsCount || 0);
             setComments(Array.isArray(e.comments) ? e.comments.slice(-5).reverse() : []);
+            // Update views from engagement if available
+            if (typeof e.views === 'number') {
+              setViews(e.views);
+            }
             // Initialize liked state from localStorage (scoped per-user)
             try {
               const key = likeKeyFor(normalized._id);
@@ -550,7 +562,6 @@ const BlogView = () => {
     blog_Category,
     published_Date,
     blog_Image,
-    views,
     metaTitle,
     metaDescription,
     relatedProjects,
