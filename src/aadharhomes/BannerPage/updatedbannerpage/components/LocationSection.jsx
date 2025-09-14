@@ -349,8 +349,8 @@ const LocationSection = ({
         </motion.div>
       </div>
 
-      {/* Global Styles */}
-      <style jsx global>{`
+      {/* Scoped styles for this component */}
+      <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0) translateX(0); }
           50% { transform: translateY(-10px) translateX(5px); }

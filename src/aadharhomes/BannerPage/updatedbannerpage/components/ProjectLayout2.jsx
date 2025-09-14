@@ -14,7 +14,7 @@ import RelatedProjects from './RelatedProjects';
 import CallbackModal from './CallbackModal';
 import FooterForm from './FooterForm';
 import { Helmet } from 'react-helmet-async';
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../../../../config/apiClient";
 
 
@@ -55,6 +55,7 @@ function ProjectLayout2() {
   const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
   const [callbackSuccessHandler, setCallbackSuccessHandler] = useState(null);
   const { pUrl } = useParams();
+  const navigate = useNavigate();
 
   const handleShowCallback = (successCallback = null) => {
     setCallbackSuccessHandler(() => successCallback);
@@ -73,11 +74,16 @@ function ProjectLayout2() {
         setLoading(true);
         const response = await api.get(`project/View/${pUrl}`);
         const projectData = response?.data?.dataview?.[0] || null;
-        if (isMounted) {
-          setProjectViewDetails(projectData);
+        if (!projectData) {
+          // If no project found for this slug, redirect to home
+          navigate('/', { replace: true });
+          return;
         }
+        if (isMounted) setProjectViewDetails(projectData);
       } catch (err) {
         if (isMounted) setError(err);
+        // On error (e.g., 404), redirect to home
+        navigate('/', { replace: true });
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -131,16 +137,31 @@ function ProjectLayout2() {
     );
   };
 
+  // Safe summary for About section to avoid showing "undefined..."
+  const getAboutSummary = () => {
+    if (projectViewDetails?.totalUnit) {
+      const towerPrefix = projectViewDetails.type === "Residential Flats" && projectViewDetails.towerNumber
+        ? `${projectViewDetails.towerNumber} Tower - `
+        : "";
+      return `${towerPrefix}${projectViewDetails.totalUnit} Unit`;
+    }
+    if (projectViewDetails?.project_discripation) {
+      return projectViewDetails.project_discripation
+        .replace(/<[^>]*>/g, '')
+        .substring(0, 60) + '...';
+    }
+    if (projectViewDetails?.projectOverview) {
+      return projectViewDetails.projectOverview.substring(0, 60) + '...';
+    }
+    return '—';
+  };
+
   const bottomInfo = {
     landArea: projectViewDetails?.totalLandArea ? `${projectViewDetails.totalLandArea} Acres` : "—",
     possession: projectViewDetails?.possessionDate 
       ? format(new Date(projectViewDetails.possessionDate), 'MMM yyyy')
       : projectViewDetails?.project_Status || "—",
-    aboutProject: projectViewDetails?.totalUnit 
-      ? `${projectViewDetails.type === "Residential Flats" && projectViewDetails.towerNumber ? `${projectViewDetails.towerNumber} Tower - ` : ""}${projectViewDetails.totalUnit} Unit`
-      : projectViewDetails?.project_discripation 
-        ? projectViewDetails.project_discripation.replace(/<[^>]*>/g, '').substring(0, 60) + '...' 
-        : projectViewDetails?.projectOverview?.substring(0, 60) + '...' || "—",
+    aboutProject: getAboutSummary(),
     price: formatPrice()
   };
 
