@@ -78,6 +78,7 @@ const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
 const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
 const UserEdit = lazy(() => import("./Components/HomePageComponents/UserEdit"));
 const BlogView = lazy(() => import("./Pages/BlogView"));
+const BlogInsights = lazy(() => import("./Pages/BlogInsights"));
 const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation"));
 const DelhiProject = lazy(() => import("./Pages/ProjectCities/DelhiProject"));
 const NoidaProject = lazy(() => import("./Pages/ProjectCities/NoidaProject"));
@@ -180,6 +181,8 @@ const DraftManagement = lazy(() => import("./Components/Blog_Components/DraftMan
 const BlogManagementSidebar = lazy(() => import("./Components/Blog_Components/BlogManagementSidebar"));
 const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
 const ShortsSettings = lazy(() => import("./AdminPage/ShortsSettings"));
+const InsightsNews = lazy(() => import("./Pages/InsightsNews"));
+const InsightsGuides = lazy(() => import("./Pages/InsightsGuides"));
 
 // Initialize QueryClient
 const queryClient = new QueryClient();
@@ -383,8 +386,11 @@ function App() {
                       <Route path="/blog/" element={<Blogging />} />
                       {/* Place static path before dynamic ones to avoid '/blog/write' matching ':slug' */}
                       <Route path="/blog/write" element={<BlogWrite />} />
-                      <Route path="/blog/:blogTitle/:id" element={<BlogView />} />
-                      <Route path="/blog/:slug" element={<BlogView />} />
+                      <Route path="/blog/:id" element={<BlogView />} />
+                      <Route path="/blogging" element={<Blogging />} />
+                      <Route path="/blog-insights" element={<BlogInsights />} />
+                      <Route path="/insights/news/" element={<InsightsNews />} />
+                      <Route path="/insights/guides/" element={<InsightsGuides />} />
                       <Route
                         path="/resetpassword/:token"
                         element={<ForgetPassword />}
