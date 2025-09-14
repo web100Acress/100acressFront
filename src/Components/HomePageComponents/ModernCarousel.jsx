@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectCoverflow } from 'swiper/modules';
 import { MdArrowForward, MdArrowBack } from 'react-icons/md';
 import styled from "styled-components";
-import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../utils/favorites";
+import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
 
 // Import Swiper styles
 import 'swiper/css';

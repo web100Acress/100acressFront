@@ -37,18 +37,16 @@ export function initAxios() {
 
     const base = getApiBase();
 
-    // Only ensure baseURL for relative URLs NOT starting with '/'. Absolute URLs untouched.
+    // Apply baseURL for any non-absolute URL (including ones starting with '/').
+    // Absolute URLs (http/https) are left untouched.
     const full = typeof config.url === 'string' ? config.url : '';
     if (full && !/^https?:\/\//i.test(full)) {
-      // If URL starts with '/api/' or any leading '/', do not apply base
-      if (full.startsWith('/')) {
-        // Unset baseURL so axios doesn't use a default
-        delete config.baseURL;
-      } else {
-        // Relative path like 'postPerson/verify_Login' -> prefix base
-        const normalizedBase = base.endsWith('/') ? base : `${base}/`;
-        config.baseURL = normalizedBase;
-      }
+      // Normalize base by removing trailing slashes first
+      const normalizedBase = (base || '').replace(/\/+$/, '');
+      // If URL starts with '/', keep it as-is; otherwise add a separator '/'
+      config.baseURL = full.startsWith('/')
+        ? normalizedBase
+        : `${normalizedBase}/`;
     }
 
     // Dev-only diagnostics: show final resolved URL
