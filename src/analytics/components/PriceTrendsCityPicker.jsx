@@ -234,6 +234,7 @@ export default function PriceTrendsCityPicker({
     );
   };
 
+  // sc dbd
   return (
     <>
       <header className="mb-6 md:mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-8">
