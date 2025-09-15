@@ -11,6 +11,8 @@ const ResaleEnquiries = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
+  const [agentNames, setAgentNames] = useState({});
+  const [agentEmails, setAgentEmails] = useState({});
 
   const itemsPerPage = 10;
   const [messageApi, contextHolder] = message.useMessage();
@@ -26,6 +28,183 @@ const ResaleEnquiries = () => {
     };
   }, []);
 
+  // Function to fetch agent details by agent ID or number
+  const fetchAgentDetails = async (agentId, agentNumber) => {
+    if (!agentId && !agentNumber) {
+      console.log('No agent ID or number provided');
+      return null;
+    }
+    
+    const cacheKey = agentId || agentNumber;
+    if (agentNames[cacheKey]) {
+      console.log(`Agent ${cacheKey} already in cache`);
+      return agentNames[cacheKey];
+    }
+    
+    console.log(`Fetching agent details for:`, { agentId, agentNumber });
+    
+    try {
+      const base = getApiBase();
+      const tokenRaw = localStorage.getItem("myToken") || "";
+      const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
+      
+      let response;
+      if (agentId) {
+        // Try to get agent by ID first (for property poster)
+        console.log(`Making API call to: ${base}/agent/getAgentById/${agentId}`);
+        response = await axios.get(`${base}/agent/getAgentById/${agentId}`, {
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
+      } else if (agentNumber) {
+        // Fallback to getting agent by number
+        console.log(`Making API call to: ${base}/agent/getByNumber/${agentNumber}`);
+        response = await axios.get(`${base}/agent/getByNumber/${agentNumber}`, {
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
+      }
+      
+      console.log('API Response:', response?.data);
+      
+      if (response?.data?.name) {
+        const agentName = response.data.name;
+        console.log(`Found agent:`, agentName);
+        setAgentNames(prev => ({
+          ...prev,
+          [cacheKey]: agentName
+        }));
+        return agentName;
+      } else {
+        console.log('No agent details found in response');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error details:', {
+        message: error.message,
+        response: {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          headers: error.response?.headers
+        },
+        request: error.request ? 'Request was made but no response received' : 'No request was made',
+        config: {
+          url: error.config?.url,
+          method: error.config?.method,
+          headers: error.config?.headers
+        }
+      });
+      
+      // Set a default value to prevent repeated failed requests
+      setAgentNames(prev => ({
+        ...prev,
+        [cacheKey]: 'Agent not found'
+      }));
+      
+      return null;
+    }
+  };
+  
+  // For backward compatibility
+  const fetchAgentName = (agentNumber) => fetchAgentDetails(null, agentNumber);
+
+  // Function to extract name from email
+  const getNameFromEmail = (email) => {
+    if (!email) return null;
+    const username = email.split('@')[0];
+    const nameParts = username.split(/[.\-_]/);
+    return nameParts
+      .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .join(' ');
+  };
+
+  // Function to get agent name with network error resilience
+  const getAgentDisplayName = (item) => {
+    // First priority: Use agentName from item if available
+    if (item.agentName) {
+      return item.agentName;
+    }
+    
+    // Second priority: Use cached name from agentNames
+    const cacheKey = item.agentNumber || item.agentEmail;
+    if (cacheKey && agentNames[cacheKey]) {
+      return agentNames[cacheKey];
+    }
+    
+    // Third priority: Try to extract name from email
+    if (item.agentEmail) {
+      return getNameFromEmail(item.agentEmail);
+    }
+    
+    // Final fallback
+    return item.agentNumber || 'N/A';
+  };
+  
+  // Function to fetch agent's actual name from the database with rate limiting
+  const fetchAgentByEmail = async (email, agentNumber) => {
+    if (!email) return;
+    
+    // Skip API call if we already have a name from the item
+    if (agentNumber?.name) {
+      setAgentNames(prev => ({
+        ...prev,
+        [agentNumber || email]: agentNumber.name
+      }));
+      return agentNumber.name;
+    }
+    
+    // Skip API call if we already have this email in cache
+    const cacheKey = agentNumber || email;
+    if (agentNames[cacheKey]) {
+      return agentNames[cacheKey];
+    }
+    
+    // Skip API call if we can extract a reasonable name from email
+    const emailName = email ? getNameFromEmail(email) : null;
+    if (emailName) {
+      setAgentNames(prev => ({
+        ...prev,
+        [cacheKey]: emailName
+      }));
+      return emailName;
+    }
+    
+    // Only make API call as last resort
+    try {
+      const base = getApiBase();
+      const tokenRaw = localStorage.getItem('myToken') || '';
+      const token = tokenRaw.replace(/^"|"$/g, '');
+      
+      const response = await axios.get(`${base}/api/agents/by-email`, {
+        params: { email },
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        },
+        timeout: 2000 // Shorter timeout
+      });
+      
+      if (response.data?.name) {
+        setAgentNames(prev => ({
+          ...prev,
+          [cacheKey]: response.data.name
+        }));
+        return response.data.name;
+      }
+    } catch (error) {
+      // Silently fail - we already have fallbacks in place
+      console.debug('Agent name fetch failed, using fallback:', error.message);
+    }
+    
+    return null;
+  };
+
   const fetchEnquiriesData = async () => {
     setLoading(true);
     try {
@@ -38,6 +217,7 @@ const ResaleEnquiries = () => {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
+      
       // Normalize array shape and sort by createdAt descending (newest first)
       const payload = res.data;
       const list = Array.isArray(payload?.data)
@@ -46,6 +226,15 @@ const ResaleEnquiries = () => {
         ? payload
         : [];
       const sorted = [...list].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
+      // Process agent emails and fetch names
+      sorted.forEach(item => {
+        if (item.agentEmail) {
+          fetchAgentByEmail(item.agentEmail, item.agentNumber);
+        }
+      });
+      
+      // Set enquiries after processing
       setEnquiries(sorted);
     } catch (error) {
       console.error("Error fetching resale enquiries:", error);
@@ -256,10 +445,15 @@ const ResaleEnquiries = () => {
             <thead>
               <tr>
                 <th scope="col" className="table-header">Sr.No</th>
-                <th scope="col" className="table-header">Agent Number</th>
-                <th scope="col" className="table-header">Customer Name</th>
-                <th scope="col" className="table-header">Customer Email</th>
-                <th scope="col" className="table-header">Customer Number</th>
+               <th scope="col" className="table-header">
+                  <div>Agent Details</div>
+                  <div className="text-sm font-normal">Number, Name & Email</div>
+                </th>
+             
+               <th scope="col" className="table-header">
+                  <div>Costomer Details</div>
+                  <div className="text-sm font-normal">Number, Name & Email</div>
+                </th>
                 <th scope="col" className="table-header">Property Address</th>
                 <th scope="col" className="table-header">Date</th>
                 <th scope="col" className="table-header">Actions</th>
@@ -277,12 +471,64 @@ const ResaleEnquiries = () => {
                 selectedEnquiries.map((item, index) => (
                   <tr key={item?._id} className="table-row">
                     <td className="table-cell">{startIndex + index + 1}</td>
-                    <td className="table-cell">{item.agentNumber}</td>
-                    <td className="table-cell">{item.custName}</td>
-                    <td className="table-cell email-cell">{item.custEmail}</td>
-                    <td className="table-cell">{item.custNumber}</td>
-                    <td className="table-cell address-cell">{item.propertyAddress}</td>
-                    <td className="table-cell">{formatDateTime(item.createdAt)}</td>
+                    <td className="table-cell">
+                      <div className="flex flex-col space-y-2">
+
+                                                
+                        {/* Agent Name */}
+                        <div className="px-3 py-1.5 rounded-md bg-green-100 text-green-800 text-sm font-medium">
+                          👤 {getAgentDisplayName(item)}
+                        </div>
+                        
+                        {/* Agent Number */}
+                        <div className="px-3 py-1.5 rounded-md bg-blue-100 text-blue-800 text-sm font-medium">
+                          📱 {item.agentNumber || 'N/A'}
+                        </div>
+
+                        {/* Agent Email */}
+                        {item.agentEmail && (
+                          <div className="px-3 py-1.5 rounded-md bg-purple-100 text-purple-800 text-sm truncate">
+                            ✉️ {item.agentEmail}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="table-cell">
+                      <div className="flex flex-col space-y-2">
+                        {/* Customer Name */}
+                        <div className="px-3 py-1.5 rounded-md bg-pink-100 text-pink-800 text-sm font-medium">
+                          👤 {item.custName || 'N/A'}
+                        </div>
+                        
+                        {/* Customer Number */}
+                        <div className="px-3 py-1.5 rounded-md bg-cyan-100 text-cyan-800 text-sm font-medium">
+                          📱 {item.custNumber || 'N/A'}
+                        </div>
+                        
+                        {/* Customer Email */}
+                        {item.custEmail && (
+                          <div className="px-3 py-1.5 rounded-md bg-amber-100 text-amber-800 text-sm truncate">
+                            ✉️ {item.custEmail}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="table-cell">
+                      <div className="flex flex-col space-y-2">
+                        {/* Property Address */}
+                        <div className="px-3 py-1.5 rounded-md bg-indigo-100 text-indigo-800 text-sm">
+                          🏠 {item.propertyAddress || 'No address'}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="table-cell">
+                      <div className="flex flex-col space-y-2">
+                        {/* Date */}
+                        <div className="px-3 py-1.5 rounded-md bg-teal-100 text-teal-800 text-sm font-medium">
+                          📅 {formatDateTime(item.createdAt)}
+                        </div>
+                      </div>
+                    </td>
                     <td className="table-cell">
                       <button className="btn btn-danger" onClick={() => handleDelete(item)}>Delete</button>
                     </td>

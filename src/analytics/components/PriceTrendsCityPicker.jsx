@@ -17,53 +17,74 @@ export default function PriceTrendsCityPicker({
     setSelectedCities((list) => list.includes(cname) ? list.filter(c=>c!==cname) : [...list, cname]);
   };
 
-  // Landmark images per city (fallbacks if cityImages does not contain the entry)
+  // Landmark images per city with famous landmarks
   const landmarkImages = useMemo(() => ({
-    // Gurgaon / Gurugram - Cyber City skyline
-    Gurugram: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/GURGAON.webp",
-    Gurgaon: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/GURGAON.webp",
-    // Noida - Sector 18 skyline
-    Noida: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/NOIDA.webp",
-    // Delhi - India Gate
-    Delhi: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/DELHI.webp",
-    // Dwarka Expressway - Generic expressway representation
-    "Dwarka Expressway": "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/DWARKA_EXPRESSWAY.webp",
-    // Ghaziabad - Hindon River Metro Station
-    Ghaziabad: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/GHAZIABAD.webp",
-    // Faridabad - Badkhal Lake
-    Faridabad: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/FARIDABAD.webp",
-    // Popular metros with Wikimedia Commons
-    Mumbai: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/MUMBAI.webp",
-    "Navi Mumbai": "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/NAVI_MUMBAI.webp",
-    Bengaluru: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/BENGALURU.webp",
-    Bangalore: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/BENGALURU.webp",
-    Pune: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/PUNE.webp",
-    Chennai: "https://upload.wikimedia.org/wikipedia/commons/2/2e/Marina_Beach_Chennai.jpg",
-    Hyderabad: "https://upload.wikimedia.org/wikipedia/commons/5/50/Charminar_Hyderabad.jpg",
-    Kolkata: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Howrah_Bridge_at_night.jpg",
-    Ahmedabad: "https://upload.wikimedia.org/wikipedia/commons/8/8d/Sabarmati_Riverfront%2C_Ahmedabad.jpg",
-    Jaipur: "https://upload.wikimedia.org/wikipedia/commons/7/7e/Hawa_Mahal_2011.jpg",
-    Chandigarh: "https://upload.wikimedia.org/wikipedia/commons/2/2a/Chandigarh_Capitol_Complex.jpg",
-    Lucknow: "https://upload.wikimedia.org/wikipedia/commons/1/10/Rumi_Darwaza_Lucknow.jpg",
-    Indore: "https://upload.wikimedia.org/wikipedia/commons/8/82/Rajwada_Indore.jpg",
-    Surat: "https://upload.wikimedia.org/wikipedia/commons/0/0a/Surat_City.jpg",
-    Thane: "https://upload.wikimedia.org/wikipedia/commons/5/5a/Upvan_Lake%2C_Thane.jpg",
-    "New Delhi": "https://upload.wikimedia.org/wikipedia/commons/5/5b/India_Gate_in_New_Delhi_03-2016.jpg",
-    Dwarka: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/DWARKA.webp",
-    "Greater Noida": "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/GREATER_NOIDA.webp",
+    // Delhi NCR Region
+    Gurugram: "https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Gurgaon: "https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Noida: "https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Delhi: "https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    "Dwarka Expressway": "https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Ghaziabad: "https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Faridabad: "https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    "New Delhi": "https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Dwarka: "https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    "Greater Noida": "https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    
+    // Mumbai Region
+    Mumbai: "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    "Navi Mumbai": "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Thane: "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    
+    // South India
+    Bengaluru: "https://images.unsplash.com/photo-1529074963764-98f45c47344b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Bangalore: "https://images.unsplash.com/photo-1529074963764-98f45c47344b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Chennai: "https://images.unsplash.com/photo-1581532760111-12d3e1b5e1b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Hyderabad: "https://images.unsplash.com/photo-1581852053321-8f2b309a52cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    
+    // West India
+    Pune: "https://images.unsplash.com/photo-1608248543803-ba780c3a218d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Ahmedabad: "https://images.unsplash.com/photo-1608248543803-ba780c3a218d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Surat: "https://images.unsplash.com/photo-1608248543803-ba780c3a218d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    
+    // North India
+    Jaipur: "https://images.unsplash.com/photo-1608248543803-ba780c3a218d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Chandigarh: "https://images.unsplash.com/photo-1608248543803-ba780c3a218d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    Lucknow: "https://images.unsplash.com/photo-1608248543803-ba780c3a218d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    
+    // Central India
+    Indore: "https://images.unsplash.com/photo-1608248543803-ba780c3a218d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    
+    // East India
+    Kolkata: "https://images.unsplash.com/photo-1608248543803-ba780c3a218d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
   }), []);
 
-  // Single stable fallback image (Wikimedia Commons generic skyline)
-  const fallbackImage = "https://upload.wikimedia.org/wikipedia/commons/5/5e/City_skyline_generic.jpg";
+  // Fallback city image
+  const fallbackImage = "https://images.unsplash.com/photo-1480714378408-67c1b0e28bf0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80";
 
-  // Prefer S3 city image by convention if not explicitly mapped: CITY_NAME in upper snake case
+  // Generate a city image URL based on the city name
   const buildS3Image = (name) => {
-    const slug = String(name)
-      .trim()
-      .replace(/\s+/g, '_')
-      .replace(/[^A-Za-z0-9_]/g, '')
-      .toUpperCase();
-    return `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/CITIES/${slug}.webp`;
+    const cityName = String(name).trim().toLowerCase();
+    
+    // Return appropriate image based on city region
+    if (cityName.includes('gurugram') || cityName.includes('gurgaon') || 
+        cityName.includes('noida') || cityName.includes('delhi') || 
+        cityName.includes('ghaziabad') || cityName.includes('faridabad') ||
+        cityName.includes('dwarka') || cityName.includes('greater noida')) {
+      return "https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80";
+    }
+    
+    if (cityName.includes('mumbai') || cityName.includes('thane') || cityName.includes('navi mumbai')) {
+      return "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80";
+    }
+    
+    if (cityName.includes('bengaluru') || cityName.includes('bangalore') || 
+        cityName.includes('chennai') || cityName.includes('hyderabad')) {
+      return "https://images.unsplash.com/photo-1529074963764-98f45c47344b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80";
+    }
+    
+    // Default fallback
+    return fallbackImage;
   };
 
   const getCityImage = (cname) => {
@@ -149,36 +170,71 @@ export default function PriceTrendsCityPicker({
     'Kolkata': { label: 'Cultural', color: 'bg-indigo-600' },
   }), []);
 
-  const renderCard = (cname) => (
-    <button key={cname} onClick={() => compareMode ? toggleCitySelect(cname) : onChooseCity(cname, false)} className={`relative bg-white border border-gray-200 rounded-2xl p-4 text-left shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all flex flex-col items-center gap-3 ${compareMode && selectedCities.includes(cname) ? 'ring-2 ring-blue-500' : ''}`} aria-label={`Select ${cname}`} title={`Property Rates in ${cname}`}>
-      <span className="relative inline-flex w-24 h-24 rounded-full overflow-hidden bg-gray-100 shadow-inner">
-        <img
-          alt={cname}
-          loading="lazy"
-          src={getCityImage(cname)}
-          onError={(e) => { e.currentTarget.src = fallbackImage; }}
-          className="w-full h-full object-cover"
-        />
-        {/* subtle gradient ring when selected */}
-        {compareMode && selectedCities.includes(cname) && (
-          <span className="absolute inset-0 ring-2 ring-blue-500 rounded-full pointer-events-none" />
-        )}
-      </span>
-      {cityBadges[cname] && (
-        <span className={`absolute top-3 left-3 text-[10px] px-2 py-0.5 rounded-full text-white font-semibold ${cityBadges[cname].color}`}>{cityBadges[cname].label}</span>
-      )}
-      <span className="font-semibold text-lg text-gray-900 w-full max-w-[160px] truncate text-center">Property Rates in {cname}</span>
-      {compareMode && (
-        <label className="inline-flex items-center gap-2 text-sm text-gray-700">
-          <input type="checkbox" readOnly checked={selectedCities.includes(cname)} className="rounded text-blue-600 focus:ring-blue-500" /> Select
-        </label>
-      )}
-      {compareMode && selectedCities.includes(cname) && (
-        <span className="absolute top-3 right-3 inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white text-sm">✓</span>
-      )}
-    </button>
-  );
+  const [imageErrors, setImageErrors] = useState({});
 
+  const renderCard = (cname) => {
+    const imageUrl = getCityImage(cname);
+    const hasError = imageErrors[cname];
+    
+    return (
+      <button 
+        key={cname} 
+        onClick={() => compareMode ? toggleCitySelect(cname) : onChooseCity(cname, false)} 
+        className={`relative bg-white border border-gray-200 rounded-2xl p-4 text-left shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all flex flex-col items-center gap-3 ${
+          compareMode && selectedCities.includes(cname) ? 'ring-2 ring-blue-500' : ''
+        }`} 
+        aria-label={`Select ${cname}`} 
+        title={`Property Rates in ${cname}`}
+      >
+        <span className="relative inline-flex w-24 h-24 rounded-full overflow-hidden bg-gray-100 shadow-inner">
+          {!hasError ? (
+            <img
+              key={imageUrl}
+              alt={cname}
+              loading="lazy"
+              src={imageUrl}
+              onError={() => setImageErrors(prev => ({ ...prev, [cname]: true }))}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
+              <span className="text-xs text-center p-2">{cname}</span>
+            </div>
+          )}
+          {/* subtle gradient ring when selected */}
+          {compareMode && selectedCities.includes(cname) && (
+            <span className="absolute inset-0 ring-2 ring-blue-500 rounded-full pointer-events-none" />
+          )}
+        </span>
+        {cityBadges[cname] && (
+          <span className={`absolute top-3 left-3 text-[10px] px-2 py-0.5 rounded-full text-white font-semibold ${cityBadges[cname].color}`}>
+            {cityBadges[cname].label}
+          </span>
+        )}
+        <span className="font-semibold text-lg text-gray-900 w-full max-w-[160px] truncate text-center">
+          Property Rates in {cname}
+        </span>
+        {compareMode && (
+          <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+            <input 
+              type="checkbox" 
+              readOnly 
+              checked={selectedCities.includes(cname)} 
+              className="rounded text-blue-600 focus:ring-blue-500" 
+            /> 
+            Select
+          </label>
+        )}
+        {compareMode && selectedCities.includes(cname) && (
+          <span className="absolute top-3 right-3 inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white text-sm">
+            ✓
+          </span>
+        )}
+      </button>
+    );
+  };
+
+  // sc dbd
   return (
     <>
       <header className="mb-6 md:mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-8">
