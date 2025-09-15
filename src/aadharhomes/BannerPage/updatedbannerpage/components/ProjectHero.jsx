@@ -1,24 +1,34 @@
 import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 
 const ProjectHero = ({
-  backgroundImage = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1973&q=80",
-  projectTitle = "MAX ESTATE SECTOR 36A",
-  location = "Sector 36A, Gurugram",
-  phoneNumber = "+91 9810982010",
+  projectExists = true,
+  backgroundImage = null,
+  projectTitle = "",
+  location = "",
+  phoneNumber = "",
   companyLogo = null,
   bottomInfo = {
-    landArea: "14 Acre",
-    possession: "Dec 2025",
-    aboutProject: "Premium residential project with modern amenities...",
-    price: "₹ 5.2 Cr"
+    landArea: "",
+    possession: "",
+    aboutProject: "",
+    price: ""
   },
   onShowCallback = () => {}
 }) => {
-  // Memoize background image style to prevent re-renders
+  // If project doesn't exist, return null to render nothing
+  if (!projectExists || !backgroundImage) {
+    return null;
+  }
+  // Only set background image if it exists
   const backgroundStyle = useMemo(() => ({
-    backgroundImage: `url(${backgroundImage})`,
+    ...(backgroundImage && { backgroundImage: `url(${backgroundImage})` }),
     contentVisibility: 'auto',
-    containIntrinsicSize: '100vw 100vh'
+    containIntrinsicSize: '100vw 100vh',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundColor: backgroundImage ? 'transparent' : '#1a202c' // Dark background if no image
   }), [backgroundImage]);
 
   // Basic JSON-LD structured data describing the project hero entity
@@ -41,22 +51,26 @@ const ProjectHero = ({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Background Image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0"
         style={backgroundStyle}
-      />
+      >
+        {backgroundImage && (
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        )}
+      </div>
       {/* Accessible image for SEO without changing visual BG */}
-      <img
-        src={backgroundImage}
-        alt={`${projectTitle} in ${location}`}
-        fetchpriority="high"
-        loading="eager"
-        width="1973"
-        height="1100"
-        className="sr-only"
-      />
+      {backgroundImage && (
+        <img
+          src={backgroundImage}
+          alt={`${projectTitle} in ${location}`}
+          fetchpriority="high"
+          loading="eager"
+          width="1973"
+          height="1100"
+          className="sr-only"
+        />
+      )}
       
-      {/* Dark Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
       
       {/* Top Bar - Glassy Navbar */}
       <div className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 py-3 bg-black/20 backdrop-blur-md border-b border-white/10 transition-colors duration-300" aria-label="Project top navigation">
@@ -174,5 +188,39 @@ const ProjectHero = ({
     </header>
   );
 };
+
+// Add prop types for better development experience
+ProjectHero.propTypes = {
+  projectExists: PropTypes.bool,
+  backgroundImage: PropTypes.string,
+  projectTitle: PropTypes.string,
+  location: PropTypes.string,
+  phoneNumber: PropTypes.string,
+  companyLogo: PropTypes.string,
+  bottomInfo: PropTypes.shape({
+    landArea: PropTypes.string,
+    possession: PropTypes.string,
+    aboutProject: PropTypes.string,
+    price: PropTypes.string
+  }),
+  onShowCallback: PropTypes.func
+};
+
+ProjectHero.defaultProps = {
+  projectExists: true,
+  backgroundImage: null,
+  projectTitle: '',
+  location: '',
+  phoneNumber: '',
+  companyLogo: null,
+  bottomInfo: {
+    landArea: '',
+    possession: '',
+    aboutProject: '',
+    price: ''
+  },
+  onShowCallback: () => {}
+};
+ 
 
 export default ProjectHero;

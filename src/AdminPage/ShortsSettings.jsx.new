@@ -1,0 +1,295 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
+import { getApiBase } from '../config/apiBase';
+import Sidebar from './Sidebar';
+import { parseYouTubeVideoId, getEmbedUrl } from '../utils/youtubeUtils';
+
+const ShortsSettings = () => {
+  const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [input, setInput] = useState('');
+  const [video, setVideo] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
+  const [parsed, setParsed] = useState('');
+  const [previewKey, setPreviewKey] = useState(0);
+  const token = localStorage.getItem('token');
+
+  // Load video on component mount
+  useEffect(() => {
+    if (!token) {
+      console.warn('No authentication token found, redirecting to login');
+      toast.error('Please log in to access this page');
+      navigate('/login');
+      return;
+    }
+
+    const loadVideo = async () => {
+      if (!token) {
+        console.warn('Token was cleared during session');
+        navigate('/login');
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const res = await fetch(`${getApiBase()}/settings/shorts-videos`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (res.status === 401) {
+          localStorage.removeItem('token');
+          toast.error('Session expired. Please log in again.');
+          navigate('/login');
+          return;
+        }
+        
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.message || 'Failed to load video');
+        }
+        
+        const data = await res.json();
+        
+        if (data.value) {
+          const videoData = {
+            id: '1',
+            videoId: data.value,
+            url: `https://youtube.com/watch?v=${data.value}`,
+            addedAt: new Date().toISOString()
+          };
+          setVideo(videoData);
+        } else {
+          setVideo(null);
+        }
+      } catch (error) {
+        console.error('Error loading video:', error);
+        toast.error(`Error: ${error.message || 'Failed to load video'}`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadVideo();
+  }, [navigate, token]);
+
+  // Save video to the server
+  const saveVideo = useCallback(async (videoToSave) => {
+    setIsSaving(true);
+    try {
+      if (!token) {
+        throw new Error('Authentication required. Please log in again.');
+      }
+      
+      const videoId = videoToSave?.videoId || '';
+      const apiUrl = `${getApiBase()}/settings/shorts-videos`;
+      
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ value: videoId }),
+      });
+
+      if (!res.ok) {
+        let errorMessage = 'Failed to save video';
+        try {
+          const errorData = await res.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+          console.error('Error parsing error response:', e);
+        }
+        throw new Error(errorMessage);
+      }
+      
+      await res.json();
+      
+      if (videoId) {
+        const newVideo = {
+          id: '1',
+          videoId,
+          url: `https://youtube.com/watch?v=${videoId}`,
+          addedAt: new Date().toISOString()
+        };
+        setVideo(newVideo);
+      } else {
+        setVideo(null);
+      }
+      
+      const successMessage = videoId ? 'Video saved successfully' : 'Video removed';
+      toast.success(successMessage);
+      
+      setPreviewKey(prev => prev + 1);
+      return true;
+    } catch (error) {
+      console.error('Error saving video:', error);
+      toast.error(`Error: ${error.message || 'Failed to save video'}`);
+      return false;
+    } finally {
+      setIsSaving(false);
+    }
+  }, [token, navigate]);
+
+  // Update parsed video ID when input changes
+  useEffect(() => {
+    const videoId = parseYouTubeVideoId(input);
+    setParsed(videoId || '');
+  }, [input]);
+
+  // Add a new video
+  const addVideo = useCallback(() => {
+    const videoId = parseYouTubeVideoId(input);
+    if (!videoId) {
+      toast.error('Please enter a valid YouTube URL or ID');
+      return;
+    }
+
+    const newVideo = {
+      id: '1',
+      videoId,
+      url: input,
+      addedAt: new Date().toISOString(),
+    };
+
+    saveVideo(newVideo);
+    setInput('');
+  }, [input, saveVideo]);
+
+  // Remove video
+  const removeVideo = useCallback(() => {
+    saveVideo(null);
+  }, [saveVideo]);
+
+  // Handle clear video
+  const handleClear = useCallback(async () => {
+    if (!window.confirm('Are you sure you want to remove the current video? This cannot be undone.')) {
+      return;
+    }
+    
+    setIsClearing(true);
+    try {
+      const success = await saveVideo(null);
+      if (success) {
+        setVideo(null);
+        setPreviewKey(prev => prev + 1);
+        toast.success('Video has been removed');
+        
+        // Notify other tabs about the update
+        if (typeof BroadcastChannel !== 'undefined') {
+          const channel = new BroadcastChannel('shorts-update');
+          try {
+            channel.postMessage({ type: 'shorts-update', videos: [] });
+          } catch (error) {
+            console.error('Error posting message to channel:', error);
+          } finally {
+            channel.close();
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error removing video:', error);
+      toast.error('Failed to remove video');
+    } finally {
+      setIsClearing(false);
+    }
+  }, [saveVideo]);
+
+  // Helper function to get embed URL for preview
+  const getPreviewSrc = (video) => {
+    if (!video?.videoId) return "";
+    return getEmbedUrl(video.videoId);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen bg-gray-50">
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <div className={`flex-1 p-8 transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-20'}`}>
+          <h1 className="text-2xl font-bold mb-6">Shorts Settings</h1>
+          <div className="animate-pulse">Loading video...</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex">
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className={`flex-1 p-8 transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-20'}`}>
+        <h1 className="text-2xl font-bold mb-6">Shorts Settings</h1>
+        
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="mb-6">
+            <label htmlFor="youtube-url" className="block text-sm font-medium text-gray-700 mb-2">
+              YouTube Video URL or ID
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                id="youtube-url"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="https://www.youtube.com/watch?v=..."
+                className="flex-1 p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+              <button
+                onClick={addVideo}
+                disabled={isSaving || !parsed}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSaving ? 'Saving...' : 'Add Video'}
+              </button>
+            </div>
+            {parsed && (
+              <p className="mt-2 text-sm text-green-600">
+                Detected Video ID: {parsed}
+              </p>
+            )}
+          </div>
+
+          {video && (
+            <div className="mt-6">
+              <h2 className="text-lg font-medium mb-4">Current Video</h2>
+              <div className="bg-gray-100 p-4 rounded-lg">
+                <div className="aspect-w-16 aspect-h-9 mb-4">
+                  <iframe
+                    key={previewKey}
+                    src={getPreviewSrc(video)}
+                    title="YouTube video player"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    className="w-full h-64 rounded-md"
+                  />
+                </div>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-medium">Video ID: {video.videoId}</p>
+                    <p className="text-sm text-gray-600">
+                      Added: {new Date(video.addedAt).toLocaleString()}
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleClear}
+                    disabled={isClearing}
+                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isClearing ? 'Removing...' : 'Remove Video'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      <ToastContainer position="bottom-right" autoClose={3000} />
+    </div>
+  );
+};
+
+export default ShortsSettings;

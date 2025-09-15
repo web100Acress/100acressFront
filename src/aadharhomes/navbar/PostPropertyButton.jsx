@@ -244,7 +244,7 @@ import { useRef, useState, useEffect } from "react";
             left: 0;
             right: 0;
             bottom: 0;
-            // background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 10px;
             z-index: -4;
           }
@@ -278,7 +278,7 @@ import { useRef, useState, useEffect } from "react";
             left: -10px;
             right: -10px;
             bottom: -10px;
-            // background: radial-gradient(circle, rgba(102, 126, 234, 0.4) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.4) 0%, transparent 70%);
             border-radius: 20px;
             z-index: -2;
             filter: blur(15px);
@@ -545,4 +545,33 @@ import { useRef, useState, useEffect } from "react";
 
   export default PostPropertyButton;
 
-    
+          
+      `}</style>
+    </div>
+  );
+};
+
+export default PostPropertyButton;
+          z-index: 1;
+        }
+
+        .arrow-icon {
+          opacity: 0.8;
+        }
+
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) scale(0.8); opacity: 0.3; }
+          50% { transform: translateY(-10px) scale(1); opacity: 0.8; }
+        }
+          
+      `}</style>
+    </div>
+  );
+};
+
+export default PostPropertyButton;

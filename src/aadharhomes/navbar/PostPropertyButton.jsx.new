@@ -1,0 +1,65 @@
+import { useState, useContext } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../AuthContext";
+
+const PostPropertyButton = () => {
+  const { isAuthenticated } = useContext(AuthContext) || {};
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  const handleClick = (e) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      setShowAuthModal(true);
+    }
+  };
+
+  return (
+    <div className="relative">
+      <Link
+        to={isAuthenticated ? "/postproperty" : "#"}
+        onClick={handleClick}
+        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        <span className="font-medium">Post Property</span>
+        <span className="ml-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
+          FREE
+        </span>
+      </Link>
+
+      {showAuthModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Login Required</h3>
+              <button
+                onClick={() => setShowAuthModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="mb-6 text-gray-600">Please login to post a property</p>
+            <div className="flex space-x-3">
+              <Link
+                to="/login"
+                className="flex-1 bg-blue-600 text-white py-2 px-4 rounded text-center hover:bg-blue-700"
+                onClick={() => setShowAuthModal(false)}
+              >
+                Login
+              </Link>
+              <Link
+                to="/signup"
+                className="flex-1 border border-gray-300 py-2 px-4 rounded text-center hover:bg-gray-50"
+                onClick={() => setShowAuthModal(false)}
+              >
+                Sign Up
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PostPropertyButton;
