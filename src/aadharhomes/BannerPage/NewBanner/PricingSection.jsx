@@ -18,7 +18,7 @@ export default function PricingSection({ projectViewDetails, BhK_Details, handle
         </div>
 
         <div className="prc-content">
-          {/* Desktop Table View */}
+        
           <div className="prc-table-wrap prc-hide-mobile">
             <div className="prc-table">
               <div className="prc-thead">

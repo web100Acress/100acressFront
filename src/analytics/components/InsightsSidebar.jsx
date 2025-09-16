@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-// Fixed Insights sidebar for all analytics pages
+// Enhanced Insights sidebar with better icons and responsiveness
 export default function InsightsSidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -10,22 +10,12 @@ export default function InsightsSidebar() {
   const drawerRef = React.useRef(null);
   const closeBtnRef = React.useRef(null);
 
-  // Initialize collapsed from localStorage
-  React.useEffect(() => {
-    try {
-      const stored = localStorage.getItem('insightsSidebarCollapsed');
-      if (stored === '1' || stored === '0') {
-        setCollapsed(stored === '1');
-      }
-    } catch {}
-  }, []);
-
-  // Persist collapsed to localStorage on change
-  React.useEffect(() => {
-    try {
-      localStorage.setItem('insightsSidebarCollapsed', collapsed ? '1' : '0');
-    } catch {}
-  }, [collapsed]);
+  // Initialize collapsed from React state only (no localStorage)
+  const [expandedSections, setExpandedSections] = useState({
+    insights: true,
+    resources: true,
+    tools: true
+  });
 
   // Close mobile menu on route change or ESC
   React.useEffect(() => {
@@ -59,7 +49,6 @@ export default function InsightsSidebar() {
   React.useEffect(() => {
     if (!mobileOpen) return;
 
-    // Focus the close button initially
     const t = setTimeout(() => {
       closeBtnRef.current?.focus();
     }, 0);
@@ -101,12 +90,8 @@ export default function InsightsSidebar() {
     };
   }, [mobileOpen]);
 
-  // Sidebar width and state
-  const W = collapsed ? 56 : 260;
-  const [expandedSections, setExpandedSections] = useState({
-    insights: true,
-    resources: true
-  });
+  // Responsive sidebar width
+  const W = collapsed ? 64 : 280;
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
@@ -115,226 +100,293 @@ export default function InsightsSidebar() {
     }));
   };
 
-  const item = (to, label, icon, showLabel = true, badge = null) => {
+  // Enhanced icons with better design
+  const icons = {
+    insights: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+        <path d="M9 11H7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2z"/>
+        <path d="M17 7h-2a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+        <path d="M5 15v-3a2 2 0 0 1 2-2h2"/>
+        <path d="M19 9V6a2 2 0 0 0-2-2h-2"/>
+      </svg>
+    ),
+    property: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+        <path d="M3 9.5L12 4l9 5.5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-11z"/>
+        <path d="M9 22V12h6v10"/>
+      </svg>
+    ),
+    trends: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+      </svg>
+    ),
+    blog: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14,2 14,8 20,8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+        <polyline points="10,9 9,9 8,9"/>
+      </svg>
+    ),
+    news: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+        <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
+        <path d="M18 14h-8"/>
+        <path d="M15 18h-5"/>
+        <path d="M10 6h8v4h-8V6z"/>
+      </svg>
+    ),
+    guides: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+      </svg>
+    ),
+    calculator: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+        <rect x="4" y="2" width="16" height="20" rx="2"/>
+        <line x1="8" y1="6" x2="16" y2="6"/>
+        <line x1="8" y1="10" x2="16" y2="10"/>
+        <line x1="8" y1="14" x2="12" y2="14"/>
+        <line x1="8" y1="18" x2="12" y2="18"/>
+        <circle cx="16" cy="16" r="2"/>
+      </svg>
+    ),
+    loan: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 6v6l4 2"/>
+        <path d="M16 8a6 6 0 0 0-8 0"/>
+      </svg>
+    ),
+    menu: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    ),
+    close: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    ),
+    chevronDown: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+        <polyline points="6,9 12,15 18,9"/>
+      </svg>
+    ),
+    collapse: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+        <polyline points="15,18 9,12 15,6"/>
+      </svg>
+    )
+  };
+
+  const item = (to, label, icon, showLabel = true, badge = null, isNew = false) => {
     const active = isActive(to);
     return (
       <Link
         to={to}
-        className={`group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${active ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'}`}
+        className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
+          active 
+            ? 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 shadow-sm border border-blue-100' 
+            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+        }`}
         onClick={() => setMobileOpen(false)}
         aria-label={!showLabel ? label : undefined}
         title={!showLabel ? label : undefined}
       >
-        <span className={`w-6 h-6 flex-shrink-0 ${active ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-500'}`}>
+        <span className={`flex-shrink-0 ${active ? 'text-blue-600' : 'text-gray-500 group-hover:text-blue-500'} transition-colors`}>
           {icon}
         </span>
         {showLabel && (
           <div className="flex-1 min-w-0 flex items-center justify-between">
             <span className="font-medium text-sm truncate">{label}</span>
-            {badge && (
-              <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
-                {badge}
-              </span>
-            )}
+            <div className="flex items-center gap-1">
+              {isNew && (
+                <span className="px-1.5 py-0.5 text-xs font-medium rounded-md bg-green-100 text-green-700">
+                  New
+                </span>
+              )}
+              {badge && (
+                <span className="px-1.5 py-0.5 text-xs font-medium rounded-md bg-blue-100 text-blue-700">
+                  {badge}
+                </span>
+              )}
+            </div>
           </div>
         )}
       </Link>
     );
   };
 
-  const sectionHeader = (title, isExpanded, onClick) => (
-    <button
-      onClick={onClick}
-      className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none"
-    >
-      <span className="uppercase text-xs font-semibold tracking-wider text-gray-500">
-        {title}
-      </span>
-      <svg
-        className={`w-4 h-4 text-gray-500 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
+  const sectionHeader = (title, isExpanded, onClick, showInCollapsed = false) => {
+    if (collapsed && !showInCollapsed) return null;
+    
+    return (
+      <button
+        onClick={onClick}
+        className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-gray-500 hover:text-gray-700 focus:outline-none transition-colors"
       >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-      </svg>
-    </button>
-  );
+        <span className="uppercase tracking-wider">
+          {collapsed ? title.charAt(0) : title}
+        </span>
+        {!collapsed && (
+          <span className={`transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
+            {icons.chevronDown}
+          </span>
+        )}
+      </button>
+    );
+  };
 
   return (
     <>
-      {/* Mobile: Hamburger trigger */}
+      {/* Mobile: Enhanced hamburger trigger */}
       <button
         type="button"
         aria-label="Open insights menu"
         aria-controls="insights-mobile-drawer"
         aria-expanded={mobileOpen}
         onClick={() => setMobileOpen(true)}
-        className="md:hidden fixed left-3 top-[calc(var(--nav-h,64px)+8px)] z-[9992] inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-200 bg-white shadow-sm text-gray-700"
+        className="md:hidden fixed left-4 top-[calc(var(--nav-h,64px)+12px)] z-[9992] inline-flex items-center justify-center w-11 h-11 rounded-xl border border-gray-200 bg-white/90 backdrop-blur-sm shadow-lg text-gray-700 hover:bg-white hover:shadow-xl transition-all duration-200"
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
-          <path d="M3 6h18M3 12h18M3 18h18" />
-        </svg>
+        {icons.menu}
+        {/* Notification dot for mobile */}
+        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
       </button>
 
-      {/* Mobile: Overlay */}
+      {/* Mobile: Enhanced overlay */}
       <div
-        className={`${mobileOpen ? 'fixed' : 'hidden'} md:hidden inset-0 bg-black/40 z-[9991]`}
+        className={`${mobileOpen ? 'fixed' : 'hidden'} md:hidden inset-0 bg-black/50 backdrop-blur-sm z-[9991] transition-opacity duration-300`}
         onClick={() => setMobileOpen(false)}
         aria-hidden="true"
       />
 
-      {/* Mobile: Drawer */}
+      {/* Mobile: Enhanced drawer */}
       <div
         id="insights-mobile-drawer"
         role="dialog"
         aria-modal="true"
         aria-label="Insights navigation"
-        className={`md:hidden fixed z-[9993] top-[var(--nav-h,64px)] bottom-0 left-0 w-72 bg-white border-r border-gray-200 shadow-xl transform transition-transform duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`md:hidden fixed z-[9993] top-0 bottom-0 left-0 w-80 bg-white/95 backdrop-blur-xl border-r border-gray-200 shadow-2xl transform transition-transform duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
         ref={drawerRef}
       >
         <div className="h-full flex flex-col">
-          {/* Header */}
-          <div className="px-3 py-3 border-b border-gray-100 flex items-center justify-between">
+          {/* Enhanced header */}
+          <div className="px-4 py-4 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50">
             <div className="flex items-center gap-3">
-              <div className="w-7 h-7 text-blue-600">
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full"><path d="M12 2a5 5 0 0 0-5 5v1.3a3 3 0 0 1-.7 1.9L5 12h14l-1.3-1.8a3 3 0 0 1-.7-1.9V7a5 5 0 0 0-5-5Z"/><path d="M5 14h14l-1 7H6l-1-7Z"/></svg>
+              <div className="w-8 h-8 text-blue-600 bg-white rounded-lg p-1.5 shadow-sm">
+                {icons.insights}
               </div>
-              <div className="text-base font-semibold">Insights</div>
+              <div className="text-lg font-bold text-gray-900">Insights</div>
             </div>
             <button
               type="button"
               aria-label="Close menu"
               onClick={() => setMobileOpen(false)}
-              className="inline-flex items-center justify-center w-9 h-9 rounded-md text-gray-600 hover:bg-gray-50"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-lg text-gray-600 hover:bg-white/50 transition-colors"
               ref={closeBtnRef}
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path d="M6 6l12 12M18 6L6 18"/></svg>
+              {icons.close}
             </button>
           </div>
 
-          {/* Menu */}
-          <nav className="overflow-y-auto py-2">
-            <div className="space-y-1 px-2">
+          {/* Enhanced menu */}
+          <nav className="overflow-y-auto py-4 px-3 flex-1">
+            <div className="space-y-2">
+              {/* Insights Section */}
               {sectionHeader('Insights', expandedSections.insights, () => toggleSection('insights'))}
               {expandedSections.insights && (
-                <div className="space-y-0.5 pl-1 mb-2">
-                  {item('/analytics/price-trends', 'Price Trends', (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-                      <path d="M3 3v18h18"/>
-                      <path d="M7 15l4-4 3 3 5-6"/>
-                    </svg>
-                  ))}
-                  {item('/analytics', 'My Property Insights', (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-                      <path d="M3 12l9-9 9 9"/>
-                      <path d="M9 21V9h6v12"/>
-                    </svg>
-                  ))}
+                <div className="space-y-1 mb-4">
+                  {item('/analytics', 'Property Insights', icons.property)}
+                  {item('/analytics/price-trends', 'Price Trends', icons.trends)}
                 </div>
               )}
 
+              {/* Resources Section */}
               {sectionHeader('Resources', expandedSections.resources, () => toggleSection('resources'))}
               {expandedSections.resources && (
-                <div className="space-y-0.5 pl-1">
-                  {item('/blog-insights', 'Blog', (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-                      <path d="M4 4h16v16H4z"/>
-                      <path d="M8 8h8M8 12h6M8 16h4"/>
-                    </svg>
-                  ), true, 'New')}
-                  
-                  {item('/insights/news', 'News', (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-                      <path d="M4 6h16M4 10h16M4 14h10"/>
-                    </svg>
-                  ), true, '5+')}
-                  
-                  {item('/insights/guides', 'Guides', (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                      <path d="M4 4v15.5A2.5 2.5 0 0 0 6.5 22H20V6a2 2 0 0 0-2-2H4z"/>
-                    </svg>
-                  ), true)}
+                <div className="space-y-1 mb-4">
+                  {item('/blog-insights', 'Blog', icons.blog, true, null, true)}
+                  {item('/insights/news', 'News', icons.news, true, '5+')}
+                  {item('/insights/guides', 'Guides', icons.guides)}
                 </div>
               )}
 
-              <div className="pt-2">
-                {sectionHeader('Tools', expandedSections.tools, () => toggleSection('tools'))}
-                {expandedSections.tools && (
-                  <div className="space-y-0.5 pl-1">
-                    {item('/emi-calculator', 'EMI Calculator', (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-                        <rect x="3" y="4" width="18" height="18" rx="2"/>
-                        <path d="M3 10h18M7 4v6"/>
-                      </svg>
-                    ))}
-                    {item('/emi-calculator', 'Home Loan Eligibility', (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-                        <path d="M20 21v-8a2 2 0 0 0-2-2h-4"/>
-                        <path d="M4 21v-8a2 2 0 0 1 2-2h4"/>
-                        <path d="M12 3l8 8-8 8-8-8 8-8z"/>
-                      </svg>
-                    ))}
-                  </div>
-                )}
-              </div>
+              {/* Tools Section */}
+              {sectionHeader('Tools', expandedSections.tools, () => toggleSection('tools'))}
+              {expandedSections.tools && (
+                <div className="space-y-1">
+                  {item('/emi-calculator', 'EMI Calculator', icons.calculator)}
+                  {item('/loan-eligibility', 'Loan Eligibility', icons.loan)}
+                </div>
+              )}
             </div>
           </nav>
+
+          {/* Mobile footer */}
+          <div className="border-t border-gray-100 p-3 bg-gray-50/50">
+            <div className="text-xs text-gray-500 text-center">
+              Tap outside to close
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Desktop: Fixed sidebar */}
+      {/* Desktop: Enhanced fixed sidebar */}
       <aside
-        style={{ top: 'var(--nav-h, 64px)', width: W, left: 0 }}
-        className="hidden md:block fixed z-[9990] bottom-0 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 border-r border-gray-200 shadow-[0_6px_24px_rgba(0,0,0,0.06)]"
+        style={{ 
+          top: 'var(--nav-h, 64px)', 
+          width: W, 
+          left: 0,
+          height: 'calc(100vh - var(--nav-h, 64px))'
+        }}
+        className="hidden md:block fixed z-[9990] bg-white/95 backdrop-blur-xl border-r border-gray-200 shadow-lg transition-all duration-300"
       >
         <div className="h-full flex flex-col">
-          {/* Header */}
-          <div className="px-3 py-3 border-b border-gray-100 flex items-center gap-3">
-            <div className="w-7 h-7 text-blue-600">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full"><path d="M12 2a5 5 0 0 0-5 5v1.3a3 3 0 0 1-.7 1.9L5 12h14l-1.3-1.8a3 3 0 0 1-.7-1.9V7a5 5 0 0 0-5-5Z"/><path d="M5 14h14l-1 7H6l-1-7Z"/></svg>
+          {/* Enhanced header */}
+          <div className="px-4 py-4 border-b border-gray-100 flex items-center gap-3 bg-gradient-to-r from-blue-50/50 to-indigo-50/50">
+            <div className="w-8 h-8 text-blue-600 bg-white rounded-lg p-1.5 shadow-sm flex-shrink-0">
+              {icons.insights}
             </div>
-            {!collapsed && <div className="text-base font-semibold">Insights</div>}
+            {!collapsed && <div className="text-lg font-bold text-gray-900 truncate">Insights</div>}
           </div>
 
-          {/* Menu */}
-          <nav className="p-3 overflow-y-auto">
+          {/* Enhanced menu */}
+          <nav className="p-3 overflow-y-auto flex-1">
             <div className="space-y-1">
-              {item('/analytics', 'My property Insights', (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M3 12l9-9 9 9"/><path d="M9 21V9h6v12"/></svg>
-              ), !collapsed)}
-              {item('/analytics/price-trends', 'Price Trends', (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
-              ), !collapsed)}
-              {item('/blog-insights', 'Blog', (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h6M8 16h4"/></svg>
-              ), !collapsed)}
-              {item('/insights/news', 'News', (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M4 6h16M4 10h16M4 14h10"/></svg>
-              ), !collapsed)}
-              {item('/insights/guides', 'Guides', (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4v15.5A2.5 2.5 0 0 0 6.5 22H20V6a2 2 0 0 0-2-2H4z"/></svg>
-              ), !collapsed)}
-              {item('/emi-calculator', 'EMI Calculator', (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M7 4v6"/></svg>
-              ), !collapsed)}
-              {item('/emi-calculator', 'Home Loan Eligibility', (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M20 21v-8a2 2 0 0 0-2-2h-4"/><path d="M4 21v-8a2 2 0 0 1 2-2h4"/><path d="M12 3l8 8-8 8-8-8 8-8z"/></svg>
-              ), !collapsed)}
+              {/* Quick access items */}
+              {item('/analytics', 'Property Insights', icons.property, !collapsed)}
+              {item('/analytics/price-trends', 'Price Trends', icons.trends, !collapsed)}
+              
+              <div className="h-px bg-gray-200 my-3"></div>
+              
+              {item('/blog-insights', 'Blog', icons.blog, !collapsed, null, true)}
+              {item('/insights/news', 'News', icons.news, !collapsed, collapsed ? '5' : '5+')}
+              {item('/insights/guides', 'Guides', icons.guides, !collapsed)}
+              
+              <div className="h-px bg-gray-200 my-3"></div>
+              
+              {item('/emi-calculator', 'EMI Calculator', icons.calculator, !collapsed)}
+              {item('/loan-eligibility', 'Loan Eligibility', icons.loan, !collapsed)}
             </div>
           </nav>
 
-          {/* Footer actions */}
-          <div className="mt-auto border-t border-gray-100 p-2 flex items-center justify-between">
+          {/* Enhanced footer */}
+          <div className="border-t border-gray-100 p-3">
             <button
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 text-sm px-2 py-1 rounded-md hover:bg-gray-50"
+              className="w-full inline-flex items-center justify-center gap-2 text-gray-600 hover:text-gray-900 text-sm px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-all duration-200"
               onClick={() => setCollapsed((c) => !c)}
             >
-              <span className="w-5 h-5">
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M15.5 5l-7 7 7 7"/></svg>
+              <span className={`transform transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`}>
+                {icons.collapse}
               </span>
-              {!collapsed && <span>Collapse</span>}
+              {!collapsed && <span className="font-medium">Collapse</span>}
             </button>
           </div>
         </div>

@@ -832,7 +832,7 @@ const Home = () => {
      margin-top: 76px; /* match header height (60 + 8 + 8 padding) */
      position: relative; /* for gradient overlay */
      overflow: hidden; /* avoid secondary scrollbar when scaled */
-   }
+  }
  
    /* Remove top fade overlay */
   .hero-strip-99::before {
