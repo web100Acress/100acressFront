@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../config/apiClient";
 import Sidebar from "./Sidebar";
 import { message } from "antd"; // Import Ant Design message for modern notifications
 import { MdInfo, MdLocationOn, MdAttachMoney, MdApartment, MdTitle, MdDescription, MdPerson, MdImage, MdBusiness, MdDateRange, MdOutlineNumbers, MdOutlinePhone, MdOutlineAttachMoney, MdOutlineInsertDriveFile, MdOutlineCloudUpload, MdOutlineCategory, MdStar, MdSchool, MdMovie, MdSearch, MdKeyboardArrowDown } from "react-icons/md";
 import Tippy from '@tippyjs/react';
+
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 import { useDropzone } from 'react-dropzone';
@@ -94,17 +95,16 @@ const InsertProject = () => {
   // Fetch builders from backend
   const fetchBuildersFromBackend = async () => {
     try {
-      const response = await fetch("/builder/viewAll");
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success && result.data) {
-          // Extract builder names from backend response
-          const backendBuilders = result.data.map(builder => builder.builderName);
-          // Combine default builders with backend builders (remove duplicates)
-          const combinedBuilders = [...new Set([...defaultBuildersList, ...backendBuilders])];
-          setBuildersList(combinedBuilders);
-          return combinedBuilders;
-        }
+      const { data: result } = await api.get("builder/viewAll");
+      if (result?.success && result?.data) {
+        // Extract builder names from backend response
+        const backendBuilders = result.data.map((builder) => builder.builderName);
+        // Combine default builders with backend builders (remove duplicates)
+        const combinedBuilders = [
+          ...new Set([...defaultBuildersList, ...backendBuilders]),
+        ];
+        setBuildersList(combinedBuilders);
+        return combinedBuilders;
       }
     } catch (error) {
       console.log('Could not fetch builders from backend, using default list');
@@ -155,23 +155,17 @@ const InsertProject = () => {
         });
 
         // API call to save new builder to backend
-        const builderApiEndpoint = "/builder/Insert";
+        const builderApiEndpoint = "builder/Insert";
         const builderData = {
           builderName: customBuilderName.trim(),
           createdAt: new Date().toISOString(),
           status: 'active'
         };
 
-        const response = await fetch(builderApiEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(builderData)
-        });
+        const response = await api.post(builderApiEndpoint, builderData);
 
-        if (response.ok) {
-          const result = await response.json();
+        if (response.status === 200) {
+          const result = response.data;
           
           // Success - update local state
           setEditFromData(prev => ({
@@ -342,7 +336,8 @@ const InsertProject = () => {
       content: 'Adding new project...',
     });
 
-    const apiEndpoint = "/api/project/Insert"; // Using /api prefix to trigger Vite proxy
+    const apiEndpoint = "project/Insert"; // Use direct backend path (no dev-only /api prefix)
+    
     const formDataAPI = new FormData();
     
     // Get auth token from localStorage
@@ -406,12 +401,9 @@ const InsertProject = () => {
         'Authorization': `Bearer ${token.replace(/^"/, '').replace(/"$/, '')}`
       });
       
-      const response = await axios.post(apiEndpoint, formDataAPI, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token.replace(/^"|"$/g, '')}`
-        },
-        withCredentials: true // Important for cookies if using them
+      const response = await api.post(apiEndpoint, formDataAPI, {
+        // Let axios/browser set multipart boundary automatically; auth handled by api client
+        withCredentials: true,
       });
 
       if (response.status === 200) {
