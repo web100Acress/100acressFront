@@ -85,6 +85,22 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    const config = error.config || {};
+    // Retry on 429 (Too Many Requests) and 503 (Service Unavailable)
+    const status = error.response?.status;
+    const shouldRetry = status === 429 || status === 503 || error.code === 'ECONNABORTED';
+    if (shouldRetry) {
+      config.__retryCount = config.__retryCount || 0;
+      const maxRetries = 3;
+      if (config.__retryCount < maxRetries) {
+        config.__retryCount += 1;
+        // Exponential backoff with jitter: base 500ms
+        const delay = Math.min(500 * Math.pow(2, config.__retryCount - 1), 4000);
+        const jitter = Math.floor(Math.random() * 250);
+        const backoff = delay + jitter;
+        return new Promise((resolve) => setTimeout(resolve, backoff)).then(() => api(config));
+      }
+    }
     // Handle CORS errors
     if (error.code === 'ERR_NETWORK') {
       console.error('Network Error:', error.message);
