@@ -8,6 +8,122 @@ import Api_Service from "../../Redux/utils/Api_Service";
 import { orderProjects, hasCustomOrder, getCustomOrder, getRandomSeed } from "../../Utils/ProjectOrderUtils";
 import { syncProjectOrdersFromServer } from "../../Redux/slice/ProjectOrderSlice";
 import { isFavorite, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
+// New modern Developer Page components
+import Hero from "../DeveloperPage/Hero";
+import FilterBar from "../DeveloperPage/FilterBar";
+import ProjectCard from "../DeveloperPage/ProjectCard";
+import CompareBar from "../DeveloperPage/CompareBar";
+
+// Lightweight builder information for sidebar display
+// Extend freely as needed; safe fallbacks are provided if a builder key is missing
+const BUILDER_INFO = {
+  "godrej-properties": {
+    about:
+      "Godrej Properties brings the legacy of Godrej Group to the real estate industry with a strong focus on design, sustainability, and customer trust. They develop residential and commercial landmarks across major Indian cities.",
+    founded: "1990",
+    hq: "Mumbai, Maharashtra",
+    website: "https://www.godrejproperties.com/",
+  },
+  "dlf-homes": {
+    about:
+      "DLF is one of India's largest real estate developers, known for large-scale integrated townships, commercial complexes, and premium residences across the country.",
+    founded: "1946",
+    hq: "Gurugram, Haryana",
+    website: "https://www.dlf.in/",
+  },
+  "m3m-india": {
+    about:
+      "M3M India is recognized for innovative concepts and premium developments in the luxury real estate segment with strong presence in Gurugram.",
+    founded: "2007",
+    hq: "Gurugram, Haryana",
+    website: "https://www.m3mindia.com/",
+  },
+  "bptp-limited": {
+    about:
+      "BPTP develops residential and commercial projects with a focus on quality construction and practical designs in NCR and beyond.",
+    founded: "2003",
+    hq: "Gurugram, Haryana",
+    website: "https://www.bptp.com/",
+  },
+  "emaar-india": {
+    about:
+      "Emaar India, part of Emaar Properties, creates premium residential and commercial spaces known for international-quality design and execution.",
+    founded: "2005 (India)",
+    hq: "Gurugram, Haryana",
+    website: "https://www.emaar-india.com/",
+  },
+};
+
+// Builder logos aligned with the grid in Builder.jsx
+const BUILDER_LOGOS = {
+  'godrej-properties': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/godrej.jpg',
+  'dlf-homes': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/dlf.png',
+  'emaar-india': 'https://cdn.in.emaar.com/wp-content/themes/emaar/inc/assets/images/emaar-india-logo-en.svg',
+  'birla-estate': 'https://www.birlaestates.com/images/birla-estate-logo.webp',
+  'adani-realty': 'https://www.adanirealty.com/-/media/project/realty/header/logo.ashx',
+  'experion-developers': 'https://www.experion.co/img/logo/experion-logo.png',
+  'signature-global': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp',
+  'sobha-developers': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/sobha.webp',
+  'central-park': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg',
+  'trump-towers': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/Trump-Tower.webp',
+  'elan-group': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/elan-logo.webp',
+  'puri-developers': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/puri+(1).webp',
+  'm3m-india': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3m.webp',
+  'smartworld-developers': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/smartworld.webp',
+  'bptp-limited': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp',
+  'whiteland': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/whiteland.jpg',
+  'indiabulls-real-estate': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/indiabulls.webp',
+  'aipl': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png',
+  'trevoc-group': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/trevoc.webp',
+  'aarize-developers': 'https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/tmfm0mywshnqqnmz7j9x',
+};
+
+// Sidebar component that stays fixed (sticky) on large screens
+const DeveloperSidebar = ({ builderKey, builderName }) => {
+  const info = BUILDER_INFO[builderKey] || {};
+  const aboutText =
+    info.about || `${builderName} is a reputed real estate developer with projects known for location, quality, and amenities.`;
+  const logoSrc = BUILDER_LOGOS[builderKey] || '/Images/100acresslogo.png';
+
+  return (
+    <aside className="hidden lg:block lg:col-span-3">
+      <div className="sticky top-24">
+        <div className="rounded-xl border shadow-sm bg-white">
+          <div className="p-5 border-b">
+            <img
+              src={logoSrc}
+              alt={`${builderName} logo`}
+              className="w-20 h-20 object-contain bg-white rounded mb-2 mx-auto"
+              loading="lazy"
+            />
+            <h2 className="text-xl font-semibold text-gray-800">About {builderName}</h2>
+          </div>
+          <div className="p-5 space-y-4 text-sm leading-6 text-gray-700">
+            <p className="text-gray-700">{aboutText}</p>
+            <ul className="space-y-2">
+              {info.founded && (
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 text-red-500">•</span>
+                  <span><span className="font-medium">Founded:</span> {info.founded}</span>
+                </li>
+              )}
+              {info.hq && (
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 text-red-500">•</span>
+                  <span><span className="font-medium">Headquarters:</span> {info.hq}</span>
+                </li>
+              )}
+              <li className="flex items-start gap-2">
+                <span className="mt-1 text-red-500">•</span>
+                <span><span className="font-medium">Focus:</span> Residential and mixed-use developments</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+};
 
 const BuilderPage = React.memo(() => {
     const { builderName } = useParams(); 
@@ -282,151 +398,109 @@ const BuilderPage = React.memo(() => {
     console.log('🔍 BuilderPage re-rendering due to Redux state change');
   }, [customOrders, buildersWithCustomOrder, randomSeeds]);
 
+  // UI states for new page (must be declared before any conditional return to keep hooks order stable)
+  const [view, setView] = useState('grid');
+  const [sort, setSort] = useState('newest');
+  const [mapView, setMapView] = useState(false);
+  const [compare, setCompare] = useState([]);
+
   // Render loading state if data is not yet available
   if (loading) {
     return <div className="flex justify-center items-center min-h-[40vh] text-xl font-semibold text-red-600">Loading projects...</div>;
   }
 
+  const toggleCompare = (p) => {
+    setCompare((prev) => {
+      const exists = prev.find(x => (x._id || x.id) === (p._id || p.id));
+      if (exists) return prev.filter(x => (x._id || x.id) !== (p._id || p.id));
+      const next = [...prev, p];
+      return next.slice(-3); // cap to 3
+    });
+  };
+
+  const onExplore = (project) => {
+    try {
+      // analytics hook
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'developer_explore_click', project: project?.projectName });
+    } catch {}
+    const pUrl = project?.project_url;
+    if (pUrl) window.location.href = `/${pUrl}/`;
+  };
+
+  const onFavorite = (project) => {
+    try {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'developer_favorite_click', project: project?.projectName });
+    } catch {}
+    return onToggleFavorite(project)({ preventDefault: () => {}, stopPropagation: () => {} });
+  };
+
   return (
     <div>
       <Helmet>
-        <title>
-          {formattedBuilderName} Projects in Gurugram – Luxury Homes
-        </title>
-        <meta
-          name="description"
-          content={`${builderName} Projects are renowned for ideal locations, impeccable quality, and desirable amenities.`}
-        />
-        <link
-          rel="canonical"
-          href={`https://www.100acress.com/developers/${builderName.toLowerCase()}/`}
-        />
+        <title>Developer Page | {formattedBuilderName}</title>
+        <meta name="description" content={`Developer Page for ${formattedBuilderName}. Explore premium projects with filters, map view, and comparisons.`} />
+        <link rel="canonical" href={`https://www.100acress.com/developers/${builderName.toLowerCase()}/`} />
       </Helmet>
 
-      <section className="w-full flex flex-col items-center pt-20 px-4 md:px-6 scroll-mt-16">
-              <h1 className="w-full max-w-screen-xl text-center text-2xl sm:text-3xl md:text-4xl lg:text-4xl text-red-600 font-bold px-4 py-6 break-words">
-                {formattedBuilderName} Projects in Gurugram
-              </h1>
-              
-              {/* Sync Status Indicator */}
-              {/* <div className="mb-4 text-center">
-                <span className={`text-xs px-2 py-1 rounded-full ${
-                  isSynced 
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
-                    : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
-                }`}>
-                  {isSynced ? '✅ Live Order  ' : '🔄 Syncing...'}
-                </span>
-                <p className="text-xs text-gray-500 mt-1">
-                  {isSynced ? 'Project order synced with admin panel' : 'Updating project order...'}
-                </p>
-              </div>  
-               */}
-      
-              <div className="grid max-w-md  grid-cols-1 px-8 sm:max-w-lg md:max-w-screen-xl md:grid-cols-2 md:px-4 lg:grid-cols-4 sm:gap-4 lg:gap-4 w-full">
-                {orderedProjects?.map((item, index) => {
-                  const pUrl = item.project_url;
-                  return (
-                    <span key={item._id || item.id || index}>
-      
-                      <article
-                        className="mb-2 overflow-hidden rounded-md  border text-gray-700 shadow-md duration-500 ease-in-out hover:shadow-xl"
-                      >
-                        <div className="relative flex p-3">
-                          <Link to={`/${pUrl}/`} target="_top">
-      
-                            <img
-                              src={item.frontImage?.url || item.frontImage?.cdn_url || '/placeholder-image.jpg'}
-                              alt="property In Gurugram"
-                              className="w-full h-48 object-fit rounded-lg transition-transform duration-500 ease-in-out hover:scale-110"
-                            />
-                          </Link>
-                          <div className="absolute top-5 right-5 flex gap-2">
-                            <button
-                              type="button"
-                              onClick={onToggleFavorite(item)}
-                              className="w-8 h-8 rounded-full bg-white/90 backdrop-blur hover:bg-white shadow flex items-center justify-center"
-                              aria-label={isFavorite(item._id || item.id || item.slug) ? "Remove from favorites" : "Add to favorites"}
-                            >
-                              {isFavorite(item._id || item.id || item.slug) ? (
-                                // Filled heart
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ef4444" className="w-5 h-5">
-                                  <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.188 3 12.9 3 10.25 3 7.902 4.902 6 7.25 6c1.273 0 2.49.495 3.39 1.384L12 8.743l1.36-1.36A4.75 4.75 0 0116.75 6C19.098 6 21 7.902 21 10.25c0 2.65-1.688 4.938-3.989 7.257a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.218l-.022.012-.007.003a.75.75 0 01-.666 0z" />
-                                </svg>
-                              ) : (
-                                // Outline heart
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="1.8" className="w-5 h-5">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 10.25c0 2.65-1.688 4.938-3.989 7.257a25.175 25.175 0 01-4.244 3.17l-.383.218-.022.012-.007.003-.007-.003-.022-.012-.383-.218a25.18 25.18 0 01-4.244-3.17C4.688 15.188 3 12.9 3 10.25 3 7.902 4.902 6 7.25 6c1.273 0 2.49.495 3.39 1.384L12 8.743l1.36-1.36A4.75 4.75 0 0116.75 6C19.098 6 21 7.902 21 10.25z" />
-                                </svg>
-                              )}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleShare(item)}
-                              className="w-8 h-8 rounded-full bg-white/90 backdrop-blur hover:bg-white shadow flex items-center justify-center"
-                              aria-label="Share"
-                            >
-                              <ShareFrameIcon />
-                            </button>
-                          </div>
-                        </div>
-                        <div className="pt-0 p-3">
-                          <div className="pb-2">
-                            <span className="text-[15px] font-semibold hover:text-red-600 duration-500 ease-in-out font-['Rubik',sans-serif]">
-                              {item.projectName}
-                            </span>
-                            <br />
-                            <span className="text-sm text-gray-400 hover:text-red-600  duration-500 ease-in-out">
-                              {item.city}, {item.state}
-                            </span>
-                          </div>
-      
-                          <ul className="box-border flex list-none items-center border-b border-solid border-gray-200 px-0 py-2">
-                            <li className="mr-4 flex items-center text-left">
-                              <li className="text-left">
-                                <p className="m-0 text-sm font-medium ">
-                                  <PropertyIcon />{" "}{item.type}
-                                </p>
-                                <span className="text-[10px] text-gray-600 block truncate text-sm hover:overflow-visible hover:white-space-normal hover:bg-white">
-                                  <LocationRedIcon />{" "}{item.projectAddress}
-                                </span>
-      
-                              </li>
-                            </li>
-                          </ul>
-      
-                          <ul className="m-0  flex list-none items-center justify-between px-0  pb-0">
-                            <li className="text-left">
-                              <span className="text-sm font-extrabold text-red-600">
-                                <span className="text-xl"><RupeeIcon /></span>
-                                {item.minPrice < 1 ? (
-                                  <>{item.minPrice * 100} L</>
-                                ) : (
-                                  <>{item.minPrice}</>
-                                )}
-                                {" - "}
-                                {item.maxPrice} Cr
-                              </span>
-                            </li>
-                            <Link to={`/${pUrl}/`} target="_top">
-                              <li className="text-left">
-                                <button
-                                  type="button"
-                                  className="text-white bg-gradient-to-r from-[#C13B44] via-red-500 to-[#C13B44] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-xs px-4 py-1.5  text-center me-2"
-                                >
-                                  View Details
-                                </button>
-                              </li>
-                            </Link>
-                          </ul>
-                        </div>
-                      </article>
-                    </span>
-                  );
-                })}
+      {/* Hero */}
+      <Hero title={formattedBuilderName} onExplore={() => {}} onContact={() => {}} />
+      {/* Sticky Filters */}
+      <FilterBar view={view} setView={setView} sort={sort} setSort={setSort} mapView={mapView} setMapView={setMapView} />
+
+      {/* Main two-column layout */}
+      <section className="w-full flex flex-col items-center px-4 md:px-6 py-6">
+        <h1 className="sr-only">Developer Page</h1>
+        <div className="w-full max-w-screen-xl grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Left: Developer info */}
+          <DeveloperSidebar builderKey={builderName} builderName={formattedBuilderName} />
+
+          {/* Right: Content with optional map split */}
+          <div className="lg:col-span-9 space-y-4">
+            {mapView ? (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <div className="lg:col-span-5 rounded-xl border bg-white/70 h-[420px] flex items-center justify-center text-gray-500">
+                  Map coming soon
+                </div>
+                <div className="lg:col-span-7">
+                  <div className={`${view === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4' : 'space-y-3'}`}>
+                    {orderedProjects?.map((item, index) => (
+                      <ProjectCard
+                        key={item._id || item.id || index}
+                        project={item}
+                        view={view}
+                        onExplore={onExplore}
+                        onFavorite={onFavorite}
+                        onShare={handleShare}
+                        isFav={isFavorite(item._id || item.id || item.slug)}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
-      
+            ) : (
+              <div className={`${view === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-3'}`}>
+                {orderedProjects?.map((item, index) => (
+                  <ProjectCard
+                    key={item._id || item.id || index}
+                    project={item}
+                    view={view}
+                    onExplore={onExplore}
+                    onFavorite={onFavorite}
+                    onShare={handleShare}
+                    isFav={isFavorite(item._id || item.id || item.slug)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </section>
+
+      {/* Compare Bar */}
+      <CompareBar items={compare} onOpen={() => { /* TODO: open compare page */ }} onRemove={(p) => setCompare(prev => prev.filter(x => (x._id || x.id) !== (p._id || p.id)))} />
+
       <Footer />
     </div>
   );
