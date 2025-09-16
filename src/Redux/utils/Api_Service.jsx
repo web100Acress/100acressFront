@@ -18,6 +18,9 @@ import { maxpriceproject,minpriceproject } from "../slice/PriceBasedSlice";
 
 // Maintain per-builder abort controllers to prevent overlapping requests
 const propertyOrderControllers = new Map();
+// De-dup in-flight requests per builder and provide a small cache to avoid rapid repeated calls
+const propertyOrderInFlight = new Map(); // key -> Promise
+const propertyOrderCache = new Map();    // key -> { data, ts }
 
 const Api_service = () => {
   const dispatch = useDispatch();
@@ -456,23 +459,52 @@ const Api_service = () => {
   },[dispatch]);
 
   const getPropertyOrder = async (builderName) => {
+    const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
     try {
       if (!builderName) return null;
-      // Abort any previous request for the same builder to avoid overlaps and hanging XHRs
-      const prev = propertyOrderControllers.get(builderName);
+
+      const key = String(builderName).trim().toLowerCase();
+
+      // Serve from cache if fresh
+      const cached = propertyOrderCache.get(key);
+      if (cached && (Date.now() - cached.ts) < CACHE_TTL_MS) {
+        console.log('🟩 getPropertyOrder: cache hit for', builderName);
+        return cached.data;
+      }
+
+      // If a request is already in-flight for this builder, return the same promise
+      const inflight = propertyOrderInFlight.get(key);
+      if (inflight) {
+        console.log('🟨 getPropertyOrder: reusing in-flight promise for', builderName);
+        return inflight;
+      }
+
+      // Abort any previous (stuck) controller for the same builder to avoid overlaps
+      const prev = propertyOrderControllers.get(key);
       if (prev) {
         try { prev.abort(); console.log('🟨 getPropertyOrder: aborted previous request for', builderName); } catch {}
       }
+
       const controller = new AbortController();
-      propertyOrderControllers.set(builderName, controller);
+      propertyOrderControllers.set(key, controller);
       console.log('🟦 getPropertyOrder: start', builderName);
-      const res = await api.get(`propertyOrder/builder/${encodeURIComponent(builderName)}`, {
-        signal: controller.signal,
-        timeout: 15000,
-      });
-      const data = res?.data?.data || null;
-      console.log('🟦 getPropertyOrder: success', builderName, { hasData: !!data, count: Array.isArray(data?.customOrder) ? data.customOrder.length : 'n/a' });
-      return data;
+
+      // Create a shared promise and store it as in-flight
+      const promise = (async () => {
+        const res = await api.get(`propertyOrder/builder/${encodeURIComponent(builderName)}`, {
+          signal: controller.signal,
+          timeout: 15000,
+        });
+        const data = res?.data?.data || null;
+        console.log('🟦 getPropertyOrder: success', builderName, { hasData: !!data, count: Array.isArray(data?.customOrder) ? data.customOrder.length : 'n/a' });
+        // Cache result
+        propertyOrderCache.set(key, { data, ts: Date.now() });
+        return data;
+      })();
+
+      propertyOrderInFlight.set(key, promise);
+      const result = await promise;
+      return result;
     } catch (error) {
       if (error?.name === 'CanceledError' || error?.message === 'canceled') {
         console.warn('🟨 getPropertyOrder: request canceled for', builderName);
@@ -481,8 +513,10 @@ const Api_service = () => {
       console.error('🟥 getPropertyOrder: error', builderName, error);
       return null;
     } finally {
-      // Clear controller for this builder
-      propertyOrderControllers.delete(builderName);
+      // Clear controller and in-flight entry for this builder
+      const key = String(builderName || '').trim().toLowerCase();
+      propertyOrderControllers.delete(key);
+      propertyOrderInFlight.delete(key);
       console.log('🟦 getPropertyOrder: end', builderName);
     }
   };

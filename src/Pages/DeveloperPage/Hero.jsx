@@ -1,0 +1,42 @@
+import React, { useMemo } from 'react';
+import { gradients, tokens } from './DesignTokens';
+
+const chips = [
+  { key: 'price', label: 'Price' },
+  { key: 'location', label: 'Location' },
+  { key: 'type', label: 'Project Type' },
+  { key: 'possession', label: 'Possession' },
+];
+
+export default function Hero({ onExplore, onContact, title = 'Developer Page', subtitle = 'Premium projects crafted with quality, sustainability, and exceptional after‑sales service.' }) {
+  const bgStyle = useMemo(() => ({
+    background: `${gradients.darkOverlay}, url('/Images/mainbg.webp') center/cover no-repeat`,
+  }), []);
+
+  return (
+    <section className="relative w-full" style={bgStyle}>
+      <div className="absolute inset-0" style={{backdropFilter: 'blur(2px)'}} />
+      <div className="relative max-w-screen-xl mx-auto px-4 md:px-6 pt-14 md:pt-20 pb-8 md:pb-10 text-white">
+        <div className="max-w-3xl mx-auto text-center">
+          <h1 className="mt-4 md:mt-6 text-3xl md:text-5xl font-extrabold leading-tight font-['Poppins','Inter',sans-serif]">{title}</h1>
+          <p className="mt-3 text-white/85 text-base md:text-lg">{subtitle}</p>
+        </div>
+
+        {/* Search + chips */}
+        <div className="mt-6 md:mt-8 bg-white/10 rounded-2xl p-3 md:p-4 border border-white/20 backdrop-blur max-w-3xl mx-auto">
+          <div className="flex items-center gap-2 bg-white rounded-xl px-3 py-2">
+            <span className="text-gray-400">🔎</span>
+            <input placeholder="Search by city, locality or project" className="flex-1 outline-none py-2 text-gray-800" />
+            <button className="px-3 py-1.5 rounded-lg text-white" style={{background: gradients.primary}}>Search</button>
+          </div>
+        </div>
+
+        {/* CTAs */}
+        <div className="mt-4 flex flex-wrap gap-3 justify-center">
+          <button onClick={onExplore} className="px-5 py-2.5 rounded-lg text-white font-medium shadow" style={{background: gradients.primary}}>Explore Projects</button>
+          <button onClick={onContact} className="px-5 py-2.5 rounded-lg bg-white/15 border border-white/30 text-white hover:bg-white/25">Contact Sales</button>
+        </div>
+      </div>
+    </section>
+  );
+}
