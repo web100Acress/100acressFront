@@ -364,7 +364,41 @@ const BlogView = () => {
         }
 
         // First get blog data without counting view
-        const blogResponse = await api.get(`blog/view/${effectiveId}`);
+        let blogResponse;
+        try {
+          // First check if blog exists by slug
+          try {
+            const slugCheck = await api.get(`blog/slug/${encodeURIComponent(effectiveId)}`);
+            if (slugCheck?.data?.data?.exists === false) {
+              setLoadError('Blog not found');
+              return;
+            }
+            // If we get here, the slug exists but we need to use its ID
+            if (slugCheck?.data?.data?.id) {
+              effectiveId = slugCheck.data.data.id;
+            }
+          } catch (slugErr) {
+            console.warn('Error checking blog slug:', slugErr);
+          }
+
+          // Now fetch the blog data
+          blogResponse = await api.get(`blog/view/${effectiveId}`);
+          
+          if (!blogResponse?.data?.data) {
+            console.error('Blog not found or invalid response:', effectiveId);
+            setLoadError('Blog not found');
+            return;
+          }
+        } catch (error) {
+          console.error('Error fetching blog data:', {
+            error: error.response?.data || error.message,
+            status: error.response?.status,
+            url: error.config?.url
+          });
+          setLoadError('Failed to load blog. The blog may not exist or there might be a server issue.');
+          return;
+        }
+        
         if ((blogResponse.status === 200 || blogResponse.status === 201) && blogResponse.data && blogResponse.data.data) {
           const normalized = normalizeBlog(blogResponse.data.data);
           setData(normalized);
