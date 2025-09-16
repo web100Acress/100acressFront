@@ -11,7 +11,7 @@ import {resale} from "../slice/ResaleSlice";
 import api from "../../config/apiClient";
 import { API_ROUTES, API_ROUTES_PROJECTS } from "./Constant_Service";
 import { sortByDesiredOrder } from "../../Utils/ProjectSorting";
-import { Affordable_Desired_Order, COMMERCIAL_DESIRED_ORDER, DesiredLuxuryOrder, Recommendedreordered, SCO_DESIRED_ORDER, Trending_Desired_Order } from "../../Pages/datafeed/Desiredorder";
+import { Affordable_Desired_Order, BUDGET_DESIRED_ORDER, COMMERCIAL_DESIRED_ORDER, DesiredLuxuryOrder, Recommendedreordered, SCO_DESIRED_ORDER, Trending_Desired_Order } from "../../Pages/datafeed/Desiredorder";
 import { emaar } from "../slice/ProjectstatusSlice";
 import { useCallback } from "react";
 import { maxpriceproject,minpriceproject } from "../slice/PriceBasedSlice";
@@ -103,17 +103,26 @@ const Api_service = () => {
         console.error("Error fetching Commercial data:", error);
     }
   }
-
-  const getBudgetHomes = async() =>{
-    try{
+// weeeeeeeeeeeeeeeeeehfeiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+  const getBudgetHomes = async() => {
+    try {
         const response = await api.get(`${API_ROUTES.projectsBase()}/budgethomes`);
         const Featuredprojects = response.data.data;
-        dispatch(budget(Featuredprojects));
-    }catch(error){
+        console.log('Budget Projects:', Featuredprojects.map(p => p.projectName));
+        
+        // Sort projects according to the desired order
+        const sortedProjects = sortByDesiredOrder(
+            Featuredprojects,
+            BUDGET_DESIRED_ORDER,
+            "projectName"
+        );
+        
+        dispatch(budget(sortedProjects));
+    } catch(error) {
         console.error("Error fetching BudgetHomes data:", error);
     }
   }
-
+// //////////////////////////////////////////////////////////////////////////////////////////
   const getProjectIndelhi = async()=>{
     try{
       const response = await api.get(`${API_ROUTES.projectsBase()}/city`);
