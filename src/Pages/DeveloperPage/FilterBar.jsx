@@ -26,9 +26,7 @@ export default function FilterBar({ view, setView, sort, setSort, mapView, setMa
         <div className="flex items-center gap-2">
           <button title="Grid view" onClick={() => setView?.('grid')} className={`px-3 py-1.5 rounded-lg border ${view === 'grid' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white'}`}>▦</button>
           <button title="List view" onClick={() => setView?.('list')} className={`px-3 py-1.5 rounded-lg border ${view === 'list' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white'}`}>☰</button>
-          <button onClick={() => setMapView?.(!mapView)} className="px-3 py-1.5 rounded-lg text-white" style={{background: gradients.primary}}>
-            {mapView ? 'Hide Map' : 'Map View'}
-          </button>
+          {/* Map View button removed per request */}
         </div>
       </div>
     </div>

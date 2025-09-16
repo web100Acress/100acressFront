@@ -114,6 +114,24 @@ const BUILDER_INFO = {
   },
 };
 
+// Canonical display names for builder brands (for titles/meta)
+const DISPLAY_NAMES = {
+  'adani-realty': 'Adani Realty',
+  'm3m-india': 'M3M India',
+  'emaar-india': 'Emaar India',
+  'experion-developers': 'Experion Developers',
+  'signature-global': 'Signature Global',
+  'dlf-homes': 'DLF Homes',
+  'whiteland': 'Whiteland',
+  'aipl': 'AIPL',
+  'elan-group': 'Elan Group',
+  'bptp-limited': 'BPTP Limited',
+  'trevoc-group': 'Trevoc Group',
+  'indiabulls-real-estate': 'Indiabulls Real Estate',
+  'smartworld-developers': 'Smartworld Developers',
+  'central-park': 'Central Park',
+};
+
 // Builder logos aligned with the grid in Builder.jsx
 const BUILDER_LOGOS = {
   'godrej-properties': 'https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/godrej.jpg',
@@ -375,6 +393,8 @@ const BuilderPage = React.memo(() => {
   };
   
   const formattedBuilderName = formatBuilderName(builderName);
+  const displayName = DISPLAY_NAMES[builderName] || formattedBuilderName;
+  const heroTitleText = `${displayName} Projects in Gurugram`;
   
   useEffect(() => {
     if (builderName) {
@@ -463,6 +483,24 @@ const BuilderPage = React.memo(() => {
   const [sort, setSort] = useState('newest');
   const [mapView, setMapView] = useState(false);
   const [compare, setCompare] = useState([]);
+  // Local search term from Hero
+  const [searchTerm, setSearchTerm] = useState('');
+  const handleHeroSearch = useCallback((q) => {
+    setSearchTerm(q || '');
+  }, []);
+
+  // Apply client-side filter by project name, city, or address (must be before any conditional returns)
+  const visibleProjects = useMemo(() => {
+    const list = orderedProjects || [];
+    const q = (searchTerm || '').trim().toLowerCase();
+    if (!q) return list;
+    return list.filter(p => {
+      const name = String(p?.projectName || '').toLowerCase();
+      const city = String(p?.city || '').toLowerCase();
+      const addr = String(p?.projectAddress || '').toLowerCase();
+      return name.includes(q) || city.includes(q) || addr.includes(q);
+    });
+  }, [orderedProjects, searchTerm]);
 
   // Render loading state if data is not yet available
   if (loading) {
@@ -499,13 +537,13 @@ const BuilderPage = React.memo(() => {
   return (
     <div>
       <Helmet>
-        <title>Developer Page | {formattedBuilderName}</title>
-        <meta name="description" content={`Developer Page for ${formattedBuilderName}. Explore premium projects with filters, map view, and comparisons.`} />
+        <title>{heroTitleText} | 100acress</title>
+        <meta name="description" content={`${displayName} projects in Gurugram. Explore premium residential and commercial projects with pricing, photos, and details.`} />
         <link rel="canonical" href={`https://www.100acress.com/developers/${builderName.toLowerCase()}/`} />
       </Helmet>
 
       {/* Hero */}
-      <Hero title={formattedBuilderName} onExplore={() => {}} onContact={() => {}} />
+      <Hero title={heroTitleText} onExplore={() => {}} onContact={() => {}} onSearch={handleHeroSearch} />
       {/* Sticky Filters */}
       <FilterBar view={view} setView={setView} sort={sort} setSort={setSort} mapView={mapView} setMapView={setMapView} />
 
@@ -525,7 +563,7 @@ const BuilderPage = React.memo(() => {
                 </div>
                 <div className="lg:col-span-7">
                   <div className={`${view === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4' : 'space-y-3'}`}>
-                    {orderedProjects?.map((item, index) => (
+                    {visibleProjects?.map((item, index) => (
                       <ProjectCard
                         key={item._id || item.id || index}
                         project={item}
@@ -541,7 +579,7 @@ const BuilderPage = React.memo(() => {
               </div>
             ) : (
               <div className={`${view === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-3'}`}>
-                {orderedProjects?.map((item, index) => (
+                {visibleProjects?.map((item, index) => (
                   <ProjectCard
                     key={item._id || item.id || index}
                     project={item}
