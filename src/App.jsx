@@ -1,4 +1,4 @@
-// Sticky floating "List Property" button on mobile (right side)
+ // Sticky floating "List Property" button on mobile (right side)
 function MobileStickyListProperty() {
   const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
   const postTarget = token ? "/postproperty" : "/auth/signin";
