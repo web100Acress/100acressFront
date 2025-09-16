@@ -104,11 +104,18 @@ export const budgetPlots = [
   // }
 ];
 
-export const Recommendedreordered = [
+export const BUDGET_DESIRED_ORDER = [
 
+  "Signature Global City 81",
+  "adore-the-select-premia",
+  "M3M Soulitude",
+  "ROF Pravasa"
+];
+
+export const Recommendedreordered = [
   "ROF Pravasa",
   "Signature Global Cloverdale SPR",
-  "Indiabulls Heights",
+  "Experion One 42",
   "Experion The Trillion",
 ];
 
