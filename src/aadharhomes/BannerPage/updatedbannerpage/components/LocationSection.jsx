@@ -89,7 +89,7 @@ const LocationSection = ({
   // Quick action handlers
   const handleCall = () => {
     console.log('Calling:', phoneNumber);
-    window.location.href = `tel:${phoneNumber}`;
+    window.location.href = `tel:+91${phoneNumber}`;
   };
 
   const handleEmail = () => {

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { gradients, tokens } from './DesignTokens';
 
 const chips = [
@@ -8,10 +8,15 @@ const chips = [
   { key: 'possession', label: 'Possession' },
 ];
 
-export default function Hero({ onExplore, onContact, title = 'Developer Page', subtitle = 'Premium projects crafted with quality, sustainability, and exceptional after‑sales service.' }) {
+export default function Hero({ onExplore, onContact, onSearch, title = 'Developer Page', subtitle = 'Premium projects crafted with quality, sustainability, and exceptional after‑sales service.' }) {
   const bgStyle = useMemo(() => ({
     background: `${gradients.darkOverlay}, url('/Images/mainbg.webp') center/cover no-repeat`,
   }), []);
+  const [text, setText] = useState('');
+  const handleSearch = useCallback(() => {
+    const q = (text || '').trim();
+    if (onSearch && q) onSearch(q);
+  }, [text, onSearch]);
 
   return (
     <section className="relative w-full" style={bgStyle}>
@@ -26,16 +31,18 @@ export default function Hero({ onExplore, onContact, title = 'Developer Page', s
         <div className="mt-6 md:mt-8 bg-white/10 rounded-2xl p-3 md:p-4 border border-white/20 backdrop-blur max-w-3xl mx-auto">
           <div className="flex items-center gap-2 bg-white rounded-xl px-3 py-2">
             <span className="text-gray-400">🔎</span>
-            <input placeholder="Search by city, locality or project" className="flex-1 outline-none py-2 text-gray-800" />
-            <button className="px-3 py-1.5 rounded-lg text-white" style={{background: gradients.primary}}>Search</button>
+            <input
+              placeholder="Search by city, locality or project"
+              className="flex-1 outline-none py-2 text-gray-800"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+            />
+            <button onClick={handleSearch} className="px-3 py-1.5 rounded-lg text-white" style={{background: gradients.primary}}>Search</button>
           </div>
         </div>
 
-        {/* CTAs */}
-        <div className="mt-4 flex flex-wrap gap-3 justify-center">
-          <button onClick={onExplore} className="px-5 py-2.5 rounded-lg text-white font-medium shadow" style={{background: gradients.primary}}>Explore Projects</button>
-          <button onClick={onContact} className="px-5 py-2.5 rounded-lg bg-white/15 border border-white/30 text-white hover:bg-white/25">Contact Sales</button>
-        </div>
+        {/* CTAs removed per request */}
       </div>
     </section>
   );
