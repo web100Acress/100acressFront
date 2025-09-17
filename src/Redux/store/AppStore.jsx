@@ -13,6 +13,7 @@ import PriceBasedReducer from "../slice/PriceBasedSlice.jsx";
 import projectOrderReducer from "../slice/ProjectOrderSlice.jsx";
 import favoritesReducer from "../slice/FavoritesSlice.jsx";
 import viewedReducer from "../slice/ViewedSlice.jsx";
+import bannerReducer from "../slice/BannerSlice.jsx";
 
 const AppStore = configureStore({
     reducer: {
@@ -30,6 +31,7 @@ const AppStore = configureStore({
         projectOrder: projectOrderReducer,
         favorites: favoritesReducer,
         viewed: viewedReducer,
+        banner: bannerReducer,
     },
     devTools: process.env.NODE_ENV !== 'production',
 });
