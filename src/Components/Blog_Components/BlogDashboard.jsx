@@ -156,7 +156,8 @@ export default function BlogDashboard() {
     status: 'all',
     dateRange: 'all',
     search: '',
-    category: 'all'
+    category: 'all',
+    type: 'blog'
   });
 
   const [selectedBlog, setSelectedBlog] = useState(null);
@@ -353,8 +354,9 @@ export default function BlogDashboard() {
     const matchesStatus = filters.status === 'all' || 
                          (filters.status === 'published' && blog.isPublished) ||
                          (filters.status === 'draft' && !blog.isPublished);
+    const matchesType = filters.type === 'all' || ((blog.type || 'blog').toLowerCase() === filters.type);
     
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchesType;
   });
 
   const getGrowthIcon = (value) => {
@@ -528,6 +530,9 @@ export default function BlogDashboard() {
               <span className="mx-2 text-gray-400">•</span>
               <Calendar size={14} className="mr-1 text-gray-400" />
               {record.createdAt ? new Date(record.createdAt).toLocaleDateString() : 'N/A'}
+              {(record.type || 'blog').toLowerCase() === 'news' && (
+                <Tag color="gold" className="ml-2">News</Tag>
+              )}
             </div>
           </div>
         </div>
@@ -921,6 +926,17 @@ export default function BlogDashboard() {
                 <Badge status="default" className="mr-2" />
                 Draft
               </Option>
+            </Select>
+            <Select
+              value={filters.type}
+              onChange={(value) => setFilters({ ...filters, type: value })}
+              size="large"
+              style={{ minWidth: 150 }}
+              className="rounded-lg"
+            >
+              <Option value="all">All Types</Option>
+              <Option value="blog">Blog</Option>
+              <Option value="news">News</Option>
             </Select>
             <Select
               value={filters.dateRange}

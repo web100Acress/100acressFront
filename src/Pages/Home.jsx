@@ -825,7 +825,7 @@ const Home = () => {
      width: 100%;
      height: 340px;
      /* Expecting file at: public/experion the trillion banner (1).png */
-     background-image: url("https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/experion-trillion-banner.webp");
+     background-image: url("/Images/Website-Hero-Image.jpg");
      background-repeat: no-repeat;
      background-position: center center; /* keep image centered */
      background-size: auto 100%; /* fit height exactly; crop sides on small screens */

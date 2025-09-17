@@ -132,6 +132,7 @@ const MarketAnalytics = lazy(() => import("./analytics/pages/MarketAnalytics"));
 const LocationIntelligence = lazy(() => import("./analytics/pages/LocationIntelligence"));
 const InvestmentInsights = lazy(() => import("./analytics/pages/InvestmentInsights"));
 const AnalyticsHome = lazy(() => import("./analytics/pages/AnalyticsHome"));
+const LoanEligibility = lazy(() => import("./analytics/pages/LoanEligibility"));
 
 // Admin components (already lazy loaded)
 const Addnew = lazy(() => import("./AdminPage/Addnew"));
@@ -368,6 +369,7 @@ function App() {
                       <Route path="/analytics/market" element={<MarketAnalytics />} />
                       <Route path="/analytics/location" element={<LocationIntelligence />} />
                       <Route path="/analytics/investment" element={<InvestmentInsights />} />
+                      <Route path="/loan-eligibility" element={<LoanEligibility />} />
                       <Route
                         path="/project-in-underconstruction/"
                         element={<UnderConstruction />}

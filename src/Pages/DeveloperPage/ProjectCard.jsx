@@ -16,32 +16,52 @@ export default function ProjectCard({ project, view = 'grid', onExplore, onFavor
     ? 'flex gap-4 items-stretch'
     : '';
 
+  // Try to use the same primary phone number used on the project page
+  const resolvePhone = (p) => {
+    const keys = [
+      'primaryPhone', 'primaryNo', 'primary_number', 'primary_phone',
+      'salesPhone', 'sales_number', 'contactPhone', 'contact_number',
+      'phone1', 'phone', 'mobile', 'projectContact', 'leadPhone'
+    ];
+    for (const k of keys) {
+      const v = p?.[k];
+      if (typeof v === 'string' && v.trim()) return v.trim();
+    }
+    return '';
+  };
+
   const handlePhone = () => {
     if (typeof onPhone === 'function') return onPhone(project);
-    const phone = project?.contactPhone || '+919999999999';
+    const phone = resolvePhone(project) || '+918500900100';
     try { window.location.href = `tel:${phone}`; } catch {}
   };
 
   const handleWhatsApp = () => {
     if (typeof onWhatsApp === 'function') return onWhatsApp(project);
-    const phone = (project?.whatsapp || project?.contactPhone || '919999999999').replace(/\D/g, '');
+    const phone = '918500900100'; // +91 85009 00100
     const text = encodeURIComponent(`Hi, I'm interested in ${project?.projectName || 'this project'}`);
     const url = `https://wa.me/${phone}?text=${text}`;
     try { window.open(url, '_blank', 'noopener,noreferrer'); } catch {}
   };
 
+  const openProject = () => onExplore?.(project);
+
   return (
     <article
-      className={`rounded-xl border border-gray-200 bg-white/60 backdrop-blur-md shadow-sm hover:shadow-lg transition-all overflow-hidden ${cardClass}`}
+      className={`rounded-xl border border-gray-200 bg-white/60 backdrop-blur-md shadow-sm hover:shadow-lg transition-all overflow-hidden ${cardClass} cursor-pointer`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={openProject}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter') openProject(); }}
     >
       {/* Image */}
       <div className={`${view === 'list' ? 'w-2/5' : ''} relative`}>
         <img src={image} alt={project?.projectName} className={`${view === 'list' ? 'h-full w-full object-cover' : 'w-full aspect-video object-cover'}`} loading="lazy" />
         <div className="absolute top-3 right-3 flex gap-2">
           <button
-            onClick={() => onFavorite?.(project)}
+            onClick={(e) => { e.stopPropagation(); onFavorite?.(project); }}
             className="w-9 h-9 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow border hover:scale-105 transition-transform"
             aria-label={isFav ? 'Unsave' : 'Save'}
           >
@@ -58,7 +78,7 @@ export default function ProjectCard({ project, view = 'grid', onExplore, onFavor
             )}
           </button>
           <button
-            onClick={() => onShare?.(project)}
+            onClick={(e) => { e.stopPropagation(); onShare?.(project); }}
             className="w-9 h-9 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow border hover:scale-105 transition-transform"
             aria-label="Share"
           >
@@ -105,7 +125,7 @@ export default function ProjectCard({ project, view = 'grid', onExplore, onFavor
         {/* Actions */}
         <div className="mt-3 flex items-center justify-between">
           <button
-            onClick={() => onExplore?.(project)}
+            onClick={(e) => { e.stopPropagation(); onExplore?.(project); }}
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-white text-sm shadow"
             style={{ background: gradients.primary }}
           >
@@ -117,7 +137,7 @@ export default function ProjectCard({ project, view = 'grid', onExplore, onFavor
           </button>
           <div className="flex items-center gap-2">
             <button
-              onClick={handlePhone}
+              onClick={(e) => { e.stopPropagation(); handlePhone(); }}
               title="Call"
               aria-label="Call"
               className="w-9 h-9 rounded-full bg-white/90 border shadow flex items-center justify-center hover:bg-white"
@@ -125,7 +145,7 @@ export default function ProjectCard({ project, view = 'grid', onExplore, onFavor
               📞
             </button>
             <button
-              onClick={handleWhatsApp}
+              onClick={(e) => { e.stopPropagation(); handleWhatsApp(); }}
               title="WhatsApp"
               aria-label="WhatsApp"
               className="w-9 h-9 rounded-full bg-[#25D366] text-white shadow hover:bg-[#1EBE59] flex items-center justify-center"
