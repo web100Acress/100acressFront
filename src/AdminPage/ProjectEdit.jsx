@@ -184,56 +184,71 @@ const ProjectEdit = () => {
 
   const handleUpdateUser = async () => {
     try {
-      const fromData = new FormData();
+      const formData = new FormData();
 
-      // Append all key-value pairs from values
-      for (const key in values) {
-        if (values[key] !== undefined && values[key] !== null) {
-          fromData.append(key, values[key]);
+      // Append scalar/text fields explicitly to avoid sending objects where files are expected
+      const scalarKeys = [
+        'projectName','builderName','projectAddress','city','state','country','paymentPlan',
+        'luxury','spotlight','projectOverview','projectRedefine_Business','projectRedefine_Connectivity',
+        'projectRedefine_Education','projectRedefine_Entertainment','projectReraNo','AboutDeveloper','type',
+        'project_url','meta_title','meta_description','project_Status','launchingDate','totalLandArea',
+        'totalUnit','towerNumber','mobileNumber','possessionDate','minPrice','maxPrice','Amenities'
+      ];
+      scalarKeys.forEach((key) => {
+        const val = values[key];
+        if (val !== undefined && val !== null && typeof val !== 'object') {
+          formData.append(key, val);
         }
-      }
+      });
 
-      // Append floor plan images if they exist
-      if (values.project_floorplan_Image && Array.isArray(values.project_floorplan_Image)) {
+      // Helper: append single file if it's a File object or an object with .file
+      const appendMaybeFile = (field, value) => {
+        if (!value) return;
+        if (value instanceof File) {
+          formData.append(field, value);
+          console.log(`Appending ${field} (File)`, value);
+        } else if (value && value.file instanceof File) {
+          formData.append(field, value.file);
+          console.log(`Appending ${field} (.file)`, value.file);
+        }
+      };
+
+      // Single-file fields as per backend routes/Project.route.js
+      appendMaybeFile('frontImage', values.frontImage);
+      appendMaybeFile('thumbnailImage', values.thumbnailImage);
+      appendMaybeFile('project_locationImage', values.project_locationImage);
+      appendMaybeFile('highlightImage', values.highlightImage);
+      appendMaybeFile('projectMaster_plan', values.projectMaster_plan);
+      appendMaybeFile('logo', values.logo);
+
+      // Multi-file fields
+      if (Array.isArray(values.project_floorplan_Image)) {
         values.project_floorplan_Image.forEach((item, index) => {
-          if (item && item.file) {
-            fromData.append(`project_floorplan_Image`, item.file);
-            console.log(`Appending floor plan image: project_floorplan_Image[${index}]`, item.file);
+          if (item instanceof File) {
+            formData.append('project_floorplan_Image', item);
+            console.log(`Appending floorplan[${index}] (File)`, item);
+          } else if (item && item.file instanceof File) {
+            formData.append('project_floorplan_Image', item.file);
+            console.log(`Appending floorplan[${index}] (.file)`, item.file);
           }
         });
       }
-
-      // Append project gallery images if they exist
-      if (values.projectGallery && Array.isArray(values.projectGallery)) {
+      if (Array.isArray(values.projectGallery)) {
         values.projectGallery.forEach((item, index) => {
-          if (item && item.file) {
-            fromData.append(`projectGallery`, item.file);
-            console.log(`Appending gallery image: projectGallery[${index}]`, item.file);
+          if (item instanceof File) {
+            formData.append('projectGallery', item);
+            console.log(`Appending projectGallery[${index}] (File)`, item);
+          } else if (item && item.file instanceof File) {
+            formData.append('projectGallery', item.file);
+            console.log(`Appending projectGallery[${index}] (.file)`, item.file);
           }
         });
       }
 
-      // Append front image if it exists
-      if (values.frontImage && values.frontImage.file) {
-        fromData.append('frontImage', values.frontImage.file);
-        console.log(`Appending front image: frontImage`, values.frontImage.file);
-      }
-
-      // Append thumbnail image if it exists
-      if (values.thumbnailImage && values.thumbnailImage.file) {
-        fromData.append('thumbnailImage', values.thumbnailImage.file);
-        console.log(`Appending front image: thumbnailImage`, values.thumbnailImage.file);
-      }
-
-      // Append project master plan image if it exists
-      if (values.projectMaster_plan && values.projectMaster_plan.file) {
-        fromData.append('projectMaster_plan', values.projectMaster_plan.file);
-        console.log(`Appending master plan image: projectMaster_plan`, values.projectMaster_plan.file);
-      }
-      const response = await api.post(
-        `/project/Update/${id}`,
-        fromData
-      );
+      // Submit; api client will set Authorization and proper multipart headers
+      const response = await api.post(`/project/Update/${id}`, formData, {
+        withCredentials: true,
+      });
 
       if (response.status === 200) {
         alert("Data updated successfully");
