@@ -22,8 +22,13 @@ export default function Hero({ onExplore, onContact, onSearch, title = 'Develope
     <section className="relative w-full" style={bgStyle}>
       <div className="absolute inset-0" style={{backdropFilter: 'blur(2px)'}} />
       <div className="relative max-w-screen-xl mx-auto px-4 md:px-6 pt-14 md:pt-20 pb-8 md:pb-10 text-white">
-        <div className="max-w-3xl mx-auto text-center">
-          <h1 className="mt-4 md:mt-6 text-3xl md:text-5xl font-extrabold leading-tight font-['Poppins','Inter',sans-serif]">{title}</h1>
+        <div className="mx-auto text-center">
+          <h1
+            className="mt-4 md:mt-6 font-extrabold leading-tight font-['Poppins','Inter',sans-serif] whitespace-nowrap overflow-hidden text-ellipsis"
+            style={{ fontSize: 'clamp(14px, 3vw, 30px)' }}
+          >
+            {title}
+          </h1>
           <p className="mt-3 text-white/85 text-base md:text-lg">{subtitle}</p>
         </div>
 

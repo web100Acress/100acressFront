@@ -445,7 +445,7 @@ const Home = () => {
     >
   {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
-        <Link to="/experion-the-trillion/" className="block relative w-full group" target="_self" aria-label="Experion The Trillion">
+        <Link to="/developers/signature-global/" className="block relative w-full group" target="_self" aria-label="Signature Global">
           
           <div className="hero-strip-99 transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer" aria-hidden="true" style={{ backfaceVisibility: 'hidden' }} />
         </Link>
@@ -825,7 +825,7 @@ const Home = () => {
      width: 100%;
      height: 340px;
      /* Expecting file at: public/experion the trillion banner (1).png */
-     background-image: url("https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/experion-trillion-banner.webp");
+     background-image: url("/Images/Website-Hero-Image.jpg");
      background-repeat: no-repeat;
      background-position: center center; /* keep image centered */
      background-size: auto 100%; /* fit height exactly; crop sides on small screens */

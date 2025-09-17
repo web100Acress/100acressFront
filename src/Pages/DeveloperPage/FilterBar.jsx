@@ -4,9 +4,7 @@ import { gradients } from './DesignTokens';
 export default function FilterBar({ view, setView, sort, setSort, mapView, setMapView }) {
   const sorts = [
     { key: 'price', label: 'Price' },
-    { key: 'rating', label: 'Rating' },
     { key: 'newest', label: 'Newest' },
-    { key: 'nearest', label: 'Nearest' },
   ];
 
   return (

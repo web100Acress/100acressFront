@@ -163,6 +163,24 @@ const DeveloperSidebar = ({ builderKey, builderName }) => {
     info.about || `${builderName} is a reputed real estate developer with projects known for location, quality, and amenities.`;
   const logoSrc = BUILDER_LOGOS[builderKey] || '/Images/100acresslogo.png';
 
+  // Show More logic for overflowing description
+  const aboutRef = React.useRef(null);
+  const [needsMore, setNeedsMore] = React.useState(false);
+  const [showModal, setShowModal] = React.useState(false);
+  React.useEffect(() => {
+    const el = aboutRef.current;
+    if (!el) return;
+    const check = () => {
+      try {
+        setNeedsMore(el.scrollHeight > el.clientHeight + 4);
+      } catch {}
+    };
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => { try { ro.disconnect(); } catch {} };
+  }, [aboutText, builderKey]);
+
   return (
     <aside className="hidden lg:block lg:col-span-3">
       <div className="sticky top-24">
@@ -177,7 +195,18 @@ const DeveloperSidebar = ({ builderKey, builderName }) => {
             <h2 className="text-xl font-semibold text-gray-800">About {builderName}</h2>
           </div>
           <div className="p-5 space-y-4 text-sm leading-6 text-gray-700">
-            <p className="text-gray-700">{aboutText}</p>
+            <div ref={aboutRef} className="text-gray-700 max-h-60 overflow-hidden">
+              {aboutText}
+            </div>
+            {needsMore && (
+              <button
+                type="button"
+                onClick={() => setShowModal(true)}
+                className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm text-white bg-red-600 hover:bg-red-700"
+              >
+                View More
+              </button>
+            )}
             <ul className="space-y-2">
               {info.founded && (
                 <li className="flex items-start gap-2">
@@ -199,6 +228,33 @@ const DeveloperSidebar = ({ builderKey, builderName }) => {
           </div>
         </div>
       </div>
+
+      {/* Modal for full About text */}
+      {showModal && (
+        <div className="fixed inset-0 z-50">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setShowModal(false)}
+          />
+          <div className="absolute inset-0 flex items-center justify-center p-4">
+            <div className="w-full max-w-2xl bg-white rounded-xl shadow-xl overflow-hidden animate-[modalFadeIn_200ms_ease-out]">
+              <div className="flex items-center justify-between px-4 py-3 border-b">
+                <h3 className="text-lg font-semibold">About {builderName}</h3>
+                <button
+                  className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-50"
+                  onClick={() => setShowModal(false)}
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="p-4 max-h-[70vh] overflow-auto leading-7 text-sm text-gray-700">
+                {aboutText}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 };
