@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { getApiBase } from '../config/apiBase';
 
@@ -11,6 +11,14 @@ const Projects = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(50);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Additional filters
+  const [filterType, setFilterType] = useState("");
+  const [filterCity, setFilterCity] = useState("");
+  const [filterAddress, setFilterAddress] = useState("");
+  const [filterBuilder, setFilterBuilder] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterState, setFilterState] = useState("");
 
   const [messageApi, contextHolder] = message.useMessage(); // For Ant Design messages
 
@@ -140,15 +148,58 @@ const Projects = () => {
     setCurrentPage(1); // Reset to first page on new search
   };
 
-  const filteredProjects = viewAll.filter((item) =>
-    item.projectName.toLowerCase().includes(searchTerm.toLowerCase())
+  // Unique options for filters
+  const typeOptions = useMemo(
+    () => Array.from(new Set((viewAll || []).map(v => v?.type).filter(Boolean))).sort(),
+    [viewAll]
   );
+  const cityOptions = useMemo(
+    () => Array.from(new Set((viewAll || []).map(v => v?.city).filter(Boolean))).sort(),
+    [viewAll]
+  );
+  const builderOptions = useMemo(
+    () => Array.from(new Set((viewAll || []).map(v => v?.builderName).filter(Boolean))).sort(),
+    [viewAll]
+  );
+  const statusOptions = useMemo(
+    () => Array.from(new Set((viewAll || []).map(v => v?.project_Status).filter(Boolean))).sort(),
+    [viewAll]
+  );
+  const stateOptions = useMemo(
+    () => Array.from(new Set((viewAll || []).map(v => v?.state).filter(Boolean))).sort(),
+    [viewAll]
+  );
+
+  // Apply combined filters
+  const filteredProjects = viewAll.filter((item) => {
+    const name = (item?.projectName || "").toLowerCase();
+    const addr = (item?.projectAddress || "").toLowerCase();
+    const matchesName = name.includes((searchTerm || "").toLowerCase());
+    const matchesType = !filterType || item?.type === filterType;
+    const matchesCity = !filterCity || item?.city === filterCity;
+    const matchesAddress = !filterAddress || addr.includes(filterAddress.toLowerCase());
+    const matchesBuilder = !filterBuilder || item?.builderName === filterBuilder;
+    const matchesStatus = !filterStatus || item?.project_Status === filterStatus;
+    const matchesState = !filterState || item?.state === filterState;
+    return matchesName && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState;
+  });
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredProjects.slice(indexOfFirstRow, indexOfLastRow);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  const resetFilters = () => {
+    setSearchTerm("");
+    setFilterType("");
+    setFilterCity("");
+    setFilterAddress("");
+    setFilterBuilder("");
+    setFilterStatus("");
+    setFilterState("");
+    setCurrentPage(1);
   };
 
   return (
@@ -168,6 +219,63 @@ const Projects = () => {
             <button className="search-button">
               Search
             </button>
+          </div>
+          {/* Filters moved next to search bar */}
+          <div className="filters-container">
+           
+            <select
+              className="filter-select"
+              value={filterType}
+              onChange={(e) => { setFilterType(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">All Types</option>
+              {typeOptions.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
+            <select
+              className="filter-select"
+              value={filterCity}
+              onChange={(e) => { setFilterCity(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">All Cities</option>
+              {cityOptions.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
+            <select
+              className="filter-select"
+              value={filterBuilder}
+              onChange={(e) => { setFilterBuilder(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">All Builders</option>
+              {builderOptions.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
+            <select
+              className="filter-select"
+              value={filterStatus}
+              onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">All Statuses</option>
+              {statusOptions.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
+            <select
+              className="filter-select"
+              value={filterState}
+              onChange={(e) => { setFilterState(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">All States</option>
+              {stateOptions.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
+            {/* <button type="button" className="reset-filters-button" onClick={resetFilters}>
+              Reset
+            </button> */}
           </div>
           <Link to={"/admin/project-insert"}>
             <button
@@ -361,8 +469,8 @@ const projectStyles = `
   justify-content: space-between;
   align-items: center;
   margin-bottom: 3rem; /* More space below header */
-  flex-wrap: wrap;
-  gap: 1.8rem; /* Increased gap for better separation */
+  flex-wrap: nowrap; /* keep in one row on larger screens */
+  gap: 0.8rem; /* tighter gap so items fit in one row */
 }
 
 .search-container {
@@ -372,8 +480,9 @@ const projectStyles = `
   border-radius: 14px; /* Even softer rounded corners */
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1); /* Deeper, more elegant shadow */
   overflow: hidden;
-  max-width: 500px; /* Wider search bar */
-  flex-grow: 1;
+  max-width: 520px; /* slightly narrower to make room for filters */
+  flex: 0 1 420px; /* allow shrinking if needed */
+  min-width: 280px; /* avoid too small on medium screens */
   border: 1px solid #d8e2ed; /* Subtle border for definition */
 }
 
@@ -416,6 +525,63 @@ const projectStyles = `
   box-shadow: 0 6px 20px rgba(244, 67, 54, 0.5);
 }
 
+.filters-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: transparent; /* merge visually with header */
+  border: none;
+  border-radius: 12px;
+  padding: 6px 4px;
+  box-shadow: none;
+  flex: 1 1 0; /* take remaining space */
+  flex-wrap: nowrap; /* single row */
+  overflow-x: auto; /* allow horizontal scroll if needed */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.filters-container::-webkit-scrollbar { display: none; }
+
+.filters-container .filter-input,
+.filters-container .filter-select {
+  min-width: 120px;
+  width: 140px; /* consistent width */
+  flex: 0 0 auto; /* prevent shrinking too small */
+}
+
+.filters-container .reset-filters-button {
+  white-space: nowrap;
+}
+
+/* Responsive: wrap on smaller screens */
+@media (max-width: 1100px) {
+  .projects-header {
+    flex-wrap: wrap;
+  }
+  .filters-container {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    gap: 10px;
+  }
+  .filters-container .filter-input,
+  .filters-container .filter-select {
+    width: 100%;
+    max-width: 240px;
+  }
+}
+
+/* Wider screens can afford larger controls */
+@media (min-width: 1400px) {
+  .filters-container .filter-input,
+  .filters-container .filter-select {
+    width: 170px;
+  }
+  .projects-header {
+    gap: 1rem;
+  }
+}
+
 .add-new-project-button {
   background: linear-gradient(45deg, #4CAF50 0%, #43a047 100%); /* Green gradient */
   color: #ffffff;
@@ -430,6 +596,7 @@ const projectStyles = `
   gap: 10px;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+  flex: 0 0 auto; /* keep natural size, don't stretch */
 }
 
 .add-new-project-button:hover {
@@ -477,6 +644,51 @@ const projectStyles = `
 
 .table-header:last-child {
   border-top-right-radius: 20px;
+}
+
+.filter-row {
+  background-color: #fafbff;
+}
+
+.filter-cell {
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border-bottom: 2px solid #e8eaf1;
+}
+
+.filter-input,
+.filter-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d8e2ed;
+  border-radius: 10px;
+  outline: none;
+  font-size: 0.95rem;
+  color: #333d4e;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+  border-color: #b0c4de;
+  box-shadow: 0 0 0 3px rgba(176, 196, 222, 0.25);
+}
+
+.reset-filters-button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #e0e6ed;
+  background: linear-gradient(45deg, #eeeeee 0%, #e2e8f0 100%);
+  color: #333d4e;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-filters-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .table-body .table-row:nth-child(odd) { /* Back to odd for a subtle stripe */
