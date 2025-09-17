@@ -231,7 +231,7 @@ const PossessionProperty = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent">
                         <div className="absolute bottom-2 left-2 right-2">
                           <div className="flex items-center justify-between mb-1">
-                            <span className={`bg-gradient-to-r ${item.gradient} text-white px-2 py-0.5 rounded-full text-xs font-bold shadow-lg`}>
+                            <span className={`bg-white text-black px-2 py-0.5 rounded-full text-xs font-bold shadow-lg`}>
                               {item.badge}
                             </span>
                             <span className="text-white text-xs font-medium bg-black/30 backdrop-blur-sm px-1.5 py-0.5 rounded-full">
@@ -295,7 +295,7 @@ const PossessionProperty = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
                       <div className="absolute bottom-4 left-4 right-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                          <span className="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">
                             {item.badge}
                           </span>
                           <span className="text-white text-sm font-medium">

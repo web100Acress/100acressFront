@@ -188,7 +188,7 @@ const CityProjects = () => {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
             {/* Sidebar (desktop) */}
             <aside className="hidden md:block md:col-span-3">
-              <div className="sticky top-24 bg-white/80 backdrop-blur rounded-2xl border border-gray-200 shadow-sm p-4">
+              <div className="sticky top-28 lg:top-32 bg-white/80 backdrop-blur rounded-2xl border border-gray-200 shadow-sm p-4">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-sm font-semibold text-gray-800">Filter Options</h3>
                   <button className="text-xs text-red-600 font-semibold" onClick={clearAll} type="button">Clear All</button>

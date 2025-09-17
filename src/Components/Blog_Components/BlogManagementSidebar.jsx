@@ -12,12 +12,14 @@ import {
   Settings,
   User
 } from 'lucide-react';
+import { Modal } from 'antd';
 import axios from'axios';
 import { useNavigate } from'react-router-dom';
 
 function BlogManagementSidebar() {
    
    const [sidebarOpen, setSidebarOpen] = useState(false);
+   const [showCreateArticle, setShowCreateArticle] = useState(false);
    const history = useNavigate();
    const location = useLocation();
 
@@ -138,7 +140,20 @@ function BlogManagementSidebar() {
                   </Link>
                </li>
                
+               {/* Create Article (between Add Blog and Drafts) */}
+               <li>
+                <button 
+                  type='button'
+                  onMouseDown={() => setShowCreateArticle(true)}
+                  onClick={() => setShowCreateArticle(true)}
+                  className="w-full flex items-center p-3 text-gray-700 rounded-xl hover:bg-blue-50 group transition-all duration-200 focus:outline-none"
+                >
+                  <NotebookText className="w-5 h-5 text-gray-500 group-hover:text-blue-600" />
+                  <span className="ms-3 font-semibold">Create Article</span>
+                </button>
+               </li>
 
+               
               
                <li>
                 <Link 
@@ -211,6 +226,58 @@ function BlogManagementSidebar() {
       <Outlet />
    </div>
 </div>
+
+      {/* Create Article Modal */}
+      <Modal
+        title={<div className="text-lg font-semibold text-gray-900">Select Article Type</div>}
+        open={showCreateArticle}
+        onCancel={() => setShowCreateArticle(false)}
+        footer={null}
+        centered
+        bodyStyle={{ paddingTop: 8 }}
+        destroyOnClose
+        maskClosable
+        zIndex={10000}
+        rootStyle={{ zIndex: 10001, pointerEvents: 'auto' }}
+        maskStyle={{ zIndex: 10000 }}
+        getContainer={() => document.body}
+      >
+        <p className="text-sm text-gray-600 mb-4">Choose the type of article you’d like to create.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button
+            type='button'
+            onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); setShowCreateArticle(false); history('/seo/blogs/write?type=blog'); }}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowCreateArticle(false); history('/seo/blogs/write?type=blog'); }}
+            className="w-full text-left p-4 border border-gray-200 rounded-xl hover:border-blue-500 hover:shadow transition-all bg-white"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                <i className="fa-solid fa-blog"></i>
+              </div>
+              <div>
+                <div className="font-semibold text-gray-900">Blog</div>
+                <div className="text-sm text-gray-600">Standard blog post displayed under All Blogs.</div>
+              </div>
+            </div>
+          </button>
+          <button
+            type='button'
+            onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); setShowCreateArticle(false); history('/seo/blogs/write?type=news'); }}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowCreateArticle(false); history('/seo/blogs/write?type=news'); }}
+            className="w-full text-left p-4 border border-gray-200 rounded-xl hover:border-blue-500 hover:shadow transition-all bg-white"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-lg bg-yellow-50 text-yellow-700 flex items-center justify-center">
+                <i className="fa-regular fa-newspaper"></i>
+              </div>
+              <div>
+                <div className="font-semibold text-gray-900">News</div>
+                <div className="text-sm text-gray-600">News article displayed under Insights → News.</div>
+              </div>
+            </div>
+          </button>
+        </div>
+      </Modal>
     </>
   )
 }

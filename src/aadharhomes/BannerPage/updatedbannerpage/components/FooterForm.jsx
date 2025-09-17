@@ -99,38 +99,35 @@ const FooterForm = ({ builderName = "Premium", projectViewDetails = {}, projectT
               </div>
               
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
-                Get Exclusive 
-                <span className="block text-transparent bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text">
-                  Property Details
-                </span>
+                Enquire Now
               </h2>
               
             </div>
 
             {/* Call Now Section - Moved from bottom */}
-            <div className="p-4 md:p-6 bg-gradient-to-r from-amber-500/10 to-amber-600/5 rounded-2xl border border-amber-500/20">
-              <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="p-3 md:p-4 bg-gradient-to-r from-amber-500/10 to-amber-600/5 rounded-2xl border border-amber-500/20">
+              <div className="flex flex-col sm:flex-row items-center gap-2">
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center">
                     <svg className="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1v3.61a1 1 0 01-.91 1A16 16 0 014 5.92 1 1 0 015 5h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.24 1.01l-2.32 2.23z"/>
                     </svg>
                   </div>
                 </div>
                 <div className="flex-1 text-center sm:text-left">
-                  <h4 className="text-white font-semibold text-lg mb-1">Need Immediate Assistance?</h4>
-                  <p className="text-gray-300 text-sm">Call our property experts directly</p>
+                  <h4 className="text-white font-semibold text-base mb-0">Need Immediate Assistance?</h4>
+                  <p className="text-gray-400 text-xs">Call our property experts directly</p>
                 </div>
                 <div className="flex-shrink-0">
                   <a
-                    href={`tel:${dialNumber}`}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold hover:from-amber-600 hover:to-amber-700 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-amber-500/20 text-sm"
-                    aria-label={`Call ${displayNumber}`}
+                    href={`tel:+91${dialNumber}`}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold hover:from-amber-600 hover:to-amber-700 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-amber-500/20 text-sm md:text-base"
+                    aria-label={`Call +91${displayNumber}`}
                   >
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1v3.61a1 1 0 01-.91 1A16 16 0 014 5.92 1 1 0 015 5h3.61a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.24 1.01l-2.32 2.23z"/>
                     </svg>
-                    <span className="text-sm">{displayNumber}</span>
+                    <span className="text-sm md:text-base font-extrabold tracking-wide">{displayNumber}</span>
                   </a>
                 </div>
               </div>
