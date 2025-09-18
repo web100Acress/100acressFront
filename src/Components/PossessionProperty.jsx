@@ -25,7 +25,15 @@ const PossessionProperty = () => {
     autoplaySpeed: 4000,
     fade: true,
     cssEase: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-    beforeChange: (oldIndex, newIndex) => setCurrentSlide(newIndex),
+    beforeChange: (oldIndex, newIndex) => {
+      setCurrentSlide(newIndex);
+      // Defer to allow slick to update ARIA first
+      setTimeout(() => updateSlideA11y(), 0);
+    },
+    afterChange: () => {
+      // Ensure a11y state is correct after slide transition completes
+      setTimeout(() => updateSlideA11y(), 0);
+    },
     responsive: [
       {
         breakpoint: 768,
@@ -40,6 +48,46 @@ const PossessionProperty = () => {
       }
     ]
   };
+
+  // Ensure only visible slide is focusable for screen readers
+  const updateSlideA11y = () => {
+    try {
+      const slides = document.querySelectorAll('.slick-slide');
+      slides.forEach(slide => {
+        const hidden = slide.getAttribute('aria-hidden') === 'true';
+        // Toggle inert when supported
+        if (hidden) {
+          slide.setAttribute('inert', '');
+        } else {
+          slide.removeAttribute('inert');
+        }
+        // Manage focusable descendants
+        const focusables = slide.querySelectorAll('a, button, input, select, textarea, [tabindex]');
+        focusables.forEach(el => {
+          if (hidden) {
+            el.setAttribute('tabindex', '-1');
+            el.setAttribute('aria-hidden', 'true');
+          } else {
+            // Only restore when it was disabled by us
+            if (el.getAttribute('tabindex') === '-1') el.removeAttribute('tabindex');
+            if (el.getAttribute('aria-hidden') === 'true') el.removeAttribute('aria-hidden');
+          }
+        });
+      });
+      // Label and normalize slick dots
+      const dots = document.querySelectorAll('.slick-dots li button');
+      dots.forEach((btn, i) => {
+        btn.setAttribute('type', 'button');
+        btn.setAttribute('aria-label', `Go to slide ${i + 1}`);
+      });
+    } catch (_) {}
+  };
+
+  useEffect(() => {
+    // Run on mount and whenever currentSlide changes to keep state in sync
+    const id = setTimeout(() => updateSlideA11y(), 0);
+    return () => clearTimeout(id);
+  }, [currentSlide]);
 
   const possessionData = {
     "ready-to-move": {
@@ -132,6 +180,37 @@ const PossessionProperty = () => {
 
   return (
     <div className={`w-full transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+      {/* Accessibility styles for slick dots */}
+      <style>{`
+        .slick-dots {
+          bottom: 6px;
+        }
+        .slick-dots li {
+          margin: 0 4px;
+        }
+        .slick-dots li button {
+          width: 12px;            /* visual dot size */
+          height: 12px;           /* visual dot size */
+          padding: 18px;          /* 12 + 2*18 = 48px total touch target */
+          border-radius: 9999px;
+          background-clip: content-box; /* keep visual dot small */
+          min-width: 48px;        /* enforce min hit area */
+          min-height: 48px;       /* enforce min hit area */
+          line-height: 0;         /* avoid extra inline height */
+          display: inline-flex;   /* center for consistent focus ring */
+          align-items: center;
+          justify-content: center;
+        }
+        .slick-dots li button:focus-visible {
+          outline: 2px solid #facc15;
+          outline-offset: 2px;
+        }
+        @media (max-width: 768px) {
+          .slick-dots li button {
+            padding: 18px;  /* keep 48x48 on mobile as well */
+          }
+        }
+      `}</style>
       {/* Header Section - Full Width */}
       <div className="text-center mb-4 md:mb-6 px-4 md:px-6">
         <div className="relative">
@@ -216,7 +295,7 @@ const PossessionProperty = () => {
           <Slider {...carouselSettings}>
             {carouselItems.map((item, index) => (
               <div key={index} className="px-1 w-full">
-                <Link to={item.to} target="_top" className="w-full">
+                <Link to={item.to} target="_top" className="w-full" aria-label={item.title}>
                   <div 
                     className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-700 transform hover:scale-105 w-full"
                     onMouseEnter={() => setIsHovered(index)}
@@ -226,12 +305,14 @@ const PossessionProperty = () => {
                       <img
                         className="w-full h-32 sm:h-36 object-cover transition-transform duration-700 group-hover:scale-110"
                         src={item.imgSrc}
-                        alt={item.title}
+                        alt=""
+                        role="presentation"
+                        aria-hidden="true"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent">
                         <div className="absolute bottom-2 left-2 right-2">
                           <div className="flex items-center justify-between mb-1">
-                            <span className={`bg-gradient-to-r ${item.gradient} text-white px-2 py-0.5 rounded-full text-xs font-bold shadow-lg`}>
+                            <span className={`bg-white text-black px-2 py-0.5 rounded-full text-xs font-bold shadow-lg`}>
                               {item.badge}
                             </span>
                             <span className="text-white text-xs font-medium bg-black/30 backdrop-blur-sm px-1.5 py-0.5 rounded-full">
@@ -284,18 +365,20 @@ const PossessionProperty = () => {
         <div className="w-full px-4">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 w-full">
             {carouselItems.map((item, index) => (
-              <Link key={index} to={item.to} target="_top" className="w-full">
+              <Link key={index} to={item.to} target="_top" className="w-full" aria-label={item.title}>
                 <div className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 bg-white w-full">
                   <div className="relative w-full">
                     <img
                       className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                       src={item.imgSrc}
-                      alt={item.title}
+                      alt=""
+                      role="presentation"
+                      aria-hidden="true"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
                       <div className="absolute bottom-4 left-4 right-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                          <span className="bg-white text-black px-3 py-1 rounded-full text-sm font-semibold">
                             {item.badge}
                           </span>
                           <span className="text-white text-sm font-medium">

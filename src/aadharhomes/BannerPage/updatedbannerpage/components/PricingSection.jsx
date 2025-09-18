@@ -153,7 +153,7 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
             </p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
               <a 
-                href={`tel:${dialNumber}`}
+                href={`tel:+91${dialNumber}`}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-amber-500/40 text-amber-400 hover:text-black hover:bg-amber-500 transition-colors duration-200 font-medium"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

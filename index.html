@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -27,42 +28,65 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- Preconnect for Unsplash CDN to speed up first image paint -->
-  <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
-  <link rel="preconnect" href="https://unsplash.com" />
-  <!-- Preload hero image (fallback Unsplash JPG). Custom preloads are added dynamically in JS. -->
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1600&q=80" imagesrcset="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=640&q=60 640w, https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1024&q=70 1024w, https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1600&q=80 1600w" imagesizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw">
-  <link
+  <!-- Preload main module for faster startup -->
+  <link rel="modulepreload" href="/src/index.jsx" />
+  <!-- Preload LCP hero image with high priority -->
+  <link rel="preload" as="image" fetchpriority="high"
+    href="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/experion-trillion-banner.webp" />
+  <!-- Load Google Fonts non-blocking -->
+  <link rel="preload" as="style"
     href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Gluten:wght@100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
-    rel="stylesheet">
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Gluten:wght@100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" />
+  </noscript>
+
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" />
+  </noscript>
   <script type="module" src="/src/index.jsx"></script>
-  <!-- Google tag (gtag.js) -->
+  <!-- Google tag (gtag.js) - defer init until idle -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-1XY9M6DY08"></script>
   <script>
-    window.addEventListener('DOMContentLoaded', function () {
+    function initGA(){
       window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
+      function gtag(){ dataLayer.push(arguments); }
       gtag('js', new Date());
       gtag('config', 'G-1XY9M6DY08');
-    });
+    }
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(initGA);
+    } else {
+      setTimeout(initGA, 1500);
+    }
   </script>
   <!-- Meta Pixel Code -->
   <script>
-    !function (f, b, e, v, n, t, s) {
-      if (f.fbq) return; n = f.fbq = function () {
-        n.callMethod ?
-        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-      };
-      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-      n.queue = []; t = b.createElement(e); t.async = !0;
-      t.src = v; s = b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t, s)
-    }(window, document, 'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '982711101921963');
-    fbq('track', 'PageView');
+    function initFB(){
+      try {
+        !function (f, b, e, v, n, t, s) {
+          if (f.fbq) return; n = f.fbq = function () {
+            n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+          };
+          if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+          n.queue = []; t = b.createElement(e); t.async = !0;
+          t.src = v; s = b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t, s)
+        }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '982711101921963');
+        fbq('track', 'PageView');
+      } catch(e) { /* ignore */ }
+    }
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(initFB);
+    } else {
+      setTimeout(initFB, 2000);
+    }
   </script>
 <!-- End Meta Pixel Code -->
   <!-- *schema Organization* -->
@@ -141,42 +165,222 @@
 
   <div id="root"></div>
 
-  <script type="module" src="/src/index.jsx"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-  <script>
-    console.log('jQuery before slick:', typeof window.jQuery, window.jQuery ? 'OK' : 'NOT OK');
-  </script>
-
-  <script type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
-
   <!-- adde new -->
 
   <script type="text/javascript">
-    _linkedin_partner_id = "7381604";
-    window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
-    window._linkedin_data_partner_ids.push(_linkedin_partner_id);
-  </script>
-  <script type="text/javascript">
-    (function (l) {
-      if (!l) {
-        window.lintrk = function (a, b) { window.lintrk.q.push([a, b]) };
-        window.lintrk.q = []
-      }
-      var s = document.getElementsByTagName("script")[0];
-      var b = document.createElement("script");
-      b.type = "text/javascript"; b.async = true;
-      b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
-      s.parentNode.insertBefore(b, s);
-    })(window.lintrk);
+    function initLinkedIn(){
+      try {
+        _linkedin_partner_id = "7381604";
+        window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+        window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+        (function (l) {
+          if (!l) {
+            window.lintrk = function (a, b) { window.lintrk.q.push([a, b]) };
+            window.lintrk.q = []
+          }
+          var s = document.getElementsByTagName("script")[0];
+          var b = document.createElement("script");
+          b.type = "text/javascript"; b.async = true;
+          b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+          s.parentNode.insertBefore(b, s);
+        })(window.lintrk);
+      } catch(e) { /* ignore */ }
+    }
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(initLinkedIn);
+    } else {
+      setTimeout(initLinkedIn, 2500);
+    }
   </script>
   <noscript>
     <img height="1" width="1" style="display:none;" alt=""
       src="https://px.ads.linkedin.com/collect/?pid=7381604&fmt=gif" />
   </noscript>
 
+  <script>
+    // Lazy-load non-critical images by default
+    (function(){
+      function lazyAll(){
+        const imgs = document.querySelectorAll('img:not([loading])');
+        imgs.forEach(img => {
+          const rect = img.getBoundingClientRect();
+          const aboveFold = rect.top < (window.innerHeight || 800);
+          if (!aboveFold) img.loading = 'lazy';
+          img.decoding = img.decoding || 'async';
+        });
+      }
+      if (document.readyState === 'complete') lazyAll();
+      else window.addEventListener('load', lazyAll);
+    })();
+    // Helper: derive best accessible label
+    function getBestLabel(el) {
+      const pick = (...vals) => vals.find(v => v && String(v).trim())?.toString().trim();
+      const aria = el.getAttribute && el.getAttribute('aria-label');
+      const title = el.getAttribute && el.getAttribute('title');
+      const dataLabel = el.getAttribute && (el.getAttribute('data-label') || el.getAttribute('data-action') || el.getAttribute('name'));
+      const value = 'value' in el ? el.value : undefined;
+      let text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+      // Keyword mapping for icon-only buttons (e.g., share/next/prev/close/search)
+      const cls = (el.className || '').toLowerCase();
+      const kwMap = [
+        { k: 'share', v: 'Share' },
+        { k: 'next', v: 'Next' },
+        { k: 'prev', v: 'Previous' },
+        { k: 'previous', v: 'Previous' },
+        { k: 'close', v: 'Close' },
+        { k: 'search', v: 'Search' },
+        { k: 'menu', v: 'Menu' },
+        { k: 'play', v: 'Play' },
+        { k: 'pause', v: 'Pause' },
+        { k: 'download', v: 'Download' },
+      ];
+      let kw = kwMap.find(m => cls.includes(m.k))?.v;
+      // Special-case: navigation buttons
+      if (!kw && cls.includes('nav-btn')) {
+        const dir = (el.getAttribute('data-dir') || el.getAttribute('data-direction') || '').toLowerCase();
+        if (dir.startsWith('p')) kw = 'Previous';
+        else if (dir.startsWith('n')) kw = 'Next';
+        else if (cls.includes('left')) kw = 'Previous';
+        else if (cls.includes('right')) kw = 'Next';
+      }
+      // If element only contains an SVG, treat as icon-only
+      if (!text && el.querySelector && el.querySelector('svg')) {
+        text = kw || '';
+      }
+      return pick(aria, title, dataLabel, value, text, kw);
+    }
 
+    function setAccessibleName(el) {
+      const label = getBestLabel(el);
+      if (!label) return;
+      if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', label);
+      if (!el.getAttribute('title')) el.setAttribute('title', label);
+      // Hide decorative svgs inside buttons
+      el.querySelectorAll('svg').forEach(svg => {
+        if (!svg.getAttribute('aria-label') && !svg.getAttribute('aria-labelledby')) {
+          svg.setAttribute('aria-hidden', 'true');
+          svg.setAttribute('focusable', 'false');
+        }
+      });
+    }
+
+    // Reduce redundant alt text when a visible text label is adjacent
+    function fixRedundantAlts(root = document) {
+      const imgs = root.querySelectorAll('img[alt]');
+      imgs.forEach(img => {
+        const alt = (img.getAttribute('alt') || '').trim();
+        if (!alt) return;
+        const sib = img.nextElementSibling;
+        const sibText = sib && (sib.textContent || '').replace(/\s+/g, ' ').trim();
+        if (sibText && alt && sibText.toLowerCase() === alt.toLowerCase()) {
+          img.setAttribute('alt', '');
+          img.setAttribute('aria-hidden', 'true');
+          img.setAttribute('role', 'presentation');
+        }
+      });
+    }
+
+    function applyTitles(root = document) {
+      // Buttons
+      root.querySelectorAll('button').forEach(setAccessibleName);
+      // Inputs that act like buttons
+      root.querySelectorAll('input[type="button"], input[type="submit"], input[type="reset"]').forEach(setAccessibleName);
+      // Anchors explicitly acting as buttons
+      root.querySelectorAll('a[role="button"]').forEach(setAccessibleName);
+      // All anchors lacking labels but containing icon-only or text
+      root.querySelectorAll('a').forEach(a => {
+        const hasName = a.getAttribute('aria-label') || a.getAttribute('title');
+        const text = (a.textContent || '').replace(/\s+/g, ' ').trim();
+        if (!hasName && text) {
+          a.setAttribute('aria-label', text);
+          a.setAttribute('title', text);
+        }
+        // Hide decorative svgs inside links
+        a.querySelectorAll('svg').forEach(svg => {
+          if (!svg.getAttribute('aria-label') && !svg.getAttribute('aria-labelledby')) {
+            svg.setAttribute('aria-hidden', 'true');
+            svg.setAttribute('focusable', 'false');
+          }
+        });
+      });
+      // Ensure explicit fixes for common selectors
+      root.querySelectorAll('button.share-btn').forEach(btn => {
+        if (!btn.getAttribute('aria-label')) btn.setAttribute('aria-label', 'Share');
+        if (!btn.getAttribute('title')) btn.setAttribute('title', 'Share');
+      });
+      root.querySelectorAll('button.nav-btn').forEach(btn => {
+        if (!btn.getAttribute('aria-label') || !btn.getAttribute('title')) {
+          const dir = (btn.getAttribute('data-dir') || btn.getAttribute('data-direction') || '').toLowerCase();
+          const guess = dir.startsWith('p') ? 'Previous' : dir.startsWith('n') ? 'Next' : (btn.className.toLowerCase().includes('left') ? 'Previous' : 'Next');
+          if (!btn.getAttribute('aria-label')) btn.setAttribute('aria-label', guess);
+          if (!btn.getAttribute('title')) btn.setAttribute('title', guess);
+        }
+      });
+      // Buttons inside search bars
+      root.querySelectorAll('.search-bar button').forEach(btn => {
+        if (!btn.getAttribute('aria-label') && !btn.getAttribute('title')) {
+          btn.setAttribute('aria-label', 'Search');
+          btn.setAttribute('title', 'Search');
+        }
+      });
+      // Fix redundant alts near labels
+      fixRedundantAlts(root);
+    }
+
+    // Initial run
+    applyTitles(document);
+
+    // Observe future DOM changes (SPA navigation, lazy content, modals, etc.)
+    const observer = new MutationObserver(mutations => {
+      for (const m of mutations) {
+        m.addedNodes && m.addedNodes.forEach(node => {
+          if (node.nodeType === 1) { // ELEMENT_NODE
+            applyTitles(node);
+          }
+        });
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+  </script>
+
+  <style id="a11y-touch-targets">
+    /* Improve minimum touch target sizes and focus visibility */
+    :is(a.button, button, .nav-btn, .chip, .slick-arrow, a.text-center, button.nav-btn) {
+      min-width: 44px;
+      min-height: 44px;
+    }
+    .nav-btn {
+      padding: 8px !important; /* from h-8/w-8 to meet 44px with padding */
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px; /* chips are often shorter; raise a bit */
+      padding: 8px 12px; /* ensure adequate hit area */
+      gap: 6px;
+    }
+    /* Slick arrows */
+    .slick-arrow {
+      width: 44px !important;
+      height: 44px !important;
+      border-radius: 9999px;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+    }
+    .slick-arrow:before {
+      font-size: 24px !important;
+      line-height: 1 !important;
+    }
+    /* Generic focus outline for keyboard users */
+    :is(a, button, [role="button"]).focus-visible,
+    :is(a, button, [role="button"]):focus-visible {
+      outline: 2px solid #f59e0b; /* amber-500 */
+      outline-offset: 2px;
+    }
+  </style>
 
 </body>
 
