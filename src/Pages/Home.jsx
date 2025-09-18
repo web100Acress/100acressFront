@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import Chatbot from "../Components/HomePageComponents/Chatbot";
 import { AuthContext } from "../AuthContext";
 import FloatingShorts from "../Components/FloatingShorts";
+import DynamicHeroBanner from "../Components/HomePageComponents/DynamicHeroBanner";
 
 const Home = () => {
   // const [showConfetti, setShowConfetti] = useState(true);
@@ -445,10 +446,8 @@ const Home = () => {
     >
   {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
-        <Link to="/developers/signature-global/" className="block relative w-full group" target="_self" aria-label="Signature Global">
-          
-          <div className="hero-strip-99 transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer" aria-hidden="true" style={{ backfaceVisibility: 'hidden' }} />
-        </Link>
+        {/* Dynamic Hero Banner */}
+        <DynamicHeroBanner />
     </div>
 
     {/* SearchBar should NOT be blurred */}
@@ -821,18 +820,7 @@ const Home = () => {
   }
 
    
-   .hero-strip-99 {
-     width: 100%;
-     height: 340px;
-     /* Expecting file at: public/experion the trillion banner (1).png */
-     background-image: url("/Images/Website-Hero-Image.jpg");
-     background-repeat: no-repeat;
-     background-position: center center; /* keep image centered */
-     background-size: auto 100%; /* fit height exactly; crop sides on small screens */
-     margin-top: 76px; /* match header height (60 + 8 + 8 padding) */
-     position: relative; /* for gradient overlay */
-     overflow: hidden; /* avoid secondary scrollbar when scaled */
-  }
+   /* Static hero styles removed - now using DynamicHeroBanner component */
  
    /* Remove top fade overlay */
   .hero-strip-99::before {

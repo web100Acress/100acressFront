@@ -184,6 +184,7 @@ const DraftManagement = lazy(() => import("./Components/Blog_Components/DraftMan
 const BlogManagementSidebar = lazy(() => import("./Components/Blog_Components/BlogManagementSidebar"));
 const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
 const ShortsSettings = lazy(() => import("./AdminPage/ShortsSettings"));
+const BannerManagement = lazy(() => import("./AdminPage/BannerManagement"));
 const InsightsNews = lazy(() => import("./Pages/InsightsNews"));
 const InsightsGuides = lazy(() => import("./Pages/InsightsGuides"));
 
@@ -495,6 +496,7 @@ function App() {
                       <Route path="buy/view/edit/:id" element={<LazyLoad> <BuyEdit /></LazyLoad>} />
                       <Route path="contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
                       <Route path="shorts" element={<LazyLoad><ShortsSettings /></LazyLoad>} />
+                      <Route path="banner-management" element={<LazyLoad><BannerManagement /></LazyLoad>} />
                       <Route
                         path="ContactUs/UserProfile"
                         element={<LazyLoad> <UserProfile /></LazyLoad>}
