@@ -430,6 +430,10 @@ const Home = () => {
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
+      {/* Visually hidden H1 for correct heading order without affecting layout */}
+      <h1 className="sr-only">100acress Real Estate in Gurgaon – Buy, Rent, Sell & New Launch Projects</h1>
+      {/* Main landmark for primary content region */}
+      <main id="main-content" role="main">
       
       {/* Confetti Animation */}
       {/* {showConfetti && <ConfettiAllCorners /> */}
@@ -446,8 +450,18 @@ const Home = () => {
   {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
         <Link to="/developers/signature-global/" className="block relative w-full group" target="_self" aria-label="Signature Global">
-          
-          <div className="hero-strip-99 transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer" aria-hidden="true" style={{ backfaceVisibility: 'hidden' }} />
+          {/* LCP image: render real <img> so it's discoverable and prioritized */}
+          <img
+            src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/experion-trillion-banner.webp"
+            alt=""
+            aria-hidden="true"
+            fetchpriority="high"
+            decoding="async"
+            className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+            style={{ backfaceVisibility: 'hidden' }}
+          />
+          {/* Keep existing overlay/effects on top */}
+          <div className="hero-strip-99 transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer relative" aria-hidden="true" style={{ backfaceVisibility: 'hidden' }} />
         </Link>
     </div>
 
@@ -787,9 +801,9 @@ const Home = () => {
       </div> {/* Closing div for the blur container */}
       <LuxuryFooter />
  
-      </Wrapper>
- 
-   );
+      </main>
+    </Wrapper>
+  );
  
  }
  

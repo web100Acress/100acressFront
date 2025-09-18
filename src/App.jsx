@@ -621,9 +621,11 @@ function MobileBottomNav() {
             <div className="flex flex-col items-center justify-center -mt-6">
               <a
                 href="tel:+918500900100"
-                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg ring-4 ring-white"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg ring-4 ring-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                aria-label="Call 8500900100"
+                title="Call 8500900100"
               >
-                <i className="fa-solid fa-phone text-lg"></i>
+                <i className="fa-solid fa-phone text-lg" aria-hidden="true"></i>
               </a>
               <span className="mt-1 text-[11px]">Contact</span>
             </div>
