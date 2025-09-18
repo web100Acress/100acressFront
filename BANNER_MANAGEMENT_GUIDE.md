@@ -177,3 +177,4 @@ Potential improvements for the system:
 ## Support
 
 For technical support or questions about the banner management system, please contact the development team.
+
