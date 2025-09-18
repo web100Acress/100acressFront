@@ -223,4 +223,4 @@ ProjectHero.defaultProps = {
 };
  
 
-export default ProjectHero;
+export default ProjectHero

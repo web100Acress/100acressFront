@@ -73,7 +73,13 @@ function ProjectLayout2() {
       try {
         setLoading(true);
         const response = await api.get(`project/View/${pUrl}`);
+        console.log('Full API Response:', response); // Debug log
         const projectData = response?.data?.dataview?.[0] || null;
+        console.log('Project Data:', projectData);
+        if (projectData) {
+          console.log('Payment Plan Data:', projectData.paymentPlan);
+          console.log('BHK Details:', projectData.BhK_Details);
+        }
         if (!projectData) {
           // If no project found for this slug, redirect to home
           navigate('/', { replace: true });
@@ -99,7 +105,7 @@ function ProjectLayout2() {
   const location = projectViewDetails?.projectAddress
     ? `${projectViewDetails.projectAddress}${projectViewDetails?.city ? ", " + projectViewDetails.city : ""}`
     : projectViewDetails?.city || "";
-  const phoneNumber = projectViewDetails?.mobileNumber || "+91 9810982010";
+  const phoneNumber = projectViewDetails?.mobileNumber || "9811750130";
   const companyLogo = projectViewDetails?.logo?.url || null;
   // Format price display based on min/max values
   const formatPrice = () => {
@@ -248,12 +254,16 @@ function ProjectLayout2() {
         onShowCallback={handleShowCallback}
       />
 
+      {/* Debug: Log projectViewDetails structure */}
+      {console.log('projectViewDetails:', JSON.stringify(projectViewDetails, null, 2))}
+      
       {/* Pricing Section */}
       <PricingSection 
         projectName={projectViewDetails?.projectName}
         minPrice={projectViewDetails?.minPrice}
         maxPrice={projectViewDetails?.maxPrice}
         bhkDetails={projectViewDetails?.BhK_Details || []}
+        paymentPlan={projectViewDetails?.paymentPlan || []}
         onShowCallback={handleShowCallback}
         projectViewDetails={projectViewDetails}
       />
