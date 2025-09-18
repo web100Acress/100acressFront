@@ -106,7 +106,7 @@ export default function ProjectCard({ project, view = 'grid', onExplore, onFavor
       <div className={`${view === 'list' ? 'flex-1 p-4' : 'p-3 md:p-4'}`}>
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h3 className="font-semibold text-gray-800 line-clamp-1">{project?.projectName}</h3>
+            <h3 className="font-bold text-lg line-clamp-1">{project?.projectName}</h3>
             <div className="text-sm text-gray-500 line-clamp-1">{project?.city}{project?.state ? `, ${project.state}` : ''}</div>
           </div>
           {/* Removed price next to name as requested */}
