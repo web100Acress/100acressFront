@@ -22,7 +22,7 @@ const LocationSection = ({
   }, []);
 
   // Extract phone number from projectViewDetails (same logic as ProjectHero)
-  const phoneNumber = projectViewDetails?.mobileNumber || "+91 9810982010";
+  const phoneNumber = projectViewDetails?.mobileNumber || "9811750130";
   
   // For verification: log the phone number we are receiving from admin
   useEffect(() => {

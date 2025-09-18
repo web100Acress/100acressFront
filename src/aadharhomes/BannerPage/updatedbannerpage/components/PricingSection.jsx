@@ -1,7 +1,12 @@
 import React from 'react';
 
-const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onShowCallback = () => {}, projectViewDetails = null }) => {
+const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], paymentPlan = [], onShowCallback = () => {}, projectViewDetails = null }) => {
+  console.log('PricingSection Props:', { projectName, bhkDetails, paymentPlan, projectViewDetails });
   const hasBhkDetails = bhkDetails && Array.isArray(bhkDetails) && bhkDetails.length > 0;
+  // Handle both string and array paymentPlan formats
+  const normalizedPaymentPlan = typeof paymentPlan === 'string' ? [paymentPlan] : (Array.isArray(paymentPlan) ? paymentPlan : []);
+  const hasPaymentPlan = normalizedPaymentPlan.length > 0;
+  console.log('hasBhkDetails:', hasBhkDetails, 'hasPaymentPlan:', hasPaymentPlan);
   // Phone number logic: backend number determines footer display
   const getFooterPhoneNumbers = () => {
     const backendNumber = projectViewDetails?.mobileNumber;
@@ -82,6 +87,11 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
                         <th scope="col" className="px-6 py-4 text-center text-xs font-medium text-amber-400 uppercase tracking-wider">
                           Price
                         </th>
+                        {hasPaymentPlan && (
+                          <th scope="col" className="px-6 py-4 text-center text-xs font-medium text-amber-400 uppercase tracking-wider">
+                            Payment Plan
+                          </th>
+                        )}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-700">
@@ -98,6 +108,13 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
                               {formatBhkPrice(item.bhk_price || item.price)}
                             </div>
                           </td>
+                          {hasPaymentPlan && (
+                            <td className="px-6 py-4 text-center">
+                              <div className="text-base text-amber-400">
+                                {normalizedPaymentPlan[index] || normalizedPaymentPlan[0] || 'Contact for Details'}
+                              </div>
+                            </td>
+                          )}
                         </tr>
                       ))}
                     </tbody>
@@ -118,8 +135,8 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
                         <div className="text-xl font-bold text-white">{item.bhk_type || `Unit ${index + 1}`}</div>
                       </div>
                       
-                      {/* Area and Price - Side by side */}
-                      <div className="grid grid-cols-2 gap-4">
+                      {/* Area, Price, and Payment Plan - Responsive grid */}
+                      <div className={`grid gap-4 ${hasPaymentPlan ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2'}`}>
                         <div className="text-center">
                           <div className="text-xs text-gray-400 uppercase tracking-wider font-medium mb-1">Area</div>
                           <div className="text-base font-semibold text-amber-400">{item.bhk_Area || 'N/A'}</div>
@@ -130,6 +147,14 @@ const PricingSection = ({ projectName, minPrice, maxPrice, bhkDetails = [], onSh
                             {formatBhkPrice(item.bhk_price || item.price)}
                           </div>
                         </div>
+                        {hasPaymentPlan && (
+                          <div className="text-center">
+                            <div className="text-xs text-gray-400 uppercase tracking-wider font-medium mb-1">Payment Plan</div>
+                            <div className="text-base font-semibold text-amber-400 break-words">
+                              {normalizedPaymentPlan[index] || normalizedPaymentPlan[0] || 'Contact for Details'}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
