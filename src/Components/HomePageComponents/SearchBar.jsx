@@ -116,8 +116,20 @@ function SearchBar() {
     { name: "Golf Course Extn Road", link: "/property-in-gurugram/golf-course-extn-road/" },
   ];
 
-  const itemsPerPage = 7;
+  // Responsive items per page: 3 on mobile (<=640px), 7 on larger screens
+  const [itemsPerPage, setItemsPerPage] = useState(7);
   const nextpage = 1;
+
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      if (typeof window !== 'undefined') {
+        setItemsPerPage(window.innerWidth <= 640 ? 3 : 6);
+      }
+    };
+    updateItemsPerPage();
+    window.addEventListener('resize', updateItemsPerPage);
+    return () => window.removeEventListener('resize', updateItemsPerPage);
+  }, []);
 
   const visibleLocalities = localities.slice(currentIndex, currentIndex + itemsPerPage);
 
@@ -245,16 +257,18 @@ function SearchBar() {
           <button className="mobile-hidden p-2 mr-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors">
             <FiMic className="w-5 h-5" />
           </button>
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="search-btn flex items-center justify-center bg-[#e53e3e] hover:bg-[#cc2f3b] text-white px-0 py-0 sm:px-5 md:px-6 rounded-full font-medium transition-all duration-300 hover:shadow-lg text-sm sm:text-base min-w-[110px] sm:h-12 md:h-14"
-            onClick={handleSearch}
-            aria-label="Search"
-          >
-            <FiSearch className="mr-0 sm:mr-2 w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
-            <span className="search-btn-text hidden sm:inline">Search</span>
-          </motion.button>
+          <div className="relative">
+            <motion.button 
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="search-btn flex items-center justify-center bg-[#e53e3e] hover:bg-[#cc2f3b] text-white px-4 py-3 sm:px-5 md:px-6 rounded-full font-medium transition-all duration-200 hover:shadow-lg text-sm sm:text-base min-w-[50px] h-[50px] sm:h-12 md:h-14 sm:min-w-[120px]"
+              onClick={handleSearch}
+              aria-label="Search"
+            >
+              <FiSearch className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span className="search-btn-text hidden sm:inline ml-2">Search</span>
+            </motion.button>
+          </div>
         </div>
 
         {/* Suggestions Dropdown */}
@@ -280,33 +294,37 @@ function SearchBar() {
 
         {/* Top Localities (single row, overflow hidden, arrow navigation) */}
         <div className="trending-searches mt-6 relative">
-          <div className="flex items-center gap-3">
-            
+          <div className="flex items-center gap-2">
+            {/* Prev */}
             <button
               type="button"
               onClick={handlePrev}
-              className="nav-btn h-8 w-8 flex items-center justify-center shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 transition"
+              className="nav-btn h-9 w-9 md:h-10 md:w-10 flex items-center justify-center shrink-0 rounded-full bg-white shadow-sm hover:shadow border border-gray-200 text-gray-700 transition active:scale-[0.98]"
+              aria-label="Previous"
             >
               <FiChevronLeft />
             </button>
             {/* Viewport */}
             <div className="relative flex-1 overflow-hidden">
-              <div className="flex flex-nowrap gap-2 whitespace-nowrap">
+              <div className="flex flex-nowrap gap-2 sm:gap-3 whitespace-nowrap">
                 {visibleLocalities.map((loc) => (
                   <a
                     key={loc.name}
                     href={loc.link}
-                    className="chip px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 text-xs sm:text-sm transition"
+                    className="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-800 text-xs sm:text-sm hover:bg-gray-50 transition shadow-sm max-w-[160px] sm:max-w-[220px] truncate"
+                    title={loc.name}
                   >
                     {loc.name}
                   </a>
                 ))}
               </div>
             </div>
+            {/* Next */}
             <button
               type="button"
               onClick={handleNext}
-              className="nav-btn h-8 w-8 flex items-center justify-center shrink-0 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 transition"
+              className="nav-btn h-9 w-9 md:h-10 md:w-10 flex items-center justify-center shrink-0 rounded-full bg-white shadow-sm hover:shadow border border-gray-200 text-gray-700 transition active:scale-[0.98]"
+              aria-label="Next"
             >
               <FiChevronRight />
             </button>

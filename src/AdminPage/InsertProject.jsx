@@ -860,6 +860,20 @@ const InsertProject = () => {
                     onChange={handleChangeProjectData}
                   />
                 </div>
+                <div>
+                    <Tippy content={<span>Payment Plan (text or URL)</span>} animation="scale" theme="light-border">
+                      <label htmlFor="paymentPlan" className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1"><MdAttachMoney /> Payment Plan</label>
+                    </Tippy>
+                  <input
+                    type="text"
+                    id="paymentPlan"
+                    name="paymentPlan"
+                    placeholder="e.g., 10:90 plan or https://..."
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                    value={editFromData.paymentPlan}
+                    onChange={handleChangeProjectData}
+                  />
+                </div>
               </div>
             </div>
 

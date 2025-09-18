@@ -19,6 +19,8 @@ const Projects = () => {
   const [filterBuilder, setFilterBuilder] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterState, setFilterState] = useState("");
+  const [filterHasMobile, setFilterHasMobile] = useState("");
+  const [filterHasPayment, setFilterHasPayment] = useState("");
 
   const [messageApi, contextHolder] = message.useMessage(); // For Ant Design messages
 
@@ -181,11 +183,60 @@ const Projects = () => {
     const matchesBuilder = !filterBuilder || item?.builderName === filterBuilder;
     const matchesStatus = !filterStatus || item?.project_Status === filterStatus;
     const matchesState = !filterState || item?.state === filterState;
-    return matchesName && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState;
+    const hasMobile = Boolean((item?.mobileNumber ?? "").toString().trim());
+    const matchesMobile = !filterHasMobile || (filterHasMobile === "with" ? hasMobile : !hasMobile);
+    const hasPayment = Boolean((item?.paymentPlan ?? "").toString().trim());
+    const matchesPayment = !filterHasPayment || (filterHasPayment === "with" ? hasPayment : !hasPayment);
+    return matchesName && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment;
   });
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredProjects.slice(indexOfFirstRow, indexOfLastRow);
+
+  // Export filtered data to CSV
+  const handleExportCSV = () => {
+    try {
+      const columns = [
+        { key: 'projectName', label: 'Name' },
+        { key: 'type', label: 'Type' },
+        { key: 'city', label: 'City' },
+        { key: 'state', label: 'State' },
+        { key: 'project_Status', label: 'Status' },
+        { key: 'builderName', label: 'Builder' },
+        { key: 'projectAddress', label: 'Address' },
+        { key: 'mobileNumber', label: 'Mobile' },
+        { key: 'project_url', label: 'Slug' },
+      ];
+
+      const csvEscape = (val) => {
+        const s = (val ?? '').toString();
+        // Replace quotes with doubled quotes and wrap the value in quotes
+        const escaped = '"' + s.replace(/"/g, '""') + '"';
+        return escaped;
+      };
+
+      const header = columns.map(c => csvEscape(c.label)).join(',');
+      const lines = filteredProjects.map(item =>
+        columns.map(c => csvEscape(item?.[c.key])).join(',')
+      );
+      const csvContent = ['\ufeff' + header, ...lines].join('\n'); // BOM for Excel
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const date = new Date().toISOString().slice(0,10);
+      a.download = `projects_${date}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      messageApi.open({ type: 'success', content: `Exported ${filteredProjects.length} rows.`, duration: 2 });
+    } catch (err) {
+      console.error('CSV export failed', err);
+      messageApi.open({ type: 'error', content: 'Failed to export CSV', duration: 2 });
+    }
+  };
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -199,6 +250,8 @@ const Projects = () => {
     setFilterBuilder("");
     setFilterStatus("");
     setFilterState("");
+    setFilterHasMobile("");
+    setFilterHasPayment("");
     setCurrentPage(1);
   };
 
@@ -273,17 +326,38 @@ const Projects = () => {
                 <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
+              {/* <select
+                className="filter-select"
+                value={filterHasMobile}
+                onChange={(e) => { setFilterHasMobile(e.target.value); setCurrentPage(1); }}
+              >
+                <option value="">Mobile: All</option>
+                <option value="with">Mobile: With</option>
+                <option value="without">Mobile: Without</option>
+              </select> */}
+            <select
+              className="filter-select"
+              value={filterHasPayment}
+              onChange={(e) => { setFilterHasPayment(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">Payment: All</option>
+              <option value="with">Payment: With</option>
+              <option value="without">Payment: Without</option>
+            </select>
             {/* <button type="button" className="reset-filters-button" onClick={resetFilters}>
               Reset
             </button> */}
           </div>
-          <Link to={"/admin/project-insert"}>
-            <button
-              className="add-new-project-button"
-            >
-              Add New Project ➕
-            </button>
-          </Link>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button type="button" className="export-csv-button" onClick={handleExportCSV}>Export CSV</button>
+            <Link to={"/admin/project-insert"}>
+              <button
+                className="add-new-project-button"
+              >
+                Add New Project ➕
+              </button>
+            </Link>
+          </div>
         </div>
 
         <div className="table-container">
@@ -470,7 +544,7 @@ const projectStyles = `
   align-items: center;
   margin-bottom: 3rem; /* More space below header */
   flex-wrap: nowrap; /* keep in one row on larger screens */
-  gap: 0.8rem; /* tighter gap so items fit in one row */
+  gap: 0.5rem; /* tighter gap so items fit in one row */
 }
 
 .search-container {
@@ -480,20 +554,20 @@ const projectStyles = `
   border-radius: 14px; /* Even softer rounded corners */
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1); /* Deeper, more elegant shadow */
   overflow: hidden;
-  max-width: 520px; /* slightly narrower to make room for filters */
-  flex: 0 1 420px; /* allow shrinking if needed */
+  max-width: 360px; /* even narrower to make room for filters */
+  flex: 0 1 320px; /* allow shrinking if needed */
   min-width: 280px; /* avoid too small on medium screens */
   border: 1px solid #d8e2ed; /* Subtle border for definition */
 }
 
 .search-input {
-  padding: 14px 20px; /* Increased padding */
+  padding: 10px 16px; /* compact padding */
   border: none;
   border-bottom: 3px solid #f44336; /* Prominent red accent */
   color: #333d4e;
   outline: none;
   flex-grow: 1;
-  font-size: 1.05rem; /* Slightly larger text */
+  font-size: 0.98rem; /* slightly smaller text */
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -509,11 +583,11 @@ const projectStyles = `
 .search-button {
   background: linear-gradient(45deg, #f44336 0%, #e53935 100%); /* Red gradient */
   color: #ffffff;
-  padding: 14px 25px; /* More padding */
+  padding: 10px 18px; /* compact padding */
   border: none;
   border-radius: 0 14px 14px 0;
   cursor: pointer;
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   font-weight: 600;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4); /* Matching shadow for button */
@@ -528,26 +602,33 @@ const projectStyles = `
 .filters-container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background-color: transparent; /* merge visually with header */
   border: none;
   border-radius: 12px;
-  padding: 6px 4px;
+  padding: 4px 2px;
   box-shadow: none;
   flex: 1 1 0; /* take remaining space */
-  flex-wrap: nowrap; /* single row */
-  overflow-x: auto; /* allow horizontal scroll if needed */
+  flex-wrap: wrap; /* allow multiple rows */
+  overflow-x: visible; /* no horizontal scroll when wrapping */
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Firefox */
 }
 
 .filters-container::-webkit-scrollbar { display: none; }
 
+.filters-break {
+  flex-basis: 100%; /* force next items to start on a new line */
+  height: 0; /* no extra height */
+}
+
 .filters-container .filter-input,
 .filters-container .filter-select {
-  min-width: 120px;
-  width: 140px; /* consistent width */
+  min-width: 90px;
+  width: 112px; /* slightly larger for better readability */
   flex: 0 0 auto; /* prevent shrinking too small */
+  padding: 8px 10px; /* comfortable */
+  font-size: 0.9rem;
 }
 
 .filters-container .reset-filters-button {
@@ -575,7 +656,7 @@ const projectStyles = `
 @media (min-width: 1400px) {
   .filters-container .filter-input,
   .filters-container .filter-select {
-    width: 170px;
+    width: 150px;
   }
   .projects-header {
     gap: 1rem;
@@ -603,6 +684,26 @@ const projectStyles = `
   background: linear-gradient(45deg, #43a047 0%, #388e3c 100%); /* Darker green gradient on hover */
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
+}
+
+/* Export CSV button */
+.export-csv-button {
+  background: linear-gradient(45deg, #6c63ff 0%, #5a54e6 100%);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.35);
+}
+
+.export-csv-button:hover {
+  background: linear-gradient(45deg, #5a54e6 0%, #4c48cc 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(108, 99, 255, 0.45);
 }
 
 /* Table Styling */
