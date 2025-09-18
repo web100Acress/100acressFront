@@ -32,7 +32,9 @@ const TopSeoPlots = () => {
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
               src="https://d16gdc5rm7f21b.cloudfront.net/100acre/sco+plots/emaarsco.jpg"
-              alt="emaar"
+              alt=""
+              role="presentation"
+              aria-hidden="true"
               className="w-full  h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black opacity-30"></div>
@@ -49,7 +51,9 @@ const TopSeoPlots = () => {
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
               src="https://d16gdc5rm7f21b.cloudfront.net/100acre/sco+plots/reach.jpg"
-              alt="reach"
+              alt=""
+              role="presentation"
+              aria-hidden="true"
               className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black opacity-30"></div>
@@ -66,7 +70,9 @@ const TopSeoPlots = () => {
           <div className="relative border border-gray-200 rounded-lg dark:border-neutral-700 overflow-hidden group">
             <img
               src="https://d16gdc5rm7f21b.cloudfront.net/100acre/sco+plots/dlfsco.jpg"
-              alt="dlf"
+              alt=""
+              role="presentation"
+              aria-hidden="true"
               className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black opacity-30"></div>
