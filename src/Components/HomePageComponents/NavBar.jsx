@@ -44,7 +44,15 @@ function FinalNavBar() {
             className='barDotMenu'
             style={{ width: "fit-content", marginBottom: "5px", marginTop: "5px" }}
           >
-            <HiBars3 size={28} color='white' onClick={() => setShowNav(!showNav)} />
+            <button
+              type="button"
+              aria-label={showNav ? 'Close menu' : 'Open menu'}
+              title={showNav ? 'Close menu' : 'Open menu'}
+              onClick={() => setShowNav(!showNav)}
+              className='barDotMenuBtn'
+            >
+              <HiBars3 size={28} color='white' aria-hidden="true" focusable="false" />
+            </button>
           </div>
         </div>
 
@@ -52,7 +60,7 @@ function FinalNavBar() {
         <div className='hdrCenter'>
           <div className='1euNB' style={{ cursor: "pointer" }}>
             <Link to={ROOT}>
-              <img src="../../Images/mainLogo.png" alt='' width='140' loading="lazy" />
+              <img src="../../Images/mainLogo.png" alt='100acress' width='140' loading="lazy" />
             </Link>
           </div>
         </div>
@@ -78,35 +86,39 @@ function FinalNavBar() {
             }}>
             <div className='d-flex align-items-center justify-content-between  pr-3'>
               <div className='1euNB'>
-                <img src="../../Images/mainLogo.png" alt='' width='140' loading="lazy"/>
+                <img src="../../Images/mainLogo.png" alt='100acress' width='140' loading="lazy"/>
                 
               </div>
               <div
                 className='barDotMenu'
                 style={{ width: "fit-content", marginBottom: "10px" }}>
-                <RxCross2
-                  size={30}
-                  color='white'
+                <button
+                  type="button"
+                  aria-label="Close menu"
+                  title="Close menu"
                   onClick={() => setShowNav(!showNav)}
-                />
+                  className='barDotMenuBtn'
+                >
+                  <RxCross2 size={30} color='white' aria-hidden="true" focusable="false" />
+                </button>
               </div>
             </div>
             <div className='MBflx' style={{background:"#e53e3e"}}>
           <ul className='ulfx _1grx flex-column'>
             <li className='pxrE el1'>
               <span className='pxrETXT'>
-                <a>Buy</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Buy">Buy</a>
               </span>
             </li>
             <li>
               <span className='pxrETXT'>
-                <a>Rent</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Rent">Rent</a>
               </span>
               
             </li>
             <li className='_3px49x '>
               <span className='pxrETXT'>
-                <a>Sell</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Sell">Sell</a>
               </span>
             </li>
 
@@ -122,13 +134,12 @@ function FinalNavBar() {
             </li>
             <li className='_3px49x'>
               <span className='pxrETXT'>
-                <a>New Launches</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="New Launches">New Launches</a>
               </span>
-              
             </li>
             <li className='_3px49x'>
               <span className='pxrETXT'>
-                <a>Properties</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Properties">Properties</a>
               </span>
             </li>
 
@@ -168,7 +179,7 @@ function FinalNavBar() {
           <ul className='ulfx _1grx' style={{marginTop:"2px"}}>
             <li className='pxrE el1'>
               <span className='pxrETXT'>
-                <a>Buy</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Buy">Buy</a>
               </span>
               <ul className='_2emBLM'>
                 <li className='_3emBLMe'>
@@ -200,7 +211,7 @@ function FinalNavBar() {
             </li>
             <li>
               <span className='pxrETXT'>
-                <a>Rent</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Rent">Rent</a>
               </span>
               <ul className='_2emBLM'>
                 <li className='_3emBLMe'>
@@ -232,7 +243,7 @@ function FinalNavBar() {
             </li>
             <li className='_3px49x _exJRE'>
               <span className='pxrETXT'>
-                <a>Sell</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Sell">Sell</a>
               </span>
               <ul className='_2emBLM'>
                 <li className='_3emBLMe'>
@@ -273,7 +284,7 @@ function FinalNavBar() {
             </li>
             <li className='_3px49x'>
               <span className='pxrETXT'>
-                <a>New Launches</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="New Launches">New Launches</a>
               </span>
               <ul className='_2emBLM _nEXRT'>
                 <li className='_3emBLMe'>
@@ -310,7 +321,7 @@ function FinalNavBar() {
             </li>
             <li className='_3px49x'>
               <span className='pxrETXT'>
-                <a>Projects</a>
+                <a role="button" tabIndex="0" aria-haspopup="true" aria-expanded="false" aria-label="Projects">Projects</a>
               </span>
               <ul className='_2emBLM _nEXRT'>
                 <li className='_3emBLMe'>
@@ -672,11 +683,30 @@ const Wrapper = styled.section`
     background: transparent;
     border: 1px solid rgba(255,255,255,0.8);
     color: #fff;
-    width: 34px;
-    height: 34px;
+    width: 44px;
+    height: 44px;
     border-radius: 9999px;
     padding: 0;
     transition: all 0.3s ease-in-out;
+  }
+  .barDotMenuBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 9999px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.0);
+    cursor: pointer;
+  }
+  .barDotMenuBtn:hover { background: rgba(255,255,255,0.08); }
+  .barDotMenuBtn:focus-visible,
+  .profBtn:focus-visible,
+  ._6bnYTum:focus-visible,
+  .linkEl:focus-visible {
+    outline: 2px solid #facc15; /* high-contrast focus ring */
+    outline-offset: 2px;
   }
   @media screen and (max-width: 920px) {
     .NBflx { display: none; }
@@ -696,7 +726,7 @@ const Wrapper = styled.section`
     .hdrRight { grid-column: 3 / 4; justify-content: flex-end; gap: 8px; }
     /* Force smaller logo on mobile */
     .hdrCenter img { width: 100px !important; height: auto !important; display: block; }
-    .profBtn { width: 32px; height: 32px; }
+    .profBtn { width: 44px; height: 44px; }
     .barDotMenu svg { width: 26px; height: 26px; }
     ._6bnYTum { padding: 6px 14px; }
     :root { --nav-h: 60px; }

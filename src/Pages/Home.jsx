@@ -431,6 +431,10 @@ const Home = () => {
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
       </Helmet>
+      {/* Visually hidden H1 for correct heading order without affecting layout */}
+      <h1 className="sr-only">100acress Real Estate in Gurgaon – Buy, Rent, Sell & New Launch Projects</h1>
+      {/* Main landmark for primary content region */}
+      <main id="main-content" role="main">
       
       {/* Confetti Animation */}
       {/* {showConfetti && <ConfettiAllCorners /> */}
@@ -786,9 +790,9 @@ const Home = () => {
       </div> {/* Closing div for the blur container */}
       <LuxuryFooter />
  
-      </Wrapper>
- 
-   );
+      </main>
+    </Wrapper>
+  );
  
  }
  

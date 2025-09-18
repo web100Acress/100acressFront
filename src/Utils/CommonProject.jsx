@@ -128,6 +128,8 @@ const CommonProject = ({ data, title, path ,animation, compact = false }) => {
                     const pUrl = item.project_url;
                     const id = item?._id || item?.id || item?.slug || pUrl;
                     const isFav = favCheck(id);
+                    // Choose appropriate heading level: use h3 when a section title (h2) is present, otherwise h2
+                    const HeadingTag = title ? 'h3' : 'h2';
                      return (
                        <span key={index} className="mb-2 md:mb-0">
                          <article
@@ -176,9 +178,9 @@ const CommonProject = ({ data, title, path ,animation, compact = false }) => {
                            <div className={`flex flex-col flex-1 justify-between ${compact ? 'p-3 gap-1.5' : 'p-4 gap-2'}`} style={{ fontFamily: 'Rubik, sans-serif' }}>
                              <div>
                                {item?.projectName && (
-                                <h3 className={`${compact ? 'text-[15px]' : 'text-base md:text-[17px]'} font-semibold tracking-[-0.2px] text-gray-900 mb-1 group-hover:text-red-600 transition-colors truncate whitespace-nowrap`} style={{ fontFamily: 'Rubik, sans-serif' }}>
+                                <HeadingTag className={`${compact ? 'text-[15px]' : 'text-base md:text-[17px]'} font-semibold tracking-[-0.2px] text-gray-900 mb-1 group-hover:text-red-600 transition-colors truncate whitespace-nowrap`} style={{ fontFamily: 'Rubik, sans-serif' }}>
                                   {item.projectName}
-                                </h3>
+                                </HeadingTag>
                               )}
                                <div className={`mt-0.5 ${compact ? 'text-[12px]' : 'text-[13px]'} text-gray-600 truncate max-w-full`}>
                                    <span title={item.projectAddress} className="truncate">{(item.projectAddress || '').slice(0, 48)}{(item.projectAddress || '').length > 48 ? '…' : ''}</span>

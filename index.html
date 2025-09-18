@@ -264,6 +264,22 @@
       });
     }
 
+    // Reduce redundant alt text when a visible text label is adjacent
+    function fixRedundantAlts(root = document) {
+      const imgs = root.querySelectorAll('img[alt]');
+      imgs.forEach(img => {
+        const alt = (img.getAttribute('alt') || '').trim();
+        if (!alt) return;
+        const sib = img.nextElementSibling;
+        const sibText = sib && (sib.textContent || '').replace(/\s+/g, ' ').trim();
+        if (sibText && alt && sibText.toLowerCase() === alt.toLowerCase()) {
+          img.setAttribute('alt', '');
+          img.setAttribute('aria-hidden', 'true');
+          img.setAttribute('role', 'presentation');
+        }
+      });
+    }
+
     function applyTitles(root = document) {
       // Buttons
       root.querySelectorAll('button').forEach(setAccessibleName);
@@ -271,6 +287,22 @@
       root.querySelectorAll('input[type="button"], input[type="submit"], input[type="reset"]').forEach(setAccessibleName);
       // Anchors explicitly acting as buttons
       root.querySelectorAll('a[role="button"]').forEach(setAccessibleName);
+      // All anchors lacking labels but containing icon-only or text
+      root.querySelectorAll('a').forEach(a => {
+        const hasName = a.getAttribute('aria-label') || a.getAttribute('title');
+        const text = (a.textContent || '').replace(/\s+/g, ' ').trim();
+        if (!hasName && text) {
+          a.setAttribute('aria-label', text);
+          a.setAttribute('title', text);
+        }
+        // Hide decorative svgs inside links
+        a.querySelectorAll('svg').forEach(svg => {
+          if (!svg.getAttribute('aria-label') && !svg.getAttribute('aria-labelledby')) {
+            svg.setAttribute('aria-hidden', 'true');
+            svg.setAttribute('focusable', 'false');
+          }
+        });
+      });
       // Ensure explicit fixes for common selectors
       root.querySelectorAll('button.share-btn').forEach(btn => {
         if (!btn.getAttribute('aria-label')) btn.setAttribute('aria-label', 'Share');
@@ -284,6 +316,15 @@
           if (!btn.getAttribute('title')) btn.setAttribute('title', guess);
         }
       });
+      // Buttons inside search bars
+      root.querySelectorAll('.search-bar button').forEach(btn => {
+        if (!btn.getAttribute('aria-label') && !btn.getAttribute('title')) {
+          btn.setAttribute('aria-label', 'Search');
+          btn.setAttribute('title', 'Search');
+        }
+      });
+      // Fix redundant alts near labels
+      fixRedundantAlts(root);
     }
 
     // Initial run
@@ -302,6 +343,44 @@
 
     observer.observe(document.body, { childList: true, subtree: true });
   </script>
+
+  <style id="a11y-touch-targets">
+    /* Improve minimum touch target sizes and focus visibility */
+    :is(a.button, button, .nav-btn, .chip, .slick-arrow, a.text-center, button.nav-btn) {
+      min-width: 44px;
+      min-height: 44px;
+    }
+    .nav-btn {
+      padding: 8px !important; /* from h-8/w-8 to meet 44px with padding */
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px; /* chips are often shorter; raise a bit */
+      padding: 8px 12px; /* ensure adequate hit area */
+      gap: 6px;
+    }
+    /* Slick arrows */
+    .slick-arrow {
+      width: 44px !important;
+      height: 44px !important;
+      border-radius: 9999px;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+    }
+    .slick-arrow:before {
+      font-size: 24px !important;
+      line-height: 1 !important;
+    }
+    /* Generic focus outline for keyboard users */
+    :is(a, button, [role="button"]).focus-visible,
+    :is(a, button, [role="button"]):focus-visible {
+      outline: 2px solid #f59e0b; /* amber-500 */
+      outline-offset: 2px;
+    }
+  </style>
 
 </body>
 

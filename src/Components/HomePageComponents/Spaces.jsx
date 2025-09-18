@@ -91,7 +91,7 @@ function SpacesAvailable() {
                     />
                     <div className="badge">{project.badge}</div>
                     <div className="title-overlay">
-                      <h3 className="project-title">{project.title}</h3>
+                      <h2 className="project-title">{project.title}</h2>
                     </div>
                     <div className="description-overlay">
                       <span className="project-description">{project.description}</span>
@@ -121,7 +121,7 @@ function SpacesAvailable() {
                     />
                     <div className="badge">{project.badge}</div>
                     <div className="title-overlay">
-                      <h3 className="project-title">{project.title}</h3>
+                      <h2 className="project-title">{project.title}</h2>
                     </div>
                     <div className="description-overlay">
                       <span className="project-description">{project.description}</span>
