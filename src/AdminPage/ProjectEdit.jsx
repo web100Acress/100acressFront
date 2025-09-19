@@ -360,6 +360,7 @@ const ProjectEdit = () => {
         { label: "Property Name", name: "projectName", icon: <MdInfo className="inline mr-1" /> },
         { label: "Type", name: "type", icon: <MdInfo className="inline mr-1" /> },
         { label: "Project Status", name: "project_Status", icon: <MdInfo className="inline mr-1" /> },
+        { label: "Project URL", name: "project_url", icon: <MdInfo className="inline mr-1" />, placeholder: "project-name" },
         { label: "Builder Name", name: "builderName", icon: <MdInfo className="inline mr-1" /> },
         { label: "Address", name: "projectAddress", icon: <MdInfo className="inline mr-1" /> },
         { label: "City", name: "city", icon: <MdInfo className="inline mr-1" /> },
@@ -551,21 +552,30 @@ const ProjectEdit = () => {
                   <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{section.title}</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {section.fields.map(field => (
+                  {section.fields.map(field => {
+                    console.log('Rendering field:', field.name, 'Value:', values[field.name]);
+                    return (
                     <div key={field.name}>
                       <label className="block text-red-700 font-semibold mb-2 flex items-center">{field.icon}{field.label}</label>
                       {field.select ? (
-                        <select name={field.name} value={values[field.name]} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none dark:bg-gray-900 dark:text-white">
+                        <select name={field.name} value={values[field.name] || ''} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none dark:bg-gray-900 dark:text-white">
                           <option value="">Select {field.label}</option>
                           {field.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                         </select>
                       ) : field.textarea ? (
-                        <textarea name={field.name} value={values[field.name]} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none dark:bg-gray-900 dark:text-white" />
+                        <textarea name={field.name} value={values[field.name] || ''} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none dark:bg-gray-900 dark:text-white" />
                       ) : (
-                        <input type="text" name={field.name} value={values[field.name]} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none dark:bg-gray-900 dark:text-white" />
+                        <input 
+                          type="text" 
+                          name={field.name} 
+                          value={values[field.name] || ''} 
+                          onChange={e => setValues({ ...values, [field.name]: e.target.value })} 
+                          placeholder={field.placeholder || ''}
+                          className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none dark:bg-gray-900 dark:text-white" 
+                        />
                       )}
                     </div>
-                  ))}
+                  )})}
                 </div>
                 {idx < groupedSections.length - 1 && <hr className="my-8 border-t-2 border-dashed border-gray-200" />}
               </div>
