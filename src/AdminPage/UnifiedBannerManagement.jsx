@@ -90,8 +90,14 @@ const UnifiedBannerManagement = () => {
         formData.append('bannerImage', selectedDesktopFile);
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/admin/banners/upload`, {
-        method: 'POST',
+      // Use PUT for updates, POST for new banners
+      const method = editingBanner ? 'PUT' : 'POST';
+      const url = editingBanner 
+        ? `${import.meta.env.VITE_API_BASE}/api/admin/banners/${editingBanner._id}`
+        : `${import.meta.env.VITE_API_BASE}/api/admin/banners/upload`;
+
+      const response = await fetch(url, {
+        method: method,
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         },
@@ -99,16 +105,16 @@ const UnifiedBannerManagement = () => {
       });
 
       if (response.ok) {
-        toast.success('Hero banner uploaded successfully!');
+        toast.success(editingBanner ? 'Hero banner updated successfully!' : 'Hero banner uploaded successfully!');
         dispatch(fetchAllBanners());
         resetForm();
       } else {
         const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to upload hero banner');
+        toast.error(errorData.message || `Failed to ${editingBanner ? 'update' : 'upload'} hero banner`);
       }
     } catch (error) {
-      console.error('Error uploading hero banner:', error);
-      toast.error('Error uploading hero banner');
+      console.error(`Error ${editingBanner ? 'updating' : 'uploading'} hero banner:`, error);
+      toast.error(`Error ${editingBanner ? 'updating' : 'uploading'} hero banner`);
     }
   };
 
@@ -123,6 +129,8 @@ const UnifiedBannerManagement = () => {
       formData.append('order', bannerData.order);
       formData.append('position', bannerData.position);
       formData.append('size', bannerData.size);
+      formData.append('desktopImage', bannerData.desktopImage);
+      formData.append('mobileImage', bannerData.mobileImage);
       
       if (selectedDesktopFile) {
         formData.append('desktopBannerImage', selectedDesktopFile);
@@ -131,8 +139,14 @@ const UnifiedBannerManagement = () => {
         formData.append('mobileBannerImage', selectedMobileFile);
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/admin/small-banners/upload`, {
-        method: 'POST',
+      // Use PUT for updates, POST for new banners
+      const method = editingBanner ? 'PUT' : 'POST';
+      const url = editingBanner 
+        ? `${import.meta.env.VITE_API_BASE}/api/admin/small-banners/${editingBanner._id}`
+        : `${import.meta.env.VITE_API_BASE}/api/admin/small-banners/upload`;
+
+      const response = await fetch(url, {
+        method: method,
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         },
@@ -140,16 +154,16 @@ const UnifiedBannerManagement = () => {
       });
 
       if (response.ok) {
-        toast.success('Small banner uploaded successfully!');
+        toast.success(editingBanner ? 'Small banner updated successfully!' : 'Small banner uploaded successfully!');
         dispatch(fetchAllSmallBanners());
         resetForm();
       } else {
         const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to upload small banner');
+        toast.error(errorData.message || `Failed to ${editingBanner ? 'update' : 'upload'} small banner`);
       }
     } catch (error) {
-      console.error('Error uploading small banner:', error);
-      toast.error('Error uploading small banner');
+      console.error(`Error ${editingBanner ? 'updating' : 'uploading'} small banner:`, error);
+      toast.error(`Error ${editingBanner ? 'updating' : 'uploading'} small banner`);
     }
   };
 
@@ -254,12 +268,16 @@ const UnifiedBannerManagement = () => {
   };
 
   const generateSlug = (title) => {
-    return title
+    const baseSlug = title
       .toLowerCase()
       .replace(/[^a-z0-9\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .trim();
+    
+    // Add timestamp to make slug unique
+    const timestamp = Date.now().toString().slice(-6);
+    return `${baseSlug}-${timestamp}`;
   };
 
   const handleTitleChange = (e) => {
@@ -267,7 +285,8 @@ const UnifiedBannerManagement = () => {
     setBannerData(prev => ({
       ...prev,
       title,
-      slug: generateSlug(title)
+      // Only generate new slug for new banners, not when editing
+      slug: editingBanner ? prev.slug : generateSlug(title)
     }));
   };
 
@@ -611,40 +630,91 @@ const UnifiedBannerManagement = () => {
                         )}
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            <MdComputer className="inline mr-1" />
-                            Desktop Image *
-                          </label>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleFileSelect(e.target.files[0], 'desktop')}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          />
-                          {desktopPreviewUrl && (
-                            <div className="mt-2">
-                              <img src={desktopPreviewUrl} alt="Desktop Preview" className="h-24 w-auto rounded-lg" />
-                            </div>
-                          )}
+                      <div className="space-y-6">
+                        {/* Desktop Image Section */}
+                        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                          <h4 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                            <MdComputer className="text-blue-600" />
+                            Desktop Image
+                          </h4>
+                          
+                          <div className="mb-4">
+                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                              Desktop Image Link
+                            </label>
+                            <input
+                              type="url"
+                              name="desktopImage"
+                              value={bannerData.desktopImage}
+                              onChange={(e) => setBannerData(prev => ({ ...prev, desktopImage: e.target.value }))}
+                              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200"
+                              placeholder="https://example.com/desktop-image.jpg"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                              Or Upload Desktop Image
+                            </label>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleFileSelect(e.target.files[0], 'desktop')}
+                              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200"
+                            />
+                            {desktopPreviewUrl && (
+                              <div className="mt-4">
+                                <img
+                                  src={desktopPreviewUrl}
+                                  alt="Desktop Preview"
+                                  className="w-full max-w-xs h-32 object-cover rounded-lg border"
+                                />
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            <MdPhoneAndroid className="inline mr-1" />
-                            Mobile Image *
-                          </label>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleFileSelect(e.target.files[0], 'mobile')}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          />
-                          {mobilePreviewUrl && (
-                            <div className="mt-2">
-                              <img src={mobilePreviewUrl} alt="Mobile Preview" className="h-24 w-auto rounded-lg" />
-                            </div>
-                          )}
+
+                        {/* Mobile Image Section */}
+                        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                          <h4 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                            <MdPhoneAndroid className="text-green-600" />
+                            Mobile Image
+                          </h4>
+                          
+                          <div className="mb-4">
+                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                              Mobile Image Link
+                            </label>
+                            <input
+                              type="url"
+                              name="mobileImage"
+                              value={bannerData.mobileImage}
+                              onChange={(e) => setBannerData(prev => ({ ...prev, mobileImage: e.target.value }))}
+                              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200"
+                              placeholder="https://example.com/mobile-image.jpg"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                              Or Upload Mobile Image
+                            </label>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleFileSelect(e.target.files[0], 'mobile')}
+                              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200"
+                            />
+                            {mobilePreviewUrl && (
+                              <div className="mt-4">
+                                <img
+                                  src={mobilePreviewUrl}
+                                  alt="Mobile Preview"
+                                  className="w-full max-w-xs h-32 object-cover rounded-lg border"
+                                />
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     )}
