@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { parseYouTubeVideoId } from "../config/siteSettings";
 import { getApiBase } from "../config/apiBase";
 import Sidebar from "./Sidebar";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const ShortsSettings = () => {
@@ -476,17 +476,6 @@ const ShortsSettings = () => {
         </div>
       </div>
       
-      <ToastContainer 
-        position="top-right" 
-        autoClose={4000} 
-        hideProgressBar={false} 
-        closeOnClick 
-        pauseOnHover 
-        draggable 
-        theme="colored"
-        toastClassName="rounded-xl"
-        style={{ zIndex: 999999 }}
-      />
     </div>
   );
 };

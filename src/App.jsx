@@ -32,6 +32,8 @@ import { AuthProvider } from "./AuthContext";
 import { Toaster } from "./Components/ui/Toaster";
 import { Toaster as Sonner } from "./Components/ui/sonner";
 import { TooltipProvider } from "./Components/ui/Tooltip";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
@@ -184,7 +186,8 @@ const DraftManagement = lazy(() => import("./Components/Blog_Components/DraftMan
 const BlogManagementSidebar = lazy(() => import("./Components/Blog_Components/BlogManagementSidebar"));
 const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
 const ShortsSettings = lazy(() => import("./AdminPage/ShortsSettings"));
-const BannerManagement = lazy(() => import("./AdminPage/BannerManagement"));
+const UnifiedBannerManagement = lazy(() => import("./AdminPage/UnifiedBannerManagement"));
+const ProjectOrderManagement = lazy(() => import("./AdminPage/ProjectOrderManagement"));
 const InsightsNews = lazy(() => import("./Pages/InsightsNews"));
 const InsightsGuides = lazy(() => import("./Pages/InsightsGuides"));
 
@@ -239,6 +242,18 @@ function App() {
                 <Suspense fallback={<LoadingSpinner />}>
                   <Toaster position="top-right" />
                   <Sonner position="top-right" richColors />
+                  <ToastContainer
+                    position="top-right"
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                  />
                   
 
                   {/* Your existing routes */}
@@ -496,7 +511,8 @@ function App() {
                       <Route path="buy/view/edit/:id" element={<LazyLoad> <BuyEdit /></LazyLoad>} />
                       <Route path="contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
                       <Route path="shorts" element={<LazyLoad><ShortsSettings /></LazyLoad>} />
-                      <Route path="banner-management" element={<LazyLoad><BannerManagement /></LazyLoad>} />
+                <Route path="unified-banner-management" element={<LazyLoad><UnifiedBannerManagement /></LazyLoad>} />
+                <Route path="project-order-management" element={<LazyLoad><ProjectOrderManagement /></LazyLoad>} />
                       <Route
                         path="ContactUs/UserProfile"
                         element={<LazyLoad> <UserProfile /></LazyLoad>}

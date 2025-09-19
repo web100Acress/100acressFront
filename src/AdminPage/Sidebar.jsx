@@ -6,13 +6,13 @@ import { GoProjectSymlink } from "react-icons/go";
 import { AiFillPropertySafety } from "react-icons/ai";
 import { GiFamilyHouse } from "react-icons/gi";
 import { FaHome, FaYoutube } from "react-icons/fa";
-import { MdImage } from "react-icons/md";
+import { MdImage, MdCategory } from "react-icons/md";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaRegUserCircle } from "react-icons/fa";
 import { BiSolidGraduation }  from "react-icons/bi"; // Corrected import syntax for BiSolidGraduation
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import toastify CSS
 import logoImage from "/Images/100logo.jpg";
 
@@ -175,10 +175,14 @@ const Sidebar = () => {
             <FaYoutube className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
             <span>Shorts Settings</span>
           </Link>
-          <Link to="/Admin/banner-management" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/banner-management") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
-            <MdImage className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
-            <span>Banner Management</span>
-          </Link>
+        <Link to="/Admin/unified-banner-management" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/unified-banner-management") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
+          <MdImage className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
+          <span>Banner Management</span>
+        </Link>
+        <Link to="/Admin/project-order-management" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/project-order-management") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
+          <MdCategory className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
+          <span>Project Order Management</span>
+        </Link>
           <Link to="/Admin/user" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/user") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <FaRegUserCircle className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
             <span>Registered User</span>
@@ -203,7 +207,6 @@ const Sidebar = () => {
           </button>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchActiveBanners, setCurrentBanner } from '../../Redux/slice/BannerSlice';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import SmallBannerSection from './SmallBannerSection';
 
 const DynamicHeroBanner = () => {
   const dispatch = useDispatch();
@@ -44,13 +48,18 @@ const DynamicHeroBanner = () => {
   }, [currentIndex, activeBanners, dispatch]);
 
   const handleBannerClick = (banner) => {
-    if (banner.link) {
+    // Use slug if available, otherwise fall back to link
+    const targetUrl = banner.slug || banner.link;
+    
+    if (targetUrl) {
       // Open link in new tab if it's an external URL
-      if (banner.link.startsWith('http')) {
-        window.open(banner.link, '_blank');
+      if (targetUrl.startsWith('http')) {
+        window.open(targetUrl, '_blank');
       } else {
         // Use React Router for internal links
-        window.location.href = banner.link;
+        // If it's a slug, prepend with / for internal routing
+        const internalUrl = targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}/`;
+        window.location.href = internalUrl;
       }
     }
   };
@@ -69,6 +78,8 @@ const DynamicHeroBanner = () => {
   // Show error state with fallback
   if (error || activeBanners.length === 0) {
     console.log('No banners found, showing fallback. Error:', error, 'Banners:', activeBanners);
+    console.log('API Base URL:', import.meta.env.VITE_API_BASE);
+    console.log('Full API URL:', `${import.meta.env.VITE_API_BASE}/api/banners/active`);
     return (
       <HeroWrapper>
         <Link to="/developers/signature-global/" className="block relative w-full group" target="_self" aria-label="Signature Global">
@@ -78,75 +89,114 @@ const DynamicHeroBanner = () => {
     );
   }
 
+  // Slick carousel settings
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 800,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    fade: true,
+    cssEase: 'linear',
+    arrows: true,
+    pauseOnHover: true,
+    beforeChange: (oldIndex, newIndex) => {
+      setCurrentIndex(newIndex);
+    },
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          arrows: false,
+          dots: true,
+          autoplay: true,
+          autoplaySpeed: 4000,
+          fade: false,
+          cssEase: 'ease-out'
+        }
+      }
+    ]
+  };
+
   console.log('Rendering banners:', activeBanners);
+  console.log('Banner count:', activeBanners.length);
+  console.log('Loading state:', loading);
+  console.log('Error state:', error);
   
   return (
     <HeroWrapper>
-      {/* Banner Container */}
+      {/* Banner Carousel Container */}
       <div className="relative w-full">
-        {activeBanners.map((banner, index) => {
-          // Try multiple ways to get the image URL
-          const imageUrl = banner.image?.cdn_url || banner.image?.url || banner.cdn_url || banner.imageUrl;
-          console.log(`Banner ${index} full object:`, banner);
-          console.log(`Banner ${index} image object:`, banner.image);
-          console.log(`Banner ${index} resolved imageUrl:`, imageUrl);
-          
-          return (
-            <Link
-              key={banner._id}
-              to={banner.link || "/developers/signature-global/"}
-              className={`block relative w-full group ${index === currentIndex ? 'active' : 'hidden'}`}
-              target={banner.link?.startsWith('http') ? '_blank' : '_self'}
-              aria-label={banner.title}
-            >
-              <div 
-                className="hero-strip-99-dynamic transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer"
-                style={{ 
-                  backfaceVisibility: 'hidden',
-                  backgroundImage: imageUrl ? `url("${imageUrl}")` : 'url("/Images/Website-Hero-Image.jpg")',
-                  backgroundSize: 'auto 100%',
-                  backgroundPosition: 'center center',
-                  backgroundRepeat: 'no-repeat'
-                }}
-                aria-hidden="true"
-              />
-              {/* Debug overlay to show if image is loading */}
-              {!imageUrl && (
-                <div style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  color: 'red',
-                  background: 'white',
-                  padding: '10px',
-                  borderRadius: '5px'
-                }}>
-                  No Image URL Found
-                </div>
-              )}
-            </Link>
-          );
-        })}
-
-        {/* Banner Navigation Dots (if multiple banners) */}
-        {activeBanners.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-            {activeBanners.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentIndex 
-                    ? 'bg-white shadow-lg' 
-                    : 'bg-white bg-opacity-50 hover:bg-opacity-75'
-                }`}
-                aria-label={`Go to banner ${index + 1}`}
-              />
-            ))}
-          </div>
-        )}
+        <Slider {...sliderSettings}>
+          {activeBanners.map((banner, index) => {
+            // Try multiple ways to get the image URL
+            const imageUrl = banner.image?.cdn_url || banner.image?.url || banner.cdn_url || banner.imageUrl;
+            console.log(`Banner ${index} full object:`, banner);
+            console.log(`Banner ${index} image object:`, banner.image);
+            console.log(`Banner ${index} resolved imageUrl:`, imageUrl);
+            console.log(`Banner ${index} slug:`, banner.slug);
+            console.log(`Banner ${index} link:`, banner.link);
+            
+            return (
+              <div key={banner._id}>
+                <Link
+                  to={banner.slug ? `/${banner.slug}/` : (banner.link || "/developers/signature-global/")}
+                  className="block relative w-full group"
+                  target={(banner.slug || banner.link)?.startsWith('http') ? '_blank' : '_self'}
+                  aria-label={banner.title}
+                >
+                  <div 
+                    className="hero-strip-99-dynamic transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer"
+                    style={{ 
+                      backfaceVisibility: 'hidden',
+                      backgroundImage: imageUrl ? `url("${imageUrl}")` : 'url("/Images/Website-Hero-Image.jpg")',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
+                      height: '400px',
+                      width: '100%'
+                    }}
+                    aria-hidden="true"
+                  />
+                  {/* Banner Content Overlay */}
+                  {(banner.title || banner.subtitle) && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center text-white bg-black bg-opacity-50 p-6 rounded-lg">
+                        {banner.title && (
+                          <h2 className="text-3xl font-bold mb-2">{banner.title}</h2>
+                        )}
+                        {banner.subtitle && (
+                          <p className="text-lg">{banner.subtitle}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {/* Debug overlay to show if image is loading */}
+                  {!imageUrl && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      color: 'red',
+                      background: 'white',
+                      padding: '10px',
+                      borderRadius: '5px'
+                    }}>
+                      No Image URL Found
+                    </div>
+                  )}
+                </Link>
+              </div>
+            );
+          })}
+        </Slider>
       </div>
+      
+      {/* Small Banner Section */}
+      <SmallBannerSection />
     </HeroWrapper>
   );
 };
