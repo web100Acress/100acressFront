@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { EyeIcon } from "lucide-react";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { budgetPlots } from "./datafeed/Desiredorder";
+import { budgetPlots } from "../Utils/ProjectOrderData";
 
 const BudgetPlotsInGurugraon = () => {
 

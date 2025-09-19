@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FiSearch, FiMic, FiMapPin, FiChevronRight, FiChevronLeft, FiCrosshair } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import Slider from 'react-slick';
-import { imageSrc, phoneSrc } from '../../Pages/datafeed/Desiredorder';
+import SmallBannerSection from './SmallBannerSection';
 import { useMediaQuery } from '@chakra-ui/react';
 
 function SearchBar() {
@@ -337,37 +337,13 @@ function SearchBar() {
 
     <div className="hidden md:block mt-2 lg:w-[750px] lg:h-[132px] md:h-[132px] md:w-[650px] mx-auto">
       <div className="section pt-4 md:pt-6">
-        <Slider {...settings}>
-          {imageSrc.map((src, index) => (
-            <div key={index}>
-              <img 
-                src={src.image} 
-                onClick={() => window.open(src.link, "_self")} 
-                alt={`Slide ${index}`} 
-                className="w-full h-auto cursor-pointer rounded-lg" 
-                loading="lazy"
-              />
-            </div>
-          ))}
-        </Slider>
+        <SmallBannerSection />
       </div>
     </div>
 
     <div className="block sm:hidden w-full max-w-[360px] h-[198px] mt-6 mx-auto">
       <div className="section">
-        <Slider {...phonesettings}>
-          {phoneSrc.map((src, index) => (
-            <div key={index}>
-              <img
-                src={src.image}
-                alt={`Slide ${index}`}
-                onClick={() => window.open(src.link, "_self")}
-                className="w-full h-full object-contain rounded-lg cursor-pointer bg-white"
-                loading="lazy"
-              />
-            </div>
-          ))}
-        </Slider>
+        <SmallBannerSection />
       </div>
     </div>
   </Wrapper>

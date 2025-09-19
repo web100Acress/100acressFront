@@ -15,7 +15,7 @@ import { Helmet } from "react-helmet";
 import Api_Service from "../Redux/utils/Api_Service";
 import { shuffleArrayWithSeed, generateSeedFromBuilderName } from "../Utils/ProjectOrderUtils";
 import Sidebar from "./Sidebar";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ProjectOrderManager = () => {
@@ -810,7 +810,6 @@ const ProjectOrderManager = () => {
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
       <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
-        <ToastContainer />
         <Helmet>
           <title>Project Order Manager - Admin Dashboard</title>
         </Helmet>
