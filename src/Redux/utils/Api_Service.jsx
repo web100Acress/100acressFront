@@ -11,7 +11,7 @@ import {resale} from "../slice/ResaleSlice";
 import api from "../../config/apiClient";
 import { API_ROUTES, API_ROUTES_PROJECTS } from "./Constant_Service";
 import { sortByDesiredOrder } from "../../Utils/ProjectSorting";
-import { Affordable_Desired_Order, BUDGET_DESIRED_ORDER, COMMERCIAL_DESIRED_ORDER, DesiredLuxuryOrder, Recommendedreordered, SCO_DESIRED_ORDER, Trending_Desired_Order } from "../../Utils/ProjectOrderData";
+import { getAffordableDesiredOrder, BUDGET_DESIRED_ORDER, getCommercialDesiredOrder, getLuxuryDesiredOrder, getRecommendedDesiredOrder, getSCODesiredOrder, getTrendingDesiredOrder } from "../../Utils/ProjectOrderData";
 import { emaar } from "../slice/ProjectstatusSlice";
 import { useCallback } from "react";
 import { maxpriceproject,minpriceproject } from "../slice/PriceBasedSlice";
@@ -28,7 +28,8 @@ const Api_service = () => {
   const getTrending = async () => {
     try {
       // Use dynamic project ordering
-      await getProjectsByCategory('trending', Trending_Desired_Order, trending);
+      const trendingOrder = getTrendingDesiredOrder();
+      await getProjectsByCategory('trending', trendingOrder, trending);
     } catch (error) {
       console.error("Error fetching trending data:", error);
     }
@@ -37,7 +38,8 @@ const Api_service = () => {
   const getSpotlight = useCallback(async () => {
     try {
       // Use dynamic project ordering
-      await getProjectsByCategory('spotlight', Recommendedreordered, spotlight);
+      const recommendedOrder = getRecommendedDesiredOrder();
+      await getProjectsByCategory('spotlight', recommendedOrder, spotlight);
     } catch (error) {
       console.error("Error fetching spotlight data:", error);
     }
@@ -68,7 +70,8 @@ const Api_service = () => {
   const getAffordable = async() =>{
     try{
         // Use dynamic project ordering
-        await getProjectsByCategory('affordable', Affordable_Desired_Order, affordable);
+        const affordableOrder = getAffordableDesiredOrder();
+        await getProjectsByCategory('affordable', affordableOrder, affordable);
     }catch(error){
         console.error("Error fetching Affordable data:", error);
     }
@@ -86,7 +89,8 @@ const Api_service = () => {
   const getScoplots = async() =>{
     try{
         // Use dynamic project ordering
-        await getProjectsByCategory('sco', SCO_DESIRED_ORDER, scoplots);
+        const scoOrder = getSCODesiredOrder();
+        await getProjectsByCategory('sco', scoOrder, scoplots);
     }catch(error){
         console.error("Error fetching Sco data:", error);
     }
@@ -95,7 +99,8 @@ const Api_service = () => {
   const getCommercial = async() =>{
     try{
         // Use dynamic project ordering
-        await getProjectsByCategory('commercial', COMMERCIAL_DESIRED_ORDER, commercial);
+        const commercialOrder = getCommercialDesiredOrder();
+        await getProjectsByCategory('commercial', commercialOrder, commercial);
     }catch(error){
         console.error("Error fetching Commercial data:", error);
     }
@@ -242,7 +247,8 @@ const Api_service = () => {
         dispatch(scoplotsall(AllProjectbyQuery));
       }else
       if(query === "luxury"){
-        dispatch(luxuryAll(sortByDesiredOrder((AllProjectbyQuery),DesiredLuxuryOrder,"projectName")));
+        const luxuryOrder = getLuxuryDesiredOrder();
+        dispatch(luxuryAll(sortByDesiredOrder((AllProjectbyQuery),luxuryOrder,"projectName")));
       }else
       if(query === "deendayalplots"){
         dispatch(deendayalplots(AllProjectbyQuery));
