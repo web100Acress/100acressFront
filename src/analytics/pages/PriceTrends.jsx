@@ -163,9 +163,9 @@ export default function PriceTrends() {
   ], []);
   const visibleCities = useMemo(() => allCities.filter(c => c.toLowerCase().includes(cityQuery.toLowerCase())), [allCities, cityQuery]);
 
-  // Tiny sparkline path for locality trend
-  const makeSpark = (rate, changePct) => {
-    const w = 64, h = 24, pad = 2, n = 8;
+  // Tiny sparkline path for locality trend (parameterized for width/height)
+  const makeSpark = (rate, changePct, w = 64, h = 24) => {
+    const pad = 2, n = 8;
     const start = rate / (1 + (changePct/100));
     const pts = Array.from({length:n}, (_,i)=> start + (i/(n-1))*(rate - start));
     const min = Math.min(...pts), max = Math.max(...pts);
@@ -447,7 +447,7 @@ export default function PriceTrends() {
             ) : (
               <>
                 {/* Hero Banner for City Data */}
-                <div className="relative w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] overflow-hidden mb-8 rounded-2xl">
+                <div className="relative w-full h-[25vh] sm:h-[30vh] md:h-[35vh] lg:h-[40vh] overflow-hidden mb-8 rounded-2xl">
                   {/* Background Image with Overlay */}
                   <div className="absolute inset-0">
                     <img 
@@ -460,7 +460,7 @@ export default function PriceTrends() {
                   
                   {/* Content */}
                   <div className="relative z-10 flex items-center justify-center h-full px-4 sm:px-6 lg:px-8">
-                    <div className="text-center max-w-4xl mx-auto">
+                    <div className="text-center max-w-4xl mx-auto -mt-2 sm:-mt-4 md:-mt-6">
                       <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 sm:mb-6 leading-tight">
                         Property Trends in
                         <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -508,7 +508,8 @@ export default function PriceTrends() {
                 {/* Backdrop for all screen sizes */}
                 <div className={`fixed inset-0 z-40 transition-opacity duration-300 ease-out ${drawerAnimating ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundColor: 'rgba(0,0,0,0.3)' }} onClick={closeDrawer} />
                 {/* Mobile-style bottom sheet for all screen sizes */}
-                <aside className={`fixed bottom-0 left-0 right-0 h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] bg-white z-50 shadow-2xl rounded-t-2xl overflow-hidden flex flex-col transform transition-transform duration-300 ease-out ${drawerAnimating ? 'translate-y-0' : 'translate-y-full'}`}>
+                <aside className={`fixed bottom-0 left-0 right-0 h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] bg-transparent z-50 overflow-hidden transform transition-transform duration-300 ease-out ${drawerAnimating ? 'translate-y-0' : 'translate-y-full'}`}>
+                  <div className="mx-auto w-full h-full max-w-xl sm:max-w-1xl lg:max-w-2xl bg-white shadow-2xl rounded-t-2xl overflow-hidden flex flex-col">
                   <div className="p-4 border-b flex items-center justify-between relative">
                     <span className="absolute left-1/2 -top-2 -translate-x-1/2 w-12 h-1.5 bg-gray-300 rounded-full" aria-hidden="true" />
                     <div>
@@ -539,7 +540,7 @@ export default function PriceTrends() {
                     <div className="border rounded-xl p-3">
                       <div className="text-sm font-semibold mb-2">Trend</div>
                       <svg viewBox="0 0 240 80" className="w-full h-20">
-                        <path d={makeSpark(drawerData?.rate||100, drawerData?.change5y||0).replaceAll('64','240').replaceAll('24','80')} fill="none" stroke="#2563eb" strokeWidth="2" />
+                        <path d={makeSpark(drawerData?.rate||100, drawerData?.change5y||0, 240, 80)} fill="none" stroke="#2563eb" strokeWidth="2" />
                       </svg>
                     </div>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
@@ -632,6 +633,7 @@ export default function PriceTrends() {
                         </div>
                       </div>
                     </div>
+                  </div>
                   </div>
                 </aside>
               </>
