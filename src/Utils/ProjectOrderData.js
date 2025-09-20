@@ -1,15 +1,41 @@
-// Utility to get project order data from localStorage or return default data
-export const getProjectOrderData = () => {
+// Utility to get project order data from backend API or localStorage fallback
+export const getProjectOrderData = async () => {
   try {
+    console.log('🌐 Fetching project orders from API...');
+    const apiBase = import.meta.env.VITE_API_BASE || 'http://localhost:3500';
+    const apiUrl = `${apiBase}/api/project-orders`;
+    console.log('🌐 API URL:', apiUrl);
+    // First try to fetch from backend API
+    const response = await fetch(apiUrl);
+    console.log('📡 API Response status:', response.status);
+    if (response.ok) {
+      const data = await response.json();
+      console.log('📡 API Response data:', data);
+      if (data.success && data.data) {
+        // Cache the data in localStorage for offline use
+        localStorage.setItem('projectOrders', JSON.stringify(data.data));
+        console.log('✅ Project orders fetched from API and cached');
+        return data.data;
+      }
+    }
+  } catch (error) {
+    console.error('❌ Error fetching project orders from API:', error);
+  }
+  
+  // Fallback to localStorage if API fails
+  try {
+    console.log('📦 Trying localStorage fallback...');
     const saved = localStorage.getItem('projectOrders');
     if (saved) {
+      console.log('✅ Project orders loaded from localStorage');
       return JSON.parse(saved);
     }
   } catch (error) {
-    console.error('Error loading project orders from localStorage:', error);
+    console.error('❌ Error loading project orders from localStorage:', error);
   }
   
-  // Return default data if localStorage is empty or error occurs
+  // Return default data if both API and localStorage fail
+  console.log('📋 Using default project order data');
   return {
     luxury: [
       { id: 1, name: "Elan The Emperor", order: 1, isActive: true },
@@ -69,48 +95,67 @@ export const getProjectOrderData = () => {
 };
 
 // Get specific category data
-export const getLuxuryDesiredOrder = () => {
-  const data = getProjectOrderData();
+export const getLuxuryDesiredOrder = async () => {
+  const data = await getProjectOrderData();
   return data.luxury.filter(item => item.isActive).map(item => item.name);
 };
 
-export const getTrendingDesiredOrder = () => {
-  const data = getProjectOrderData();
-  return data.trending.filter(item => item.isActive).map(item => item.name);
+export const getTrendingDesiredOrder = async () => {
+  const data = await getProjectOrderData();
+  const trendingOrder = data.trending.filter(item => item.isActive).map(item => item.name);
+  console.log('getTrendingDesiredOrder - Raw data:', data.trending);
+  console.log('getTrendingDesiredOrder - Filtered order:', trendingOrder);
+  return trendingOrder;
 };
 
-export const getAffordableDesiredOrder = () => {
-  const data = getProjectOrderData();
+export const getAffordableDesiredOrder = async () => {
+  const data = await getProjectOrderData();
   return data.affordable.filter(item => item.isActive).map(item => item.name);
 };
 
-export const getSCODesiredOrder = () => {
-  const data = getProjectOrderData();
+export const getSCODesiredOrder = async () => {
+  const data = await getProjectOrderData();
   return data.sco.filter(item => item.isActive).map(item => item.name);
 };
 
-export const getCommercialDesiredOrder = () => {
-  const data = getProjectOrderData();
+export const getCommercialDesiredOrder = async () => {
+  const data = await getProjectOrderData();
   return data.commercial.filter(item => item.isActive).map(item => item.name);
 };
 
-export const getBudgetDesiredOrder = () => {
-  const data = getProjectOrderData();
+export const getBudgetDesiredOrder = async () => {
+  const data = await getProjectOrderData();
   return data.budget.filter(item => item.isActive).map(item => item.name);
 };
 
-export const getRecommendedDesiredOrder = () => {
-  const data = getProjectOrderData();
-  return data.recommended.filter(item => item.isActive).map(item => item.name);
+export const getRecommendedDesiredOrder = async () => {
+  console.log('📋 getRecommendedDesiredOrder called');
+  const data = await getProjectOrderData();
+  console.log('📋 Project order data:', data);
+  let recommended = data.recommended.filter(item => item.isActive).map(item => item.name);
+  
+  // If we get generic names from the API, use the correct project names
+  if (recommended.includes("Recommended Project 1") || recommended.includes("Recommended Project 2")) {
+    console.log('🔄 Using fallback project names for recommended');
+    recommended = [
+      "ROF Pravasa",
+      "Signature Global Cloverdale SPR", 
+      "Experion One 42",
+      "Experion The Trillion"
+    ];
+  }
+  
+  console.log('📋 Recommended order result:', recommended);
+  return recommended;
 };
 
-export const getDesiredLuxuryOrder = () => {
-  const data = getProjectOrderData();
+export const getDesiredLuxuryOrder = async () => {
+  const data = await getProjectOrderData();
   return data.desiredLuxury.filter(item => item.isActive).map(item => item.name);
 };
 
-export const getBudgetPlots = () => {
-  const data = getProjectOrderData();
+export const getBudgetPlots = async () => {
+  const data = await getProjectOrderData();
   return data.budgetPlots.filter(item => item.isActive).map(item => ({
     title: item.name,
     link: item.link,
@@ -118,13 +163,5 @@ export const getBudgetPlots = () => {
   }));
 };
 
-// Export all data for backward compatibility
-export const Luxury_Desired_Order = getLuxuryDesiredOrder();
-export const Trending_Desired_Order = getTrendingDesiredOrder();
-export const Affordable_Desired_Order = getAffordableDesiredOrder();
-export const SCO_DESIRED_ORDER = getSCODesiredOrder();
-export const COMMERCIAL_DESIRED_ORDER = getCommercialDesiredOrder();
-export const BUDGET_DESIRED_ORDER = getBudgetDesiredOrder();
-export const Recommendedreordered = getRecommendedDesiredOrder();
-export const DesiredLuxuryOrder = getDesiredLuxuryOrder();
-export const budgetPlots = getBudgetPlots();
+// Note: All functions are now async and should be called with await
+// For backward compatibility, you can create wrapper functions if needed

@@ -32,8 +32,6 @@ import { AuthProvider } from "./AuthContext";
 import { Toaster } from "./Components/ui/Toaster";
 import { Toaster as Sonner } from "./Components/ui/sonner";
 import { TooltipProvider } from "./Components/ui/Tooltip";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PrivateRoute from "./Components/PrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
@@ -166,6 +164,7 @@ const ProjectEditBHK = lazy(() => import("./AdminPage/ProjectEditBHK"));
 const ProjectAddHighligths = lazy(() => import("./AdminPage/ProjectAddHighligths"));
 const ProjectEditHighlight = lazy(() => import("./AdminPage/ProjectEditHighlight"));
 const ProjectOrderManager = lazy(() => import("./AdminPage/ProjectOrderManager"));
+const ProjectOrderManagement = lazy(() => import("./AdminPage/ProjectOrderManagement"));
 const BlogEdit = lazy(() => import("./AdminPage/BlogEdit"));
 const BlogWrite = lazy(() => import("./AdminPage/BlogWrite"));
 const Career = lazy(() => import("./AdminPage/Career"));
@@ -186,8 +185,7 @@ const DraftManagement = lazy(() => import("./Components/Blog_Components/DraftMan
 const BlogManagementSidebar = lazy(() => import("./Components/Blog_Components/BlogManagementSidebar"));
 const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
 const ShortsSettings = lazy(() => import("./AdminPage/ShortsSettings"));
-const UnifiedBannerManagement = lazy(() => import("./AdminPage/UnifiedBannerManagement"));
-const ProjectOrderManagement = lazy(() => import("./AdminPage/ProjectOrderManagement"));
+const BannerManagement = lazy(() => import("./AdminPage/BannerManagement"));
 const InsightsNews = lazy(() => import("./Pages/InsightsNews"));
 const InsightsGuides = lazy(() => import("./Pages/InsightsGuides"));
 
@@ -242,18 +240,6 @@ function App() {
                 <Suspense fallback={<LoadingSpinner />}>
                   <Toaster position="top-right" />
                   <Sonner position="top-right" richColors />
-                  <ToastContainer
-                    position="top-right"
-                    autoClose={3000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                  />
                   
 
                   {/* Your existing routes */}
@@ -511,8 +497,7 @@ function App() {
                       <Route path="buy/view/edit/:id" element={<LazyLoad> <BuyEdit /></LazyLoad>} />
                       <Route path="contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
                       <Route path="shorts" element={<LazyLoad><ShortsSettings /></LazyLoad>} />
-                <Route path="unified-banner-management" element={<LazyLoad><UnifiedBannerManagement /></LazyLoad>} />
-                <Route path="project-order-management" element={<LazyLoad><ProjectOrderManagement /></LazyLoad>} />
+                      <Route path="banner-management" element={<LazyLoad><BannerManagement /></LazyLoad>} />
                       <Route
                         path="ContactUs/UserProfile"
                         element={<LazyLoad> <UserProfile /></LazyLoad>}
@@ -544,6 +529,10 @@ function App() {
                       <Route
                         path="project-order-manager"
                         element={<LazyLoad><ProjectOrderManager /></LazyLoad>}
+                      />
+                      <Route
+                        path="project-order-management"
+                        element={<LazyLoad><ProjectOrderManagement /></LazyLoad>}
                       />
                       <Route
                         path="dashboard"
