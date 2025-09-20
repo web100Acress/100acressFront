@@ -11,7 +11,7 @@ import {resale} from "../slice/ResaleSlice";
 import api from "../../config/apiClient";
 import { API_ROUTES, API_ROUTES_PROJECTS } from "./Constant_Service";
 import { sortByDesiredOrder } from "../../Utils/ProjectSorting";
-import { getAffordableDesiredOrder, BUDGET_DESIRED_ORDER, getCommercialDesiredOrder, getLuxuryDesiredOrder, getRecommendedDesiredOrder, getSCODesiredOrder, getTrendingDesiredOrder } from "../../Utils/ProjectOrderData";
+import { getAffordableDesiredOrder, getBudgetDesiredOrder, getCommercialDesiredOrder, getLuxuryDesiredOrder, getRecommendedDesiredOrder, getSCODesiredOrder, getTrendingDesiredOrder } from "../../Utils/ProjectOrderData";
 import { emaar } from "../slice/ProjectstatusSlice";
 import { useCallback } from "react";
 import { maxpriceproject,minpriceproject } from "../slice/PriceBasedSlice";
@@ -21,14 +21,26 @@ const propertyOrderControllers = new Map();
 // De-dup in-flight requests per builder and provide a small cache to avoid rapid repeated calls
 const propertyOrderInFlight = new Map(); // key -> Promise
 const propertyOrderCache = new Map();    // key -> { data, ts }
+const requestThrottle = new Map();       // key -> timestamp
 
 const Api_service = () => {
   const dispatch = useDispatch();
 
   const getTrending = async () => {
     try {
+      // Throttle requests to prevent 429 errors
+      const now = Date.now();
+      const lastCall = requestThrottle.get('trending') || 0;
+      if (now - lastCall < 2000) { // 2 second throttle
+        console.log('Trending request throttled, skipping');
+        return;
+      }
+      requestThrottle.set('trending', now);
+      
       // Use dynamic project ordering
-      const trendingOrder = getTrendingDesiredOrder();
+      const trendingOrder = await getTrendingDesiredOrder();
+      console.log('Trending order from admin:', trendingOrder);
+      
       await getProjectsByCategory('trending', trendingOrder, trending);
     } catch (error) {
       console.error("Error fetching trending data:", error);
@@ -37,11 +49,25 @@ const Api_service = () => {
 
   const getSpotlight = useCallback(async () => {
     try {
+      console.log('🔍 getSpotlight called');
+      // Throttle requests to prevent 429 errors
+      const now = Date.now();
+      const lastCall = requestThrottle.get('spotlight') || 0;
+      if (now - lastCall < 2000) { // 2 second throttle
+        console.log('Spotlight request throttled, skipping');
+        return;
+      }
+      requestThrottle.set('spotlight', now);
+      
       // Use dynamic project ordering
-      const recommendedOrder = getRecommendedDesiredOrder();
+      console.log('📋 Getting recommended order...');
+      const recommendedOrder = await getRecommendedDesiredOrder();
+      console.log('📋 Recommended order:', recommendedOrder);
+      console.log('🌐 Making API call to getProjectsByCategory...');
       await getProjectsByCategory('spotlight', recommendedOrder, spotlight);
+      console.log('✅ getSpotlight completed');
     } catch (error) {
-      console.error("Error fetching spotlight data:", error);
+      console.error("❌ Error fetching spotlight data:", error);
     }
   }, [dispatch]);
 
@@ -69,9 +95,18 @@ const Api_service = () => {
 
   const getAffordable = async() =>{
     try{
-        // Use dynamic project ordering
-        const affordableOrder = getAffordableDesiredOrder();
-        await getProjectsByCategory('affordable', affordableOrder, affordable);
+      // Throttle requests to prevent 429 errors
+      const now = Date.now();
+      const lastCall = requestThrottle.get('affordable') || 0;
+      if (now - lastCall < 2000) { // 2 second throttle
+        console.log('Affordable request throttled, skipping');
+        return;
+      }
+      requestThrottle.set('affordable', now);
+      
+      // Use dynamic project ordering
+      const affordableOrder = await getAffordableDesiredOrder();
+      await getProjectsByCategory('affordable', affordableOrder, affordable);
     }catch(error){
         console.error("Error fetching Affordable data:", error);
     }
@@ -80,7 +115,8 @@ const Api_service = () => {
   const getLuxury = async() =>{
     try{
         // Use dynamic project ordering
-        await getProjectsByCategory('luxury', Luxury_Desired_Order, luxury);
+        const luxuryOrder = await getLuxuryDesiredOrder();
+        await getProjectsByCategory('luxury', luxuryOrder, luxury);
     }catch(error){
         console.error("Error fetching Luxury data:", error);
     }
@@ -89,7 +125,7 @@ const Api_service = () => {
   const getScoplots = async() =>{
     try{
         // Use dynamic project ordering
-        const scoOrder = getSCODesiredOrder();
+        const scoOrder = await getSCODesiredOrder();
         await getProjectsByCategory('sco', scoOrder, scoplots);
     }catch(error){
         console.error("Error fetching Sco data:", error);
@@ -99,7 +135,7 @@ const Api_service = () => {
   const getCommercial = async() =>{
     try{
         // Use dynamic project ordering
-        const commercialOrder = getCommercialDesiredOrder();
+        const commercialOrder = await getCommercialDesiredOrder();
         await getProjectsByCategory('commercial', commercialOrder, commercial);
     }catch(error){
         console.error("Error fetching Commercial data:", error);
@@ -109,7 +145,8 @@ const Api_service = () => {
   const getBudgetHomes = async() => {
     try {
         // Get dynamic budget project names from ProjectOrderData
-        const budgetProjectNames = BUDGET_DESIRED_ORDER.join(',');
+        const budgetOrder = await getBudgetDesiredOrder();
+        const budgetProjectNames = budgetOrder.join(',');
         
         const response = await api.get(`${API_ROUTES.projectsBase()}/budgethomes?projects=${budgetProjectNames}`);
         const Featuredprojects = response.data.data;
@@ -118,7 +155,7 @@ const Api_service = () => {
         // Sort projects according to the desired order
         const sortedProjects = sortByDesiredOrder(
             Featuredprojects,
-            BUDGET_DESIRED_ORDER,
+            budgetOrder,
             "projectName"
         );
         
@@ -132,8 +169,15 @@ const Api_service = () => {
   const getProjectsByCategory = async(category, projectNames, dispatchAction) => {
     try {
         const projectNamesString = projectNames.join(',');
-        const response = await api.get(`${API_ROUTES.projectsBase()}/category?category=${category}&projects=${projectNamesString}`);
+        const apiUrl = `${API_ROUTES.projectsBase()}/category?category=${category}&projects=${projectNamesString}`;
+        console.log('🌐 API URL:', apiUrl);
+        console.log('📊 Project names:', projectNames);
+        console.log('📊 Project names string:', projectNamesString);
+        
+        const response = await api.get(apiUrl);
+        console.log('📡 API Response:', response.data);
         const projects = response.data.data;
+        console.log('📊 Projects data:', projects);
         
         // Sort projects according to the desired order
         const sortedProjects = sortByDesiredOrder(
@@ -141,10 +185,13 @@ const Api_service = () => {
             projectNames,
             "projectName"
         );
+        console.log('📊 Sorted projects:', sortedProjects);
         
         dispatch(dispatchAction(sortedProjects));
+        console.log('✅ Dispatched to Redux store');
     } catch(error) {
-        console.error(`Error fetching ${category} data:`, error);
+        console.error(`❌ Error fetching ${category} data:`, error);
+        console.error('❌ Error details:', error.response?.data || error.message);
     }
   }
 // //////////////////////////////////////////////////////////////////////////////////////////
@@ -247,7 +294,7 @@ const Api_service = () => {
         dispatch(scoplotsall(AllProjectbyQuery));
       }else
       if(query === "luxury"){
-        const luxuryOrder = getLuxuryDesiredOrder();
+        const luxuryOrder = await getLuxuryDesiredOrder();
         dispatch(luxuryAll(sortByDesiredOrder((AllProjectbyQuery),luxuryOrder,"projectName")));
       }else
       if(query === "deendayalplots"){

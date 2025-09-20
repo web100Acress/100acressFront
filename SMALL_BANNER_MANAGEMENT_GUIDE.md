@@ -235,3 +235,5 @@ For technical issues or questions:
 4. Review this guide for troubleshooting steps
 
 The small banner management system is now fully integrated with your admin panel, providing complete control over promotional banner display in the hero section.
+
+
