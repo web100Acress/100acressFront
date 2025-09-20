@@ -10,6 +10,13 @@ import DOMPurify from 'dompurify';
 import "./BlogView.css";
 import useIsMobile from '../hooks/useIsMobile';
 import { ThumbsUp, Share2, MessageCircle } from 'lucide-react';
+import { 
+  FALLBACK_IMG, 
+  getBestImageUrl, 
+  createSafeImageProps, 
+  convertS3ToProxyUrl,
+  isS3Url 
+} from '../Utils/imageUtils';
 
 const BlogView = () => {
   const { allupcomingProject } = useContext(DataContext);
@@ -48,7 +55,7 @@ const BlogView = () => {
     { label: 'Property under 1 Cr', url: '/budget-properties' },
     { label: 'Upcoming Projects', url: '/upcoming-projects-in-gurgaon' },
     { label: 'New Launch Projects', url: '/projects-in-newlaunch' },
-    { label: 'SEO Plots', url: '/sco/plots' },
+    { label: 'SCO Plots', url: '/sco/plots' },
     { label: 'Commercial Projects', url: '/projects/commercial/' },
   ];
   const popularTools = [
@@ -104,8 +111,7 @@ const BlogView = () => {
     } catch (_) { return { userId: '', email: '' }; }
   };
 
-  // Safe image fallback for broken S3 URLs
-  const FALLBACK_IMG = "/Images/blog.avif";
+  // Enhanced image error handler with S3 proxy support
   const onImgError = (e) => {
     try {
       const img = e?.target;
@@ -113,10 +119,6 @@ const BlogView = () => {
 
       // Prevent infinite loop if fallback also fails
       if (img.dataset.fallback) return;
-
-      const fallbackSrc = FALLBACK_IMG.startsWith('http') 
-        ? FALLBACK_IMG 
-        : `${window.location.origin}${FALLBACK_IMG}`;
 
       // If we have an alternate candidate stored on element, try it once
       const alt = img.dataset.altSrc;
@@ -127,6 +129,20 @@ const BlogView = () => {
         return;
       }
 
+      // Try to convert S3 URL to proxy URL if it's an S3 URL
+      if (isS3Url(img.src)) {
+        const proxyUrl = convertS3ToProxyUrl(img.src);
+        if (proxyUrl !== img.src) {
+          img.src = proxyUrl;
+          return;
+        }
+      }
+
+      // Final fallback to default image
+      const fallbackSrc = FALLBACK_IMG.startsWith('http') 
+        ? FALLBACK_IMG 
+        : `${window.location.origin}${FALLBACK_IMG}`;
+
       if (img.src !== fallbackSrc) {
         img.dataset.fallback = "1";
         img.src = fallbackSrc;
@@ -136,7 +152,7 @@ const BlogView = () => {
     }
   };
 
-  // Helper to pick best image from a project payload (same strategy as Trending)
+  // Helper to pick best image from a project payload with S3 proxy support
   const pickProjectImage = (p) => {
     try {
       if (!p || typeof p !== 'object') return '';
@@ -149,7 +165,11 @@ const BlogView = () => {
       const any = p?.image || p?.project_Image || '';
       const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
       const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
-      return /^data:image\/svg\+xml/i.test(u) ? '' : (u || '');
+      
+      if (!u || /^data:image\/svg\+xml/i.test(u)) return '';
+      
+      // Convert S3 URLs to proxy URLs
+      return convertS3ToProxyUrl(u);
     } catch (_) {
       return '';
     }
@@ -303,7 +323,15 @@ const BlogView = () => {
     }
 
     // Choose display URL: prefer CDN, then S3/url; ignore placeholders
-    normalizedImage.display = normalizedImage.cdn_url || normalizedImage.url || '';
+    let rawDisplay = normalizedImage.cdn_url || normalizedImage.url || '';
+    
+    // Fix double-encoded URLs
+    if (rawDisplay && rawDisplay.includes('%2520')) {
+      rawDisplay = rawDisplay.replace(/%2520/g, '%20').replace(/%2525/g, '%25');
+    }
+    
+    normalizedImage.display = convertS3ToProxyUrl(rawDisplay);
+    
 
       return {
         blog_Title: obj.blog_Title || '',
@@ -704,6 +732,7 @@ const BlogView = () => {
     );
   }
 
+
   return (
     <div className="blog-view bg-gray-50 min-h-screen">
       <Helmet>
@@ -715,6 +744,7 @@ const BlogView = () => {
         <meta name="twitter:card" content="summary_large_image" />
         {blog_Image?.url && <meta name="twitter:image" content={blog_Image.url} />}
       </Helmet>
+
 
       {/* Modern Brand-Aligned Title */}
       <div className="max-w-4xl mx-auto px-4 pt-12 pb-6 mt-10">
@@ -747,7 +777,8 @@ const BlogView = () => {
                     const name = project?.projectName || 'Project';
                     const url = project?.project_url || '';
                     const thumbnail = project?.thumbnail || '';
-                    const img = (relatedThumbs[url] || thumbnail || FALLBACK_IMG);
+                    const rawImg = (relatedThumbs[url] || thumbnail || FALLBACK_IMG);
+                    const img = getBestImageUrl(rawImg);
 
                     const handleProjectClick = () => {
                       try {
@@ -838,7 +869,7 @@ const BlogView = () => {
                   const any = p?.image || p?.project_Image || '';
                   const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
                   const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
-                  return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
+                  return getBestImageUrl(u);
                 })();
                 return (
                   <div
@@ -983,14 +1014,10 @@ const BlogView = () => {
             <div className="relative w-full mb-2 overflow-hidden">
               {blog_Image?.display ? (
                 <img
-                  src={blog_Image.display}
-                  alt={blog_Title || 'Blog post image'}
-                  className="w-full h-auto block rounded-xl"
-                  onError={onImgError}
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                  crossOrigin="anonymous"
-                  data-alt-src={blog_Image?.cdn_url && blog_Image?.url && blog_Image.cdn_url !== blog_Image.url ? (blog_Image.display === blog_Image.cdn_url ? blog_Image.url : blog_Image.cdn_url) : ''}
+                  {...createSafeImageProps(blog_Image.display, blog_Title || 'Blog post image', {
+                    className: "w-full h-auto block rounded-xl",
+                    'data-alt-src': blog_Image?.cdn_url && blog_Image?.url && blog_Image.cdn_url !== blog_Image.url ? (blog_Image.display === blog_Image.cdn_url ? blog_Image.url : blog_Image.cdn_url) : ''
+                  })}
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-xl">
@@ -1129,7 +1156,7 @@ const BlogView = () => {
                 const any = p?.image || p?.project_Image || '';
                 const fromArray = Array.isArray(p?.images) && p.images.length ? (p.images[0]?.url || p.images[0]) : '';
                 const u = t1 || t2 || fThumb || c1 || fMain || b1 || fromArray || any || '';
-                return /^data:image\/svg\+xml/i.test(u) ? FALLBACK_IMG : (u || FALLBACK_IMG);
+                return getBestImageUrl(u);
               })();
               return (
                 <div

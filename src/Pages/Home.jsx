@@ -319,9 +319,11 @@ const Home = () => {
     switch (activeFilter) {
       case "Trending":
         setDisplayedProjects(memoizedProjects.trending);
+        setPath("/projects-in-gurugram/");
         break;
       case "Featured":
         setDisplayedProjects(memoizedProjects.featured);
+        setPath("/projects-in-gurugram/");
         break;
       case "Upcoming":
         setDisplayedProjects(memoizedProjects.upcoming);
@@ -337,9 +339,11 @@ const Home = () => {
         break;
       case "Affordable":
         setDisplayedProjects(memoizedProjects.affordable.slice(0, 4));
+        setPath("/projects-in-gurugram/budget");
         break;
       case "Budget":
         setDisplayedProjects(memoizedProjects.budget);
+        setPath("/budget-properties/");
         break;
       case "Luxury":
         setDisplayedProjects(memoizedProjects.luxury.slice(0, 4));
