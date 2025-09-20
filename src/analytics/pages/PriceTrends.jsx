@@ -35,7 +35,6 @@ export default function PriceTrends() {
   const [drawerData, setDrawerData] = useState(null);
   const [drawerRestored, setDrawerRestored] = useState(false);
   const [compareFlash, setCompareFlash] = useState(false);
-  const deskDrawerRef = useRef(null);
 
   // Real-estate themed city images
   const cityImages = useMemo(() => ({
@@ -402,21 +401,8 @@ export default function PriceTrends() {
     return () => window.removeEventListener('keydown', onKey);
   }, [drawerOpen]);
 
-  // Click outside to close on desktop only (no backdrop)
-  useEffect(() => {
-    const handler = (e) => {
-      if (!drawerOpen) return;
-      if (window.matchMedia('(min-width: 768px)').matches) {
-        const withinDrawer = deskDrawerRef.current && deskDrawerRef.current.contains(e.target);
-        const isMoreBtn = !!(e.target.closest && e.target.closest('[data-pt-more]'));
-        if (!withinDrawer && !isMoreBtn) {
-          closeDrawer();
-        }
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [drawerOpen]);
+  // Click outside to close (backdrop handles this now)
+  // Removed desktop-specific click outside handler since we're using backdrop for all screen sizes
 
   return (
     <React.Fragment>
@@ -459,30 +445,70 @@ export default function PriceTrends() {
                 />
               </div>
             ) : (
-              <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex w-10 h-10 rounded-full bg-gray-100 items-center justify-center">
-                    <svg viewBox="0 0 24 24" className="w-5 h-5 text-gray-600" fill="currentColor"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z"/></svg>
-                  </span>
-                  <div>
-                    <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">Property Rates in {city}</h1>
-                    <div className="text-sm text-gray-600">Top localities, price trends and rental yields</div>
+              <>
+                {/* Hero Banner for City Data */}
+                <div className="relative w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] overflow-hidden mb-8 rounded-2xl">
+                  {/* Background Image with Overlay */}
+                  <div className="absolute inset-0">
+                    <img 
+                      src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1973&q=80"
+                      alt="Real Estate Analytics"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60"></div>
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="relative z-10 flex items-center justify-center h-full px-4 sm:px-6 lg:px-8">
+                    <div className="text-center max-w-4xl mx-auto">
+                      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 sm:mb-6 leading-tight">
+                        Property Trends in
+                        <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                          {city}
+                        </span>
+                      </h1>
+                      <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed">
+                        Discover real-time property price trends, rental yields, and market insights for {city}
+                      </p>
+                      
+                      {/* Action Buttons */}
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                        <button onClick={()=>{ setShowPicker(true); setCompareMode(false); }} className="px-6 py-3 bg-white/20 backdrop-blur-sm text-white font-semibold rounded-xl hover:bg-white/30 transition-all duration-200 border border-white/30">
+                          Change City
+                        </button>
+                        <button onClick={downloadCSV} className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                          Download Data
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button onClick={()=>{ setShowPicker(true); setCompareMode(false); }} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Change city</button>
-                  <button onClick={downloadCSV} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Download CSV</button>
-                </div>
-              </header>
+
+                <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex w-10 h-10 rounded-full bg-gray-100 items-center justify-center">
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-gray-600" fill="currentColor"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z"/></svg>
+                    </span>
+                    <div>
+                      <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight">Top Localities</h2>
+                      <div className="text-sm text-gray-600">Price trends and rental yields by area</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={()=>{ setShowPicker(true); setCompareMode(false); }} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Change city</button>
+                    <button onClick={downloadCSV} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Download CSV</button>
+                  </div>
+                </header>
+              </>
             )}
 
             {/* Drawer for locality details: mobile bottom sheet + desktop side drawer */}
             {drawerOpen && (
               <>
-                {/* Backdrop only on mobile; keep desktop clickable */}
-                <div className={`fixed inset-0 z-40 transition-opacity duration-300 ease-out md:hidden ${drawerAnimating ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundColor: 'rgba(0,0,0,0.3)' }} onClick={closeDrawer} />
-                {/* Mobile bottom sheet */}
-                <aside className={`fixed bottom-0 left-0 right-0 h-[70vh] bg-white z-50 shadow-2xl rounded-t-2xl overflow-hidden md:hidden flex flex-col transform transition-transform duration-300 ease-out ${drawerAnimating ? 'translate-y-0' : 'translate-y-full'}`}>
+                {/* Backdrop for all screen sizes */}
+                <div className={`fixed inset-0 z-40 transition-opacity duration-300 ease-out ${drawerAnimating ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundColor: 'rgba(0,0,0,0.3)' }} onClick={closeDrawer} />
+                {/* Mobile-style bottom sheet for all screen sizes */}
+                <aside className={`fixed bottom-0 left-0 right-0 h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] bg-white z-50 shadow-2xl rounded-t-2xl overflow-hidden flex flex-col transform transition-transform duration-300 ease-out ${drawerAnimating ? 'translate-y-0' : 'translate-y-full'}`}>
                   <div className="p-4 border-b flex items-center justify-between relative">
                     <span className="absolute left-1/2 -top-2 -translate-x-1/2 w-12 h-1.5 bg-gray-300 rounded-full" aria-hidden="true" />
                     <div>
@@ -495,19 +521,19 @@ export default function PriceTrends() {
                       Close
                     </button>
                   </div>
-                  <div className="p-4 space-y-4 overflow-auto">
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-auto">
+                    <div className="grid grid-cols-3 gap-3 sm:gap-4">
+                      <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                         <div className="text-xs text-gray-500">Price</div>
-                        <div className="text-base font-semibold">₹{drawerData?.rate?.toLocaleString()}/ sq.ft</div>
+                        <div className="text-base sm:text-lg font-semibold">₹{drawerData?.rate?.toLocaleString()}/ sq.ft</div>
                       </div>
-                      <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                         <div className="text-xs text-gray-500">5Y Change</div>
-                        <div className="text-base font-semibold text-emerald-600">▲ {drawerData?.change5y}%</div>
+                        <div className="text-base sm:text-lg font-semibold text-emerald-600">▲ {drawerData?.change5y}%</div>
                       </div>
-                      <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                         <div className="text-xs text-gray-500">Yield</div>
-                        <div className="text-base font-semibold">{drawerData?.yield}%</div>
+                        <div className="text-base sm:text-lg font-semibold">{drawerData?.yield}%</div>
                       </div>
                     </div>
                     <div className="border rounded-xl p-3">
@@ -516,19 +542,19 @@ export default function PriceTrends() {
                         <path d={makeSpark(drawerData?.rate||100, drawerData?.change5y||0).replaceAll('64','240').replaceAll('24','80')} fill="none" stroke="#2563eb" strokeWidth="2" />
                       </svg>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                       <button onClick={()=>{
                         const u = `/listings?city=${encodeURIComponent(city)}&locality=${encodeURIComponent(drawerData?.locality||'')}&zone=${encodeURIComponent(zone)}&type=${encodeURIComponent(type)}`;
                         navigate(u);
                         closeDrawer();
-                      }} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">View listings</button>
+                      }} className="flex-1 px-4 py-3 rounded-lg border hover:bg-gray-50 text-sm font-medium">View listings</button>
                       <button onClick={()=>{
                         setCompareMode(true);
                         setSelectedCities((list)=> list.includes(city) ? list : [...list, city]);
                         closeDrawer();
                         window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Compare this city</button>
-                      <button className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Share</button>
+                      }} className="flex-1 px-4 py-3 rounded-lg border hover:bg-gray-50 text-sm font-medium">Compare this city</button>
+                      <button className="flex-1 px-4 py-3 rounded-lg border hover:bg-gray-50 text-sm font-medium">Share</button>
                     </div>
                     {/* Engagement extras */}
                     <div className="mt-2 grid grid-cols-1 gap-3">
@@ -552,7 +578,7 @@ export default function PriceTrends() {
                         const u = `/projects?city=${encodeURIComponent(city)}&locality=${encodeURIComponent(drawerData?.locality||'')}`;
                         navigate(u);
                         closeDrawer();
-                      }} className="w-full px-3 py-2 rounded-lg border bg-gray-900 text-white text-sm hover:bg-gray-800">Explore projects in {drawerData?.locality}</button>
+                      }} className="w-full px-4 py-3 rounded-lg border bg-gray-900 text-white text-sm font-medium hover:bg-gray-800">Explore projects in {drawerData?.locality}</button>
                       {/* Limited-time nudge */}
                       <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
                         <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M12 8v5h5v2h-7V8z"/></svg>
@@ -605,47 +631,6 @@ export default function PriceTrends() {
                           <div className="p-2 rounded bg-gray-50 border">“Connectivity is great, prices trending up.” — Asha, {city}</div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </aside>
-                {/* Desktop/Tablet side drawer */}
-                <aside ref={deskDrawerRef} className={`hidden md:flex fixed top-0 right-0 h-full md:w-[360px] lg:w-[420px] bg-white z-50 shadow-2xl flex-col transform transition-transform duration-300 ease-out ${drawerAnimating ? 'translate-x-0' : 'translate-x-full'}`}>
-                  <div className="p-4 border-b flex items-center justify-between">
-                    <div>
-                      <div className="text-xs uppercase tracking-wide text-gray-500">Locality</div>
-                      <h3 className="text-lg font-bold text-gray-900">{drawerData?.locality}</h3>
-                      <div className="text-xs text-gray-500">{drawerData?.zone} • {type}</div>
-                    </div>
-                    <button onClick={closeDrawer} className="px-3 py-1.5 rounded-md border text-sm hover:bg-gray-50">Close</button>
-                  </div>
-                  <div className="p-4 space-y-4 overflow-auto">
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="bg-gray-50 rounded-lg p-3">
-                        <div className="text-xs text-gray-500">Price</div>
-                        <div className="text-base font-semibold">₹{drawerData?.rate?.toLocaleString()}/ sq.ft</div>
-                      </div>
-                      <div className="bg-gray-50 rounded-lg p-3">
-                        <div className="text-xs text-gray-500">5Y Change</div>
-                        <div className="text-base font-semibold text-emerald-600">▲ {drawerData?.change5y}%</div>
-                      </div>
-                      <div className="bg-gray-50 rounded-lg p-3">
-                        <div className="text-xs text-gray-500">Yield</div>
-                        <div className="text-base font-semibold">{drawerData?.yield}%</div>
-                      </div>
-                    </div>
-                    <div className="border rounded-xl p-3">
-                      <div className="text-sm font-semibold mb-2">Trend</div>
-                      <svg viewBox="0 0 240 80" className="w-full h-20">
-                        <path d={makeSpark(drawerData?.rate||100, drawerData?.change5y||0).replaceAll('64','240').replaceAll('24','80')} fill="none" stroke="#2563eb" strokeWidth="2" />
-                      </svg>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button onClick={()=>{
-                        const u = `/listings?city=${encodeURIComponent(city)}&locality=${encodeURIComponent(drawerData?.locality||'')}&zone=${encodeURIComponent(zone)}&type=${encodeURIComponent(type)}`;
-                        navigate(u);
-                        setDrawerOpen(false);
-                      }} className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">View listings</button>
-                      <button className="px-3 py-2 rounded-lg border hover:bg-gray-50 text-sm">Share</button>
                     </div>
                   </div>
                 </aside>
