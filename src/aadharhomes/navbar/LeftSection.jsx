@@ -563,7 +563,7 @@ export default function LeftSection({
         </Button>
       </Link>
       {/* Insights (highlighted + opens mega dropdown on hover) */}
-{/*       <Link to="/analytics" 
+      <Link to="/analytics" 
         onMouseEnter={() => { if (onOpenInsights) { clearTimer(insightsTimer); onOpenInsights(); } }}
         onMouseLeave={() => { if (onCloseInsights) closeFnWithDelay(insightsTimer, onCloseInsights); }}
       >
@@ -587,7 +587,7 @@ export default function LeftSection({
           Insights
         </Button>
       </Link>
-      */}
+     
     </Flex>
   );
 }
