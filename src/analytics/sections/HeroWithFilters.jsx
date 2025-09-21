@@ -1,6 +1,18 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { mapCoordsToCity } from "../components/LocationContext";
+import {
+  CATEGORIES,
+  PROPERTY_TYPES_BY_CATEGORY,
+  CITIES,
+  BEDROOMS,
+  BATHROOMS,
+  FURNISHING,
+  RERA,
+  QUICK_LINKS,
+  buildSearchHref,
+  sanitizeSelections,
+} from "../config/filters";
 
 export default function HeroWithFilters() {
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -66,6 +78,19 @@ export default function HeroWithFilters() {
     const data = { category, propertyType, city, bedrooms, bathrooms, areaMin, areaMax, furnishing, rera };
     try { localStorage.setItem('heroFilters', JSON.stringify(data)); } catch {}
   }, [category, propertyType, city, bedrooms, bathrooms, areaMin, areaMax, furnishing, rera]);
+
+  // Ensure propertyType is valid for selected category
+  useEffect(() => {
+    const next = sanitizeSelections({ category, propertyType });
+    if (next.propertyType !== propertyType) {
+      setPropertyType('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category]);
+
+  const propertyTypeOptions = useMemo(() => {
+    return PROPERTY_TYPES_BY_CATEGORY[category] || [];
+  }, [category]);
 
   // Build query string for search
   const searchHref = useMemo(() => {
@@ -184,21 +209,21 @@ export default function HeroWithFilters() {
             <div className="w-full grid grid-cols-1 sm:flex sm:flex-1 gap-3 items-center">
               <select aria-label="Category" value={category} onChange={(e)=>setCategory(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[160px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 <option value="">Category</option>
-                <option value="Residential">Residential</option>
-                <option value="Commercial">Commercial</option>
+                {CATEGORIES.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
               <select aria-label="Property Type" value={propertyType} onChange={(e)=>setPropertyType(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[180px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 <option value="">Property Type</option>
-                <option value="Apartment">Apartment</option>
-                <option value="Villa">Villa</option>
-                <option value="Plot">Plot</option>
-                <option value="Office">Office</option>
+                {propertyTypeOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
               <select aria-label="City" value={city} onChange={(e)=>setCity(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[200px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 <option value="">Location</option>
-                <option value="gurgaon">Gurgaon</option>
-                <option value="noida">Noida</option>
-                <option value="dwarka-expressway">Dwarka Expressway</option>
+                {CITIES.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
               <button
                 type="button"
@@ -244,25 +269,20 @@ export default function HeroWithFilters() {
           </div>
           {/* Quick links */}
           <div className="mx-3 sm:mx-4 md:mx-12 mt-2 flex flex-wrap gap-3 items-center justify-center text-slate-50/90 text-sm">
-            <Link to={`/buy?category=${encodeURIComponent(category || 'Residential')}&type=${encodeURIComponent(propertyType || 'Apartment')}&city=${encodeURIComponent(city || 'gurgaon')}`} className="hover:underline">Buy</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/rent?category=${encodeURIComponent(category || 'Residential')}&type=${encodeURIComponent(propertyType || 'Apartment')}&city=${encodeURIComponent(city || 'noida')}`} className="hover:underline">Rent</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/commercial?category=${encodeURIComponent('Commercial')}&type=${encodeURIComponent('Office')}&city=${encodeURIComponent(city || 'gurugram')}`} className="hover:underline">Commercial</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/buy?category=${encodeURIComponent('Residential')}&type=${encodeURIComponent('Apartment')}&city=${encodeURIComponent(city || 'gurgaon')}`} className="hover:underline">Apartments</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/buy?category=${encodeURIComponent('Residential')}&type=${encodeURIComponent('Villa')}&city=${encodeURIComponent(city || 'gurgaon')}`} className="hover:underline">Villas</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/buy?category=${encodeURIComponent('Residential')}&type=${encodeURIComponent('Plot')}&city=${encodeURIComponent(city || 'gurgaon')}`} className="hover:underline">Plots</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/commercial?category=${encodeURIComponent('Commercial')}&type=${encodeURIComponent('Office')}&city=${encodeURIComponent(city || 'gurgaon')}`} className="hover:underline">Offices</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/buy?category=${encodeURIComponent(category || 'Residential')}&type=${encodeURIComponent(propertyType || 'Apartment')}&city=${encodeURIComponent('gurgaon')}`} className="hover:underline">Gurgaon</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/buy?category=${encodeURIComponent(category || 'Residential')}&type=${encodeURIComponent(propertyType || 'Apartment')}&city=${encodeURIComponent('noida')}`} className="hover:underline">Noida</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/buy?category=${encodeURIComponent(category || 'Residential')}&type=${encodeURIComponent(propertyType || 'Apartment')}&city=${encodeURIComponent('dwarka-expressway')}`} className="hover:underline">Dwarka Expressway</Link>
+            {QUICK_LINKS.map((q, idx) => {
+              const params = {
+                category: q.category({ category, propertyType, city }),
+                type: q.type({ category, propertyType, city }),
+                city: q.city({ category, propertyType, city }),
+              };
+              const href = buildSearchHref(q.path, params);
+              return (
+                <React.Fragment key={q.label}>
+                  <Link to={href} className="hover:underline">{q.label}</Link>
+                  {idx < QUICK_LINKS.length - 1 && <span className="opacity-60 hidden sm:inline">|</span>}
+                </React.Fragment>
+              );
+            })}
           </div>
           {/* spacer to create breathing room below the floating filter */}
           <div className="h-10 md:h-16" />
@@ -282,15 +302,15 @@ export default function HeroWithFilters() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <select aria-label="Bedrooms" value={bedrooms} onChange={(e)=>setBedrooms(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 w-full shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                   <option value="">Bedrooms</option>
-                  <option value="1+">1+</option>
-                  <option value="2+">2+</option>
-                  <option value="3+">3+</option>
+                  {BEDROOMS.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
                 </select>
                 <select aria-label="Bathrooms" value={bathrooms} onChange={(e)=>setBathrooms(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 w-full shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                   <option value="">Bathrooms</option>
-                  <option value="1+">1+</option>
-                  <option value="2+">2+</option>
-                  <option value="3+">3+</option>
+                  {BATHROOMS.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
                 </select>
                 <div className="flex gap-2">
                   <input aria-label="Minimum area" value={areaMin} onChange={(e)=>setAreaMin(e.target.value)} className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none placeholder:text-gray-400" placeholder="Min area (sqft)" aria-invalid={areaInvalid} aria-describedby={areaInvalid ? 'area-error' : undefined} />
@@ -301,14 +321,15 @@ export default function HeroWithFilters() {
                 )}
                 <select aria-label="Furnishing" value={furnishing} onChange={(e)=>setFurnishing(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 w-full shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                   <option value="">Furnishing</option>
-                  <option value="Unfurnished">Unfurnished</option>
-                  <option value="Semi-furnished">Semi-furnished</option>
-                  <option value="Furnished">Furnished</option>
+                  {FURNISHING.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
                 </select>
                 <select aria-label="RERA" value={rera} onChange={(e)=>setRera(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 w-full shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                   <option value="">RERA</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
+                  {RERA.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
                 </select>
               </div>
               <div className="mt-4 flex items-center justify-end gap-2">
