@@ -69,7 +69,7 @@ const CareerWithUs = lazy(() => import("./Pages/CareerWithUs"));
 const UserEditProperty = lazy(() => import("./Pages/UserEditProperty"));
 const Blogging = lazy(() => import("./Pages/Blogging"));
 const ResidentialProjects = lazy(() => import("./Components/HomePageComponents/ResidentialProjects"));
-const UpComingProjects = lazy(() => import("./Components/HomePageComponents/UpComingProjects"));
+const ProjectStatusSearch = lazy(() => import("./Pages/ProjectStatusSearch"));
 const CommercialProject = lazy(() => import("./Components/HomePageComponents/CommercialProject"));
 const ScoPlots = lazy(() => import("./Components/HomePageComponents/ScoPlots"));
 const BuilderIndependentFloor = lazy(() => import("./Components/HomePageComponents/BuilderIndependentFloor"));
@@ -89,7 +89,6 @@ const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation")
 // const Pushkar = lazy(() => import("./Pages/ProjectCities/Pushkar"));
 const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
 const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
-const ReadyToMoveProject = lazy(() => import("./Pages/ReadyToMoveProject"));
 const VillasProjects = lazy(() => import("./Components/HomePageComponents/VillasProjects"));
 const LuxuryVillasForSalePage = lazy(() => import("./Pages/LuxuryVillasForSalePage"));
 const ScoPlotsInGurugramPage = lazy(() => import("./Pages/ScoPlotsInGurugramPage"));
@@ -107,7 +106,6 @@ const Possessionin2025 = lazy(() => import("./Pages/Possessionin2025"));
 // const Mumbai = lazy(() => import("./Pages/ProjectCities/Mumbai"));
 // const KasauliProject = lazy(() => import("./Pages/ProjectCities/KasauliProject"));
 // const Sonipat = lazy(() => import("./Pages/ProjectCities/Sonipat"));
-const UnderConstruction = lazy(() => import("./Pages/UnderConstruction"));
 const NewLaunch = lazy(() => import("./Pages/NewLaunch"));
 // const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
 const SignatureGlobal = lazy(() => import("./Pages/SignatureGlobal"));
@@ -186,6 +184,7 @@ const BlogManagementSidebar = lazy(() => import("./Components/Blog_Components/Bl
 const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
 const ShortsSettings = lazy(() => import("./AdminPage/ShortsSettings"));
 const BannerManagement = lazy(() => import("./AdminPage/BannerManagement"));
+const UnifiedBannerManagement = lazy(() => import("./AdminPage/UnifiedBannerManagement"));
 const InsightsNews = lazy(() => import("./Pages/InsightsNews"));
 const InsightsGuides = lazy(() => import("./Pages/InsightsGuides"));
 const InsightsManagement = lazy(() => import("./AdminPage/InsightsManagement"));
@@ -289,7 +288,7 @@ function App() {
                       />
                       <Route
                         path="/projects-in-gurugram/property-ready-to-move/"
-                        element={<ReadyToMoveProject />}
+                        element={<ProjectStatusSearch />}
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-after-2026/"
@@ -339,7 +338,7 @@ function App() {
                       />
                       <Route
                         path="/projects/upcoming-projects-in-gurgaon/"
-                        element={<UpComingProjects />}
+                        element={<ProjectStatusSearch />}
                       />
                       <Route
                         path="/projects/commercial/"
@@ -377,9 +376,9 @@ function App() {
                       <Route path="/loan-eligibility" element={<LoanEligibility />} />
                       <Route
                         path="/project-in-underconstruction/"
-                        element={<UnderConstruction />}
+                        element={<ProjectStatusSearch />}
                       />
-                      <Route path="/projects-in-newlaunch/" element={<NewLaunch />} />
+                      <Route path="/projects-in-newlaunch/" element={<ProjectStatusSearch />} />
                       <Route path="/project-in-goa/" element={<CityProjects />} />
                       <Route path="/plots-in-gurugram/" element={<PlotsInGurugramPage />} />
                       <Route path="/projects/villas/" element={<LuxuryVillasForSalePage />} />
@@ -501,6 +500,7 @@ function App() {
                       <Route path="contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
                       <Route path="shorts" element={<LazyLoad><ShortsSettings /></LazyLoad>} />
                       <Route path="banner-management" element={<LazyLoad><BannerManagement /></LazyLoad>} />
+                      <Route path="unified-banner-management" element={<LazyLoad><UnifiedBannerManagement /></LazyLoad>} />
                       <Route
                         path="ContactUs/UserProfile"
                         element={<LazyLoad> <UserProfile /></LazyLoad>}
