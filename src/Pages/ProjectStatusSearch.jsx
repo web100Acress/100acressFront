@@ -13,6 +13,7 @@ import Hero from "./ProjectStatusSearch/Hero";
 import FilterBar from "./ProjectStatusSearch/FilterBar";
 import ProjectCard from "./ProjectStatusSearch/ProjectCard";
 import CompareBar from "./ProjectStatusSearch/CompareBar";
+import FAQAccordion from "./ProjectStatusSearch/FAQAccordion";
 
 const ProjectStatusSearch = () => {
   const { allProjectData } = useContext(DataContext);
@@ -24,14 +25,21 @@ const ProjectStatusSearch = () => {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [savedProjects, setSavedProjects] = useState(new Set());
   const [compareProjects, setCompareProjects] = useState(new Set());
-  const [isFilterSticky, setIsFilterSticky] = useState(false);
   const [sort, setSort] = useState('newest');
+  const [showFilterBar, setShowFilterBar] = useState(false);
   const [filters, setFilters] = useState({
     city: '',
     location: '',
     projectType: '',
     price: ''
   });
+  
+  // Pagination state
+  const [displayedProjects, setDisplayedProjects] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(40);
+  const [totalPages, setTotalPages] = useState(0);
+  
   
   // Request throttling
   const requestThrottle = useRef(new Map());
@@ -52,35 +60,71 @@ const ProjectStatusSearch = () => {
   const projectStatus = getProjectStatus();
   console.log('Detected project status:', projectStatus);
   
-  // Project status configurations
+  // Project status configurations with enhanced SEO
   const statusConfig = {
     upcoming: {
       title: "UpComing Projects in Gurgaon",
       description: "Explore best upcoming projects in Gurgaon with modern amenities. Find residential & commercial spaces customized to your lifestyle. Visit 100acress today!",
       metaTitle: "Discover Upcoming Projects in Gurgaon - 100acress",
       canonical: "https://www.100acress.com/projects/upcoming-projects-in-gurgaon/",
-      query: "allupcomingproject"
+      query: "allupcomingproject",
+      keywords: "upcoming projects gurgaon, new residential projects gurgaon, commercial projects gurgaon, gurgaon real estate, property investment gurgaon",
+      structuredData: {
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "name": "100acress",
+        "description": "Leading real estate platform for upcoming projects in Gurgaon",
+        "url": "https://www.100acress.com",
+        "areaServed": "Gurgaon, Haryana, India"
+      }
     },
     underconstruction: {
       title: "Under Construction Projects in Gurgaon",
       description: "Under Construction Properties in Gurgaon include commercial and residential projects that will meet various requirements. These developments are equipped with modern amenities, great places close to business areas, as well as extensive green spaces. They're designed to meet the ever-changing demands of urban dwellers who want peace, convenience, and a vibrant lifestyle.",
       metaTitle: "Property in UnderConstruction - Flats, Villas, House in gurugram.",
       canonical: "https://www.100acress.com/under-construction-projects-in-gurgaon/",
-      query: "underconstruction"
+      query: "underconstruction",
+      keywords: "under construction projects gurgaon, ongoing projects gurgaon, construction status gurgaon, gurgaon property development",
+      structuredData: {
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "name": "100acress",
+        "description": "Comprehensive guide to under construction projects in Gurgaon",
+        "url": "https://www.100acress.com",
+        "areaServed": "Gurgaon, Haryana, India"
+      }
     },
     readytomove: {
       title: "Ready To Move Projects",
       description: "Explore ready to move properties in Gurgaon with modern amenities. Find residential & commercial spaces ready for immediate possession.",
       metaTitle: "Ready To Move Properties in Gurgaon - 100acress",
       canonical: "https://www.100acress.com/projects-in-gurugram/property-ready-to-move/",
-      query: "readytomove"
+      query: "readytomove",
+      keywords: "ready to move properties gurgaon, immediate possession gurgaon, completed projects gurgaon, gurgaon ready homes",
+      structuredData: {
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "name": "100acress",
+        "description": "Ready to move properties in Gurgaon with immediate possession",
+        "url": "https://www.100acress.com",
+        "areaServed": "Gurgaon, Haryana, India"
+      }
     },
     newlaunch: {
       title: "Projects in New Launch",
       description: "Explore new launch projects in Gurgaon with modern amenities. Find the latest residential & commercial spaces.",
       metaTitle: "New Launch Projects in Gurgaon - 100acress",
       canonical: "https://www.100acress.com/projects-in-newlaunch/",
-      query: "newlaunch"
+      query: "newlaunch",
+      keywords: "new launch projects gurgaon, latest projects gurgaon, new residential projects gurgaon, gurgaon property launches",
+      structuredData: {
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "name": "100acress",
+        "description": "Latest new launch projects in Gurgaon",
+        "url": "https://www.100acress.com",
+        "areaServed": "Gurgaon, Haryana, India"
+      }
     }
   };
 
@@ -207,14 +251,19 @@ const ProjectStatusSearch = () => {
 
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
+    // Auto-filter when filter changes
+    setTimeout(() => {
+      handleSearch();
+    }, 100);
   };
 
-  const handleSearch = () => {
-    const filtered = allProjectData.filter((item) => {
+  const handleSearch = (resetPagination = true) => {
+    const dataToFilter = memoizedProjectData || [];
+    let filtered = dataToFilter.filter((item) => {
       return (
-        (filters.city === "" || item.city.toLowerCase().includes(filters.city.toLowerCase())) &&
-        (filters.location === "" || item.projectAddress.toLowerCase().includes(filters.location.toLowerCase())) &&
-        (filters.projectType === "" || item.type.toLowerCase().includes(filters.projectType.toLowerCase())) &&
+        (filters.city === "" || (item.city && item.city.toLowerCase().includes(filters.city.toLowerCase()))) &&
+        (filters.location === "" || (item.projectAddress && item.projectAddress.toLowerCase().includes(filters.location.toLowerCase()))) &&
+        (filters.projectType === "" || (item.type && item.type.toLowerCase().includes(filters.projectType.toLowerCase()))) &&
         (filters.price === "" || (() => {
           if (filters.price === "") return true;
           const [min, max] = filters.price.split(",").map(v => v === "Infinity" ? Infinity : parseFloat(v));
@@ -222,7 +271,21 @@ const ProjectStatusSearch = () => {
         })())
       );
     });
+
+    // Apply sorting
+    if (sort === 'price') {
+      filtered = filtered.sort((a, b) => (a.minPrice || 0) - (b.minPrice || 0));
+    } else if (sort === 'newest') {
+      filtered = filtered.sort((a, b) => new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0));
+    }
+
     setFilteredProjects(filtered);
+    
+    // Only reset pagination when explicitly requested (not from auto-filter)
+    if (resetPagination) {
+      setCurrentPage(1);
+      updateDisplayedProjects(filtered, 1);
+    }
   };
 
   const handleExplore = (project) => {
@@ -243,11 +306,33 @@ const ProjectStatusSearch = () => {
     }
   };
 
-  // Sticky filter effect
+  // Update displayed projects based on pagination
+  const updateDisplayedProjects = (allProjects, page) => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const projectsToShow = allProjects.slice(startIndex, endIndex);
+    
+    setDisplayedProjects(projectsToShow);
+    setTotalPages(Math.ceil(allProjects.length / itemsPerPage));
+  };
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      const allProjects = filteredProjects.length > 0 ? filteredProjects : memoizedProjectData || [];
+      updateDisplayedProjects(allProjects, page);
+    }
+  };
+
+
+  // Scroll detection for filter bar visibility
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.pageYOffset;
-      setIsFilterSticky(scrollTop > 200);
+      const navHeight = 64; // 16 * 4 = 64px (mt-16)
+      const heroHeight = window.innerHeight * 0.3; // 30vh hero height
+      setShowFilterBar(scrollTop > (heroHeight + navHeight));
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -276,6 +361,24 @@ const ProjectStatusSearch = () => {
     setFilteredProjects([]); // Clear filtered results when route changes
   }, [location.pathname]);
 
+  // Auto-filter when filters or sort change (but not when data loads)
+  useEffect(() => {
+    if (memoizedProjectData && memoizedProjectData.length > 0) {
+      // Only auto-filter if filters or sort have been set (not on initial data load)
+      if (Object.keys(filters).some(key => filters[key] !== '') || sort) {
+        handleSearch(false); // Don't reset pagination for auto-filter
+      }
+    }
+  }, [filters, sort]);
+
+  // Initialize displayed projects when data loads
+  useEffect(() => {
+    if (memoizedProjectData && memoizedProjectData.length > 0) {
+      setCurrentPage(1);
+      updateDisplayedProjects(memoizedProjectData, 1);
+    }
+  }, [memoizedProjectData]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -288,23 +391,120 @@ const ProjectStatusSearch = () => {
     };
   }, []);
 
+  // Generate dynamic structured data for projects
+  const generateProjectStructuredData = () => {
+    const projects = filteredProjects.length > 0 ? filteredProjects : memoizedProjectData || [];
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": currentConfig.title,
+      "description": currentConfig.description,
+      "url": currentConfig.canonical,
+      "numberOfItems": projects.length,
+      "itemListElement": projects.slice(0, 10).map((project, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "RealEstateListing",
+          "name": project.projectName,
+          "description": project.projectAddress,
+          "url": `${window.location.origin}/${project.project_url}/`,
+          "image": project.frontImage?.url || project.frontImage?.cdn_url,
+          "offers": {
+            "@type": "Offer",
+            "price": project.minPrice ? `${project.minPrice}Cr` : "Contact for Price",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": project.city,
+            "addressRegion": project.state,
+            "addressCountry": "IN"
+          }
+        }
+      }))
+    };
+  };
+
   return (
     <>
       <Helmet>
+        {/* Basic Meta Tags */}
+        <title>{currentConfig.metaTitle}</title>
         <meta name="description" content={currentConfig.description} />
+        <meta name="keywords" content={currentConfig.keywords} />
+        <link rel="canonical" href={currentConfig.canonical} />
+        
+        {/* Open Graph Tags */}
         <meta property="og:title" content={currentConfig.metaTitle} />
-        <meta property="og:site_name" content="100acress" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
-        <meta property="og:url" content={currentConfig.canonical} />
         <meta property="og:description" content={currentConfig.description} />
-        <meta property="og:keywords" content={currentConfig.title} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={currentConfig.canonical} />
+        <meta property="og:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta property="og:site_name" content="100acress" />
+        <meta property="og:locale" content="en_IN" />
+        
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={currentConfig.metaTitle} />
         <meta name="twitter:description" content={currentConfig.description} />
-        <meta name="twitter:url" content="https://twitter.com/100acressdotcom" />
-        <meta name="twitter:card" content="summary" />
-        <title>{currentConfig.metaTitle}</title>
-        <link rel="canonical" href={currentConfig.canonical} />
+        <meta name="twitter:image" content="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logo.webp" />
+        <meta name="twitter:site" content="@100acressdotcom" />
+        
+        {/* Additional SEO Meta Tags */}
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="bingbot" content="index, follow" />
+        <meta name="author" content="100acress" />
+        <meta name="publisher" content="100acress" />
+        <meta name="copyright" content="100acress" />
+        <meta name="language" content="en" />
+        <meta name="geo.region" content="IN-HR" />
+        <meta name="geo.placename" content="Gurgaon" />
+        <meta name="geo.position" content="28.4595;77.0266" />
+        <meta name="ICBM" content="28.4595, 77.0266" />
+        
+        {/* Mobile Optimization */}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#D32F2F" />
+        <meta name="msapplication-TileColor" content="#D32F2F" />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(currentConfig.structuredData)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(generateProjectStructuredData())}
+        </script>
+        
+        {/* Breadcrumb Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://www.100acress.com"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://www.100acress.com/projects"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": currentConfig.title,
+                "item": currentConfig.canonical
+              }
+            ]
+          })}
+        </script>
       </Helmet>
 
       {/* Hero Section */}
@@ -314,10 +514,18 @@ const ProjectStatusSearch = () => {
         onSearch={handleSearch}
         onFilterChange={handleFilterChange}
         filters={filters}
+        projectStatus={projectStatus}
       />
 
-      {/* Filter Bar */}
-      {(projectStatus === 'upcoming' || projectStatus === 'readytomove' || projectStatus === 'newlaunch') && (
+      {/* Section Separator */}
+      <div className="bg-gradient-to-r from-gray-50 to-gray-100 h-1"></div>
+
+      {/* Filter Bar - Show only after scrolling past hero (Desktop only) */}
+      <div className={`hidden lg:block fixed top-16 left-0 right-0 z-40 transition-all duration-500 ease-in-out ${
+        showFilterBar 
+          ? 'transform translate-y-0 opacity-100 scale-100 animate-in slide-in-from-top-4' 
+          : 'transform -translate-y-full opacity-0 scale-95 pointer-events-none'
+      }`}>
         <FilterBar 
           view={viewMode}
           setView={setViewMode}
@@ -327,83 +535,321 @@ const ProjectStatusSearch = () => {
           onFilterChange={handleFilterChange}
           onSearch={handleSearch}
         />
-      )}
+      </div>
+
+      {/* Section Separator */}
+      <div className="bg-gradient-to-r from-gray-100 to-gray-50 h-1"></div>
 
       {/* Main Content Area */}
-      <div className="min-h-screen">
+      <div className={`min-h-screen bg-gray-50 transition-all duration-500 ease-in-out ${showFilterBar ? 'lg:pt-32' : 'pt-0'}`}>
 
-          {/* ProjectSearching component for underconstruction */}
-          {projectStatus === 'underconstruction' && (
-            <div className="mt-auto">
-              <ProjectSearching 
-                searchdata={memoizedProjectData} 
-                sendDatatoparent={handleDatafromSearch}
-              />
-            </div>
-          )}
+       {/* ProjectSearching component for underconstruction - Hidden extra search bar */}
+       {false && projectStatus === 'underconstruction' && (
+         <div className="mt-auto">
+           <ProjectSearching 
+             searchdata={memoizedProjectData} 
+             sendDatatoparent={handleDatafromSearch}
+           />
+         </div>
+       )}
 
-        {/* Project Grid */}
-        <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-8">
+        {/* Main Content with Sidebar */}
+      <div className="max-w-screen-xl mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-8 lg:pt-0">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-8 min-h-screen">
+            
+            {/* Sidebar - Enhanced SEO Content */}
+            <div className="lg:w-1/3 xl:w-1/4 hidden">
+              <div className="sticky top-32 max-h-[calc(100vh-8rem)] overflow-y-auto pb-6 pt-4">
+                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">🏠</span>
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-900 mb-2">
+                      {currentConfig.title}
+            </h2>
+                    <div className="w-12 h-1 bg-gradient-to-r from-red-500 to-red-700 mx-auto rounded-full"></div>
+                  </div>
+                  
+                  <div className="text-gray-700">
+                    <p className="text-sm leading-relaxed mb-4 text-gray-600">
+                      {currentConfig.description}
+                    </p>
+                    <p className="text-sm leading-relaxed mb-6 text-gray-600">
+                      Browse through our curated collection of {projectStatus === 'upcoming' ? 'upcoming' : projectStatus === 'underconstruction' ? 'under construction' : projectStatus === 'readytomove' ? 'ready to move' : 'new launch'} properties in Gurgaon. 
+                      Each project is carefully selected to meet modern living standards.
+                    </p>
+                    
+                    {/* Enhanced Feature Cards */}
+                    <div className="space-y-4 mb-6">
+                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100 hover:shadow-md transition-all duration-300">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <span className="text-white text-sm">🏢</span>
+                          </div>
+                          <h3 className="font-bold text-gray-900 text-sm">Premium Amenities</h3>
+                        </div>
+                        <p className="text-xs text-gray-600">✅ Gym, ✅ Swimming Pool, ✅ Clubhouse, ✅ 24/7 Security</p>
+                      </div>
+                      
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-100 hover:shadow-md transition-all duration-300">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                            <span className="text-white text-sm">📍</span>
+                          </div>
+                          <h3 className="font-bold text-gray-900 text-sm">Strategic Location</h3>
+                        </div>
+                        <p className="text-xs text-gray-600">✅ Business Hubs, ✅ Schools, ✅ Hospitals, ✅ Entertainment Zones</p>
+                      </div>
+                      
+                      <div className="bg-gradient-to-r from-orange-50 to-amber-50 p-4 rounded-xl border border-orange-100 hover:shadow-md transition-all duration-300">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                            <span className="text-white text-sm">💰</span>
+                          </div>
+                          <h3 className="font-bold text-gray-900 text-sm">Best Prices</h3>
+                        </div>
+                        <p className="text-xs text-gray-600">✅ Competitive Pricing, ✅ Flexible Payment Plans, ✅ Attractive Offers</p>
+          </div>
+        </div>
 
-          {/* Project Cards */}
-          <div className={`grid gap-6 ${
-            viewMode === 'grid' 
-              ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
-              : 'grid-cols-1'
-          }`}>
-              {(filteredProjects.length > 0 ? filteredProjects : memoizedProjectData || []).map((item, index) => {
-                const projectId = item._id || index;
-                const isSaved = savedProjects.has(projectId);
-                const isComparing = compareProjects.has(projectId);
-
-                return (
-                  <ProjectCard
-                    key={index}
-                    project={item}
-                    view={viewMode}
-                    onExplore={handleExplore}
-                    onFavorite={toggleSaveProject}
-                    onShare={handleShare}
-                    isFav={isSaved}
-                    onCompareToggle={toggleCompareProject}
-                    compared={isComparing}
-                    projectStatus={projectStatus}
-                  />
-                );
-              })}
-            </div>
-
-          {/* Empty State */}
-          {(!filteredProjects.length && !memoizedProjectData?.length) && (
-            <div className="text-center py-16">
-              <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
-                <span className="text-4xl">🏠</span>
+                    {/* Expert CTA Button */}
+                    <div className="text-center">
+                       <a
+                         href={`https://wa.me/918500900100?text=${encodeURIComponent(`Hi, I'm interested in ${projectStatus} properties in Gurgaon. Can you help me find the best options?`)}`}
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="block w-full hover:scale-105 transition-all duration-300 hover:-translate-y-1"
+                        >
+                         <img 
+                           src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/icons/Untitled+design+(1).png" 
+                           alt="Talk to an Expert" 
+                           className="w-full h-auto rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                         />
+                       </a>
+                      
+                      <p className="text-xs text-gray-500 mt-2">
+                        Get personalized recommendations from our real estate experts
+                      </p>
+                    </div>
+                    
+                    {/* Trust Indicators */}
+                    <div className="mt-6 pt-4 border-t border-gray-200">
+                      <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
+                        <div className="flex items-center gap-1">
+                          <span>🛡️</span>
+                          <span>RERA Approved</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span>⭐</span>
+                          <span>4.8/5 Rating</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span>🏆</span>
+                          <span>Trusted</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Properties Found</h3>
-              <p className="text-gray-600 mb-6">Try adjusting your search criteria to find more properties.</p>
+            </div>
+
+            {/* Main Content - Project Cards */}
+            <div className="w-full">
+              
+        <div className={`grid gap-3 sm:gap-6 ${
+          viewMode === 'grid' 
+                  ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
+            : 'grid-cols-1'
+        }`}>
+          {displayedProjects.map((item, index) => {
+            const projectId = item._id || index;
+            const isSaved = savedProjects.has(projectId);
+            const isComparing = compareProjects.has(projectId);
+
+            return (
+              <ProjectCard
+                key={index}
+                project={item}
+                view={viewMode}
+                onExplore={handleExplore}
+                onFavorite={toggleSaveProject}
+                onShare={handleShare}
+                isFav={isSaved}
+                onCompareToggle={toggleCompareProject}
+                compared={isComparing}
+                projectStatus={projectStatus}
+              />
+            );
+          })}
+        </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && displayedProjects.length > 0 && (
+          <div className="flex justify-center items-center mt-6 sm:mt-8 px-2 sm:px-4">
+            <div className="flex items-center gap-2 sm:gap-4">
+              {/* Previous Button */}
               <button
-                onClick={() => {
-                  setFilteredProjects([]);
-                  setFilters({
-                    city: '',
-                    location: '',
-                    projectType: '',
-                    price: ''
-                  });
-                }}
-                className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`px-3 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  currentPage === 1
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400'
+                }`}
               >
-                Clear Filters
+                Previous
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex items-center gap-1 sm:gap-2">
+                {/* First page */}
+                {currentPage > 3 && (
+                  <>
+                    <button
+                      onClick={() => handlePageChange(1)}
+                      className="px-3 py-2 rounded-lg font-medium bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400 transition-all duration-300"
+                    >
+                      1
+                    </button>
+                    {currentPage > 4 && <span className="text-gray-400">...</span>}
+                  </>
+                )}
+
+                {/* Current page and surrounding pages */}
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  const startPage = Math.max(1, currentPage - 2);
+                  const pageNum = startPage + i;
+                  if (pageNum > totalPages) return null;
+                  
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => handlePageChange(pageNum)}
+                      className={`px-3 py-2 rounded-lg font-medium transition-all duration-300 ${
+                        pageNum === currentPage
+                          ? 'bg-red-600 text-white border border-red-600'
+                          : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+
+                {/* Last page */}
+                {currentPage < totalPages - 2 && (
+                  <>
+                    {currentPage < totalPages - 3 && <span className="text-gray-400">...</span>}
+                    <button
+                      onClick={() => handlePageChange(totalPages)}
+                      className="px-3 py-2 rounded-lg font-medium bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400 transition-all duration-300"
+                    >
+                      {totalPages}
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`px-3 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  currentPage === totalPages
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400'
+                }`}
+              >
+                Next
               </button>
             </div>
-          )}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {(!filteredProjects.length && !memoizedProjectData?.length) && (
+          <div className="text-center py-16">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+              <span className="text-4xl">🏠</span>
+            </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Loading...</h3>
+                  <p className="text-gray-600 mb-6">Please wait while we load the properties.</p>
+            <button
+              onClick={() => {
+                setFilteredProjects([]);
+                setFilters({
+                  city: '',
+                  location: '',
+                  projectType: '',
+                  price: ''
+                });
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200"
+            >
+              Clear Filters
+            </button>
+          </div>
+        )}
+            </div>
+          </div>
+
+          {/* Section Separator */}
+          <div className="mt-16 bg-gradient-to-r from-gray-50 to-gray-100 h-1"></div>
+
+          {/* Trust Boosters Section */}
+          <div className="mt-12 sm:mt-16 py-8 sm:py-12">
+            <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 text-center">
+                Why Choose 100acress?
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+                <div className="text-center group hover:scale-105 transition-all duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform duration-300">
+                    <span className="text-2xl">🛡️</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">RERA Approved</h3>
+                  <p className="text-gray-600 text-sm">All our projects are RERA registered ensuring legal compliance and transparency</p>
+                </div>
+                
+                <div className="text-center group hover:scale-105 transition-all duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform duration-300">
+                    <span className="text-2xl">🏆</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Trusted Partners</h3>
+                  <p className="text-gray-600 text-sm">Working with top developers like DLF, M3M, Sobha, and Signature Global</p>
+                </div>
+                
+                <div className="text-center group hover:scale-105 transition-all duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform duration-300">
+                    <span className="text-2xl">🏠</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Premium Properties</h3>
+                  <p className="text-gray-600 text-sm">Handpicked luxury properties with modern amenities and prime locations</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* FAQ Section for SEO - Full Width */}
+          <div className="mt-12 sm:mt-16">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 text-center px-3">
+              Frequently Asked Questions
+            </h2>
+            <div className="max-w-4xl mx-auto px-3 sm:px-4">
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
+                <FAQAccordion projectStatus={projectStatus} />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Compare Bar */}
       <CompareBar 
         items={Array.from(compareProjects).map(id => 
-          (filteredProjects.length > 0 ? filteredProjects : memoizedProjectData || []).find(p => (p._id || p.id) === id)
+          displayedProjects.find(p => (p._id || p.id) === id)
         ).filter(Boolean)}
         onOpen={() => console.log('Open comparison')}
         onRemove={(project) => toggleCompareProject(project)}
@@ -412,13 +858,13 @@ const ProjectStatusSearch = () => {
        {/* CommonProject component for underconstruction */}
        {projectStatus === 'underconstruction' && (
          <CommonProject
-           data={filteredProjects.length === 0 ? memoizedProjectData : filteredProjects}
+           data={displayedProjects}
            animation="fade-up"
          />
        )}
 
-      {/* Footer for underconstruction */}
-      {projectStatus === 'underconstruction' && <Footer />}
+      {/* Footer */}
+      <Footer />
     </>
   );
 };

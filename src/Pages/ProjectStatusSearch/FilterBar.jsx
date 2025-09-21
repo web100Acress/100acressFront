@@ -54,17 +54,22 @@ export default function FilterBar({
     ]
   };
 
+
   return (
-    <div className="sticky top-16 z-30 bg-white/80 backdrop-blur border-b border-gray-200">
-      <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-3 flex items-center justify-center gap-3">
-        <div className="flex flex-wrap items-center gap-3">
+    <div className="bg-white/20 backdrop-blur-xl border border-white/30 shadow-2xl transition-all duration-300 ease-in-out rounded-full mx-2 sm:mx-6 md:mx-12 my-1">
+      <div className="w-full px-2 sm:px-4 py-1.5 sm:py-2">
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
           {/* Sort Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {sorts.map(s => (
               <button
                 key={s.key}
                 onClick={() => setSort?.(s.key)}
-                className={`px-3 py-1.5 rounded-full text-sm border ${sort === s.key ? 'bg-gray-900 text-white border-gray-900' : 'bg-white hover:bg-gray-50'}`}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium border border-white/30 transition-all duration-300 ease-in-out flex items-center gap-1 backdrop-blur-sm ${
+                  sort === s.key 
+                    ? 'bg-red-500/80 text-white shadow-lg transform scale-105' 
+                    : 'bg-white/20 text-gray-800 hover:bg-white/30 hover:scale-105'
+                }`}
               >
                 {s.label}
               </button>
@@ -72,51 +77,79 @@ export default function FilterBar({
           </div>
 
           {/* Filter Dropdowns */}
-          <div className="flex items-center gap-2">
-            <select
-              className="appearance-none bg-white border border-gray-300 rounded-lg px-3 py-1.5 pr-8 text-sm font-medium text-gray-700 hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 min-w-[120px]"
-              value={filters.city || ''}
-              onChange={(e) => onFilterChange?.('city', e.target.value)}
-            >
-              {filterOptions.city.map(option => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
+          <div className="flex items-center gap-1">
+            <div className="relative">
+              <select
+                className="appearance-none bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-1.5 pr-6 text-xs font-medium text-gray-800 hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all duration-300 ease-in-out min-w-[90px] hover:scale-105"
+                value={filters.city || ''}
+                onChange={(e) => onFilterChange?.('city', e.target.value)}
+              >
+                {filterOptions.city.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </div>
 
-            <select
-              className="appearance-none bg-white border border-gray-300 rounded-lg px-3 py-1.5 pr-8 text-sm font-medium text-gray-700 hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 min-w-[120px]"
-              value={filters.location || ''}
-              onChange={(e) => onFilterChange?.('location', e.target.value)}
-            >
-              <option value="">All Locations</option>
-            </select>
+            <div className="relative">
+              <select
+                className="appearance-none bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-1.5 pr-6 text-xs font-medium text-gray-800 hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all duration-300 ease-in-out min-w-[90px] hover:scale-105"
+                value={filters.location || ''}
+                onChange={(e) => onFilterChange?.('location', e.target.value)}
+              >
+                <option value="">All Locations</option>
+              </select>
+            </div>
 
-            <select
-              className="appearance-none bg-white border border-gray-300 rounded-lg px-3 py-1.5 pr-8 text-sm font-medium text-gray-700 hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 min-w-[120px]"
-              value={filters.projectType || ''}
-              onChange={(e) => onFilterChange?.('projectType', e.target.value)}
-            >
-              {filterOptions.projectType.map(option => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                className="appearance-none bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-1.5 pr-6 text-xs font-medium text-gray-800 hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all duration-300 ease-in-out min-w-[90px] hover:scale-105"
+                value={filters.projectType || ''}
+                onChange={(e) => onFilterChange?.('projectType', e.target.value)}
+              >
+                {filterOptions.projectType.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </div>
 
-            <select
-              className="appearance-none bg-white border border-gray-300 rounded-lg px-3 py-1.5 pr-8 text-sm font-medium text-gray-700 hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 min-w-[120px]"
-              value={filters.price || ''}
-              onChange={(e) => onFilterChange?.('price', e.target.value)}
-            >
-              {filterOptions.price.map(option => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                className="appearance-none bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-1.5 pr-6 text-xs font-medium text-gray-800 hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all duration-300 ease-in-out min-w-[90px] hover:scale-105"
+                value={filters.price || ''}
+                onChange={(e) => onFilterChange?.('price', e.target.value)}
+              >
+                {filterOptions.price.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button title="Grid view" onClick={() => setView?.('grid')} className={`px-3 py-1.5 rounded-lg border ${view === 'grid' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white'}`}>▦</button>
-          <button title="List view" onClick={() => setView?.('list')} className={`px-3 py-1.5 rounded-lg border ${view === 'list' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white'}`}>☰</button>
+          {/* View Toggle */}
+          <div className="flex items-center gap-1">
+            <button 
+              title="Grid view" 
+              onClick={() => setView?.('grid')} 
+              className={`px-3 py-1.5 rounded-xl border border-white/30 transition-all duration-300 ease-in-out flex items-center gap-1 backdrop-blur-sm text-xs ${
+                view === 'grid' 
+                  ? 'bg-red-500/80 text-white shadow-lg transform scale-105' 
+                  : 'bg-white/20 text-gray-800 hover:bg-white/30 hover:scale-105'
+              }`}
+            >
+              Grid
+            </button>
+            <button 
+              title="List view" 
+              onClick={() => setView?.('list')} 
+              className={`px-3 py-1.5 rounded-xl border border-white/30 transition-all duration-300 ease-in-out flex items-center gap-1 backdrop-blur-sm text-xs ${
+                view === 'list' 
+                  ? 'bg-red-500/80 text-white shadow-lg transform scale-105' 
+                  : 'bg-white/20 text-gray-800 hover:bg-white/30 hover:scale-105'
+              }`}
+            >
+              List
+            </button>
+          </div>
         </div>
       </div>
     </div>
