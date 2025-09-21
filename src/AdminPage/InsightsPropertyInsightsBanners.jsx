@@ -58,7 +58,7 @@ export default function InsightsPropertyInsightsBanners() {
 
   const onSubmit = async (e)=>{
     e.preventDefault();
-    try { await uploadHero(); await uploadSmall(); reset(); await fetchAll(); alert("Uploaded"); } catch { alert("Upload failed"); }
+    try { await uploadHero(); await uploadSmall(); reset(); await fetchAll(); notifyBannersUpdated(); alert("Uploaded"); } catch { alert("Upload failed"); }
   };
 
   const del = async (id, type)=>{
@@ -66,6 +66,7 @@ export default function InsightsPropertyInsightsBanners() {
     const url = type==='hero' ? `${base}/api/admin/banners/${id}` : `${base}/api/admin/small-banners/${id}`;
     await fetch(url, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` }});
     await fetchAll();
+    notifyBannersUpdated();
   };
 
   return (
@@ -214,6 +215,14 @@ export default function InsightsPropertyInsightsBanners() {
       </div>
     </div>
   );
+}
+
+function notifyBannersUpdated(){
+  try {
+    const k = 'banners:updated';
+    localStorage.setItem(k, String(Date.now()));
+    window.dispatchEvent(new Event(k));
+  } catch {}
 }
 
 function Spinner({ light }){
