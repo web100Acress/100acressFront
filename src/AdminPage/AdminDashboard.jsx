@@ -359,6 +359,16 @@ const AdminDashboard = () => {
           <div className="header-underline"></div>
         </div>
 
+        {/* Quick action button */}
+        <div className="flex justify-end mb-6">
+          <Link
+            to="/Admin/insights"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:from-blue-700 hover:to-indigo-700 transition"
+          >
+            Go to Insights
+          </Link>
+        </div>
+
         {/* Stats Grid */}
         <div className="stats-grid">
           {loading ? (
