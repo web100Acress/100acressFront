@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import AdminInsightsSidebar from "./AdminInsightsSidebar";
+import AdminInsightsSidebar from "../components/AdminInsightsSidebar";
 import { Link } from "react-router-dom";
 
-const SLUG_PREFIX = "insights-price-trends";
+const SLUG_PREFIX = "insights-property-insights";
 
-export default function InsightsPriceTrendsBanners() {
+export default function InsightsPropertyInsightsBanners() {
   const [hero, setHero] = useState([]);
   const [small, setSmall] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,21 +16,41 @@ export default function InsightsPriceTrendsBanners() {
     try {
       const base = import.meta.env.VITE_API_BASE;
       const [h, s] = await Promise.all([
-        fetch(`${base}/api/admin/insights-price-trends-banners`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${base}/api/admin/insights-price-trends-small-banners`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${base}/api/admin/insights-banners`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${base}/api/admin/insights-small-banners`, { headers: { Authorization: `Bearer ${token}` } }),
       ]);
+
+      console.log('Hero response status:', h.status);
+      console.log('Small response status:', s.status);
+
+      if (!h.ok) {
+        console.error('Hero fetch failed:', await h.text());
+      }
+      if (!s.ok) {
+        console.error('Small fetch failed:', await s.text());
+      }
+
       const hj = await h.json().catch(() => ({ banners: [] }));
       const sj = await s.json().catch(() => ({ banners: [] }));
+
+      console.log('Hero response data:', hj);
+      console.log('Small response data:', sj);
+
       setHero((hj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
       setSmall((sj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
+
+      console.log('Filtered hero banners:', (hj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
+      console.log('Filtered small banners:', (sj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
+    } catch (error) {
+      console.error('Error fetching banners:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(()=>{ fetchAll(); }, []);
+  useEffect(() => { fetchAll(); }, []);
 
-  const reset = ()=> setForm({ title: "", subtitle: "", link: "", order: 0, desktopFile: null, mobileFile: null });
+  const reset = () => setForm({ title: "", subtitle: "", link: "", order: 0, desktopFile: null, mobileFile: null });
 
   const uploadHero = async () => {
     const base = import.meta.env.VITE_API_BASE;
@@ -41,12 +61,26 @@ export default function InsightsPriceTrendsBanners() {
     fd.append("link", form.link);
     fd.append("order", String(form.order || 0));
     if (form.desktopFile) fd.append("bannerImage", form.desktopFile);
-    const response = await fetch(`${base}/api/admin/insights-price-trends-banners/upload`, {
+
+    console.log('Uploading hero banner with data:', {
+      title: form.title,
+      subtitle: form.subtitle,
+      slug: SLUG_PREFIX,
+      link: form.link,
+      order: form.order || 0,
+      hasFile: !!form.desktopFile
+    });
+
+    const response = await fetch(`${base}/api/admin/insights-banners/upload`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: fd
     });
+
+    console.log('Hero upload response status:', response.status);
     const result = await response.json();
+    console.log('Hero upload response:', result);
+
     return result;
   };
 
@@ -62,64 +96,115 @@ export default function InsightsPriceTrendsBanners() {
     if (form.mobileFile) fd.append("mobileBannerImage", form.mobileFile);
     fd.append("position", "top");
     fd.append("size", "large");
-    const response = await fetch(`${base}/api/admin/insights-price-trends-small-banners/upload`, {
+
+    console.log('Uploading small banner with data:', {
+      title: form.title,
+      subtitle: form.subtitle,
+      slug: SLUG_PREFIX,
+      link: form.link,
+      order: form.order || 0,
+      hasDesktopFile: !!form.desktopFile,
+      hasMobileFile: !!form.mobileFile,
+      position: "top",
+      size: "large"
+    });
+
+    const response = await fetch(`${base}/api/admin/insights-small-banners/upload`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: fd
     });
+
+    console.log('Small upload response status:', response.status);
     const result = await response.json();
+    console.log('Small upload response:', result);
+
     return result;
   };
 
-  const onSubmit = async (e)=>{
+  const onSubmit = async (e) => {
     e.preventDefault();
-    try { 
-      const heroResult = await uploadHero(); 
-      const smallResult = await uploadSmall(); 
-      reset(); 
-      await fetchAll(); 
-      notifyBannersUpdated(); 
-      alert("Uploaded"); 
-    } catch { 
-      alert("Upload failed"); 
+    try {
+      const heroResult = await uploadHero();
+      const smallResult = await uploadSmall();
+
+      console.log('Upload results:', { heroResult, smallResult });
+
+      if (heroResult.success && smallResult.success) {
+        reset();
+        await fetchAll();
+        notifyBannersUpdated();
+        alert("Uploaded successfully!");
+      } else {
+        const errorMessage = heroResult.message || smallResult.message || "Upload failed";
+        alert(`Upload failed: ${errorMessage}`);
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert("Upload failed: " + error.message);
     }
   };
 
   const del = async (id, type) => {
     const base = import.meta.env.VITE_API_BASE;
     const url = type === 'hero'
-      ? `${base}/api/admin/insights-price-trends-banners/${id}`
-      : `${base}/api/admin/insights-price-trends-small-banners/${id}`;
-    await fetch(url, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
-    await fetchAll();
-    notifyBannersUpdated();
+      ? `${base}/api/admin/insights-banners/${id}`
+      : `${base}/api/admin/insights-small-banners/${id}`;
+
+    if (!confirm(`Are you sure you want to delete this ${type} banner?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      console.log('Delete response status:', response.status);
+      const result = await response.json();
+      console.log('Delete response:', result);
+
+      if (response.ok) {
+        await fetchAll();
+        notifyBannersUpdated();
+        alert("Banner deleted successfully!");
+      } else {
+        alert(`Delete failed: ${result.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert("Delete failed: " + error.message);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-          <div className="sticky top-0 z-[9000] w-full bg-white/80 backdrop-blur border-b border-gray-200">
-                  <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">IN</div>
-                      <h1 className="text-lg sm:text-xl font-semibold text-gray-800">Price Trends Dashboard</h1>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Link
-                        to="/Admin/dashboard"
-                        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50"
-                        >
-                        ← Back to Admin
-                        </Link>
-                    </div>
-                  </div>
-                </div>
+      {/* Sticky header */}
+      <div className="sticky top-0 z-[9000] w-full bg-white/80 backdrop-blur border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">IN</div>
+            <h1 className="text-lg sm:text-xl font-semibold text-gray-800">Insights Dashboard</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/Admin/dashboard"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50"
+            >
+              ← Back to Admin
+            </Link>
+          </div>
+        </div>
+      </div>
+
       <AdminInsightsSidebar />
       <div className="max-w-7xl mx-auto md:pl-[300px] px-4 sm:px-6 lg:px-8 py-6">
         {/* Page heading */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Price Trends Banners</h1>
-            <p className="text-sm text-gray-500 mt-1">Upload hero and small banners for the Price Trends section.</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Property Insights Banners</h1>
+            <p className="text-sm text-gray-500 mt-1">Upload hero and small banners for the Property Insights section.</p>
           </div>
         </div>
 
@@ -132,7 +217,7 @@ export default function InsightsPriceTrendsBanners() {
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Title</label>
               <input className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                     placeholder="e.g. City-wide report"
+                     placeholder="e.g. Expert opinions"
                      value={form.title}
                      onChange={e=>setForm({...form, title:e.target.value})}/>
             </div>
@@ -192,14 +277,19 @@ export default function InsightsPriceTrendsBanners() {
               {loading && <Spinner />}
             </div>
             <div className="p-3 sm:p-4 space-y-2">
-              {hero.map(b=> (
+              {hero.map(b => (
                 <div key={b._id} className="flex items-center gap-3 border border-gray-200 rounded-xl p-2.5">
                   <img src={b.image?.cdn_url || b.image?.url} className="w-28 h-16 object-cover rounded-lg" />
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-gray-900 truncate">{b.title}</div>
                     <div className="text-xs text-gray-500 truncate">{b.subtitle}</div>
                   </div>
-                  <button onClick={()=>{ if(confirm('Delete this hero banner?')) del(b._id,'hero'); }} className="text-red-600 text-xs border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5">Delete</button>
+                  <button
+                    onClick={() => { if (confirm('Delete this hero banner?')) del(b._id, 'hero'); }}
+                    className="text-red-600 text-xs border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5"
+                  >
+                    Delete
+                  </button>
                 </div>
               ))}
               {hero.length===0 && !loading && <Empty text="No hero banners." />}
@@ -212,14 +302,19 @@ export default function InsightsPriceTrendsBanners() {
               {loading && <Spinner />}
             </div>
             <div className="p-3 sm:p-4 space-y-2">
-              {small.map(b=> (
+              {small.map(b => (
                 <div key={b._id} className="flex items-center gap-3 border border-gray-200 rounded-xl p-2.5">
                   <img src={b.desktopImage?.cdn_url || b.desktopImage?.url} className="w-28 h-16 object-cover rounded-lg" />
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-gray-900 truncate">{b.title}</div>
                     <div className="text-xs text-gray-500 truncate">{b.subtitle}</div>
                   </div>
-                  <button onClick={()=>{ if(confirm('Delete this small banner?')) del(b._id,'small'); }} className="text-red-600 text-xs border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5">Delete</button>
+                  <button
+                    onClick={() => { if (confirm('Delete this small banner?')) del(b._id, 'small'); }}
+                    className="text-red-600 text-xs border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5"
+                  >
+                    Delete
+                  </button>
                 </div>
               ))}
               {small.length===0 && !loading && <Empty text="No small banners." />}

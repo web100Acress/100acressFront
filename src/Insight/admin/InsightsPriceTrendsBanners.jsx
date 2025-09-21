@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AdminInsightsSidebar from "./AdminInsightsSidebar";
+import AdminInsightsSidebar from "../components/AdminInsightsSidebar";
 import { Link } from "react-router-dom";
 
 const SLUG_PREFIX = "insights-price-trends";
@@ -73,15 +73,15 @@ export default function InsightsPriceTrendsBanners() {
 
   const onSubmit = async (e)=>{
     e.preventDefault();
-    try { 
-      const heroResult = await uploadHero(); 
-      const smallResult = await uploadSmall(); 
-      reset(); 
-      await fetchAll(); 
-      notifyBannersUpdated(); 
-      alert("Uploaded"); 
-    } catch { 
-      alert("Upload failed"); 
+    try {
+      const heroResult = await uploadHero();
+      const smallResult = await uploadSmall();
+      reset();
+      await fetchAll();
+      notifyBannersUpdated();
+      alert("Uploaded");
+    } catch {
+      alert("Upload failed");
     }
   };
 
