@@ -187,6 +187,9 @@ const BannerManagement = lazy(() => import("./AdminPage/BannerManagement"));
 const UnifiedBannerManagement = lazy(() => import("./AdminPage/UnifiedBannerManagement"));
 const InsightsNews = lazy(() => import("./Pages/InsightsNews"));
 const InsightsGuides = lazy(() => import("./Pages/InsightsGuides"));
+const InsightsManagement = lazy(() => import("./AdminPage/InsightsManagement"));
+const InsightsPriceTrendsBanners = lazy(() => import("./AdminPage/InsightsPriceTrendsBanners"));
+const InsightsPropertyInsightsBanners = lazy(() => import("./AdminPage/InsightsPropertyInsightsBanners"));
 
 // Initialize QueryClient
 const queryClient = new QueryClient();
@@ -537,6 +540,18 @@ function App() {
                       <Route
                         path="dashboard"
                         element={<LazyLoad><AdminDashboard /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights"
+                        element={<LazyLoad><InsightsManagement /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/price-trends"
+                        element={<LazyLoad><InsightsPriceTrendsBanners /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/property-insights"
+                        element={<LazyLoad><InsightsPropertyInsightsBanners /></LazyLoad>}
                       />
                     </Route>
 

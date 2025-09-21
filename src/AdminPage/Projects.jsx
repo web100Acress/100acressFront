@@ -181,7 +181,12 @@ const Projects = () => {
     const matchesCity = !filterCity || item?.city === filterCity;
     const matchesAddress = !filterAddress || addr.includes(filterAddress.toLowerCase());
     const matchesBuilder = !filterBuilder || item?.builderName === filterBuilder;
-    const matchesStatus = !filterStatus || item?.project_Status === filterStatus;
+    const statusVal = (item?.project_Status ?? '').toString().trim();
+    const matchesStatus = !filterStatus
+      ? true
+      : (filterStatus === '__missing__'
+          ? statusVal.length === 0
+          : item?.project_Status === filterStatus);
     const matchesState = !filterState || item?.state === filterState;
     const hasMobile = Boolean((item?.mobileNumber ?? "").toString().trim());
     const matchesMobile = !filterHasMobile || (filterHasMobile === "with" ? hasMobile : !hasMobile);
@@ -312,6 +317,7 @@ const Projects = () => {
               onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
             >
               <option value="">All Statuses</option>
+              <option value="__missing__">No status</option>
               {statusOptions.map(opt => (
                 <option key={opt} value={opt}>{opt}</option>
               ))}
