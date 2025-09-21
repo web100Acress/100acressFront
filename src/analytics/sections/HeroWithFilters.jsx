@@ -97,8 +97,8 @@ export default function HeroWithFilters() {
       try {
         const base = import.meta.env.VITE_API_BASE || '';
         const token = localStorage.getItem('myToken');
-        const publicUrl = base ? `${base}/api/banners` : `/api/banners`;
-        const adminUrl  = base ? `${base}/api/admin/banners` : `/api/admin/banners`;
+        const publicUrl = base ? `${base}/api/banners/active` : `/api/banners/active`;
+        const adminUrl  = base ? `${base}/api/admin/banners`  : `/api/admin/banners`;
 
         // Try public first
         let res = await fetch(publicUrl);
@@ -116,7 +116,7 @@ export default function HeroWithFilters() {
           data = await res.json();
         }
 
-        const list = (data?.banners || []).filter(b => (b?.slug || '').startsWith(HERO_BANNER_SLUG));
+        const list = (data?.banners || []).filter(b => (b?.slug || '').startsWith(HERO_BANNER_SLUG) && b?.isActive !== false);
         if (list.length) {
           // Sort by order asc if present, else leave as-is
           list.sort((a,b)=> (a?.order ?? 0) - (b?.order ?? 0));
@@ -127,6 +127,9 @@ export default function HeroWithFilters() {
             const bust = img.includes('?') ? `${img}&t=${Date.now()}` : `${img}?t=${Date.now()}`;
             setHeroSrc(bust);
           }
+        } else {
+          // No active banner found with matching slug - clear any existing banner
+          if (active) setHeroSrc(null);
         }
       } catch (e) {
         console.warn('Hero banner fetch error:', e);
@@ -140,13 +143,19 @@ export default function HeroWithFilters() {
   useEffect(() => {
     const onStorage = (e) => {
       if (e.key === 'banners:updated') {
-        setBannerLoading(true);
-        setBannerRefreshKey((k) => k + 1);
+        // Add a small delay to allow backend processing
+        setTimeout(() => {
+          setBannerLoading(true);
+          setBannerRefreshKey((k) => k + 1);
+        }, 1000);
       }
     };
     const onCustom = () => {
-      setBannerLoading(true);
-      setBannerRefreshKey((k) => k + 1);
+      // Add a small delay to allow backend processing
+      setTimeout(() => {
+        setBannerLoading(true);
+        setBannerRefreshKey((k) => k + 1);
+      }, 1000);
     };
     window.addEventListener('storage', onStorage);
     window.addEventListener('banners:updated', onCustom);
@@ -373,11 +382,12 @@ export default function HeroWithFilters() {
           <div className="mx-3 sm:mx-4 md:mx-12 mt-2 flex flex-wrap gap-3 items-center justify-center text-slate-50/90 text-sm">
             {quickLinksOpt.map((q, idx) => {
               const params = {
-                category: q.category({ category, propertyType, city }),
-                type: q.type({ category, propertyType, city }),
-                city: q.city({ category, propertyType, city }),
+                category: q.category || 'residential',
+                type: q.type || 'apartment',
+                city: q.city || '',
               };
               const href = buildSearchHref(q.path, params);
+
               return (
                 <React.Fragment key={q.label}>
                   <Link to={href} className="hover:underline">{q.label}</Link>

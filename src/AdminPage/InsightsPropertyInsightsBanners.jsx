@@ -16,19 +16,41 @@ export default function InsightsPropertyInsightsBanners() {
     try {
       const base = import.meta.env.VITE_API_BASE;
       const [h, s] = await Promise.all([
-        fetch(`${base}/api/admin/banners`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${base}/api/admin/small-banners`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${base}/api/admin/insights-banners`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${base}/api/admin/insights-small-banners`, { headers: { Authorization: `Bearer ${token}` } }),
       ]);
-      const hj = await h.json().catch(()=>({ banners: [] }));
-      const sj = await s.json().catch(()=>({ banners: [] }));
-      setHero((hj.banners||[]).filter(b => (b.slug||"").startsWith(SLUG_PREFIX)));
-      setSmall((sj.banners||[]).filter(b => (b.slug||"").startsWith(SLUG_PREFIX)));
-    } finally { setLoading(false); }
+
+      console.log('Hero response status:', h.status);
+      console.log('Small response status:', s.status);
+
+      if (!h.ok) {
+        console.error('Hero fetch failed:', await h.text());
+      }
+      if (!s.ok) {
+        console.error('Small fetch failed:', await s.text());
+      }
+
+      const hj = await h.json().catch(() => ({ banners: [] }));
+      const sj = await s.json().catch(() => ({ banners: [] }));
+
+      console.log('Hero response data:', hj);
+      console.log('Small response data:', sj);
+
+      setHero((hj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
+      setSmall((sj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
+
+      console.log('Filtered hero banners:', (hj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
+      console.log('Filtered small banners:', (sj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
+    } catch (error) {
+      console.error('Error fetching banners:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(()=>{ fetchAll(); }, []);
+  useEffect(() => { fetchAll(); }, []);
 
-  const reset = ()=> setForm({ title: "", subtitle: "", link: "", order: 0, desktopFile: null, mobileFile: null });
+  const reset = () => setForm({ title: "", subtitle: "", link: "", order: 0, desktopFile: null, mobileFile: null });
 
   const uploadHero = async () => {
     const base = import.meta.env.VITE_API_BASE;
@@ -37,10 +59,31 @@ export default function InsightsPropertyInsightsBanners() {
     fd.append("subtitle", form.subtitle);
     fd.append("slug", SLUG_PREFIX);
     fd.append("link", form.link);
-    fd.append("order", String(form.order||0));
+    fd.append("order", String(form.order || 0));
     if (form.desktopFile) fd.append("bannerImage", form.desktopFile);
-    await fetch(`${base}/api/admin/banners/upload`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd });
+
+    console.log('Uploading hero banner with data:', {
+      title: form.title,
+      subtitle: form.subtitle,
+      slug: SLUG_PREFIX,
+      link: form.link,
+      order: form.order || 0,
+      hasFile: !!form.desktopFile
+    });
+
+    const response = await fetch(`${base}/api/admin/insights-banners/upload`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd
+    });
+
+    console.log('Hero upload response status:', response.status);
+    const result = await response.json();
+    console.log('Hero upload response:', result);
+
+    return result;
   };
+
   const uploadSmall = async () => {
     const base = import.meta.env.VITE_API_BASE;
     const fd = new FormData();
@@ -48,25 +91,91 @@ export default function InsightsPropertyInsightsBanners() {
     fd.append("subtitle", form.subtitle);
     fd.append("slug", SLUG_PREFIX);
     fd.append("link", form.link);
-    fd.append("order", String(form.order||0));
+    fd.append("order", String(form.order || 0));
     if (form.desktopFile) fd.append("desktopBannerImage", form.desktopFile);
     if (form.mobileFile) fd.append("mobileBannerImage", form.mobileFile);
     fd.append("position", "top");
     fd.append("size", "large");
-    await fetch(`${base}/api/admin/small-banners/upload`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd });
+
+    console.log('Uploading small banner with data:', {
+      title: form.title,
+      subtitle: form.subtitle,
+      slug: SLUG_PREFIX,
+      link: form.link,
+      order: form.order || 0,
+      hasDesktopFile: !!form.desktopFile,
+      hasMobileFile: !!form.mobileFile,
+      position: "top",
+      size: "large"
+    });
+
+    const response = await fetch(`${base}/api/admin/insights-small-banners/upload`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd
+    });
+
+    console.log('Small upload response status:', response.status);
+    const result = await response.json();
+    console.log('Small upload response:', result);
+
+    return result;
   };
 
-  const onSubmit = async (e)=>{
+  const onSubmit = async (e) => {
     e.preventDefault();
-    try { await uploadHero(); await uploadSmall(); reset(); await fetchAll(); notifyBannersUpdated(); alert("Uploaded"); } catch { alert("Upload failed"); }
+    try {
+      const heroResult = await uploadHero();
+      const smallResult = await uploadSmall();
+
+      console.log('Upload results:', { heroResult, smallResult });
+
+      if (heroResult.success && smallResult.success) {
+        reset();
+        await fetchAll();
+        notifyBannersUpdated();
+        alert("Uploaded successfully!");
+      } else {
+        const errorMessage = heroResult.message || smallResult.message || "Upload failed";
+        alert(`Upload failed: ${errorMessage}`);
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert("Upload failed: " + error.message);
+    }
   };
 
-  const del = async (id, type)=>{
+  const del = async (id, type) => {
     const base = import.meta.env.VITE_API_BASE;
-    const url = type==='hero' ? `${base}/api/admin/banners/${id}` : `${base}/api/admin/small-banners/${id}`;
-    await fetch(url, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` }});
-    await fetchAll();
-    notifyBannersUpdated();
+    const url = type === 'hero'
+      ? `${base}/api/admin/insights-banners/${id}`
+      : `${base}/api/admin/insights-small-banners/${id}`;
+
+    if (!confirm(`Are you sure you want to delete this ${type} banner?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      console.log('Delete response status:', response.status);
+      const result = await response.json();
+      console.log('Delete response:', result);
+
+      if (response.ok) {
+        await fetchAll();
+        notifyBannersUpdated();
+        alert("Banner deleted successfully!");
+      } else {
+        alert(`Delete failed: ${result.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert("Delete failed: " + error.message);
+    }
   };
 
   return (
@@ -168,14 +277,19 @@ export default function InsightsPropertyInsightsBanners() {
               {loading && <Spinner />}
             </div>
             <div className="p-3 sm:p-4 space-y-2">
-              {hero.map(b=> (
+              {hero.map(b => (
                 <div key={b._id} className="flex items-center gap-3 border border-gray-200 rounded-xl p-2.5">
                   <img src={b.image?.cdn_url || b.image?.url} className="w-28 h-16 object-cover rounded-lg" />
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-gray-900 truncate">{b.title}</div>
                     <div className="text-xs text-gray-500 truncate">{b.subtitle}</div>
                   </div>
-                  <button onClick={()=>{ if(confirm('Delete this hero banner?')) del(b._id,'hero'); }} className="text-red-600 text-xs border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5">Delete</button>
+                  <button
+                    onClick={() => { if (confirm('Delete this hero banner?')) del(b._id, 'hero'); }}
+                    className="text-red-600 text-xs border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5"
+                  >
+                    Delete
+                  </button>
                 </div>
               ))}
               {hero.length===0 && !loading && <Empty text="No hero banners." />}
@@ -188,14 +302,19 @@ export default function InsightsPropertyInsightsBanners() {
               {loading && <Spinner />}
             </div>
             <div className="p-3 sm:p-4 space-y-2">
-              {small.map(b=> (
+              {small.map(b => (
                 <div key={b._id} className="flex items-center gap-3 border border-gray-200 rounded-xl p-2.5">
                   <img src={b.desktopImage?.cdn_url || b.desktopImage?.url} className="w-28 h-16 object-cover rounded-lg" />
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-gray-900 truncate">{b.title}</div>
                     <div className="text-xs text-gray-500 truncate">{b.subtitle}</div>
                   </div>
-                  <button onClick={()=>{ if(confirm('Delete this small banner?')) del(b._id,'small'); }} className="text-red-600 text-xs border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5">Delete</button>
+                  <button
+                    onClick={() => { if (confirm('Delete this small banner?')) del(b._id, 'small'); }}
+                    className="text-red-600 text-xs border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5"
+                  >
+                    Delete
+                  </button>
                 </div>
               ))}
               {small.length===0 && !loading && <Empty text="No small banners." />}

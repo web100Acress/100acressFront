@@ -32,7 +32,7 @@ const UnifiedBannerManagement = () => {
     subtitle: '',
     slug: '',
     link: '',
-    isActive: true,
+    isActive: false, // Default to inactive so banners don't show immediately after upload
     order: 0,
     position: 'bottom',
     size: 'small',
@@ -252,7 +252,7 @@ const UnifiedBannerManagement = () => {
       subtitle: '',
       slug: '',
       link: '',
-      isActive: true,
+      isActive: false, // Default to inactive for new uploads
       order: 0,
       position: 'bottom',
       size: 'small',

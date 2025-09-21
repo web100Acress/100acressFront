@@ -47,7 +47,7 @@ export default function CommercialCarousel({
         title: "DLF CyberHub Retail",
         price: 6500,
         rent: true,
-        img: "https://images.unsplash.com/photo-1461719482306-99863d23f7d6?auto=format&fit=crop&w=1400&q=80",
+        img: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1400&q=80",
       },
       {
         id: 6,
@@ -55,7 +55,7 @@ export default function CommercialCarousel({
         color: "bg-green-500",
         title: "IT Park Tower",
         price: 720000,
-        img: "https://images.unsplash.com/photo-1464600923926-4ff72f9505f1?auto=format&fit=crop&w=1400&q=80",
+        img: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1400&q=80",
       },
     ];
 

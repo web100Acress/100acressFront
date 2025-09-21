@@ -16,14 +16,16 @@ export default function InsightsPriceTrendsBanners() {
     try {
       const base = import.meta.env.VITE_API_BASE;
       const [h, s] = await Promise.all([
-        fetch(`${base}/api/admin/banners`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${base}/api/admin/small-banners`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${base}/api/admin/insights-price-trends-banners`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${base}/api/admin/insights-price-trends-small-banners`, { headers: { Authorization: `Bearer ${token}` } }),
       ]);
-      const hj = await h.json().catch(()=>({ banners: [] }));
-      const sj = await s.json().catch(()=>({ banners: [] }));
-      setHero((hj.banners||[]).filter(b => (b.slug||"").startsWith(SLUG_PREFIX)));
-      setSmall((sj.banners||[]).filter(b => (b.slug||"").startsWith(SLUG_PREFIX)));
-    } finally { setLoading(false); }
+      const hj = await h.json().catch(() => ({ banners: [] }));
+      const sj = await s.json().catch(() => ({ banners: [] }));
+      setHero((hj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
+      setSmall((sj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(()=>{ fetchAll(); }, []);
@@ -37,10 +39,17 @@ export default function InsightsPriceTrendsBanners() {
     fd.append("subtitle", form.subtitle);
     fd.append("slug", SLUG_PREFIX);
     fd.append("link", form.link);
-    fd.append("order", String(form.order||0));
+    fd.append("order", String(form.order || 0));
     if (form.desktopFile) fd.append("bannerImage", form.desktopFile);
-    await fetch(`${base}/api/admin/banners/upload`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd });
+    const response = await fetch(`${base}/api/admin/insights-price-trends-banners/upload`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd
+    });
+    const result = await response.json();
+    return result;
   };
+
   const uploadSmall = async () => {
     const base = import.meta.env.VITE_API_BASE;
     const fd = new FormData();
@@ -48,23 +57,40 @@ export default function InsightsPriceTrendsBanners() {
     fd.append("subtitle", form.subtitle);
     fd.append("slug", SLUG_PREFIX);
     fd.append("link", form.link);
-    fd.append("order", String(form.order||0));
+    fd.append("order", String(form.order || 0));
     if (form.desktopFile) fd.append("desktopBannerImage", form.desktopFile);
     if (form.mobileFile) fd.append("mobileBannerImage", form.mobileFile);
     fd.append("position", "top");
     fd.append("size", "large");
-    await fetch(`${base}/api/admin/small-banners/upload`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd });
+    const response = await fetch(`${base}/api/admin/insights-price-trends-small-banners/upload`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd
+    });
+    const result = await response.json();
+    return result;
   };
 
   const onSubmit = async (e)=>{
     e.preventDefault();
-    try { await uploadHero(); await uploadSmall(); reset(); await fetchAll(); notifyBannersUpdated(); alert("Uploaded"); } catch { alert("Upload failed"); }
+    try { 
+      const heroResult = await uploadHero(); 
+      const smallResult = await uploadSmall(); 
+      reset(); 
+      await fetchAll(); 
+      notifyBannersUpdated(); 
+      alert("Uploaded"); 
+    } catch { 
+      alert("Upload failed"); 
+    }
   };
 
-  const del = async (id, type)=>{
+  const del = async (id, type) => {
     const base = import.meta.env.VITE_API_BASE;
-    const url = type==='hero' ? `${base}/api/admin/banners/${id}` : `${base}/api/admin/small-banners/${id}`;
-    await fetch(url, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` }});
+    const url = type === 'hero'
+      ? `${base}/api/admin/insights-price-trends-banners/${id}`
+      : `${base}/api/admin/insights-price-trends-small-banners/${id}`;
+    await fetch(url, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
     await fetchAll();
     notifyBannersUpdated();
   };
@@ -75,7 +101,7 @@ export default function InsightsPriceTrendsBanners() {
                   <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">IN</div>
-                      <h1 className="text-lg sm:text-xl font-semibold text-gray-800">Insights Dashboard</h1>
+                      <h1 className="text-lg sm:text-xl font-semibold text-gray-800">Price Trends Dashboard</h1>
                     </div>
                     <div className="flex items-center gap-2">
                         <Link
