@@ -1,5 +1,5 @@
         import React from "react";
-    import AdminInsightsSidebar from "./AdminInsightsSidebar";
+    import AdminInsightsSidebar from "../components/AdminInsightsSidebar";
     import { Link } from "react-router-dom";
 
 // Admin Insights Management screen

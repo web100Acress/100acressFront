@@ -399,7 +399,7 @@ export default function HeroWithFilters() {
           {/* spacer to create breathing room below the floating filter */}
           <div className="h-10 md:h-16" />
         </div>
-        
+
         {/* Advanced Filters Modal */}
         {advancedOpen && (
           <div className="fixed inset-0 z-30" aria-labelledby="advanced-filters-title" role="dialog" aria-modal="true">

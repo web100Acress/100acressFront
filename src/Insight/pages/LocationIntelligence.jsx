@@ -1,5 +1,5 @@
 import React from "react";
-import InsightsSidebar from "../components/InsightsSidebar";
+import InsightsSidebar from '../components/InsightsSidebar';
 
 export default function LocationIntelligence() {
   return (

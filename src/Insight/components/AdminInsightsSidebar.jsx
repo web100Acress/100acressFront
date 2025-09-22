@@ -10,96 +10,6 @@ export default function AdminInsightsSidebar() {
   const drawerRef = React.useRef(null);
   const closeBtnRef = React.useRef(null);
 
-  // Initialize collapsed from React state only (no localStorage)
-  const [expandedSections, setExpandedSections] = useState({
-    insights: true,
-    resources: true,
-    tools: true
-  });
-
-  // Close mobile menu on route change or ESC
-  React.useEffect(() => {
-    setMobileOpen(false);
-  }, [location.pathname]);
-
-  React.useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === 'Escape') setMobileOpen(false);
-    };
-    if (mobileOpen) {
-      window.addEventListener('keydown', onKey);
-    }
-    return () => window.removeEventListener('keydown', onKey);
-  }, [mobileOpen]);
-
-  // Prevent background scroll when mobile drawer is open
-  React.useEffect(() => {
-    const original = document.body.style.overflow;
-    if (mobileOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = original || '';
-    }
-    return () => {
-      document.body.style.overflow = original || '';
-    };
-  }, [mobileOpen]);
-
-  // Focus trap inside mobile drawer
-  React.useEffect(() => {
-    if (!mobileOpen) return;
-
-    const t = setTimeout(() => {
-      closeBtnRef.current?.focus();
-    }, 0);
-
-    const getFocusable = () => {
-      const root = drawerRef.current;
-      if (!root) return [];
-      return Array.from(
-        root.querySelectorAll(
-          'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
-        )
-      ).filter((el) => !el.hasAttribute('disabled') && !el.getAttribute('aria-hidden'));
-    };
-
-    const handleTab = (e) => {
-      if (e.key !== 'Tab') return;
-      const focusables = getFocusable();
-      if (focusables.length === 0) return;
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      const active = document.activeElement;
-      if (e.shiftKey) {
-        if (active === first || !drawerRef.current?.contains(active)) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else {
-        if (active === last || !drawerRef.current?.contains(active)) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleTab, true);
-    return () => {
-      clearTimeout(t);
-      document.removeEventListener('keydown', handleTab, true);
-    };
-  }, [mobileOpen]);
-
-  // Responsive sidebar width
-  const W = collapsed ? 64 : 280;
-
-  const toggleSection = (section) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
-
   // Enhanced icons with better design
   const icons = {
     insights: (
@@ -121,46 +31,6 @@ export default function AdminInsightsSidebar() {
         <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
       </svg>
     ),
-    blog: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <polyline points="14,2 14,8 20,8"/>
-        <line x1="16" y1="13" x2="8" y2="13"/>
-        <line x1="16" y1="17" x2="8" y2="17"/>
-        <polyline points="10,9 9,9 8,9"/>
-      </svg>
-    ),
-    news: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-        <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
-        <path d="M18 14h-8"/>
-        <path d="M15 18h-5"/>
-        <path d="M10 6h8v4h-8V6z"/>
-      </svg>
-    ),
-    guides: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-      </svg>
-    ),
-    calculator: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-        <rect x="4" y="2" width="16" height="20" rx="2"/>
-        <line x1="8" y1="6" x2="16" y2="6"/>
-        <line x1="8" y1="10" x2="16" y2="10"/>
-        <line x1="8" y1="14" x2="12" y2="14"/>
-        <line x1="8" y1="18" x2="12" y2="18"/>
-        <circle cx="16" cy="16" r="2"/>
-      </svg>
-    ),
-    loan: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M12 6v6l4 2"/>
-        <path d="M16 8a6 6 0 0 0-8 0"/>
-      </svg>
-    ),
     menu: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
         <line x1="3" y1="6" x2="21" y2="6"/>
@@ -174,17 +44,20 @@ export default function AdminInsightsSidebar() {
         <line x1="6" y1="6" x2="18" y2="18"/>
       </svg>
     ),
-    chevronDown: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-        <polyline points="6,9 12,15 18,9"/>
-      </svg>
-    ),
     collapse: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
         <polyline points="15,18 9,12 15,6"/>
       </svg>
     )
   };
+
+  // Close mobile menu on route change
+  React.useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
+
+  // Responsive sidebar width
+  const W = collapsed ? 64 : 280;
 
   const item = (to, label, icon, showLabel = true, badge = null, isNew = false) => {
     const active = isActive(to);
@@ -224,40 +97,20 @@ export default function AdminInsightsSidebar() {
     );
   };
 
-  const sectionHeader = (title, isExpanded, onClick, showInCollapsed = false) => {
-    if (collapsed && !showInCollapsed) return null;
-
-    return (
-      <button
-        onClick={onClick}
-        className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-gray-500 hover:text-gray-700 focus:outline-none transition-colors"
-      >
-        <span className="uppercase tracking-wider">
-          {collapsed ? title.charAt(0) : title}
-        </span>
-        {!collapsed && (
-          <span className={`transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
-            {icons.chevronDown}
-          </span>
-        )}
-      </button>
-    );
-  };
-
   return (
     <>
       {/* Mobile: Enhanced hamburger trigger */}
       <button
         type="button"
-        aria-label="Open insights menu"
-        aria-controls="insights-mobile-drawer"
+        aria-label="Open admin menu"
+        aria-controls="admin-mobile-drawer"
         aria-expanded={mobileOpen}
         onClick={() => setMobileOpen(true)}
         className="md:hidden fixed left-4 top-[calc(var(--nav-h,64px)+12px)] z-[9992] inline-flex items-center justify-center w-11 h-11 rounded-xl border border-gray-200 bg-white/90 backdrop-blur-sm shadow-lg text-gray-700 hover:bg-white hover:shadow-xl transition-all duration-200"
       >
         {icons.menu}
         {/* Notification dot for mobile */}
-        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+        <span className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full border-2 border-white"></span>
       </button>
 
       {/* Mobile: Enhanced overlay */}
@@ -269,10 +122,10 @@ export default function AdminInsightsSidebar() {
 
       {/* Mobile: Enhanced drawer */}
       <div
-        id="insights-mobile-drawer"
+        id="admin-mobile-drawer"
         role="dialog"
         aria-modal="true"
-        aria-label="Insights navigation"
+        aria-label="Admin navigation"
         className={`md:hidden fixed z-[9993] top-0 bottom-0 left-0 w-80 bg-white/95 backdrop-blur-xl border-r border-gray-200 shadow-2xl transform transition-transform duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
         ref={drawerRef}
       >
@@ -283,7 +136,10 @@ export default function AdminInsightsSidebar() {
               <div className="w-8 h-8 text-blue-600 bg-white rounded-lg p-1.5 shadow-sm">
                 {icons.insights}
               </div>
-              <div className="text-lg font-bold text-gray-900">Admin Insights</div>
+              <div>
+                <div className="text-lg font-bold text-gray-900">Admin Panel</div>
+                <div className="text-xs text-gray-500">Management Dashboard</div>
+              </div>
             </div>
             <button
               type="button"
@@ -299,41 +155,19 @@ export default function AdminInsightsSidebar() {
           {/* Enhanced menu */}
           <nav className="overflow-y-auto py-4 px-3 flex-1">
             <div className="space-y-2">
-              {/* Admin Management Section */}
-              {sectionHeader('Admin', expandedSections.insights, () => toggleSection('insights'))}
-              {expandedSections.insights && (
-                <div className="space-y-1 mb-4">
-                  {item('/Admin/insights', 'Insights Dashboard', icons.insights)}
-                  {item('/Admin/insights/price-trends', 'Price Trends Banners', icons.trends)}
-                  {item('/Admin/insights/property-insights', 'Property Insights Banners', icons.property)}
-                </div>
-              )}
-
-              {/* Resources Section */}
-              {sectionHeader('Resources', expandedSections.resources, () => toggleSection('resources'))}
-              {expandedSections.resources && (
-                <div className="space-y-1 mb-4">
-                  {item('/blog-insights', 'Blog', icons.blog, true, null, true)}
-                  {item('/insights/news', 'News', icons.news, true, '5+')}
-                  {item('/insights/guides', 'Guides', icons.guides)}
-                </div>
-              )}
-
-              {/* Tools Section */}
-              {sectionHeader('Tools', expandedSections.tools, () => toggleSection('tools'))}
-              {expandedSections.tools && (
-                <div className="space-y-1">
-                  {item('/emi-calculator', 'EMI Calculator', icons.calculator)}
-                  {item('/loan-eligibility', 'Loan Eligibility', icons.loan)}
-                </div>
-              )}
+              {/* Admin Management Section - Only the 3 requested items */}
+              <div className="space-y-1 mb-4">
+                {item('/Admin/insights', 'Insights Dashboard', icons.insights)}
+                {item('/Admin/insights/price-trends', 'Price Trends Banners', icons.trends)}
+                {item('/Admin/insights/property-insights', 'Property Insights Banners', icons.property)}
+              </div>
             </div>
           </nav>
 
           {/* Mobile footer */}
           <div className="border-t border-gray-100 p-3 bg-gray-50/50">
             <div className="text-xs text-gray-500 text-center">
-              Tap outside to close
+              Tap outside to close admin menu
             </div>
           </div>
         </div>
@@ -343,7 +177,7 @@ export default function AdminInsightsSidebar() {
       <aside
         style={{
           top: 'var(--nav-h, 64px)',
-          width: W,
+          width: collapsed ? 64 : 280,
           left: 0,
           height: 'calc(100vh - var(--nav-h, 64px))'
         }}
@@ -355,27 +189,21 @@ export default function AdminInsightsSidebar() {
             <div className="w-8 h-8 text-blue-600 bg-white rounded-lg p-1.5 shadow-sm flex-shrink-0">
               {icons.insights}
             </div>
-            {!collapsed && <div className="text-lg font-bold text-gray-900 truncate">Admin Insights</div>}
+            {!collapsed && (
+              <div>
+                <div className="text-lg font-bold text-gray-900 truncate">Admin Panel</div>
+                <div className="text-xs text-gray-500">Management Dashboard</div>
+              </div>
+            )}
           </div>
 
           {/* Enhanced menu */}
           <nav className="p-3 overflow-y-auto flex-1">
             <div className="space-y-1">
-              {/* Quick access items */}
+              {/* Admin items - Only the 3 requested items */}
               {item('/Admin/insights', 'Insights Dashboard', icons.insights, !collapsed)}
               {item('/Admin/insights/price-trends', 'Price Trends Banners', icons.trends, !collapsed)}
               {item('/Admin/insights/property-insights', 'Property Insights Banners', icons.property, !collapsed)}
-
-              <div className="h-px bg-gray-200 my-3"></div>
-
-              {item('/blog-insights', 'Blog', icons.blog, !collapsed, null, true)}
-              {item('/insights/news', 'News', icons.news, !collapsed, collapsed ? '5' : '5+')}
-              {item('/insights/guides', 'Guides', icons.guides, !collapsed)}
-
-              <div className="h-px bg-gray-200 my-3"></div>
-
-              {item('/emi-calculator', 'EMI Calculator', icons.calculator, !collapsed)}
-              {item('/loan-eligibility', 'Loan Eligibility', icons.loan, !collapsed)}
             </div>
           </nav>
 

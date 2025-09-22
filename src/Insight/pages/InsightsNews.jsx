@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from "../aadharhomes/navbar/Navbar";
-import InsightsSidebar from '../analytics/components/InsightsSidebar';
+import Navbar from "../../aadharhomes/navbar/Navbar";
+import InsightsSidebar from "../components/InsightsSidebar";
 import { Search, Clock, User, TrendingUp, ArrowRight, Flame, Bookmark, Share2, MessageSquare, Eye } from 'lucide-react';
 
 const InsightsNews = () => {
@@ -153,13 +153,13 @@ const InsightsNews = () => {
     .map(([tag]) => tag);
 
   const filteredNews = news.filter(item => {
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch = searchQuery === '' ||
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+
     const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
-    
+
     return matchesSearch && matchesCategory;
   });
 
@@ -437,7 +437,7 @@ const InsightsNews = () => {
                         </select>
                       </div>
                     </div>
-                    
+
                     <div className="mt-4 flex space-x-1 overflow-x-auto pb-2 scrollbar-hide">
                       {categories.map((category) => (
                         <button
@@ -454,7 +454,7 @@ const InsightsNews = () => {
                       ))}
                     </div>
                   </div>
-                  
+
                   {/* News List */}
                   <div className="divide-y divide-gray-100">
                     {isLoading ? (
@@ -580,7 +580,7 @@ const InsightsNews = () => {
                         <input
                           type="email"
                           placeholder="Your email address"
-                          className="flex-1 min-w-0 px-4 py-2 text-sm text-gray-900 placeholder-gray-500 bg-white border border-r-0 border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="flex-1 min-w-0 px-4 py-2 text-sm text-gray-900 placeholder-gray-500 bg-white border border-r-0 border-gray-300 rounded-l-lg focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 transition-all"
                         />
                         <button
                           type="submit"

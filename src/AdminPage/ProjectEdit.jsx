@@ -192,12 +192,18 @@ const ProjectEdit = () => {
         'luxury','spotlight','projectOverview','projectRedefine_Business','projectRedefine_Connectivity',
         'projectRedefine_Education','projectRedefine_Entertainment','projectReraNo','AboutDeveloper','type',
         'project_url','meta_title','meta_description','project_Status','launchingDate','totalLandArea',
-        'totalUnit','towerNumber','mobileNumber','possessionDate','minPrice','maxPrice','Amenities'
+        'totalUnit','towerNumber','mobileNumber','possessionDate','minPrice','maxPrice','Amenities',
+        'project_discripation'
       ];
       scalarKeys.forEach((key) => {
         const val = values[key];
         if (val !== undefined && val !== null && typeof val !== 'object') {
           formData.append(key, val);
+          console.log(`Appending ${key}: ${val}`); // Debug: Log what's being sent
+        } else if (val === undefined || val === null) {
+          console.log(`Skipping ${key}: value is undefined or null`);
+        } else {
+          console.log(`Skipping ${key}: value is object type`, typeof val);
         }
       });
 
@@ -252,6 +258,12 @@ const ProjectEdit = () => {
 
       if (response.status === 200) {
         alert("Data updated successfully");
+
+        // Trigger refresh in Projects component if it's open
+        if (window.location.pathname === '/admin/projects' || window.location.pathname.startsWith('/admin/Projects')) {
+          // Send message to parent window to refresh data
+          window.postMessage({ type: 'PROJECT_UPDATED', projectId: id }, '*');
+        }
 
       } else {
         console.error("Failed to update user");
