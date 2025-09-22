@@ -4,7 +4,7 @@ import { getApiBase } from '../config/apiBase';
 
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
-import { message } from "antd"; // Assuming Ant Design message is available
+import { message } from "antd"; 
 
 const Projects = () => {
   const [viewAll, setViewAll] = useState([]);
@@ -22,6 +22,8 @@ const Projects = () => {
   const [filterHasMobile, setFilterHasMobile] = useState("");
   const [filterHasPayment, setFilterHasPayment] = useState("");
 
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   const [messageApi, contextHolder] = message.useMessage(); // For Ant Design messages
 
   // Effect to inject styles into the document head
@@ -36,6 +38,24 @@ const Projects = () => {
       document.head.removeChild(styleSheet);
     };
   }, []); // Run once on mount to inject styles
+
+  // Listen for project update messages from other components
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data && event.data.type === 'PROJECT_UPDATED') {
+        // Refresh the data when a project is updated
+        setRefreshTrigger(prev => prev + 1);
+        messageApi.open({
+          type: "success",
+          content: "Project updated successfully. Data refreshed.",
+          duration: 2,
+        });
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [messageApi]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,7 +87,7 @@ const Projects = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [refreshTrigger]);
 
   const handleDeleteUser = async (id) => {
     try {
@@ -93,6 +113,8 @@ const Projects = () => {
         });
         // Filter out the deleted item from the state to update UI
         setViewAll(prevViewAll => (Array.isArray(prevViewAll) ? prevViewAll.filter(item => item._id !== id) : []));
+        // Refresh data to ensure consistency
+        setRefreshTrigger(prev => prev + 1);
       } else {
 
         messageApi.open({
@@ -136,13 +158,8 @@ const Projects = () => {
     }
   };
 
-  const handleDeleteButtonClick = (id) => {
-    const confirmDeletion = window.confirm(
-      "Are you sure you want to delete this project?"
-    );
-    if (confirmDeletion) {
-      handleDeleteUser(id);
-    }
+  const handleRefreshData = () => {
+    setRefreshTrigger(prev => prev + 1);
   };
 
   const handleSearch = (e) => {
@@ -355,6 +372,9 @@ const Projects = () => {
             </button> */}
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
+            <button type="button" className="refresh-button" onClick={handleRefreshData}>
+              🔄 Refresh Data
+            </button>
             <button type="button" className="export-csv-button" onClick={handleExportCSV}>Export CSV</button>
             <Link to={"/admin/project-insert"}>
               <button
@@ -692,9 +712,8 @@ const projectStyles = `
   box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
 }
 
-/* Export CSV button */
-.export-csv-button {
-  background: linear-gradient(45deg, #6c63ff 0%, #5a54e6 100%);
+.refresh-button {
+  background: linear-gradient(45deg, #2196f3 0%, #1976d2 100%);
   color: #ffffff;
   padding: 10px 16px;
   border-radius: 12px;
@@ -703,13 +722,13 @@ const projectStyles = `
   cursor: pointer;
   font-size: 0.95rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.35);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.35);
 }
 
-.export-csv-button:hover {
-  background: linear-gradient(45deg, #5a54e6 0%, #4c48cc 100%);
+.refresh-button:hover {
+  background: linear-gradient(45deg, #1976d2 0%, #1565c0 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(108, 99, 255, 0.45);
+  box-shadow: 0 6px 18px rgba(33, 150, 243, 0.45);
 }
 
 /* Table Styling */

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from "../aadharhomes/navbar/Navbar";
-import InsightsSidebar from '../analytics/components/InsightsSidebar';
-import { 
-  Search, BookOpen, Clock, User, ArrowRight, Bookmark, Share2, Flame, 
+import Navbar from "../../aadharhomes/navbar/Navbar";
+import InsightsSidebar from "../components/InsightsSidebar";
+import {
+  Search, BookOpen, Clock, User, ArrowRight, Bookmark, Share2, Flame,
   Home, TrendingUp, Calculator, Hammer, Star, Download, Printer, Moon, Sun,
   BookmarkCheck, BookmarkPlus, ChevronLeft, ChevronRight, Filter, X
 } from 'lucide-react';
@@ -20,7 +20,7 @@ const InsightsGuides = () => {
     readTime: 'any',
     sortBy: 'newest'
   });
-  
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const guidesPerPage = 6; // Number of guides to show per page
@@ -105,24 +105,24 @@ const InsightsGuides = () => {
 
   // Get all unique categories
   const categories = ['all', ...new Set(guides.map(guide => guide.category))];
-  
+
   // Filter and sort guides based on search and filters
   const filteredGuides = guides.filter(guide => {
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch = searchQuery === '' ||
       guide.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       guide.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
       guide.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-      
+
     const matchesCategory = activeCategory === 'all' || guide.category === activeCategory;
-    
-    const matchesLevel = filters.level.length === 0 || 
+
+    const matchesLevel = filters.level.length === 0 ||
       filters.level.includes(guide.level.toLowerCase());
-      
-    const matchesReadTime = filters.readTime === 'any' || 
+
+    const matchesReadTime = filters.readTime === 'any' ||
       (filters.readTime === 'short' && parseInt(guide.readTime) <= 5) ||
       (filters.readTime === 'medium' && parseInt(guide.readTime) > 5 && parseInt(guide.readTime) <= 10) ||
       (filters.readTime === 'long' && parseInt(guide.readTime) > 10);
-      
+
     return matchesSearch && matchesCategory && matchesLevel && matchesReadTime;
   }).sort((a, b) => {
     if (filters.sortBy === 'newest') {
@@ -134,27 +134,27 @@ const InsightsGuides = () => {
     }
     return 0;
   });
-  
+
   // Get current guides for pagination
   const indexOfLastGuide = currentPage * guidesPerPage;
   const indexOfFirstGuide = indexOfLastGuide - guidesPerPage;
   const currentGuides = filteredGuides.slice(indexOfFirstGuide, indexOfLastGuide);
   const totalPages = Math.ceil(filteredGuides.length / guidesPerPage);
-  
+
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  
+
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, activeCategory, filters]);
-  
+
   // Get related guides (excluding current guide and limiting to 3)
   const getRelatedGuides = (currentGuide) => {
     return guides
-      .filter(g => 
-        g.id !== currentGuide.id && 
-        (g.category === currentGuide.category || 
+      .filter(g =>
+        g.id !== currentGuide.id &&
+        (g.category === currentGuide.category ||
          g.tags.some(tag => currentGuide.tags.includes(tag)))
       )
       .slice(0, 3);
@@ -163,10 +163,10 @@ const InsightsGuides = () => {
   const toggleBookmark = (id, e) => {
     e.stopPropagation();
     // Update the guides array to toggle bookmark status
-    const updatedGuides = guides.map(guide => 
+    const updatedGuides = guides.map(guide =>
       guide.id === id ? { ...guide, isBookmarked: !guide.isBookmarked } : guide
     );
-    
+
     // Update the saved guides list
     setSavedGuides(prev => {
       if (savedGuides.includes(id)) {
@@ -208,10 +208,10 @@ const InsightsGuides = () => {
     const [isHovered, setIsHovered] = useState(false);
     const [isSaved, setIsSaved] = useState(savedGuides.includes(guide.id));
     const relatedGuides = getRelatedGuides(guide);
-    
+
     // Calculate reading progress (simulated)
     const readingProgress = Math.min(100, Math.floor(Math.random() * 100));
-    
+
     return (
       <motion.div
         onClick={() => onClick(guide.id)}
@@ -229,7 +229,7 @@ const InsightsGuides = () => {
               <Icon className={`h-6 w-6 ${guide.iconColor}`} />
             </div>
             <div className="flex space-x-1">
-              <button 
+              <button
                 onClick={(e) => toggleBookmark(guide.id, e)}
                 className="p-1.5 text-gray-400 hover:text-yellow-500 transition-colors group relative"
                 aria-label={isSaved ? 'Remove from saved' : 'Save for later'}
@@ -245,8 +245,8 @@ const InsightsGuides = () => {
                   {isSaved || guide.isBookmarked ? 'Saved' : 'Save for later'}
                 </span>
               </button>
-              
-              <button 
+
+              <button
                 onClick={(e) => downloadGuide(e, guide)}
                 className="p-1.5 text-gray-400 hover:text-green-500 transition-colors group relative"
                 aria-label="Download"
@@ -256,8 +256,8 @@ const InsightsGuides = () => {
                   Download PDF
                 </span>
               </button>
-              
-              <button 
+
+              <button
                 onClick={(e) => printGuide(e, guide)}
                 className="p-1.5 text-gray-400 hover:text-purple-500 transition-colors group relative"
                 aria-label="Print"
@@ -267,8 +267,8 @@ const InsightsGuides = () => {
                   Print Guide
                 </span>
               </button>
-              
-              <button 
+
+              <button
                 onClick={(e) => shareGuide(e, guide)}
                 className="p-1.5 text-gray-400 hover:text-blue-500 transition-colors group relative"
                 aria-label="Share"
@@ -284,13 +284,13 @@ const InsightsGuides = () => {
           {/* Reading Progress */}
           {readingProgress > 0 && (
             <div className="w-full bg-gray-200 rounded-full h-1.5 mb-4">
-              <div 
-                className="bg-blue-600 h-1.5 rounded-full" 
+              <div
+                className="bg-blue-600 h-1.5 rounded-full"
                 style={{ width: `${readingProgress}%` }}
               ></div>
             </div>
           )}
-          
+
           <div className="mb-3">
             <div className="flex items-center justify-between mb-2">
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -303,7 +303,7 @@ const InsightsGuides = () => {
                 </span>
               )}
             </div>
-            
+
             <h3 className="text-lg font-semibold text-gray-900 mb-2 leading-tight">
               {guide.title}
             </h3>
@@ -323,15 +323,15 @@ const InsightsGuides = () => {
               </span>
               <div className="flex items-center">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <Star 
-                    key={star} 
-                    className={`h-3.5 w-3.5 ${star <= Math.ceil(guide.rating || 4) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
+                  <Star
+                    key={star}
+                    className={`h-3.5 w-3.5 ${star <= Math.ceil(guide.rating || 4) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
                   />
                 ))}
               </div>
             </div>
             <div className="flex flex-wrap gap-2 w-full justify-between items-center pt-3">
-              <button 
+              <button
                 className="flex-shrink-0 inline-flex items-center text-xs sm:text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors px-2.5 py-1.5 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -340,7 +340,7 @@ const InsightsGuides = () => {
               >
                 <span className="hidden sm:inline">Related</span> Guides
               </button>
-              <motion.button 
+              <motion.button
                 className="flex-shrink-0 inline-flex items-center justify-center text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-700 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-500 transition-all duration-300 px-4 py-2.5 rounded-lg shadow-sm hover:shadow-md active:scale-95 whitespace-nowrap"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
@@ -350,12 +350,12 @@ const InsightsGuides = () => {
                 }}
               >
                 <span>Read more</span>
-                <motion.span 
+                <motion.span
                   className="ml-1.5 flex items-center"
                   initial={{ x: 0 }}
                   animate={{ x: [0, 2, 0] }}
-                  transition={{ 
-                    repeat: Infinity, 
+                  transition={{
+                    repeat: Infinity,
                     duration: 1.5,
                     ease: "easeInOut"
                   }}
@@ -445,7 +445,7 @@ const InsightsGuides = () => {
             <div className="mb-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Filter by Category</h3>
-                <button 
+                <button
                   onClick={() => setShowFilters(!showFilters)}
                   className="text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center"
                 >
@@ -453,7 +453,7 @@ const InsightsGuides = () => {
                   {showFilters ? 'Hide Filters' : 'More Filters'}
                 </button>
               </div>
-              
+
               <div className="relative">
                 <div className="flex space-x-2 pb-2 overflow-x-auto scrollbar-hide">
                   {categories.map(category => (
@@ -470,12 +470,12 @@ const InsightsGuides = () => {
                     </button>
                   ))}
                 </div>
-                
+
                 {/* Scroll indicators */}
                 <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-gray-50 dark:from-gray-900 to-transparent pointer-events-none"></div>
                 <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-gray-50 dark:from-gray-900 to-transparent pointer-events-none"></div>
               </div>
-              
+
               {/* Advanced Filters */}
               {showFilters && (
                 <div className="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
@@ -503,7 +503,7 @@ const InsightsGuides = () => {
                         ))}
                       </div>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Read Time</label>
                       <select
@@ -517,7 +517,7 @@ const InsightsGuides = () => {
                         <option value="long">Long Read (15+ min)</option>
                       </select>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sort By</label>
                       <select
@@ -531,7 +531,7 @@ const InsightsGuides = () => {
                       </select>
                     </div>
                   </div>
-                  
+
                   <div className="mt-4 flex justify-end">
                     <button
                       onClick={() => {
@@ -557,7 +557,7 @@ const InsightsGuides = () => {
                 <h2 className="text-2xl font-bold text-gray-900">All Guides</h2>
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-gray-600">Sort by:</span>
-                  <select 
+                  <select
                     className="text-sm border border-gray-300 rounded-md px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                     value={filters.sortBy}
                     onChange={(e) => setFilters({...filters, sortBy: e.target.value})}
@@ -568,7 +568,7 @@ const InsightsGuides = () => {
                   </select>
                 </div>
               </div>
-              
+
               {filteredGuides.length > 0 ? (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -581,7 +581,7 @@ const InsightsGuides = () => {
                       />
                     ))}
                   </div>
-                  
+
                   {/* Pagination */}
                   {totalPages > 1 && (
                     <div className="mt-10 flex justify-center">
@@ -590,14 +590,14 @@ const InsightsGuides = () => {
                           onClick={() => paginate(Math.max(1, currentPage - 1))}
                           disabled={currentPage === 1}
                           className={`px-3 py-1.5 rounded-md ${
-                            currentPage === 1 
-                              ? 'text-gray-400 cursor-not-allowed' 
+                            currentPage === 1
+                              ? 'text-gray-400 cursor-not-allowed'
                               : 'text-gray-700 hover:bg-gray-100'
                           }`}
                         >
                           <ChevronLeft className="h-5 w-5" />
                         </button>
-                        
+
                         {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                           // Show first 2 pages, current page with neighbors, and last 2 pages
                           let pageNum;
@@ -610,7 +610,7 @@ const InsightsGuides = () => {
                           } else {
                             pageNum = currentPage - 2 + i;
                           }
-                          
+
                           return (
                             <button
                               key={pageNum}
@@ -625,11 +625,11 @@ const InsightsGuides = () => {
                             </button>
                           );
                         })}
-                        
+
                         {totalPages > 5 && currentPage < totalPages - 2 && (
                           <span className="px-2 py-1.5 text-gray-500">...</span>
                         )}
-                        
+
                         {totalPages > 5 && currentPage < totalPages - 2 && (
                           <button
                             onClick={() => paginate(totalPages)}
@@ -642,20 +642,20 @@ const InsightsGuides = () => {
                             {totalPages}
                           </button>
                         )}
-                        
+
                         <button
                           onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
                           disabled={currentPage === totalPages}
                           className={`px-3 py-1.5 rounded-md ${
-                            currentPage === totalPages 
-                              ? 'text-gray-400 cursor-not-allowed' 
+                            currentPage === totalPages
+                              ? 'text-gray-400 cursor-not-allowed'
                               : 'text-gray-700 hover:bg-gray-100'
                           }`}
                         >
                           <ChevronRight className="h-5 w-5" />
                         </button>
                       </nav>
-                      
+
                       <div className="mt-4 text-center text-sm text-gray-500">
                         Showing {indexOfFirstGuide + 1}-{Math.min(indexOfLastGuide, filteredGuides.length)} of {filteredGuides.length} guides
                       </div>

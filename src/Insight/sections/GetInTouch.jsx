@@ -59,7 +59,7 @@ export default function GetInTouch() {
             >
               <h3 className="text-2xl font-extrabold mb-2">Get in touch</h3>
               <p className="text-white/75 text-sm mb-6">
-                Have a question or want to discuss a property? Fill out the form and we’ll get back to you.
+                Have a question or want to discuss a property? Fill out the form and we'll get back to you.
               </p>
 
               <form onSubmit={(e) => { e.preventDefault(); showToast('Message sent successfully!'); }} className="space-y-4" aria-live="polite">

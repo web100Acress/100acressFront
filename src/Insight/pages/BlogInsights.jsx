@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from "../aadharhomes/navbar/Navbar";
+import Navbar from "../../aadharhomes/navbar/Navbar";
 import { Search, Clock, User, Flame, Bookmark, Share2, Eye, Home, TrendingUp, Calculator, Hammer, ArrowRight } from 'lucide-react';
-import InsightsSidebar from '../analytics/components/InsightsSidebar';
+import InsightsSidebar from '../components/InsightsSidebar';
 
 const BlogInsights = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -387,7 +387,7 @@ const BlogInsights = () => {
       <div className="flex flex-1 overflow-hidden pt-16">
         <InsightsSidebar />
         <div className="flex-1 flex overflow-hidden">
-          <div className="w-full max-w-5xl mx-auto overflow-y-auto px-4  py-6">
+          <div className="w-full max-w-5xl mx-auto overflow-y-auto px-4 py-6 pl-4 md:pl-[220px] lg:pl-[260px] xl:pl-[260px]">
             <div className="w-full">
                   <div className="flex items-center justify-between">
                     {/* <h3 className="text-sm font-medium text-blue-800">New Post</h3> */}

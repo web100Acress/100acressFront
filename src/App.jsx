@@ -79,7 +79,7 @@ const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
 const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
 const UserEdit = lazy(() => import("./Components/HomePageComponents/UserEdit"));
 const BlogView = lazy(() => import("./Pages/BlogView"));
-const BlogInsights = lazy(() => import("./Pages/BlogInsights"));
+const BlogInsights = lazy(() => import("./Insight/pages/BlogInsights"));
 const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation"));
 // Per-city pages are now handled by CityProjects; imports removed
 // const DelhiProject = lazy(() => import("./Pages/ProjectCities/DelhiProject"));
@@ -123,14 +123,14 @@ const ViewAllProperty = lazy(() => import("./Pages/ViewAllProperty"));
 const BlogWriteModal = lazy(() => import("./AdminPage/BlogWriteModal"));
 // const Dubai = lazy(() => import("./Pages/ProjectCities/Dubai"));
 const GlobalBudgetPrice = lazy(() => import("./Pages/GlobalBudgetPrice"));
-const PriceTrends = lazy(() => import("./analytics/pages/PriceTrends"));
+const PriceTrends = lazy(() => import("./Insight/pages/PriceTrends"));
 const CityProjects = lazy(() => import("./Pages/ProjectCities/CityProjects"));
 // Analytics pages (MVP scaffold)
-const MarketAnalytics = lazy(() => import("./analytics/pages/MarketAnalytics"));
-const LocationIntelligence = lazy(() => import("./analytics/pages/LocationIntelligence"));
-const InvestmentInsights = lazy(() => import("./analytics/pages/InvestmentInsights"));
-const AnalyticsHome = lazy(() => import("./analytics/pages/AnalyticsHome"));
-const LoanEligibility = lazy(() => import("./analytics/pages/LoanEligibility"));
+const MarketAnalytics = lazy(() => import("./Insight/pages/MarketAnalytics"));
+const LocationIntelligence = lazy(() => import("./Insight/pages/LocationIntelligence"));
+const InvestmentInsights = lazy(() => import("./Insight/pages/InvestmentInsights"));
+const AnalyticsHome = lazy(() => import("./Insight/pages/AnalyticsHome"));
+const LoanEligibility = lazy(() => import("./Insight/pages/LoanEligibility"));
 
 // Admin components (already lazy loaded)
 const Addnew = lazy(() => import("./AdminPage/Addnew"));
@@ -185,11 +185,11 @@ const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
 const ShortsSettings = lazy(() => import("./AdminPage/ShortsSettings"));
 const BannerManagement = lazy(() => import("./AdminPage/BannerManagement"));
 const UnifiedBannerManagement = lazy(() => import("./AdminPage/UnifiedBannerManagement"));
-const InsightsNews = lazy(() => import("./Pages/InsightsNews"));
-const InsightsGuides = lazy(() => import("./Pages/InsightsGuides"));
-const InsightsManagement = lazy(() => import("./AdminPage/InsightsManagement"));
-const InsightsPriceTrendsBanners = lazy(() => import("./AdminPage/InsightsPriceTrendsBanners"));
-const InsightsPropertyInsightsBanners = lazy(() => import("./AdminPage/InsightsPropertyInsightsBanners"));
+const InsightsNews = lazy(() => import("./Insight/pages/InsightsNews"));
+const InsightsGuides = lazy(() => import("./Insight/pages/InsightsGuides"));
+const InsightsManagement = lazy(() => import("./Insight/admin/InsightsManagement"));
+const InsightsPriceTrendsBanners = lazy(() => import("./Insight/admin/InsightsPriceTrendsBanners"));
+const InsightsPropertyInsightsBanners = lazy(() => import("./Insight/admin/InsightsPropertyInsightsBanners"));
 
 // Initialize QueryClient
 const queryClient = new QueryClient();
@@ -400,8 +400,10 @@ function App() {
                       <Route path="/blog/:id" element={<BlogView />} />
                       <Route path="/blogging" element={<Blogging />} />
                       <Route path="/blog-insights" element={<BlogInsights />} />
-                      <Route path="/insights/news/" element={<InsightsNews />} />
-                      <Route path="/insights/guides/" element={<InsightsGuides />} />
+                      <Route path="/insights/price-trends" element={<PriceTrends />} />
+                      <Route path="/insights/property-insights" element={<AnalyticsHome />} />
+                      <Route path="/insights/news" element={<InsightsNews />} />
+                      <Route path="/insights/guides" element={<InsightsGuides />} />
                       <Route
                         path="/resetpassword/:token"
                         element={<ForgetPassword />}

@@ -11,6 +11,7 @@ import DarkCTA from "../sections/DarkCTA";
 import GetInTouch from "../sections/GetInTouch";
 import CitiesGrid from "../sections/CitiesGrid";
 import FooterInfo from "../sections/FooterInfo";
+import PriceTrendsCityPicker from "../components/PriceTrendsCityPicker";
 
 export default function AnalyticsHome() {
   return (
@@ -27,9 +28,10 @@ export default function AnalyticsHome() {
         <DarkCTA />
         <TestimonialsSlider />
         <CommercialCarousel />
-        {/* <GetInTouch /> */}
+        <GetInTouch />
         <CitiesGrid />
         <FooterInfo />
+        <PriceTrendsCityPicker />
       </div>
     </LocationProvider>
   );

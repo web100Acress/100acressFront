@@ -53,7 +53,7 @@ export default function TestimonialsSlider() {
       <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8">
         <div className="text-center md:text-left">
           <h3 className="text-2xl md:text-3xl font-extrabold text-[#0c0a09] mb-3">What our clients say about us</h3>
-          <div className="text-blue-600 text-5xl leading-none mb-2">“</div>
+          <div className="text-blue-600 text-5xl leading-none mb-2">"</div>
           <p className="text-gray-600 text-sm md:text-base max-w-prose mx-auto md:mx-0">
             {testimonials[tIndex].quote}
           </p>
