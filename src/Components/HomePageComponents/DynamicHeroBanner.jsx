@@ -68,8 +68,8 @@ const DynamicHeroBanner = () => {
   }, [currentIndex, activeBanners, dispatch]);
 
   const handleBannerClick = (banner) => {
-    // Use slug if available, otherwise fall back to link
-    const targetUrl = banner.slug || banner.link;
+    // Use slug to generate https://www.100acress.com/slug format
+    const targetUrl = banner.slug ? `https://www.100acress.com/${banner.slug}` : banner.link;
     
     if (targetUrl) {
       // Open link in new tab if it's an external URL
@@ -168,7 +168,7 @@ const DynamicHeroBanner = () => {
             return (
               <div key={banner._id}>
                 <Link
-                  to={banner.slug ? `/${banner.slug}/` : (banner.link || "/developers/signature-global/")}
+                  to={banner.slug ? `https://www.100acress.com/${banner.slug}` : (banner.link || "/developers/signature-global/")}
                   className="block relative w-full group"
                   target={(banner.slug || banner.link)?.startsWith('http') ? '_blank' : '_self'}
                   aria-label={banner.title}
