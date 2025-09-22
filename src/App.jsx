@@ -44,7 +44,6 @@ import { initializePerformanceOptimizations } from "./utils/performanceOptimizat
 import { initializeStaticAssetOptimizations } from "./utils/staticAssetOptimization";
 import { SVGSprite } from "./utils/svgSpriteGenerator.jsx";
 import { initializeCloudFrontOptimizations } from "./utils/cloudfrontOptimization";
-import { initializePerformanceMonitoring } from "./utils/performanceMonitoring";
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
 // Lazy load all main page components
@@ -232,7 +231,6 @@ function App() {
     initializePerformanceOptimizations();
     initializeStaticAssetOptimizations();
     initializeCloudFrontOptimizations();
-    initializePerformanceMonitoring();
 
     // Clean up on unmount
     return () => {
