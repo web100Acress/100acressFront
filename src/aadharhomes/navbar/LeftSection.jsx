@@ -587,8 +587,6 @@ export default function LeftSection({
           Insights
         </Button>
       </Link> */}
-      </Link> */}
-     
     </Flex>
   );
 }
