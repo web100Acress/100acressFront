@@ -7,6 +7,10 @@ export default defineConfig(() => {
     server: {
       port: 3000,
       allowedHosts: ['30eb0c089ea5.ngrok-free.app', '.ngrok-free.app'],
+      fs: {
+        // Allow serving files from one level up to the project root
+        allow: ['..']
+      },
       proxy: {
         // In dev, route all '/api' requests to the backend
         '/api': {
@@ -25,7 +29,7 @@ export default defineConfig(() => {
     },
     preview:{port:4000},
     build: {
-      outDir: 'build',  
+      outDir: 'build',
       rollupOptions: {
         output: {
           // manualChunks removed to let Vite handle chunking automatically
@@ -93,5 +97,9 @@ export default defineConfig(() => {
         'jodit-react'
       ]
     },
+    // Ensure proper handling of dynamic imports
+    resolve: {
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
+    }
   };
 });
