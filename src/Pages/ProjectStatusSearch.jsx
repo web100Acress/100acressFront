@@ -855,11 +855,13 @@ const ProjectStatusSearch = () => {
         onRemove={(project) => toggleCompareProject(project)}
       />
 
-       {/* CommonProject component for underconstruction */}
-       {projectStatus === 'underconstruction' && (
+       {/* CommonProject component for underconstruction - Removed extra cards */}
+       {false && projectStatus === 'underconstruction' && (
          <CommonProject
            data={displayedProjects}
            animation="fade-up"
+           showGrid={false}
+           hideHeader={true}
          />
        )}
 

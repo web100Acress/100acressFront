@@ -76,7 +76,7 @@ export default function Hero({
   };
 
   return (
-    <section className="relative w-full min-h-[30vh] flex items-center mt-16" style={bgStyle}>
+    <section className="relative w-full min-h-[30vh] flex items-center mt-16 bg-gradient-to-br from-red-600 via-red-700 to-red-800">
       {/* Animated particles effect */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-white/20 rounded-full animate-pulse"></div>
@@ -85,13 +85,10 @@ export default function Hero({
         <div className="absolute top-1/2 right-1/4 w-0.5 h-0.5 bg-white/25 rounded-full animate-pulse"></div>
       </div>
       
-      <div className="absolute inset-0" style={{backdropFilter: 'blur(1px)'}} />
+      <div className="absolute inset-0 backdrop-blur-sm" />
               <div className="relative max-w-screen-xl mx-auto px-3 sm:px-4 md:px-6 py-3 md:py-4 text-white w-full">
                 <div className="mx-auto text-center">
-                  <h1
-                    className="mt-2 md:mt-4 font-extrabold leading-tight font-['Poppins','Inter',sans-serif] mb-2 md:mb-3 px-2"
-                    style={{ fontSize: 'clamp(18px, 4vw, 36px)' }}
-                  >
+                  <h1 className="mt-2 md:mt-4 font-extrabold leading-tight font-['Poppins','Inter',sans-serif] mb-2 md:mb-3 px-2 text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
                     {getDynamicTitle()}
                   </h1>
                   <p className="mt-2 text-white/90 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed px-2">
@@ -115,8 +112,7 @@ export default function Hero({
                         />
                         <button 
                           onClick={handleSearch} 
-                          className="ml-2 px-3 sm:px-4 py-2 rounded-lg text-white font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm sm:text-base"
-                          style={{background: 'linear-gradient(135deg, #D32F2F 0%, #B71C1C 100%)'}}
+                          className="ml-2 px-3 sm:px-4 py-2 rounded-lg text-white font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm sm:text-base bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
                         >
                           Search
                         </button>

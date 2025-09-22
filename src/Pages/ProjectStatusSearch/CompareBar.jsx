@@ -17,7 +17,7 @@ export default function CompareBar({ items = [], onOpen, onRemove }) {
               ))}
             </div>
           </div>
-          <button onClick={onOpen} className="px-4 py-2 rounded-lg text-white" style={{background: gradients.primary}}>
+          <button onClick={onOpen} className="px-4 py-2 rounded-lg text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 transition-all duration-300">
             View Comparison
           </button>
         </div>

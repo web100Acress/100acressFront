@@ -6,12 +6,28 @@ import styled from 'styled-components';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import SmallBannerSection from './SmallBannerSection';
 
 const DynamicHeroBanner = () => {
   const dispatch = useDispatch();
   const { activeBanners, loading, error } = useSelector(state => state.banner);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Helper function to filter hero banners
+  const filterHeroBanners = (banners) => {
+    return banners.filter(banner => {
+      const hasSmallBannerProperties = banner.size || 
+                                       banner.position || 
+                                       banner.desktopImage || 
+                                       banner.mobileImage ||
+                                       banner.type === 'small' ||
+                                       banner.bannerType === 'small';
+      
+      const hasHeroBannerStructure = banner.image && 
+                                     (banner.image.url || banner.image.cdn_url);
+      
+      return hasHeroBannerStructure && !hasSmallBannerProperties;
+    });
+  };
 
   useEffect(() => {
     // Fetch active banners on component mount
@@ -27,23 +43,27 @@ const DynamicHeroBanner = () => {
     }
   }, [activeBanners, dispatch]);
 
-  // Auto-rotate banners if multiple banners exist
+  // Auto-rotate banners if multiple hero banners exist
   useEffect(() => {
-    if (activeBanners.length > 1) {
+    const heroBanners = filterHeroBanners(activeBanners);
+
+    if (heroBanners.length > 1) {
       const interval = setInterval(() => {
         setCurrentIndex((prevIndex) => 
-          prevIndex === activeBanners.length - 1 ? 0 : prevIndex + 1
+          prevIndex === heroBanners.length - 1 ? 0 : prevIndex + 1
         );
       }, 5000); // Change banner every 5 seconds
 
       return () => clearInterval(interval);
     }
-  }, [activeBanners.length]);
+  }, [activeBanners]);
 
   // Update current banner when index changes
   useEffect(() => {
-    if (activeBanners.length > 0) {
-      dispatch(setCurrentBanner(activeBanners[currentIndex]));
+    const heroBanners = filterHeroBanners(activeBanners);
+
+    if (heroBanners.length > 0) {
+      dispatch(setCurrentBanner(heroBanners[currentIndex]));
     }
   }, [currentIndex, activeBanners, dispatch]);
 
@@ -120,8 +140,13 @@ const DynamicHeroBanner = () => {
     ]
   };
 
+  // Filter to ensure only hero banners are shown (not small banners)
+  const heroBanners = filterHeroBanners(activeBanners);
+
   console.log('Rendering banners:', activeBanners);
-  console.log('Banner count:', activeBanners.length);
+  console.log('Filtered hero banners:', heroBanners);
+  console.log('Banner count (all):', activeBanners.length);
+  console.log('Hero banner count:', heroBanners.length);
   console.log('Loading state:', loading);
   console.log('Error state:', error);
   
@@ -129,8 +154,9 @@ const DynamicHeroBanner = () => {
     <HeroWrapper>
       {/* Banner Carousel Container */}
       <div className="relative w-full">
-        <Slider {...sliderSettings}>
-          {activeBanners.map((banner, index) => {
+        {heroBanners.length > 0 ? (
+          <Slider {...sliderSettings}>
+            {heroBanners.map((banner, index) => {
             // Try multiple ways to get the image URL
             const imageUrl = banner.image?.cdn_url || banner.image?.url || banner.cdn_url || banner.imageUrl;
             console.log(`Banner ${index} full object:`, banner);
@@ -160,19 +186,7 @@ const DynamicHeroBanner = () => {
                     }}
                     aria-hidden="true"
                   />
-                  {/* Banner Content Overlay */}
-                  {(banner.title || banner.subtitle) && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center text-white bg-black bg-opacity-50 p-6 rounded-lg">
-                        {banner.title && (
-                          <h2 className="text-3xl font-bold mb-2">{banner.title}</h2>
-                        )}
-                        {banner.subtitle && (
-                          <p className="text-lg">{banner.subtitle}</p>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                  {/* Banner Content Overlay - Removed title and description */}
                   {/* Debug overlay to show if image is loading */}
                   {!imageUrl && (
                     <div style={{
@@ -192,11 +206,9 @@ const DynamicHeroBanner = () => {
               </div>
             );
           })}
-        </Slider>
+          </Slider>
+        ) : null}
       </div>
-      
-      {/* Small Banner Section */}
-      <SmallBannerSection />
     </HeroWrapper>
   );
 };
@@ -228,17 +240,6 @@ const HeroWrapper = styled.div`
     animation: spin 1s linear infinite;
   }
 
-  .hero-strip-99-default {
-    width: 100%;
-    height: 340px;
-    background-image: url("/Images/Website-Hero-Image.jpg");
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: auto 100%;
-    margin-top: 76px;
-    position: relative;
-    overflow: hidden;
-  }
 
   .hero-strip-99-dynamic {
     width: 100%;
@@ -276,7 +277,6 @@ const HeroWrapper = styled.div`
 
   @media (max-width: 640px) {
     .hero-strip-99-loading,
-    .hero-strip-99-default,
     .hero-strip-99-dynamic {
       margin-top: 72px;
     }
