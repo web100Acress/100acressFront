@@ -47,71 +47,134 @@ export default function InsightsPriceTrendsBanners() {
 
   const token = localStorage.getItem("myToken");
 
-  // Load data from localStorage on component mount
+  // Load data from API on component mount
   useEffect(() => {
-    const savedCities = localStorage.getItem('priceTrendsCities');
-    const savedPriceTrends = localStorage.getItem('priceTrendsData');
+    const loadData = async () => {
+      try {
+        const token = localStorage.getItem("myToken");
+        const base = import.meta.env.VITE_API_BASE;
 
-    if (savedCities) {
-      setCityData(JSON.parse(savedCities));
-    } else {
-      // Initialize with empty data - users will add data through forms
-      const emptyData = { ncr: [], metro: [], other: [] };
-      setCityData(emptyData);
-      localStorage.setItem('priceTrendsCities', JSON.stringify(emptyData));
-    }
+        // Load cities data
+        const citiesResponse = await fetch(`${base}/api/admin/cities`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (citiesResponse.ok) {
+          const citiesData = await citiesResponse.json();
+          const citiesByCategory = { ncr: [], metro: [], other: [] };
+          citiesData.data.forEach(city => {
+            if (citiesByCategory[city.category]) {
+              citiesByCategory[city.category].push({
+                id: city._id,
+                name: city.name,
+                banner: city.banner,
+                localities: city.localities || []
+              });
+            }
+          });
+          setCityData(citiesByCategory);
+        }
 
-    if (savedPriceTrends) {
-      setPriceTrendsData(JSON.parse(savedPriceTrends));
-    } else {
-      // Initialize with empty array - users will add data through forms
-      setPriceTrendsData([]);
-      localStorage.setItem('priceTrendsData', JSON.stringify([]));
-    }
+        // Load price trends data
+        const priceTrendsResponse = await fetch(`${base}/api/admin/price-trends`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (priceTrendsResponse.ok) {
+          const priceTrendsData = await priceTrendsResponse.json();
+          setPriceTrendsData(priceTrendsData.data.map(trend => ({
+            id: trend._id,
+            area: trend.area,
+            price: trend.price,
+            rental: trend.rental,
+            trend: trend.trend
+          })));
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
+    };
+
+    loadData();
   }, []);
 
-  const fetchAll = async () => {
-    setLoading(true);
+  // Load data from API
+  const loadDataFromAPI = async () => {
     try {
+      const token = localStorage.getItem("myToken");
       const base = import.meta.env.VITE_API_BASE;
-      const [h, s] = await Promise.all([
-        fetch(`${base}/api/admin/insights-price-trends-banners`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${base}/api/admin/insights-price-trends-small-banners`, { headers: { Authorization: `Bearer ${token}` } }),
-      ]);
-      const hj = await h.json().catch(() => ({ banners: [] }));
-      const sj = await s.json().catch(() => ({ banners: [] }));
-      setHero((hj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
-      setSmall((sj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
 
-      // Don't overwrite dynamic data with sample data
-      // setCityData(citiesData);
-    } finally {
-      setLoading(false);
+      // Load cities data
+      const citiesResponse = await fetch(`${base}/api/admin/cities`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (citiesResponse.ok) {
+        const citiesData = await citiesResponse.json();
+        const citiesByCategory = { ncr: [], metro: [], other: [] };
+        citiesData.data.forEach(city => {
+          if (citiesByCategory[city.category]) {
+            citiesByCategory[city.category].push({
+              id: city._id,
+              name: city.name,
+              banner: city.banner,
+              localities: city.localities || []
+            });
+          }
+        });
+        setCityData(citiesByCategory);
+      }
+
+      // Load price trends data
+      const priceTrendsResponse = await fetch(`${base}/api/admin/price-trends`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (priceTrendsResponse.ok) {
+        const priceTrendsData = await priceTrendsResponse.json();
+        setPriceTrendsData(priceTrendsData.data.map(trend => ({
+          id: trend._id,
+          area: trend.area,
+          price: trend.price,
+          rental: trend.rental,
+          trend: trend.trend
+        })));
+      }
+    } catch (error) {
+      console.error('Error loading data from API:', error);
     }
   };
 
-  // City management functions
-  const addCity = () => {
-    const newCity = {
-      id: Date.now(),
-      name: cityForm.name,
-      banner: cityForm.banner,
-      localities: cityForm.localities.split(',').map(loc => loc.trim()).filter(loc => loc)
-    };
+  const addCity = async () => {
+    try {
+      const token = localStorage.getItem("myToken");
+      const base = import.meta.env.VITE_API_BASE;
 
-    const updatedCities = {
-      ...cityData,
-      [cityForm.category]: [...cityData[cityForm.category], newCity]
-    };
+      const response = await fetch(`${base}/api/admin/cities`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: cityForm.name,
+          category: cityForm.category,
+          banner: cityForm.banner,
+          localities: cityForm.localities
+        })
+      });
 
-    setCityData(updatedCities);
-    localStorage.setItem('priceTrendsCities', JSON.stringify(updatedCities));
-
-    resetCityForm();
-    setShowCityForm(false);
+      if (response.ok) {
+        const result = await response.json();
+        await loadDataFromAPI();
+        resetCityForm();
+        setShowCityForm(false);
+      } else {
+        alert('Failed to add city');
+      }
+    } catch (error) {
+      console.error('Error adding city:', error);
+      alert('Error adding city');
+    }
   };
 
-  const editCity = (city) => {
+  const editCity = async (city) => {
     setEditingCity(city);
     setCityForm({
       name: city.name,
@@ -122,34 +185,59 @@ export default function InsightsPriceTrendsBanners() {
     setShowCityForm(true);
   };
 
-  const updateCity = () => {
-    const updatedCities = { ...cityData };
-    const cityIndex = updatedCities[activeTab].findIndex(city => city.id === editingCity.id);
+  const updateCity = async () => {
+    try {
+      const token = localStorage.getItem("myToken");
+      const base = import.meta.env.VITE_API_BASE;
 
-    if (cityIndex !== -1) {
-      updatedCities[activeTab][cityIndex] = {
-        ...editingCity,
-        name: cityForm.name,
-        banner: cityForm.banner,
-        localities: cityForm.localities.split(',').map(loc => loc.trim()).filter(loc => loc)
-      };
+      const response = await fetch(`${base}/api/admin/cities/${editingCity.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: cityForm.name,
+          category: cityForm.category,
+          banner: cityForm.banner,
+          localities: cityForm.localities
+        })
+      });
 
-      setCityData(updatedCities);
-      localStorage.setItem('priceTrendsCities', JSON.stringify(updatedCities));
+      if (response.ok) {
+        await loadDataFromAPI();
+        resetCityForm();
+        setEditingCity(null);
+        setShowCityForm(false);
+      } else {
+        alert('Failed to update city');
+      }
+    } catch (error) {
+      console.error('Error updating city:', error);
+      alert('Error updating city');
     }
-
-    resetCityForm();
-    setEditingCity(null);
-    setShowCityForm(false);
   };
 
-  const deleteCity = (cityId) => {
+  const deleteCity = async (cityId) => {
     if (confirm('Delete this city?')) {
-      const updatedCities = { ...cityData };
-      updatedCities[activeTab] = updatedCities[activeTab].filter(city => city.id !== cityId);
+      try {
+        const token = localStorage.getItem("myToken");
+        const base = import.meta.env.VITE_API_BASE;
 
-      setCityData(updatedCities);
-      localStorage.setItem('priceTrendsCities', JSON.stringify(updatedCities));
+        const response = await fetch(`${base}/api/admin/cities/${cityId}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          await loadDataFromAPI();
+        } else {
+          alert('Failed to delete city');
+        }
+      } catch (error) {
+        console.error('Error deleting city:', error);
+        alert('Error deleting city');
+      }
     }
   };
 
@@ -163,24 +251,39 @@ export default function InsightsPriceTrendsBanners() {
   };
 
   // Price trends management functions
-  const addPriceTrend = () => {
-    const newPriceTrend = {
-      id: Date.now(),
-      area: priceTrendsForm.area,
-      price: priceTrendsForm.price,
-      rental: priceTrendsForm.rental,
-      trend: priceTrendsForm.trend
-    };
+  const addPriceTrend = async () => {
+    try {
+      const token = localStorage.getItem("myToken");
+      const base = import.meta.env.VITE_API_BASE;
 
-    const updatedPriceTrends = [...priceTrendsData, newPriceTrend];
-    setPriceTrendsData(updatedPriceTrends);
-    localStorage.setItem('priceTrendsData', JSON.stringify(updatedPriceTrends));
+      const response = await fetch(`${base}/api/admin/price-trends`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          area: priceTrendsForm.area,
+          price: priceTrendsForm.price,
+          rental: priceTrendsForm.rental,
+          trend: priceTrendsForm.trend
+        })
+      });
 
-    resetPriceTrendsForm();
-    setShowPriceTrendsForm(false);
+      if (response.ok) {
+        await loadDataFromAPI();
+        resetPriceTrendsForm();
+        setShowPriceTrendsForm(false);
+      } else {
+        alert('Failed to add price trend');
+      }
+    } catch (error) {
+      console.error('Error adding price trend:', error);
+      alert('Error adding price trend');
+    }
   };
 
-  const editPriceTrend = (trend) => {
+  const editPriceTrend = async (trend) => {
     setEditingPriceTrend(trend);
     setPriceTrendsForm({
       area: trend.area,
@@ -191,26 +294,59 @@ export default function InsightsPriceTrendsBanners() {
     setShowPriceTrendsForm(true);
   };
 
-  const updatePriceTrend = () => {
-    const updatedPriceTrends = priceTrendsData.map(trend =>
-      trend.id === editingPriceTrend.id
-        ? { ...editingPriceTrend, ...priceTrendsForm }
-        : trend
-    );
+  const updatePriceTrend = async () => {
+    try {
+      const token = localStorage.getItem("myToken");
+      const base = import.meta.env.VITE_API_BASE;
 
-    setPriceTrendsData(updatedPriceTrends);
-    localStorage.setItem('priceTrendsData', JSON.stringify(updatedPriceTrends));
+      const response = await fetch(`${base}/api/admin/price-trends/${editingPriceTrend.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          area: priceTrendsForm.area,
+          price: priceTrendsForm.price,
+          rental: priceTrendsForm.rental,
+          trend: priceTrendsForm.trend
+        })
+      });
 
-    resetPriceTrendsForm();
-    setEditingPriceTrend(null);
-    setShowPriceTrendsForm(false);
+      if (response.ok) {
+        await loadDataFromAPI();
+        resetPriceTrendsForm();
+        setEditingPriceTrend(null);
+        setShowPriceTrendsForm(false);
+      } else {
+        alert('Failed to update price trend');
+      }
+    } catch (error) {
+      console.error('Error updating price trend:', error);
+      alert('Error updating price trend');
+    }
   };
 
-  const deletePriceTrend = (trendId) => {
+  const deletePriceTrend = async (trendId) => {
     if (confirm('Delete this price trend entry?')) {
-      const updatedPriceTrends = priceTrendsData.filter(trend => trend.id !== trendId);
-      setPriceTrendsData(updatedPriceTrends);
-      localStorage.setItem('priceTrendsData', JSON.stringify(updatedPriceTrends));
+      try {
+        const token = localStorage.getItem("myToken");
+        const base = import.meta.env.VITE_API_BASE;
+
+        const response = await fetch(`${base}/api/admin/price-trends/${trendId}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          await loadDataFromAPI();
+        } else {
+          alert('Failed to delete price trend');
+        }
+      } catch (error) {
+        console.error('Error deleting price trend:', error);
+        alert('Error deleting price trend');
+      }
     }
   };
 
@@ -317,6 +453,23 @@ export default function InsightsPriceTrendsBanners() {
     } else {
       // Reset to original data when "Show Less" is clicked
       setPriceTrendsData(priceTrendsData);
+    }
+  };
+
+  const fetchAll = async () => {
+    setLoading(true);
+    try {
+      const base = import.meta.env.VITE_API_BASE;
+      const [h, s] = await Promise.all([
+        fetch(`${base}/api/admin/insights-price-trends-banners`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${base}/api/admin/insights-price-trends-small-banners`, { headers: { Authorization: `Bearer ${token}` } }),
+      ]);
+      const hj = await h.json().catch(() => ({ banners: [] }));
+      const sj = await s.json().catch(() => ({ banners: [] }));
+      setHero((hj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
+      setSmall((sj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
+    } finally {
+      setLoading(false);
     }
   };
 
