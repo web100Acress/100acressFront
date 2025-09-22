@@ -4,6 +4,7 @@ import { fetchActiveBanners, setCurrentBanner } from '../../Redux/slice/BannerSl
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Slider from 'react-slick';
+import { Helmet } from 'react-helmet';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -102,8 +103,32 @@ const DynamicHeroBanner = () => {
     console.log('Full API URL:', `${import.meta.env.VITE_API_BASE}/api/banners/active`);
     return (
       <HeroWrapper>
+        {/* Preload fallback image for LCP optimization */}
+        <Helmet>
+          <link 
+            rel="preload" 
+            as="image" 
+            href="/Images/Website-Hero-Image.jpg"
+            fetchPriority="high"
+          />
+        </Helmet>
         <Link to="/developers/signature-global/" className="block relative w-full group" target="_self" aria-label="Signature Global">
-          <div className="hero-strip-99-default transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer" aria-hidden="true" style={{ backfaceVisibility: 'hidden' }} />
+          <img
+            src="/Images/Website-Hero-Image.jpg"
+            alt="Signature Global - Hero Banner"
+            className="hero-strip-99-default transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer"
+            style={{ 
+              backfaceVisibility: 'hidden',
+              objectFit: 'cover',
+              objectPosition: 'center',
+              height: '400px',
+              width: '100%'
+            }}
+            fetchPriority="high"
+            loading="eager"
+            width="1200"
+            height="400"
+          />
         </Link>
       </HeroWrapper>
     );
@@ -150,8 +175,25 @@ const DynamicHeroBanner = () => {
   console.log('Loading state:', loading);
   console.log('Error state:', error);
   
+  // Get the first banner image for preloading
+  const firstBannerImage = heroBanners.length > 0 ? 
+    (heroBanners[0].image?.cdn_url || heroBanners[0].image?.url || heroBanners[0].cdn_url || heroBanners[0].imageUrl) : 
+    null;
+
   return (
     <HeroWrapper>
+      {/* Preload the first banner image for LCP optimization */}
+      {firstBannerImage && (
+        <Helmet>
+          <link 
+            rel="preload" 
+            as="image" 
+            href={firstBannerImage}
+            fetchPriority="high"
+          />
+        </Helmet>
+      )}
+      
       {/* Banner Carousel Container */}
       <div className="relative w-full">
         {heroBanners.length > 0 ? (
@@ -173,18 +215,22 @@ const DynamicHeroBanner = () => {
                   target={(banner.slug || banner.link)?.startsWith('http') ? '_blank' : '_self'}
                   aria-label={banner.title}
                 >
-                  <div 
+                  {/* Use proper img tag for LCP optimization */}
+                  <img
+                    src={imageUrl || "/Images/Website-Hero-Image.jpg"}
+                    alt={banner.title || "Hero banner"}
                     className="hero-strip-99-dynamic transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer"
-                    style={{ 
+                    style={{
                       backfaceVisibility: 'hidden',
-                      backgroundImage: imageUrl ? `url("${imageUrl}")` : 'url("/Images/Website-Hero-Image.jpg")',
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      backgroundRepeat: 'no-repeat',
+                      objectFit: 'cover',
+                      objectPosition: 'center',
                       height: '400px',
                       width: '100%'
                     }}
-                    aria-hidden="true"
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    width="1200"
+                    height="400"
                   />
                   {/* Banner Content Overlay - Removed title and description */}
                   {/* Debug overlay to show if image is loading */}
@@ -241,13 +287,15 @@ const HeroWrapper = styled.div`
   }
 
 
-  .hero-strip-99-dynamic {
+  .hero-strip-99-dynamic,
+  .hero-strip-99-default {
     width: 100%;
-    height: 340px;
+    height: 400px;
     margin-top: 76px;
     position: relative;
     overflow: hidden;
     transition: opacity 0.5s ease-in-out;
+    display: block;
   }
 
   .hero-strip-99-dynamic.active {
@@ -277,7 +325,8 @@ const HeroWrapper = styled.div`
 
   @media (max-width: 640px) {
     .hero-strip-99-loading,
-    .hero-strip-99-dynamic {
+    .hero-strip-99-dynamic,
+    .hero-strip-99-default {
       margin-top: 72px;
     }
   }
