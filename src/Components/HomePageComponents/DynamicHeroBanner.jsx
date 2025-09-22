@@ -124,7 +124,7 @@ const DynamicHeroBanner = () => {
               height: '400px',
               width: '100%'
             }}
-            fetchPriority="high"
+            fetchpriority="high"
             loading="eager"
             width="1200"
             height="400"
@@ -227,7 +227,7 @@ const DynamicHeroBanner = () => {
                       height: '400px',
                       width: '100%'
                     }}
-                    fetchPriority={index === 0 ? "high" : "auto"}
+                    fetchpriority={index === 0 ? "high" : "auto"}
                     loading={index === 0 ? "eager" : "lazy"}
                     width="1200"
                     height="400"

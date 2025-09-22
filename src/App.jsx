@@ -618,7 +618,7 @@ function MobileBottomNav() {
   const profileTarget = token ? "/userdashboard/" : "/auth/signin";
 
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 z-[10000]">
+    <nav className="mobile-bottom-nav md:hidden fixed bottom-0 inset-x-0 z-[10000]">
       <div className="mx-auto max-w-screen-md">
         <div className="relative px-2 pb-[10px] pt-2">
           {/* Bar background */}
@@ -628,7 +628,7 @@ function MobileBottomNav() {
             {/* Home */}
             <Link to="/" className="flex flex-col items-center gap-1 py-2">
               <span className={`text-xl ${isActive(["/", "/projects", "/property"]) ? "text-red-600" : "text-gray-500"}`}>
-                <i className="fa-solid fa-house"></i>
+                <i className="fa-solid fa-house" style={{fontFamily: 'Font Awesome 6 Free', fontWeight: 900}}></i>
               </span>
               <span className={`${isActive(["/", "/projects", "/property"]) ? "text-gray-900 font-semibold" : ""}`}>Home</span>
             </Link>
@@ -636,7 +636,7 @@ function MobileBottomNav() {
             {/* Blogs (Insights -> Blogs) */}
             <Link to="/blog/" className="flex flex-col items-center gap-1 py-2">
               <span className={`text-xl ${isActive("/blog") ? "text-red-600" : "text-gray-500"}`}>
-                <i className="fa-solid fa-blog"></i>
+                <i className="fa-solid fa-blog" style={{fontFamily: 'Font Awesome 6 Free', fontWeight: 900}}></i>
               </span>
               <span className={`${isActive("/blog") ? "text-gray-900 font-semibold" : ""}`}>Blogs</span>
             </Link>
@@ -649,7 +649,7 @@ function MobileBottomNav() {
                 aria-label="Call 8500900100"
                 title="Call 8500900100"
               >
-                <i className="fa-solid fa-phone text-lg" aria-hidden="true"></i>
+                <i className="fa-solid fa-phone text-lg" style={{fontFamily: 'Font Awesome 6 Free', fontWeight: 900}} aria-hidden="true"></i>
               </a>
               <span className="mt-1 text-[11px]">Contact</span>
             </div>
@@ -657,7 +657,7 @@ function MobileBottomNav() {
             {/* Liked (was Shortlisted) */}
             <Link to={likedTarget} className="flex flex-col items-center gap-1 py-2">
               <span className={`text-xl ${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-red-600" : "text-gray-500"}`}>
-                <i className="fa-solid fa-heart"></i>
+                <i className="fa-solid fa-heart" style={{fontFamily: 'Font Awesome 6 Free', fontWeight: 900}}></i>
               </span>
               <span className={`${isActive("/userdashboard") && (new URLSearchParams(location.search).get("tab") === "liked") ? "text-gray-900 font-semibold" : ""}`}>Liked</span>
             </Link>
@@ -665,7 +665,7 @@ function MobileBottomNav() {
             {/* Profile */}
             <Link to={profileTarget} className="flex flex-col items-center gap-1 py-2">
               <span className={`text-xl ${isActive("/userdashboard") ? "text-red-600" : "text-gray-500"}`}>
-                <i className="fa-solid fa-user"></i>
+                <i className="fa-solid fa-user" style={{fontFamily: 'Font Awesome 6 Free', fontWeight: 900}}></i>
               </span>
               <span className={`${isActive("/userdashboard") ? "text-gray-900 font-semibold" : ""}`}>Profile</span>
             </Link>
@@ -691,5 +691,59 @@ const Wrapper = styled.section`
   li,
   a {
     font-family: "Rubik", sans-serif;
+  }
+  
+  /* Ensure mobile navigation icons are visible */
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .mobile-bottom-nav .fa-solid {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+  }
+  
+  /* Fallback for Font Awesome icons */
+  .mobile-bottom-nav .fa-house::before {
+    content: "🏠";
+    font-family: initial;
+  }
+  
+  .mobile-bottom-nav .fa-blog::before {
+    content: "📝";
+    font-family: initial;
+  }
+  
+  .mobile-bottom-nav .fa-phone::before {
+    content: "📞";
+    font-family: initial;
+  }
+  
+  .mobile-bottom-nav .fa-heart::before {
+    content: "❤️";
+    font-family: initial;
+  }
+  
+  .mobile-bottom-nav .fa-user::before {
+    content: "👤";
+    font-family: initial;
+  }
+  
+  /* Ensure icons are visible even if Font Awesome fails to load */
+  @media (max-width: 768px) {
+    .mobile-bottom-nav {
+      display: block !important;
+    }
   }
 `;
