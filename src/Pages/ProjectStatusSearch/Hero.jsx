@@ -127,10 +127,14 @@ export default function Hero({
                         >
                           <option value="">All Cities</option>
                           <option value="Gurugram">Gurugram</option>
+                          <option value="Noida">Noida</option>
                           <option value="Delhi">Delhi</option>
+                          <option value="Goa">Goa</option>
+                          <option value="Ayodhya">Ayodhya</option>
                           <option value="Mumbai">Mumbai</option>
-                          <option value="Bangalore">Bangalore</option>
-                          <option value="Pune">Pune</option>
+                          <option value="Panchkula">Panchkula</option>
+                          <option value="Kasauli">Kasauli</option>
+                          <option value="Dubai">Dubai</option>
                         </select>
                         
                         <select
@@ -140,10 +144,11 @@ export default function Hero({
                         >
                           <option value="">All Prices</option>
                           <option value="0,1">Under 1 Cr</option>
-                          <option value="1,5">1-5 Cr</option>
-                          <option value="5,10">5-10 Cr</option>
-                          <option value="10,20">10-20 Cr</option>
-                          <option value="20,Infinity">Above 20 Cr</option>
+                          <option value="1,5">1 to 5 Cr</option>
+                          <option value="5,10">5 to 10 Cr</option>
+                          <option value="10,20">10 to 20 Cr</option>
+                          <option value="20,50">20 to 50 Cr</option>
+                          <option value="50,Infinity">Above 50 Cr</option>
                         </select>
                         
                         <select
@@ -152,10 +157,16 @@ export default function Hero({
                           onChange={(e) => onFilterChange?.('projectType', e.target.value)}
                         >
                           <option value="">All Types</option>
+                          <option value="Commercial Property">Commercial Property</option>
                           <option value="Residential Flats">Residential Flats</option>
-                          <option value="Villas">Villas</option>
-                          <option value="Commercial Property">Commercial</option>
+                          <option value="SCO Plots">SCO Plots</option>
+                          <option value="Deen Dayal Plots">Deen Dayal Plots</option>
+                          <option value="Residential Plots">Residential Plots</option>
+                          <option value="Independent Floors">Independent Floors</option>
                           <option value="Builder Floors">Builder Floors</option>
+                          <option value="Affordable Homes">Affordable Homes</option>
+                          <option value="Villas">Villas</option>
+                          <option value="Farm Houses">Farm House</option>
                         </select>
                       </div>
                     </div>
