@@ -1,6 +1,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { getApiBase } from "../config/apiBase";
+import { cachedSettingsFetch, clearSettingsCache } from "../utils/apiCache";
 
 /*
   FloatingShorts
@@ -13,6 +14,7 @@ const FloatingShorts = ({ videoId = "" }) => {
   const [visible, setVisible] = useState(true);
   const [mini, setMini] = useState(false);
   const [moveMode, setMoveMode] = useState(false); // full-card drag toggle
+  const [isPlaying, setIsPlaying] = useState(false); // Track if video is playing
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1024
   );
@@ -41,9 +43,8 @@ const FloatingShorts = ({ videoId = "" }) => {
 
     const fetchId = async () => {
       try {
-        const res = await fetch(`${getApiBase()}/settings/shorts-video-id`);
-        if (!res.ok) return;
-        const data = await res.json();
+        // Use cached API call with 2-minute TTL
+        const data = await cachedSettingsFetch('shorts-video-id', 2 * 60 * 1000);
         const value = data?.value;
         if (!cancelled && value && value !== activeVideoId) {
           setActiveVideoId(value);
@@ -182,6 +183,7 @@ const FloatingShorts = ({ videoId = "" }) => {
   if (!visible) return null;
 
   const embedSrc = `https://www.youtube.com/embed/${activeVideoId}?autoplay=1&mute=1&loop=1&playlist=${activeVideoId}&controls=0&modestbranding=1&playsinline=1&rel=0`;
+  const thumbnailSrc = `https://img.youtube.com/vi/${activeVideoId}/hqdefault.jpg`;
 
   const containerDynamicStyle = {
     position: "fixed",
@@ -289,15 +291,66 @@ const FloatingShorts = ({ videoId = "" }) => {
         <div style={overlayStyle} onMouseDown={startDrag} onTouchStart={startDrag} onDragStart={(e) => e.preventDefault()} draggable={false} />
       )}
 
-      {/* Video */}
+      {/* Video - Optimized with lazy loading */}
       <div style={frameWrapStyle} onDragStart={(e) => e.preventDefault()} draggable={false}>
-        <iframe
-          title="YouTube Shorts"
-          src={embedSrc}
-          allow="autoplay; encrypted-media; picture-in-picture"
-          allowFullScreen
-          style={iframeStyle}
-        />
+        {!isPlaying ? (
+          // Static thumbnail with play button
+          <div style={{ position: 'relative', width: '100%', height: '100%', background: '#000' }}>
+            <img
+              src={thumbnailSrc}
+              alt="YouTube Shorts Thumbnail"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block'
+              }}
+              loading="lazy"
+            />
+            <button
+              onClick={() => setIsPlaying(true)}
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: isMobile ? 60 : isTablet ? 70 : 80,
+                height: isMobile ? 60 : isTablet ? 70 : 80,
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.9)',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: isMobile ? 24 : isTablet ? 28 : 32,
+                color: '#000',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'rgba(255, 255, 255, 1)';
+                e.target.style.transform = 'translate(-50%, -50%) scale(1.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'rgba(255, 255, 255, 0.9)';
+                e.target.style.transform = 'translate(-50%, -50%) scale(1)';
+              }}
+            >
+              ▶
+            </button>
+          </div>
+        ) : (
+          // Actual iframe loaded only when user clicks play
+          <iframe
+            title="YouTube Shorts"
+            src={embedSrc}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+            style={iframeStyle}
+            loading="lazy"
+          />
+        )}
       </div>
     </div>
   );

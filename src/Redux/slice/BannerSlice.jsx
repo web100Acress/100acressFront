@@ -1,15 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { cachedBannerFetch, clearBannerCache } from '../../utils/apiCache';
 
 // Async thunk to fetch active banners
 export const fetchActiveBanners = createAsyncThunk(
   'banner/fetchActiveBanners',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/banners/active`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch banners');
-      }
-      const data = await response.json();
+      // Use cached API call with 5-minute TTL
+      const data = await cachedBannerFetch('banners/active', 5 * 60 * 1000);
       return data.banners || [];
     } catch (error) {
       return rejectWithValue(error.message);

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllBanners } from '../Redux/slice/BannerSlice.jsx';
 import { fetchAllSmallBanners } from '../Redux/slice/SmallBannerSlice.jsx';
 import { toast } from 'react-toastify';
+import { autoInvalidateCache } from '../utils/cacheInvalidation';
 import 'react-toastify/dist/ReactToastify.css';
 import Sidebar from './Sidebar';
 import { 
@@ -117,11 +118,12 @@ const UnifiedBannerManagement = () => {
 
       console.log('Hero banner update response status:', response.status);
 
-      if (response.ok) {
-        toast.success(editingBanner ? 'Hero banner updated successfully!' : 'Hero banner uploaded successfully!');
-        dispatch(fetchAllBanners());
-        resetForm();
-      } else {
+          if (response.ok) {
+            toast.success(editingBanner ? 'Hero banner updated successfully!' : 'Hero banner uploaded successfully!');
+            autoInvalidateCache(editingBanner ? 'banner-update' : 'banner-upload');
+            dispatch(fetchAllBanners());
+            resetForm();
+          } else {
         const errorText = await response.text();
         console.error('Hero banner update error response:', errorText);
         let errorData;
@@ -207,11 +209,12 @@ const UnifiedBannerManagement = () => {
 
       console.log('Small banner upload response status:', response.status);
 
-      if (response.ok) {
-        toast.success(editingBanner ? 'Small banner updated successfully!' : 'Small banner uploaded successfully!');
-        dispatch(fetchAllSmallBanners());
-        resetForm();
-      } else {
+          if (response.ok) {
+            toast.success(editingBanner ? 'Small banner updated successfully!' : 'Small banner uploaded successfully!');
+            autoInvalidateCache(editingBanner ? 'small-banner-update' : 'small-banner-upload');
+            dispatch(fetchAllSmallBanners());
+            resetForm();
+          } else {
         const errorText = await response.text();
         console.error('Small banner upload error response:', errorText);
         let errorData;
