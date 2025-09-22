@@ -2,7 +2,10 @@
 
 import React,{Suspense} from "react";
 import ReactDOM from "react-dom/client";
+import "./index.css";
 import App from "./App.jsx";
+import "mdb-react-ui-kit/dist/css/mdb.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import {Provider} from "react-redux";
 import AppStore from "./Redux/store/AppStore";
 // import { EnquiryProvider } from "./Context/enquiryContext";
@@ -11,9 +14,6 @@ import { BrowserRouter, useLocation } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import CustomSkeleton from "../src/Utils/CustomSkeleton";
 import { initAxios } from "./config/axiosSetup";
-import { cssLoader } from "./Utils/CSSLoader";
-// Import Font Awesome synchronously for mobile navigation icons
-import "@fortawesome/fontawesome-free/css/all.min.css";
 
 // Initialize global axios config (base URL + interceptors)
 initAxios();
@@ -48,20 +48,3 @@ root.render(
     </Provider>
   </>
 );
-
-// Load non-critical CSS asynchronously after initial render
-setTimeout(() => {
-  // Load CSS files that are not critical for LCP
-  const nonCriticalCSS = [
-    '/src/index.css',
-    'mdb-react-ui-kit/dist/css/mdb.min.css'
-  ];
-  
-  nonCriticalCSS.forEach(cssPath => {
-    cssLoader.loadCSS(cssPath, {
-      media: 'all',
-      onLoad: () => console.log(`Loaded CSS: ${cssPath}`),
-      onError: () => console.warn(`Failed to load CSS: ${cssPath}`)
-    });
-  });
-}, 100); // Small delay to ensure initial render is complete

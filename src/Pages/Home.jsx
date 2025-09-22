@@ -434,8 +434,6 @@ const Home = () => {
         100acress | The Best Real Estate Portal in Gurgaon
         </title>
         <link rel="canonical" href="https://www.100acress.com/" />
-        {/* Preload LCP image for better performance */}
-        <link rel="preload" as="image" href="/Images/Website-Hero-Image.jpg" fetchPriority="high" />
       </Helmet>
       {/* Visually hidden H1 for correct heading order without affecting layout */}
       <h1 className="sr-only">100acress Real Estate in Gurgaon – Buy, Rent, Sell & New Launch Projects</h1>

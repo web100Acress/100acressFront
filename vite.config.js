@@ -60,9 +60,6 @@ export default defineConfig(() => {
           drop_debugger: true,
         },
       },
-      // Optimize CSS loading
-      cssCodeSplit: true, // Split CSS into smaller chunks
-      cssMinify: true, // Minify CSS
     },
     plugins: [
       react(),
