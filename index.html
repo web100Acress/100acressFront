@@ -26,14 +26,35 @@
   <meta name="twitter:site" content="@100acressdotcom" />
   <meta name="twitter:image" content="https://www.100acress.com/Images/mainog.png" />
 
+  <!-- DNS prefetch for faster font loading -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
   <!-- Preload main module for faster startup -->
   <link rel="modulepreload" href="/src/index.jsx" />
+  
   <!-- Preload LCP hero image with high priority -->
   <link rel="preload" as="image" fetchpriority="high"
-    href="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/experion-trillion-banner.webp" />
-  <!-- Load Google Fonts non-blocking -->
+    href="https://d16gdc5rm7f21b.cloudfront.net/uploads/1758524116196-signature-glob" />
+  
+  <!-- Fallback preload for default hero image -->
+  <link rel="preload" as="image" fetchpriority="high"
+    href="/Images/Website-Hero-Image.jpg" />
+  
+  <!-- Font preloading handled by Google Fonts CSS -->
+  
+  <!-- Load Google Fonts non-blocking with improved loading strategy -->
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" />
+  </noscript>
+  
+  <!-- Defer non-critical fonts -->
   <link rel="preload" as="style"
     href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Gluten:wght@100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
     onload="this.onload=null;this.rel='stylesheet'">
@@ -41,14 +62,185 @@
     <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Gluten:wght@100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" />
   </noscript>
-
-  <link rel="preload" as="style"
-    href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
-    onload="this.onload=null;this.rel='stylesheet'">
-  <noscript>
-    <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" />
-  </noscript>
+  <!-- Critical CSS for above-the-fold content -->
+  <style id="critical-css">
+    /* Critical styles for LCP optimization */
+    body { 
+      margin: 0; 
+      font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    
+    /* Critical hero styles */
+    .hero-strip-99-dynamic,
+    .hero-strip-99-default {
+      width: 100%;
+      height: 400px;
+      margin-top: 76px;
+      position: relative;
+      overflow: hidden;
+      display: block;
+      object-fit: cover;
+      object-position: center;
+    }
+    
+    /* Critical navbar styles */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: #ffffff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      transition: background-color 200ms ease;
+    }
+    
+    /* Critical layout styles */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    /* Critical typography */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Rubik', sans-serif;
+      font-weight: 600;
+      line-height: 1.2;
+      margin: 0 0 1rem 0;
+    }
+    
+    /* Critical button styles */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-primary {
+      background-color: #dc2626;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #b91c1c;
+    }
+    
+    /* Critical responsive styles */
+    @media (max-width: 640px) {
+      .hero-strip-99-dynamic,
+      .hero-strip-99-default {
+        margin-top: 72px;
+        height: 300px;
+      }
+    }
+    
+    /* Font display optimization - handled by Google Fonts preload */
+    
+    /* Mobile bottom navigation visibility */
+    @media (max-width: 768px) {
+      .mobile-bottom-nav {
+        display: block !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 10000 !important;
+        background: white !important;
+        border-top: 1px solid #e5e7eb !important;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08) !important;
+      }
+      
+      .mobile-bottom-nav .fa-solid {
+        font-family: "Font Awesome 6 Free" !important;
+        font-weight: 900 !important;
+        display: inline-block !important;
+        font-style: normal !important;
+        font-variant: normal !important;
+        text-rendering: auto !important;
+        line-height: 1 !important;
+      }
+    }
+  </style>
+  
+  <!-- LCP Image Discovery Script -->
+  <script>
+    // Add LCP image to document for discovery after DOM is ready
+    function addLCPImage() {
+      if (document.head && document.body) {
+        // Add the signature global image preload immediately
+        const lcpImageUrl = 'https://d16gdc5rm7f21b.cloudfront.net/uploads/1758524116196-signature-glob';
+        
+        // Create preload link for LCP image
+        const preloadLink = document.createElement('link');
+        preloadLink.rel = 'preload';
+        preloadLink.as = 'image';
+        preloadLink.href = lcpImageUrl;
+        preloadLink.setAttribute('fetchpriority', 'high');
+        document.head.appendChild(preloadLink);
+        
+        // Also add a hidden img element for immediate discovery
+        const lcpImg = document.createElement('img');
+        lcpImg.src = lcpImageUrl;
+        lcpImg.alt = 'signature global';
+        lcpImg.style.display = 'none';
+        lcpImg.setAttribute('fetchpriority', 'high');
+        lcpImg.setAttribute('loading', 'eager');
+        lcpImg.setAttribute('width', '1200');
+        lcpImg.setAttribute('height', '400');
+        document.body.appendChild(lcpImg);
+      }
+    }
+    
+    // Run when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', addLCPImage);
+    } else {
+      addLCPImage();
+    }
+  </script>
+  
+  <!-- Defer CSS loading to reduce render-blocking -->
+  <script>
+    // Load CSS asynchronously after critical rendering
+    function loadCSS(href) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      link.media = 'print';
+      link.onload = function() {
+        this.media = 'all';
+        this.onload = null;
+      };
+      document.head.appendChild(link);
+    }
+    
+    // Load main CSS after page load
+    window.addEventListener('load', function() {
+      // Load the main CSS bundle asynchronously
+      if (document.querySelector('link[href*="index-"]')) {
+        // CSS already loaded by Vite
+        return;
+      }
+      
+      // Fallback: load CSS manually if not already loaded
+      const existingCSS = document.querySelector('link[rel="stylesheet"]');
+      if (!existingCSS) {
+        // This will be handled by Vite's build process
+        console.log('CSS loading handled by Vite');
+      }
+    });
+  </script>
+  
   <script type="module" src="/src/index.jsx"></script>
   <!-- Google tag (gtag.js) - defer init until idle -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-1XY9M6DY08"></script>
@@ -164,6 +356,28 @@
 
 
   <div id="root"></div>
+  
+  <!-- Static LCP image for immediate discovery (hidden by default, shown if dynamic banner fails) -->
+  <img 
+    id="static-lcp-fallback" 
+    src="/Images/Website-Hero-Image.jpg" 
+    alt="100acress - Real Estate in Gurgaon"
+    style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      object-position: center;
+      z-index: -1;
+      display: none;
+    "
+    fetchpriority="high"
+    loading="eager"
+    width="1200"
+    height="400"
+  />
 
   <!-- adde new -->
 
