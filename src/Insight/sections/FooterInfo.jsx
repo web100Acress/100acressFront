@@ -73,6 +73,6 @@ export default function FooterInfo() {
       </div>
       </div>
     </section>
-    
+
   );
 }

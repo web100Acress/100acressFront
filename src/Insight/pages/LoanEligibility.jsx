@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from "../../aadharhomes/navbar/Navbar";
-import InsightsSidebar from "../components/InsightsSidebar";
+import InsightsSidebar from '../components/InsightsSidebar';
 
 export default function LoanEligibility() {
   const [monthlyIncome, setMonthlyIncome] = React.useState(100000);
@@ -96,5 +96,3 @@ export default function LoanEligibility() {
     </div>
   );
 }
-
-
