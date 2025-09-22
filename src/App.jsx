@@ -40,10 +40,6 @@ import "animate.css";
 import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
 import LoginForm from "./Components/LoginForm";
-import { initializePerformanceOptimizations } from "./utils/performanceOptimization";
-import { initializeStaticAssetOptimizations } from "./utils/staticAssetOptimization";
-import { SVGSprite } from "./utils/svgSpriteGenerator.jsx";
-import { initializeCloudFrontOptimizations } from "./utils/cloudfrontOptimization";
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
 // Lazy load all main page components
@@ -227,11 +223,6 @@ function App() {
       };
     }
 
-    // Initialize performance optimizations
-    initializePerformanceOptimizations();
-    initializeStaticAssetOptimizations();
-    initializeCloudFrontOptimizations();
-
     // Clean up on unmount
     return () => {
       delete window.showAuthModal;
@@ -243,7 +234,6 @@ function App() {
 
   return (
     <>
-      <SVGSprite />
       <DataProvider>
         <AuthProvider>
           <TooltipProvider>
