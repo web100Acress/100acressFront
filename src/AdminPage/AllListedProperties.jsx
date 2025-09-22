@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo, memo } from "react";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import Sidebar from "./Sidebar";
 import axios from "axios";
 import { getApiBase } from '../config/apiBase';
@@ -8,6 +10,88 @@ import { Link } from "react-router-dom";
 import { Oval } from "react-loader-spinner";
 import { PaginationControls } from "../Components/Blog_Components/BlogManagement"; // Assuming this path is correct and the component is structured to receive classes
 import { Modal, message } from "antd"; // Import message from antd
+
+// Memoized Property Row Component
+const PropertyRow = memo(({ property, onDelete }) => (
+  <tr className="table-row">
+    <td className="table-cell image-cell">
+      <div className="property-image-wrapper">
+        <LazyLoadImage
+          src={property?.frontImage?.url || "https://via.placeholder.com/150x100?text=No+Image"}
+          alt={property?.propertyName || "Property Image"}
+          effect="blur"
+          className="property-image"
+          placeholderSrc="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 100'%3E%3C/svg%3E"
+        />
+      </div>
+    </td>
+    <td className="table-cell name-cell">
+      <div className="property-name-text">
+        {property.propertyName}
+      </div>
+      <div className="property-type-text">
+        {property.propertyType}
+      </div>
+    </td>
+    <td className="table-cell price-cell">
+      {property?.price ? `₹${Number(property.price).toLocaleString('en-IN')}` : 'N/A'}
+    </td>
+    <td className="table-cell address-cell">
+      {property?.address || 'N/A'}
+    </td>
+    <td className="table-cell property-looking-cell">
+      <span className={`status-badge ${property?.propertyLooking?.toLowerCase()}`}>
+        {property?.propertyLooking || 'N/A'}
+      </span>
+    </td>
+    <td className="table-cell posted-by-cell">
+      {property?.name || 'N/A'}
+    </td>
+    <td className="table-cell actions-cell">
+      <div className="actions-buttons-container">
+        <Link to={`/Admin/viewproperty/viewdetails/${property._id}`} title="View Details">
+          <button className="action-button view-button">
+            <Eye size={18} />
+          </button>
+        </Link>
+        <Link to={`/Admin/viewproperty/editdetails/${property._id}`} title="Edit Property">
+          <button className="action-button edit-button">
+            <Edit size={18} />
+          </button>
+        </Link>
+        <button
+          className="action-button delete-button"
+          title="Delete Property"
+          onClick={() => onDelete(property._id)}
+        >
+          <Trash2 size={18} />
+        </button>
+      </div>
+    </td>
+  </tr>
+));
+
+// Memoized Delete Confirmation Modal
+const DeleteConfirmationModal = memo(({ 
+  isOpen, 
+  onConfirm, 
+  onCancel, 
+  confirmLoading,
+  text 
+}) => (
+  <Modal
+    title="Confirm Deletion"
+    open={isOpen}
+    onOk={onConfirm}
+    confirmLoading={confirmLoading}
+    onCancel={onCancel}
+    okText="Delete"
+    cancelText="Cancel"
+    maskClosable={false}
+  >
+    <p className="modal-text">{text}</p>
+  </Modal>
+));
 
 const AllListedProperties = () => {
   const tokenRaw = localStorage.getItem("myToken") || "";
@@ -25,6 +109,11 @@ const AllListedProperties = () => {
   const [propertyToDelete, setPropertyToDelete] = useState(null);
   const [isVerified, setIsVerified] = useState('verified');
 
+  // Memoize the token to prevent unnecessary re-renders
+  const tokenRawMemo = useMemo(() => localStorage.getItem("myToken") || "", []);
+  const tokenMemo = useMemo(() => tokenRawMemo.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, ""), [tokenRawMemo]);
+
+  // Memoize the messageApi configuration
   const [messageApi, contextHolder] = message.useMessage();
 
   // Effect to inject styles into the document head
@@ -49,10 +138,13 @@ const AllListedProperties = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          }
+            ...(tokenMemo ? { Authorization: `Bearer ${tokenMemo}` } : {}),
+          },
+          // Add timeout to prevent hanging requests
+          timeout: 10000
         }
       );
+      
       if (res.status >= 200 && res.status < 300) {
         const root = res.data;
         const pageArr = Array.isArray(root?.data) ? root.data : [];
@@ -63,17 +155,21 @@ const AllListedProperties = () => {
           ? root.data
           : [];
         const pages = Number(first?.totalPages || root?.totalPages || 0) || 0;
-        setAllListedProperty(list);
+        
+        // Use functional update to prevent race conditions
+        setAllListedProperty(prev => 
+          JSON.stringify(prev) !== JSON.stringify(list) ? list : prev
+        );
         setTotalPages(pages);
       }
     } catch (error) {
       console.error("Error fetching properties:", error);
-      setError(error || error.message);
+      setError(error?.message || "An error occurred");
       messageApi.error("Failed to fetch properties. Please try again.");
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageLimit, isVerified, token, messageApi]);
+  }, [currentPage, pageLimit, isVerified, tokenMemo, messageApi]);
 
   useEffect(() => {
     fetchData();
@@ -83,122 +179,201 @@ const AllListedProperties = () => {
     setOpenModal(true);
   };
 
-  const handleOk = async () => {
-    setModalText('Deleting...');
+  const handleOk = useCallback(async () => {
+    if (!propertyToDelete) {
+      messageApi.error('No property selected for deletion');
+      return;
+    }
+
+    setModalText('Deleting property...');
     setConfirmLoading(true);
-    const result = await handleDeleteProperty(propertyToDelete);
-    if (result.success) {
-      messageApi.success("Property deleted successfully!");
-      setAllListedProperty(prevProperties => prevProperties.filter(property => property._id !== propertyToDelete));
+
+    try {
+      const result = await handleDeleteProperty(propertyToDelete);
+      if (result?.success) {
+        messageApi.success(result.message || 'Property deleted successfully');
+        // The fetchData() inside handleDeleteProperty will update the list
+      } else {
+        const errorMessage = result?.message || 'Failed to delete property';
+        messageApi.error(`Error: ${errorMessage}`);
+      }
+    } catch (error) {
+      console.error('Error in handleOk:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'An error occurred while deleting the property';
+      messageApi.error(errorMessage);
+    } finally {
       setModalText('Do you want to delete this Property?');
       setConfirmLoading(false);
       setOpenModal(false);
-    } else {
-      messageApi.error(`Error deleting Property: ${result.message}`);
-      setModalText('Error deleting Property.');
-      setConfirmLoading(false);
-      setOpenModal(false);
+      setPropertyToDelete(null);
     }
-  };
+  }, [propertyToDelete, messageApi]);
 
-  const handleCancel = () => {
-    console.log('Clicked cancel button');
+  const handleCancel = useCallback(() => {
     setOpenModal(false);
     setPropertyToDelete(null);
     setModalText('Do you want to delete this Property?');
-  };
+  }, []);
 
-  const handleDeleteProperty = async (id) => {
+  const handleDeleteProperty = useCallback(async (id) => {
+    if (!id) {
+      console.error("No property ID provided for deletion");
+      return { success: false, message: "No property ID provided" };
+    }
+
     try {
       console.log("Attempting to delete property with ID:", id);
       const base = getApiBase();
-      const res = await axios.delete(
+      const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"$/, '');
+      
+      if (!token) {
+        console.error("No authentication token found");
+        return { success: false, message: "Authentication required" };
+      }
+
+      const response = await axios.delete(
         `${base}/postPerson/propertyDelete/${id}`,
         {
-            headers: {
-                "Content-Type": "application/json",
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            }
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          timeout: 10000 // 10 second timeout
         }
       );
 
-      console.log("Delete response:", res);
-      if (res.status >= 200 && res.status < 300) {
+      console.log("Delete response:", response.data);
+      
+      if (response.status >= 200 && response.status < 300) {
+        // Refresh the properties list after successful deletion
+        fetchData();
         return {
           success: true,
           message: "Property deleted successfully",
-        }
-      } else {
-        console.error("Delete failed with status:", res.status);
-        return {
-          success: false,
-          message: res.data?.message || "Unknown error",
-        }
+          data: response.data
+        };
       }
-    } catch (error) {
-      console.error("Delete property error:", error);
-      console.error("Error response:", error.response);
+      
+      console.error("Delete failed with status:", response.status);
       return {
         success: false,
-        message: error.response?.data?.error || error.response?.data?.message || error.message,
+        message: response.data?.message || `Server returned status ${response.status}`,
+        status: response.status
+      };
+      
+    } catch (error) {
+      console.error("Delete property error:", error);
+      
+      let errorMessage = "Failed to delete property";
+      
+      if (error.response) {
+        console.error("Error response data:", error.response.data);
+        console.error("Error status:", error.response.status);
+        
+        errorMessage = error.response.data?.message || 
+                      error.response.data?.error || 
+                      `Server error: ${error.response.status}`;
+                      
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+        errorMessage = "No response from server. Please check your connection.";
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = "Request timed out. Please try again.";
+      } else {
+        errorMessage = error.message || "An unknown error occurred";
       }
+      
+      return {
+        success: false,
+        message: errorMessage,
+        error: error
+      };
     }
-  };
+  }, [tokenMemo]);
 
-  const handleDeleteButtonClicked = (id) => {
-    showModal();
+  const handleDeleteButtonClicked = useCallback((id) => {
+    setOpenModal(true);
     setPropertyToDelete(id);
     setModalText('Do you want to delete this Property?');
-  };
+  }, []);
 
+  // Memoize the DeleteConfirmationModal component with a different name
+  const MemoizedDeleteConfirmationModal = useMemo(() => (
+    <DeleteConfirmationModal
+      isOpen={openModal}
+      onConfirm={handleOk}
+      onCancel={handleCancel}
+      confirmLoading={confirmLoading}
+      text={modalText}
+    />
+  ), [openModal, handleOk, handleCancel, confirmLoading, modalText]);
+
+  // Memoize the filter controls to prevent re-renders
+  const FilterControls = useMemo(() => (
+    <div className="filter-controls">
+      <select
+        value={pageLimit}
+        onChange={(e) => {
+          setPageLimit(Number(e.target.value));
+          setCurrentPage(1);
+        }}
+        className="select-dropdown"
+      >
+        <option value={10}>10 per page</option>
+        <option value={25}>25 per page</option>
+        <option value={50}>50 per page</option>
+      </select>
+      <select
+        value={isVerified}
+        onChange={(e) => {
+          setIsVerified(e.target.value);
+          setCurrentPage(1);
+        }}
+        className="select-dropdown"
+      >
+        <option value={'verified'}>Verified</option>
+        <option value={'unverified'}>Unverified</option>
+      </select>
+    </div>
+  ), [pageLimit, isVerified]);
+
+  // Memoize the loading state
+  const LoadingState = useMemo(() => (
+    <tr>
+      <td colSpan={7} className="loading-state-cell">
+        <Oval
+          height={50}
+          width={50}
+          color="#6c5ce7"
+          ariaLabel="loading-indicator"
+          wrapperClass="loader-spinner-wrapper"
+          visible={true}
+        />
+        <p>Loading properties...</p>
+      </td>
+    </tr>
+  ), []);
+
+  // Memoize the empty state
+  const EmptyState = useMemo(() => (
+    <tr>
+      <td colSpan={7} className="no-data-message">
+        No properties found. Adjust filters or try again.
+      </td>
+    </tr>
+  ), []);
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
       <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
-        {contextHolder} {/* For Ant Design messages */}
+        {contextHolder}
         <div className="properties-header">
           <h1 className="properties-title">Properties Listed</h1>
-          <div className="filter-controls">
-            <select
-              value={pageLimit}
-              onChange={(e) => {
-                setPageLimit(Number(e.target.value));
-                setCurrentPage(1); // Reset to first page when limit changes
-              }}
-              className="select-dropdown"
-            >
-              <option value={10}>10 per page</option>
-              <option value={25}>25 per page</option>
-              <option value={50}>50 per page</option>
-            </select>
-            <select
-              value={isVerified}
-              onChange={(e) => {
-                setIsVerified(e.target.value);
-                setCurrentPage(1); // Reset to first page when verification status changes
-              }}
-              className="select-dropdown"
-            >
-              <option value={'verified'}>Verified</option>
-              <option value={'unverified'}>Unverified</option>
-            </select>
-          </div>
+          {FilterControls}
         </div>
 
-        <Modal
-          title="Confirm Deletion"
-          open={openModal}
-          onOk={handleOk}
-          confirmLoading={confirmLoading}
-          onCancel={handleCancel}
-          okText="Delete"
-          cancelText="Cancel"
-          maskClosable={false} // Prevent closing by clicking outside
-          className="delete-modal" // Custom class for modal styling
-        >
-          <p className="modal-text">{modalText}</p>
-        </Modal>
+        {MemoizedDeleteConfirmationModal}
 
         <div className="table-container-wrapper">
           <div className="table-scroll-area">
@@ -216,80 +391,17 @@ const AllListedProperties = () => {
               </thead>
               <tbody className="table-body">
                 {isLoading ? (
-                  <tr>
-                    <td colSpan={7} className="loading-state-cell">
-                      <Oval
-                        height={50}
-                        width={50}
-                        color="#6c5ce7" // Match primary color for loader
-                        ariaLabel="loading-indicator"
-                        wrapperClass="loader-spinner-wrapper"
-                        visible={true}
-                      />
-                      <p>Loading properties...</p>
-                    </td>
-                  </tr>
+                  LoadingState
                 ) : allListedProperty.length > 0 ? (
                   allListedProperty.map((property) => (
-                    <tr key={property._id} className="table-row">
-                      <td className="table-cell image-cell">
-                        <div className="property-image-wrapper">
-                          <img
-                            src={property?.frontImage?.url || "https://via.placeholder.com/150x100?text=No+Image"} // Placeholder for no image
-                            alt={property?.propertyName || "Property Image"}
-                            className="property-image"
-                          />
-                        </div>
-                      </td>
-                      <td className="table-cell name-cell">
-                        <div className="property-name-text">
-                          {property.propertyName}
-                        </div>
-                        <div className="property-type-text">
-                          {property.propertyType}
-                        </div>
-                      </td>
-                      <td className="table-cell price-cell">{property?.price ? `₹${Number(property.price).toLocaleString('en-IN')}` : 'N/A'}</td> {/* Format price */}
-                      <td className="table-cell address-cell">
-                        {property?.address || 'N/A'}
-                      </td>
-                      <td className="table-cell property-looking-cell">
-                        <span className={`status-badge ${property?.propertyLooking?.toLowerCase()}`}>
-                          {property?.propertyLooking || 'N/A'}
-                        </span>
-                      </td>
-                      <td className="table-cell posted-by-cell">
-                        {property?.name || 'N/A'}
-                      </td>
-                      <td className="table-cell actions-cell">
-                        <div className="actions-buttons-container">
-                          <Link to={`/Admin/viewproperty/viewdetails/${property._id}`} title="View Details">
-                            <button className="action-button view-button">
-                              <Eye size={18} />
-                            </button>
-                          </Link>
-                          <Link to={`/Admin/viewproperty/editdetails/${property._id}`} title="Edit Property">
-                            <button className="action-button edit-button">
-                              <Edit size={18} />
-                            </button>
-                          </Link>
-                          <button
-                            className="action-button delete-button"
-                            title="Delete Property"
-                            onClick={() => handleDeleteButtonClicked(property._id)}
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    <PropertyRow 
+                      key={property._id} 
+                      property={property} 
+                      onDelete={handleDeleteButtonClicked} 
+                    />
                   ))
                 ) : (
-                  <tr>
-                    <td colSpan={7} className="no-data-message">
-                      No properties found. Adjust filters or try again.
-                    </td>
-                  </tr>
+                  EmptyState
                 )}
               </tbody>
             </table>

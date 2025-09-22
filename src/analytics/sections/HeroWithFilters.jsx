@@ -1,6 +1,18 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { mapCoordsToCity } from "../components/LocationContext";
+import {
+  CATEGORIES,
+  PROPERTY_TYPES_BY_CATEGORY,
+  CITIES,
+  BEDROOMS,
+  BATHROOMS,
+  FURNISHING,
+  RERA,
+  QUICK_LINKS,
+  buildSearchHref,
+  sanitizeSelections,
+} from "../config/filters";
 
 export default function HeroWithFilters() {
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -8,11 +20,12 @@ export default function HeroWithFilters() {
   const dialogRef = React.useRef(null);
   const dialogCloseBtnRef = React.useRef(null);
 
-  // Hero image sources (configurable via env; fallback to Unsplash)
-  const HERO_AVIF = import.meta.env.VITE_HERO_AVIF || '';
-  const HERO_WEBP = import.meta.env.VITE_HERO_WEBP || '';
-  const HERO_JPG = import.meta.env.VITE_HERO_JPG || 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1600&q=80';
+  // Hero banner (purely dynamic from backend)
   const [heroLoaded, setHeroLoaded] = useState(false);
+  const [bannerLoading, setBannerLoading] = useState(true);
+  const [heroSrc, setHeroSrc] = useState(null);
+  const HERO_BANNER_SLUG = import.meta.env.VITE_HERO_BANNER_SLUG || 'home-hero';
+  const [bannerRefreshKey, setBannerRefreshKey] = useState(0);
 
   // Primary filters
   const [category, setCategory] = useState('');
@@ -26,6 +39,16 @@ export default function HeroWithFilters() {
   const [areaMax, setAreaMax] = useState('');
   const [furnishing, setFurnishing] = useState('');
   const [rera, setRera] = useState('');
+
+  // Dynamic options state with static fallbacks
+  const [categoriesOpt, setCategoriesOpt] = useState(CATEGORIES);
+  const [ptByCatOpt, setPtByCatOpt] = useState(PROPERTY_TYPES_BY_CATEGORY);
+  const [citiesOpt, setCitiesOpt] = useState(CITIES);
+  const [bedroomsOpt, setBedroomsOpt] = useState(BEDROOMS);
+  const [bathroomsOpt, setBathroomsOpt] = useState(BATHROOMS);
+  const [furnishingOpt, setFurnishingOpt] = useState(FURNISHING);
+  const [reraOpt, setReraOpt] = useState(RERA);
+  const [quickLinksOpt, setQuickLinksOpt] = useState(QUICK_LINKS);
 
   // Load persisted filters
   useEffect(() => {
@@ -66,6 +89,127 @@ export default function HeroWithFilters() {
     const data = { category, propertyType, city, bedrooms, bathrooms, areaMin, areaMax, furnishing, rera };
     try { localStorage.setItem('heroFilters', JSON.stringify(data)); } catch {}
   }, [category, propertyType, city, bedrooms, bathrooms, areaMin, areaMax, furnishing, rera]);
+
+  // Fetch hero banner from backend (public) so admin uploads reflect here
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const base = import.meta.env.VITE_API_BASE || '';
+        const token = localStorage.getItem('myToken');
+        const publicUrl = base ? `${base}/api/banners/active` : `/api/banners/active`;
+        const adminUrl  = base ? `${base}/api/admin/banners`  : `/api/admin/banners`;
+
+        // Try public first
+        let res = await fetch(publicUrl);
+        let data;
+        if (res.ok) {
+          data = await res.json();
+        } else {
+          // If public fails, try admin (if accessible) with optional token
+          const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+          res = await fetch(adminUrl, { headers });
+          if (!res.ok) {
+            console.warn('Banner fetch failed at both public and admin endpoints', { publicStatus: res.status });
+            throw new Error('Failed');
+          }
+          data = await res.json();
+        }
+
+        const list = (data?.banners || []).filter(b => (b?.slug || '').startsWith(HERO_BANNER_SLUG) && b?.isActive !== false);
+        if (list.length) {
+          // Sort by order asc if present, else leave as-is
+          list.sort((a,b)=> (a?.order ?? 0) - (b?.order ?? 0));
+          const top = list[0];
+          const img = top?.image?.cdn_url || top?.image?.url;
+          if (img && active) {
+            // cache-bust to avoid stale image right after upload
+            const bust = img.includes('?') ? `${img}&t=${Date.now()}` : `${img}?t=${Date.now()}`;
+            setHeroSrc(bust);
+          }
+        } else {
+          // No active banner found with matching slug - clear any existing banner
+          if (active) setHeroSrc(null);
+        }
+      } catch (e) {
+        console.warn('Hero banner fetch error:', e);
+      }
+      if (active) setBannerLoading(false);
+    })();
+    return () => { active = false; };
+  }, [HERO_BANNER_SLUG, bannerRefreshKey]);
+
+  // Listen for cross-tab or in-app uploads to refresh banner
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === 'banners:updated') {
+        // Add a small delay to allow backend processing
+        setTimeout(() => {
+          setBannerLoading(true);
+          setBannerRefreshKey((k) => k + 1);
+        }, 1000);
+      }
+    };
+    const onCustom = () => {
+      // Add a small delay to allow backend processing
+      setTimeout(() => {
+        setBannerLoading(true);
+        setBannerRefreshKey((k) => k + 1);
+      }, 1000);
+    };
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('banners:updated', onCustom);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('banners:updated', onCustom);
+    };
+  }, []);
+
+  // Ensure propertyType is valid for selected category
+  useEffect(() => {
+    const next = sanitizeSelections({ category, propertyType });
+    if (next.propertyType !== propertyType) {
+      setPropertyType('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category]);
+
+  const propertyTypeOptions = useMemo(() => {
+    return ptByCatOpt[category] || [];
+  }, [category]);
+
+  // Fetch dynamic options from API with safe fallback
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const base = import.meta.env.VITE_API_BASE || '';
+        const url = base ? `${base}/api/filters` : `/api/filters`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Failed to load filters');
+        const data = await res.json();
+        if (cancelled || !data || typeof data !== 'object') return;
+
+        if (Array.isArray(data.categories) && data.categories.length) setCategoriesOpt(data.categories.map(v => (typeof v === 'string' ? { value: v, label: v } : v)));
+        if (data.propertyTypesByCategory && typeof data.propertyTypesByCategory === 'object') {
+          const mapped = {};
+          Object.entries(data.propertyTypesByCategory).forEach(([k, arr]) => {
+            mapped[k] = Array.isArray(arr) ? arr.map(v => (typeof v === 'string' ? { value: v, label: v } : v)) : [];
+          });
+          setPtByCatOpt(mapped);
+        }
+        if (Array.isArray(data.cities) && data.cities.length) setCitiesOpt(data.cities.map(v => (typeof v === 'string' ? { value: v, label: v } : v)));
+        if (Array.isArray(data.bedrooms) && data.bedrooms.length) setBedroomsOpt(data.bedrooms.map(v => (typeof v === 'string' ? { value: v, label: v } : v)));
+        if (Array.isArray(data.bathrooms) && data.bathrooms.length) setBathroomsOpt(data.bathrooms.map(v => (typeof v === 'string' ? { value: v, label: v } : v)));
+        if (Array.isArray(data.furnishing) && data.furnishing.length) setFurnishingOpt(data.furnishing.map(v => (typeof v === 'string' ? { value: v, label: v } : v)));
+        if (Array.isArray(data.rera) && data.rera.length) setReraOpt(data.rera.map(v => (typeof v === 'string' ? { value: v, label: v } : v)));
+        if (Array.isArray(data.quickLinks) && data.quickLinks.length) setQuickLinksOpt(data.quickLinks);
+      } catch (e) {
+        // Silent fallback to static config
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   // Build query string for search
   const searchHref = useMemo(() => {
@@ -145,32 +289,24 @@ export default function HeroWithFilters() {
   return (
     <section className="max-w-screen-xl mx-auto px-3 sm:px-4 md:px-6 md:pl-[260px] mb-4 md:mb-8" style={{ marginTop: 'calc(var(--nav-h, 64px) + 12px)' }}>
       <div className="relative rounded-2xl sm:rounded-[22px] overflow-hidden shadow-xl min-h-[50svh] sm:min-h-[56svh] lg:min-h-[60svh]">
-        {/* skeleton shimmer while hero loads */}
-        {!heroLoaded && (
+        {/* skeleton shimmer while fetching banner */}
+        {bannerLoading && (
           <div aria-hidden="true" className="absolute inset-0 bg-gray-200">
             <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200" />
           </div>
         )}
-        {/* Optimized background image for better LCP with AVIF/WebP and fallback */}
-        <picture>
-          {HERO_AVIF && (
-            <source srcSet={`${HERO_AVIF}`} type="image/avif" />
-          )}
-          {HERO_WEBP && (
-            <source srcSet={`${HERO_WEBP}`} type="image/webp" />
-          )}
+        {/* Render backend banner only (no static fallback) */}
+        {heroSrc ? (
           <img
-            srcSet={`${HERO_JPG.replace('w=1600', 'w=640').replace('q=80','q=60')} 640w, ${HERO_JPG.replace('w=1600','w=1024')} 1024w, ${HERO_JPG} 1600w`}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
-            src={HERO_JPG}
-            alt="City skyline and homes backdrop"
+            src={heroSrc}
+            alt="Hero banner"
             decoding="async"
-            fetchpriority="high"
+            fetchPriority="high"
             loading="eager"
             className={`absolute inset-0 w-full h-full object-cover ${heroLoaded ? 'opacity-100' : 'opacity-0'} ${reducedMotion ? '' : 'transition-opacity duration-500'}`}
             onLoad={() => setHeroLoaded(true)}
           />
-        </picture>
+        ) : null}
         {/* gradient overlay + vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-[rgba(12,18,28,0.45)] to-[rgba(12,18,28,0.55)]" aria-hidden="true" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,0.2)_60%,rgba(0,0,0,0.45)_100%)]" aria-hidden="true" />
@@ -184,21 +320,21 @@ export default function HeroWithFilters() {
             <div className="w-full grid grid-cols-1 sm:flex sm:flex-1 gap-3 items-center">
               <select aria-label="Category" value={category} onChange={(e)=>setCategory(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[160px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 <option value="">Category</option>
-                <option value="Residential">Residential</option>
-                <option value="Commercial">Commercial</option>
+                {categoriesOpt.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
               <select aria-label="Property Type" value={propertyType} onChange={(e)=>setPropertyType(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[180px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 <option value="">Property Type</option>
-                <option value="Apartment">Apartment</option>
-                <option value="Villa">Villa</option>
-                <option value="Plot">Plot</option>
-                <option value="Office">Office</option>
+                {propertyTypeOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
               <select aria-label="City" value={city} onChange={(e)=>setCity(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[200px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 <option value="">Location</option>
-                <option value="gurgaon">Gurgaon</option>
-                <option value="noida">Noida</option>
-                <option value="dwarka-expressway">Dwarka Expressway</option>
+                {citiesOpt.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
               </select>
               <button
                 type="button"
@@ -244,25 +380,21 @@ export default function HeroWithFilters() {
           </div>
           {/* Quick links */}
           <div className="mx-3 sm:mx-4 md:mx-12 mt-2 flex flex-wrap gap-3 items-center justify-center text-slate-50/90 text-sm">
-            <Link to={`/buy?category=${encodeURIComponent(category || 'Residential')}&type=${encodeURIComponent(propertyType || 'Apartment')}&city=${encodeURIComponent(city || 'gurgaon')}`} className="hover:underline">Buy</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/rent?category=${encodeURIComponent(category || 'Residential')}&type=${encodeURIComponent(propertyType || 'Apartment')}&city=${encodeURIComponent(city || 'noida')}`} className="hover:underline">Rent</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/commercial?category=${encodeURIComponent('Commercial')}&type=${encodeURIComponent('Office')}&city=${encodeURIComponent(city || 'gurugram')}`} className="hover:underline">Commercial</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/buy?category=${encodeURIComponent('Residential')}&type=${encodeURIComponent('Apartment')}&city=${encodeURIComponent(city || 'gurgaon')}`} className="hover:underline">Apartments</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/buy?category=${encodeURIComponent('Residential')}&type=${encodeURIComponent('Villa')}&city=${encodeURIComponent(city || 'gurgaon')}`} className="hover:underline">Villas</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/buy?category=${encodeURIComponent('Residential')}&type=${encodeURIComponent('Plot')}&city=${encodeURIComponent(city || 'gurgaon')}`} className="hover:underline">Plots</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/commercial?category=${encodeURIComponent('Commercial')}&type=${encodeURIComponent('Office')}&city=${encodeURIComponent(city || 'gurgaon')}`} className="hover:underline">Offices</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/buy?category=${encodeURIComponent(category || 'Residential')}&type=${encodeURIComponent(propertyType || 'Apartment')}&city=${encodeURIComponent('gurgaon')}`} className="hover:underline">Gurgaon</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/buy?category=${encodeURIComponent(category || 'Residential')}&type=${encodeURIComponent(propertyType || 'Apartment')}&city=${encodeURIComponent('noida')}`} className="hover:underline">Noida</Link>
-            <span className="opacity-60 hidden sm:inline">|</span>
-            <Link to={`/buy?category=${encodeURIComponent(category || 'Residential')}&type=${encodeURIComponent(propertyType || 'Apartment')}&city=${encodeURIComponent('dwarka-expressway')}`} className="hover:underline">Dwarka Expressway</Link>
+            {quickLinksOpt.map((q, idx) => {
+              const params = {
+                category: q.category || 'residential',
+                type: q.type || 'apartment',
+                city: q.city || '',
+              };
+              const href = buildSearchHref(q.path, params);
+
+              return (
+                <React.Fragment key={q.label}>
+                  <Link to={href} className="hover:underline">{q.label}</Link>
+                  {idx < quickLinksOpt.length - 1 && <span className="opacity-60 hidden sm:inline">|</span>}
+                </React.Fragment>
+              );
+            })}
           </div>
           {/* spacer to create breathing room below the floating filter */}
           <div className="h-10 md:h-16" />
@@ -282,15 +414,15 @@ export default function HeroWithFilters() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <select aria-label="Bedrooms" value={bedrooms} onChange={(e)=>setBedrooms(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 w-full shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                   <option value="">Bedrooms</option>
-                  <option value="1+">1+</option>
-                  <option value="2+">2+</option>
-                  <option value="3+">3+</option>
+                  {bedroomsOpt.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
                 </select>
                 <select aria-label="Bathrooms" value={bathrooms} onChange={(e)=>setBathrooms(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 w-full shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                   <option value="">Bathrooms</option>
-                  <option value="1+">1+</option>
-                  <option value="2+">2+</option>
-                  <option value="3+">3+</option>
+                  {bathroomsOpt.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
                 </select>
                 <div className="flex gap-2">
                   <input aria-label="Minimum area" value={areaMin} onChange={(e)=>setAreaMin(e.target.value)} className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none placeholder:text-gray-400" placeholder="Min area (sqft)" aria-invalid={areaInvalid} aria-describedby={areaInvalid ? 'area-error' : undefined} />
@@ -301,14 +433,15 @@ export default function HeroWithFilters() {
                 )}
                 <select aria-label="Furnishing" value={furnishing} onChange={(e)=>setFurnishing(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 w-full shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                   <option value="">Furnishing</option>
-                  <option value="Unfurnished">Unfurnished</option>
-                  <option value="Semi-furnished">Semi-furnished</option>
-                  <option value="Furnished">Furnished</option>
+                  {furnishingOpt.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
                 </select>
                 <select aria-label="RERA" value={rera} onChange={(e)=>setRera(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 w-full shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                   <option value="">RERA</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
+                  {reraOpt.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
                 </select>
               </div>
               <div className="mt-4 flex items-center justify-end gap-2">

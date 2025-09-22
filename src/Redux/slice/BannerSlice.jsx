@@ -23,18 +23,34 @@ export const fetchAllBanners = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('myToken');
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/admin/banners`, {
+      // Use local API for testing, production API for live
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const apiBase = isLocalhost 
+        ? (import.meta.env.VITE_API_BASE || 'http://localhost:3500')
+        : 'https://api.100acress.com';
+      console.log('BannerSlice: fetchAllBanners - API Base:', apiBase);
+      console.log('BannerSlice: fetchAllBanners - Token:', token ? 'Present' : 'Missing');
+      
+      const response = await fetch(`${apiBase}/api/admin/banners`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
+      
+      console.log('BannerSlice: fetchAllBanners - Response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch banners');
+        const errorText = await response.text();
+        console.error('BannerSlice: fetchAllBanners - Error response:', errorText);
+        throw new Error(`Failed to fetch banners: ${response.status} ${errorText}`);
       }
+      
       const data = await response.json();
+      console.log('BannerSlice: fetchAllBanners - Response data:', data);
       return data.banners || [];
     } catch (error) {
+      console.error('BannerSlice: fetchAllBanners - Error:', error);
       return rejectWithValue(error.message);
     }
   }
@@ -85,11 +101,13 @@ const bannerSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchAllBanners.fulfilled, (state, action) => {
+        console.log('BannerSlice: fetchAllBanners.fulfilled - Payload:', action.payload);
         state.loading = false;
         state.allBanners = action.payload;
         state.error = null;
       })
       .addCase(fetchAllBanners.rejected, (state, action) => {
+        console.log('BannerSlice: fetchAllBanners.rejected - Error:', action.payload);
         state.loading = false;
         state.error = action.payload;
       });

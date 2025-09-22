@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MdSpaceDashboard } from "react-icons/md";
+import { MdSpaceDashboard, MdInsights } from "react-icons/md";
 import { FaDiagramProject } from "react-icons/fa6";
 import { SiBloglovin } from "react-icons/si";
 import { GoProjectSymlink } from "react-icons/go";
@@ -121,6 +121,10 @@ const Sidebar = () => {
             <MdSpaceDashboard className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
             <span>Dashboard</span>
           </Link>
+          {/* <Link to="/Admin/insights" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/insights") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
+            <MdInsights className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
+            <span>Insights</span>
+          </Link> */}
           <Link to="/Admin/enquiries" className={`sidebar-nav-item group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-500/80 hover:to-purple-500/80 hover:text-white font-medium text-base ${location.pathname.startsWith("/Admin/enquiries") ? "bg-gradient-to-r from-blue-500/80 to-purple-500/80 text-white" : "text-gray-200 dark:text-gray-300"}`}>
             <GoProjectSymlink className="icon text-xl group-hover:scale-110 group-hover:text-white transition-transform duration-200" />
             <span>Project Enquiries</span>

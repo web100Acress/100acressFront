@@ -32,7 +32,7 @@ const UnifiedBannerManagement = () => {
     subtitle: '',
     slug: '',
     link: '',
-    isActive: true,
+    isActive: false, // Default to inactive so banners don't show immediately after upload
     order: 0,
     position: 'bottom',
     size: 'small',
@@ -120,6 +120,20 @@ const UnifiedBannerManagement = () => {
 
   const uploadSmallBanner = async () => {
     try {
+      // Validate required fields
+      if (!bannerData.title) {
+        toast.error('Title is required');
+        return;
+      }
+      if (!bannerData.slug) {
+        toast.error('Slug is required');
+        return;
+      }
+      if (!selectedDesktopFile && !bannerData.desktopImage) {
+        toast.error('Desktop image is required');
+        return;
+      }
+
       const formData = new FormData();
       formData.append('title', bannerData.title);
       formData.append('subtitle', bannerData.subtitle);
@@ -129,9 +143,16 @@ const UnifiedBannerManagement = () => {
       formData.append('order', bannerData.order);
       formData.append('position', bannerData.position);
       formData.append('size', bannerData.size);
-      formData.append('desktopImage', bannerData.desktopImage);
-      formData.append('mobileImage', bannerData.mobileImage);
       
+      // Only append image URLs if no files are selected
+      if (!selectedDesktopFile && bannerData.desktopImage) {
+        formData.append('desktopImage', bannerData.desktopImage);
+      }
+      if (!selectedMobileFile && bannerData.mobileImage) {
+        formData.append('mobileImage', bannerData.mobileImage);
+      }
+      
+      // Append files if selected
       if (selectedDesktopFile) {
         formData.append('desktopBannerImage', selectedDesktopFile);
       }
@@ -139,11 +160,22 @@ const UnifiedBannerManagement = () => {
         formData.append('mobileBannerImage', selectedMobileFile);
       }
 
+      // Use local API for testing, production API for live
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const apiBase = isLocalhost 
+        ? (import.meta.env.VITE_API_BASE || 'http://localhost:3500')
+        : 'https://api.100acress.com';
+
       // Use PUT for updates, POST for new banners
       const method = editingBanner ? 'PUT' : 'POST';
       const url = editingBanner 
-        ? `${import.meta.env.VITE_API_BASE}/api/admin/small-banners/${editingBanner._id}`
-        : `${import.meta.env.VITE_API_BASE}/api/admin/small-banners/upload`;
+        ? `${apiBase}/api/admin/small-banners/${editingBanner._id}`
+        : `${apiBase}/api/admin/small-banners/upload`;
+
+      console.log('Small banner upload - FormData contents:');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
 
       const response = await fetch(url, {
         method: method,
@@ -153,12 +185,21 @@ const UnifiedBannerManagement = () => {
         body: formData
       });
 
+      console.log('Small banner upload response status:', response.status);
+
       if (response.ok) {
         toast.success(editingBanner ? 'Small banner updated successfully!' : 'Small banner uploaded successfully!');
         dispatch(fetchAllSmallBanners());
         resetForm();
       } else {
-        const errorData = await response.json();
+        const errorText = await response.text();
+        console.error('Small banner upload error response:', errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          errorData = { message: errorText };
+        }
         toast.error(errorData.message || `Failed to ${editingBanner ? 'update' : 'upload'} small banner`);
       }
     } catch (error) {
@@ -252,7 +293,7 @@ const UnifiedBannerManagement = () => {
       subtitle: '',
       slug: '',
       link: '',
-      isActive: true,
+      isActive: false, // Default to inactive for new uploads
       order: 0,
       position: 'bottom',
       size: 'small',

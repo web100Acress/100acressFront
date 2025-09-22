@@ -606,7 +606,15 @@ const SmallBannerManagement = () => {
                             <div className="h-16 w-24 flex-shrink-0">
                               <img
                                 className="h-16 w-24 object-cover rounded-lg"
-                                src={banner.image?.cdn_url || banner.image?.url}
+                                src={
+                                  banner.desktopImage?.cdn_url ||
+                                  banner.desktopImage?.url ||
+                                  banner.mobileImage?.cdn_url ||
+                                  banner.mobileImage?.url ||
+                                  banner.image?.cdn_url ||
+                                  banner.image?.url ||
+                                  '/Images/placeholder-banner.jpg'
+                                }
                                 alt={banner.title}
                               />
                             </div>
