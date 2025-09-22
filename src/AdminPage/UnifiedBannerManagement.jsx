@@ -90,11 +90,22 @@ const UnifiedBannerManagement = () => {
         formData.append('bannerImage', selectedDesktopFile);
       }
 
-      // Use PUT for updates, POST for new banners
-      const method = editingBanner ? 'PUT' : 'POST';
+      // Use local API for testing, production API for live
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const apiBase = isLocalhost 
+        ? (import.meta.env.VITE_API_BASE || 'http://localhost:3500')
+        : 'https://api.100acress.com';
+
+      // Use PATCH for updates, POST for new banners
+      const method = editingBanner ? 'PATCH' : 'POST';
       const url = editingBanner 
-        ? `${import.meta.env.VITE_API_BASE}/api/admin/banners/${editingBanner._id}`
-        : `${import.meta.env.VITE_API_BASE}/api/admin/banners/upload`;
+        ? `${apiBase}/api/admin/banners/${editingBanner._id}`
+        : `${apiBase}/api/admin/banners/upload`;
+
+      console.log('Hero banner update - FormData contents:');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
 
       const response = await fetch(url, {
         method: method,
@@ -104,12 +115,21 @@ const UnifiedBannerManagement = () => {
         body: formData
       });
 
+      console.log('Hero banner update response status:', response.status);
+
       if (response.ok) {
         toast.success(editingBanner ? 'Hero banner updated successfully!' : 'Hero banner uploaded successfully!');
         dispatch(fetchAllBanners());
         resetForm();
       } else {
-        const errorData = await response.json();
+        const errorText = await response.text();
+        console.error('Hero banner update error response:', errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          errorData = { message: errorText };
+        }
         toast.error(errorData.message || `Failed to ${editingBanner ? 'update' : 'upload'} hero banner`);
       }
     } catch (error) {
@@ -326,8 +346,8 @@ const UnifiedBannerManagement = () => {
     setBannerData(prev => ({
       ...prev,
       title,
-      // Only generate new slug for new banners, not when editing
-      slug: editingBanner ? prev.slug : generateSlug(title)
+      // Generate slug for both new and editing banners
+      slug: generateSlug(title)
     }));
   };
 
@@ -599,7 +619,11 @@ const UnifiedBannerManagement = () => {
                         value={bannerData.link}
                         onChange={(e) => setBannerData(prev => ({ ...prev, link: e.target.value }))}
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                        placeholder="https://www.100acress.com/slug"
                       />
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Leave empty to use slug-based link: https://www.100acress.com/{bannerData.slug || 'your-slug'}
+                      </p>
                     </div>
                   </div>
 

@@ -106,7 +106,7 @@ const SmallBannerSection = () => {
           const fallbackImageUrl = banner.image?.cdn_url || banner.image?.url || 
                                   banner.cdn_url || banner.imageUrl;
           
-          const targetUrl = banner.slug ? `/${banner.slug}/` : (banner.link || '#');
+          const targetUrl = banner.slug ? `https://www.100acress.com/${banner.slug}` : (banner.link || '#');
           
           return (
             <div key={banner._id}>
