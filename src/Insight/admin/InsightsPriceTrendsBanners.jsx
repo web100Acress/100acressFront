@@ -33,17 +33,13 @@ export default function InsightsPriceTrendsBanners() {
   const [cityForm, setCityForm] = useState({
     name: '',
     category: 'ncr',
-    banner: '',
+    bannerFile: null,
+    bannerPreview: '',
     localities: ''
   });
 
-  // Price trends form state
-  const [priceTrendsForm, setPriceTrendsForm] = useState({
-    area: '',
-    price: '',
-    rental: '',
-    trend: ''
-  });
+  // Navigation state
+  const [viewMode, setViewMode] = useState('city-list'); // city-list, add-city, edit-city, price-trends
 
   const token = localStorage.getItem("myToken");
 
@@ -180,18 +176,21 @@ export default function InsightsPriceTrendsBanners() {
       const token = localStorage.getItem("myToken");
       const base = import.meta.env.VITE_API_BASE;
 
+      const formData = new FormData();
+      formData.append('name', cityForm.name);
+      formData.append('category', cityForm.category);
+      formData.append('localities', cityForm.localities);
+
+      if (cityForm.bannerFile) {
+        formData.append('bannerImage', cityForm.bannerFile);
+      }
+
       const response = await fetch(`${base}/api/admin/cities`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({
-          name: cityForm.name,
-          category: cityForm.category,
-          banner: cityForm.banner,
-          localities: cityForm.localities
-        })
+        body: formData
       });
 
       if (response.ok) {
@@ -200,7 +199,8 @@ export default function InsightsPriceTrendsBanners() {
         resetCityForm();
         setShowCityForm(false);
       } else {
-        alert('Failed to add city');
+        const errorData = await response.json();
+        alert(`Failed to add city: ${errorData.message || 'Unknown error'}`);
       }
     } catch (error) {
       console.error('Error adding city:', error);
@@ -212,8 +212,9 @@ export default function InsightsPriceTrendsBanners() {
     setEditingCity(city);
     setCityForm({
       name: city.name,
-      category: activeTab,
-      banner: city.banner,
+      category: city.category,
+      bannerFile: null,
+      bannerPreview: city.banner?.url || '',
       localities: city.localities.join(', ')
     });
     setShowCityForm(true);
@@ -224,18 +225,21 @@ export default function InsightsPriceTrendsBanners() {
       const token = localStorage.getItem("myToken");
       const base = import.meta.env.VITE_API_BASE;
 
+      const formData = new FormData();
+      formData.append('name', cityForm.name);
+      formData.append('category', cityForm.category);
+      formData.append('localities', cityForm.localities);
+
+      if (cityForm.bannerFile) {
+        formData.append('bannerImage', cityForm.bannerFile);
+      }
+
       const response = await fetch(`${base}/api/admin/cities/${editingCity.id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({
-          name: cityForm.name,
-          category: cityForm.category,
-          banner: cityForm.banner,
-          localities: cityForm.localities
-        })
+        body: formData
       });
 
       if (response.ok) {
@@ -244,7 +248,8 @@ export default function InsightsPriceTrendsBanners() {
         setEditingCity(null);
         setShowCityForm(false);
       } else {
-        alert('Failed to update city');
+        const errorData = await response.json();
+        alert(`Failed to update city: ${errorData.message || 'Unknown error'}`);
       }
     } catch (error) {
       console.error('Error updating city:', error);
@@ -279,7 +284,8 @@ export default function InsightsPriceTrendsBanners() {
     setCityForm({
       name: '',
       category: 'ncr',
-      banner: '',
+      bannerFile: null,
+      bannerPreview: '',
       localities: ''
     });
   };
@@ -393,9 +399,50 @@ export default function InsightsPriceTrendsBanners() {
     });
   };
 
+  // Navigation functions
+  const navigateToCityList = () => {
+    setViewMode('city-list');
+    setShowCityForm(false);
+    setEditingCity(null);
+    resetCityForm();
+  };
+
+  const navigateToAddCity = () => {
+    setViewMode('add-city');
+    setShowCityForm(true);
+    setEditingCity(null);
+    resetCityForm();
+  };
+
+  const navigateToEditCity = (city) => {
+    setViewMode('edit-city');
+    editCity(city);
+  };
+
+  const navigateToPriceTrends = () => {
+    setViewMode('price-trends');
+    setShowPriceTrendsForm(false);
+    setEditingPriceTrend(null);
+    resetPriceTrendsForm();
+  };
+
+  // Get all cities from all categories
+  const getAllCities = () => {
+    return Object.values(cityData).flat();
+  };
+
   useEffect(() => {
     fetchAll();
   }, []);
+
+  // Cleanup banner preview URLs to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (cityForm.bannerPreview && cityForm.bannerPreview.startsWith('blob:')) {
+        URL.revokeObjectURL(cityForm.bannerPreview);
+      }
+    };
+  }, [cityForm.bannerPreview]);
 
   const reset = () => setForm({ title: "", subtitle: "", link: "", order: 0, desktopFile: null, mobileFile: null });
 
@@ -561,9 +608,9 @@ export default function InsightsPriceTrendsBanners() {
           {/* City Grid */}
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-800">Cities in {activeTab === 'ncr' ? 'NCR' : activeTab === 'metro' ? 'Metro Cities' : 'Other Cities'}</h3>
+              <h3 className="text-lg font-medium text-gray-800">All Cities ({getAllCities().length})</h3>
               <button
-                onClick={() => setShowCityForm(true)}
+                onClick={navigateToAddCity}
                 className="inline-flex items-center gap-2 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -572,7 +619,7 @@ export default function InsightsPriceTrendsBanners() {
                 Add City
               </button>
             </div>
-            {cityData[activeTab].length === 0 ? (
+            {getAllCities().length === 0 ? (
               <div className="text-center py-8">
                 <div className="text-gray-400 mb-4">
                   <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -581,9 +628,9 @@ export default function InsightsPriceTrendsBanners() {
                   </svg>
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No cities added yet</h3>
-                <p className="text-gray-500 mb-4">Get started by adding your first city to this category.</p>
+                <p className="text-gray-500 mb-4">Get started by adding your first city to any category.</p>
                 <button
-                  onClick={() => setShowCityForm(true)}
+                  onClick={navigateToAddCity}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -594,7 +641,7 @@ export default function InsightsPriceTrendsBanners() {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {cityData[activeTab].map((city) => (
+                {getAllCities().map((city) => (
                   <div
                     key={city.id}
                     onClick={() => handleCityClick(city)}
@@ -604,15 +651,29 @@ export default function InsightsPriceTrendsBanners() {
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <div className="aspect-video bg-gray-100 rounded-t-xl flex items-center justify-center">
-                      <span className="text-gray-400 text-sm">Banner Image</span>
+                    <div className="aspect-video bg-gray-100 rounded-t-xl overflow-hidden">
+                      {city.banner?.url ? (
+                        <img
+                          src={city.banner.url}
+                          alt={city.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 text-sm">Image not available</div>';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 text-sm">
+                          No banner image
+                        </div>
+                      )}
                     </div>
                     <div className="p-3">
                       <h3 className="font-medium text-gray-900">{city.name}</h3>
                       <p className="text-xs text-gray-500 mt-1">{city.localities?.length || 0} localities</p>
                       <div className="flex gap-2 mt-2">
                         <button
-                          onClick={(e) => { e.stopPropagation(); editCity(city); }}
+                          onClick={(e) => { e.stopPropagation(); navigateToEditCity(city); }}
                           className="text-xs text-indigo-600 hover:text-indigo-700"
                         >
                           Edit
@@ -793,13 +854,59 @@ export default function InsightsPriceTrendsBanners() {
                 </select>
               </div>
               <div className="md:col-span-2">
-                <label className="block text-xs font-medium text-gray-600 mb-1">Banner URL</label>
-                <input
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                  placeholder="Enter banner image URL"
-                  value={cityForm.banner}
-                  onChange={e => setCityForm({...cityForm, banner: e.target.value})}
-                />
+                <label className="block text-xs font-medium text-gray-600 mb-1">Banner Image</label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-indigo-400 transition-colors">
+                  {cityForm.bannerPreview ? (
+                    <div className="mb-4">
+                      <img
+                        src={cityForm.bannerPreview}
+                        alt="Banner preview"
+                        className="max-w-full max-h-32 mx-auto rounded-lg shadow-sm"
+                      />
+                    </div>
+                  ) : (
+                    <div className="mb-4">
+                      <svg className="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setCityForm({
+                          ...cityForm,
+                          bannerFile: file,
+                          bannerPreview: URL.createObjectURL(file)
+                        });
+                      }
+                    }}
+                    className="hidden"
+                    id="banner-upload"
+                  />
+                  <label
+                    htmlFor="banner-upload"
+                    className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    {cityForm.bannerFile ? 'Change Image' : 'Upload Image'}
+                  </label>
+                  {cityForm.bannerFile && (
+                    <button
+                      type="button"
+                      onClick={() => setCityForm({...cityForm, bannerFile: null, bannerPreview: ''})}
+                      className="ml-2 text-red-600 hover:text-red-700 text-sm"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Upload a banner image for this city (max 5MB)</p>
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-medium text-gray-600 mb-1">Localities (comma separated)</label>
@@ -895,120 +1002,6 @@ export default function InsightsPriceTrendsBanners() {
             </form>
           </div>
         )}
-
-        {/* Banner Upload Form */}
-        <div className="mt-6 bg-white border border-gray-200 rounded-2xl shadow-sm">
-          <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-800">Create banners</h2>
-          </div>
-          <form onSubmit={onSubmit} className="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Title</label>
-              <input
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                placeholder="e.g. City-wide report"
-                value={form.title}
-                onChange={e => setForm({...form, title:e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Subtitle</label>
-              <input
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                placeholder="Short supporting text"
-                value={form.subtitle}
-                onChange={e => setForm({...form, subtitle:e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Link</label>
-              <input
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                placeholder="https://example.com"
-                value={form.link}
-                onChange={e => setForm({...form, link:e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Order</label>
-              <input
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                type="number"
-                placeholder="0"
-                value={form.order}
-                onChange={e => setForm({...form, order:Number(e.target.value)||0})}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Desktop Image (hero/small)</label>
-              <label className="w-full flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-3 text-xs text-gray-500 hover:border-indigo-300 cursor-pointer">
-                <input type="file" accept="image/*" className="hidden" onChange={e => setForm({...form, desktopFile:e.target.files?.[0]||null})}/>
-                {form.desktopFile ? <span className="truncate max-w-[220px]">{form.desktopFile.name}</span> : <span>Click to choose image</span>}
-              </label>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Mobile Image (small)</label>
-              <label className="w-full flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-3 text-xs text-gray-500 hover:border-indigo-300 cursor-pointer">
-                <input type="file" accept="image/*" className="hidden" onChange={e => setForm({...form, mobileFile:e.target.files?.[0]||null})}/>
-                {form.mobileFile ? <span className="truncate max-w-[220px]">{form.mobileFile.name}</span> : <span>Click to choose image</span>}
-              </label>
-            </div>
-            <div className="md:col-span-2 flex items-center gap-2">
-              <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm shadow-sm">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"/>
-                </svg>
-                Upload
-              </button>
-              <button type="button" onClick={reset} className="px-3 py-2 text-sm text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50">Reset</button>
-            </div>
-          </form>
-        </div>
-
-        {/* Existing Banner Lists */}
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm">
-            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-800">Hero Banners</h3>
-              {loading && <Spinner />}
-            </div>
-            <div className="p-3 sm:p-4 space-y-2">
-              {hero.map(b => (
-                <div key={b._id} className="flex items-center gap-3 border border-gray-200 rounded-xl p-2.5">
-                  <img src={b.image?.cdn_url || b.image?.url} className="w-28 h-16 object-cover rounded-lg" />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-gray-900 truncate">{b.title}</div>
-                    <div className="text-xs text-gray-500 truncate">{b.subtitle}</div>
-                  </div>
-                  <button onClick={() => { if(confirm('Delete this hero banner?')) del(b._id,'hero'); }} className="text-red-600 text-xs border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5">Delete</button>
-                </div>
-              ))}
-              {hero.length === 0 && !loading && <Empty text="No hero banners." />}
-            </div>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm">
-            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-800">Small Banners</h3>
-              {loading && <Spinner />}
-            </div>
-            <div className="p-3 sm:p-4 space-y-2">
-              {small.map(b => (
-                <div key={b._id} className="flex items-center gap-3 border border-gray-200 rounded-xl p-2.5">
-                  <img src={b.desktopImage?.cdn_url || b.desktopImage?.url} className="w-28 h-16 object-cover rounded-lg" />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-gray-900 truncate">{b.title}</div>
-                    <div className="text-xs text-gray-500 truncate">{b.subtitle}</div>
-                  </div>
-                  <button onClick={() => { if(confirm('Delete this small banner?')) del(b._id,'small'); }} className="text-red-600 text-xs border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5">Delete</button>
-                </div>
-              ))}
-              {small.length === 0 && !loading && <Empty text="No small banners." />}
-            </div>
-          </div>
-        </div>
-
-        {/* Loading state */}
         {loading && (
           <div className="fixed inset-x-0 bottom-4 flex justify-center pointer-events-none">
             <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-gray-900/90 text-white px-3 py-1.5 text-xs shadow-lg">

@@ -29,6 +29,7 @@ export default function PriceTrends() {
   const [pickerLoading, setPickerLoading] = useState(true);
   const [compareMode, setCompareMode] = useState(false);
   const [selectedCities, setSelectedCities] = useState([]);
+  const [compareFlash, setCompareFlash] = useState(false);
   const [Charts, setCharts] = useState(null);
   const [seriesMap, setSeriesMap] = useState({}); // { City: [{x,y}, ...] }
   const [seriesLoading, setSeriesLoading] = useState(false);
@@ -167,7 +168,11 @@ export default function PriceTrends() {
 
   const visibleCities = useMemo(() => {
     const allCities = cityCategories.flatMap(category => category.cities || []);
-    return allCities.filter(c => c.toLowerCase().includes(cityQuery.toLowerCase()));
+    return allCities.filter(c => {
+      // Handle both string and object formats
+      const cityName = typeof c === 'object' ? c.name : c;
+      return cityName.toLowerCase().includes(cityQuery.toLowerCase());
+    });
   }, [cityCategories, cityQuery]);
 
   // Tiny sparkline path for locality trend (parameterized for width/height)
@@ -216,7 +221,7 @@ export default function PriceTrends() {
                 categoryName === 'metro' ? 'Metro Cities' : 'Other Cities',
           color: categoryName === 'ncr' ? '#3B82F6' :
                  categoryName === 'metro' ? '#10B981' : '#8B5CF6',
-          cities: cities.map(city => city.name)
+          cities: cities // Pass full city objects instead of just names
         }));
         setCityCategories(categories);
       }
@@ -314,6 +319,18 @@ export default function PriceTrends() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+
+  // Quick filter chips for popular cities - dynamically generated from visibleCities
+  const popularChips = useMemo(
+    () => {
+      if (!Array.isArray(visibleCities) || visibleCities.length === 0) return [];
+      // Get first 12 cities as popular chips, handling both string and object formats
+      return visibleCities.slice(0, 12).map(city => {
+        return typeof city === 'object' ? city.name : city;
+      });
+    },
+    [visibleCities]
+  );
 
   // Fetch trend series for compare mode
   const fetchSeries = async (cities) => {
