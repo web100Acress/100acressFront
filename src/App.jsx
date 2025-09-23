@@ -126,10 +126,12 @@ const GlobalBudgetPrice = lazy(() => import("./Pages/GlobalBudgetPrice"));
 const PriceTrends = lazy(() => import("./Insight/pages/PriceTrends"));
 const CityProjects = lazy(() => import("./Pages/ProjectCities/CityProjects"));
 // Analytics pages (MVP scaffold)
+const MarketReports = lazy(() => import("./Insight/pages/MarketReports"));
+const AreaAnalytics = lazy(() => import("./Insight/pages/AreaAnalytics"));
+const AnalyticsHome = lazy(() => import("./Insight/pages/AnalyticsHome"));
 const MarketAnalytics = lazy(() => import("./Insight/pages/MarketAnalytics"));
 const LocationIntelligence = lazy(() => import("./Insight/pages/LocationIntelligence"));
 const InvestmentInsights = lazy(() => import("./Insight/pages/InvestmentInsights"));
-const AnalyticsHome = lazy(() => import("./Insight/pages/AnalyticsHome"));
 const LoanEligibility = lazy(() => import("./Insight/pages/LoanEligibility"));
 
 // Admin components (already lazy loaded)
@@ -552,8 +554,12 @@ function App() {
                         element={<LazyLoad><InsightsPriceTrendsBanners /></LazyLoad>}
                       />
                       <Route
-                        path="insights/property-insights"
-                        element={<LazyLoad><InsightsPropertyInsightsBanners /></LazyLoad>}
+                        path="insights/market-reports"
+                        element={<LazyLoad><MarketReports /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/investment"
+                        element={<LazyLoad><InvestmentInsights /></LazyLoad>}
                       />
                     </Route>
 

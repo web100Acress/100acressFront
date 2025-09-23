@@ -61,7 +61,24 @@ export default function InsightsPriceTrendsBanners() {
         if (citiesResponse.ok) {
           const citiesData = await citiesResponse.json();
           const citiesByCategory = { ncr: [], metro: [], other: [] };
-          citiesData.data.forEach(city => {
+
+          // Handle different possible response formats
+          let cities = [];
+          if (Array.isArray(citiesData.data)) {
+            cities = citiesData.data;
+          } else if (citiesData.data && typeof citiesData.data === 'object') {
+            // If data is an object with categories (current backend format)
+            Object.values(citiesData.data).forEach(categoryCities => {
+              if (Array.isArray(categoryCities)) {
+                cities = cities.concat(categoryCities);
+              }
+            });
+          } else if (citiesData.success && citiesData.data) {
+            // Handle case where data might be nested differently
+            cities = citiesData.data;
+          }
+
+          cities.forEach(city => {
             if (citiesByCategory[city.category]) {
               citiesByCategory[city.category].push({
                 id: city._id,
@@ -109,7 +126,24 @@ export default function InsightsPriceTrendsBanners() {
       if (citiesResponse.ok) {
         const citiesData = await citiesResponse.json();
         const citiesByCategory = { ncr: [], metro: [], other: [] };
-        citiesData.data.forEach(city => {
+
+        // Handle different possible response formats
+        let cities = [];
+        if (Array.isArray(citiesData.data)) {
+          cities = citiesData.data;
+        } else if (citiesData.data && typeof citiesData.data === 'object') {
+          // If data is an object with categories (current backend format)
+          Object.values(citiesData.data).forEach(categoryCities => {
+            if (Array.isArray(categoryCities)) {
+              cities = cities.concat(categoryCities);
+            }
+          });
+        } else if (citiesData.success && citiesData.data) {
+          // Handle case where data might be nested differently
+          cities = citiesData.data;
+        }
+
+        cities.forEach(city => {
           if (citiesByCategory[city.category]) {
             citiesByCategory[city.category].push({
               id: city._id,
