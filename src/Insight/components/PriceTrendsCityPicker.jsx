@@ -13,14 +13,31 @@ export default function PriceTrendsCityPicker({
   onChooseCity,
   cityCategories = [], // Dynamic city categories from admin API
 }) {
-  const toggleCitySelect = (cname) => {
+  const toggleCitySelect = (city) => {
+    // Handle both object and string formats
+    const cname = typeof city === 'object' ? city.name : city;
     setSelectedCities((list) =>
       list.includes(cname) ? list.filter((c) => c !== cname) : [...list, cname]
     );
   };
 
-  const getCityImage = (cname) => {
-    // Use cityImages prop if available, otherwise show city name as fallback
+  // Enhanced function to get city banner from dynamic data or fallback to static images
+  const getCityBanner = (cname) => {
+    // First try to find the city in the dynamic categories to get its banner
+    for (const category of cityCategories) {
+      const cityData = (category.cities || []).find(city => {
+        if (typeof city === 'object') {
+          return city.name === cname;
+        } else {
+          return city === cname;
+        }
+      });
+      if (cityData && typeof cityData === 'object' && cityData.banner?.url) {
+        return cityData.banner.url;
+      }
+    }
+
+    // Fallback to static cityImages prop if dynamic data not available
     return cityImages[cname] || null;
   };
 
@@ -29,6 +46,38 @@ export default function PriceTrendsCityPicker({
   const [expanded, setExpanded] = useState(false);
   const [screenSize, setScreenSize] = useState("lg");
   const [gridCols, setGridCols] = useState(6);
+  const [bannerData, setBannerData] = useState(null);
+  const [bannerLoading, setBannerLoading] = useState(false);
+
+  // Fetch banner data on component mount
+  useEffect(() => {
+    const fetchBannerData = async () => {
+      setBannerLoading(true);
+      try {
+        const token = localStorage.getItem("myToken");
+        const base = import.meta.env.VITE_API_BASE;
+
+        const response = await fetch(`${base}/api/admin/insights-price-trends-banners`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          // Get the first active banner with matching slug
+          const activeBanner = (result.banners || []).find(banner =>
+            (banner.slug || "").includes("insights-price-trends") && banner.active !== false
+          );
+          setBannerData(activeBanner);
+        }
+      } catch (error) {
+        console.error('Error fetching banner data:', error);
+      } finally {
+        setBannerLoading(false);
+      }
+    };
+
+    fetchBannerData();
+  }, []);
 
   useEffect(() => {
     const updateScreenSize = () => {
@@ -74,15 +123,21 @@ export default function PriceTrendsCityPicker({
 
   const displayedCities = useMemo(() => {
     if (expanded) return visibleCities;
-    return Array.isArray(visibleCities) ? visibleCities.slice(0, perPage) : [];
+    // Handle both object and string formats when slicing
+    if (Array.isArray(visibleCities)) {
+      return visibleCities.slice(0, perPage);
+    }
+    return [];
   }, [expanded, perPage, visibleCities]);
 
   // Quick filter chips for popular cities - dynamically generated from visibleCities
   const popularChips = useMemo(
     () => {
       if (!Array.isArray(visibleCities) || visibleCities.length === 0) return [];
-      // Get first 12 cities as popular chips
-      return visibleCities.slice(0, 12);
+      // Get first 12 cities as popular chips, handling both string and object formats
+      return visibleCities.slice(0, 12).map(city => {
+        return typeof city === 'object' ? city.name : city;
+      });
     },
     [visibleCities]
   );
@@ -90,8 +145,10 @@ export default function PriceTrendsCityPicker({
   const [imageErrors, setImageErrors] = useState({});
   const [hoveredCard, setHoveredCard] = useState(null);
 
-  const renderCard = (cname) => {
-    const imageUrl = getCityImage(cname);
+  const renderCard = (city) => {
+    // Handle both object and string formats for backward compatibility
+    const cname = typeof city === 'object' ? city.name : city;
+    const imageUrl = getCityBanner(cname);
     const hasError = imageErrors[cname];
     const isSelected = compareMode && selectedCities.includes(cname);
     const isHovered = hoveredCard === cname;
@@ -119,7 +176,7 @@ export default function PriceTrendsCityPicker({
         >
           {/* Enhanced image container with better styling */}
           <div className="relative inline-flex w-16 h-16 sm:w-20 sm:h-20 lg:w-28 lg:h-28 rounded-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 shadow-inner ring-2 sm:ring-4 ring-white">
-            {!hasError ? (
+            {!hasError && imageUrl ? (
               <img
                 key={imageUrl}
                 alt={cname}
@@ -200,13 +257,33 @@ export default function PriceTrendsCityPicker({
         <div className="mb-4 sm:mb-6">
           <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
         </div>
-        {/* Header removed as requested */}
-        <div className="mb-2 sm:mb-4" />
 
-        {/* Decorative divider (search removed for cleaner layout) */}
-        <div className="mb-4 sm:mb-6">
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
-        </div>
+        {/* Dynamic Banner Display */}
+        {bannerData && (
+          <div className="mb-6 sm:mb-8">
+            <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl shadow-xl">
+              {bannerData.image?.url && (
+                <img
+                  src={bannerData.image.url}
+                  alt={bannerData.title || "Banner"}
+                  className="w-full h-32 sm:h-40 md:h-48 lg:h-56 object-cover"
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60 flex items-center">
+                <div className="px-4 sm:px-6 lg:px-8 text-white">
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-2">
+                    {bannerData.title}
+                  </h2>
+                  {bannerData.subtitle && (
+                      <p className="text-sm sm:text-base lg:text-lg opacity-90">
+                      {bannerData.subtitle}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Popular Cities with Compare toggle (rounded box) */}
         <div className="mb-6 sm:mb-8 bg-white border-2 border-gray-200 rounded-2xl sm:rounded-3xl shadow-sm p-3 sm:p-4">
@@ -345,7 +422,9 @@ export default function PriceTrendsCityPicker({
               </section>
             )}
           </div>
-        )}{/* Enhanced View More/Less Buttons */}
+        )}
+
+        {/* Enhanced View More/Less Buttons */}
         {!pickerLoading &&
           visibleCities &&
           !expanded && (
