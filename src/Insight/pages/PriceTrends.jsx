@@ -24,6 +24,8 @@ export default function PriceTrends() {
   const [loading, setLoading] = useState(false);
   const [localities, setLocalities] = useState(null);
   const [totalCount, setTotalCount] = useState(null);
+  const [cityCategories, setCityCategories] = useState([]);
+  const [citiesLoading, setCitiesLoading] = useState(true);
   const [pickerLoading, setPickerLoading] = useState(true);
   const [compareMode, setCompareMode] = useState(false);
   const [selectedCities, setSelectedCities] = useState([]);
@@ -34,9 +36,15 @@ export default function PriceTrends() {
   const [drawerAnimating, setDrawerAnimating] = useState(false); // for slide transitions
   const [drawerData, setDrawerData] = useState(null);
   const [drawerRestored, setDrawerRestored] = useState(false);
-  const [compareFlash, setCompareFlash] = useState(false);
-
-  // Real-estate themed city images
+  const [activeLocality, setActiveLocality] = useState(null);
+  const [alertSubscribed, setAlertSubscribed] = useState(false);
+  const [savedLocality, setSavedLocality] = useState(false);
+  const [miniName, setMiniName] = useState("");
+  const [miniPhone, setMiniPhone] = useState("");
+  const [miniSubmitted, setMiniSubmitted] = useState(false);
+  const [emiPrincipal, setEmiPrincipal] = useState(0);
+  const [emiRate, setEmiRate] = useState(8.5);
+  const [emiYears, setEmiYears] = useState(20);
   const cityImages = useMemo(() => ({
     Bangalore: "/assets/cities/bangalore.jpg",
     Mumbai: "/assets/cities/mumbai.jpg",
@@ -157,11 +165,10 @@ export default function PriceTrends() {
     return { median, avgChange, avgYield };
   }, [filtered]);
 
-  const allCities = useMemo(() => [
-    "Bangalore","Mumbai","Delhi","Pune","Chennai","Hyderabad","Kolkata","Navi Mumbai","Gurgaon","Noida",
-    "Ahmedabad","Jaipur","Lucknow","Surat","Indore","Nagpur","Thane","Vadodara","Ghaziabad","Faridabad"
-  ], []);
-  const visibleCities = useMemo(() => allCities.filter(c => c.toLowerCase().includes(cityQuery.toLowerCase())), [allCities, cityQuery]);
+  const visibleCities = useMemo(() => {
+    const allCities = cityCategories.flatMap(category => category.cities || []);
+    return allCities.filter(c => c.toLowerCase().includes(cityQuery.toLowerCase()));
+  }, [cityCategories, cityQuery]);
 
   // Tiny sparkline path for locality trend (parameterized for width/height)
   const makeSpark = (rate, changePct, w = 64, h = 24) => {
@@ -191,13 +198,45 @@ export default function PriceTrends() {
     }
   }, [initialCity]);
 
+  // Fetch cities from API
+  const fetchCities = async () => {
+    try {
+      const token = localStorage.getItem("myToken");
+      const base = getApiBase();
+      const response = await fetch(`${base}/api/admin/cities`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        // Transform the API response to match the expected format
+        const categories = Object.entries(result.data).map(([categoryName, cities]) => ({
+          id: categoryName,
+          name: categoryName === 'ncr' ? 'Popular in NCR' :
+                categoryName === 'metro' ? 'Metro Cities' : 'Other Cities',
+          color: categoryName === 'ncr' ? '#3B82F6' :
+                 categoryName === 'metro' ? '#10B981' : '#8B5CF6',
+          cities: cities.map(city => city.name)
+        }));
+        setCityCategories(categories);
+      }
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    } finally {
+      setCitiesLoading(false);
+    }
+  };
+
   // Simulate picker skeleton for first paint
   useEffect(() => {
-    const t = setTimeout(()=> setPickerLoading(false), 300);
+    const t = setTimeout(() => setPickerLoading(false), 300);
     return () => clearTimeout(t);
   }, []);
 
-  // Lazy-load Recharts (optional)
+  // Fetch cities on component mount
+  useEffect(() => {
+    fetchCities();
+  }, []);
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -318,16 +357,6 @@ export default function PriceTrends() {
     }
   }, [compareMode]);
 
-  const [activeLocality, setActiveLocality] = useState(null);
-  const [alertSubscribed, setAlertSubscribed] = useState(false);
-  const [savedLocality, setSavedLocality] = useState(false);
-  const [miniName, setMiniName] = useState("");
-  const [miniPhone, setMiniPhone] = useState("");
-  const [miniSubmitted, setMiniSubmitted] = useState(false);
-  const [emiPrincipal, setEmiPrincipal] = useState(0);
-  const [emiRate, setEmiRate] = useState(8.5);
-  const [emiYears, setEmiYears] = useState(20);
-
   const handlePriceAlert = () => {
     try {
       const key = `pt_alert_${city}_${drawerData?.locality || ''}`;
@@ -424,7 +453,8 @@ export default function PriceTrends() {
             setCityQuery={setCityQuery}
             visibleCities={visibleCities}
             cityImages={cityImages}
-            pickerLoading={pickerLoading}
+            pickerLoading={pickerLoading || citiesLoading}
+            cityCategories={cityCategories}
             onChooseCity={(cname, isCompare) => {
               if (isCompare) { setShowPicker(false); }
               else if (cname) { chooseCity(cname); }

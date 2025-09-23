@@ -11,6 +11,7 @@ export default function PriceTrendsCityPicker({
   cityImages,
   pickerLoading,
   onChooseCity,
+  cityCategories = [], // Dynamic city categories from admin API
 }) {
   const toggleCitySelect = (cname) => {
     setSelectedCities((list) =>
@@ -84,54 +85,6 @@ export default function PriceTrendsCityPicker({
       return visibleCities.slice(0, 12);
     },
     [visibleCities]
-  );
-
-  // Dynamic city categorization based on city names
-  const ncrCities = useMemo(
-    () => {
-      if (!Array.isArray(displayedCities)) return [];
-      return displayedCities.filter((city) => {
-        const name = String(city).toLowerCase();
-        return name.includes('gurgaon') || name.includes('gurugram') ||
-               name.includes('noida') || name.includes('delhi') ||
-               name.includes('ghaziabad') || name.includes('faridabad') ||
-               name.includes('dwarka') || name.includes('greater noida');
-      });
-    },
-    [displayedCities]
-  );
-
-  const metroCities = useMemo(
-    () => {
-      if (!Array.isArray(displayedCities)) return [];
-      return displayedCities.filter((city) => {
-        const name = String(city).toLowerCase();
-        return name.includes('mumbai') || name.includes('thane') ||
-               name.includes('navi mumbai') || name.includes('pune') ||
-               name.includes('bengaluru') || name.includes('bangalore') ||
-               name.includes('chennai') || name.includes('hyderabad') ||
-               name.includes('kolkata') || name.includes('ahmedabad');
-      });
-    },
-    [displayedCities]
-  );
-
-  const otherCities = useMemo(
-    () =>
-      (displayedCities || []).filter(
-        (city) => {
-          const name = String(city).toLowerCase();
-          return !name.includes('gurgaon') && !name.includes('gurugram') &&
-                 !name.includes('noida') && !name.includes('delhi') &&
-                 !name.includes('mumbai') && !name.includes('thane') &&
-                 !name.includes('navi mumbai') && !name.includes('pune') &&
-                 !name.includes('bengaluru') && !name.includes('bangalore') &&
-                 !name.includes('chennai') && !name.includes('hyderabad') &&
-                 !name.includes('kolkata') && !name.includes('ahmedabad') &&
-                 !name.includes('jaipur') && !name.includes('lucknow');
-        }
-      ),
-    [displayedCities]
   );
 
   const [imageErrors, setImageErrors] = useState({});
@@ -331,13 +284,16 @@ export default function PriceTrendsCityPicker({
           </div>
         ) : (
           <div className="space-y-8 sm:space-y-12">
-            {/* NCR Cities Section */}
-            {ncrCities.length > 0 && (
-              <section>
+            {/* Dynamic City Categories from Admin API */}
+            {cityCategories.map((category, index) => (
+              <section key={category.id || index}>
                 <div className="flex items-center gap-4 mb-4 sm:mb-6">
-                  <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-blue-600 to-indigo-600 rounded-full"></div>
+                  <div
+                    className="w-1 h-6 sm:h-8 rounded-full"
+                    style={{ backgroundColor: category.color || '#3B82F6' }}
+                  ></div>
                   <h2 className="text-lg sm:text-2xl font-bold text-gray-800 uppercase tracking-wider">
-                    Popular in NCR
+                    {category.name || category.title}
                   </h2>
                 </div>
                 <div
@@ -355,18 +311,18 @@ export default function PriceTrendsCityPicker({
                       : "grid-cols-6"
                   }`}
                 >
-                  {ncrCities.map(renderCard)}
+                  {(category.cities || []).map(renderCard)}
                 </div>
               </section>
-            )}
+            ))}
 
-            {/* Metro Cities Section */}
-            {metroCities.length > 0 && (
+            {/* Fallback for uncategorized cities */}
+            {cityCategories.length === 0 && displayedCities && displayedCities.length > 0 && (
               <section>
                 <div className="flex items-center gap-4 mb-4 sm:mb-6">
-                  <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-emerald-600 to-green-600 rounded-full"></div>
+                  <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-gray-600 to-gray-700 rounded-full"></div>
                   <h2 className="text-lg sm:text-2xl font-bold text-gray-800 uppercase tracking-wider">
-                    Metro Cities
+                    All Cities
                   </h2>
                 </div>
                 <div
@@ -384,36 +340,7 @@ export default function PriceTrendsCityPicker({
                       : "grid-cols-6"
                   }`}
                 >
-                  {metroCities.map(renderCard)}
-                </div>
-              </section>
-            )}
-
-            {/* Other Cities Section */}
-            {otherCities.length > 0 && (
-              <section>
-                <div className="flex items-center gap-4 mb-4 sm:mb-6">
-                  <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-purple-600 to-indigo-600 rounded-full"></div>
-                  <h2 className="text-lg sm:text-2xl font-bold text-gray-800 uppercase tracking-wider">
-                    Other Cities
-                  </h2>
-                </div>
-                <div
-                  className={`grid gap-4 sm:gap-6 ${
-                    gridCols === 1
-                      ? "grid-cols-1"
-                      : gridCols === 2
-                      ? "grid-cols-2"
-                      : gridCols === 3
-                      ? "grid-cols-3"
-                      : gridCols === 4
-                      ? "grid-cols-4"
-                      : gridCols === 5
-                      ? "grid-cols-5"
-                      : "grid-cols-6"
-                  }`}
-                >
-                  {otherCities.map(renderCard)}
+                  {displayedCities.map(renderCard)}
                 </div>
               </section>
             )}
