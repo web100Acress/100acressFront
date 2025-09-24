@@ -34,6 +34,7 @@ export default function FeaturedGrid() {
     sco: false,
     affordable: false,
     luxury: false,
+    luxuryAll: false,
     budget: false,
     delhi: false,
     dubai: false,
@@ -68,6 +69,9 @@ export default function FeaturedGrid() {
           break;
         case "Luxury":
           getLuxury();
+          if (!dataLoaded.luxuryAll) {
+            getAllProjects("luxury"); // Add this to populate LuxuryAllProject
+          }
           break;
         case "Budget":
           getBudgetHomes();
@@ -83,7 +87,8 @@ export default function FeaturedGrid() {
       }
       setDataLoaded((prevData) => ({
         ...prevData,
-        [filter]: true
+        [filter]: true,
+        ...(filter === "Luxury" ? { luxuryAll: true } : {})
       }));
     };
 
@@ -98,7 +103,7 @@ export default function FeaturedGrid() {
     loadData("Budget");
     loadData("Delhi");
     loadData("Dubai");
-  }, [dataLoaded, getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getProjectbyState]);
+  }, [dataLoaded, getTrending, getFeatured, getUpcoming, getCommercial, getAffordable, getLuxury, getScoplots, getBudgetHomes, getProjectIndelhi, getProjectbyState, getAllProjects]);
 
   // Filter projects based on active filter
   useEffect(() => {
@@ -143,7 +148,7 @@ export default function FeaturedGrid() {
     const shuffled = [...projectsToShow].sort(() => 0.5 - Math.random());
     const finalProjects = shuffled.slice(0, 18);
     setFilteredProjects(finalProjects);
-  }, [activeFilter, showAllSections, TrendingProjects, FeaturedProjects, UpcomingProjects, CommercialProjects, AffordableProjects, BudgetHomesProjects, SCOProjects, LuxuryAllProject]);
+  }, [activeFilter, TrendingProjects, FeaturedProjects, UpcomingProjects, CommercialProjects, AffordableProjects, BudgetHomesProjects, SCOProjects, LuxuryAllProject]);
 
   // Update favorites state
   useEffect(() => {
@@ -278,7 +283,7 @@ export default function FeaturedGrid() {
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#0c0a09] tracking-tight">Discover your featured property</h2>
           <p className="text-gray-500 text-sm md:text-base mt-1">Loading projects...</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-7">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="bg-gray-200 rounded-2xl h-80 animate-pulse"></div>
           ))}
@@ -291,9 +296,9 @@ export default function FeaturedGrid() {
     <section className="max-w-screen-xl mx-auto px-4 md:px-6 md:pl-[260px] mt-12 md:mt-20">
       <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
         <h2 className="text-2xl md:text-3xl font-extrabold text-[#0c0a09] tracking-tight">
-          {activeFilter} Properties in Gurugram and Delhi NCR
+          Premium {activeFilter} Properties in Delhi NCR
         </h2>
-        <p className="text-gray-500 text-sm md:text-base mt-1">Leo morbi faucibus mattis pharetra tellus velit ultricies duis rhoncus</p>
+        <p className="text-gray-500 text-sm md:text-base mt-1">Discover handpicked properties that match your lifestyle and investment goals</p>
       </div>
 
       {/* Filter Buttons */}
@@ -428,13 +433,13 @@ export default function FeaturedGrid() {
               </h3>
             </div>
             {UpcomingProjects.length === 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div key={i} className="bg-gray-200 rounded-2xl h-80 animate-pulse"></div>
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7">
                 {[...UpcomingProjects].sort(() => 0.5 - Math.random()).slice(0, 6).map((project, index) => (
                   <ProjectCard key={project._id || index} project={project} />
                 ))}
@@ -450,13 +455,13 @@ export default function FeaturedGrid() {
               </h3>
             </div>
             {LuxuryAllProject.length === 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7">
                 {[1, 2, 3, 4].map((i) => (
                   <div key={i} className="bg-gray-200 rounded-2xl h-80 animate-pulse"></div>
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7">
                 {[...LuxuryAllProject].sort(() => 0.5 - Math.random()).slice(0, 4).map((project, index) => (
                   <ProjectCard key={project._id || index} project={project} />
                 ))}
@@ -472,13 +477,13 @@ export default function FeaturedGrid() {
               </h3>
             </div>
             {BudgetHomesProjects.length === 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div key={i} className="bg-gray-200 rounded-2xl h-80 animate-pulse"></div>
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7">
                 {[...BudgetHomesProjects].sort(() => 0.5 - Math.random()).slice(0, 6).map((project, index) => (
                   <ProjectCard key={project._id || index} project={project} />
                 ))}
@@ -494,13 +499,13 @@ export default function FeaturedGrid() {
               </h3>
             </div>
             {SCOProjects.length === 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7">
                 {[1, 2, 3, 4].map((i) => (
                   <div key={i} className="bg-gray-200 rounded-2xl h-80 animate-pulse"></div>
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7">
                 {[...SCOProjects].sort(() => 0.5 - Math.random()).slice(0, 4).map((project, index) => (
                   <ProjectCard key={project._id || index} project={project} />
                 ))}
@@ -512,7 +517,7 @@ export default function FeaturedGrid() {
 
       {/* Single Category View */}
       {!showAllSections && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-7 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7 mt-4">
         {transformedCards.map((c) => (
           <Link
             key={c.id}
