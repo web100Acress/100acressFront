@@ -36,17 +36,8 @@ export default function HeroWithFilters() {
   const [uploadingPoster, setUploadingPoster] = useState(false);
   const [posters, setPosters] = useState([]);
   const [loadingPosters, setLoadingPosters] = useState(false);
-  // Advanced filters
-  const [category, setCategory] = useState('');
-  const [propertyType, setPropertyType] = useState('');
-  const [city, setCity] = useState('');
-  const [bedrooms, setBedrooms] = useState('');
-  const [bathrooms, setBathrooms] = useState('');
-  const [areaMin, setAreaMin] = useState('');
-  const [areaMax, setAreaMax] = useState('');
-  const [furnishing, setFurnishing] = useState('');
-  const [rera, setRera] = useState('');
 
+  // Check if user is admin
   const isAdmin = useMemo(() => {
     try {
       const token = localStorage.getItem('myToken');
@@ -58,87 +49,163 @@ export default function HeroWithFilters() {
     }
   }, []);
 
-  // Restore filters from localStorage
-useEffect(() => {
-  try {
-    const raw = localStorage.getItem('heroFilters');
-    if (raw) {
-      const f = JSON.parse(raw);
-      setCategory(f.category || '');
-      setPropertyType(f.propertyType || '');
-      setCity(f.city || '');
-      setBedrooms(f.bedrooms || '');
-      setBathrooms(f.bathrooms || '');
-      setAreaMax(f.areaMax || '');
-      setFurnishing(f.furnishing || '');
-      setRera(f.rera || '');
-    }
-  } catch {}
-}, []); // ✅ close this effect properly
+  // Advanced filters
+  const [bedrooms, setBedrooms] = useState('');
+  const [bathrooms, setBathrooms] = useState('');
+  const [areaMin, setAreaMin] = useState('');
+  const [areaMax, setAreaMax] = useState('');
+  const [furnishing, setFurnishing] = useState('');
+  const [rera, setRera] = useState('');
 
-// Dynamic options state with static fallbacks
-const [categoriesOpt, setCategoriesOpt] = useState(CATEGORIES);
-const [ptByCatOpt, setPtByCatOpt] = useState(PROPERTY_TYPES_BY_CATEGORY);
-const [citiesOpt, setCitiesOpt] = useState(CITIES);
-const [bedroomsOpt, setBedroomsOpt] = useState(BEDROOMS);
-const [bathroomsOpt, setBathroomsOpt] = useState(BATHROOMS);
-const [furnishingOpt, setFurnishingOpt] = useState(FURNISHING);
-const [reraOpt, setReraOpt] = useState(RERA);
-const [quickLinksOpt, setQuickLinksOpt] = useState(QUICK_LINKS);
+  // Dynamic options state with static fallbacks
+  const [categoriesOpt, setCategoriesOpt] = useState(CATEGORIES);
+  const [ptByCatOpt, setPtByCatOpt] = useState(PROPERTY_TYPES_BY_CATEGORY);
+  const [citiesOpt, setCitiesOpt] = useState(CITIES);
+  const [bedroomsOpt, setBedroomsOpt] = useState(BEDROOMS);
+  const [bathroomsOpt, setBathroomsOpt] = useState(BATHROOMS);
+  const [furnishingOpt, setFurnishingOpt] = useState(FURNISHING);
+  const [reraOpt, setReraOpt] = useState(RERA);
+  const [quickLinksOpt, setQuickLinksOpt] = useState(QUICK_LINKS);
 
-// … later …
+  // Load persisted filters
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('heroFilters');
+      if (raw) {
+        const f = JSON.parse(raw);
+        setCategory(f.category || '');
+        setPropertyType(f.propertyType || '');
+        setCity(f.city || '');
+        setBedrooms(f.bedrooms || '');
+        setBathrooms(f.bathrooms || '');
+        setAreaMin(f.areaMin || '');
+        setAreaMax(f.areaMax || '');
+        setFurnishing(f.furnishing || '');
+        setRera(f.rera || '');
+      }
+    } catch {}
+  }, []);
 
-// Listen for cross-tab or in-app uploads to refresh banner
-useEffect(() => {
-  const onStorage = (e) => {
-    if (e.key === 'banners:updated') {
+  // Prefill city from saved geo coords (LocationContext mapping) if empty
+  useEffect(() => {
+    if (city) return;
+    try {
+      const s = localStorage.getItem('geoCoords');
+      if (s) {
+        const c = JSON.parse(s);
+        if (c && typeof c.lat === 'number' && typeof c.lng === 'number') {
+          const mapped = mapCoordsToCity(c);
+          if (mapped) setCity(mapped.toLowerCase().replace(/\s+/g, '-'));
+        }
+      }
+    } catch {}
+  }, [city]);
+
+  // Persist on changes (debounced-ish)
+  useEffect(() => {
+    const data = { category, propertyType, city, bedrooms, bathrooms, areaMin, areaMax, furnishing, rera };
+    try { localStorage.setItem('heroFilters', JSON.stringify(data)); } catch {}
+  }, [category, propertyType, city, bedrooms, bathrooms, areaMin, areaMax, furnishing, rera]);
+
+  // Fetch hero banner from backend (public) so admin uploads reflect here
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const base = import.meta.env.VITE_API_BASE || '';
+        const token = localStorage.getItem('myToken');
+        const publicUrl = base ? `${base}/api/banners/active` : `/api/banners/active`;
+        const adminUrl  = base ? `${base}/api/admin/banners`  : `/api/admin/banners`;
+
+        // Try public first
+        let res = await fetch(publicUrl);
+        let data;
+        if (res.ok) {
+          data = await res.json();
+        } else {
+          // If public fails, try admin (if accessible) with optional token
+          const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+          res = await fetch(adminUrl, { headers });
+          if (!res.ok) {
+            console.warn('Banner fetch failed at both public and admin endpoints', { publicStatus: res.status });
+            throw new Error('Failed');
+          }
+          data = await res.json();
+        }
+
+        const list = (data?.banners || []).filter(b => (b?.slug || '').startsWith(HERO_BANNER_SLUG) && b?.isActive !== false);
+        if (list.length) {
+          // Sort by order asc if present, else leave as-is
+          list.sort((a,b)=> (a?.order ?? 0) - (b?.order ?? 0));
+          const top = list[0];
+          const img = top?.image?.cdn_url || top?.image?.url;
+          if (img && active) {
+            // cache-bust to avoid stale image right after upload
+            const bust = img.includes('?') ? `${img}&t=${Date.now()}` : `${img}?t=${Date.now()}`;
+            setHeroSrc(bust);
+          }
+        } else {
+          // No active banner found with matching slug - clear any existing banner
+          if (active) setHeroSrc(null);
+        }
+      } catch (e) {
+        console.warn('Hero banner fetch error:', e);
+      }
+      if (active) setBannerLoading(false);
+    })();
+    return () => { active = false; };
+  }, [HERO_BANNER_SLUG, bannerRefreshKey]);
+
+  // Listen for cross-tab or in-app uploads to refresh banner
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === 'banners:updated') {
+        // Add a small delay to allow backend processing
+        setTimeout(() => {
+          setBannerLoading(true);
+          setBannerRefreshKey((k) => k + 1);
+        }, 1000);
+      }
+    };
+    const onCustom = () => {
+      // Add a small delay to allow backend processing
       setTimeout(() => {
         setBannerLoading(true);
         setBannerRefreshKey((k) => k + 1);
       }, 1000);
-    }
-  };
-  const onCustom = () => {
-    setTimeout(() => {
-      setBannerLoading(true);
-      setBannerRefreshKey((k) => k + 1);
-    }, 1000);
-  };
-  window.addEventListener('storage', onStorage);
-  window.addEventListener('banners:updated', onCustom);
-  return () => {
-    window.removeEventListener('storage', onStorage);
-    window.removeEventListener('banners:updated', onCustom);
-  };
-}, []); // ✅ this was missing earlier
+    };
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('banners:updated', onCustom);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('banners:updated', onCustom);
+    };
+  // Fetch posters from backend
+  useEffect(() => {
+    const fetchPosters = async () => {
+      try {
+        setLoadingPosters(true);
+        const base = import.meta.env.VITE_API_BASE || '';
+        const token = localStorage.getItem('myToken');
+        const url = base ? `${base}/api/admin/posters` : '/api/admin/posters';
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-// Fetch posters from backend
-useEffect(() => {
-  const fetchPosters = async () => {
-    try {
-      setLoadingPosters(true);
-      const base = import.meta.env.VITE_API_BASE || '';
-      const token = localStorage.getItem('myToken');
-      const url = base ? `${base}/api/admin/posters` : '/api/admin/posters';
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-
-      const res = await fetch(url, { headers });
-      if (res.ok) {
-        const data = await res.json();
-        setPosters(data.posters || []);
+        const res = await fetch(url, { headers });
+        if (res.ok) {
+          const data = await res.json();
+          setPosters(data.posters || []);
+        }
+      } catch (error) {
+        console.error('Error fetching posters:', error);
+      } finally {
+        setLoadingPosters(false);
       }
-    } catch (error) {
-      console.error('Error fetching posters:', error);
-    } finally {
-      setLoadingPosters(false);
+    };
+
+    if (isAdmin) {
+      fetchPosters();
     }
-  };
-
-  if (isAdmin) {
-    fetchPosters();
-  }
-}, [isAdmin]); // ✅ properly closed
-
+  }, [isAdmin]);
 
   // Handle poster file selection
   const handlePosterFileChange = (e) => {
