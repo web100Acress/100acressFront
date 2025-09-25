@@ -184,7 +184,7 @@ export default function PriceTrends() {
   const summary = useMemo(() => {
     const items = filtered;
     if (!items || items.length === 0) return { median: 0, avgChange: 0, avgYield: 0 };
-    const rates = items.map(r => r.rate).sort((a,b)=>a-b);
+    const rates = items.map(r => r.rate || 0).sort((a,b)=>a-b);
     const mid = Math.floor(rates.length/2);
     const median = rates.length % 2 ? rates[mid] : Math.round((rates[mid-1] + rates[mid]) / 2);
     const avgChange = (items.reduce((s, r)=> s + (r.change5y||0), 0) / items.length).toFixed(1);
@@ -338,8 +338,14 @@ export default function PriceTrends() {
   };
 
   const downloadCSV = () => {
-    const rows = filtered.map(r => ({ locality: r.locality, zone: r.zone, rate: r.rate, change5y: r.change5y, yield: r.yield }));
-    const header = Object.keys(rows[0] || { locality:'', zone:'', rate:'', change5y:'', yield:'' });
+    const rows = filtered.map(r => ({
+      locality: r.locality || '',
+      zone: r.zone || '',
+      rate: r.rate || 0,
+      change5y: r.change5y || 0,
+      yield: r.yield || 0
+    }));
+    const header = Object.keys(rows[0] || { locality:'', zone:'', rate:0, change5y:0, yield:0 });
     const csv = [header.join(','), ...rows.map(r => header.map(h => String(r[h]).replace(/,/g,'')).join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -596,21 +602,21 @@ export default function PriceTrends() {
                     <div className="grid grid-cols-3 gap-3 sm:gap-4">
                       <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                         <div className="text-xs text-gray-500">Price</div>
-                        <div className="text-base sm:text-lg font-semibold">₹{drawerData?.rate?.toLocaleString()}/ sq.ft</div>
+                        <div className="text-base sm:text-lg font-semibold">₹{(drawerData?.rate || 0).toLocaleString()}/ sq.ft</div>
                       </div>
                       <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                         <div className="text-xs text-gray-500">5Y Change</div>
-                        <div className="text-base sm:text-lg font-semibold text-emerald-600">▲ {drawerData?.change5y}%</div>
+                        <div className="text-base sm:text-lg font-semibold text-emerald-600">▲ {drawerData?.change5y || 0}%</div>
                       </div>
                       <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                         <div className="text-xs text-gray-500">Yield</div>
-                        <div className="text-base sm:text-lg font-semibold">{drawerData?.yield}%</div>
+                        <div className="text-base sm:text-lg font-semibold">{drawerData?.yield || 0}%</div>
                       </div>
                     </div>
                     <div className="border rounded-xl p-3">
                       <div className="text-sm font-semibold mb-2">Trend</div>
                       <svg viewBox="0 0 240 80" className="w-full h-20">
-                        <path d={makeSpark(drawerData?.rate||100, drawerData?.change5y||0, 240, 80)} fill="none" stroke="#2563eb" strokeWidth="2" />
+                        <path d={makeSpark(drawerData?.rate || 0, drawerData?.change5y || 0, 240, 80)} fill="none" stroke="#2563eb" strokeWidth="2" />
                       </svg>
                     </div>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
@@ -754,12 +760,12 @@ export default function PriceTrends() {
                                 <div className="text-xs text-gray-500">{r.zone} • {type}</div>
                               </div>
                               <div className="ml-auto text-right w-full sm:w-auto">
-                                <div className="font-extrabold text-gray-900">₹{r.rate.toLocaleString()}/ sq.ft</div>
-                                <div className="text-xs text-emerald-600">▲ {r.change5y}% in 5Y</div>
+                                <div className="font-extrabold text-gray-900">₹{(r.rate || 0).toLocaleString()}/ sq.ft</div>
+                                <div className="text-xs text-emerald-600">▲ {r.change5y || 0}% in 5Y</div>
                               </div>
-                              <div className="w-full sm:w-28 text-left sm:text-right text-xs text-gray-600">Rental Yield {r.yield}%</div>
+                              <div className="w-full sm:w-28 text-left sm:text-right text-xs text-gray-600">Rental Yield {r.yield || 0}%</div>
                               <svg viewBox="0 0 64 24" className="ml-2 hidden md:block" width="64" height="24">
-                                <path d={makeSpark(r.rate, r.change5y)} fill="none" stroke="#22c55e" strokeWidth="2" />
+                                <path d={makeSpark(r.rate || 0, r.change5y || 0)} fill="none" stroke="#22c55e" strokeWidth="2" />
                               </svg>
                               <button data-pt-more onClick={()=> openDrawer(r)} className={`ml-2 w-full xs:w-auto sm:w-auto px-3 py-1.5 rounded-md border text-xs ${activeLocality===r.locality ? 'bg-blue-600 text-white border-blue-600' : 'hover:bg-gray-50'}`}>More</button>
                             </li>
