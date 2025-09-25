@@ -62,34 +62,78 @@ export default function PriceTrends() {
 
   // Fetch localities from API (no fallback to mock data)
   const fetchLocalities = async () => {
-    if (!city) return;
+    if (!city) {
+      console.log('fetchLocalities: No city selected, returning early');
+      return;
+    }
+
+    console.log('fetchLocalities: Starting fetch for city:', city);
     setLoading(true);
+
     try {
       const base = getApiBase();
-      const qs = new URLSearchParams({
-        city,
-        zone: zone === 'All Zones' ? '' : zone,
-        type,
-        duration,
-        sort,
-        page: String(page),
-        limit: String(pageSize)
-      }).toString();
-      const res = await fetch(`${base}/analytics/price-trends/localities?${qs}`);
-      if (!res.ok) throw new Error('bad');
-      const data = await res.json();
-      if (data && data.success && Array.isArray(data.data)) {
-        setLocalities(data.data);
-        if (typeof data.total === 'number') setTotalCount(data.total);
+      const token = localStorage.getItem('myToken');
+      const response = await fetch(`${base}/api/admin/cities`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      console.log('fetchLocalities: Response status:', response.status);
+
+      if (!response.ok) {
+        console.error('fetchLocalities: API error:', response.status, response.statusText);
+        setLocalities([]);
+        setTotalCount(0);
+        return;
+      }
+
+      const result = await response.json();
+      console.log('fetchLocalities: Raw API response:', result);
+
+      if (result && result.success && result.data) {
+        // Find the city data for the selected city
+        let cityData = null;
+        Object.values(result.data).forEach(categoryCities => {
+          const foundCity = categoryCities.find(c => c.name.toLowerCase() === city.toLowerCase());
+          if (foundCity) {
+            cityData = foundCity;
+          }
+        });
+
+        if (cityData && cityData.localities && cityData.localities.length > 0) {
+          console.log('fetchLocalities: Found localities for city:', cityData.localities);
+
+          // Transform the localities data to match the expected format
+          const transformedLocalities = cityData.localities.map(locality => ({
+            locality: locality.locality,
+            zone: locality.zone,
+            rate: locality.rate,
+            change5y: locality.change5y,
+            yield: locality.yield,
+            type: 'Apartment', // Default type since not stored in city localities
+            city: cityData.name
+          }));
+
+          setLocalities(transformedLocalities);
+          setTotalCount(transformedLocalities.length);
+
+          console.log('fetchLocalities: Success! Found', transformedLocalities.length, 'localities');
+        } else {
+          console.warn('fetchLocalities: No localities found for city:', city);
+          setLocalities([]);
+          setTotalCount(0);
+        }
       } else {
+        console.warn('fetchLocalities: Invalid response format or no data:', result);
         setLocalities([]);
         setTotalCount(0);
       }
-    } catch (_) {
+    } catch (error) {
+      console.error('fetchLocalities: Error fetching localities:', error);
       setLocalities([]);
       setTotalCount(0);
     } finally {
       setLoading(false);
+      console.log('fetchLocalities: Completed');
     }
   };
   const toggleSaveLocality = () => {
@@ -126,6 +170,13 @@ export default function PriceTrends() {
       if (sort === 'yield_desc') return (b.yield||0) - (a.yield||0);
       return 0; // recommended (as-is)
     });
+
+    console.log('filtered: Localities count:', localities?.length || 0);
+    console.log('filtered: Filtered count:', items.length);
+    console.log('filtered: Sorted count:', sorted.length);
+    console.log('filtered: Zone filter:', zone);
+    console.log('filtered: Sort method:', sort);
+
     return sorted;
   }, [localities, zone, sort]);
 
@@ -213,20 +264,10 @@ export default function PriceTrends() {
     return () => clearTimeout(t);
   }, []);
 
-  // Listen for global city data refresh events
+  // Fetch cities on component mount
   useEffect(() => {
-    const handleCityDataChanged = (event) => {
-      console.log('PriceTrends received cityDataChanged event:', event.detail);
-      // Refresh cities and localities when we receive the event
-      fetchCities();
-      if (city) fetchLocalities();
-    };
-
-    window.addEventListener('cityDataChanged', handleCityDataChanged);
-    return () => {
-      window.removeEventListener('cityDataChanged', handleCityDataChanged);
-    };
-  }, [city]);
+    fetchCities();
+  }, []);
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -279,11 +320,17 @@ export default function PriceTrends() {
   }, [city, zone, type, duration, sort, page, pageSize, showPicker]);
 
   const chooseCity = (cname) => {
+    console.log('chooseCity: Selecting city:', cname);
+    console.log('chooseCity: Previous city:', city);
+
     setCity(cname);
     setShowPicker(false);
+
     const params = new URLSearchParams(location.search);
     params.set("city", cname);
     navigate({ search: params.toString() }, { replace: true });
+
+    console.log('chooseCity: City selection completed');
   };
 
   const toggleCitySelect = (cname) => {
@@ -695,26 +742,30 @@ export default function PriceTrends() {
                             <div className="ml-3 w-14 h-7 bg-gray-200 rounded" />
                           </li>
                         ))
-                      : filtered.slice((page-1)*pageSize, (page)*pageSize).map((r)=> (
-                      <li key={r.locality} className={`py-4 flex flex-wrap md:flex-nowrap items-center gap-3 md:gap-4 ${activeLocality===r.locality ? 'pt-slide-in' : ''}`}>
-                        <span className={`inline-flex w-9 h-9 md:w-10 md:h-10 rounded-full items-center justify-center ${activeLocality===r.locality ? 'bg-blue-50 text-blue-600 ring-2 ring-blue-200' : 'bg-gray-100'}`}>
-                          <svg viewBox="0 0 24 24" className="w-5 h-5 text-gray-600" fill="currentColor"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z"/></svg>
-                        </span>
-                        <div className={`min-w-0 flex-1 ${activeLocality===r.locality ? 'text-blue-700' : ''}`}>
-                          <div className={`font-semibold ${activeLocality===r.locality ? 'text-blue-700' : 'text-gray-900'}`}>{r.locality}</div>
-                          <div className="text-xs text-gray-500">{r.zone} • {type}</div>
-                        </div>
-                        <div className="ml-auto text-right w-full sm:w-auto">
-                          <div className="font-extrabold text-gray-900">₹{r.rate.toLocaleString()}/ sq.ft</div>
-                          <div className="text-xs text-emerald-600">▲ {r.change5y}% in 5Y</div>
-                        </div>
-                        <div className="w-full sm:w-28 text-left sm:text-right text-xs text-gray-600">Rental Yield {r.yield}%</div>
-                        <svg viewBox="0 0 64 24" className="ml-2 hidden md:block" width="64" height="24">
-                          <path d={makeSpark(r.rate, r.change5y)} fill="none" stroke="#22c55e" strokeWidth="2" />
-                        </svg>
-                        <button data-pt-more onClick={()=> openDrawer(r)} className={`ml-2 w-full xs:w-auto sm:w-auto px-3 py-1.5 rounded-md border text-xs ${activeLocality===r.locality ? 'bg-blue-600 text-white border-blue-600' : 'hover:bg-gray-50'}`}>More</button>
-                      </li>
-                    ))}
+                      : filtered.slice((page-1)*pageSize, (page)*pageSize).map((r, index)=> {
+                          console.log(`Rendering locality ${index}:`, r);
+                          return (
+                            <li key={r.locality} className={`py-4 flex flex-wrap md:flex-nowrap items-center gap-3 md:gap-4 ${activeLocality===r.locality ? 'pt-slide-in' : ''}`}>
+                              <span className={`inline-flex w-9 h-9 md:w-10 md:h-10 rounded-full items-center justify-center ${activeLocality===r.locality ? 'bg-blue-50 text-blue-600 ring-2 ring-blue-200' : 'bg-gray-100'}`}>
+                                <svg viewBox="0 0 24 24" className="w-5 h-5 text-gray-600" fill="currentColor"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z"/></svg>
+                              </span>
+                              <div className={`min-w-0 flex-1 ${activeLocality===r.locality ? 'text-blue-700' : ''}`}>
+                                <div className={`font-semibold ${activeLocality===r.locality ? 'text-blue-700' : 'text-gray-900'}`}>{r.locality}</div>
+                                <div className="text-xs text-gray-500">{r.zone} • {type}</div>
+                              </div>
+                              <div className="ml-auto text-right w-full sm:w-auto">
+                                <div className="font-extrabold text-gray-900">₹{r.rate.toLocaleString()}/ sq.ft</div>
+                                <div className="text-xs text-emerald-600">▲ {r.change5y}% in 5Y</div>
+                              </div>
+                              <div className="w-full sm:w-28 text-left sm:text-right text-xs text-gray-600">Rental Yield {r.yield}%</div>
+                              <svg viewBox="0 0 64 24" className="ml-2 hidden md:block" width="64" height="24">
+                                <path d={makeSpark(r.rate, r.change5y)} fill="none" stroke="#22c55e" strokeWidth="2" />
+                              </svg>
+                              <button data-pt-more onClick={()=> openDrawer(r)} className={`ml-2 w-full xs:w-auto sm:w-auto px-3 py-1.5 rounded-md border text-xs ${activeLocality===r.locality ? 'bg-blue-600 text-white border-blue-600' : 'hover:bg-gray-50'}`}>More</button>
+                            </li>
+                          );
+                        })
+                    }
                   </ul>
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm">
                     <div className="text-gray-600 w-full sm:w-auto">Page {page}{typeof totalCount==='number' ? ` • ${Math.min(page*pageSize, totalCount)} of ${totalCount}` : ''}</div>
