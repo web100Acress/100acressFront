@@ -14,6 +14,19 @@ const Forms = ({
   updateCity,
   resetCityForm,
   onCityAdded, // Callback to refresh parent data
+
+  // Price Trends Props
+  showPriceTrendForm,
+  setShowPriceTrendForm,
+  editingPriceTrend,
+  setEditingPriceTrend,
+  priceTrendForm,
+  setPriceTrendForm,
+  addPriceTrend,
+  updatePriceTrend,
+  resetPriceTrendForm,
+  onPriceTrendAdded,
+  availableCitiesForTrends, // Dynamic city list for price trends
 }) => {
   const [localities, setLocalities] = useState([
     {
@@ -29,12 +42,13 @@ const Forms = ({
   useEffect(() => {
     if (editingCity && editingCity.localities && editingCity.localities.length > 0) {
       console.log('Setting localities from editing city:', editingCity.localities);
+      console.log('Editing city full data:', editingCity);
       setLocalities(editingCity.localities.map(loc => ({
         locality: loc.locality || '',
         zone: loc.zone || 'East',
-        rate: loc.rate || '',
-        change5y: loc.change5y || '',
-        yield: loc.yield || ''
+        rate: String(loc.rate || ''),
+        change5y: String(loc.change5y || ''),
+        yield: String(loc.yield || '')
       })));
     } else if (!editingCity) {
       // Reset to default when not editing
@@ -139,7 +153,7 @@ const Forms = ({
         console.log(key, value);
       }
 
-      const url = editingCity 
+      const url = editingCity
         ? `${base}/api/admin/cities/${editingCity.id}`
         : `${base}/api/admin/cities`;
 
@@ -170,43 +184,25 @@ const Forms = ({
           yield: ''
         }]);
 
-        // Also save localities to the analytics API for PriceTrends
+        // Notify parent to refresh data
+        if (onCityAdded) onCityAdded();
+
+        // Also trigger a global refresh for other components that might be using city data
         try {
-          const analyticsPromises = localitiesData.map(async (locality) => {
-            const analyticsData = {
-              city: cityForm.name,
-              locality: locality.locality,
-              zone: locality.zone,
-              rate: locality.rate,
-              change5y: locality.change5y,
-              yield: locality.yield,
-              type: 'Apartment' // Default type
-            };
+          // Dispatch a custom event that other components can listen to
+          window.dispatchEvent(new CustomEvent('cityDataChanged', {
+            detail: { action: 'refresh' }
+          }));
 
-            console.log('Saving to analytics API:', analyticsData);
-
-            const analyticsResponse = await fetch(`${base}/analytics/price-trends/localities`, {
-              method: editingCity ? 'PUT' : 'POST', // Use PUT for updates, POST for new
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-              },
-              body: JSON.stringify(analyticsData)
-            });
-
-            if (analyticsResponse.ok) {
-              console.log('Analytics locality saved successfully:', locality.locality);
-            } else {
-              console.error('Failed to save analytics locality:', locality.locality, analyticsResponse.status);
-            }
-          });
-
-          // Wait for all analytics saves to complete
-          await Promise.all(analyticsPromises);
-          console.log('All localities saved to analytics API');
-        } catch (analyticsError) {
-          console.error('Error saving to analytics API:', analyticsError);
-          // Don't fail the whole operation if analytics save fails
+          // If we're in the insights page, trigger a page refresh after a short delay
+          if (window.location.pathname.includes('insights-price-trends') ||
+              window.location.pathname.includes('admin')) {
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          }
+        } catch (e) {
+          console.log('Could not dispatch global refresh event:', e);
         }
       } else {
         const errorData = await response.json();
@@ -220,8 +216,73 @@ const Forms = ({
     }
   };
 
+  // Price Trends Form Handlers
+  const handlePriceTrendSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const token = localStorage.getItem('myToken');
+      const base = import.meta.env.VITE_API_BASE;
+
+      console.log('Price trend form data:', priceTrendForm);
+
+      const priceTrendData = {
+        area: priceTrendForm.area,
+        price: priceTrendForm.price,
+        rental: priceTrendForm.rental,
+        trend: priceTrendForm.trend,
+        city: priceTrendForm.city,
+        type: priceTrendForm.type || 'Apartment'
+      };
+
+      console.log('Sending price trend data:', priceTrendData);
+
+      const url = editingPriceTrend
+        ? `${base}/api/admin/price-trends/${editingPriceTrend.id}`
+        : `${base}/api/admin/price-trends`;
+
+      const response = await fetch(url, {
+        method: editingPriceTrend ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(priceTrendData)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Price trend saved successfully:', result);
+
+        alert(editingPriceTrend ? 'Price trend updated successfully!' : 'Price trend added successfully!');
+
+        // Reset form
+        setShowPriceTrendForm(false);
+        setEditingPriceTrend(null);
+        resetPriceTrendForm();
+
+        // Notify parent to refresh data
+        if (onPriceTrendAdded) onPriceTrendAdded();
+
+        // Trigger global refresh
+        window.dispatchEvent(new CustomEvent('priceTrendDataChanged', {
+          detail: { action: 'refresh' }
+        }));
+
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to save price trend:', errorData);
+        alert(`Failed to save price trend: ${errorData.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error saving price trend:', error);
+      alert('Error saving price trend. Check console for details.');
+    }
+  };
+
   return (
     <>
+      {/* City Form Modal */}
       {showCityForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[95vh] overflow-y-auto">
@@ -468,6 +529,139 @@ const Forms = ({
           </div>
         </div>
       )}
+
+      {/* Price Trends Form Modal */}
+      {showPriceTrendForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[95vh] overflow-y-auto">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  {editingPriceTrend ? 'Edit Price Trend' : 'Add New Price Trend'}
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowPriceTrendForm(false);
+                    setEditingPriceTrend(null);
+                    resetPriceTrendForm();
+                  }}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <form onSubmit={handlePriceTrendSubmit} className="p-6 space-y-6">
+              {/* Price Trend Information */}
+              <div className="bg-green-50 rounded-lg p-4">
+                <h3 className="text-md font-semibold text-gray-800 mb-4">Price Trend Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Area/Locality</label>
+                    <input
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="Enter area or locality name"
+                      value={priceTrendForm.area}
+                      onChange={e => setPriceTrendForm({ ...priceTrendForm, area: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                    <select
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      value={priceTrendForm.city}
+                      onChange={e => setPriceTrendForm({ ...priceTrendForm, city: e.target.value })}
+                      required
+                    >
+                      <option value="">Select City</option>
+                      {availableCitiesForTrends.map(city => (
+                        <option key={city} value={city}>{city}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹/sq.ft)</label>
+                    <input
+                      type="number"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="15000"
+                      value={priceTrendForm.price}
+                      onChange={e => setPriceTrendForm({ ...priceTrendForm, price: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Rental Yield (%)</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="3.2"
+                      value={priceTrendForm.rental}
+                      onChange={e => setPriceTrendForm({ ...priceTrendForm, rental: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Trend</label>
+                    <select
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      value={priceTrendForm.trend}
+                      onChange={e => setPriceTrendForm({ ...priceTrendForm, trend: e.target.value })}
+                      required
+                    >
+                      <option value="up">📈 Up</option>
+                      <option value="down">📉 Down</option>
+                      <option value="stable">➡️ Stable</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
+                    <select
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      value={priceTrendForm.type}
+                      onChange={e => setPriceTrendForm({ ...priceTrendForm, type: e.target.value })}
+                    >
+                      <option value="Apartment">Apartment</option>
+                      <option value="Villa">Villa</option>
+                      <option value="Plot">Plot</option>
+                      <option value="Commercial">Commercial</option>
+                      <option value="Office">Office</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Form Actions */}
+              <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
+                <button
+                  type="submit"
+                  className="inline-flex items-center gap-2 px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm shadow-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  {editingPriceTrend ? 'Update Price Trend' : 'Add Price Trend'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPriceTrendForm(false);
+                    setEditingPriceTrend(null);
+                    resetPriceTrendForm();
+                  }}
+                  className="px-4 py-2 text-sm text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 };
@@ -484,8 +678,64 @@ export default function App() {
   });
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [availableCitiesForTrends, setAvailableCitiesForTrends] = useState([]);
 
-  // Function to fetch cities from API
+  // Price Trends State
+  const [showPriceTrendForm, setShowPriceTrendForm] = useState(false);
+  const [editingPriceTrend, setEditingPriceTrend] = useState(null);
+  const [priceTrendForm, setPriceTrendForm] = useState({
+    area: '',
+    price: '',
+    rental: '',
+    trend: 'stable',
+    city: '',
+    type: 'Apartment'
+  });
+
+  // Function to fetch cities for price trends dropdown
+  const fetchCitiesForTrends = async () => {
+    try {
+      const token = localStorage.getItem('myToken');
+      const base = import.meta.env.VITE_API_BASE;
+
+      const response = await fetch(`${base}/api/admin/cities`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Cities for trends API response:', result);
+
+        // Extract unique city names from all categories
+        const cityNames = new Set();
+        Object.values(result.data).forEach(categoryCities => {
+          categoryCities.forEach(city => {
+            cityNames.add(city.name);
+          });
+        });
+
+        // Convert to array and sort alphabetically
+        const sortedCities = Array.from(cityNames).sort();
+        console.log('Available cities for trends:', sortedCities);
+
+        setAvailableCitiesForTrends(sortedCities);
+      } else {
+        console.error('Failed to fetch cities for trends');
+        // Fallback to hardcoded list if API fails
+        setAvailableCitiesForTrends([
+          'Delhi', 'Mumbai', 'Bangalore', 'Chennai', 'Hyderabad',
+          'Pune', 'Kolkata', 'Ahmedabad', 'Jaipur', 'Surat'
+        ]);
+      }
+    } catch (error) {
+      console.error('Error fetching cities for trends:', error);
+      // Fallback to hardcoded list if API fails
+      setAvailableCitiesForTrends([
+        'Delhi', 'Mumbai', 'Bangalore', 'Chennai', 'Hyderabad',
+        'Pune', 'Kolkata', 'Ahmedabad', 'Jaipur', 'Surat'
+      ]);
+    }
+  };
   const fetchCities = async () => {
     try {
       setLoading(true);
@@ -545,9 +795,35 @@ export default function App() {
     });
   };
 
+  // Price Trends Functions
+  const addPriceTrend = (newPriceTrend) => {
+    console.log("New Price Trend Added:", newPriceTrend);
+  };
+
+  const updatePriceTrend = (updatedPriceTrend) => {
+    console.log("Price Trend Updated:", updatedPriceTrend);
+  };
+
+  const resetPriceTrendForm = () => {
+    setPriceTrendForm({
+      area: '',
+      price: '',
+      rental: '',
+      trend: 'stable',
+      city: '',
+      type: 'Apartment'
+    });
+  };
+
+  const onPriceTrendAdded = () => {
+    console.log("Price trend added, refreshing data...");
+    // Could add refresh logic here if needed
+  };
+
   // Load cities on component mount
   useEffect(() => {
     fetchCities();
+    fetchCitiesForTrends();
   }, []);
 
   return (
@@ -583,8 +859,6 @@ export default function App() {
             </button>
           </div>
         </header>
-
-        {/* --- */}
 
         {/* City List Display Section */}
         <section className="bg-white rounded-xl shadow-md p-6">
@@ -640,6 +914,8 @@ export default function App() {
                     <div className="absolute top-2 right-2">
                       <button
                         onClick={() => {
+                          console.log('Edit button clicked for city:', city);
+                          console.log('City localities:', city.localities);
                           setEditingCity(city);
                           setCityForm({
                             name: city.name,
@@ -676,6 +952,19 @@ export default function App() {
           updateCity={updateCity}
           resetCityForm={resetCityForm}
           onCityAdded={fetchCities} // Pass the refresh function
+
+          // Price Trends Props
+          showPriceTrendForm={showPriceTrendForm}
+          setShowPriceTrendForm={setShowPriceTrendForm}
+          editingPriceTrend={editingPriceTrend}
+          setEditingPriceTrend={setEditingPriceTrend}
+          priceTrendForm={priceTrendForm}
+          setPriceTrendForm={setPriceTrendForm}
+          addPriceTrend={addPriceTrend}
+          updatePriceTrend={updatePriceTrend}
+          resetPriceTrendForm={resetPriceTrendForm}
+          onPriceTrendAdded={onPriceTrendAdded}
+          availableCitiesForTrends={availableCitiesForTrends} // Pass dynamic city list for price trends
         />
 
       </div>
