@@ -46,30 +46,6 @@ export default function PriceTrends() {
   const [emiPrincipal, setEmiPrincipal] = useState(0);
   const [emiRate, setEmiRate] = useState(8.5);
   const [emiYears, setEmiYears] = useState(20);
-  const cityImages = useMemo(() => ({
-    Bangalore: "/assets/cities/bangalore.jpg",
-    Mumbai: "/assets/cities/mumbai.jpg",
-    Delhi: "/assets/cities/delhi.jpg",
-    Pune: "/assets/cities/pune.jpg",
-    Chennai: "/assets/cities/chennai.jpg",
-    Hyderabad: "/assets/cities/hyderabad.jpg",
-    Kolkata: "/assets/cities/kolkata.jpg",
-    "Navi Mumbai": "/assets/cities/navi-mumbai.jpg",
-    Gurgaon: "/assets/cities/gurgaon.jpg",
-    Noida: "/assets/cities/noida.jpg",
-  }), []);
-
-  // Mock city-locality list with rates
-  const mockLocalities = useMemo(() => {
-    const base = [
-      { locality: "Sector 65", zone: "East", rate: 15500, change5y: 194.9, yield: 2 },
-      { locality: "Sector 79", zone: "North", rate: 13600, change5y: 182.3, yield: 3 },
-      { locality: "Golf Course Ext.", zone: "South", rate: 17500, change5y: 158.3, yield: 4 },
-      { locality: "Dwarka Expressway", zone: "West", rate: 14500, change5y: 154.3, yield: 3 },
-      { locality: "Nirvana Country", zone: "East", rate: 13300, change5y: 151.9, yield: 1 },
-    ];
-    return base;
-  }, []);
 
   // Persist page size in localStorage
   useEffect(() => {
@@ -84,7 +60,7 @@ export default function PriceTrends() {
     try { localStorage.setItem('pt_page_size', String(pageSize)); } catch {}
   }, [pageSize]);
 
-  // Fetch localities from API (fallback to mock)
+  // Fetch localities from API (no fallback to mock data)
   const fetchLocalities = async () => {
     if (!city) return;
     setLoading(true);
@@ -106,17 +82,16 @@ export default function PriceTrends() {
         setLocalities(data.data);
         if (typeof data.total === 'number') setTotalCount(data.total);
       } else {
-        setLocalities(mockLocalities);
-        setTotalCount(mockLocalities.length);
+        setLocalities([]);
+        setTotalCount(0);
       }
     } catch (_) {
-      setLocalities(mockLocalities);
-      setTotalCount(mockLocalities.length);
+      setLocalities([]);
+      setTotalCount(0);
     } finally {
       setLoading(false);
     }
   };
-
   const toggleSaveLocality = () => {
     try {
       const key = `pt_save_${city}_${drawerData?.locality || ''}`;
@@ -142,9 +117,9 @@ export default function PriceTrends() {
     setPage(1);
   };
 
-  // Sort + filter client-side (when using mock or when API has no sorting)
+  // Sort + filter client-side (when using API data)
   const filtered = useMemo(() => {
-    const items = (localities || mockLocalities).filter((r) => (zone === "All Zones" ? true : r.zone.toLowerCase().includes(zone.toLowerCase())));
+    const items = (localities || []).filter((r) => (zone === "All Zones" ? true : r.zone.toLowerCase().includes(zone.toLowerCase())));
     const sorted = [...items].sort((a,b)=>{
       if (sort === 'price_desc') return b.rate - a.rate;
       if (sort === 'price_asc') return a.rate - b.rate;
@@ -152,7 +127,7 @@ export default function PriceTrends() {
       return 0; // recommended (as-is)
     });
     return sorted;
-  }, [localities, mockLocalities, zone, sort]);
+  }, [localities, zone, sort]);
 
   // Summary stats (median price, avg 5Y change, avg yield) from filtered list
   const summary = useMemo(() => {
@@ -238,10 +213,20 @@ export default function PriceTrends() {
     return () => clearTimeout(t);
   }, []);
 
-  // Fetch cities on component mount
+  // Listen for global city data refresh events
   useEffect(() => {
-    fetchCities();
-  }, []);
+    const handleCityDataChanged = (event) => {
+      console.log('PriceTrends received cityDataChanged event:', event.detail);
+      // Refresh cities and localities when we receive the event
+      fetchCities();
+      if (city) fetchLocalities();
+    };
+
+    window.addEventListener('cityDataChanged', handleCityDataChanged);
+    return () => {
+      window.removeEventListener('cityDataChanged', handleCityDataChanged);
+    };
+  }, [city]);
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -429,7 +414,7 @@ export default function PriceTrends() {
       if (!s) return;
       const saved = JSON.parse(s);
       if (saved && saved.open && saved.city === city) {
-        const items = (localities || mockLocalities) || [];
+        const items = (localities || []) || [];
         const found = items.find(r => r.locality === saved.locality);
         if (found) openDrawer(found);
       }
@@ -469,7 +454,6 @@ export default function PriceTrends() {
             cityQuery={cityQuery}
             setCityQuery={setCityQuery}
             visibleCities={visibleCities}
-            cityImages={cityImages}
             pickerLoading={pickerLoading || citiesLoading}
             cityCategories={cityCategories}
             onChooseCity={(cname, isCompare) => {
@@ -488,22 +472,14 @@ export default function PriceTrends() {
                   seriesLoading={seriesLoading}
                   selectedCities={selectedCities}
                   setCompareMode={setCompareMode}
-                  cityImages={cityImages}
                 />
               </div>
             ) : (
               <>
                 {/* Hero Banner for City Data */}
                 <div className="relative w-full h-[25vh] sm:h-[30vh] md:h-[35vh] lg:h-[40vh] overflow-hidden mb-8 rounded-2xl">
-                  {/* Background Image with Overlay */}
-                  <div className="absolute inset-0">
-                    <img 
-                      src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1973&q=80"
-                      alt="Real Estate Analytics"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60"></div>
-                  </div>
+                  {/* Background with Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600"></div>
                   
                   {/* Content */}
                   <div className="relative z-10 flex items-center justify-center h-full px-4 sm:px-6 lg:px-8">

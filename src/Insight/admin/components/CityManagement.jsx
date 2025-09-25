@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function CityManagement({
   activeTab,
@@ -30,15 +30,46 @@ export default function CityManagement({
   editPriceTrend,
   deletePriceTrend
 }) {
-  const [showAddCityModal, setShowAddCityModal] = useState(false);
+  const getAllCities = () => {
+    if (!cityData || typeof cityData !== 'object') {
+      console.log('City data is not available or not an object:', cityData);
+      return [];
+    }
 
-  const handleAddCityClick = () => {
-    setShowAddCityModal(true);
+    // Filter cities based on active tab
+    let filteredCities = [];
+    switch (activeTab) {
+      case 'ncr':
+        filteredCities = cityData.ncr || [];
+        break;
+      case 'metro':
+        filteredCities = cityData.metro || [];
+        break;
+      case 'other':
+        filteredCities = cityData.other || [];
+        break;
+      default:
+        // If no specific tab, return all cities
+        filteredCities = Object.values(cityData).flat();
+    }
+
+    console.log('Filtered cities for tab:', activeTab, 'Count:', filteredCities.length);
+    return filteredCities;
   };
 
-  const handleCloseModal = () => {
-    setShowAddCityModal(false);
-  };
+  // Listen for global city data refresh events
+  useEffect(() => {
+    const handleCityDataChanged = (event) => {
+      console.log('CityManagement received cityDataChanged event:', event.detail);
+      // The parent component should handle the actual refresh
+      // This is just a notification that data might have changed
+    };
+
+    window.addEventListener('cityDataChanged', handleCityDataChanged);
+    return () => {
+      window.removeEventListener('cityDataChanged', handleCityDataChanged);
+    };
+  }, []);
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl shadow-sm">
@@ -69,7 +100,7 @@ export default function CityManagement({
           </h3>
           <div className="flex gap-2">
             <button
-              onClick={handleAddCityClick}
+              onClick={navigateToAddCity}
               className="inline-flex items-center gap-2 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">

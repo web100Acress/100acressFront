@@ -70,6 +70,20 @@ export default function InsightsPriceTrendsBanners() {
     });
   }, []);
 
+  // Listen for global city data refresh events
+  useEffect(() => {
+    const handleCityDataChanged = (event) => {
+      console.log('InsightsPriceTrendsBanners received cityDataChanged event:', event.detail);
+      // Refresh the data when we receive the event
+      fetchAll();
+    };
+
+    window.addEventListener('cityDataChanged', handleCityDataChanged);
+    return () => {
+      window.removeEventListener('cityDataChanged', handleCityDataChanged);
+    };
+  }, []);
+
   // Load cities for dropdown when form opens
   const loadCitiesForDropdown = async () => {
     try {
