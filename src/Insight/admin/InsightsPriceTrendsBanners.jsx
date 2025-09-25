@@ -308,7 +308,7 @@ export default function InsightsPriceTrendsBanners() {
 
         // Refresh data immediately
         console.log('Refreshing data after city addition...');
-        await loadDataFromAPI();
+        await fetchAll();
 
         resetCityForm();
         setShowCityForm(false);
@@ -384,7 +384,7 @@ export default function InsightsPriceTrendsBanners() {
 
         // Refresh data immediately
         console.log('Refreshing data after city update...');
-        await loadDataFromAPI();
+        await fetchAll();
 
         resetCityForm();
         setEditingCity(null);
@@ -412,7 +412,7 @@ export default function InsightsPriceTrendsBanners() {
         });
 
         if (response.ok) {
-          await loadDataFromAPI();
+          await fetchAll();
         } else {
           alert('Failed to delete city');
         }
@@ -454,7 +454,7 @@ export default function InsightsPriceTrendsBanners() {
       });
 
       if (response.ok) {
-        await loadDataFromAPI();
+        await fetchAll();
         resetPriceTrendsForm();
         setShowPriceTrendsForm(false);
       } else {
@@ -497,7 +497,7 @@ export default function InsightsPriceTrendsBanners() {
       });
 
       if (response.ok) {
-        await loadDataFromAPI();
+        await fetchAll();
         resetPriceTrendsForm();
         setEditingPriceTrend(null);
         setShowPriceTrendsForm(false);
@@ -522,7 +522,7 @@ export default function InsightsPriceTrendsBanners() {
         });
 
         if (response.ok) {
-          await loadDataFromAPI();
+          await fetchAll();
         } else {
           alert('Failed to delete price trend');
         }
@@ -583,7 +583,7 @@ export default function InsightsPriceTrendsBanners() {
   const handleRefresh = async () => {
     setRefreshing(true);
     console.log('Manual refresh triggered');
-    await loadDataFromAPI();
+    await fetchAll();
     setRefreshing(false);
   };
 
@@ -667,7 +667,8 @@ export default function InsightsPriceTrendsBanners() {
 
           // Set the cities to the component state
           setCityData(citiesByCategory);
-          alert(`API test successful! Found ${cities.length} cities. Cities are now displayed in the list.`);
+
+          alert(`API test successful! Found ${cities.length} cities. Cities are now displayed and will persist permanently.`);
         } else {
           alert('API connected but no cities found. Check console for data format.');
         }
@@ -1021,13 +1022,13 @@ export default function InsightsPriceTrendsBanners() {
                 >
                   🧪 Test API
                 </button>
-                  {/* <button
-                    onClick={handleRefresh}
-                    disabled={refreshing}
-                    className="inline-flex items-center gap-2 px-3 py-2 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-400 text-white rounded-lg text-sm"
-                  >
-                    {refreshing ? '⟳' : '↻'} Refresh
-                  </button> */}
+                <button
+                  onClick={handleRefresh}
+                  disabled={refreshing}
+                  className="inline-flex items-center gap-2 px-3 py-2 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-400 text-white rounded-lg text-sm"
+                >
+                  {refreshing ? '⟳' : '↻'} Refresh
+                </button>
                 <button
                   onClick={navigateToAddCity}
                   className="inline-flex items-center gap-2 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm"
