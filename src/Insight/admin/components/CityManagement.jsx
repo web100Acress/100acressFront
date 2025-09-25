@@ -30,31 +30,14 @@ export default function CityManagement({
   editPriceTrend,
   deletePriceTrend
 }) {
-  const getAllCities = () => {
-    if (!cityData || typeof cityData !== 'object') {
-      console.log('City data is not available or not an object:', cityData);
-      return [];
-    }
+  const [showAddCityModal, setShowAddCityModal] = useState(false);
 
-    // Filter cities based on active tab
-    let filteredCities = [];
-    switch (activeTab) {
-      case 'ncr':
-        filteredCities = cityData.ncr || [];
-        break;
-      case 'metro':
-        filteredCities = cityData.metro || [];
-        break;
-      case 'other':
-        filteredCities = cityData.other || [];
-        break;
-      default:
-        // If no specific tab, return all cities
-        filteredCities = Object.values(cityData).flat();
-    }
+  const handleAddCityClick = () => {
+    setShowAddCityModal(true);
+  };
 
-    console.log('Filtered cities for tab:', activeTab, 'Count:', filteredCities.length);
-    return filteredCities;
+  const handleCloseModal = () => {
+    setShowAddCityModal(false);
   };
 
   return (
@@ -86,7 +69,7 @@ export default function CityManagement({
           </h3>
           <div className="flex gap-2">
             <button
-              onClick={navigateToAddCity}
+              onClick={handleAddCityClick}
               className="inline-flex items-center gap-2 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -319,7 +302,7 @@ export default function CityManagement({
             </div>
           </div>
         </div>
-      )}
+      )}    
     </div>
   );
 }

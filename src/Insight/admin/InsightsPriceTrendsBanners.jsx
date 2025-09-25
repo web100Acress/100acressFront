@@ -61,14 +61,14 @@ export default function InsightsPriceTrendsBanners() {
   const base = import.meta.env.VITE_API_BASE;
 
 
-  // Utility function to notify about banner updates
-  const notifyBannersUpdated = () => {
-    try {
-      const k = 'banners:updated';
-      localStorage.setItem(k, String(Date.now()));
-      window.dispatchEvent(new Event(k));
-    } catch {}
-  };
+  // Load data on component mount
+  useEffect(() => {
+    fetchAll().catch(() => {
+      // If API fails, add sample data for testing
+      console.log('API failed, adding sample data...');
+      addSampleData();
+    });
+  }, []);
 
   // Load cities for dropdown when form opens
   const loadCitiesForDropdown = async () => {
