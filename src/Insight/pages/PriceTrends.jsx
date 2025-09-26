@@ -528,29 +528,35 @@ export default function PriceTrends() {
             ) : (
               <>
                 {/* Hero Banner for City Data */}
-                <div className="relative w-full h-[25vh] sm:h-[30vh] md:h-[35vh] lg:h-[40vh] overflow-hidden mb-8 rounded-2xl">
-                  {/* Background with Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600"></div>
-                  
+                <div className="relative w-full h-[25vh] sm:h-[30vh] md:h-[35vh] lg:h-[50vh] overflow-hidden mb-8 rounded-2xl">
+                  {/* Enhanced Background with Darker Overlay */}
+                  <img
+                    src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=2000&q=80"
+                    alt="Property Trends Background"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/20"></div>
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
+
                   {/* Content */}
                   <div className="relative z-10 flex items-center justify-center h-full px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-4xl mx-auto -mt-2 sm:-mt-4 md:-mt-6">
-                      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 sm:mb-6 leading-tight">
+                      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 sm:mb-6 leading-tight drop-shadow-[0_3px_10px_rgba(0,0,0,0.7)]">
                         Property Trends in
-                        <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        <span className="block bg-gradient-to-r from-yellow-300 via-amber-300 to-orange-300 bg-clip-text text-transparent drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]">
                           {city}
                         </span>
                       </h1>
-                      <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed">
+                      <p className="text-lg sm:text-xl md:text-2xl text-gray-100 mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed font-medium drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
                         Discover real-time property price trends, rental yields, and market insights for {city}
                       </p>
-                      
+
                       {/* Action Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-                        <button onClick={()=>{ setShowPicker(true); setCompareMode(false); }} className="px-6 py-3 bg-white/20 backdrop-blur-sm text-white font-semibold rounded-xl hover:bg-white/30 transition-all duration-200 border border-white/30">
+                      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
+                        <button onClick={()=>{ setShowPicker(true); setCompareMode(false); }} className="px-8 py-4 bg-white/95 backdrop-blur-sm text-gray-900 font-bold rounded-2xl hover:bg-white transition-all duration-200 border-2 border-white/50 shadow-2xl hover:shadow-3xl text-lg">
                           Change City
                         </button>
-                        <button onClick={downloadCSV} className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                        <button onClick={downloadCSV} className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-2xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-2xl hover:shadow-3xl text-lg">
                           Download Data
                         </button>
                       </div>
