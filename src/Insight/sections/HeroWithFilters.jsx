@@ -348,14 +348,21 @@ useEffect(() => {
   return (
     <section className="max-w-screen-xl mx-auto px-3 sm:px-4 md:px-6 md:pl-[260px] mb-4 md:mb-8" style={{ marginTop: 'calc(var(--nav-h, 64px) + 12px)' }}>
       <div className="relative rounded-2xl sm:rounded-[22px] overflow-hidden shadow-xl min-h-[50svh] sm:min-h-[56svh] lg:min-h-[60svh]">
-        {/* skeleton shimmer while fetching banner */}
-        {bannerLoading && (
-          <div aria-hidden="true" className="absolute inset-0 bg-gray-200">
-            <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200" />
-          </div>
-        )}
-        {/* Render backend banner only (no static fallback) */}
-        {heroSrc ? (
+        {/* Static Hero Banner */}
+        <img
+          src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80"
+          alt="Luxury Properties Hero Banner"
+          decoding="async"
+          fetchPriority="high"
+          loading="eager"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        {/* Thin Black Overlay for Better Text Contrast */}
+        <div className="absolute inset-0 bg-black/30"></div>
+
+        {/* Dynamic banner overlay (if available) */}
+        {heroSrc && heroLoaded && (
           <img
             src={heroSrc}
             alt="Hero banner"
@@ -365,12 +372,12 @@ useEffect(() => {
             className={`absolute inset-0 w-full h-full object-cover ${heroLoaded ? 'opacity-100' : 'opacity-0'} ${reducedMotion ? '' : 'transition-opacity duration-500'}`}
             onLoad={() => setHeroLoaded(true)}
           />
-        ) : null}
+        )}
         {/* gradient overlay + vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-[rgba(12,18,28,0.45)] to-[rgba(12,18,28,0.55)]" aria-hidden="true" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,0.2)_60%,rgba(0,0,0,0.45)_100%)]" aria-hidden="true" />
         <div className={`relative z-10 px-4 sm:px-5 md:px-10 pt-14 md:pt-20 pb-24 md:pb-32 flex flex-col items-center justify-center text-center text-slate-50 ${reducedMotion ? '' : 'transition-[padding] duration-300'} transform translate-y-[8rem] md:translate-y-[11rem]`}>
-          <h1 className="text-[clamp(1.75rem,6vw,2.5rem)] md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">finding homes made easy for you</h1>
+          <h1 className="text-[clamp(1.75rem,6vw,2.5rem)] md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">Finding homes made easy for you</h1>
           <p className="max-w-2xl text-sm md:text-base text-slate-50/90">Nec risus quis viverra libero tellus eget. Leo morbi faucibus mattis pharetra tellus velit ultricies duis rhoncus. Porttitor fermentum eu urna eget</p>
         </div>  
         {/* Floating filter bar */}
