@@ -63,15 +63,15 @@ const CitiesGrid = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br  via-white to-blue-50 py-12 px-64">
       <section className="max-w-8xl mx-auto px-6 lg:px-12 py-20">
         {/* Luxury Header */}
-        <div className="text-center mb-20">
-          <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 rounded-full text-sm font-semibold mb-6 shadow-sm">
+        <div className="text-center mb-4">
+          {/* <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 rounded-full text-sm font-semibold mb-6 shadow-sm">
             <Crown className="w-4 h-4 mr-2" />
             Exclusive Prime Locations
-          </div>
-          <h1 className="text-4xl lg:text-6xl font-light text-slate-900 mb-8 tracking-tight">
+          </div> */}
+          <h1 className="text-4xl lg:text-6xl font-light text-slate-900 mb-4 tracking-tight">
             Discover Your
             <span className="block font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
               Dream Destination

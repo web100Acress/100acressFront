@@ -1,163 +1,269 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { FiUser, FiMail, FiPhone, FiMapPin, FiCheckCircle, FiArrowRight } from "react-icons/fi";
+import React, { useState } from 'react';
+import { CheckCircle, Instagram, Linkedin, Facebook } from 'lucide-react';
 
-export default function GetInTouch() {
-  // Reduced motion preference
-  const [reducedMotion, setReducedMotion] = useState(false);
-  useEffect(() => {
-    try {
-      const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-      const apply = () => setReducedMotion(!!mq.matches);
-      apply();
-      mq.addEventListener ? mq.addEventListener('change', apply) : mq.addListener(apply);
-      return () => { mq.removeEventListener ? mq.removeEventListener('change', apply) : mq.removeListener(apply); };
-    } catch {}
-  }, []);
+const LuxuryRealEstateContact = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    country: '',
+    phone: '',
+    email: '',
+    inquiryType: 'General',
+    message: '',
+    newsletter: false
+  });
 
-  // Lazy-load background image
-  const [bgLoaded, setBgLoaded] = useState(false);
-  useEffect(() => {
-    const url = 'https://images.unsplash.com/photo-1505692794403-34d4982f88aa?q=80&w=1600&auto=format&fit=crop';
-    const img = new Image();
-    img.onload = () => setBgLoaded(true);
-    img.src = url;
-  }, []);
-  const bgStyle = useMemo(() => {
-    const baseGrad = 'linear-gradient(90deg, rgba(2,6,23,0.75) 0%, rgba(2,6,23,0.45) 50%, rgba(2,6,23,0.1) 100%)';
-    const url = 'url(https://images.unsplash.com/photo-1505692794403-34d4982f88aa?q=80&w=1600&auto=format&fit=crop)';
-    return { background: bgLoaded ? `${baseGrad}, ${url} center/cover` : baseGrad, transition: 'background-image 300ms ease' };
-  }, [bgLoaded]);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Simple success toast
-  const [toast, setToast] = useState("");
-  const showToast = (msg) => {
-    setToast(msg);
-    window.clearTimeout(showToast._t);
-    showToast._t = window.setTimeout(() => setToast(""), 2500);
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value
+    });
   };
 
+  const handleInquiryType = (type) => {
+    setFormData({
+      ...formData,
+      inquiryType: type
+    });
+  };
+
+  const handleSubmit = () => {
+    setIsSubmitted(true);
+    setTimeout(() => {
+      setIsSubmitted(false);
+      setFormData({
+        firstName: '',
+        lastName: '',
+        country: '',
+        phone: '',
+        email: '',
+        inquiryType: 'General',
+        message: '',
+        newsletter: false
+      });
+    }, 3000);
+  };
+
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-slate-700 flex items-center justify-center px-4">
+        <div className="bg-white rounded-3xl shadow-2xl p-12 text-center max-w-md">
+          <CheckCircle className="w-20 h-20 text-emerald-500 mx-auto mb-6" />
+          <h3 className="text-3xl font-light text-gray-900 mb-3">Thank You!</h3>
+          <p className="text-gray-600 text-lg">
+            We've received your inquiry and will get back to you within 24 hours.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <section className="mt-6 md:mt-10">
-      <div className="max-w-screen-xl mx-auto px-4 md:px-6 md:pl-[260px]">
-        <div
-          className="relative rounded-2xl overflow-hidden"
-          style={bgStyle}
-        >
-          {/* soft overlay for elegance */}
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/50 via-slate-900/30 to-transparent" />
-          <div className="relative py-12 md:py-20">
-            <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-10">
+    <div className="min-h-screen bg-slate-700 relative overflow-hidden">
+      {/* Enhanced Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')"
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-800/80 via-slate-700/70 to-slate-600/60"></div>
+      </div>
 
-            {/* Card form */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-              transition={{ duration: reducedMotion ? 0 : 0.6 }}
-              viewport={{ once: true }}
-              className="backdrop-blur-md bg-white/10 text-white rounded-2xl p-6 md:p-8 shadow-[0_8px_35px_rgba(0,0,0,0.4)] max-w-md border border-white/20 ring-1 ring-white/10 hover:ring-white/20 transition"
-            >
-              <h3 className="text-2xl font-extrabold mb-2">Get in touch</h3>
-              <p className="text-white/75 text-sm mb-6">
-                Have a question or want to discuss a property? Fill out the form and we'll get back to you.
+      <div className="relative z-10 flex flex-col xl:flex-row min-h-screen">
+        {/* Enhanced Left Content Section */}
+        <div className="xl:w-1/2 p-8 lg:p-16 xl:p-20 text-white flex flex-col justify-center">
+          <div className="max-w-2xl">
+            <h1 className="text-4xl lg:text-6xl xl:text-7xl font-extralight mb-8 leading-[0.9] tracking-tight">
+              You Have Questions,<br />
+              <span className="text-slate-200">We Have Answers</span>
+            </h1>
+            <p className="text-xl lg:text-2xl text-slate-200 font-light leading-relaxed mb-16 max-w-lg">
+              Discover experiences you won't find anywhere else — thoughtfully designed to immerse you in the heart of the destination. Soulful stories waiting to be lived.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-2xl">
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-2xl font-light mb-6 text-slate-100">Location</h3>
+                <div className="space-y-2 text-slate-300 leading-relaxed">
+                  <p className="font-medium text-white">Anantara Oceanfront Resort</p>
+                  <p>123 Serenity Bay Road</p>
+                  <p>Koh Samui, Thailand 84320</p>
+                  <div className="pt-4 border-t border-slate-600 mt-6">
+                    <p className="text-white font-medium">Monday - Sunday</p>
+                    <p>08:00 - 22:00 (local time)</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-light mb-6 text-slate-100">Email</h3>
+                <p className="text-slate-200 text-lg">stay@anantaresort.com</p>
+              </div>
+            </div>
+
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-2xl font-light mb-6 text-slate-100">Social Media</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <Instagram className="w-5 h-5 text-slate-300" />
+                    <span className="text-slate-300">Instagram</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Linkedin className="w-5 h-5 text-slate-300" />
+                    <span className="text-slate-300">LinkedIn</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Facebook className="w-5 h-5 text-slate-300" />
+                    <span className="text-slate-300">Facebook</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-5 h-5 bg-slate-300 rounded-sm flex items-center justify-center">
+                      <span className="text-slate-700 text-xs font-bold">T</span>
+                    </div>
+                    <span className="text-slate-300">TikTok</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-light mb-6 text-slate-100">Contact</h3>
+                <p className="text-slate-200 text-lg">+66 77 123 456</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Enhanced Right Form Section */}
+        <div className="xl:w-1/2 p-8 lg:p-16 xl:p-20 flex items-center justify-center">
+          <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 w-full max-w-2xl border border-white/20">
+            <div className="mb-10">
+              <h2 className="text-3xl font-light text-gray-900 mb-3">
+                Tell Us What You Need
+              </h2>
+              <p className="text-gray-600 text-lg">
+                Our team is ready to assist you with every detail, big or small.
               </p>
+            </div>
 
-              <form onSubmit={(e) => { e.preventDefault(); showToast('Message sent successfully!'); }} className="space-y-4" aria-live="polite">
-                <div className="relative">
-                  <FiUser className="absolute left-3 top-3.5 text-gray-500" />
+            <div className="space-y-6">
+              {/* Enhanced Name Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
                   <input
-                    className="w-full rounded-lg bg-white text-gray-900 pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="Your name"
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    placeholder="First Name"
+                    className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all text-lg"
                   />
                 </div>
-                <div className="relative">
-                  <FiMail className="absolute left-3 top-3.5 text-gray-500" />
+                <div>
                   <input
-                    className="w-full rounded-lg bg-white text-gray-900 pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="Your email"
-                    type="email"
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    placeholder="Last Name"
+                    className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all text-lg"
                   />
                 </div>
-                <div className="relative">
-                  <FiPhone className="absolute left-3 top-3.5 text-gray-500" />
-                  <input
-                    className="w-full rounded-lg bg-white text-gray-900 pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="Your phone"
-                  />
-                </div>
-                <textarea
-                  className="w-full rounded-lg bg-white text-gray-900 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none h-28"
-                  placeholder="Your message"
+              </div>
+
+              {/* Enhanced Country and Phone */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input
+                  type="text"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  placeholder="Country"
+                  className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all text-lg"
                 />
-                <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-4 py-2.5 rounded-lg shadow-lg transition-all inline-flex items-center justify-center gap-2">
-                  Send message
-                  <FiArrowRight className="opacity-90" />
-                </button>
-              </form>
-            </motion.div>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="Phone Number"
+                  className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all text-lg"
+                />
+              </div>
 
-            {/* Headline */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1, x: 0 }}
-              transition={{ duration: reducedMotion ? 0 : 0.6 }}
-              viewport={{ once: true }}
-              className="text-white flex flex-col justify-center max-w-xl"
-            >
-              <h3 className="text-3xl md:text-4xl font-extrabold leading-tight">
-                Putting a plan to action, <br /> to assure your satisfaction!
-              </h3>
-              <p className="mt-4 text-white/85 text-base max-w-lg">
-                We help you make better property decisions with expert insights and personalized guidance. Your dream home is just a message away.
-              </p>
+              {/* Enhanced Email */}
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Email Address"
+                className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all text-lg"
+              />
 
-              {/* Value bullets */}
-              <ul className="mt-5 space-y-2 text-white/85 text-sm">
-                <li className="flex items-start gap-2">
-                  <FiCheckCircle className="mt-0.5 text-blue-400" />
-                  Personalized project recommendations
-                </li>
-                <li className="flex items-start gap-2">
-                  <FiCheckCircle className="mt-0.5 text-blue-400" />
-                  Market-backed price and location insights
-                </li>
-                <li className="flex items-start gap-2">
-                  <FiCheckCircle className="mt-0.5 text-blue-400" />
-                  Dedicated assistance from inquiry to closing
-                </li>
-              </ul>
-
-              {/* Contacts */}
-              <div className="mt-6 space-y-2 text-sm text-white/85">
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex w-7 h-7 items-center justify-center rounded-full bg-white/15 border border-white/20"><FiPhone /></span>
-                  +91 98765 43210
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex w-7 h-7 items-center justify-center rounded-full bg-white/15 border border-white/20"><FiMail /></span>
-                  contact@100acress.com
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex w-7 h-7 items-center justify-center rounded-full bg-white/15 border border-white/20"><FiMapPin /></span>
-                  Gurgaon, Haryana, India
+              {/* Enhanced Inquiry Type */}
+              <div>
+                <p className="text-gray-800 mb-4 text-lg font-medium">Type of Inquiry</p>
+                <div className="flex flex-wrap gap-3">
+                  {['Booking', 'General', 'Wedding', 'Corporate', 'Others'].map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => handleInquiryType(type)}
+                      className={`px-6 py-3 rounded-full text-lg font-medium transition-all duration-200 ${
+                        formData.inquiryType === type
+                          ? 'bg-slate-900 text-white shadow-lg scale-105'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-102'
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
                 </div>
               </div>
-            </motion.div>
 
-            {/* Toast */}
-            {toast && (
-              <div className="pointer-events-none fixed right-6 bottom-6 z-[9999]">
-                <div className="bg-white text-gray-900 px-4 py-3 rounded-lg shadow-lg border border-gray-200 flex items-center gap-2">
-                  <FiCheckCircle className="text-green-600" />
-                  <span className="text-sm font-medium">{toast}</span>
-                </div>
+              {/* Enhanced Message */}
+              <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleInputChange}
+                placeholder="Message"
+                rows="5"
+                className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all resize-none text-lg"
+              />
+
+              {/* Enhanced Newsletter Checkbox */}
+              <div className="flex items-start space-x-4 py-2">
+                <input
+                  type="checkbox"
+                  name="newsletter"
+                  checked={formData.newsletter}
+                  onChange={handleInputChange}
+                  className="w-5 h-5 mt-1 text-slate-600 bg-gray-100 border-gray-300 rounded focus:ring-slate-500 focus:ring-2"
+                />
+                <label className="text-gray-700 text-lg leading-relaxed">
+                  I'd like to receive exclusive offers and updates
+                </label>
               </div>
-            )}
 
+              {/* Enhanced Submit Button */}
+              <button
+                onClick={handleSubmit}
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-5 px-8 rounded-2xl transition-all duration-200 text-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Submit
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
-}
+};
+
+export default LuxuryRealEstateContact;
