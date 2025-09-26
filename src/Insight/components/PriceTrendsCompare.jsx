@@ -7,7 +7,7 @@ export default function PriceTrendsCompare({
   seriesLoading,
   selectedCities,
   setCompareMode,
-  cityImages,
+  cityImages = {},
 }) {
   const hasSeries = seriesMap && Object.keys(seriesMap).length > 0;
   const [imageErrors, setImageErrors] = useState({});
@@ -105,7 +105,7 @@ export default function PriceTrendsCompare({
                         {!imageErrors[cname] ? (
                           <img
                             alt={cname}
-                            src={cityImages[cname]}
+                            src={cityImages?.[cname] || ''}
                             onError={() => setImageErrors((prev) => ({ ...prev, [cname]: true }))}
                             className="w-full h-full object-cover"
                           />
@@ -185,7 +185,7 @@ export default function PriceTrendsCompare({
                       {!imageErrors[cname] ? (
                         <img
                           alt={cname}
-                          src={cityImages[cname]}
+                          src={cityImages?.[cname] || ''}
                           onError={() => setImageErrors((prev) => ({ ...prev, [cname]: true }))}
                           className="w-full h-full object-cover"
                         />
