@@ -258,32 +258,29 @@ export default function PriceTrendsCityPicker({
           <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
         </div>
 
-        {/* Dynamic Banner Display */}
-        {bannerData && (
-          <div className="mb-6 sm:mb-8">
-            <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl shadow-xl">
-              {bannerData.image?.url && (
-                <img
-                  src={bannerData.image.url}
-                  alt={bannerData.title || "Banner"}
-                  className="w-full h-32 sm:h-40 md:h-48 lg:h-56 object-cover"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60 flex items-center">
-                <div className="px-4 sm:px-6 lg:px-8 text-white">
-                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-2">
-                    {bannerData.title}
-                  </h2>
-                  {bannerData.subtitle && (
-                      <p className="text-sm sm:text-base lg:text-lg opacity-90">
-                      {bannerData.subtitle}
-                    </p>
-                  )}
-                </div>
+        {/* Static Banner Display */}
+        <div className="mb-6 sm:mb-8">
+          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl shadow-xl">
+            <img
+              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=80"
+              alt="Luxury Properties Banner"
+              className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70 flex items-center justify-center">
+              <div className="px-6 sm:px-8 lg:px-12 text-white text-center max-w-4xl">
+                <h2 className="text-3xl sm:text-4xl lg:text-6xl font-semibold mb-6 tracking-wide leading-tight">
+                  Discover Your
+                  <span className="block font-extrabold bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 bg-clip-text text-transparent mt-3">
+                    Dream Property
+                  </span>
+                </h2>
+                <p className="text-lg sm:text-xl lg:text-2xl opacity-95 font-medium leading-relaxed max-w-2xl mx-auto">
+                  Unlock exclusive luxury homes across India's premier destinations
+                </p>
               </div>
             </div>
           </div>
-        )}
+        </div>
 
         {/* Popular Cities with Compare toggle (rounded box) */}
         <div className="mb-6 sm:mb-8 bg-white border-2 border-gray-200 rounded-2xl sm:rounded-3xl shadow-sm p-3 sm:p-4">
