@@ -832,9 +832,9 @@ export default function App() {
 
       <div className="container mx-auto p-4 md:p-8">
         <header className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">City Management</h1>
+          {/* <h1 className="text-3xl font-bold">City Management</h1> */}
           <div className="flex items-center gap-3">
-            <button
+            {/* <button
               onClick={fetchCities}
               disabled={loading}
               className="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-400 text-white rounded-lg shadow-sm"
@@ -843,7 +843,7 @@ export default function App() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
               {loading ? 'Refreshing...' : 'Refresh'}
-            </button>
+            </button> */}
             <button
               onClick={() => {
                 setShowCityForm(true);
