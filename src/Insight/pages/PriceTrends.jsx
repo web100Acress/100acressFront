@@ -214,18 +214,9 @@ export default function PriceTrends() {
 
   useEffect(() => {
     if (!initialCity) {
-      try {
-        const s = localStorage.getItem("geoCoords");
-        if (s) {
-          const c = JSON.parse(s);
-          if (c && typeof c.lat === "number" && typeof c.lng === "number") {
-            const mapped = mapCoordsToCity(c);
-            if (mapped) {
-              setCity(mapped);
-            }
-          }
-        }
-      } catch {}
+      // Don't automatically set city based on geolocation
+      // Let the user manually select a city instead
+      console.log('No initial city provided, user should select manually');
     }
   }, [initialCity]);
 
@@ -379,10 +370,17 @@ export default function PriceTrends() {
       const results = await Promise.all(cities.map(async (c) => {
         try {
           const qs = new URLSearchParams({ city: c, duration });
-          const res = await fetch(`${base}/analytics/price-trends/series?${qs.toString()}`);
+          const res = await fetch(`${base}/api/price-trends/city/${c}?duration=${duration}`);
           if (!res.ok) throw new Error('bad');
           const data = await res.json();
-          if (data && data.success && Array.isArray(data.data)) return { city: c, series: data.data };
+          if (data && data.success && Array.isArray(data.data)) {
+            // Transform localities data into series data for charts
+            const seriesData = data.data.slice(0, 12).map((locality, index) => ({
+              x: index,
+              y: locality.rate || 10000 + Math.random() * 10000
+            }));
+            return { city: c, series: seriesData };
+          }
         } catch(_) {}
         // fallback fake series
         const pts = Array.from({length: 12}, (_,i)=> ({ x: i, y: 100 + Math.sin(i/2)*10 + Math.random()*4 }));
