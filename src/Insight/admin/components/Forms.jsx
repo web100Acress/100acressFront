@@ -10,6 +10,8 @@ const Forms = ({
   cityForm,
   setCityForm,
   availableCities,
+  availableBuilders, // Add availableBuilders prop
+  propertyTypeOptions, // Add propertyTypeOptions prop
   addCity,
   updateCity,
   resetCityForm,
@@ -34,7 +36,8 @@ const Forms = ({
       zone: 'East',
       rate: '',
       change5y: '',
-      yield: ''
+      yield: '',
+      projectUrl: ''
     }
   ]);
 
@@ -48,7 +51,8 @@ const Forms = ({
         zone: loc.zone || 'East',
         rate: String(loc.rate || ''),
         change5y: String(loc.change5y || ''),
-        yield: String(loc.yield || '')
+        yield: String(loc.yield || ''),
+        projectUrl: loc.projectUrl || ''
       })));
     } else if (!editingCity) {
       // Reset to default when not editing
@@ -57,7 +61,8 @@ const Forms = ({
         zone: 'East',
         rate: '',
         change5y: '',
-        yield: ''
+        yield: '',
+        projectUrl: ''
       }]);
     }
   }, [editingCity]);
@@ -92,7 +97,8 @@ const Forms = ({
         zone: 'East',
         rate: '',
         change5y: '',
-        yield: ''
+        yield: '',
+        projectUrl: ''
       }
     ]);
   };
@@ -124,7 +130,8 @@ const Forms = ({
           zone: loc.zone,
           rate: parseFloat(loc.rate) || 0,
           change5y: parseFloat(loc.change5y) || 0,
-          yield: parseFloat(loc.yield) || 0
+          yield: parseFloat(loc.yield) || 0,
+          projectUrl: loc.projectUrl || ''
         }));
 
       console.log('Form data before sending:');
@@ -181,7 +188,8 @@ const Forms = ({
           zone: 'East',
           rate: '',
           change5y: '',
-          yield: ''
+          yield: '',
+          projectUrl: ''
         }]);
 
         // Notify parent to refresh data
@@ -284,7 +292,7 @@ const Forms = ({
       {/* City Form Modal */}
       {showCityForm && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto border border-slate-200/50">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto border border-slate-200/50">
             <div className="px-6 py-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-gray-800">
@@ -300,7 +308,8 @@ const Forms = ({
                       zone: 'East',
                       rate: '',
                       change5y: '',
-                      yield: ''
+                      yield: '',
+                      projectUrl: ''
                     }]);
                   }}
                   className="text-gray-400 hover:text-gray-600"
@@ -318,14 +327,46 @@ const Forms = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">City Name</label>
-                    <input
+                    <select
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="Enter city name"
                       value={cityForm.name}
                       onChange={e => setCityForm({ ...cityForm, name: e.target.value })}
                       required
-                    />
+                    >
+                      <option value="">Select City</option>
+                      {availableCitiesForTrends.map(city => (
+                        <option key={city} value={city}>{city}</option>
+                      ))}
+                    </select>
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Builder Name</label>
+                    <select
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      value={cityForm.builder || ''}
+                      onChange={e => setCityForm({ ...cityForm, builder: e.target.value })}
+                    >
+                      <option value="">Select Builder (Optional)</option>
+                      {availableBuilders.map(builder => (
+                        <option key={builder} value={builder}>{builder}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
+                    <select
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      value={cityForm.propertyType || ''}
+                      onChange={e => setCityForm({ ...cityForm, propertyType: e.target.value })}
+                    >
+                      <option value="">Select Property Type (Optional)</option>
+                      {propertyTypeOptions.map(type => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                     <select
@@ -428,7 +469,7 @@ const Forms = ({
                           </button>
                         )}
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3">
                         <div>
                           <label className="block text-xs font-medium text-gray-600 mb-1">Locality Name</label>
                           <input
@@ -488,6 +529,16 @@ const Forms = ({
                             required
                           />
                         </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Project URL</label>
+                          <input
+                            type="url"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            placeholder="https://example.com/project"
+                            value={locality.projectUrl}
+                            onChange={e => updateLocality(index, 'projectUrl', e.target.value)}
+                          />
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -516,7 +567,8 @@ const Forms = ({
                       zone: 'East',
                       rate: '',
                       change5y: '',
-                      yield: ''
+                      yield: '',
+                      projectUrl: ''
                     }]);
                   }}
                   className="px-4 py-2 text-sm text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50"
@@ -672,14 +724,105 @@ export default function App() {
   const [cityForm, setCityForm] = useState({
     name: '',
     category: 'ncr', // Ensure default valid category
+    builder: '', // Add builder field
+    propertyType: '', // Add property type field
     bannerFile: null,
     bannerPreview: '',
   });
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [availableBuilders, setAvailableBuilders] = useState([]);
   const [availableCitiesForTrends, setAvailableCitiesForTrends] = useState([]);
+  const [propertyTypeOptions, setPropertyTypeOptions] = useState([]);
 
-  // Price Trends State
+  // Function to fetch builders from projects data (same as Projects.jsx)
+  const fetchBuilders = async () => {
+    try {
+      const token = localStorage.getItem('myToken');
+      const base = import.meta.env.VITE_API_BASE;
+
+      // Fetch projects data to get builders (same as Projects.jsx)
+      const response = await fetch(`${base}/project/viewAll/data?sort=-createdAt`, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Projects API response for builders:', result);
+
+        // Extract unique builder names from projects data (same logic as Projects.jsx)
+        const projects = Array.isArray(result?.data) ? result.data : (Array.isArray(result) ? result : []);
+        const builderNames = new Set();
+
+        projects.forEach(project => {
+          if (project?.builderName) {
+            builderNames.add(project.builderName);
+          }
+        });
+
+        // Convert to array and sort alphabetically
+        const sortedBuilders = Array.from(builderNames).sort();
+        console.log('Available builders from projects:', sortedBuilders);
+
+        setAvailableBuilders(sortedBuilders);
+      } else {
+        console.error('Failed to fetch projects for builders');
+        // Fallback to empty list if API fails
+        setAvailableBuilders([]);
+      }
+    } catch (error) {
+      console.error('Error fetching projects for builders:', error);
+      setAvailableBuilders([]);
+    }
+  };
+
+  // Function to fetch property types from projects data (same as Projects.jsx)
+  const fetchPropertyTypes = async () => {
+    try {
+      const token = localStorage.getItem('myToken');
+      const base = import.meta.env.VITE_API_BASE;
+
+      // Fetch projects data to get property types (same as Projects.jsx)
+      const response = await fetch(`${base}/project/viewAll/data?sort=-createdAt`, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Projects API response for property types:', result);
+
+        // Extract unique property types from projects data (same logic as Projects.jsx)
+        const projects = Array.isArray(result?.data) ? result.data : (Array.isArray(result) ? result : []);
+        const propertyTypes = new Set();
+
+        projects.forEach(project => {
+          if (project?.type) {
+            propertyTypes.add(project.type);
+          }
+        });
+
+        // Convert to array and sort alphabetically
+        const sortedTypes = Array.from(propertyTypes).sort();
+        console.log('Available property types from projects:', sortedTypes);
+
+        setPropertyTypeOptions(sortedTypes);
+      } else {
+        console.error('Failed to fetch projects for property types');
+        // Fallback to hardcoded list if API fails
+        setPropertyTypeOptions(['Apartment', 'Villa', 'Plot', 'Commercial', 'Office']);
+      }
+    } catch (error) {
+      console.error('Error fetching projects for property types:', error);
+      // Fallback to hardcoded list if API fails
+      setPropertyTypeOptions(['Apartment', 'Villa', 'Plot', 'Commercial', 'Office']);
+    }
+  };
   const [showPriceTrendForm, setShowPriceTrendForm] = useState(false);
   const [editingPriceTrend, setEditingPriceTrend] = useState(null);
   const [priceTrendForm, setPriceTrendForm] = useState({
@@ -697,29 +840,35 @@ export default function App() {
       const token = localStorage.getItem('myToken');
       const base = import.meta.env.VITE_API_BASE;
 
-      const response = await fetch(`${base}/api/admin/cities`, {
-        headers: { Authorization: `Bearer ${token}` }
+      // Fetch projects data to get cities (same as Projects.jsx)
+      const response = await fetch(`${base}/project/viewAll/data?sort=-createdAt`, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        }
       });
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Cities for trends API response:', result);
+        console.log('Projects API response for cities:', result);
 
-        // Extract unique city names from all categories
+        // Extract unique city names from projects data (same logic as Projects.jsx)
+        const projects = Array.isArray(result?.data) ? result.data : (Array.isArray(result) ? result : []);
         const cityNames = new Set();
-        Object.values(result.data).forEach(categoryCities => {
-          categoryCities.forEach(city => {
-            cityNames.add(city.name);
-          });
+
+        projects.forEach(project => {
+          if (project?.city) {
+            cityNames.add(project.city);
+          }
         });
 
         // Convert to array and sort alphabetically
         const sortedCities = Array.from(cityNames).sort();
-        console.log('Available cities for trends:', sortedCities);
+        console.log('Available cities from projects:', sortedCities);
 
         setAvailableCitiesForTrends(sortedCities);
       } else {
-        console.error('Failed to fetch cities for trends');
+        console.error('Failed to fetch projects for cities');
         // Fallback to hardcoded list if API fails
         setAvailableCitiesForTrends([
           'Delhi', 'Mumbai', 'Bangalore', 'Chennai', 'Hyderabad',
@@ -727,7 +876,7 @@ export default function App() {
         ]);
       }
     } catch (error) {
-      console.error('Error fetching cities for trends:', error);
+      console.error('Error fetching projects for cities:', error);
       // Fallback to hardcoded list if API fails
       setAvailableCitiesForTrends([
         'Delhi', 'Mumbai', 'Bangalore', 'Chennai', 'Hyderabad',
@@ -815,6 +964,8 @@ export default function App() {
     setCityForm({
       name: '',
       category: 'ncr', // Always use valid category
+      builder: '', // Reset builder field
+      propertyType: '', // Reset property type field
       bannerFile: null,
       bannerPreview: '',
     });
@@ -845,10 +996,12 @@ export default function App() {
     // Could add refresh logic here if needed
   };
 
-  // Load cities on component mount
+  // Load cities and builders on component mount
   useEffect(() => {
     fetchCities();
     fetchCitiesForTrends();
+    fetchBuilders();
+    fetchPropertyTypes();
   }, []);
 
   return (
@@ -983,6 +1136,8 @@ export default function App() {
           cityForm={cityForm}
           setCityForm={setCityForm}
           availableCities={cities} // Pass the cities state to the form
+          availableBuilders={availableBuilders} // Pass the builders state to the form
+          propertyTypeOptions={propertyTypeOptions} // Pass the property type options to the form
           addCity={addCity}
           updateCity={updateCity}
           resetCityForm={resetCityForm}
