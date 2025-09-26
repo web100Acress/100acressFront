@@ -71,6 +71,7 @@ const MarketReports = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 px-80  py-16 mb-4">
+      <Navbar />  
       {/* Enhanced Hero Banner */}
       <div className="relative w-full h-[70vh] md:h-[70vh] overflow-hidden rounded-3xl shadow-2xl">
         <img
@@ -93,7 +94,7 @@ const MarketReports = () => {
         </div>
         
         <div className="absolute bottom-32 left-10 hidden lg:block">
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 text-white border border-white/20">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 text-white border border-white/20">
             <div className="flex items-center space-x-3 mb-2">
               <BarChart3 className="w-5 h-5 text-blue-400" />
               <span className="text-sm font-medium">Avg Price/SqFt</span>
@@ -130,7 +131,7 @@ const MarketReports = () => {
           </div>
         </div>
       </div>
-<Navbar />
+
       <InsightsSidebar />
 
       <div className="max-w-8xl mx-auto px-6 lg:px-12 -mt-20 relative z-20">
