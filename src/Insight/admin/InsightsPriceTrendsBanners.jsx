@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import AdminInsightsSidebar from "../components/AdminInsightsSidebar";
 import { Link } from "react-router-dom";
 import CityManagement from "./components/CityManagement";
-import PriceTrendsManagement from "./components/PriceTrendsManagement";
+// import PriceTrendsManagement from "./components/PriceTrendsManagement";
 import Forms from "./components/Forms";
 
 const SLUG_PREFIX = "insights-price-trends";
@@ -949,7 +949,7 @@ export default function InsightsPriceTrendsBanners() {
               >
                 🏙️ City Management
               </button>
-              <button
+              {/* <button
                 onClick={() => setViewMode('price-trends')}
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                   viewMode === 'price-trends' || viewMode === 'price-trends-form'
@@ -958,7 +958,7 @@ export default function InsightsPriceTrendsBanners() {
                 }`}
               >
                 📈 Price Trends
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -998,7 +998,7 @@ export default function InsightsPriceTrendsBanners() {
         )}
 
         {/* Price Trends Section */}
-        {viewMode === 'price-trends' && (
+        {/* {viewMode === 'price-trends' && (
           <PriceTrendsManagement
             priceTrendsData={priceTrendsData}
             showAllData={showAllData}
@@ -1008,7 +1008,7 @@ export default function InsightsPriceTrendsBanners() {
             editPriceTrend={editPriceTrend}
             deletePriceTrend={deletePriceTrend}
           />
-        )}
+        )} */}
 
         {/* Forms */}
         <Forms
