@@ -34,7 +34,8 @@ const Forms = ({
       zone: 'East',
       rate: '',
       change5y: '',
-      yield: ''
+      yield: '',
+      projectUrl: ''
     }
   ]);
 
@@ -48,7 +49,8 @@ const Forms = ({
         zone: loc.zone || 'East',
         rate: String(loc.rate || ''),
         change5y: String(loc.change5y || ''),
-        yield: String(loc.yield || '')
+        yield: String(loc.yield || ''),
+        projectUrl: loc.projectUrl || ''
       })));
     } else if (!editingCity) {
       // Reset to default when not editing
@@ -57,7 +59,8 @@ const Forms = ({
         zone: 'East',
         rate: '',
         change5y: '',
-        yield: ''
+        yield: '',
+        projectUrl: ''
       }]);
     }
   }, [editingCity]);
@@ -92,7 +95,8 @@ const Forms = ({
         zone: 'East',
         rate: '',
         change5y: '',
-        yield: ''
+        yield: '',
+        projectUrl: ''
       }
     ]);
   };
@@ -124,7 +128,8 @@ const Forms = ({
           zone: loc.zone,
           rate: parseFloat(loc.rate) || 0,
           change5y: parseFloat(loc.change5y) || 0,
-          yield: parseFloat(loc.yield) || 0
+          yield: parseFloat(loc.yield) || 0,
+          projectUrl: loc.projectUrl || ''
         }));
 
       console.log('Form data before sending:');
@@ -181,7 +186,8 @@ const Forms = ({
           zone: 'East',
           rate: '',
           change5y: '',
-          yield: ''
+          yield: '',
+          projectUrl: ''
         }]);
 
         // Notify parent to refresh data
@@ -300,7 +306,8 @@ const Forms = ({
                       zone: 'East',
                       rate: '',
                       change5y: '',
-                      yield: ''
+                      yield: '',
+                      projectUrl: ''
                     }]);
                   }}
                   className="text-gray-400 hover:text-gray-600"
@@ -428,7 +435,7 @@ const Forms = ({
                           </button>
                         )}
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3">
                         <div>
                           <label className="block text-xs font-medium text-gray-600 mb-1">Locality Name</label>
                           <input
@@ -488,6 +495,16 @@ const Forms = ({
                             required
                           />
                         </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Project URL</label>
+                          <input
+                            type="url"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            placeholder="https://example.com/project"
+                            value={locality.projectUrl}
+                            onChange={e => updateLocality(index, 'projectUrl', e.target.value)}
+                          />
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -516,7 +533,8 @@ const Forms = ({
                       zone: 'East',
                       rate: '',
                       change5y: '',
-                      yield: ''
+                      yield: '',
+                      projectUrl: ''
                     }]);
                   }}
                   className="px-4 py-2 text-sm text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50"

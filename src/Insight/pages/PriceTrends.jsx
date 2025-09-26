@@ -109,6 +109,7 @@ export default function PriceTrends() {
             rate: locality.rate,
             change5y: locality.change5y,
             yield: locality.yield,
+            projectUrl: locality.projectUrl || '', // Add projectUrl field
             type: 'Apartment', // Default type since not stored in city localities
             city: cityData.name
           }));
@@ -625,9 +626,16 @@ export default function PriceTrends() {
                     </div>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                       <button onClick={()=>{
-                        const u = `/listings?city=${encodeURIComponent(city)}&locality=${encodeURIComponent(drawerData?.locality||'')}&zone=${encodeURIComponent(zone)}&type=${encodeURIComponent(type)}`;
-                        navigate(u);
-                        closeDrawer();
+                        // Check if there's a project URL in the data
+                        if (drawerData?.projectUrl) {
+                          window.open(drawerData.projectUrl, '_blank');
+                          closeDrawer();
+                        } else {
+                          // Fallback to listings if no project URL
+                          const u = `/listings?city=${encodeURIComponent(city)}&locality=${encodeURIComponent(drawerData?.locality||'')}&zone=${encodeURIComponent(zone)}&type=${encodeURIComponent(type)}`;
+                          navigate(u);
+                          closeDrawer();
+                        }
                       }} className="flex-1 px-4 py-3 rounded-lg border hover:bg-gray-50 text-sm font-medium">View listings</button>
                       <button onClick={()=>{
                         setCompareMode(true);
