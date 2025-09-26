@@ -1,243 +1,163 @@
-  import React, { useState } from 'react';
-  import { CheckCircle } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { FiUser, FiMail, FiPhone, FiMapPin, FiCheckCircle, FiArrowRight } from "react-icons/fi";
 
-  const LuxuryRealEstateContact = () => {
-    const [formData, setFormData] = useState({
-      firstName: '',
-      lastName: '',
-      country: '',
-      phone: '',
-      email: '',
-      inquiryType: 'General',
-      message: '',
-      newsletter: false
-    });
+export default function GetInTouch() {
+  // Reduced motion preference
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    try {
+      const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const apply = () => setReducedMotion(!!mq.matches);
+      apply();
+      mq.addEventListener ? mq.addEventListener('change', apply) : mq.addListener(apply);
+      return () => { mq.removeEventListener ? mq.removeEventListener('change', apply) : mq.removeListener(apply); };
+    } catch {}
+  }, []);
 
-    const [isSubmitted, setIsSubmitted] = useState(false);
+  // Lazy-load background image
+  const [bgLoaded, setBgLoaded] = useState(false);
+  useEffect(() => {
+    const url = 'https://images.unsplash.com/photo-1505692794403-34d4982f88aa?q=80&w=1600&auto=format&fit=crop';
+    const img = new Image();
+    img.onload = () => setBgLoaded(true);
+    img.src = url;
+  }, []);
+  const bgStyle = useMemo(() => {
+    const baseGrad = 'linear-gradient(90deg, rgba(2,6,23,0.75) 0%, rgba(2,6,23,0.45) 50%, rgba(2,6,23,0.1) 100%)';
+    const url = 'url(https://images.unsplash.com/photo-1505692794403-34d4982f88aa?q=80&w=1600&auto=format&fit=crop)';
+    return { background: bgLoaded ? `${baseGrad}, ${url} center/cover` : baseGrad, transition: 'background-image 300ms ease' };
+  }, [bgLoaded]);
 
-    const handleInputChange = (e) => {
-      const { name, value, type, checked } = e.target;
-      setFormData({
-        ...formData,
-        [name]: type === 'checkbox' ? checked : value
-      });
-    };
+  // Simple success toast
+  const [toast, setToast] = useState("");
+  const showToast = (msg) => {
+    setToast(msg);
+    window.clearTimeout(showToast._t);
+    showToast._t = window.setTimeout(() => setToast(""), 2500);
+  };
 
-    const handleInquiryType = (type) => {
-      setFormData({
-        ...formData,
-        inquiryType: type
-      });
-    };
-
-    const handleSubmit = () => {
-      setIsSubmitted(true);
-      setTimeout(() => {
-        setIsSubmitted(false);
-        setFormData({
-          firstName: '',
-          lastName: '',
-          country: '',
-          phone: '',
-          email: '',
-          inquiryType: 'General',
-          message: '',
-          newsletter: false
-        });
-      }, 3000);
-    };
-
-    if (isSubmitted) {
-      return (
-        <div className="min-h-screen bg-gray-600 flex items-center justify-center px-4">
-          <div className="bg-white rounded-2xl shadow-2xl p-12 text-center max-w-md">
-            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h3>
-            <p className="text-gray-600">
-              We've received your inquiry and will get back to you within 24 hours.
-            </p>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="min-h-screen bg-gray-600 relative overflow-hidden">
-        {/* Background Image */}
+  return (
+    <section className="mt-6 md:mt-10">
+      <div className="max-w-screen-xl mx-auto px-4 md:px-6 md:pl-[260px]">
         <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')"
-          }}
+          className="relative rounded-2xl overflow-hidden"
+          style={bgStyle}
         >
-          <div className="absolute inset-0 bg-gray-700 bg-opacity-70"></div>
-        </div>
+          {/* soft overlay for elegance */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/50 via-slate-900/30 to-transparent" />
+          <div className="relative py-12 md:py-20">
+            <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-10">
 
-        <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
-          {/* Left Content Section */}
-          <div className="lg:w-1/2 p-8 lg:p-16 text-white flex flex-col justify-between min-h-screen">
-            <div className="flex-1 flex flex-col justify-center">
-              <h1 className="text-4xl lg:text-5xl font-light mb-6 leading-tight">
-                You Have Questions,<br />
-                We Have Answers
-              </h1>
-              <p className="text-lg lg:text-xl opacity-90 mb-12 font-light max-w-md">
-                Discover experiences you won't find anywhere else — thoughtfully designed to immerse you in the heart of the destination. Soulful stories waiting to be lived.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-              <div>
-                <h3 className="text-xl font-medium mb-4">Location</h3>
-                <div className="space-y-1 text-sm opacity-90">
-                  <p>Anantara Oceanfront Resort</p>
-                  <p>123 Serenity Bay Road</p>
-                  <p>Koh Samui, Thailand 84320</p>
-                  <p className="mt-3">Monday - Sunday | 08:00 - 22:00</p>
-                  <p>(local time)</p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-medium mb-4">Social Media</h3>
-                <div className="space-y-2 text-sm opacity-90">
-                  <p>Instagram</p>
-                  <p>LinkedIn</p>
-                  <p>Facebook</p>
-                  <p>TikTok</p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-medium mb-4">Email</h3>
-                <p className="text-sm opacity-90">stay@anantaresort.com</p>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-medium mb-4">Contact</h3>
-                <p className="text-sm opacity-90">+66 77 123 456</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Form Section */}
-          <div className="lg:w-1/2 p-8 lg:p-16 flex items-center justify-center">
-            <div className="bg-white bg-opacity-95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-lg">
-              <h2 className="text-2xl font-medium text-gray-900 mb-2">
-                Tell Us What You Need
-              </h2>
-              <p className="text-gray-600 mb-8 text-sm">
-                Our team is ready to assist you with every detail, big or small.
+            {/* Card form */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+              transition={{ duration: reducedMotion ? 0 : 0.6 }}
+              viewport={{ once: true }}
+              className="backdrop-blur-md bg-white/10 text-white rounded-2xl p-6 md:p-8 shadow-[0_8px_35px_rgba(0,0,0,0.4)] max-w-md border border-white/20 ring-1 ring-white/10 hover:ring-white/20 transition"
+            >
+              <h3 className="text-2xl font-extrabold mb-2">Get in touch</h3>
+              <p className="text-white/75 text-sm mb-6">
+                Have a question or want to discuss a property? Fill out the form and we'll get back to you.
               </p>
 
-              <div className="space-y-4">
-                {/* Name Fields */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <form onSubmit={(e) => { e.preventDefault(); showToast('Message sent successfully!'); }} className="space-y-4" aria-live="polite">
+                <div className="relative">
+                  <FiUser className="absolute left-3 top-3.5 text-gray-500" />
                   <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    placeholder="First Name"
-                    className="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-gray-300 transition-all"
-                  />
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    placeholder="Last Name"
-                    className="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-gray-300 transition-all"
+                    className="w-full rounded-lg bg-white text-gray-900 pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="Your name"
                   />
                 </div>
-
-                {/* Country and Phone */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="relative">
+                  <FiMail className="absolute left-3 top-3.5 text-gray-500" />
                   <input
-                    type="text"
-                    name="country"
-                    value={formData.country}
-                    onChange={handleInputChange}
-                    placeholder="Country"
-                    className="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-gray-300 transition-all"
-                  />
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="Phone Number"
-                    className="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-gray-300 transition-all"
+                    className="w-full rounded-lg bg-white text-gray-900 pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="Your email"
+                    type="email"
                   />
                 </div>
-
-                {/* Email */}
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Email Address"
-                  className="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-gray-300 transition-all"
-                />
-
-                {/* Inquiry Type */}
-                <div>
-                  <p className="text-gray-700 mb-3 text-sm">Type of Inquiry</p>
-                  <div className="flex flex-wrap gap-2">
-                    {['Booking', 'General', 'Wedding', 'Corporate', 'Others'].map((type) => (
-                      <button
-                        key={type}
-                        onClick={() => handleInquiryType(type)}
-                        className={`px-4 py-2 rounded-full text-sm transition-all ${
-                          formData.inquiryType === type
-                            ? 'bg-gray-900 text-white'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        }`}
-                      >
-                        {type}
-                      </button>
-                    ))}
-                  </div>
+                <div className="relative">
+                  <FiPhone className="absolute left-3 top-3.5 text-gray-500" />
+                  <input
+                    className="w-full rounded-lg bg-white text-gray-900 pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="Your phone"
+                  />
                 </div>
-
-                {/* Message */}
                 <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  placeholder="Message"
-                  rows="4"
-                  className="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-gray-300 transition-all resize-none"
+                  className="w-full rounded-lg bg-white text-gray-900 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none h-28"
+                  placeholder="Your message"
                 />
-
-                {/* Newsletter Checkbox */}
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="newsletter"
-                    checked={formData.newsletter}
-                    onChange={handleInputChange}
-                    className="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 rounded focus:ring-gray-500"
-                  />
-                  <label className="ml-3 text-sm text-gray-600">
-                    I'd like to receive exclusive offers and updates
-                  </label>
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  onClick={handleSubmit}
-                  className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium py-4 px-6 rounded-lg transition-colors duration-200"
-                >
-                  Submit
+                <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-4 py-2.5 rounded-lg shadow-lg transition-all inline-flex items-center justify-center gap-2">
+                  Send message
+                  <FiArrowRight className="opacity-90" />
                 </button>
+              </form>
+            </motion.div>
+
+            {/* Headline */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1, x: 0 }}
+              transition={{ duration: reducedMotion ? 0 : 0.6 }}
+              viewport={{ once: true }}
+              className="text-white flex flex-col justify-center max-w-xl"
+            >
+              <h3 className="text-3xl md:text-4xl font-extrabold leading-tight">
+                Putting a plan to action, <br /> to assure your satisfaction!
+              </h3>
+              <p className="mt-4 text-white/85 text-base max-w-lg">
+                We help you make better property decisions with expert insights and personalized guidance. Your dream home is just a message away.
+              </p>
+
+              {/* Value bullets */}
+              <ul className="mt-5 space-y-2 text-white/85 text-sm">
+                <li className="flex items-start gap-2">
+                  <FiCheckCircle className="mt-0.5 text-blue-400" />
+                  Personalized project recommendations
+                </li>
+                <li className="flex items-start gap-2">
+                  <FiCheckCircle className="mt-0.5 text-blue-400" />
+                  Market-backed price and location insights
+                </li>
+                <li className="flex items-start gap-2">
+                  <FiCheckCircle className="mt-0.5 text-blue-400" />
+                  Dedicated assistance from inquiry to closing
+                </li>
+              </ul>
+
+              {/* Contacts */}
+              <div className="mt-6 space-y-2 text-sm text-white/85">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex w-7 h-7 items-center justify-center rounded-full bg-white/15 border border-white/20"><FiPhone /></span>
+                  +91 98765 43210
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex w-7 h-7 items-center justify-center rounded-full bg-white/15 border border-white/20"><FiMail /></span>
+                  contact@100acress.com
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex w-7 h-7 items-center justify-center rounded-full bg-white/15 border border-white/20"><FiMapPin /></span>
+                  Gurgaon, Haryana, India
+                </div>
               </div>
+            </motion.div>
+
+            {/* Toast */}
+            {toast && (
+              <div className="pointer-events-none fixed right-6 bottom-6 z-[9999]">
+                <div className="bg-white text-gray-900 px-4 py-3 rounded-lg shadow-lg border border-gray-200 flex items-center gap-2">
+                  <FiCheckCircle className="text-green-600" />
+                  <span className="text-sm font-medium">{toast}</span>
+                </div>
+              </div>
+            )}
+
             </div>
           </div>
         </div>
       </div>
-    );
-  };
-
-  export default LuxuryRealEstateContact;
+    </section>
+  );
+}
