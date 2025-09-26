@@ -279,13 +279,12 @@ const Forms = ({
       alert('Error saving price trend. Check console for details.');
     }
   };
-
   return (
     <>
       {/* City Form Modal */}
       {showCityForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[95vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto border border-slate-200/50">
             <div className="px-6 py-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-gray-800">
@@ -533,7 +532,7 @@ const Forms = ({
       {/* Price Trends Form Modal */}
       {showPriceTrendForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[95vh] overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl max-w-xl w-full max-h-[85vh] overflow-y-auto">
             <div className="px-6 py-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-gray-800">
@@ -554,7 +553,7 @@ const Forms = ({
               </div>
             </div>
             <form onSubmit={handlePriceTrendSubmit} className="p-6 space-y-6">
-              {/* Price Trend Information */}
+            
               <div className="bg-green-50 rounded-lg p-4">
                 <h3 className="text-md font-semibold text-gray-800 mb-4">Price Trend Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -635,7 +634,7 @@ const Forms = ({
                 </div>
               </div>
 
-              {/* Form Actions */}
+        
               <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
                 <button
                   type="submit"
@@ -786,6 +785,32 @@ export default function App() {
     console.log("City Updated:", updatedCity);
   };
 
+  // Function to delete a city
+  const deleteCity = async (cityId) => {
+    if (window.confirm('Are you sure you want to delete this city? This action cannot be undone.')) {
+      try {
+        const token = localStorage.getItem('myToken');
+        const base = import.meta.env.VITE_API_BASE;
+
+        const response = await fetch(`${base}/api/admin/cities/${cityId}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          console.log('City deleted successfully');
+          fetchCities(); // Refresh the list
+        } else {
+          console.error('Failed to delete city');
+          alert('Failed to delete city. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error deleting city:', error);
+        alert('Error deleting city. Check console for details.');
+      }
+    }
+  };
+
   const resetCityForm = () => {
     setCityForm({
       name: '',
@@ -911,7 +936,7 @@ export default function App() {
                         </div>
                       )}
                     </div>
-                    <div className="absolute top-2 right-2">
+                    <div className="absolute top-2 right-2 flex gap-1">
                       <button
                         onClick={() => {
                           console.log('Edit button clicked for city:', city);
@@ -925,10 +950,20 @@ export default function App() {
                           });
                           setShowCityForm(true);
                         }}
-                        className="text-gray-500 hover:text-indigo-600 p-2"
+                        className="text-gray-500 hover:text-indigo-600 p-2 rounded bg-white/80 hover:bg-white transition-colors"
+                        title="Edit City"
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => deleteCity(city.id)}
+                        className="text-gray-500 hover:text-red-600 p-2 rounded bg-white/80 hover:bg-white transition-colors"
+                        title="Delete City"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                       </button>
                     </div>
