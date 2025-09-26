@@ -72,7 +72,7 @@ const MarketReports = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 px-80  py-16 mb-4">
       {/* Enhanced Hero Banner */}
-      <div className="relative w-full h-[70vh] md:h-[70vh] overflow-hidden">
+      <div className="relative w-full h-[70vh] md:h-[70vh] overflow-hidden rounded-3xl shadow-2xl">
         <img
           src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80"
           alt="Market Analytics Dashboard"
@@ -105,17 +105,17 @@ const MarketReports = () => {
         
         <div className="relative z-10 flex items-center justify-center h-full px-6 lg:px-12">
           <div className="text-center max-w-5xl mx-auto">
-            <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm text-white rounded-full text-sm font-medium mb-6 border border-white/20">
+            {/* <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm text-white rounded-full text-sm font-medium mb-6 border border-white/20">
               <BarChart3 className="w-4 h-4 mr-2" />
               Real Estate Intelligence
-            </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-white mb-6 leading-tight">
+            </div> */}
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
               Market Reports &
-              <span className="block font-bold bg-gradient-to-r from-blue-300 via-cyan-300 to-purple-300 bg-clip-text text-transparent">
+              <span className="block font-extrabold bg-gradient-to-r from-emerald-300 via-blue-300 to-purple-300 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
                 Analytics Hub
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-slate-200 mb-10 max-w-4xl mx-auto leading-relaxed font-light">
+            <p className="text-xl md:text-2xl text-slate-100 mb-6 max-w-4xl mx-auto leading-relaxed font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
               Comprehensive market insights, data-driven analytics, and strategic intelligence for informed real estate decisions
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -158,7 +158,7 @@ const MarketReports = () => {
         </div> */}
 
         {/* Enhanced Filters */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 mb-12 border border-white/50">
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 mb-16 border border-white/50 mt-12">
           <div className="flex flex-col lg:flex-row lg:items-center gap-6">
             <div className="flex items-center space-x-3">
               <Filter className="w-5 h-5 text-slate-600" />
