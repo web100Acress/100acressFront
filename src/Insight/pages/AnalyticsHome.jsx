@@ -5,7 +5,7 @@ import LocationPrompt from "../components/LocationPrompt";
 import { LocationProvider } from "../components/LocationContext";
 import HeroWithFilters from "../sections/HeroWithFilters";
 import FeaturedGrid from "../sections/FeaturedGrid";
-// import TestimonialsSlider from "../sections/TestimonialsSlider";
+import TestimonialsSlider from "../sections/TestimonialsSlider";
 // import CommercialCarousel from "../sections/CommercialCarousel";
 import DarkCTA from "../sections/DarkCTA";
 // import GetInTouch from "../sections/GetInTouch";
@@ -27,7 +27,7 @@ export default function AnalyticsHome() {
         <HeroWithFilters />
         <FeaturedGrid />
         <DarkCTA />
-        {/* <TestimonialsSlider /> */}
+        <TestimonialsSlider />
         {/* <CommercialCarousel /> */}
         {/* <GetInTouch /> */}
         {/* <CitiesGrid /> */}
