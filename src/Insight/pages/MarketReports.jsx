@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TrendingUp, TrendingDown, BarChart3, PieChart, MapPin, Calendar, Filter, Download, ArrowRight, Building2, Home, DollarSign, Users } from "lucide-react";
 import InsightsSidebar from "../components/InsightsSidebar";
 import Navbar from "../../aadharhomes/navbar/Navbar";
+import LuxuryFooter from "../../Components/Actual_Components/LuxuryFooter";
 
 const MarketReports = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("6months");
@@ -70,16 +71,17 @@ const MarketReports = () => {
   }, [selectedPeriod, selectedCity]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 px-80  py-16 mb-4">
+    <div className="min-h-screen bg-gradient-to-br via-white to-blue-50 px-80  py-16 mb-4">
       <Navbar />  
       {/* Enhanced Hero Banner */}
       <div className="relative w-full h-[70vh] md:h-[70vh] overflow-hidden rounded-3xl shadow-2xl">
         <img
           src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80"
           alt="Market Analytics Dashboard"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-center rounded-3xl"
+          style={{ transform: 'translateY(40px)' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-800/60 to-blue-900/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-800/60 to-blue-900/40 rounded-3xl" style={{ transform: 'translateY(40px)' }}></div>
         
         {/* Floating Analytics Cards */}
         <div className="absolute top-20 right-10 hidden lg:block">
@@ -136,27 +138,7 @@ const MarketReports = () => {
 
       <div className="max-w-8xl mx-auto px-6 lg:px-12 -mt-20 relative z-20">
         {/* Key Metrics Cards */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {keyMetrics.map((metric, index) => (
-            <div key={index} className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 hover:bg-white/90 transition-all duration-300 group">
-              <div className="flex items-center justify-between mb-4">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  metric.trend === 'up' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'
-                }`}>
-                  <metric.icon className="w-6 h-6" />
-                </div>
-                <div className={`flex items-center text-sm font-medium ${
-                  metric.trend === 'up' ? 'text-emerald-600' : 'text-red-600'
-                }`}>
-                  {metric.trend === 'up' ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
-                  {metric.change}
-                </div>
-              </div>
-              <div className="text-3xl font-bold text-slate-900 mb-1">{metric.value}</div>
-              <div className="text-slate-600 text-sm">{metric.label}</div>
-            </div>
-          ))}
-        </div> */}
+     
 
         {/* Enhanced Filters */}
         <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 mb-16 border border-white/50 mt-12">
@@ -213,8 +195,29 @@ const MarketReports = () => {
           </div>
         </div>
 
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          {keyMetrics.map((metric, index) => (
+            <div key={index} className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 hover:bg-white/90 transition-all duration-300 group">
+              <div className="flex items-center justify-between mb-4">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  metric.trend === 'up' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'
+                }`}>
+                  <metric.icon className="w-6 h-6" />
+                </div>
+                <div className={`flex items-center text-sm font-medium ${
+                  metric.trend === 'up' ? 'text-emerald-600' : 'text-red-600'
+                }`}>
+                  {metric.trend === 'up' ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
+                  {metric.change}
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-slate-900 mb-1">{metric.value}</div>
+              <div className="text-slate-600 text-sm">{metric.label}</div>
+            </div>
+          ))}
+        </div>
         {/* Market Overview */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-6">
           {/* Property Price Trends */}
           <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-white/50">
             <div className="flex items-center justify-between mb-6">
@@ -263,9 +266,9 @@ const MarketReports = () => {
         </div>
 
         {/* Detailed Analysis */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-3">
           {/* Rental Yields */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-white/50">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8   border border-white/50">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">
               Rental Yields by Area
             </h2>
@@ -393,5 +396,6 @@ const MarketReports = () => {
     </div>
   );
 };
+
 
 export default MarketReports;
