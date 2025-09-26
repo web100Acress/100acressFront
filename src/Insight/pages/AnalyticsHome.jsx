@@ -6,9 +6,9 @@ import { LocationProvider } from "../components/LocationContext";
 import HeroWithFilters from "../sections/HeroWithFilters";
 import FeaturedGrid from "../sections/FeaturedGrid";
 import TestimonialsSlider from "../sections/TestimonialsSlider";
-// import CommercialCarousel from "../sections/CommercialCarousel";
+import CommercialCarousel from "../sections/CommercialCarousel";
 import DarkCTA from "../sections/DarkCTA";
-// import GetInTouch from "../sections/GetInTouch";
+import GetInTouch from "../sections/GetInTouch";
 // import CitiesGrid from "../sections/CitiesGrid";
 // import FooterInfo from "../sections/FooterInfo";
 import LuxuryFooter from "../../Components/Actual_Components/LuxuryFooter";
@@ -28,8 +28,8 @@ export default function AnalyticsHome() {
         <FeaturedGrid />
         <DarkCTA />
         <TestimonialsSlider />
-        {/* <CommercialCarousel /> */}
-        {/* <GetInTouch /> */}
+        <CommercialCarousel />
+        <GetInTouch />
         {/* <CitiesGrid /> */}
         {/* <FooterInfo /> */}
         <LuxuryFooter />
