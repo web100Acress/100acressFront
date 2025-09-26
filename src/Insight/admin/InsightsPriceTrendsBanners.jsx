@@ -798,22 +798,25 @@ export default function InsightsPriceTrendsBanners() {
         console.error('Error response:', errorText);
       }
 
-      // Load price trends data
-      const priceTrendsResponse = await fetch(`${base}/api/admin/price-trends`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (priceTrendsResponse.ok) {
-        const priceTrendsData = await priceTrendsResponse.json();
-        setPriceTrendsData(priceTrendsData.data.map(trend => ({
-          id: trend._id,
-          area: trend.area,
-          price: trend.price,
-          rental: trend.rental,
-          trend: trend.trend
-        })));
-      } else {
-        console.error('Price trends API failed:', priceTrendsResponse.status);
-      }
+      // Load price trends data (commented out - endpoint doesn't exist)
+      // const priceTrendsResponse = await fetch(`${base}/api/admin/price-trends`, {
+      //   headers: { Authorization: `Bearer ${token}` }
+      // });
+      // if (priceTrendsResponse.ok) {
+      //   const priceTrendsData = await priceTrendsResponse.json();
+      //   setPriceTrendsData(priceTrendsData.data.map(trend => ({
+      //     id: trend._id,
+      //     area: trend.area,
+      //     price: trend.price,
+      //     rental: trend.rental,
+      //     trend: trend.trend
+      //   })));
+      // } else {
+      //   console.error('Price trends API failed:', priceTrendsResponse.status);
+      // }
+
+      // Initialize empty price trends data since the API doesn't exist
+      setPriceTrendsData([]);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
