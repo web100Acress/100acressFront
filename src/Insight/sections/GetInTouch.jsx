@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
-import { CheckCircle, Instagram, Linkedin, Facebook } from 'lucide-react';
+import { CheckCircle, ArrowRight, Mail, Phone, MapPin } from 'lucide-react';
 
 const LuxuryRealEstateContact = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    country: '',
-    phone: '',
     email: '',
+    phone: '',
     inquiryType: 'General',
     message: '',
-    newsletter: false
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [focusedField, setFocusedField] = useState(null);
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     });
   };
 
@@ -37,229 +36,259 @@ const LuxuryRealEstateContact = () => {
       setFormData({
         firstName: '',
         lastName: '',
-        country: '',
-        phone: '',
         email: '',
+        phone: '',
         inquiryType: 'General',
         message: '',
-        newsletter: false
       });
-    }, 3000);
+    }, 2000);
   };
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-slate-700 flex items-center justify-center px-4">
-        <div className="bg-white rounded-3xl shadow-2xl p-12 text-center max-w-md">
-          <CheckCircle className="w-20 h-20 text-emerald-500 mx-auto mb-6" />
-          <h3 className="text-3xl font-light text-gray-900 mb-3">Thank You!</h3>
-          <p className="text-gray-600 text-lg">
-            We've received your inquiry and will get back to you within 24 hours.
-          </p>
+      <div className="w-full max-w-5xl mx-auto bg-gradient-to-br from-slate-900 to-slate-700 rounded-3xl p-8 flex items-center justify-center">
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-8 text-center border border-white/20">
+          <div className="w-16 h-16 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-8 h-8 text-white" />
+          </div>
+          <h3 className="text-2xl font-light text-white mb-2">Thank You!</h3>
+          <p className="text-white/70">We'll get back to you within 24 hours.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-700 relative overflow-hidden">
-      {/* Enhanced Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')"
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-800/80 via-slate-700/70 to-slate-600/60"></div>
-      </div>
-
-      <div className="relative z-10 flex flex-col xl:flex-row min-h-screen">
-        {/* Enhanced Left Content Section */}
-        <div className="xl:w-1/2 p-8 lg:p-16 xl:p-20 text-white flex flex-col justify-center">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl lg:text-6xl xl:text-7xl font-extralight mb-8 leading-[0.9] tracking-tight">
-              You Have Questions,<br />
-              <span className="text-slate-200">We Have Answers</span>
+    <div className="min-h-screen bg-gradient-to-br via-white to-blue-50 py-4">
+      {/* Desktop Layout with Sidebar Space */}
+      <div className="md:ml-[260px] flex justify-center">
+        <div className="w-full max-w-7xl px-6 lg:px-12 py-4">
+          {/* Header Section */}
+          <div className="text-center mb-4">
+            <h1 className="text-3xl lg:text-4xl font-light text-slate-900 mb-3 tracking-tight">
+              Get In
+              <span className="block font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
+                Touch With Us
+              </span>
             </h1>
-            <p className="text-xl lg:text-2xl text-slate-200 font-light leading-relaxed mb-16 max-w-lg">
-              Discover experiences you won't find anywhere else — thoughtfully designed to immerse you in the heart of the destination. Soulful stories waiting to be lived.
+            <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed font-light">
+              Connect with our expert team for personalized real estate guidance and premium property solutions.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-2xl">
-            <div className="space-y-8">
-              <div>
-                <h3 className="text-2xl font-light mb-6 text-slate-100">Location</h3>
-                <div className="space-y-2 text-slate-300 leading-relaxed">
-                  <p className="font-medium text-white">Anantara Oceanfront Resort</p>
-                  <p>123 Serenity Bay Road</p>
-                  <p>Koh Samui, Thailand 84320</p>
-                  <div className="pt-4 border-t border-slate-600 mt-6">
-                    <p className="text-white font-medium">Monday - Sunday</p>
-                    <p>08:00 - 22:00 (local time)</p>
-                  </div>
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-4">
+            {/* Contact Information Section */}
+            <div className="lg:col-span-1 space-y-4">
+              {/* Company Info Card */}
+              <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white">
+                <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl mb-4 flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">A</span>
                 </div>
-              </div>
+                <h3 className="text-xl font-semibold mb-2">100Acress</h3>
+                <p className="text-white/80 text-sm mb-4 leading-relaxed">
+                  Your trusted partner in premium real estate solutions across India.
+                </p>
 
-              <div>
-                <h3 className="text-2xl font-light mb-6 text-slate-100">Email</h3>
-                <p className="text-slate-200 text-lg">stay@anantaresort.com</p>
-              </div>
-            </div>
-
-            <div className="space-y-8">
-              <div>
-                <h3 className="text-2xl font-light mb-6 text-slate-100">Social Media</h3>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3">
-                    <Instagram className="w-5 h-5 text-slate-300" />
-                    <span className="text-slate-300">Instagram</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Linkedin className="w-5 h-5 text-slate-300" />
-                    <span className="text-slate-300">LinkedIn</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Facebook className="w-5 h-5 text-slate-300" />
-                    <span className="text-slate-300">Facebook</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-5 h-5 bg-slate-300 rounded-sm flex items-center justify-center">
-                      <span className="text-slate-700 text-xs font-bold">T</span>
+                    <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                      <Mail className="w-4 h-4 text-cyan-400" />
                     </div>
-                    <span className="text-slate-300">TikTok</span>
+                    <div>
+                      <p className="text-white/60 text-xs uppercase tracking-wide">Email</p>
+                      <p className="text-white text-sm">support@100acress.com</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                      <Phone className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <div>
+                      <p className="text-white/60 text-xs uppercase tracking-wide">Phone</p>
+                      <p className="text-white text-sm">+91 85009 00100</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                      <MapPin className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <div>
+                      <p className="text-white/60 text-xs uppercase tracking-wide">Location</p>
+                      <p className="text-white text-sm">Gurugram, India</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div>
-                <h3 className="text-2xl font-light mb-6 text-slate-100">Contact</h3>
-                <p className="text-slate-200 text-lg">+66 77 123 456</p>
+              {/* Quick Contact Options */}
+              <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">Quick Contact</h4>
+                <div className="space-y-3">
+                  <button className="w-full flex items-center space-x-3 p-3 bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 rounded-xl transition-all duration-200 group">
+                    <Mail className="w-5 h-5 text-blue-600 group-hover:text-blue-700" />
+                    <span className="text-gray-700 group-hover:text-gray-900 font-medium">Send Email</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 p-3 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 rounded-xl transition-all duration-200 group">
+                    <Phone className="w-5 h-5 text-green-600 group-hover:text-green-700" />
+                    <span className="text-gray-700 group-hover:text-gray-900 font-medium">Call Now</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Form Section */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 lg:p-6">
+                <div className="mb-4">
+                  <h2 className="text-2xl lg:text-3xl font-light text-gray-900 mb-2">
+                    Send us a Message
+                  </h2>
+                  <p className="text-gray-600 leading-relaxed">
+                    Fill out the form below and we'll get back to you within 24 hours with expert guidance.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {/* Name Fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        onFocus={() => setFocusedField('firstName')}
+                        onBlur={() => setFocusedField(null)}
+                        placeholder="First Name"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                      />
+                      {focusedField === 'firstName' && (
+                        <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        onFocus={() => setFocusedField('lastName')}
+                        onBlur={() => setFocusedField(null)}
+                        placeholder="Last Name"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                      />
+                      {focusedField === 'lastName' && (
+                        <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Contact Fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="relative">
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        onFocus={() => setFocusedField('email')}
+                        onBlur={() => setFocusedField(null)}
+                        placeholder="Email Address"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                      />
+                      {focusedField === 'email' && (
+                        <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        onFocus={() => setFocusedField('phone')}
+                        onBlur={() => setFocusedField(null)}
+                        placeholder="Phone Number"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                      />
+                      {focusedField === 'phone' && (
+                        <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Inquiry Type */}
+                  <div>
+                    <label className="block text-gray-700 mb-3 font-medium">Inquiry Type</label>
+                    <div className="flex flex-wrap gap-3">
+                      {['General', 'Booking', 'Support', 'Partnership'].map((type) => (
+                        <button
+                          key={type}
+                          onClick={() => handleInquiryType(type)}
+                          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                            formData.inquiryType === type
+                              ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-400/25'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105'
+                          }`}
+                        >
+                          {type}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div className="relative">
+                    <textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      onFocus={() => setFocusedField('message')}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="Tell us about your requirements..."
+                      rows="4"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-none"
+                    />
+                    {focusedField === 'message' && (
+                      <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
+                    )}
+                  </div>
+
+                  {/* Submit Button */}
+                  <button
+                    onClick={handleSubmit}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg shadow-blue-400/25 hover:shadow-xl hover:shadow-blue-400/40 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2 group"
+                  >
+                    <span>Send Message</span>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Enhanced Right Form Section */}
-        <div className="xl:w-1/2 p-8 lg:p-16 xl:p-20 flex items-center justify-center">
-          <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-10 w-full max-w-2xl border border-white/20">
-            <div className="mb-10">
-              <h2 className="text-3xl font-light text-gray-900 mb-3">
-                Tell Us What You Need
-              </h2>
-              <p className="text-gray-600 text-lg">
-                Our team is ready to assist you with every detail, big or small.
-              </p>
+          {/* Bottom Stats Section */}
+          {/* <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 rounded-3xl p-4 lg:p-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-white">
+              <div className="space-y-1">
+                <div className="text-2xl lg:text-3xl font-light">500+</div>
+                <div className="text-white/80 font-light text-sm">Properties Listed</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl lg:text-3xl font-light">50+</div>
+                <div className="text-white/80 font-light text-sm">Premium Locations</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl lg:text-3xl font-light">1000+</div>
+                <div className="text-white/80 font-light text-sm">Happy Clients</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl lg:text-3xl font-light">4.9★</div>
+                <div className="text-white/80 font-light text-sm">Client Rating</div>
+              </div>
             </div>
-
-            <div className="space-y-6">
-              {/* Enhanced Name Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    placeholder="First Name"
-                    className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all text-lg"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    placeholder="Last Name"
-                    className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all text-lg"
-                  />
-                </div>
-              </div>
-
-              {/* Enhanced Country and Phone */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <input
-                  type="text"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleInputChange}
-                  placeholder="Country"
-                  className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all text-lg"
-                />
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  placeholder="Phone Number"
-                  className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all text-lg"
-                />
-              </div>
-
-              {/* Enhanced Email */}
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Email Address"
-                className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all text-lg"
-              />
-
-              {/* Enhanced Inquiry Type */}
-              <div>
-                <p className="text-gray-800 mb-4 text-lg font-medium">Type of Inquiry</p>
-                <div className="flex flex-wrap gap-3">
-                  {['Booking', 'General', 'Wedding', 'Corporate', 'Others'].map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => handleInquiryType(type)}
-                      className={`px-6 py-3 rounded-full text-lg font-medium transition-all duration-200 ${
-                        formData.inquiryType === type
-                          ? 'bg-slate-900 text-white shadow-lg scale-105'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-102'
-                      }`}
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Enhanced Message */}
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleInputChange}
-                placeholder="Message"
-                rows="5"
-                className="w-full px-6 py-4 bg-gray-50/80 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all resize-none text-lg"
-              />
-
-              {/* Enhanced Newsletter Checkbox */}
-              <div className="flex items-start space-x-4 py-2">
-                <input
-                  type="checkbox"
-                  name="newsletter"
-                  checked={formData.newsletter}
-                  onChange={handleInputChange}
-                  className="w-5 h-5 mt-1 text-slate-600 bg-gray-100 border-gray-300 rounded focus:ring-slate-500 focus:ring-2"
-                />
-                <label className="text-gray-700 text-lg leading-relaxed">
-                  I'd like to receive exclusive offers and updates
-                </label>
-              </div>
-
-              {/* Enhanced Submit Button */}
-              <button
-                onClick={handleSubmit}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-5 px-8 rounded-2xl transition-all duration-200 text-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
-              >
-                Submit
-              </button>
-            </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
