@@ -100,32 +100,35 @@ const RealEstateTestimonials = () => {
 
   return (
     <div className="bg-gray-50 py-12 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            What Our Clients Say
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Don't just take our word for it. Here's what our satisfied clients have to say about their real estate experience with us.
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((testimonial) => (
-            <TestimonialCard key={testimonial.id} testimonial={testimonial} />
-          ))}
-        </div>
-        
-        <div className="text-center mt-12">
-          <div className="inline-flex items-center bg-white rounded-full px-6 py-3 shadow-sm">
-            <div className="flex items-center mr-4">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-              ))}
-            </div>
-            <div className="text-sm">
-              <span className="font-semibold text-gray-900">4.9/5</span>
-              <span className="text-gray-600 ml-1">from 150+ reviews</span>
+      {/* Desktop Layout with Sidebar Space */}
+      <div className="md:ml-[260px] flex justify-center">
+        <div className="w-full max-w-screen-xl px-3 sm:px-4 md:px-6">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              What Our Clients Say
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Don't just take our word for it. Here's what our satisfied clients have to say about their real estate experience with us.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {testimonials.map((testimonial) => (
+              <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+            ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <div className="inline-flex items-center bg-white rounded-full px-6 py-3 shadow-sm">
+              <div className="flex items-center mr-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <div className="text-sm">
+                <span className="font-semibold text-gray-900">4.9/5</span>
+                <span className="text-gray-600 ml-1">from 150+ reviews</span>
+              </div>
             </div>
           </div>
         </div>
