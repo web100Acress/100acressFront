@@ -370,7 +370,7 @@ function App() {
                   <Route path="/qr-generator" element={<QRGeneratorPage />} />
                       <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
                       {/* Analytics (public) */}
-                      <Route path="/analytics" element={<AnalyticsHome />} />
+                      <Route path="/property-market-trends/" element={<AnalyticsHome />} />
                       <Route path="/analytics/price-trends" element={<PriceTrends />} />
                       <Route path="/analytics/market" element={<MarketAnalytics />} />
                       <Route path="/analytics/location" element={<LocationIntelligence />} />

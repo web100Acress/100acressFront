@@ -323,7 +323,7 @@ export default function InsightsSidebar() {
               {sectionHeader('Insights', expandedSections.insights, () => toggleSection('insights'))}
               {expandedSections.insights && (
                 <div className="space-y-1 mb-4">
-                  {item('/analytics', 'Property Insights', icons.property)}
+                  {item('/', 'Property Insights', icons.property)}
                   {item('/analytics/price-trends', 'Price Trends', icons.trends)}
                   {item('/admin/insights/market-reports', 'Market Reports', icons.market, true, null, true)}
                   {item('/admin/insights/investment', 'Investment Insights', icons.investment)}
@@ -384,8 +384,11 @@ export default function InsightsSidebar() {
           <nav className="p-3 overflow-y-auto flex-1">
             <div className="space-y-1">
               {/* Quick access items */}
-              {item('/analytics', 'Property Insights', icons.property, !collapsed)}
+              {item('/property-market-trends/', 'Property Insights', icons.property, !collapsed)}
               {item('/analytics/price-trends', 'Price Trends', icons.trends, !collapsed)}
+
+              <div className="h-px bg-gray-200 my-3"></div>
+              
               {item('/admin/insights/market-reports', 'Market Reports', icons.market, !collapsed, null, true)}
               {item('/admin/insights/investment', 'Investment Insights', icons.investment, !collapsed)}
               {item('/admin/insights/area-analytics', 'Area Analytics', icons.area, !collapsed)}
