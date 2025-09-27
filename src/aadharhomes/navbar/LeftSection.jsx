@@ -563,7 +563,7 @@ export default function LeftSection({
         </Button>
       </Link>
       {/* Insights (highlighted + opens mega dropdown on hover) */}
-      <Link to="/analytics" 
+      <Link to="/property-market-trends/" 
         onMouseEnter={() => { if (onOpenInsights) { clearTimer(insightsTimer); onOpenInsights(); } }}
         onMouseLeave={() => { if (onCloseInsights) closeFnWithDelay(insightsTimer, onCloseInsights); }}
       >
@@ -584,7 +584,7 @@ export default function LeftSection({
           onMouseEnter={() => { if (onOpenInsights) { clearTimer(insightsTimer); onOpenInsights(); } }}
           onMouseLeave={() => { if (onCloseInsights) closeFnWithDelay(insightsTimer, onCloseInsights); }}
         >
-          Insights
+          Market Trends
         </Button>
       </Link>
      
