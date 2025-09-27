@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import InsightsSidebar from '../components/InsightsSidebar';
+import AdminInsightsSidebar from './AdminInsightsSidebar';
 
 export default function InvestmentInsights() {
   const [activeTab, setActiveTab] = useState('calculator');
@@ -104,7 +104,7 @@ export default function InvestmentInsights() {
         </div>
       </div>
 
-      <InsightsSidebar />
+      <AdminInsightsSidebar />
 
       <div className="max-w-7xl mx-auto md:pl-[300px] px-4 sm:px-6 lg:px-8 py-6">
         {/* Navigation Tabs */}

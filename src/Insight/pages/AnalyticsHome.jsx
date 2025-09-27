@@ -10,19 +10,14 @@ import CommercialCarousel from "../sections/CommercialCarousel";
 import DarkCTA from "../sections/DarkCTA";
 import GetInTouch from "../sections/GetInTouch";
 import CitiesGrid from "../sections/CitiesGrid";
-import FooterInfo from "../sections/FooterInfo";
-import PriceTrendsCityPicker from "../components/PriceTrendsCityPicker";
-
+// import LuxuryFooter from "../../Components/Actual_Components/LuxuryFooter";
 export default function AnalyticsHome() {
   return (
     <LocationProvider>
       <div className="w-full">
         <Navbar />
-        {/* Fixed Insights sidebar (desktop) */}
         <InsightsSidebar />
-        {/* Location prompt (shows until granted) */}
         <LocationPrompt />
-        {/* Hero */}
         <HeroWithFilters />
         <FeaturedGrid />
         <DarkCTA />
@@ -30,8 +25,7 @@ export default function AnalyticsHome() {
         <CommercialCarousel />
         <GetInTouch />
         <CitiesGrid />
-        <FooterInfo />
-        <PriceTrendsCityPicker />
+        {/* <LuxuryFooter /> */}
       </div>
     </LocationProvider>
   );

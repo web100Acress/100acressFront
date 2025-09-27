@@ -372,10 +372,11 @@ const Projects = () => {
             </button> */}
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <button type="button" className="refresh-button" onClick={handleRefreshData}>
+            {/* <button type="button" className="refresh-button" onClick={handleRefreshData}>
               🔄 Refresh Data
-            </button>
-            <button type="button" className="export-csv-button" onClick={handleExportCSV}>Export CSV</button>
+            </button> */}
+            {/* <button type="button" className="export-csv-button" onClick={handleExportCSV}>Export CSV</button> */}
+            
             <Link to={"/admin/project-insert"}>
               <button
                 className="add-new-project-button"

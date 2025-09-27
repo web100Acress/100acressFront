@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import AdminInsightsSidebar from "../components/AdminInsightsSidebar";
 import { Link } from "react-router-dom";
+import CityManagement from "./components/CityManagement";
+// import PriceTrendsManagement from "./components/PriceTrendsManagement";
+import Forms from "./components/Forms";
 
 const SLUG_PREFIX = "insights-price-trends";
 
@@ -22,6 +25,7 @@ export default function InsightsPriceTrendsBanners() {
   const [localityData, setLocalityData] = useState([]);
   const [priceTrendsData, setPriceTrendsData] = useState([]);
   const [showAllData, setShowAllData] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Form states for adding/editing data
   const [showCityForm, setShowCityForm] = useState(false);
@@ -29,127 +33,384 @@ export default function InsightsPriceTrendsBanners() {
   const [editingCity, setEditingCity] = useState(null);
   const [editingPriceTrend, setEditingPriceTrend] = useState(null);
 
-  // City form state
-  const [cityForm, setCityForm] = useState({
-    name: '',
-    category: 'ncr',
-    banner: '',
-    localities: ''
-  });
-
   // Price trends form state
   const [priceTrendsForm, setPriceTrendsForm] = useState({
     area: '',
     price: '',
     rental: '',
-    trend: ''
+    trend: 'stable',
+    city: ''
   });
 
+  // Cities state for dropdown
+  const [availableCities, setAvailableCities] = useState([]);
+
+  // City form state
+  const [cityForm, setCityForm] = useState({
+    name: '',
+    category: 'ncr',
+    bannerFile: null,
+    bannerPreview: '',
+    localities: ''
+  });
+
+  // Navigation state
+  const [viewMode, setViewMode] = useState('city-list');
+
   const token = localStorage.getItem("myToken");
+  const base = import.meta.env.VITE_API_BASE;
 
-  // Load data from localStorage on component mount
+
+  // Load data on component mount
   useEffect(() => {
-    const savedCities = localStorage.getItem('priceTrendsCities');
-    const savedPriceTrends = localStorage.getItem('priceTrendsData');
-
-    if (savedCities) {
-      setCityData(JSON.parse(savedCities));
-    } else {
-      // Initialize with empty data - users will add data through forms
-      const emptyData = { ncr: [], metro: [], other: [] };
-      setCityData(emptyData);
-      localStorage.setItem('priceTrendsCities', JSON.stringify(emptyData));
-    }
-
-    if (savedPriceTrends) {
-      setPriceTrendsData(JSON.parse(savedPriceTrends));
-    } else {
-      // Initialize with empty array - users will add data through forms
-      setPriceTrendsData([]);
-      localStorage.setItem('priceTrendsData', JSON.stringify([]));
-    }
+    fetchAll().catch(() => {
+      // If API fails, add sample data for testing
+      console.log('API failed, adding sample data...');
+      addSampleData();
+    });
   }, []);
 
-  const fetchAll = async () => {
-    setLoading(true);
-    try {
-      const base = import.meta.env.VITE_API_BASE;
-      const [h, s] = await Promise.all([
-        fetch(`${base}/api/admin/insights-price-trends-banners`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${base}/api/admin/insights-price-trends-small-banners`, { headers: { Authorization: `Bearer ${token}` } }),
-      ]);
-      const hj = await h.json().catch(() => ({ banners: [] }));
-      const sj = await s.json().catch(() => ({ banners: [] }));
-      setHero((hj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
-      setSmall((sj.banners || []).filter(b => (b.slug || "").startsWith(SLUG_PREFIX)));
+  // Listen for global city data refresh events
+  useEffect(() => {
+    const handleCityDataChanged = (event) => {
+      console.log('InsightsPriceTrendsBanners received cityDataChanged event:', event.detail);
+      // Refresh the data when we receive the event
+      fetchAll();
+    };
 
-      // Don't overwrite dynamic data with sample data
-      // setCityData(citiesData);
-    } finally {
-      setLoading(false);
+    window.addEventListener('cityDataChanged', handleCityDataChanged);
+    return () => {
+      window.removeEventListener('cityDataChanged', handleCityDataChanged);
+    };
+  }, []);
+
+  // Load cities for dropdown when form opens
+  const loadCitiesForDropdown = async () => {
+    try {
+      const token = localStorage.getItem("myToken");
+      const base = import.meta.env.VITE_API_BASE;
+
+      const citiesResponse = await fetch(`${base}/api/admin/cities`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (citiesResponse.ok) {
+        const citiesData = await citiesResponse.json();
+        let cities = [];
+
+        // Handle different possible response formats
+        if (citiesData.success && citiesData.data) {
+          if (citiesData.data.data && typeof citiesData.data.data === 'object') {
+            Object.values(citiesData.data.data).forEach(categoryCities => {
+              if (Array.isArray(categoryCities)) {
+                cities = cities.concat(categoryCities);
+              }
+            });
+          } else if (Array.isArray(citiesData.data.data)) {
+            cities = citiesData.data.data;
+          }
+        } else if (Array.isArray(citiesData.data)) {
+          cities = citiesData.data;
+        } else if (citiesData.data && typeof citiesData.data === 'object') {
+          Object.values(citiesData.data).forEach(categoryCities => {
+            if (Array.isArray(categoryCities)) {
+              cities = cities.concat(categoryCities);
+            }
+          });
+        }
+
+        // Remove duplicates and format for dropdown
+        const uniqueCities = cities.filter((city, index, self) =>
+          index === self.findIndex(c => c.name === city.name)
+        );
+
+        setAvailableCities(uniqueCities);
+      }
+    } catch (error) {
+      console.error('Error loading cities for dropdown:', error);
     }
   };
 
+  // Load data from API on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Load cities data
+        const citiesResponse = await fetch(`${base}/api/admin/cities`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (citiesResponse.ok) {
+          const citiesData = await citiesResponse.json();
+          console.log('City API response:', citiesData);
+          const citiesByCategory = { ncr: [], metro: [], other: [] };
+
+          // Handle different possible response formats
+          let cities = [];
+          if (citiesData.success && citiesData.data) {
+            console.log('API returned {success: true, data: ...} format');
+
+            // If data.data is an object with categories (current backend format)
+            if (citiesData.data.data && typeof citiesData.data.data === 'object') {
+              console.log('Data.data is object with categories:', citiesData.data.data);
+              Object.entries(citiesData.data.data).forEach(([category, categoryCities]) => {
+                console.log(`Processing category ${category}:`, categoryCities);
+                if (Array.isArray(categoryCities)) {
+                  cities = cities.concat(categoryCities);
+                }
+              });
+            }
+            // If data.data is a direct array
+            else if (Array.isArray(citiesData.data.data)) {
+              cities = citiesData.data.data;
+              console.log('Data.data is direct array:', cities);
+            }
+            // If data.data is an object but not categorized
+            else if (typeof citiesData.data.data === 'object') {
+              cities = Object.values(citiesData.data.data).flat();
+              console.log('Data.data is object, flattened:', cities);
+            }
+            // If data.data is something else
+            else {
+              cities = citiesData.data.data || [];
+              console.log('Data.data fallback:', cities);
+            }
+          } else if (Array.isArray(citiesData.data)) {
+            cities = citiesData.data;
+            console.log('Cities data is array:', cities);
+          } else if (citiesData.data && typeof citiesData.data === 'object') {
+            console.log('Cities data is object:', citiesData.data);
+            // If data is an object with categories (current backend format)
+            Object.entries(citiesData.data).forEach(([category, categoryCities]) => {
+              console.log(`Processing category ${category}:`, categoryCities);
+              if (Array.isArray(categoryCities)) {
+                cities = cities.concat(categoryCities);
+              }
+            });
+          } else if (Array.isArray(citiesData)) {
+            console.log('Cities data is direct array:', citiesData);
+            cities = citiesData;
+          } else {
+            console.log('Cities data unknown format, trying direct:', citiesData);
+            cities = citiesData.cities || citiesData || [];
+          }
+
+          console.log('Final processed cities:', cities);
+
+          if (!Array.isArray(cities)) {
+            console.error('Cities is not an array:', cities);
+            cities = [];
+          }
+
+          cities.forEach(city => {
+            console.log('Processing city:', city);
+            if (citiesByCategory[city.category]) {
+              citiesByCategory[city.category].push({
+                id: city._id || city.id,
+                name: city.name,
+                banner: city.banner,
+                localities: city.localities || []
+              });
+            } else {
+              console.warn(`Unknown category ${city.category} for city ${city.name}`);
+            }
+          });
+
+          console.log('Final cities by category:', citiesByCategory);
+          setCityData(citiesByCategory);
+        } else {
+          console.error('Cities API failed:', citiesResponse.status, citiesResponse.statusText);
+          const errorText = await citiesResponse.text();
+          console.error('Error response:', errorText);
+        }
+
+        // Load price trends data
+        const priceTrendsResponse = await fetch(`${base}/api/admin/price-trends`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (priceTrendsResponse.ok) {
+          const priceTrendsData = await priceTrendsResponse.json();
+          console.log('Price trends API response:', priceTrendsData);
+          setPriceTrendsData(priceTrendsData.data.map(trend => ({
+            id: trend._id,
+            area: trend.area,
+            price: trend.price,
+            rental: trend.rental,
+            trend: trend.trend
+          })));
+        } else {
+          console.error('Price trends API failed:', priceTrendsResponse.status);
+        }
+      } catch (error) {
+        console.error('Error in fetchAll:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Load cities when price trends form is opened
+  useEffect(() => {
+    if (showPriceTrendsForm && availableCities.length === 0) {
+      loadCitiesForDropdown();
+    }
+  }, [showPriceTrendsForm, availableCities.length]);
+
   // City management functions
-  const addCity = () => {
-    const newCity = {
-      id: Date.now(),
-      name: cityForm.name,
-      banner: cityForm.banner,
-      localities: cityForm.localities.split(',').map(loc => loc.trim()).filter(loc => loc)
-    };
+  const addCity = async () => {
+    try {
+      const token = localStorage.getItem("myToken");
+      const base = import.meta.env.VITE_API_BASE;
 
-    const updatedCities = {
-      ...cityData,
-      [cityForm.category]: [...cityData[cityForm.category], newCity]
-    };
+      console.log('Adding city with data:', {
+        name: cityForm.name,
+        category: cityForm.category,
+        localities: cityForm.localities,
+        hasFile: !!cityForm.bannerFile
+      });
 
-    setCityData(updatedCities);
-    localStorage.setItem('priceTrendsCities', JSON.stringify(updatedCities));
+      const formData = new FormData();
+      formData.append('name', cityForm.name);
+      formData.append('category', cityForm.category);
+      formData.append('localities', cityForm.localities);
 
-    resetCityForm();
-    setShowCityForm(false);
+      if (cityForm.bannerFile) {
+        formData.append('bannerImage', cityForm.bannerFile);
+      }
+
+      console.log('Making POST request to:', `${base}/api/admin/cities`);
+
+      const response = await fetch(`${base}/api/admin/cities`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      console.log('Add city response status:', response.status);
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('City added successfully:', result);
+        alert('City added successfully!');
+
+        // Refresh data immediately
+        console.log('Refreshing data after city addition...');
+        await fetchAll();
+
+        resetCityForm();
+        setShowCityForm(false);
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to add city:', errorData);
+        alert(`Failed to add city: ${errorData.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error adding city:', error);
+      alert('Error adding city. Check console for details.');
+    }
   };
 
-  const editCity = (city) => {
+  const editCity = async (city) => {
+    console.log('Editing city:', city);
+    console.log('City category:', city.category);
+
+    // Ensure category has a valid value
+    const validCategories = ['ncr', 'metro', 'other'];
+    const category = validCategories.includes(city.category) ? city.category : 'ncr';
+
     setEditingCity(city);
     setCityForm({
-      name: city.name,
-      category: activeTab,
-      banner: city.banner,
-      localities: city.localities.join(', ')
+      name: city.name || '',
+      category: category,
+      bannerFile: null,
+      bannerPreview: city.banner?.url || '',
+      localities: city.localities ? city.localities.join(', ') : ''
     });
     setShowCityForm(true);
   };
 
-  const updateCity = () => {
-    const updatedCities = { ...cityData };
-    const cityIndex = updatedCities[activeTab].findIndex(city => city.id === editingCity.id);
+  const updateCity = async () => {
+    try {
+      const token = localStorage.getItem("myToken");
+      const base = import.meta.env.VITE_API_BASE;
 
-    if (cityIndex !== -1) {
-      updatedCities[activeTab][cityIndex] = {
-        ...editingCity,
+      // Validate form data
+      const validCategories = ['ncr', 'metro', 'other'];
+      const category = validCategories.includes(cityForm.category) ? cityForm.category : 'ncr';
+
+      console.log('Updating city with data:', {
         name: cityForm.name,
-        banner: cityForm.banner,
-        localities: cityForm.localities.split(',').map(loc => loc.trim()).filter(loc => loc)
-      };
+        category: category,
+        localities: cityForm.localities,
+        hasFile: !!cityForm.bannerFile
+      });
 
-      setCityData(updatedCities);
-      localStorage.setItem('priceTrendsCities', JSON.stringify(updatedCities));
+      const formData = new FormData();
+      formData.append('name', cityForm.name || '');
+      formData.append('category', category);
+      formData.append('localities', cityForm.localities || '');
+
+      if (cityForm.bannerFile) {
+        formData.append('bannerImage', cityForm.bannerFile);
+      }
+
+      const response = await fetch(`${base}/api/admin/cities/${editingCity.id}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      console.log('Update city response status:', response.status);
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('City updated successfully:', result);
+        alert('City updated successfully!');
+
+        // Refresh data immediately
+        console.log('Refreshing data after city update...');
+        await fetchAll();
+
+        resetCityForm();
+        setEditingCity(null);
+        setShowCityForm(false);
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to update city:', errorData);
+        alert(`Failed to update city: ${errorData.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error updating city:', error);
+      alert('Error updating city. Check console for details.');
     }
-
-    resetCityForm();
-    setEditingCity(null);
-    setShowCityForm(false);
   };
 
-  const deleteCity = (cityId) => {
+  const deleteCity = async (cityId) => {
     if (confirm('Delete this city?')) {
-      const updatedCities = { ...cityData };
-      updatedCities[activeTab] = updatedCities[activeTab].filter(city => city.id !== cityId);
+      try {
+        const token = localStorage.getItem("myToken");
+        const base = import.meta.env.VITE_API_BASE;
 
-      setCityData(updatedCities);
-      localStorage.setItem('priceTrendsCities', JSON.stringify(updatedCities));
+        const response = await fetch(`${base}/api/admin/cities/${cityId}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          await fetchAll();
+        } else {
+          alert('Failed to delete city');
+        }
+      } catch (error) {
+        console.error('Error deleting city:', error);
+        alert('Error deleting city');
+      }
     }
   };
 
@@ -157,75 +418,439 @@ export default function InsightsPriceTrendsBanners() {
     setCityForm({
       name: '',
       category: 'ncr',
-      banner: '',
+      bannerFile: null,
+      bannerPreview: '',
       localities: ''
     });
   };
 
   // Price trends management functions
-  const addPriceTrend = () => {
-    const newPriceTrend = {
-      id: Date.now(),
-      area: priceTrendsForm.area,
-      price: priceTrendsForm.price,
-      rental: priceTrendsForm.rental,
-      trend: priceTrendsForm.trend
-    };
+  const addPriceTrend = async () => {
+    try {
+      const token = localStorage.getItem("myToken");
+      const base = import.meta.env.VITE_API_BASE;
 
-    const updatedPriceTrends = [...priceTrendsData, newPriceTrend];
-    setPriceTrendsData(updatedPriceTrends);
-    localStorage.setItem('priceTrendsData', JSON.stringify(updatedPriceTrends));
+      const response = await fetch(`${base}/api/admin/price-trends`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          area: priceTrendsForm.area,
+          price: priceTrendsForm.price,
+          rental: priceTrendsForm.rental,
+          trend: priceTrendsForm.trend,
+          city: priceTrendsForm.city
+        })
+      });
 
-    resetPriceTrendsForm();
-    setShowPriceTrendsForm(false);
+      if (response.ok) {
+        await fetchAll();
+        resetPriceTrendsForm();
+        setShowPriceTrendsForm(false);
+      } else {
+        alert('Failed to add price trend');
+      }
+    } catch (error) {
+      console.error('Error adding price trend:', error);
+      alert('Error adding price trend');
+    }
   };
 
-  const editPriceTrend = (trend) => {
+  const editPriceTrend = async (trend) => {
     setEditingPriceTrend(trend);
     setPriceTrendsForm({
       area: trend.area,
       price: trend.price,
       rental: trend.rental,
-      trend: trend.trend
+      trend: trend.trend,
+      city: trend.city || 'ncr'
     });
     setShowPriceTrendsForm(true);
   };
 
-  const updatePriceTrend = () => {
-    const updatedPriceTrends = priceTrendsData.map(trend =>
-      trend.id === editingPriceTrend.id
-        ? { ...editingPriceTrend, ...priceTrendsForm }
-        : trend
-    );
+  const updatePriceTrend = async () => {
+    try {
+      const token = localStorage.getItem("myToken");
+      const base = import.meta.env.VITE_API_BASE;
 
-    setPriceTrendsData(updatedPriceTrends);
-    localStorage.setItem('priceTrendsData', JSON.stringify(updatedPriceTrends));
+      const response = await fetch(`${base}/api/admin/price-trends/${editingPriceTrend.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          area: priceTrendsForm.area,
+          price: priceTrendsForm.price,
+          rental: priceTrendsForm.rental,
+          trend: priceTrendsForm.trend,
+          city: priceTrendsForm.city
+        })
+      });
 
-    resetPriceTrendsForm();
-    setEditingPriceTrend(null);
-    setShowPriceTrendsForm(false);
+      if (response.ok) {
+        await fetchAll();
+        resetPriceTrendsForm();
+        setEditingPriceTrend(null);
+        setShowPriceTrendsForm(false);
+      } else {
+        alert('Failed to update price trend');
+      }
+    } catch (error) {
+      console.error('Error updating price trend:', error);
+      alert('Error updating price trend');
+    }
   };
 
-  const deletePriceTrend = (trendId) => {
+  const deletePriceTrend = async (trendId) => {
     if (confirm('Delete this price trend entry?')) {
-      const updatedPriceTrends = priceTrendsData.filter(trend => trend.id !== trendId);
-      setPriceTrendsData(updatedPriceTrends);
-      localStorage.setItem('priceTrendsData', JSON.stringify(updatedPriceTrends));
+      try {
+        const token = localStorage.getItem("myToken");
+        const base = import.meta.env.VITE_API_BASE;
+
+        const response = await fetch(`${base}/api/admin/price-trends/${trendId}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          await fetchAll();
+        } else {
+          alert('Failed to delete price trend');
+        }
+      } catch (error) {
+        console.error('Error deleting price trend:', error);
+        alert('Error deleting price trend');
+      }
     }
   };
 
   const resetPriceTrendsForm = () => {
+    const defaultCity = availableCities.length > 0 ? availableCities[0].name : '';
     setPriceTrendsForm({
       area: '',
       price: '',
       rental: '',
-      trend: ''
+      trend: 'stable',
+      city: defaultCity
     });
   };
 
-  useEffect(() => {
-    fetchAll();
-  }, []);
+  // Navigation functions
+  const navigateToCityList = () => {
+    setViewMode('city-list');
+    setShowCityForm(false);
+    setEditingCity(null);
+    resetCityForm();
+  };
+
+  const navigateToAddCity = () => {
+    setViewMode('add-city');
+    setShowCityForm(true);
+    setEditingCity(null);
+    resetCityForm();
+  };
+
+  const navigateToEditCity = (city) => {
+    setViewMode('edit-city');
+    editCity(city);
+  };
+
+  const navigateToPriceTrends = () => {
+    setViewMode('price-trends');
+    setShowPriceTrendsForm(false);
+    setEditingPriceTrend(null);
+    resetPriceTrendsForm();
+  };
+
+  // Get all cities from all categories with debugging
+  const getAllCities = () => {
+    const allCities = Object.values(cityData).flat();
+    console.log('getAllCities called - All cities:', allCities);
+    console.log('getAllCities called - City data state:', cityData);
+    console.log('getAllCities called - Object.values(cityData):', Object.values(cityData));
+    console.log('getAllCities called - Flat result:', Object.values(cityData).flat());
+    return allCities;
+  };
+
+  // Manual refresh function
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    console.log('Manual refresh triggered');
+    await fetchAll();
+    setRefreshing(false);
+  };
+
+  // Test API connection and data
+  const testAPI = async () => {
+    try {
+      const token = localStorage.getItem("myToken");
+      const base = import.meta.env.VITE_API_BASE;
+
+      console.log('Testing API connection...');
+      console.log('Token:', token ? 'Present' : 'Missing');
+      console.log('Base URL:', base);
+
+      // Test basic connectivity
+      const testResponse = await fetch(`${base}/api/admin/cities`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      console.log('Test response status:', testResponse.status);
+      console.log('Test response headers:', Object.fromEntries(testResponse.headers.entries()));
+
+      if (testResponse.ok) {
+        const data = await testResponse.json();
+        console.log('Test API response:', data);
+
+        // Try to extract cities from any possible format
+        let cities = [];
+        if (Array.isArray(data.data)) {
+          cities = data.data;
+          console.log('Data is array:', cities);
+        } else if (data.data && typeof data.data === 'object') {
+          Object.values(data.data).forEach(categoryCities => {
+            if (Array.isArray(categoryCities)) {
+              cities = cities.concat(categoryCities);
+            }
+          });
+          console.log('Data is object, extracted cities:', cities);
+        } else if (Array.isArray(data)) {
+          cities = data;
+          console.log('Direct array:', cities);
+        } else if (data.cities && Array.isArray(data.cities)) {
+          cities = data.cities;
+          console.log('Data.cities array:', cities);
+        }
+
+        console.log('Extracted cities:', cities);
+        console.log('Total cities found:', cities.length);
+
+        if (cities.length > 0) {
+          // Convert extracted cities to the format expected by the component
+          const citiesByCategory = { ncr: [], metro: [], other: [] };
+
+          cities.forEach(city => {
+            console.log('Processing city for display:', city);
+            console.log('City category:', city.category);
+            console.log('City name:', city.name);
+
+            if (citiesByCategory[city.category]) {
+              citiesByCategory[city.category].push({
+                id: city._id || city.id,
+                name: city.name,
+                banner: city.banner,
+                localities: city.localities || []
+              });
+            } else {
+              console.warn(`Unknown category ${city.category} for city ${city.name}`);
+              // If category is not recognized, put it in 'other'
+              citiesByCategory.other.push({
+                id: city._id || city.id,
+                name: city.name,
+                banner: city.banner,
+                localities: city.localities || []
+              });
+            }
+          });
+
+          console.log('Cities by category for display:', citiesByCategory);
+          console.log('Total cities in ncr:', citiesByCategory.ncr.length);
+          console.log('Total cities in metro:', citiesByCategory.metro.length);
+          console.log('Total cities in other:', citiesByCategory.other.length);
+
+          // Set the cities to the component state
+          setCityData(citiesByCategory);
+
+          alert(`API test successful! Found ${cities.length} cities. Cities are now displayed and will persist permanently.`);
+        } else {
+          alert('API connected but no cities found. Check console for data format.');
+        }
+      } else {
+        const errorText = await testResponse.text();
+        console.error('API test failed:', errorText);
+        alert(`API test failed: ${testResponse.status} ${testResponse.statusText}`);
+      }
+    } catch (error) {
+      console.error('API test error:', error);
+      alert('API connection error. Check console for details.');
+    }
+  };
+
+  // Add sample data for testing (temporary)
+  const addSampleData = () => {
+    const sampleCities = {
+      ncr: [
+        { id: '1', name: 'Delhi', category: 'ncr', banner: null, localities: ['Connaught Place', 'Karol Bagh'] },
+        { id: '2', name: 'Gurgaon', category: 'ncr', banner: null, localities: ['DLF Phase 1', 'Sohna Road'] }
+      ],
+      metro: [
+        { id: '3', name: 'Mumbai', category: 'metro', banner: null, localities: ['Bandra', 'Andheri'] }
+      ],
+      other: [
+        { id: '4', name: 'Pune', category: 'other', banner: null, localities: ['Koregaon Park', 'Hinjawadi'] }
+      ]
+    };
+
+    console.log('Adding sample data:', sampleCities);
+    setCityData(sampleCities);
+    console.log('Sample data added successfully');
+    alert('Sample data added! Check the cities list.');
+  };
+
+  const fetchAll = async () => {
+    setLoading(true);
+    try {
+     
+      const token = localStorage.getItem("myToken");
+      const base = import.meta.env.VITE_API_BASE;
+
+      console.log('fetchAll called - Loading data from API...');
+
+      // Load cities data (this is what we need)
+      const citiesResponse = await fetch(`${base}/api/admin/cities`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (citiesResponse.ok) {
+        const citiesData = await citiesResponse.json();
+        console.log('Cities API response:', citiesData);
+        const citiesByCategory = { ncr: [], metro: [], other: [] };
+
+        // Handle different possible response formats
+        let cities = [];
+        if (citiesData.success && citiesData.data) {
+          console.log('API returned {success: true, data: ...} format');
+
+          // If data.data is an object with categories (current backend format)
+          if (citiesData.data.data && typeof citiesData.data.data === 'object') {
+            console.log('Data.data is object with categories:', citiesData.data.data);
+            Object.entries(citiesData.data.data).forEach(([category, categoryCities]) => {
+              console.log(`Processing category ${category}:`, categoryCities);
+              if (Array.isArray(categoryCities)) {
+                cities = cities.concat(categoryCities);
+              }
+            });
+          }
+          // If data.data is a direct array
+          else if (Array.isArray(citiesData.data.data)) {
+            cities = citiesData.data.data;
+            console.log('Data.data is direct array:', cities);
+          }
+          // If data.data is an object but not categorized
+          else if (typeof citiesData.data.data === 'object') {
+            cities = Object.values(citiesData.data.data).flat();
+            console.log('Data.data is object, flattened:', cities);
+          }
+          // If data.data is something else
+          else {
+            cities = citiesData.data.data || [];
+            console.log('Data.data fallback:', cities);
+          }
+        } else if (Array.isArray(citiesData.data)) {
+          cities = citiesData.data;
+          console.log('Cities data is array:', cities);
+        } else if (citiesData.data && typeof citiesData.data === 'object') {
+          console.log('Cities data is object:', citiesData.data);
+          // If data is an object with categories (current backend format)
+          Object.entries(citiesData.data).forEach(([category, categoryCities]) => {
+            console.log(`Processing category ${category}:`, categoryCities);
+            if (Array.isArray(categoryCities)) {
+              cities = cities.concat(categoryCities);
+            }
+          });
+        } else if (Array.isArray(citiesData)) {
+          console.log('Cities data is direct array:', citiesData);
+          cities = citiesData;
+        } else {
+          console.log('Cities data unknown format, trying direct:', citiesData);
+          cities = citiesData.cities || citiesData || [];
+        }
+
+        console.log('Final processed cities:', cities);
+
+        if (!Array.isArray(cities)) {
+          console.error('Cities is not an array:', cities);
+          cities = [];
+        }
+
+        cities.forEach(city => {
+          console.log('Processing city:', city);
+          if (citiesByCategory[city.category]) {
+            citiesByCategory[city.category].push({
+              id: city._id || city.id,
+              name: city.name,
+              banner: city.banner,
+              localities: city.localities || []
+            });
+          } else {
+            console.warn(`Unknown category ${city.category} for city ${city.name}`);
+          }
+        });
+
+        console.log('Final cities by category:', citiesByCategory);
+        setCityData(citiesByCategory);
+      } else {
+        console.error('Cities API failed:', citiesResponse.status, citiesResponse.statusText);
+        const errorText = await citiesResponse.text();
+        console.error('Error response:', errorText);
+      }
+
+      // Load price trends data (commented out - endpoint doesn't exist)
+      // const priceTrendsResponse = await fetch(`${base}/api/admin/price-trends`, {
+      //   headers: { Authorization: `Bearer ${token}` }
+      // });
+      // if (priceTrendsResponse.ok) {
+      //   const priceTrendsData = await priceTrendsResponse.json();
+      //   setPriceTrendsData(priceTrendsData.data.map(trend => ({
+      //     id: trend._id,
+      //     area: trend.area,
+      //     price: trend.price,
+      //     rental: trend.rental,
+      //     trend: trend.trend
+      //   })));
+      // } else {
+      //   console.error('Price trends API failed:', priceTrendsResponse.status);
+      // }
+
+      // Initialize empty price trends data since the API doesn't exist
+      setPriceTrendsData([]);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCityClick = (city) => {
+    setSelectedCity(city);
+    setLocalityData(city.localities || []);
+    // Filter price trends that match the city's localities
+    const relevantTrends = priceTrendsData.filter(trend =>
+      city.localities?.some(locality =>
+        trend.area.toLowerCase().includes(locality.toLowerCase().split(' ')[0])
+      )
+    );
+    setPriceTrendsData(relevantTrends.length > 0 ? relevantTrends : priceTrendsData.slice(0, 3));
+    setShowAllData(false);
+  };
+
+  const handleMoreClick = () => {
+    setShowAllData(!showAllData);
+    if (!showAllData) {
+      // Show extended data when "More" is clicked
+      const extendedData = priceTrendsData.flatMap(trend => [
+        trend,
+        { ...trend, id: `${trend.id}_ext`, area: `${trend.area} Extended`, price: 'Updated Price', rental: 'Updated Rental' }
+      ]);
+      setPriceTrendsData(extendedData);
+    } else {
+      // Reset to original data when "Show Less" is clicked
+      setPriceTrendsData(priceTrendsData);
+    }
+  };
 
   const reset = () => setForm({ title: "", subtitle: "", link: "", order: 0, desktopFile: null, mobileFile: null });
 
@@ -292,38 +917,6 @@ export default function InsightsPriceTrendsBanners() {
     notifyBannersUpdated();
   };
 
-  const handleCityClick = (city) => {
-    setSelectedCity(city);
-    setLocalityData(city.localities || []);
-    // Filter price trends that match the city's localities
-    const relevantTrends = priceTrendsData.filter(trend =>
-      city.localities?.some(locality =>
-        trend.area.toLowerCase().includes(locality.toLowerCase().split(' ')[0])
-      )
-    );
-    setPriceTrendsData(relevantTrends.length > 0 ? relevantTrends : priceTrendsData.slice(0, 3));
-    setShowAllData(false);
-  };
-
-  const handleMoreClick = () => {
-    setShowAllData(!showAllData);
-    if (!showAllData) {
-      // Show extended data when "More" is clicked
-      const extendedData = priceTrendsData.flatMap(trend => [
-        trend,
-        { ...trend, id: `${trend.id}_ext`, area: `${trend.area} Extended`, price: 'Updated Price', rental: 'Updated Rental' }
-      ]);
-      setPriceTrendsData(extendedData);
-    } else {
-      // Reset to original data when "Show Less" is clicked
-      setPriceTrendsData(priceTrendsData);
-    }
-  };
-
-  useEffect(() => {
-    fetchAll();
-  }, []);
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="sticky top-0 z-[9000] w-full bg-white/80 backdrop-blur border-b border-gray-200">
@@ -345,483 +938,104 @@ export default function InsightsPriceTrendsBanners() {
       <AdminInsightsSidebar />
       <div className="max-w-7xl mx-auto md:pl-[300px] px-4 sm:px-6 lg:px-8 py-6">
 
-        {/* Price Trends Display Section */}
-        <div className="mt-6 bg-white border border-gray-200 rounded-2xl shadow-sm">
-          <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-lg font-semibold text-gray-800">Price Trends & Analysis</h2>
-            <p className="text-sm text-gray-600 mt-1">City-wise property price trends, rental yields, and market analysis</p>
-          </div>
-
-          {/* City Tabs */}
+        {/* Main Navigation Tabs */}
+        <div className="mb-6 bg-white border border-gray-200 rounded-2xl shadow-sm">
           <div className="px-4 py-3 border-b border-gray-100">
             <div className="flex space-x-4">
-              {['ncr', 'metro', 'other'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    activeTab === tab
-                      ? 'bg-indigo-100 text-indigo-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  {tab === 'ncr' ? 'Popular in NCR' : tab === 'metro' ? 'Metro Cities' : 'Other Cities'}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* City Grid */}
-          <div className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-800">Cities in {activeTab === 'ncr' ? 'NCR' : activeTab === 'metro' ? 'Metro Cities' : 'Other Cities'}</h3>
               <button
-                onClick={() => setShowCityForm(true)}
-                className="inline-flex items-center gap-2 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm"
+                onClick={() => setViewMode('city-list')}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  viewMode === 'city-list' || viewMode === 'add-city' || viewMode === 'edit-city'
+                    ? 'bg-indigo-100 text-indigo-700'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }`}
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"/>
-                </svg>
-                Add City
+                🏙️ City Management
               </button>
+              {/* <button
+                onClick={() => setViewMode('price-trends')}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  viewMode === 'price-trends' || viewMode === 'price-trends-form'
+                    ? 'bg-indigo-100 text-indigo-700'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }`}
+              >
+                📈 Price Trends
+              </button> */}
             </div>
-            {cityData[activeTab].length === 0 ? (
-              <div className="text-center py-8">
-                <div className="text-gray-400 mb-4">
-                  <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No cities added yet</h3>
-                <p className="text-gray-500 mb-4">Get started by adding your first city to this category.</p>
-                <button
-                  onClick={() => setShowCityForm(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm"
-                >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"/>
-                  </svg>
-                  Add Your First City
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {cityData[activeTab].map((city) => (
-                  <div
-                    key={city.id}
-                    onClick={() => handleCityClick(city)}
-                    className={`cursor-pointer rounded-xl border-2 transition-all hover:shadow-md ${
-                      selectedCity?.id === city.id
-                        ? 'border-indigo-500 bg-indigo-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="aspect-video bg-gray-100 rounded-t-xl flex items-center justify-center">
-                      <span className="text-gray-400 text-sm">Banner Image</span>
-                    </div>
-                    <div className="p-3">
-                      <h3 className="font-medium text-gray-900">{city.name}</h3>
-                      <p className="text-xs text-gray-500 mt-1">{city.localities?.length || 0} localities</p>
-                      <div className="flex gap-2 mt-2">
-                        <button
-                          onClick={(e) => { e.stopPropagation(); editCity(city); }}
-                          className="text-xs text-indigo-600 hover:text-indigo-700"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); deleteCity(city.id); }}
-                          className="text-xs text-red-600 hover:text-red-700"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
-
-          {/* Selected City Details */}
-          {selectedCity && (
-            <div className="border-t border-gray-100 p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">{selectedCity.name} - Market Analysis</h3>
-                <button
-                  onClick={() => setSelectedCity(null)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ✕
-                </button>
-              </div>
-
-              {/* Top Localities */}
-              <div className="mb-6">
-                <h4 className="text-md font-medium text-gray-800 mb-3">Top Localities</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {localityData.map((locality, index) => (
-                    <div key={index} className="bg-gray-50 rounded-lg p-3">
-                      <div className="font-medium text-gray-900">{locality}</div>
-                      <div className="text-xs text-gray-500 mt-1">Prime area</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Price Trends Table */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-md font-medium text-gray-800">Price Trends & Rental Yields</h4>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleMoreClick}
-                      className="text-sm text-indigo-600 hover:text-indigo-700"
-                    >
-                      {showAllData ? 'Show Less' : 'More'} →
-                    </button>
-                    <button
-                      onClick={() => setShowPriceTrendsForm(true)}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm"
-                    >
-                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"/>
-                      </svg>
-                      Add
-                    </button>
-                  </div>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="text-left py-2 px-2 text-gray-600">Area</th>
-                        <th className="text-right py-2 px-2 text-gray-600">Property Price</th>
-                        <th className="text-right py-2 px-2 text-gray-600">Rental Yield</th>
-                        <th className="text-right py-2 px-2 text-gray-600">Trend</th>
-                        <th className="text-right py-2 px-2 text-gray-600">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {priceTrendsData.length === 0 ? (
-                        <tr>
-                          <td colSpan="5" className="py-8 text-center text-gray-500">
-                            <div className="text-gray-400 mb-4">
-                              <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                              </svg>
-                            </div>
-                            <h3 className="text-md font-medium text-gray-900 mb-2">No price trends added yet</h3>
-                            <p className="text-gray-500 mb-4">Add your first price trend entry to see market data.</p>
-                            <button
-                              onClick={() => setShowPriceTrendsForm(true)}
-                              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm"
-                            >
-                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"/>
-                              </svg>
-                              Add Price Trend
-                            </button>
-                          </td>
-                        </tr>
-                      ) : (
-                        priceTrendsData.slice(0, showAllData ? priceTrendsData.length : 6).map((trend, index) => (
-                          <tr key={trend.id} className="border-b border-gray-100 hover:bg-gray-50">
-                            <td className="py-2 px-2 font-medium text-gray-900">{trend.area}</td>
-                            <td className="py-2 px-2 text-right text-gray-700">{trend.price}</td>
-                            <td className="py-2 px-2 text-right text-gray-700">{trend.rental}</td>
-                            <td className="py-2 px-2 text-right">
-                              <span className={`px-2 py-1 rounded-full text-xs ${
-                                trend.trend.startsWith('+')
-                                  ? 'bg-green-100 text-green-700'
-                                  : 'bg-red-100 text-red-700'
-                              }`}>
-                                {trend.trend}
-                              </span>
-                            </td>
-                            <td className="py-2 px-2 text-right">
-                              <div className="flex gap-1 justify-end">
-                                <button
-                                  onClick={() => editPriceTrend(trend)}
-                                  className="text-xs text-indigo-600 hover:text-indigo-700"
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => deletePriceTrend(trend.id)}
-                                  className="text-xs text-red-600 hover:text-red-700"
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* City Management Form */}
-        {showCityForm && (
-          <div className="mt-6 bg-white border border-gray-200 rounded-2xl shadow-sm">
-            <div className="px-4 py-3 border-b border-gray-100">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  {editingCity ? 'Edit City' : 'Add New City'}
-                </h2>
-                <button
-                  onClick={() => { setShowCityForm(false); setEditingCity(null); resetCityForm(); }}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-            <form onSubmit={(e) => { e.preventDefault(); editingCity ? updateCity() : addCity(); }} className="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">City Name</label>
-                <input
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                  placeholder="Enter city name"
-                  value={cityForm.name}
-                  onChange={e => setCityForm({...cityForm, name: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Category</label>
-                <select
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                  value={cityForm.category}
-                  onChange={e => setCityForm({...cityForm, category: e.target.value})}
-                >
-                  <option value="ncr">NCR</option>
-                  <option value="metro">Metro Cities</option>
-                  <option value="other">Other Cities</option>
-                </select>
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs font-medium text-gray-600 mb-1">Banner URL</label>
-                <input
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                  placeholder="Enter banner image URL"
-                  value={cityForm.banner}
-                  onChange={e => setCityForm({...cityForm, banner: e.target.value})}
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs font-medium text-gray-600 mb-1">Localities (comma separated)</label>
-                <textarea
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                  placeholder="Enter localities separated by commas (e.g., Locality 1, Locality 2, Locality 3)"
-                  rows={3}
-                  value={cityForm.localities}
-                  onChange={e => setCityForm({...cityForm, localities: e.target.value})}
-                />
-              </div>
-              <div className="md:col-span-2 flex items-center gap-2">
-                <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm shadow-sm">
-                  {editingCity ? 'Update City' : 'Add City'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setShowCityForm(false); setEditingCity(null); resetCityForm(); }}
-                  className="px-3 py-2 text-sm text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
+        {/* City Management Section */}
+        {(viewMode === 'city-list' || viewMode === 'add-city' || viewMode === 'edit-city') && (
+          <CityManagement
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            cityData={cityData}
+            selectedCity={selectedCity}
+            setSelectedCity={setSelectedCity}
+            localityData={localityData}
+            priceTrendsData={priceTrendsData}
+            showAllData={showAllData}
+            setShowAllData={setShowAllData}
+            showPriceTrendsForm={showPriceTrendsForm}
+            setShowPriceTrendsForm={setShowPriceTrendsForm}
+            showCityForm={showCityForm}
+            setShowCityForm={setShowCityForm}
+            editingCity={editingCity}
+            setEditingCity={setEditingCity}
+            cityForm={cityForm}
+            setCityForm={setCityForm}
+            availableCities={availableCities}
+            handleCityClick={handleCityClick}
+            handleMoreClick={handleMoreClick}
+            navigateToAddCity={navigateToAddCity}
+            navigateToEditCity={navigateToEditCity}
+            deleteCity={deleteCity}
+            addCity={addCity}
+            updateCity={updateCity}
+            resetCityForm={resetCityForm}
+            editPriceTrend={editPriceTrend}
+            deletePriceTrend={deletePriceTrend}
+          />
         )}
 
-        {/* Price Trends Management Form */}
-        {showPriceTrendsForm && (
-          <div className="mt-6 bg-white border border-gray-200 rounded-2xl shadow-sm">
-            <div className="px-4 py-3 border-b border-gray-100">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  {editingPriceTrend ? 'Edit Price Trend' : 'Add New Price Trend'}
-                </h2>
-                <button
-                  onClick={() => { setShowPriceTrendsForm(false); setEditingPriceTrend(null); resetPriceTrendsForm(); }}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-            <form onSubmit={(e) => { e.preventDefault(); editingPriceTrend ? updatePriceTrend() : addPriceTrend(); }} className="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Area/Locality</label>
-                <input
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                  placeholder="Enter area or locality name"
-                  value={priceTrendsForm.area}
-                  onChange={e => setPriceTrendsForm({...priceTrendsForm, area: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Property Price</label>
-                <input
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                  placeholder="e.g., ₹25,000/sq.ft"
-                  value={priceTrendsForm.price}
-                  onChange={e => setPriceTrendsForm({...priceTrendsForm, price: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Rental Yield</label>
-                <input
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                  placeholder="e.g., ₹45/sq.ft"
-                  value={priceTrendsForm.rental}
-                  onChange={e => setPriceTrendsForm({...priceTrendsForm, rental: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Trend</label>
-                <input
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                  placeholder="e.g., +12% or -5%"
-                  value={priceTrendsForm.trend}
-                  onChange={e => setPriceTrendsForm({...priceTrendsForm, trend: e.target.value})}
-                />
-              </div>
-              <div className="md:col-span-2 flex items-center gap-2">
-                <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm shadow-sm">
-                  {editingPriceTrend ? 'Update' : 'Add'} Price Trend
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setShowPriceTrendsForm(false); setEditingPriceTrend(null); resetPriceTrendsForm(); }}
-                  className="px-3 py-2 text-sm text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
+        {/* Price Trends Section */}
+        {/* {viewMode === 'price-trends' && (
+          <PriceTrendsManagement
+            priceTrendsData={priceTrendsData}
+            showAllData={showAllData}
+            setShowAllData={setShowAllData}
+            showPriceTrendsForm={showPriceTrendsForm}
+            setShowPriceTrendsForm={setShowPriceTrendsForm}
+            editPriceTrend={editPriceTrend}
+            deletePriceTrend={deletePriceTrend}
+          />
+        )} */}
 
-        {/* Banner Upload Form */}
-        <div className="mt-6 bg-white border border-gray-200 rounded-2xl shadow-sm">
-          <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-800">Create banners</h2>
-          </div>
-          <form onSubmit={onSubmit} className="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Title</label>
-              <input
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                placeholder="e.g. City-wide report"
-                value={form.title}
-                onChange={e => setForm({...form, title:e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Subtitle</label>
-              <input
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                placeholder="Short supporting text"
-                value={form.subtitle}
-                onChange={e => setForm({...form, subtitle:e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Link</label>
-              <input
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                placeholder="https://example.com"
-                value={form.link}
-                onChange={e => setForm({...form, link:e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Order</label>
-              <input
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                type="number"
-                placeholder="0"
-                value={form.order}
-                onChange={e => setForm({...form, order:Number(e.target.value)||0})}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Desktop Image (hero/small)</label>
-              <label className="w-full flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-3 text-xs text-gray-500 hover:border-indigo-300 cursor-pointer">
-                <input type="file" accept="image/*" className="hidden" onChange={e => setForm({...form, desktopFile:e.target.files?.[0]||null})}/>
-                {form.desktopFile ? <span className="truncate max-w-[220px]">{form.desktopFile.name}</span> : <span>Click to choose image</span>}
-              </label>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Mobile Image (small)</label>
-              <label className="w-full flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-3 text-xs text-gray-500 hover:border-indigo-300 cursor-pointer">
-                <input type="file" accept="image/*" className="hidden" onChange={e => setForm({...form, mobileFile:e.target.files?.[0]||null})}/>
-                {form.mobileFile ? <span className="truncate max-w-[220px]">{form.mobileFile.name}</span> : <span>Click to choose image</span>}
-              </label>
-            </div>
-            <div className="md:col-span-2 flex items-center gap-2">
-              <button type="submit" className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm shadow-sm">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2a1 1 0 011 1v8h8a1 1 0 110 2h-8v8a1 1 0 11-2 0v-8H3a1 1 0 110-2h8V3a1 1 0 011-1z"/>
-                </svg>
-                Upload
-              </button>
-              <button type="button" onClick={reset} className="px-3 py-2 text-sm text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50">Reset</button>
-            </div>
-          </form>
-        </div>
+        {/* Forms */}
+        <Forms
+          showCityForm={showCityForm}
+          setShowCityForm={setShowCityForm}
+          showPriceTrendsForm={showPriceTrendsForm}
+          setShowPriceTrendsForm={setShowPriceTrendsForm}
+          editingCity={editingCity}
+          setEditingCity={setEditingCity}
+          editingPriceTrend={editingPriceTrend}
+          setEditingPriceTrend={setEditingPriceTrend}
+          cityForm={cityForm}
+          setCityForm={setCityForm}
+          priceTrendsForm={priceTrendsForm}
+          setPriceTrendsForm={setPriceTrendsForm}
+          availableCities={availableCities}
+          addCity={addCity}
+          updateCity={updateCity}
+          addPriceTrend={addPriceTrend}
+          updatePriceTrend={updatePriceTrend}
+          resetCityForm={resetCityForm}
+          resetPriceTrendsForm={resetPriceTrendsForm}
+        />
 
-        {/* Existing Banner Lists */}
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm">
-            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-800">Hero Banners</h3>
-              {loading && <Spinner />}
-            </div>
-            <div className="p-3 sm:p-4 space-y-2">
-              {hero.map(b => (
-                <div key={b._id} className="flex items-center gap-3 border border-gray-200 rounded-xl p-2.5">
-                  <img src={b.image?.cdn_url || b.image?.url} className="w-28 h-16 object-cover rounded-lg" />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-gray-900 truncate">{b.title}</div>
-                    <div className="text-xs text-gray-500 truncate">{b.subtitle}</div>
-                  </div>
-                  <button onClick={() => { if(confirm('Delete this hero banner?')) del(b._id,'hero'); }} className="text-red-600 text-xs border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5">Delete</button>
-                </div>
-              ))}
-              {hero.length === 0 && !loading && <Empty text="No hero banners." />}
-            </div>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm">
-            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-800">Small Banners</h3>
-              {loading && <Spinner />}
-            </div>
-            <div className="p-3 sm:p-4 space-y-2">
-              {small.map(b => (
-                <div key={b._id} className="flex items-center gap-3 border border-gray-200 rounded-xl p-2.5">
-                  <img src={b.desktopImage?.cdn_url || b.desktopImage?.url} className="w-28 h-16 object-cover rounded-lg" />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-gray-900 truncate">{b.title}</div>
-                    <div className="text-xs text-gray-500 truncate">{b.subtitle}</div>
-                  </div>
-                  <button onClick={() => { if(confirm('Delete this small banner?')) del(b._id,'small'); }} className="text-red-600 text-xs border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5">Delete</button>
-                </div>
-              ))}
-              {small.length === 0 && !loading && <Empty text="No small banners." />}
-            </div>
-          </div>
-        </div>
-
-        {/* Loading state */}
         {loading && (
           <div className="fixed inset-x-0 bottom-4 flex justify-center pointer-events-none">
             <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-gray-900/90 text-white px-3 py-1.5 text-xs shadow-lg">
@@ -832,31 +1046,23 @@ export default function InsightsPriceTrendsBanners() {
         )}
       </div>
     </div>
-  );
-}
+  );}
 
-function notifyBannersUpdated(){
-  try {
-    const k = 'banners:updated';
-    localStorage.setItem(k, String(Date.now()));
-    window.dispatchEvent(new Event(k));
-  } catch {}
-}
+  function notifyBannersUpdated(){
+    try {
+      const k = 'banners:updated';
+      localStorage.setItem(k, String(Date.now()));
+      window.dispatchEvent(new Event(k));
+    } catch {}
+  }
 
-function Spinner({ light }){
-  return (
-    <svg className={`animate-spin ${light? 'text-white':'text-gray-400'} w-4 h-4`} viewBox="0 0 24 24" fill="none">
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-    </svg>
-  );
-}
+  function Spinner({ light }){
+    return (
+      <svg className={`animate-spin ${light? 'text-white':'text-gray-400'} w-4 h-4`} viewBox="0 0 24 24" fill="none">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+      </svg>
+    );
+  }
 
-function Empty({ text }){
-  return (
-    <div className="flex items-center gap-2 text-xs text-gray-500">
-      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M4 7a3 3 0 013-3h10a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7z" stroke="currentColor"/></svg>
-      {text}
-    </div>
-  );
-}
+ 

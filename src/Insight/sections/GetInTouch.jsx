@@ -1,163 +1,298 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { FiUser, FiMail, FiPhone, FiMapPin, FiCheckCircle, FiArrowRight } from "react-icons/fi";
+import React, { useState } from 'react';
+import { CheckCircle, ArrowRight, Mail, Phone, MapPin } from 'lucide-react';
 
-export default function GetInTouch() {
-  // Reduced motion preference
-  const [reducedMotion, setReducedMotion] = useState(false);
-  useEffect(() => {
-    try {
-      const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-      const apply = () => setReducedMotion(!!mq.matches);
-      apply();
-      mq.addEventListener ? mq.addEventListener('change', apply) : mq.addListener(apply);
-      return () => { mq.removeEventListener ? mq.removeEventListener('change', apply) : mq.removeListener(apply); };
-    } catch {}
-  }, []);
+const LuxuryRealEstateContact = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    inquiryType: 'General',
+    message: '',
+  });
 
-  // Lazy-load background image
-  const [bgLoaded, setBgLoaded] = useState(false);
-  useEffect(() => {
-    const url = 'https://images.unsplash.com/photo-1505692794403-34d4982f88aa?q=80&w=1600&auto=format&fit=crop';
-    const img = new Image();
-    img.onload = () => setBgLoaded(true);
-    img.src = url;
-  }, []);
-  const bgStyle = useMemo(() => {
-    const baseGrad = 'linear-gradient(90deg, rgba(2,6,23,0.75) 0%, rgba(2,6,23,0.45) 50%, rgba(2,6,23,0.1) 100%)';
-    const url = 'url(https://images.unsplash.com/photo-1505692794403-34d4982f88aa?q=80&w=1600&auto=format&fit=crop)';
-    return { background: bgLoaded ? `${baseGrad}, ${url} center/cover` : baseGrad, transition: 'background-image 300ms ease' };
-  }, [bgLoaded]);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [focusedField, setFocusedField] = useState(null);
 
-  // Simple success toast
-  const [toast, setToast] = useState("");
-  const showToast = (msg) => {
-    setToast(msg);
-    window.clearTimeout(showToast._t);
-    showToast._t = window.setTimeout(() => setToast(""), 2500);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
   };
 
-  return (
-    <section className="mt-6 md:mt-10">
-      <div className="max-w-screen-xl mx-auto px-4 md:px-6 md:pl-[260px]">
-        <div
-          className="relative rounded-2xl overflow-hidden"
-          style={bgStyle}
-        >
-          {/* soft overlay for elegance */}
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/50 via-slate-900/30 to-transparent" />
-          <div className="relative py-12 md:py-20">
-            <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-10">
+  const handleInquiryType = (type) => {
+    setFormData({
+      ...formData,
+      inquiryType: type
+    });
+  };
 
-            {/* Card form */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-              transition={{ duration: reducedMotion ? 0 : 0.6 }}
-              viewport={{ once: true }}
-              className="backdrop-blur-md bg-white/10 text-white rounded-2xl p-6 md:p-8 shadow-[0_8px_35px_rgba(0,0,0,0.4)] max-w-md border border-white/20 ring-1 ring-white/10 hover:ring-white/20 transition"
-            >
-              <h3 className="text-2xl font-extrabold mb-2">Get in touch</h3>
-              <p className="text-white/75 text-sm mb-6">
-                Have a question or want to discuss a property? Fill out the form and we'll get back to you.
-              </p>
+  const handleSubmit = () => {
+    setIsSubmitted(true);
+    setTimeout(() => {
+      setIsSubmitted(false);
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        inquiryType: 'General',
+        message: '',
+      });
+    }, 2000);
+  };
 
-              <form onSubmit={(e) => { e.preventDefault(); showToast('Message sent successfully!'); }} className="space-y-4" aria-live="polite">
-                <div className="relative">
-                  <FiUser className="absolute left-3 top-3.5 text-gray-500" />
-                  <input
-                    className="w-full rounded-lg bg-white text-gray-900 pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="Your name"
-                  />
-                </div>
-                <div className="relative">
-                  <FiMail className="absolute left-3 top-3.5 text-gray-500" />
-                  <input
-                    className="w-full rounded-lg bg-white text-gray-900 pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="Your email"
-                    type="email"
-                  />
-                </div>
-                <div className="relative">
-                  <FiPhone className="absolute left-3 top-3.5 text-gray-500" />
-                  <input
-                    className="w-full rounded-lg bg-white text-gray-900 pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="Your phone"
-                  />
-                </div>
-                <textarea
-                  className="w-full rounded-lg bg-white text-gray-900 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none h-28"
-                  placeholder="Your message"
-                />
-                <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-4 py-2.5 rounded-lg shadow-lg transition-all inline-flex items-center justify-center gap-2">
-                  Send message
-                  <FiArrowRight className="opacity-90" />
-                </button>
-              </form>
-            </motion.div>
-
-            {/* Headline */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1, x: 0 }}
-              transition={{ duration: reducedMotion ? 0 : 0.6 }}
-              viewport={{ once: true }}
-              className="text-white flex flex-col justify-center max-w-xl"
-            >
-              <h3 className="text-3xl md:text-4xl font-extrabold leading-tight">
-                Putting a plan to action, <br /> to assure your satisfaction!
-              </h3>
-              <p className="mt-4 text-white/85 text-base max-w-lg">
-                We help you make better property decisions with expert insights and personalized guidance. Your dream home is just a message away.
-              </p>
-
-              {/* Value bullets */}
-              <ul className="mt-5 space-y-2 text-white/85 text-sm">
-                <li className="flex items-start gap-2">
-                  <FiCheckCircle className="mt-0.5 text-blue-400" />
-                  Personalized project recommendations
-                </li>
-                <li className="flex items-start gap-2">
-                  <FiCheckCircle className="mt-0.5 text-blue-400" />
-                  Market-backed price and location insights
-                </li>
-                <li className="flex items-start gap-2">
-                  <FiCheckCircle className="mt-0.5 text-blue-400" />
-                  Dedicated assistance from inquiry to closing
-                </li>
-              </ul>
-
-              {/* Contacts */}
-              <div className="mt-6 space-y-2 text-sm text-white/85">
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex w-7 h-7 items-center justify-center rounded-full bg-white/15 border border-white/20"><FiPhone /></span>
-                  +91 98765 43210
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex w-7 h-7 items-center justify-center rounded-full bg-white/15 border border-white/20"><FiMail /></span>
-                  contact@100acress.com
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex w-7 h-7 items-center justify-center rounded-full bg-white/15 border border-white/20"><FiMapPin /></span>
-                  Gurgaon, Haryana, India
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Toast */}
-            {toast && (
-              <div className="pointer-events-none fixed right-6 bottom-6 z-[9999]">
-                <div className="bg-white text-gray-900 px-4 py-3 rounded-lg shadow-lg border border-gray-200 flex items-center gap-2">
-                  <FiCheckCircle className="text-green-600" />
-                  <span className="text-sm font-medium">{toast}</span>
-                </div>
-              </div>
-            )}
-
-            </div>
+  if (isSubmitted) {
+    return (
+      <div className="w-full max-w-5xl mx-auto bg-gradient-to-br from-slate-900 to-slate-700 rounded-3xl p-8 flex items-center justify-center">
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-8 text-center border border-white/20">
+          <div className="w-16 h-16 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-8 h-8 text-white" />
           </div>
+          <h3 className="text-2xl font-light text-white mb-2">Thank You!</h3>
+          <p className="text-white/70">We'll get back to you within 24 hours.</p>
         </div>
       </div>
-    </section>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br via-white to-blue-50 py-4">
+      {/* Desktop Layout with Sidebar Space */}
+      <div className="md:ml-[260px] flex justify-center">
+        <div className="w-full max-w-7xl px-6 lg:px-12 py-4">
+          {/* Header Section */}
+          <div className="text-center mb-4">
+            <h1 className="text-3xl lg:text-4xl font-light text-slate-900 mb-3 tracking-tight">
+              Get In
+              <span className="block font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
+                Touch With Us
+              </span>
+            </h1>
+            <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed font-light">
+              Connect with our expert team for personalized real estate guidance and premium property solutions.
+            </p>
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-4">
+            {/* Contact Information Section */}
+            <div className="lg:col-span-1 space-y-4">
+              {/* Company Info Card */}
+              <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white">
+                <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl mb-4 flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">A</span>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">100Acress</h3>
+                <p className="text-white/80 text-sm mb-4 leading-relaxed">
+                  Your trusted partner in premium real estate solutions across India.
+                </p>
+
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                      <Mail className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <div>
+                      <p className="text-white/60 text-xs uppercase tracking-wide">Email</p>
+                      <p className="text-white text-sm">support@100acress.com</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                      <Phone className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <div>
+                      <p className="text-white/60 text-xs uppercase tracking-wide">Phone</p>
+                      <p className="text-white text-sm">+91 85009 00100</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                      <MapPin className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <div>
+                      <p className="text-white/60 text-xs uppercase tracking-wide">Location</p>
+                      <p className="text-white text-sm">Gurugram, India</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Contact Options */}
+              <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">Quick Contact</h4>
+                <div className="space-y-3">
+                  <button className="w-full flex items-center space-x-3 p-3 bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 rounded-xl transition-all duration-200 group">
+                    <Mail className="w-5 h-5 text-blue-600 group-hover:text-blue-700" />
+                    <span className="text-gray-700 group-hover:text-gray-900 font-medium">Send Email</span>
+                  </button>
+                  <button className="w-full flex items-center space-x-3 p-3 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 rounded-xl transition-all duration-200 group">
+                    <Phone className="w-5 h-5 text-green-600 group-hover:text-green-700" />
+                    <span className="text-gray-700 group-hover:text-gray-900 font-medium">Call Now</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Form Section */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 lg:p-6">
+                <div className="mb-4">
+                  <h2 className="text-2xl lg:text-3xl font-light text-gray-900 mb-2">
+                    Send us a Message
+                  </h2>
+                  <p className="text-gray-600 leading-relaxed">
+                    Fill out the form below and we'll get back to you within 24 hours with expert guidance.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {/* Name Fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        onFocus={() => setFocusedField('firstName')}
+                        onBlur={() => setFocusedField(null)}
+                        placeholder="First Name"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                      />
+                      {focusedField === 'firstName' && (
+                        <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        onFocus={() => setFocusedField('lastName')}
+                        onBlur={() => setFocusedField(null)}
+                        placeholder="Last Name"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                      />
+                      {focusedField === 'lastName' && (
+                        <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Contact Fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="relative">
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        onFocus={() => setFocusedField('email')}
+                        onBlur={() => setFocusedField(null)}
+                        placeholder="Email Address"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                      />
+                      {focusedField === 'email' && (
+                        <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        onFocus={() => setFocusedField('phone')}
+                        onBlur={() => setFocusedField(null)}
+                        placeholder="Phone Number"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                      />
+                      {focusedField === 'phone' && (
+                        <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Inquiry Type */}
+                  <div>
+                    <label className="block text-gray-700 mb-3 font-medium">Inquiry Type</label>
+                    <div className="flex flex-wrap gap-3">
+                      {['General', 'Booking', 'Support', 'Partnership'].map((type) => (
+                        <button
+                          key={type}
+                          onClick={() => handleInquiryType(type)}
+                          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                            formData.inquiryType === type
+                              ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-400/25'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105'
+                          }`}
+                        >
+                          {type}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div className="relative">
+                    <textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      onFocus={() => setFocusedField('message')}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="Tell us about your requirements..."
+                      rows="4"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-none"
+                    />
+                    {focusedField === 'message' && (
+                      <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
+                    )}
+                  </div>
+
+                  {/* Submit Button */}
+                  <button
+                    onClick={handleSubmit}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg shadow-blue-400/25 hover:shadow-xl hover:shadow-blue-400/40 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2 group"
+                  >
+                    <span>Send Message</span>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Stats Section */}
+          {/* <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 rounded-3xl p-4 lg:p-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-white">
+              <div className="space-y-1">
+                <div className="text-2xl lg:text-3xl font-light">500+</div>
+                <div className="text-white/80 font-light text-sm">Properties Listed</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl lg:text-3xl font-light">50+</div>
+                <div className="text-white/80 font-light text-sm">Premium Locations</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl lg:text-3xl font-light">1000+</div>
+                <div className="text-white/80 font-light text-sm">Happy Clients</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-2xl lg:text-3xl font-light">4.9★</div>
+                <div className="text-white/80 font-light text-sm">Client Rating</div>
+              </div>
+            </div>
+          </div> */}
+        </div>
+      </div>
+    </div>
   );
-}
+};
+
+export default LuxuryRealEstateContact;
