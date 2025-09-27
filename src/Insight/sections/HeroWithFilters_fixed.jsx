@@ -155,7 +155,7 @@ export default function HeroWithFilters() {
     }
   }, []);
 
-// … later …
+// â€¦ later â€¦
 
 // Listen for cross-tab or in-app uploads to refresh banner
 useEffect(() => {
@@ -179,7 +179,7 @@ useEffect(() => {
     window.removeEventListener('storage', onStorage);
     window.removeEventListener('banners:updated', onCustom);
   };
-}, []); // ✅ this was missing earlier
+}, []); // âœ… this was missing earlier
 
 // Fetch posters from backend
 useEffect(() => {
@@ -206,7 +206,7 @@ useEffect(() => {
   if (isAdmin) {
     fetchPosters();
   }
-}, [isAdmin]); // ✅ properly closed
+}, [isAdmin]); // âœ… properly closed
 
 
   // Handle poster file selection
@@ -463,7 +463,7 @@ useEffect(() => {
               </select>
               <select aria-label="Property Type" value={builder} onChange={(e)=>setBuilder(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[180px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                 <option value="">All Builders</option>
-                {propertyTypeOptions.map(opt => (
+                {buildersOpt.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
               </select>
@@ -727,3 +727,4 @@ useEffect(() => {
     </section>
   );
 }
+
