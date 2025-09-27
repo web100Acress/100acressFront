@@ -208,19 +208,41 @@ export default function FeaturedGrid() {
   };
 
   const formatPrice = (project) => {
-    if (!project.minPrice) return "Price on request";
-    const price = project.minPrice;
+    if (!project.minPrice && !project.maxPrice) return "Price on request";
 
     // Convert AED to INR (approximate rate: 1 AED ≈ 22.5 INR)
-    const priceInINR = price * 22.5;
+    const convertToINR = (price) => price * 22.5;
 
-    if (priceInINR >= 100) {
-      return `₹${(priceInINR / 100).toFixed(1)}Cr`;
-    } else if (priceInINR >= 1) {
-      return `₹${priceInINR.toFixed(0)}L`;
-    } else {
-      return `₹${(priceInINR * 100).toFixed(0)}K`;
+    const minPriceINR = project.minPrice ? convertToINR(project.minPrice) : null;
+    const maxPriceINR = project.maxPrice ? convertToINR(project.maxPrice) : null;
+
+    // Format price helper
+    const formatPriceValue = (priceINR) => {
+      if (priceINR >= 100) {
+        return `₹${(priceINR / 100).toFixed(1)}Cr`;
+      } else if (priceINR >= 1) {
+        return `₹${priceINR.toFixed(0)}L`;
+      } else {
+        return `₹${(priceINR * 100).toFixed(0)}K`;
+      }
+    };
+
+    // If only min price is available
+    if (minPriceINR && !maxPriceINR) {
+      return formatPriceValue(minPriceINR);
     }
+
+    // If only max price is available
+    if (!minPriceINR && maxPriceINR) {
+      return formatPriceValue(maxPriceINR);
+    }
+
+    // If both prices are available, show range
+    if (minPriceINR && maxPriceINR) {
+      return `${formatPriceValue(minPriceINR)} - ${formatPriceValue(maxPriceINR)}`;
+    }
+
+    return "Price on request";
   };
 
   const getPropertyType = (project) => {
@@ -263,7 +285,7 @@ export default function FeaturedGrid() {
           </div>
 
           <div className="p-2">
-            <h3 className="font-semibold text-sm text-gray-900 mb-0 line-clamp-1">
+            <h3 className="font-bold text-sm text-gray-900 mb-0 line-clamp-1">
               {project.projectName}
             </h3>
             
@@ -280,10 +302,10 @@ export default function FeaturedGrid() {
               </p>
             </div>
 
-            <div className="bg-[#f5f5f5] rounded-lg py-0 px-4 mt-2 min-h-[24px] flex items-center">
+            <div className="bg-[#f5f5f5] rounded-lg py-0 px-0 mt-0 min-h-[24px] flex items-center">
               <div className="flex justify-between items-center w-full">
-                <div className="text-center flex-1">
-                  <p className="text-xs text-[#222] mb-0 font-medium">Launch Price</p>
+                <div className="text-center flex mt-0  items-center justify-center flex-1 flex-col">
+                  <p className="text-xs text-[#222] mb-0 pt-2 font-bold">Launch Price</p>
                   <p className="font-bold text-[#006169] text-sm">
                     {formatPrice(project)}
                   </p>
@@ -340,7 +362,7 @@ export default function FeaturedGrid() {
           </div>
 
           <div className="p-2">
-            <h3 className="font-semibold text-sm text-gray-900 mb-0 line-clamp-1">
+            <h3 className="font-bold text-sm text-gray-900 mb-0 line-clamp-1">
               {project.projectName}
             </h3>
             
@@ -360,17 +382,17 @@ export default function FeaturedGrid() {
             <div className="bg-[#f5f5f5] rounded-lg py-0 px-4 mt-2 min-h-[24px] flex items-center">
               <div className="flex justify-between items-center w-full">
                 <div className="text-center flex-1">
-                  <p className="text-xs text-[#222] mb-0 font-medium">Launch Price</p>
+                  <p className="text-xs text-[#222] mb-0 font-bold">Launch Price</p>
                   <p className="font-bold text-[#006169] text-sm">
                     {formatPrice(project)}
                   </p>
                 </div>
-                <div className="text-right">
+                {/* <div className="text-right">
                   <p className="text-xs text-[#249f62] mb-0 font-medium">Handover</p>
                   <p className="font-bold text-[#249f62] text-xs">
                     Q{Math.ceil(Math.random() * 4)} {new Date().getFullYear() + Math.ceil(Math.random() * 3)}
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -409,237 +431,241 @@ export default function FeaturedGrid() {
   }
 
   return (
-    <section className="max-w-screen-xl mx-auto px-4 md:px-6 md:pl-[260px] mt-12 md:mt-20">
-      <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-[#0c0a09] tracking-tight">
-          Premium {activeFilter} Properties in Delhi NCR
-        </h2>
-        <p className="text-gray-500 text-sm md:text-base mt-1">Discover handpicked properties that match your lifestyle and investment goals</p>
-      </div>
-
-      {/* Filter Buttons */}
-      <div className="flex items-center justify-start gap-2 sm:gap-3 mx-2 sm:mx-3 md:mx-6 xl:ml-14 pt-2 overflow-x-auto no-scrollbar whitespace-nowrap snap-x snap-mandatory scroll-px-3">
-        <button
-          onClick={() => {
-            setActiveFilter("Trending");
-            setShowAllSections(false);
-          }}
-          className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
-            activeFilter === "Trending" && !showAllSections
-              ? "bg-black text-white shadow-lg"
-              : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
-          }`}
-        >
-          Trending
-        </button>
-        <button
-          onClick={() => {
-            setActiveFilter("Featured");
-            setShowAllSections(false);
-          }}
-          className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
-            activeFilter === "Featured" && !showAllSections
-              ? "bg-black text-white shadow-lg"
-              : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
-          }`}
-        >
-          Featured
-        </button>
-        <button
-          onClick={() => {
-            setActiveFilter("Upcoming");
-            setShowAllSections(false);
-          }}
-          className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
-            activeFilter === "Upcoming" && !showAllSections
-              ? "bg-black text-white shadow-lg"
-              : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
-          }`}
-        >
-          Upcoming
-        </button>
-        <button
-          onClick={() => {
-            setActiveFilter("Commercial");
-            setShowAllSections(false);
-          }}
-          className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
-            activeFilter === "Commercial" && !showAllSections
-              ? "bg-black text-white shadow-lg"
-              : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
-          }`}
-        >
-          Commercial
-        </button>
-        <button
-          onClick={() => {
-            setActiveFilter("Affordable");
-            setShowAllSections(false);
-          }}
-          className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
-            activeFilter === "Affordable" && !showAllSections
-              ? "bg-black text-white shadow-lg"
-              : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
-          }`}
-        >
-          Affordable
-        </button>
-        <button
-          onClick={() => {
-            setActiveFilter("Budget");
-            setShowAllSections(false);
-          }}
-          className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
-            activeFilter === "Budget" && !showAllSections
-              ? "bg-black text-white shadow-lg"
-              : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
-          }`}
-        >
-          Budget
-        </button>
-        <button
-          onClick={() => {
-            setActiveFilter("SCO");
-            setShowAllSections(false);
-          }}
-          className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
-            activeFilter === "SCO" && !showAllSections
-              ? "bg-black text-white shadow-lg"
-              : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
-          }`}
-        >
-          SCO
-        </button>
-        <button
-          onClick={() => {
-            setActiveFilter("Luxury");
-            setShowAllSections(false);
-          }}
-          className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
-            activeFilter === "Luxury" && !showAllSections
-              ? "bg-black text-white shadow-lg"
-              : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
-          }`}
-        >
-          Luxury
-        </button>
-        {/* <button
-          onClick={() => {
-            setShowAllSections(true);
-            setActiveFilter("All");
-          }}
-          className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
-            showAllSections
-              ? "bg-black text-white shadow-lg"
-              : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
-          }`}
-        >
-          All Sections
-        </button> */}
-      </div>
-
-      {/* Show All Sections */}
-      {showAllSections && (
-        <div className="space-y-8 mt-8">
-          {/* Upcoming Projects */}
-          <div>
-            <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
-              <h3 className="text-xl md:text-2xl font-extrabold text-[#0c0a09] tracking-tight">
-                New Upcoming Housing Projects in Gurgaon 2025
-              </h3>
-            </div>
-            {UpcomingProjects.length === 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="bg-gray-200 rounded-xl h-96 animate-pulse"></div>
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {[...UpcomingProjects].sort(() => 0.5 - Math.random()).slice(0, 6).map((project, index) => (
-                  <AllSectionsProjectCard key={project._id || index} project={project} />
-                ))}
-              </div>
-            )}
+    <section className="mt-12 md:mt-20">
+      {/* Desktop Layout with Sidebar Space */}
+      <div className="md:ml-[260px] flex justify-center">
+        <div className="w-full max-w-screen-xl px-4 md:px-6">
+          <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-[#0c0a09] tracking-tight">
+              Premium {activeFilter} Properties in Delhi NCR
+            </h2>
+            <p className="text-gray-500 text-sm md:text-base mt-1">Discover handpicked properties that match your lifestyle and investment goals</p>
           </div>
 
-          {/* Luxury Projects */}
-          <div>
-            <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
-              <h3 className="text-xl md:text-2xl font-extrabold text-[#0c0a09] tracking-tight">
-                Top Luxury Apartments For You
-              </h3>
-            </div>
-            {LuxuryAllProject.length === 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="bg-gray-200 rounded-xl h-96 animate-pulse"></div>
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {[...LuxuryAllProject].sort(() => 0.5 - Math.random()).slice(0, 4).map((project, index) => (
-                  <AllSectionsProjectCard key={project._id || index} project={project} />
-                ))}
-              </div>
-            )}
+          {/* Filter Buttons */}
+          <div className="flex items-center justify-start gap-2 sm:gap-3 mx-2 sm:mx-3 md:mx-6 xl:ml-14 pt-2 overflow-x-auto no-scrollbar whitespace-nowrap snap-x snap-mandatory scroll-px-3">
+            <button
+              onClick={() => {
+                setActiveFilter("Trending");
+                setShowAllSections(false);
+              }}
+              className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
+                activeFilter === "Trending" && !showAllSections
+                  ? "bg-black text-white shadow-lg"
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
+            >
+              Trending
+            </button>
+            <button
+              onClick={() => {
+                setActiveFilter("Featured");
+                setShowAllSections(false);
+              }}
+              className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
+                activeFilter === "Featured" && !showAllSections
+                  ? "bg-black text-white shadow-lg"
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
+            >
+              Featured
+            </button>
+            <button
+              onClick={() => {
+                setActiveFilter("Upcoming");
+                setShowAllSections(false);
+              }}
+              className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
+                activeFilter === "Upcoming" && !showAllSections
+                  ? "bg-black text-white shadow-lg"
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
+            >
+              Upcoming
+            </button>
+            <button
+              onClick={() => {
+                setActiveFilter("Commercial");
+                setShowAllSections(false);
+              }}
+              className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
+                activeFilter === "Commercial" && !showAllSections
+                  ? "bg-black text-white shadow-lg"
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
+            >
+              Commercial
+            </button>
+            <button
+              onClick={() => {
+                setActiveFilter("Affordable");
+                setShowAllSections(false);
+              }}
+              className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
+                activeFilter === "Affordable" && !showAllSections
+                  ? "bg-black text-white shadow-lg"
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
+            >
+              Affordable
+            </button>
+            <button
+              onClick={() => {
+                setActiveFilter("Budget");
+                setShowAllSections(false);
+              }}
+              className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
+                activeFilter === "Budget" && !showAllSections
+                  ? "bg-black text-white shadow-lg"
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
+            >
+              Budget
+            </button>
+            <button
+              onClick={() => {
+                setActiveFilter("SCO");
+                setShowAllSections(false);
+              }}
+              className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
+                activeFilter === "SCO" && !showAllSections
+                  ? "bg-black text-white shadow-lg"
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
+            >
+              SCO
+            </button>
+            <button
+              onClick={() => {
+                setActiveFilter("Luxury");
+                setShowAllSections(false);
+              }}
+              className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
+                activeFilter === "Luxury" && !showAllSections
+                  ? "bg-black text-white shadow-lg"
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
+            >
+              Luxury
+            </button>
+            {/* <button
+              onClick={() => {
+                setShowAllSections(true);
+                setActiveFilter("All");
+              }}
+              className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
+                showAllSections
+                  ? "bg-black text-white shadow-lg"
+                  : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+              }`}
+            >
+              All Sections
+            </button> */}
           </div>
 
-          {/* Budget Projects */}
-          <div>
-            <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
-              <h3 className="text-xl md:text-2xl font-extrabold text-[#0c0a09] tracking-tight">
-                Best Budget Projects in Gurugram
-              </h3>
-            </div>
-            {BudgetHomesProjects.length === 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="bg-gray-200 rounded-xl h-96 animate-pulse"></div>
-                ))}
+          {/* Show All Sections */}
+          {showAllSections && (
+            <div className="space-y-8 mt-8">
+              {/* Upcoming Projects */}
+              <div>
+                <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
+                  <h3 className="text-xl md:text-2xl font-extrabold text-[#0c0a09] tracking-tight">
+                    New Upcoming Housing Projects in Gurgaon 2025
+                  </h3>
+                </div>
+                {UpcomingProjects.length === 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                      <div key={i} className="bg-gray-200 rounded-xl h-96 animate-pulse"></div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    {[...UpcomingProjects].sort(() => 0.5 - Math.random()).slice(0, 6).map((project, index) => (
+                      <AllSectionsProjectCard key={project._id || index} project={project} />
+                    ))}
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {[...BudgetHomesProjects].sort(() => 0.5 - Math.random()).slice(0, 6).map((project, index) => (
-                  <AllSectionsProjectCard key={project._id || index} project={project} />
-                ))}
-              </div>
-            )}
-          </div>
 
-          {/* SCO Projects */}
-          <div>
-            <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
-              <h3 className="text-xl md:text-2xl font-extrabold text-[#0c0a09] tracking-tight">
-                SCO Projects in Gurugram
-              </h3>
+              {/* Luxury Projects */}
+              <div>
+                <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
+                  <h3 className="text-xl md:text-2xl font-extrabold text-[#0c0a09] tracking-tight">
+                    Top Luxury Apartments For You
+                  </h3>
+                </div>
+                {LuxuryAllProject.length === 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="bg-gray-200 rounded-xl h-96 animate-pulse"></div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    {[...LuxuryAllProject].sort(() => 0.5 - Math.random()).slice(0, 4).map((project, index) => (
+                      <AllSectionsProjectCard key={project._id || index} project={project} />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Budget Projects */}
+              <div>
+                <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
+                  <h3 className="text-xl md:text-2xl font-extrabold text-[#0c0a09] tracking-tight">
+                    Best Budget Projects in Gurugram
+                  </h3>
+                </div>
+                {BudgetHomesProjects.length === 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                      <div key={i} className="bg-gray-200 rounded-xl h-96 animate-pulse"></div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    {[...BudgetHomesProjects].sort(() => 0.5 - Math.random()).slice(0, 6).map((project, index) => (
+                      <AllSectionsProjectCard key={project._id || index} project={project} />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* SCO Projects */}
+              <div>
+                <div className="mx-auto max-w-5xl text-center mb-3 md:mb-4">
+                  <h3 className="text-xl md:text-2xl font-extrabold text-[#0c0a09] tracking-tight">
+                    SCO Projects in Gurugram
+                  </h3>
+                </div>
+                {SCOProjects.length === 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="bg-gray-200 rounded-xl h-96 animate-pulse"></div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    {[...SCOProjects].sort(() => 0.5 - Math.random()).slice(0, 4).map((project, index) => (
+                      <AllSectionsProjectCard key={project._id || index} project={project} />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-            {SCOProjects.length === 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="bg-gray-200 rounded-xl h-96 animate-pulse"></div>
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {[...SCOProjects].sort(() => 0.5 - Math.random()).slice(0, 4).map((project, index) => (
-                  <AllSectionsProjectCard key={project._id || index} project={project} />
-                ))}
-              </div>
-            )}
-          </div>
+          )}
+
+          {/* Single Category View */}
+          {!showAllSections && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mt-8">
+              {filteredProjects.map((project, index) => (
+                <ProjectCard key={project._id || index} project={project} />
+              ))}
+            </div>
+          )}
         </div>
-      )}
-
-      {/* Single Category View */}
-      {!showAllSections && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mt-8">
-          {filteredProjects.map((project, index) => (
-            <ProjectCard key={project._id || index} project={project} />
-          ))}
-        </div>
-      )}
-
+      </div>
     </section>
   );
 }
