@@ -82,30 +82,28 @@ export default function PriceTrendsCityPicker({
   useEffect(() => {
     const updateScreenSize = () => {
       const width = window.innerWidth;
-      // Account for sidebar width (260px) on larger screens
-      const availableWidth = width >= 768 ? width - 260 : width;
 
-      if (availableWidth < 320) {
+      if (width < 320) {
         setScreenSize("xs");
         setPerPage(4); // 1x4 grid
         setGridCols(1);
-      } else if (availableWidth < 480) {
+      } else if (width < 480) {
         setScreenSize("xs");
         setPerPage(6); // 2x3 grid
         setGridCols(2);
-      } else if (availableWidth < 640) {
+      } else if (width < 640) {
         setScreenSize("sm");
         setPerPage(9); // 3x3 grid
         setGridCols(3);
-      } else if (availableWidth < 768) {
+      } else if (width < 768) {
         setScreenSize("md");
         setPerPage(12); // 4x3 grid
         setGridCols(4);
-      } else if (availableWidth < 1024) {
+      } else if (width < 1024) {
         setScreenSize("lg");
         setPerPage(15); // 5x3 grid
         setGridCols(5);
-      } else if (availableWidth < 1280) {
+      } else if (width < 1280) {
         setScreenSize("xl");
         setPerPage(18); // 6x3 grid
         setGridCols(6);
@@ -249,7 +247,7 @@ export default function PriceTrendsCityPicker({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
-      <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 pl-4 md:pl-[276px] lg:pl-[276px] xl:pl-[276px]">
+      <div className="max-w-8xl mx-auto px-6 lg:px-12 py-4 sm:py-6 lg:py-8">
         {/* Header removed as requested */}
         <div className="mb-2 sm:mb-4" />
 
