@@ -474,7 +474,7 @@ export default function HeroWithFilters() {
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
                   </select>
-                  <button
+                  {/* <button
                     type="button"
                     aria-label="More filters"
                     className="inline-flex items-center justify-center w-10 h-10 rounded-md border border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200 shadow-sm md:hidden"
@@ -482,7 +482,7 @@ export default function HeroWithFilters() {
                     title="Open advanced filters"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M3.75 6.75a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-.75.75h-4.5v8.69a.75.75 0 0 1-1.147.636l-3.706-2.224a.75.75 0 0 1-.364-.636V9H4.5a.75.75 0 0 1-.75-.75v-1.5Z"/></svg>
-                  </button>
+                  </button> */}
                 </div>
                 {/* Advanced filters */}
                 <button type="button" onClick={() => setAdvancedOpen(true)} className="hidden md:inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-gray-100 text-gray-800 hover:bg-gray-200 shadow-sm">
