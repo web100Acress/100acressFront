@@ -1,5 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import axios from "axios";
+import { getApiBase } from '../../config/apiBase';
 import { mapCoordsToCity } from "../components/LocationContext";
 import {
   CATEGORIES,
@@ -15,19 +17,39 @@ import {
 } from "../config/filters";
 
 export default function HeroWithFilters() {
+  // UI State
   const [reducedMotion, setReducedMotion] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const dialogRef = React.useRef(null);
   const dialogCloseBtnRef = React.useRef(null);
-
-  // Hero banner (purely dynamic from backend)
+  
+  // Categories & Filters State
+  const [categoriesOpt, setCategoriesOpt] = useState([{ value: "", label: "All Types" }]);
+  const [ptByCatOpt, setPtByCatOpt] = useState(PROPERTY_TYPES_BY_CATEGORY);
+  const [citiesOpt, setCitiesOpt] = useState(CITIES);
+  const [bedroomsOpt, setBedroomsOpt] = useState(BEDROOMS);
+  const [bathroomsOpt, setBathroomsOpt] = useState(BATHROOMS);
+  const [furnishingOpt, setFurnishingOpt] = useState(FURNISHING);
+  const [reraOpt, setReraOpt] = useState(RERA);
+  const [quickLinksOpt, setQuickLinksOpt] = useState(QUICK_LINKS);
+  const [category, setCategory] = useState("");
+  const [propertyType, setPropertyType] = useState("");
+  const [city, setCity] = useState("");
+  const [bedrooms, setBedrooms] = useState("");
+  const [bathrooms, setBathrooms] = useState("");
+  const [areaMin, setAreaMin] = useState("");
+  const [areaMax, setAreaMax] = useState("");
+  const [furnishing, setFurnishing] = useState("");
+  const [rera, setRera] = useState("");
+  
+  // Banner State
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [bannerLoading, setBannerLoading] = useState(true);
   const [heroSrc, setHeroSrc] = useState(null);
   const HERO_BANNER_SLUG = import.meta.env.VITE_HERO_BANNER_SLUG || 'home-hero';
   const [bannerRefreshKey, setBannerRefreshKey] = useState(0);
-
-  // Poster management state
+  
+  // Poster Management State
   const [showPosterForm, setShowPosterForm] = useState(false);
   const [posterFile, setPosterFile] = useState(null);
   const [posterPreview, setPosterPreview] = useState(null);
@@ -36,16 +58,57 @@ export default function HeroWithFilters() {
   const [uploadingPoster, setUploadingPoster] = useState(false);
   const [posters, setPosters] = useState([]);
   const [loadingPosters, setLoadingPosters] = useState(false);
-  // Advanced filters
-  const [category, setCategory] = useState('');
-  const [propertyType, setPropertyType] = useState('');
-  const [city, setCity] = useState('');
-  const [bedrooms, setBedrooms] = useState('');
-  const [bathrooms, setBathrooms] = useState('');
-  const [areaMin, setAreaMin] = useState('');
-  const [areaMax, setAreaMax] = useState('');
-  const [furnishing, setFurnishing] = useState('');
-  const [rera, setRera] = useState('');
+  
+  // Fetch project types for categories dropdown
+  useEffect(() => {
+    const fetchProjectTypes = async () => {
+      try {
+        const base = getApiBase();
+        const tokenRaw = localStorage.getItem("myToken") || "";
+        const token = tokenRaw.replace(/^\"|\"$/g, "").replace(/^Bearer\\s+/i, "");
+        const res = await axios.get(
+          `${base}/project/viewAll/data?sort=-createdAt`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            }
+          }
+        );
+        
+        const payload = res.data;
+        const rows = Array.isArray(payload?.data) ? payload.data : (Array.isArray(payload) ? payload : []);
+        
+        // Get unique project types
+        const uniqueTypes = [...new Set(rows.map(project => project.type).filter(Boolean))];
+        
+        // Update categories with unique project types
+        const typeOptions = uniqueTypes.map(type => ({
+          value: type,
+          label: type
+        }));
+        
+        setCategoriesOpt([{ value: "", label: "All Types" }, ...typeOptions]);
+        
+        // Get unique cities
+        const uniqueCities = [...new Set(rows.map(project => project.city).filter(Boolean))];
+        
+        // Update cities with unique cities
+        const cityOptions = uniqueCities.map(city => ({
+          value: city,
+          label: city
+        }));
+        
+        setCitiesOpt([{ value: "", label: "All Locations" }, ...cityOptions]);
+      } catch (error) {
+        console.error("Error fetching project types:", error);
+        // Fallback to default categories if API fails
+        setCategoriesOpt([{ value: "", label: "All Types" }]);
+      }
+    };
+    
+    fetchProjectTypes();
+  }, []);
 
   const isAdmin = useMemo(() => {
     try {
@@ -59,32 +122,24 @@ export default function HeroWithFilters() {
   }, []);
 
   // Restore filters from localStorage
-useEffect(() => {
-  try {
-    const raw = localStorage.getItem('heroFilters');
-    if (raw) {
-      const f = JSON.parse(raw);
-      setCategory(f.category || '');
-      setPropertyType(f.propertyType || '');
-      setCity(f.city || '');
-      setBedrooms(f.bedrooms || '');
-      setBathrooms(f.bathrooms || '');
-      setAreaMax(f.areaMax || '');
-      setFurnishing(f.furnishing || '');
-      setRera(f.rera || '');
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('heroFilters');
+      if (raw) {
+        const f = JSON.parse(raw);
+        setCategory(f.category || '');
+        setPropertyType(f.propertyType || '');
+        setCity(f.city || '');
+        setBedrooms(f.bedrooms || '');
+        setBathrooms(f.bathrooms || '');
+        setAreaMax(f.areaMax || '');
+        setFurnishing(f.furnishing || '');
+        setRera(f.rera || '');
+      }
+    } catch (error) {
+      console.error('Error restoring filters:', error);
     }
-  } catch {}
-}, []); // ✅ close this effect properly
-
-// Dynamic options state with static fallbacks
-const [categoriesOpt, setCategoriesOpt] = useState(CATEGORIES);
-const [ptByCatOpt, setPtByCatOpt] = useState(PROPERTY_TYPES_BY_CATEGORY);
-const [citiesOpt, setCitiesOpt] = useState(CITIES);
-const [bedroomsOpt, setBedroomsOpt] = useState(BEDROOMS);
-const [bathroomsOpt, setBathroomsOpt] = useState(BATHROOMS);
-const [furnishingOpt, setFurnishingOpt] = useState(FURNISHING);
-const [reraOpt, setReraOpt] = useState(RERA);
-const [quickLinksOpt, setQuickLinksOpt] = useState(QUICK_LINKS);
+  }, []);
 
 // … later …
 
@@ -234,8 +289,9 @@ useEffect(() => {
   }, [category]);
 
   const propertyTypeOptions = useMemo(() => {
+    if (!ptByCatOpt || !category) return [];
     return ptByCatOpt[category] || [];
-  }, [category]);
+  }, [category, ptByCatOpt]);
 
   // Fetch dynamic options from API with safe fallback
   useEffect(() => {
@@ -378,14 +434,14 @@ useEffect(() => {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,0.2)_60%,rgba(0,0,0,0.45)_100%)]" aria-hidden="true" />
         <div className={`relative z-10 px-4 sm:px-5 md:px-10 pt-14 md:pt-20 pb-24 md:pb-32 flex flex-col items-center justify-center text-center text-slate-50 ${reducedMotion ? '' : 'transition-[padding] duration-300'} transform translate-y-[8rem] md:translate-y-[11rem]`}>
           <h1 className="text-[clamp(1.75rem,6vw,2.5rem)] md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">Finding homes made easy for you</h1>
-          <p className="max-w-2xl text-sm md:text-base text-slate-50/90">Nec risus quis viverra libero tellus eget. Leo morbi faucibus mattis pharetra tellus velit ultricies duis rhoncus. Porttitor fermentum eu urna eget</p>
+          <p className="max-w-2xl text-sm md:text-base text-slate-50/90">Discover your dream property with our expert real estate guidance. Find luxury apartments and spacious villas that match your lifestyle and budget.</p>
         </div>  
         {/* Floating filter bar */}
         <div className="relative z-20 -mb-10 sm:-mb-12 md:-mb-16 mx-auto max-w-5xl">
         <div className={`mx-3 sm:mx-4 md:mx-12 mt-10 sm:mt-14 md:mt-20 bg-gray-50/90 supports-[backdrop-filter]:bg-white/80 ${reducedMotion ? '' : 'backdrop-blur-[10px]'} border border-gray-200 rounded-xl sm:rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.18)] p-3 md:p-4 flex flex-wrap gap-3 items-center justify-between ${reducedMotion ? '' : 'transition-transform duration-300'}`}>
             <div className="w-full grid grid-cols-1 sm:flex sm:flex-1 gap-3 items-center">
               <select aria-label="Category" value={category} onChange={(e)=>setCategory(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[160px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                <option value="">Category</option>
+                <option value="">Property Types </option>
                 {categoriesOpt.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
@@ -397,7 +453,7 @@ useEffect(() => {
                 ))}
               </select>
               <select aria-label="City" value={city} onChange={(e)=>setCity(e.target.value)} className="border border-gray-300 bg-white rounded-lg px-3 py-2 text-sm text-gray-800 w-full sm:w-[200px] shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                <option value="">Location</option>
+                <option value="">All Cities</option>
                 {citiesOpt.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
