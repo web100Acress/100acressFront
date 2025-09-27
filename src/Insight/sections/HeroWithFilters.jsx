@@ -434,7 +434,7 @@ useEffect(() => {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,0.2)_60%,rgba(0,0,0,0.45)_100%)]" aria-hidden="true" />
         <div className={`relative z-10 px-4 sm:px-5 md:px-10 pt-14 md:pt-20 pb-24 md:pb-32 flex flex-col items-center justify-center text-center text-slate-50 ${reducedMotion ? '' : 'transition-[padding] duration-300'} transform translate-y-[8rem] md:translate-y-[11rem]`}>
           <h1 className="text-[clamp(1.75rem,6vw,2.5rem)] md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">Finding homes made easy for you</h1>
-          <p className="max-w-2xl text-sm md:text-base text-slate-50/90">Nec risus quis viverra libero tellus eget. Leo morbi faucibus mattis pharetra tellus velit ultricies duis rhoncus. Porttitor fermentum eu urna eget</p>
+          <p className="max-w-2xl text-sm md:text-base text-slate-50/90">Discover your dream property with our expert real estate guidance. Find luxury apartments and spacious villas that match your lifestyle and budget.</p>
         </div>  
         {/* Floating filter bar */}
         <div className="relative z-20 -mb-10 sm:-mb-12 md:-mb-16 mx-auto max-w-5xl">
