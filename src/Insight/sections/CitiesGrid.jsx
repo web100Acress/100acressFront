@@ -57,123 +57,53 @@ const CitiesGrid = () => {
       type: 'Value'
     }
   ];
-
   const handleImageError = (e) => {
     e.currentTarget.src = 'https://images.unsplash.com/photo-1600607687644-c7171b42498b?auto=format&fit=crop&w=2000&q=80';
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br  via-white to-blue-50 py-12 px-64">
-      <section className="max-w-8xl mx-auto px-6 lg:px-12 py-20">
-        {/* Luxury Header */}
-        <div className="text-center mb-4">
-          {/* <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 rounded-full text-sm font-semibold mb-6 shadow-sm">
-            <Crown className="w-4 h-4 mr-2" />
-            Exclusive Prime Locations
-          </div> */}
-          <h1 className="text-4xl lg:text-6xl font-light text-slate-900 mb-4 tracking-tight">
-            Discover Your
-            <span className="block font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
-              Dream Destination
-            </span>
-          </h1>
-          <p className="text-xl text-slate-600 max-w-4xl mx-auto leading-relaxed font-light">
-            Explore India's most prestigious residential destinations where luxury meets lifestyle, and every property tells a story of excellence.
-          </p>
-        </div>
-
-        {/* Luxury Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
-          
-          {/* Hero Featured City - Gurugram */}
-          <div 
-            className="lg:col-span-8 lg:row-span-2 group relative rounded-3xl overflow-hidden cursor-pointer"
-            onMouseEnter={() => setHoveredCity(0)}
-            onMouseLeave={() => setHoveredCity(null)}
-          >
-            <div className="relative h-96 lg:h-full">
-              <img 
-                src={cities[0].img} 
-                alt={cities[0].name}
-                onError={handleImageError}
-                className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-105" 
-              />
-              
-              {/* Luxury Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-              
-              {/* Premium Badge */}
-              <div className="absolute top-6 left-6">
-                <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-white text-sm font-bold rounded-full shadow-lg">
-                  <Star className="w-4 h-4 mr-1 fill-current" />
-                  {cities[0].type}
-                </div>
-              </div>
-
-              {/* Rating */}
-              <div className="absolute top-6 right-6">
-                <div className="flex items-center px-3 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white">
-                  <Star className="w-4 h-4 mr-1 fill-current text-yellow-400" />
-                  <span className="text-sm font-semibold">{cities[0].rating}</span>
-                </div>
-              </div>
-              
-              {/* Content */}
-              <div className="absolute bottom-8 left-8 right-8">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="px-4 py-2 bg-emerald-500/90 backdrop-blur-sm text-white text-sm font-bold rounded-full">
-                    {cities[0].trend} Growth
-                  </div>
-                  <div className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm rounded-full">
-                    Hot Market
-                  </div>
-                </div>
-                
-                <h2 className="text-4xl lg:text-5xl font-light text-white mb-3">{cities[0].name}</h2>
-                <p className="text-white/90 text-xl mb-6 font-light">{cities[0].description}</p>
-                
-                <div className="flex items-center justify-between">
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-6 text-white/80">
-                      <div className="flex items-center space-x-2">
-                        <Building2 className="w-5 h-5" />
-                        <span className="text-lg">{cities[0].props}+ Properties</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <TrendingUp className="w-5 h-5" />
-                        <span className="text-lg">From {cities[0].avgPrice}</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300">
-                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                      <ArrowRight className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br via-white to-blue-50 py-12">
+      {/* Desktop Layout with Sidebar Space */}
+      <div className="md:ml-[260px] flex justify-center">
+        <div className="w-full max-w-8xl px-6 lg:px-12 py-20">
+          {/* Luxury Header */}
+          <div className="text-center mb-4">
+            {/* <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 rounded-full text-sm font-semibold mb-6 shadow-sm">
+              <Crown className="w-4 h-4 mr-2" />
+              Exclusive Prime Locations
+            </div> */}
+            <h1 className="text-4xl lg:text-6xl font-light text-slate-900 mb-4 tracking-tight">
+              Discover Your
+              <span className="block font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
+                Dream Destination
+              </span>
+            </h1>
+            <p className="text-xl text-slate-600 max-w-4xl mx-auto leading-relaxed font-light">
+              Explore India's most prestigious residential destinations where luxury meets lifestyle, and every property tells a story of excellence.
+            </p>
           </div>
 
-          {/* Premium Cities Column */}
-          <div className="lg:col-span-4 space-y-8">
+        {/* Luxury Grid Layout - Right section moved */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
+
+          {/* Premium Cities Column - Now on the left */}
+          <div className="lg:col-span-4 lg:order-1 space-y-8">
             {cities.slice(1, 3).map((city, index) => (
-              <div 
+              <div
                 key={city.name}
                 className="group relative rounded-2xl overflow-hidden cursor-pointer h-64"
                 onMouseEnter={() => setHoveredCity(index + 1)}
                 onMouseLeave={() => setHoveredCity(null)}
               >
-                <img 
-                  src={city.img} 
+                <img
+                  src={city.img}
                   alt={city.name}
                   onError={handleImageError}
-                  className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110" 
+                  className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                 />
-                
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20"></div>
-                
+
                 {/* Type Badge */}
                 <div className="absolute top-4 left-4">
                   <span className={`px-3 py-1 text-xs font-bold rounded-full ${
@@ -192,7 +122,7 @@ const CitiesGrid = () => {
                     {city.rating}
                   </div>
                 </div>
-                
+
                 <div className="absolute bottom-4 left-4 right-4">
                   <div className="flex items-center space-x-2 mb-2">
                     <span className="px-3 py-1 bg-emerald-500/80 backdrop-blur-sm text-white text-xs font-semibold rounded-full">
@@ -201,7 +131,7 @@ const CitiesGrid = () => {
                   </div>
                   <h3 className="text-2xl font-semibold text-white mb-1">{city.name}</h3>
                   <p className="text-white/80 text-sm mb-3 font-light">{city.description}</p>
-                  
+
                   <div className="flex items-center justify-between text-white/70 text-sm">
                     <span className="flex items-center space-x-1">
                       <Building2 className="w-4 h-4" />
@@ -212,6 +142,77 @@ const CitiesGrid = () => {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Hero Featured City - Gurugram - Now on the right */}
+          <div
+            className="lg:col-span-8 lg:order-2 lg:row-span-2 group relative rounded-3xl overflow-hidden cursor-pointer"
+            onMouseEnter={() => setHoveredCity(0)}
+            onMouseLeave={() => setHoveredCity(null)}
+          >
+            <div className="relative h-96 lg:h-full">
+              <img
+                src={cities[0].img}
+                alt={cities[0].name}
+                onError={handleImageError}
+                className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
+              />
+
+              {/* Luxury Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+              {/* Premium Badge */}
+              <div className="absolute top-6 left-6">
+                <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-white text-sm font-bold rounded-full shadow-lg">
+                  <Star className="w-4 h-4 mr-1 fill-current" />
+                  {cities[0].type}
+                </div>
+              </div>
+
+              {/* Rating */}
+              <div className="absolute top-6 right-6">
+                <div className="flex items-center px-3 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white">
+                  <Star className="w-4 h-4 mr-1 fill-current text-yellow-400" />
+                  <span className="text-sm font-semibold">{cities[0].rating}</span>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="absolute bottom-8 left-8 right-8">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="px-4 py-2 bg-emerald-500/90 backdrop-blur-sm text-white text-sm font-bold rounded-full">
+                    {cities[0].trend} Growth
+                  </div>
+                  <div className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm rounded-full">
+                    Hot Market
+                  </div>
+                </div>
+
+                <h2 className="text-4xl lg:text-5xl font-light text-white mb-3">{cities[0].name}</h2>
+                <p className="text-white/90 text-xl mb-6 font-light">{cities[0].description}</p>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-6 text-white/80">
+                      <div className="flex items-center space-x-2">
+                        <Building2 className="w-5 h-5" />
+                        <span className="text-lg">{cities[0].props}+ Properties</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <TrendingUp className="w-5 h-5" />
+                        <span className="text-lg">From {cities[0].avgPrice}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300">
+                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                      <ArrowRight className="w-6 h-6 text-white" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -305,8 +306,9 @@ const CitiesGrid = () => {
               <div className="text-white/80 font-light">Customer Rating</div>
             </div>
           </div>
+          </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

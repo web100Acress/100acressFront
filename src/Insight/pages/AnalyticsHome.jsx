@@ -8,9 +8,9 @@ import FeaturedGrid from "../sections/FeaturedGrid";
 import TestimonialsSlider from "../sections/TestimonialsSlider";
 import CommercialCarousel from "../sections/CommercialCarousel";
 import DarkCTA from "../sections/DarkCTA";
-// import GetInTouch from "../sections/GetInTouch";
+import GetInTouch from "../sections/GetInTouch";
 import CitiesGrid from "../sections/CitiesGrid";
-import LuxuryFooter from "../../Components/Actual_Components/LuxuryFooter";
+// import LuxuryFooter from "../../Components/Actual_Components/LuxuryFooter";
 export default function AnalyticsHome() {
   return (
     <LocationProvider>
@@ -23,9 +23,9 @@ export default function AnalyticsHome() {
         <DarkCTA />
         <TestimonialsSlider />
         <CommercialCarousel />
-        {/* <GetInTouch /> */}
+        <GetInTouch />
         <CitiesGrid />
-        <LuxuryFooter />
+        {/* <LuxuryFooter /> */}
       </div>
     </LocationProvider>
   );

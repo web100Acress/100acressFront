@@ -386,7 +386,9 @@ export default function InsightsSidebar() {
               {/* Quick access items */}
               {item('/property-market-trends/', 'Property Insights', icons.property, !collapsed)}
               {item('/analytics/price-trends', 'Price Trends', icons.trends, !collapsed)}
+
               <div className="h-px bg-gray-200 my-3"></div>
+              
               {item('/admin/insights/market-reports', 'Market Reports', icons.market, !collapsed, null, true)}
               {item('/admin/insights/investment', 'Investment Insights', icons.investment, !collapsed)}
               {item('/admin/insights/area-analytics', 'Area Analytics', icons.area, !collapsed)}

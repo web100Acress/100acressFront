@@ -550,7 +550,7 @@ export default function LeftSection({
           <MenuItem as={Link} to="/projects/commercial/">Commercial Projects</MenuItem>
         </MenuList>
       </Menu>
-
+            
       {/* Quick links */}
       <Link to="/rental-properties/best-rental-property-in-gurugram/">
         <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={3} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideRental ? "none" : "inline-flex" }}>

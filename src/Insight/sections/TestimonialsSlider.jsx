@@ -44,8 +44,8 @@ const RealEstateTestimonials = () => {
   const testimonials = [
     {
       id: 1,
-      name: "Sudhanshu",
-      location: "Downtown District",
+      name: "Rajesh Kumar",
+      location: "DLF Phase 2, Gurugram",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
       rating: 5,
       review: "Working with this real estate team was exceptional. They helped us find our dream home in just 3 weeks. Their market knowledge and negotiation skills saved us thousands. Highly recommend!",
@@ -53,8 +53,8 @@ const RealEstateTestimonials = () => {
     },
     {
       id: 2,
-      name: "ananya",
-      location: "Riverside Heights",
+      name: "Priya Sharma",
+      location: "Sector 62, Noida",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
       rating: 5,
       review: "As a first-time home buyer, I was nervous about the process. The team guided me through every step with patience and expertise. They made what seemed impossible, possible.",
@@ -62,8 +62,8 @@ const RealEstateTestimonials = () => {
     },
     {
       id: 3,
-      name: "Deepika",
-      location: "Oakwood Estates",
+      name: "Amit Singh",
+      location: "Indirapuram, Ghaziabad",
       image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
       rating: 5,
       review: "Selling our family home was emotional, but this team made it stress-free. They priced it perfectly and had multiple offers within days. Professional service from start to finish.",
@@ -71,8 +71,8 @@ const RealEstateTestimonials = () => {
     },
     {
       id: 4,
-      name: "Narendra",
-      location: "Marina Bay",
+      name: "Kavita Patel",
+      location: "Greater Kailash, New Delhi",
       image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
       rating: 5,
       review: "Investment property purchase made easy. Their market analysis was spot-on, and they found me a property that's already appreciated 15% in 6 months. Excellent ROI guidance.",
@@ -80,8 +80,8 @@ const RealEstateTestimonials = () => {
     },
     {
       id: 5,
-      name: "Soni",
-      location: "Sunset Hills",
+      name: "Vikram Mehta",
+      location: "Sector 15, Faridabad",
       image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
       rating: 5,
       review: "After working with several agents, I finally found the right team. They listened to my needs, showed relevant properties, and negotiated a great deal. Couldn't be happier!",
@@ -89,8 +89,8 @@ const RealEstateTestimonials = () => {
     },
     {
       id: 6,
-      name: "Virat",
-      location: "Tech Valley",
+      name: "Sneha Gupta",
+      location: "Sector 137, Noida Expressway",
       image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
       rating: 5,
       review: "Relocated for work and needed to sell quickly. They handled everything remotely with video calls and digital signatures. Sold above asking price in 2 weeks. Amazing service!",
