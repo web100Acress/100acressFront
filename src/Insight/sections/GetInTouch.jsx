@@ -59,12 +59,12 @@ const LuxuryRealEstateContact = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br via-white to-blue-50 py-6">
+    <div className="min-h-screen bg-gradient-to-br via-white to-blue-50 py-4">
       {/* Desktop Layout with Sidebar Space */}
       <div className="md:ml-[260px] flex justify-center">
-        <div className="w-full max-w-7xl px-6 lg:px-12 py-6">
+        <div className="w-full max-w-7xl px-6 lg:px-12 py-4">
           {/* Header Section */}
-          <div className="text-center mb-6">
+          <div className="text-center mb-4">
             <h1 className="text-3xl lg:text-4xl font-light text-slate-900 mb-3 tracking-tight">
               Get In
               <span className="block font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
@@ -77,16 +77,16 @@ const LuxuryRealEstateContact = () => {
           </div>
 
           {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-4">
             {/* Contact Information Section */}
-            <div className="lg:col-span-1 space-y-6">
+            <div className="lg:col-span-1 space-y-4">
               {/* Company Info Card */}
               <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white">
-                <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl mb-6 flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl mb-4 flex items-center justify-center">
                   <span className="text-white font-bold text-lg">A</span>
                 </div>
                 <h3 className="text-xl font-semibold mb-2">100Acress</h3>
-                <p className="text-white/80 text-sm mb-6 leading-relaxed">
+                <p className="text-white/80 text-sm mb-4 leading-relaxed">
                   Your trusted partner in premium real estate solutions across India.
                 </p>
 
@@ -139,9 +139,9 @@ const LuxuryRealEstateContact = () => {
 
             {/* Contact Form Section */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 lg:p-8">
-                <div className="mb-8">
-                  <h2 className="text-2xl lg:text-3xl font-light text-gray-900 mb-3">
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 lg:p-6">
+                <div className="mb-4">
+                  <h2 className="text-2xl lg:text-3xl font-light text-gray-900 mb-2">
                     Send us a Message
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
@@ -149,7 +149,7 @@ const LuxuryRealEstateContact = () => {
                   </p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {/* Name Fields */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="relative">
