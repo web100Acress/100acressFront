@@ -208,41 +208,29 @@ export default function FeaturedGrid() {
   };
 
   const formatPrice = (project) => {
-    if (!project.minPrice && !project.maxPrice) return "Price on request";
+    if (!project.minPrice && !project.maxPrice) return "Reveal Soon";
 
-    // Convert AED to INR (approximate rate: 1 AED ≈ 22.5 INR)
-    const convertToINR = (price) => price * 22.5;
-
-    const minPriceINR = project.minPrice ? convertToINR(project.minPrice) : null;
-    const maxPriceINR = project.maxPrice ? convertToINR(project.maxPrice) : null;
-
-    // Format price helper
-    const formatPriceValue = (priceINR) => {
-      if (priceINR >= 100) {
-        return `₹${(priceINR / 100).toFixed(1)}Cr`;
-      } else if (priceINR >= 1) {
-        return `₹${priceINR.toFixed(0)}L`;
+    const formatPriceValue = (price) => {
+      if (price < 1) {
+        return `${(price * 100).toFixed(2)} L`;
       } else {
-        return `₹${(priceINR * 100).toFixed(0)}K`;
+        return `${price} Cr`;
       }
     };
 
-    // If only min price is available
-    if (minPriceINR && !maxPriceINR) {
-      return formatPriceValue(minPriceINR);
+    if (project.minPrice && project.maxPrice) {
+      return `${formatPriceValue(project.minPrice)} - ${formatPriceValue(project.maxPrice)}`;
     }
 
-    // If only max price is available
-    if (!minPriceINR && maxPriceINR) {
-      return formatPriceValue(maxPriceINR);
+    if (project.minPrice) {
+      return formatPriceValue(project.minPrice);
     }
 
-    // If both prices are available, show range
-    if (minPriceINR && maxPriceINR) {
-      return `${formatPriceValue(minPriceINR)} - ${formatPriceValue(maxPriceINR)}`;
+    if (project.maxPrice) {
+      return formatPriceValue(project.maxPrice);
     }
 
-    return "Price on request";
+    return "Reveal Soon";
   };
 
   const getPropertyType = (project) => {

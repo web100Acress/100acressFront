@@ -191,7 +191,7 @@ const InsightsNews = lazy(() => import("./Insight/pages/InsightsNews"));
 const InsightsGuides = lazy(() => import("./Insight/pages/InsightsGuides"));
 const InsightsManagement = lazy(() => import("./Insight/admin/InsightsManagement"));
 const InsightsPriceTrendsBanners = lazy(() => import("./Insight/admin/InsightsPriceTrendsBanners"));
-const InsightsPropertyInsightsBanners = lazy(() => import("./Insight/admin/InsightsPropertyInsightsBanners"));
+const Contacts = lazy(() => import("./Insight/components/Contacts"));
 
 // Initialize QueryClient
 const queryClient = new QueryClient();
@@ -550,8 +550,8 @@ function App() {
                         element={<LazyLoad><InsightsManagement /></LazyLoad>}
                       />
                       <Route
-                        path="insights/price-trends"
-                        element={<LazyLoad><InsightsPriceTrendsBanners /></LazyLoad>}
+                        path="insights/contacts"
+                        element={<LazyLoad><Contacts /></LazyLoad>}
                       />
                       <Route
                         path="insights/market-reports"
