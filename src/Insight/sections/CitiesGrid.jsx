@@ -62,17 +62,17 @@ const CitiesGrid = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br via-white to-blue-50 py-12">
+    <div className="min-h-screen bg-gradient-to-br via-white to-blue-50">
       {/* Desktop Layout with Sidebar Space */}
       <div className="md:ml-[260px] flex justify-center">
-        <div className="w-full max-w-8xl px-6 lg:px-12 py-20">
+        <div className="w-full max-w-8xl px-6 lg:px-12">
           {/* Luxury Header */}
-          <div className="text-center mb-4">
+          <div className="text-center">
             {/* <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 rounded-full text-sm font-semibold mb-6 shadow-sm">
               <Crown className="w-4 h-4 mr-2" />
               Exclusive Prime Locations
             </div> */}
-            <h1 className="text-4xl lg:text-6xl font-light text-slate-900 mb-4 tracking-tight">
+            <h1 className="text-4xl lg:text-6xl font-light text-slate-900 tracking-tight">
               Discover Your
               <span className="block font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
                 Dream Destination
@@ -84,10 +84,10 @@ const CitiesGrid = () => {
           </div>
 
         {/* Luxury Grid Layout - Right section moved */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 mb-0">
 
           {/* Premium Cities Column - Now on the left */}
-          <div className="lg:col-span-4 lg:order-1 space-y-8">
+          <div className="lg:col-span-4 lg:order-1 space-y-1">
             {cities.slice(1, 3).map((city, index) => (
               <div
                 key={city.name}
@@ -217,7 +217,7 @@ const CitiesGrid = () => {
         </div>
 
         {/* Bottom Premium Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-0">
           {cities.slice(3, 5).map((city, index) => (
             <div 
               key={city.name}
@@ -272,12 +272,12 @@ const CitiesGrid = () => {
           ))}
 
           {/* Explore More Luxury Card */}
-          <div className="group relative rounded-2xl bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 cursor-pointer h-80 flex flex-col items-center justify-center text-white p-8">
-            <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-white/20 transition-all duration-300">
+          <div className="group relative rounded-2xl bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 cursor-pointer h-80 flex flex-col items-center justify-center text-white p-4">
+            <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-3 group-hover:bg-white/20 transition-all duration-300">
               <MapPin className="w-10 h-10" />
             </div>
-            <h3 className="text-2xl font-semibold mb-3 text-center">Explore More</h3>
-            <p className="text-white/80 text-center mb-6 font-light">
+            <h3 className="text-2xl font-semibold mb-2 text-center">Explore More</h3>
+            <p className="text-white/80 text-center mb-3 font-light">
               Discover luxury properties in 50+ premium locations across India
             </p>
             <div className="px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium group-hover:bg-white/20 transition-all duration-300 border border-white/20">
@@ -287,22 +287,22 @@ const CitiesGrid = () => {
         </div>
 
         {/* Luxury Stats */}
-        <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 rounded-3xl p-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center text-white">
+        <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 rounded-3xl p-3">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2 text-center text-white">
             <div className="space-y-2">
-              <div className="text-4xl font-light mb-2">1500+</div>
+              <div className="text-4xl font-light mb-1">1500+</div>
               <div className="text-white/80 font-light">Premium Properties</div>
             </div>
             <div className="space-y-2">
-              <div className="text-4xl font-light mb-2">50+</div>
+              <div className="text-4xl font-light mb-1">50+</div>
               <div className="text-white/80 font-light">Luxury Locations</div>
             </div>
             <div className="space-y-2">
-              <div className="text-4xl font-light mb-2">5000+</div>
+              <div className="text-4xl font-light mb-1">5000+</div>
               <div className="text-white/80 font-light">Happy Families</div>
             </div>
             <div className="space-y-2">
-              <div className="text-4xl font-light mb-2">4.8★</div>
+              <div className="text-4xl font-light mb-1">4.8★</div>
               <div className="text-white/80 font-light">Customer Rating</div>
             </div>
           </div>

@@ -133,13 +133,13 @@ const LuxuryRealEstateContact = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br via-white to-blue-50 py-4">
+    <div className="min-h-screen bg-gradient-to-br via-white to-blue-50 py-2">
       {/* Desktop Layout with Sidebar Space */}
       <div className="md:ml-[260px] flex justify-center">
-        <div className="w-full max-w-7xl px-6 lg:px-12 py-4">
+        <div className="w-full max-w-7xl px-6 lg:px-12 py-2">
           {/* Header Section */}
-          <div className="text-center mb-4">
-            <h1 className="text-3xl lg:text-4xl font-light text-slate-900 mb-3 tracking-tight">
+          <div className="text-center mb-2">
+            <h1 className="text-3xl lg:text-4xl font-light text-slate-900 mb-2 tracking-tight">
               Get In
               <span className="block font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
                 Touch With Us
@@ -151,7 +151,7 @@ const LuxuryRealEstateContact = () => {
           </div>
 
           {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-2">
             {/* Contact Information Section */}
             <div className="lg:col-span-1 space-y-4">
               {/* Company Info Card */}
@@ -220,7 +220,7 @@ const LuxuryRealEstateContact = () => {
             {/* Contact Form Section */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 lg:p-6">
-                <div className="mb-4">
+                <div className="mb-3">
                   <h2 className="text-2xl lg:text-3xl font-light text-gray-900 mb-2">
                     Send us a Message
                   </h2>
