@@ -133,12 +133,12 @@ const LuxuryRealEstateContact = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br via-white to-blue-50 py-2">
+    <div className="min-h-screen bg-gradient-to-br via-white to-blue-50 py-8">
       {/* Desktop Layout with Sidebar Space */}
       <div className="md:ml-[260px] flex justify-center">
-        <div className="w-full max-w-7xl px-6 lg:px-12 py-2">
+        <div className="w-full max-w-7xl px-6 lg:px-12 py-1">
           {/* Header Section */}
-          <div className="text-center mb-2">
+          <div className="text-center mb-8">
             <h1 className="text-3xl lg:text-4xl font-light text-slate-900 mb-2 tracking-tight">
               Get In
               <span className="block font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
