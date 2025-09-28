@@ -1,65 +1,20 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { MdFavoriteBorder, MdFavorite } from 'react-icons/md';
+import { isFavorite, toggleFavorite } from "../../Utils/favorites";
+import { AuthContext } from "../../AuthContext";
 
 export default function CommercialCarousel({
   title = "Commercial property",
   subtitle = "Explore premium office & retail spaces curated for modern businesses",
-  items,
 }) {
-  const localItems =
-    items || [
-      {
-        id: 1,
-        status: "For sale",
-        color: "bg-green-500",
-        title: "Cyber City Office",
-        price: 560000,
-        img: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1400&q=80",
-      },
-      {
-        id: 2,
-        status: "For rent",
-        color: "bg-purple-500",
-        title: "Sohna Road Retail",
-        price: 4800,
-        rent: true,
-        img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1400&q=80",
-      },
-      {
-        id: 3,
-        status: "For sale",
-        color: "bg-green-500",
-        title: "Golf Course Rd Office",
-        price: 420000,
-        img: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1400&q=80",
-      },
-      {
-        id: 4,
-        status: "For sale",
-        color: "bg-green-500",
-        title: "Noida Sec 62 IT Space",
-        price: 390000,
-        img: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1400&q=80",
-      },
-      {
-        id: 5,
-        status: "For rent",
-        color: "bg-purple-500",
-        title: "DLF CyberHub Retail",
-        price: 6500,
-        rent: true,
-        img: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1400&q=80",
-      },
-      {
-        id: 6,
-        status: "For sale",
-        color: "bg-green-500",
-        title: "IT Park Tower",
-        price: 720000,
-        img: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1400&q=80",
-      },
-    ];
+  const { isAuthenticated } = React.useContext(AuthContext);
 
-  // Enrich with categories (if not passed)
+  // Get commercial projects data from Redux store (same as Home.jsx)
+  const CommercialProjects = useSelector(store => store?.project?.commercial) || [];
+
+  // Enrich with categories (same logic as original)
   const itemsWithCat = useMemo(() => {
     const infer = (t = "") => {
       const s = t.toLowerCase();
@@ -68,8 +23,8 @@ export default function CommercialCarousel({
       if (s.includes("office")) return "Office";
       return "Commercial";
     };
-    return (localItems || []).map((it) => ({ ...it, category: it.category || infer(it.title) }));
-  }, [localItems]);
+    return (CommercialProjects || []).map((it) => ({ ...it, category: it.category || infer(it.projectName || it.title) }));
+  }, [CommercialProjects]);
 
   // Filters
   const categories = useMemo(() => ["All", ...Array.from(new Set(itemsWithCat.map(i => i.category)))], [itemsWithCat]);
@@ -94,17 +49,138 @@ export default function CommercialCarousel({
     return () => el.removeEventListener('scroll', onScroll);
   }, [cardWidth, filtered]);
 
-  const Icon = ({ path }) => (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      className="w-4 h-4"
-    >
-      <path d={path} />
-    </svg>
-  );
+  const handleFavoriteClick = (e, project) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isAuthenticated) {
+      alert('Please login to add favorites');
+      return;
+    }
+
+    const projectId = project._id || project.id;
+    toggleFavorite(projectId);
+    // Force re-render to update favorite state
+    setActiveIndex(prev => prev);
+  };
+
+  const handleWhatsAppClick = (e, project) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const message = `Hi, I'm interested in ${project.projectName} located in ${project.city}. Could you please provide more details?`;
+    const whatsappUrl = `https://wa.me/918500900100?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const formatPrice = (project) => {
+    if (!project.minPrice && !project.maxPrice) return "Reveal Soon";
+
+    const formatPriceValue = (price) => {
+      if (price < 1) {
+        return `${(price * 100).toFixed(2)} L`;
+      } else {
+        return `${price} Cr`;
+      }
+    };
+
+    if (project.minPrice && project.maxPrice) {
+      return `${formatPriceValue(project.minPrice)} - ${formatPriceValue(project.maxPrice)}`;
+    }
+
+    if (project.minPrice) {
+      return formatPriceValue(project.minPrice);
+    }
+
+    if (project.maxPrice) {
+      return formatPriceValue(project.maxPrice);
+    }
+
+    return "Reveal Soon";
+  };
+
+  const getPropertyType = (project) => {
+    if (project.type) return project.type;
+    if (project.category) return project.category;
+    return "Commercial";
+  };
+
+  const ProjectCard = ({ project }) => {
+    const id = project._id || project.id;
+    const isFav = isFavorite(id);
+
+    return (
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group">
+        <Link to={`/${project.project_url}/`} target="_top" className="block">
+          <div className="relative">
+            <div className="w-full h-28 lg:h-32">
+              <img
+                src={project.thumbnailImage?.public_id
+                  ? `https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/${project.thumbnailImage.public_id}`
+                  : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=1400&auto=format&fit=crop'
+                }
+                alt={project.projectName}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={(e) => handleFavoriteClick(e, project)}
+              className="absolute top-3 right-3 w-5 h-5 rounded-full bg-white/100 hover:bg-white/90 shadow-md flex items-center justify-center transition-all duration-200 z-10"
+            >
+              {isFav ? (
+                <MdFavorite className="w-4 h-4 text-red-500" />
+              ) : (
+                <MdFavoriteBorder className="w-4 h-4 text-gray-600" />
+              )}
+            </button>
+          </div>
+
+          <div className="p-2">
+            <h3 className="font-bold text-sm text-gray-900 mb-0 line-clamp-1">
+              {project.projectName}
+            </h3>
+
+            <p className="text-xs text-gray-600 mb-1">
+              {getPropertyType(project)}
+            </p>
+
+            <div className="flex items-start mb-1">
+              <svg className="w-4 h-4 text-gray-400 mt-0.5 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+              </svg>
+              <p className="text-sm text-gray-500 line-clamp-2">
+                {project.projectAddress || `${project.city}, ${project.state}`}
+              </p>
+            </div>
+
+            <div className="bg-[#f5f5f5] rounded-lg py-0 px-0 mt-0 min-h-[24px] flex items-center">
+              <div className="flex justify-between items-center w-full">
+                <div className="text-center flex mt-0  items-center justify-center flex-1 flex-col">
+                  <p className="text-xs text-[#222] mb-0 pt-2 font-bold">Launch Price</p>
+                  <p className="font-bold text-[#006169] text-sm">
+                    {formatPrice(project)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Link>
+
+        <div className="px-2 pb-2">
+          <button
+            onClick={(e) => handleWhatsAppClick(e, project)}
+            className="w-full bg-[#e9f7f0]  text-[#249f62] py-2.5 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors duration-200"
+          >
+            <svg className="w-5 h-5 fill-[#249f62]" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.690"/>
+            </svg>
+            WhatsApp
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section className="pb-14">
@@ -116,118 +192,56 @@ export default function CommercialCarousel({
             <h2 className="text-2xl md:text-3xl font-extrabold text-[#0c0a09] tracking-tight">
               {title}
             </h2>
-            {subtitle && (
-              <p className="text-gray-500 text-sm md:text-base mt-1">{subtitle}</p>
-            )}
+            <p className="text-gray-600 mt-2 max-w-2xl mx-auto">{subtitle}</p>
           </div>
 
-          {/* Filters */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-5">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => { setSelected(cat); setActiveIndex(0); if (trackRef.current) trackRef.current.scrollTo({ left: 0, behavior: 'smooth' }); }}
-                className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${selected === cat ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
-              >
-                {cat}
-              </button>
-            ))}
+          {/* Filter Tabs */}
+          <div className="flex justify-center mb-6">
+            <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelected(cat)}
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                    selected === cat
+                      ? "bg-white text-gray-900 shadow-sm"
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Carousel */}
           <div className="relative">
-            <button aria-label="Prev" onClick={() => scrollByCards(-1)} className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow items-center justify-center hover:shadow-md z-10">
-              <svg viewBox="0 0 24 24" className="w-5 h-5 text-gray-700"><path fill="currentColor" d="M15 18l-6-6 6-6"/></svg>
-            </button>
-            <button aria-label="Next" onClick={() => scrollByCards(1)} className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow items-center justify-center hover:shadow-md z-10">
-              <svg viewBox="0 0 24 24" className="w-5 h-5 text-gray-700"><path fill="currentColor" d="M9 6l6 6-6 6"/></svg>
-            </button>
-            <div ref={trackRef} className="overflow-x-auto pb-3 no-scrollbar snap-x snap-mandatory">
-              <div className="flex gap-5 min-w-[700px] md:min-w-0">
-                {filtered.map((c) => (
-                  <div
-                    key={c.id}
-                    className="group bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm min-w-[260px] md:min-w-[280px] hover:shadow-[0_14px_32px_rgba(0,0,0,0.12)] transition-all duration-300 hover:-translate-y-1 snap-start"
-                  >
-                    {/* Image */}
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={c.img}
-                        alt={c.title}
-                        className="w-full h-44 md:h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                        onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1400&q=80'; }}
-                      />
-                      {/* Overlay gradient */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-70" />
-                      {/* Status badge */}
-                      <div className="absolute top-3 left-3">
-                        <span
-                          className={`inline-flex text-white text-[11px] font-semibold px-3 py-1 rounded-full shadow ${c.color}`}
-                        >
-                          {c.status}
-                        </span>
-                      </div>
-                      {/* Category tag */}
-                      <div className="absolute bottom-3 left-3">
-                        <span className="inline-flex bg-white/90 text-gray-800 text-[11px] font-semibold px-2.5 py-1 rounded-full shadow-sm">
-                          {c.category}
-                        </span>
-                      </div>
-                      {/* Favorite button */}
-                      <button
-                        type="button"
-                        className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 hover:bg-white shadow-md flex items-center justify-center transition-colors"
-                      >
-                        <svg
-                          viewBox="0 0 24 24"
-                          className="w-5 h-5 text-gray-700 group-hover:text-red-500 transition-colors"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M12 21s-7-4.35-9.33-8.1C.6 9.69 2.61 6 6.07 6c1.74 0 3.41.81 4.43 2.09C11.52 6.81 13.19 6 14.93 6c3.46 0 5.47 3.69 3.4 6.9C19 16.65 12 21 12 21Z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-4">
-                      <h3 className="font-semibold text-[15px] text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors">
-                        {c.title}
-                      </h3>
-                      <div className="mt-2 text-gray-900 font-bold text-[15px]">
-                        {c.rent
-                          ? `₹${c.price.toLocaleString()}/mo`
-                          : `₹${c.price.toLocaleString()}`}
-                      </div>
-
-                      {/* Specs row */}
-                      {/* <div className="mt-3 grid grid-cols-4 gap-2 text-[11px] text-gray-600 border-t pt-3">
-                        <div className="flex items-center gap-1">
-                          <Icon path="M3 10h18M7 10v10m10-10v10M7 15h10" />2
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Icon path="M3 20h18M7 20V8h10v12M9 11h2m4 0h2" />2
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Icon path="M4 4h16v16H4z" />2
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Icon path="M3 20h18M6 20V10h12v10M8 14h2m4 0h2" />2
-                        </div>
-                      </div> */}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* Indicators */}
-            <div className="mt-3 flex items-center justify-center gap-1.5">
-              {filtered.map((_, i) => (
-                <span key={i} className={`w-1.5 h-1.5 rounded-full ${i === activeIndex ? 'bg-blue-600' : 'bg-gray-300'}`} />
+            <div
+              ref={trackRef}
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {filtered.slice(0, 8).map((item, idx) => (
+                <div key={item._id || idx} className="flex-none w-72 snap-center">
+                  <ProjectCard project={item} />
+                </div>
               ))}
             </div>
+
+            {/* Navigation Dots */}
+            {filtered.length > 4 && (
+              <div className="flex justify-center space-x-2 mt-6">
+                {Array.from({ length: Math.ceil(filtered.length / 4) }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => scrollByCards(i * 4 - activeIndex)}
+                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                      i === Math.floor(activeIndex / 4) ? "bg-gray-900" : "bg-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
