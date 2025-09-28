@@ -203,7 +203,7 @@ export default function CommercialCarousel({
                       </div>
 
                       {/* Specs row */}
-                      <div className="mt-3 grid grid-cols-4 gap-2 text-[11px] text-gray-600 border-t pt-3">
+                      {/* <div className="mt-3 grid grid-cols-4 gap-2 text-[11px] text-gray-600 border-t pt-3">
                         <div className="flex items-center gap-1">
                           <Icon path="M3 10h18M7 10v10m10-10v10M7 15h10" />2
                         </div>
@@ -216,7 +216,7 @@ export default function CommercialCarousel({
                         <div className="flex items-center gap-1">
                           <Icon path="M3 20h18M6 20V10h12v10M8 14h2m4 0h2" />2
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 ))}
