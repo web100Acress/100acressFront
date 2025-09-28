@@ -26,11 +26,10 @@ export default function AdminInsightsSidebar() {
         <path d="M9 22V12h6v10"/>
       </svg>
     ),
-    enquiry: (
+    contact: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        <path d="M8 9h8"/>
-        <path d="M8 13h6"/>
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
       </svg>
     ),
     menu: (
@@ -162,6 +161,7 @@ export default function AdminInsightsSidebar() {
                 {item('/Admin/insights', 'Insights Dashboard', icons.insights)}
                 {item('/Admin/insights/price-trends', 'Price Trends Banners', icons.trends)}
                 {item('/Admin/insights/enquiries', 'Enquiries', icons.enquiry)}
+                {item('/Admin/insights/contacts', 'Contacts', icons.contact)}
               </div>
             </div>
           </nav>
@@ -206,6 +206,7 @@ export default function AdminInsightsSidebar() {
               {item('/Admin/insights', 'Insights Dashboard', icons.insights, !collapsed)}
               {item('/Admin/insights/price-trends', 'Price Trends Banners', icons.trends, !collapsed)}
               {item('/Admin/insights/enquiries', 'Enquiries', icons.enquiry, !collapsed)}
+              {item('/Admin/insights/contacts', 'Contacts', icons.contact, !collapsed)}
             </div>
           </nav>
 

@@ -29,19 +29,74 @@ const LuxuryRealEstateContact = () => {
     });
   };
 
-  const handleSubmit = () => {
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        inquiryType: 'General',
-        message: '',
+  const handleSubmit = async () => {
+    // Basic validation
+    if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim() || !formData.phone.trim() || !formData.message.trim()) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert('Please enter a valid email address');
+      return;
+    }
+
+    // Phone validation (basic Indian mobile number)
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(formData.phone.replace(/\s+/g, ''))) {
+      alert('Please enter a valid 10-digit mobile number');
+      return;
+    }
+
+    try {
+      const base = import.meta.env.VITE_API_BASE || '';
+      const url = base ? `${base}/api/contact` : '/api/contact';
+
+      console.log('Submitting to:', url);
+      console.log('Form data:', formData);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
-    }, 2000);
+
+      console.log('Response status:', response.status);
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('Success response:', responseData);
+        setIsSubmitted(true);
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
+            inquiryType: 'General',
+            message: '',
+          });
+        }, 2000);
+      } else {
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (parseError) {
+          errorData = { message: 'Invalid response from server' };
+        }
+
+        console.error('Error response:', response.status, errorData);
+        alert(`Failed to submit contact form: ${errorData.message || 'Please try again.'}`);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      alert('Network error. Please check your connection and try again.');
+    }
   };
 
   if (isSubmitted) {
@@ -82,10 +137,10 @@ const LuxuryRealEstateContact = () => {
             <div className="lg:col-span-1 space-y-4">
               {/* Company Info Card */}
               <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white">
-                <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl mb-4 flex items-center justify-center">
+                {/* <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl mb-4 flex items-center justify-center">
                   <span className="text-white font-bold text-lg">A</span>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">100Acress</h3>
+                </div> */}
+                {/* <h3 className="text-xl font-semibold mb-2">100Acress</h3> */}
                 <p className="text-white/80 text-sm mb-4 leading-relaxed">
                   Your trusted partner in premium real estate solutions across India.
                 </p>
@@ -267,28 +322,6 @@ const LuxuryRealEstateContact = () => {
               </div>
             </div>
           </div>
-
-          {/* Bottom Stats Section */}
-          {/* <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 rounded-3xl p-4 lg:p-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-white">
-              <div className="space-y-1">
-                <div className="text-2xl lg:text-3xl font-light">500+</div>
-                <div className="text-white/80 font-light text-sm">Properties Listed</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-2xl lg:text-3xl font-light">50+</div>
-                <div className="text-white/80 font-light text-sm">Premium Locations</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-2xl lg:text-3xl font-light">1000+</div>
-                <div className="text-white/80 font-light text-sm">Happy Clients</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-2xl lg:text-3xl font-light">4.9★</div>
-                <div className="text-white/80 font-light text-sm">Client Rating</div>
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>
