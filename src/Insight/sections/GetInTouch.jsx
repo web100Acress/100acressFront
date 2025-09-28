@@ -57,15 +57,21 @@ const LuxuryRealEstateContact = () => {
       console.log('Submitting to:', url);
       console.log('Form data:', formData);
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
+        signal: controller.signal,
       });
 
+      clearTimeout(timeoutId);
       console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (response.ok) {
         const responseData = await response.json();
@@ -84,18 +90,31 @@ const LuxuryRealEstateContact = () => {
         }, 2000);
       } else {
         let errorData;
+        const responseText = await response.text();
+        console.log('Response text:', responseText);
+
         try {
-          errorData = await response.json();
+          errorData = JSON.parse(responseText);
         } catch (parseError) {
-          errorData = { message: 'Invalid response from server' };
+          console.error('Failed to parse response as JSON:', parseError);
+          errorData = {
+            message: `Server error (${response.status}): ${responseText.substring(0, 200)}...`
+          };
         }
 
         console.error('Error response:', response.status, errorData);
         alert(`Failed to submit contact form: ${errorData.message || 'Please try again.'}`);
       }
     } catch (error) {
-      console.error('Network error:', error);
-      alert('Network error. Please check your connection and try again.');
+      console.error('Network or fetch error:', error);
+
+      if (error.name === 'AbortError') {
+        alert('Request timed out. Please check your connection and try again.');
+      } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        alert('Network error. Please check if the server is running and try again.');
+      } else {
+        alert(`Error: ${error.message || 'Unknown error occurred'}`);
+      }
     }
   };
 
