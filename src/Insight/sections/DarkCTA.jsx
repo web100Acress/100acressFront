@@ -18,19 +18,59 @@ export default function DarkCTA() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    // You can add API call here to submit the enquiry
-    setShowEnquiryForm(false);
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      mobile: '',
-      query: ''
-    });
+
+    try {
+      const base = import.meta.env.VITE_API_BASE || '';
+      const token = localStorage.getItem('myToken');
+      const url = base ? `${base}/api/enquiry` : '/api/enquiry';
+
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...headers,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Enquiry submitted successfully:', result);
+
+        // Show success message
+        if (typeof window.toast === 'function') {
+          window.toast.success('Enquiry submitted successfully! We will contact you soon.');
+        }
+
+        // Close modal and reset form
+        setShowEnquiryForm(false);
+        setFormData({
+          name: '',
+          email: '',
+          mobile: '',
+          query: ''
+        });
+      } else {
+        const errorData = await response.json();
+        console.error('Error submitting enquiry:', errorData);
+
+        // Show error message
+        if (typeof window.toast === 'function') {
+          window.toast.error(errorData.message || 'Failed to submit enquiry. Please try again.');
+        }
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+
+      // Show error message
+      if (typeof window.toast === 'function') {
+        window.toast.error('Network error. Please check your connection and try again.');
+      }
+    }
   };
 
   const handleCall = () => {
