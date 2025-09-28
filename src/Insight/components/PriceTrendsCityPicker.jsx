@@ -56,26 +56,32 @@ export default function PriceTrendsCityPicker({
       try {
         const token = localStorage.getItem("myToken");
         const base = import.meta.env.VITE_API_BASE;
-
-        const response = await fetch(`${base}/api/admin/insights-price-trends-banners`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
+    
+        const headers = token
+          ? { Authorization: `Bearer ${token}` }
+          : {}; // 👈 agar token nahi hai to empty headers bhejenge
+    
+        const response = await fetch(
+          `${base}/api/admin/insights-price-trends-banners`,
+          { headers }
+        );
+    
         if (response.ok) {
           const result = await response.json();
-          // Get the first active banner with matching slug
-          const activeBanner = (result.banners || []).find(banner =>
-            (banner.slug || "").includes("insights-price-trends") && banner.active !== false
+          const activeBanner = (result.banners || []).find(
+            (banner) =>
+              (banner.slug || "").includes("insights-price-trends") &&
+              banner.active !== false
           );
           setBannerData(activeBanner);
         }
       } catch (error) {
-        console.error('Error fetching banner data:', error);
+        console.error("Error fetching banner data:", error);
       } finally {
         setBannerLoading(false);
       }
     };
-
+    
     fetchBannerData();
   }, []);
 
