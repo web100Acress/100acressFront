@@ -199,11 +199,17 @@ const LuxuryRealEstateContact = () => {
               <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
                 <h4 className="text-lg font-semibold text-gray-900 mb-4">Quick Contact</h4>
                 <div className="space-y-3">
-                  <button className="w-full flex items-center space-x-3 p-3 bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 rounded-xl transition-all duration-200 group">
+                  <button
+                    onClick={() => window.open('mailto:support@100acress.com', '_self')}
+                    className="w-full flex items-center space-x-3 p-3 bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 rounded-xl transition-all duration-200 group"
+                  >
                     <Mail className="w-5 h-5 text-blue-600 group-hover:text-blue-700" />
                     <span className="text-gray-700 group-hover:text-gray-900 font-medium">Send Email</span>
                   </button>
-                  <button className="w-full flex items-center space-x-3 p-3 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 rounded-xl transition-all duration-200 group">
+                  <button
+                    onClick={() => window.open('tel:+918500900100', '_self')}
+                    className="w-full flex items-center space-x-3 p-3 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 rounded-xl transition-all duration-200 group"
+                  >
                     <Phone className="w-5 h-5 text-green-600 group-hover:text-green-700" />
                     <span className="text-gray-700 group-hover:text-gray-900 font-medium">Call Now</span>
                   </button>
