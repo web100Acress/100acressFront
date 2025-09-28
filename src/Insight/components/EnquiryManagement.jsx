@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import AdminInsightsSidebar from '../components/AdminInsightsSidebar';
 
 export default function EnquiryManagement() {
   const [enquiries, setEnquiries] = useState([]);
@@ -16,19 +18,34 @@ export default function EnquiryManagement() {
       const token = localStorage.getItem('myToken');
       const url = base ? `${base}/api/admin/enquiries` : '/api/admin/enquiries';
 
+      console.log('Fetching enquiries from:', url);
+      console.log('Token:', token ? 'Present' : 'Missing');
+
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-      const response = await fetch(url, { headers });
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...headers,
+        },
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
 
       if (response.ok) {
         const data = await response.json();
+        console.log('Enquiries data:', data);
         setEnquiries(data.data || []);
       } else {
-        throw new Error('Failed to fetch enquiries');
+        const errorText = await response.text();
+        console.error('API Error:', response.status, errorText);
+        throw new Error(`Failed to fetch enquiries: ${response.status} ${errorText}`);
       }
     } catch (error) {
       console.error('Error fetching enquiries:', error);
-      setError('Failed to load enquiries. Please try again.');
+      setError(`Failed to load enquiries: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -173,8 +190,28 @@ export default function EnquiryManagement() {
   }
 
   return (
-    <section className="max-w-screen-xl mx-auto px-4 md:px-6 md:pl-[280px] mt-12 md:mt-20">
-      <div className="mx-auto max-w-5xl">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="sticky top-0 z-[9000] w-full bg-white/80 backdrop-blur border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-green-100 text-green-600 flex items-center justify-center font-bold">💎</div>
+            <h1 className="text-lg sm:text-xl font-semibold text-gray-800">Enquiry Management</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/Admin/dashboard"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50"
+            >
+              ← Back to Admin
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <AdminInsightsSidebar />
+
+      <div className="max-w-7xl mx-auto md:pl-[300px] px-4 sm:px-6 lg:px-8 py-6">
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#0c0a09] tracking-tight">
@@ -309,6 +346,6 @@ export default function EnquiryManagement() {
           </div>
         )}
       </div>
-    </section>
+    </div>
   );
 }

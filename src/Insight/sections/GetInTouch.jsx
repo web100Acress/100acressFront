@@ -156,10 +156,6 @@ const LuxuryRealEstateContact = () => {
             <div className="lg:col-span-1 space-y-4">
               {/* Company Info Card */}
               <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white">
-                {/* <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl mb-4 flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">A</span>
-                </div> */}
-                {/* <h3 className="text-xl font-semibold mb-2">100Acress</h3> */}
                 <p className="text-white/80 text-sm mb-4 leading-relaxed">
                   Your trusted partner in premium real estate solutions across India.
                 </p>
