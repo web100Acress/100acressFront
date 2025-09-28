@@ -159,7 +159,7 @@ export default function AdminInsightsSidebar() {
               <div className="space-y-1 mb-4">
                 {item('/Admin/insights', 'Insights Dashboard', icons.insights)}
                 {item('/Admin/insights/price-trends', 'Price Trends Banners', icons.trends)}
-                {item('/Admin/insights/property-insights', 'Property Insights Banners', icons.property)}
+                {/* {item('/Admin/insights/property-insights', 'Property Insights Banners', icons.property)} */}
               </div>
             </div>
           </nav>
@@ -203,7 +203,7 @@ export default function AdminInsightsSidebar() {
               {/* Admin items - Only the 3 requested items */}
               {item('/Admin/insights', 'Insights Dashboard', icons.insights, !collapsed)}
               {item('/Admin/insights/price-trends', 'Price Trends Banners', icons.trends, !collapsed)}
-              {item('/Admin/insights/property-insights', 'Property Insights Banners', icons.property, !collapsed)}
+              {/* {item('/Admin/insights/property-insights', 'Property Insights Banners', icons.property, !collapsed)} */}
             </div>
           </nav>
 
