@@ -64,7 +64,7 @@ export default function RightSection({
   return (
     <Flex
       alignItems="center"
-      gap={{ base: 1, md: 2 }}
+      gap={{ base: 0.5, md: 1 }}
       order={{ base: 3, md: 3 }}
       justifyContent={{ base: "flex-end", md: "flex-end" }}
       flex={{ base: "initial", md: 1 }}
@@ -95,7 +95,7 @@ export default function RightSection({
         {token ? (
           isMobile ? (
             <>
-              <Button onClick={() => (isAcctOpen ? onAcctClose() : onAcctOpen())} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
+              <Button onClick={() => (isAcctOpen ? onAcctClose() : onAcctOpen())} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={1}>
                 <Flex align="center" gap={2}>
                   <Box as="span" border="1px solid rgba(0,0,0,0.1)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden" bg="gray.100">
                     {avatarUrl ? (
@@ -198,7 +198,7 @@ export default function RightSection({
             </>
           ) : (
             <Menu placement="bottom-end" isLazy strategy="fixed">
-              <MenuButton as={Button} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
+              <MenuButton as={Button} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={1}>
                 <Flex align="center" gap={2}>
                   <Box as="span" border="1px solid rgba(0,0,0,0.1)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden" bg="gray.100">
                     {avatarUrl ? (
@@ -303,7 +303,7 @@ export default function RightSection({
           )
         ) : (
           <>
-            <Button onClick={showModal} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
+            <Button onClick={showModal} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={1}>
               <Flex align="center" gap={2}>
                 <Box as="span" border="1px solid rgba(0,0,0,0.1)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" bg="gray.100">
                   <Box as="span" lineHeight={0} color="gray.500">
@@ -325,7 +325,7 @@ export default function RightSection({
       </Box>
 
       {/* Desktop Post Property CTA with moving red border */}
-      <Box display={{ base: 'none', md: 'inline-flex' }} ml={2}>
+      <Box display={{ base: 'none', md: 'inline-flex' }} ml={0.5}>
         <Link to="/postproperty/">
           <MovingBorderButton
             borderRadius="1.75rem"
