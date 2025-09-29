@@ -202,7 +202,7 @@ function SearchBar() {
     <Wrapper>
       <div className="w-full max-w-6xl mx-auto px-1 mt-2">
         {/* Main Search Container */}
-        <div className="glass-container group w-full mx-auto p-6 rounded-3xl overflow-hidden border border-gray-100 -mt-4 sm:-mt-6 md:-mt-14 bg-white shadow-2xl">
+        <div className="glass-container group w-full mx-auto p-6 rounded-3xl overflow-hidden border border-gray-100 -mt-4 sm:-mt-8 md:-mt-36 bg-white shadow-2xl">
         {/* Category Tabs */}
         <div className="tabs-container flex justify-center mb-1">
           <div className="inline-flex p-1 bg-gray-100 rounded-xl">
