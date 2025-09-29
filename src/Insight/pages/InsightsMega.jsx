@@ -75,7 +75,6 @@ export default function InsightsMega({ isOpen, onClose }) {
               transform="translateX(-50%)"
               top={{ base: "56px", md: "64px" }}
               zIndex={9998}
-              onMouseLeave={onClose}
               width={{ base: "95%", md: "860px" }}
               maxW="95vw"
             >
@@ -149,28 +148,26 @@ export default function InsightsMega({ isOpen, onClose }) {
                     </Box>
                     <Flex direction="column" gap={2}>
                       {[
-                        "Investment outlook",
-                        "Global Investment Committee",
-                        "Asset allocation",
-                        "Responsible investing",
-                        "Subscribe to insights",
+                        { name: "Investment outlook", path: "/analytics/investment-outlook" },
+                        { name: "Global Investment Committee", path: "/analytics/global-committee" },
+                        { name: "Asset allocation", path: "/analytics/asset-allocation" },
+                        { name: "Responsible investing", path: "/analytics/responsible-investing" },
+                        { name: "Subscribe to insights", path: "/subscribe/insights" },
                       ].map((item, idx) => (
                         <Link
                           key={idx}
-                          to="/analytics/market"
+                          to={item.path}
                           style={{
                             fontSize: "14px",
                             color: "rgba(255,255,255,0.85)",
                             transition: "0.2s",
+                            display: "flex",
+                            alignItems: "center"
                           }}
-                          onMouseEnter={(e) =>
-                            (e.target.style.color = "#7fd5f0")
-                          }
-                          onMouseLeave={(e) =>
-                            (e.target.style.color = "rgba(255,255,255,0.85)")
-                          }
+                          onMouseEnter={(e) => e.target.style.color = "#7fd5f0"}
+                          onMouseLeave={(e) => e.target.style.color = "rgba(255,255,255,0.85)"}
                         >
-                          {item}
+                          {item.name}
                         </Link>
                       ))}
                       <Button
@@ -201,38 +198,29 @@ export default function InsightsMega({ isOpen, onClose }) {
                       Real estate types
                     </Box>
                     <Flex direction="column" gap={2}>
-                      <Link
-                        to="/property/residential/"
-                        style={{ fontSize: "14px", color: "rgba(255,255,255,0.85)", transition: "0.2s" }}
-                        onMouseEnter={(e) => (e.target.style.color = "#7fd5f0")}
-                        onMouseLeave={(e) => (e.target.style.color = "rgba(255,255,255,0.85)")}
-                      >
-                        Residential
-                      </Link>
-                      <Link
-                        to="/projects/commercial/"
-                        style={{ fontSize: "14px", color: "rgba(255,255,255,0.85)", transition: "0.2s" }}
-                        onMouseEnter={(e) => (e.target.style.color = "#7fd5f0")}
-                        onMouseLeave={(e) => (e.target.style.color = "rgba(255,255,255,0.85)")}
-                      >
-                        Commercial
-                      </Link>
-                      <Link
-                        to="/plots-in-gurugram/"
-                        style={{ fontSize: "14px", color: "rgba(255,255,255,0.85)", transition: "0.2s" }}
-                        onMouseEnter={(e) => (e.target.style.color = "#7fd5f0")}
-                        onMouseLeave={(e) => (e.target.style.color = "rgba(255,255,255,0.85)")}
-                      >
-                        Plots & Land
-                      </Link>
-                      <Link
-                        to="/projects/villas/"
-                        style={{ fontSize: "14px", color: "rgba(255,255,255,0.85)", transition: "0.2s" }}
-                        onMouseEnter={(e) => (e.target.style.color = "#7fd5f0")}
-                        onMouseLeave={(e) => (e.target.style.color = "rgba(255,255,255,0.85)")}
-                      >
-                        Luxury villas
-                      </Link>
+                      {[
+                        { name: "Residential", path: "/property/residential/" },
+                        { name: "Commercial", path: "/projects/commercial/" },
+                        { name: "Plots & Land", path: "/plots-in-gurugram/" },
+                        { name: "Luxury Villas", path: "/projects/villas/" }
+                      ].map((item, idx) => (
+                        <Link
+                          key={idx}
+                          to={item.path}
+                          style={{
+                            fontSize: "14px",
+                            color: "rgba(255,255,255,0.85)",
+                            transition: "0.2s",
+                            display: "flex",
+                            alignItems: "center"
+                          }}
+                          onMouseEnter={(e) => e.target.style.color = "#7fd5f0"}
+                          onMouseLeave={(e) => e.target.style.color = "rgba(255,255,255,0.85)"}
+                        >
+                          <TypeIcon name={item.name} />
+                          {item.name}
+                        </Link>
+                      ))}
                     </Flex>
                   </Box>
                 </Grid>

@@ -476,7 +476,7 @@ const Projects = () => {
                         </Link>
 
                         <button
-                          onClick={() => handleDeleteButtonClick(id)}
+                          onClick={() => handleDeleteUser(id)}
                           type="button"
                           className="action-button delete-button"
                         >

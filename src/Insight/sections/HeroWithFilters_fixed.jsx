@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from "axios";
 import { getApiBase } from '../../config/apiBase';
@@ -538,56 +538,7 @@ useEffect(() => {
         </div>
 
         {/* Advanced Filters Modal */}
-        {advancedOpen && (
-          <div className="fixed inset-0 z-30" aria-labelledby="advanced-filters-title" role="dialog" aria-modal="true">
-            <div onClick={() => setAdvancedOpen(false)} className="absolute inset-0 bg-black/40" aria-hidden="true" />
-            <div ref={dialogRef} className={`absolute left-1/2 top-1/2 -translate-x-1/2 w-[92vw] sm:w-[90vw] max-w-xl bg-gray-50 rounded-2xl shadow-2xl border border-gray-200 ${reducedMotion ? '-translate-y-1/2' : '-translate-y-[55%] transition-all duration-300'} p-4 md:p-6`} style={{ transform: 'translate(-50%, -50%)' }}>
-              <div className="flex items-center justify-between mb-3">
-                <h3 id="advanced-filters-title" className="text-lg md:text-xl font-extrabold text-gray-900">Advanced filters</h3>
-                <button ref={dialogCloseBtnRef} onClick={() => setAdvancedOpen(false)} className="w-8 h-8 inline-flex items-center justify-center rounded-md border border-gray-200 hover:bg-gray-200" aria-label="Close advanced filters">
-                  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M6.225 4.811 4.81 6.225 9.586 11l-4.775 4.775 1.414 1.414L11 12.414l4.775 4.775 1.414-1.414L12.414 11l4.775-4.775-1.414-1.414L11 9.586 6.225 4.811Z"/></svg>
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <select aria-label="Bedrooms" value={bedrooms} onChange={(e)=>setBedrooms(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 w-full shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                  <option value="">Bedrooms</option>
-                  {bedroomsOpt.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-                <select aria-label="Bathrooms" value={bathrooms} onChange={(e)=>setBathrooms(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 w-full shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                  <option value="">Bathrooms</option>
-                  {bathroomsOpt.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-                <div className="flex gap-2">
-                  <input aria-label="Minimum area" value={areaMin} onChange={(e)=>setAreaMin(e.target.value)} className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none placeholder:text-gray-400" placeholder="Min area (sqft)" aria-invalid={areaInvalid} aria-describedby={areaInvalid ? 'area-error' : undefined} />
-                  <input aria-label="Maximum area" value={areaMax} onChange={(e)=>setAreaMax(e.target.value)} className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none placeholder:text-gray-400" placeholder="Max area (sqft)" aria-invalid={areaInvalid} aria-describedby={areaInvalid ? 'area-error' : undefined} />
-                </div>
-                {areaInvalid && (
-                  <p id="area-error" className="col-span-2 text-xs text-red-600">Min area cannot be greater than max area.</p>
-                )}
-                <select aria-label="Furnishing" value={furnishing} onChange={(e)=>setFurnishing(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 w-full shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                  <option value="">Furnishing</option>
-                  {furnishingOpt.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-                <select aria-label="RERA" value={rera} onChange={(e)=>setRera(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 w-full shadow-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                  <option value="">RERA</option>
-                  {reraOpt.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="mt-4 flex items-center justify-end gap-2">
-                <button onClick={() => setAdvancedOpen(false)} className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-200">Cancel</button>
-                <Link to={searchHref} onClick={() => setAdvancedOpen(false)} className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-semibold">Apply filters</Link>
-              </div>
-            </div>
-          </div>
-        )}
+      
       </div>
 
       {/* Admin Poster Management */}
