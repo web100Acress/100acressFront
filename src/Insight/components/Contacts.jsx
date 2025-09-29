@@ -24,7 +24,9 @@ export default function Contacts() {
 
       if (response.ok) {
         const data = await response.json();
-        setContacts(data.data || []);
+
+        const getInTouchContacts = data.data ? data.data.filter(contact => contact.source === 'GetInTouch Form') : [];
+        setContacts(getInTouchContacts);
       } else {
         throw new Error('Failed to fetch contacts');
       }
@@ -130,6 +132,7 @@ export default function Contacts() {
 
   // Get inquiry type badge color
   const getInquiryTypeColor = (type) => {
+    if (!type) return 'bg-gray-100 text-gray-800';
     switch (type.toLowerCase()) {
       case 'general':
         return 'bg-gray-100 text-gray-800';
@@ -202,7 +205,7 @@ export default function Contacts() {
                         {contact.status}
                       </span>
                       <span className={`px-2 py-1 text-xs font-medium rounded-full ${getInquiryTypeColor(contact.inquiryType)}`}>
-                        {contact.inquiryType}
+                        {contact.inquiryType || 'Not specified'}
                       </span>
                       <span className="text-xs text-gray-500">
                         {formatDate(contact.createdAt)}
@@ -212,17 +215,17 @@ export default function Contacts() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
                         <p className="text-sm text-gray-600 mb-1">Email</p>
-                        <p className="font-medium">{contact.email}</p>
+                        <p className="font-medium">{contact.email || 'Not provided'}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600 mb-1">Phone</p>
-                        <p className="font-medium">{contact.phone}</p>
+                        <p className="font-medium">{contact.phone || 'Not provided'}</p>
                       </div>
                     </div>
 
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Message</p>
-                      <p className="text-gray-800 leading-relaxed">{contact.message}</p>
+                      <p className="text-gray-800 leading-relaxed">{contact.message || 'No message'}</p>
                     </div>
 
                     {contact.source && (
