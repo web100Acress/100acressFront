@@ -1,15 +1,14 @@
 import React from 'react';
+import { FaHome, FaBuilding, FaWarehouse, FaCity } from 'react-icons/fa';
 import { Star } from 'lucide-react';
 
 const TestimonialCard = ({ testimonial }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow duration-300">
       <div className="flex items-center mb-4">
-        <img
-          src={testimonial.image}
-          alt={testimonial.name}
-          className="w-12 h-12 rounded-full object-cover mr-4"
-        />
+        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-4 text-gray-600">
+          {testimonial.image}
+        </div>
         <div>
           <h3 className="font-semibold text-gray-900">{testimonial.name}</h3>
           <p className="text-sm text-gray-600">{testimonial.location}</p>
@@ -45,56 +44,56 @@ const RealEstateTestimonials = () => {
     {
       id: 1,
       name: "Rajesh Kumar",
-      location: "DLF Phase 2, Gurugram",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      location: "Gurugram",
+      image: <FaBuilding />, 
       rating: 5,
       review: "Working with this real estate team was exceptional. They helped us find our dream home in just 3 weeks. Their market knowledge and negotiation skills saved us thousands. Highly recommend!",
-      propertyType: "3BR Condo"
+      propertyType: "Affordable Property" // Updated from "3BR Condo"
     },
     {
       id: 2,
       name: "Priya Sharma",
-      location: "Sector 62, Noida",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      location: "Noida",
+      image: <FaHome />, // Icon for Townhouse (e.g., home icon)
       rating: 5,
       review: "As a first-time home buyer, I was nervous about the process. The team guided me through every step with patience and expertise. They made what seemed impossible, possible.",
-      propertyType: "2BR Townhouse"
+      propertyType: "builder floor" // Updated from "2BR Townhouse"
     },
     {
       id: 3,
       name: "Amit Singh",
-      location: "Indirapuram, Ghaziabad",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+      location: "Delhi",
+      image: <FaHome />, // Icon for Independent House (e.g., house icon)
       rating: 5,
       review: "Selling our family home was emotional, but this team made it stress-free. They priced it perfectly and had multiple offers within days. Professional service from start to finish.",
-      propertyType: "4BR Family Home"
+      propertyType: "commercial property" // Updated from "4BR Family Home"
     },
     {
       id: 4,
       name: "Kavita Patel",
-      location: "Greater Kailash, New Delhi",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      location: "Panchkula",
+      image: <FaCity />, // Icon for Commercial Property (e.g., city/building icon)
       rating: 5,
       review: "Investment property purchase made easy. Their market analysis was spot-on, and they found me a property that's already appreciated 15% in 6 months. Excellent ROI guidance.",
-      propertyType: "Investment Property"
+      propertyType: "Farm house" // Updated from "Investment Property"
     },
     {
       id: 5,
       name: "Vikram Mehta",
-      location: "Sector 15, Faridabad",
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+      location: "Panipat",
+      image: <FaBuilding />, // Icon for Apartment (e.g., apartment building)
       rating: 5,
       review: "After working with several agents, I finally found the right team. They listened to my needs, showed relevant properties, and negotiated a great deal. Couldn't be happier!",
-      propertyType: "1BR Apartment"
+      propertyType: "Sco plot" // Updated from "1BR Apartment"
     },
     {
       id: 6,
       name: "Sneha Gupta",
-      location: "Sector 137, Noida Expressway",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+      location: "pushkar",
+      image: <FaWarehouse />, // Icon for Loft (e.g., warehouse/modern icon for loft)
       rating: 5,
       review: "Relocated for work and needed to sell quickly. They handled everything remotely with video calls and digital signatures. Sold above asking price in 2 weeks. Amazing service!",
-      propertyType: "Modern Loft"
+      propertyType: "villa" // Updated from "Modern Loft"
     }
   ];
 
