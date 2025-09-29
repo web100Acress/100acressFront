@@ -50,7 +50,8 @@ const ProjectEdit = () => {
     possessionDate: "",
     minPrice: "",
     maxPrice: "",
-    Amenities:"",    
+    Amenities:"",
+    project_Brochure: "",
   });
 
   const { id } = useParams();
@@ -76,7 +77,6 @@ const ProjectEdit = () => {
           setValues(res.data.dataedit);
         }
         else if(res.status >= 400 && res.status < 500){
-          alert("You are not authorized to view this page.")
         }
         else if(res.status >= 500){
           alert("Server error. Please try again later.")
@@ -86,9 +86,9 @@ const ProjectEdit = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [id]);
 
-  function handleFileChange(event) {
+  const handleFileChange = (event) => {
     const input = event.target;
     if (input.files && input.files[0]) {
       const reader = new FileReader();
@@ -103,8 +103,9 @@ const ProjectEdit = () => {
       };
       reader.readAsDataURL(input.files[0]);
     }
-  }
-  function handleThumbnailImageChange(event) {
+  };
+
+  const handleThumbnailImageChange = (event) => {
     const input = event.target;
     if (input.files && input.files[0]) {
       const reader = new FileReader();
@@ -119,11 +120,20 @@ const ProjectEdit = () => {
       };
       reader.readAsDataURL(input.files[0]);
     }
-  }
+  };
 
-
-
-
+  const handleBrochureChange = (event) => {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+      setValues((prevValues) => ({
+        ...prevValues,
+        project_Brochure: {
+          file: input.files[0],
+          url: URL.createObjectURL(input.files[0]),
+        },
+      }));
+    }
+  };
 
   // const handleUpdateUser = async () => {
   //   try {
@@ -181,7 +191,6 @@ const ProjectEdit = () => {
 
 
 
-
   const handleUpdateUser = async () => {
     try {
       const formData = new FormData();
@@ -226,6 +235,7 @@ const ProjectEdit = () => {
       appendMaybeFile('highlightImage', values.highlightImage);
       appendMaybeFile('projectMaster_plan', values.projectMaster_plan);
       appendMaybeFile('logo', values.logo);
+      appendMaybeFile('project_Brochure', values.project_Brochure);
 
       // Multi-file fields
       if (Array.isArray(values.project_floorplan_Image)) {
@@ -500,7 +510,7 @@ const ProjectEdit = () => {
                 setValues({ ...values, highlightImage: file });
               }} className="mt-2 dark:bg-gray-900 dark:text-white" />
             </div>
-            {/* Master Plan Image */}
+            {/* Project Brochure */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
               <h3 className="text-xl font-semibold text-gray-800 dark:text-white text-center mb-2">Project Master Plan</h3>
               <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
@@ -514,6 +524,21 @@ const ProjectEdit = () => {
                 const file = e.target.files[0];
                 setValues({ ...values, projectMaster_plan: file });
               }} className="mt-2 dark:bg-gray-900 dark:text-white" />
+            </div>
+          </div>
+
+          {/* Project Brochure */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col items-center border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white text-center mb-2">Project Brochure</h3>
+              <div className="flex items-center justify-center h-48 w-full overflow-hidden rounded-lg bg-gray-50 border border-gray-200 mb-2">
+                {values.project_Brochure && values.project_Brochure.url ? (
+                  <iframe src={values.project_Brochure.url} alt="brochure" className="max-h-full max-w-full" style={{ width: '100%', height: '100%' }} />
+                ) : (
+                  <span className="text-gray-500 text-sm italic">No Brochure</span>
+                )}
+              </div>
+              <input type="file" accept="application/pdf" name="project_Brochure" onChange={handleBrochureChange} className="mt-2 dark:bg-gray-900 dark:text-white" />
             </div>
           </div>
 
