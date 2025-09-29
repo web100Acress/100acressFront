@@ -13,6 +13,8 @@ import FAQSection from './FAQSection';
 import RelatedProjects from './RelatedProjects';
 import CallbackModal from './CallbackModal';
 import FooterForm from './FooterForm';
+import StickyBrochureButton from './StickyBrochureButton';
+import BrochureDownloadModal from './BrochureDownloadModal';
 import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../../../config/apiClient";
@@ -54,6 +56,7 @@ function ProjectLayout2() {
   const [error, setError] = useState(null);
   const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
   const [callbackSuccessHandler, setCallbackSuccessHandler] = useState(null);
+  const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
   const { pUrl } = useParams();
   const navigate = useNavigate();
 
@@ -65,6 +68,14 @@ function ProjectLayout2() {
   const handleCloseCallback = () => {
     setIsCallbackModalOpen(false);
     setCallbackSuccessHandler(null);
+  };
+
+  const handleBrochureDownload = () => {
+    setIsBrochureModalOpen(true);
+  };
+
+  const handleCloseBrochureModal = () => {
+    setIsBrochureModalOpen(false);
   };
 
   useEffect(() => {
@@ -367,6 +378,18 @@ function ProjectLayout2() {
       />
       
       
+
+      {/* Sticky Brochure Download Button */}
+      <StickyBrochureButton onDownloadClick={handleBrochureDownload} />
+
+      {/* Brochure Download Modal */}
+      <BrochureDownloadModal
+        isOpen={isBrochureModalOpen}
+        onClose={handleCloseBrochureModal}
+        projectViewDetails={projectViewDetails}
+        projectTitle={projectTitle}
+        location={location}
+      />
 
       {/* Global Callback Modal */}
       <CallbackModal 
