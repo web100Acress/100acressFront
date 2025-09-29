@@ -82,7 +82,7 @@ export default function LeftSection({
   return (
     <Flex
       alignItems="center"
-      gap={{ base: 1, md: 3 }}
+      gap={{ base: 0, md: 0.5 }}
       order={{ base: 1, md: 2 }}
       flex={{ base: "initial", md: 1 }}
       justifyContent={{ base: "flex-start", md: forceHamburger ? "flex-start" : "center" }}
@@ -101,7 +101,7 @@ export default function LeftSection({
         aria-label="Menu"
         variant="ghost"
         color="#111"
-        mr={2}
+        mr={0}
         onClick={() => (isDrawerOpen ? closeDrawer() : openDrawer())}
         display={{ base: "inline-flex", md: (forceHamburger || showHamburgerOnDesktop) ? "inline-flex" : "none" }}
       />
@@ -357,7 +357,7 @@ export default function LeftSection({
           height="auto"
           minH="unset"
           pr={2}
-          mr={2}
+          mr={0}
           borderRight={{ base: 'none', md: 'none' }}
           borderRadius={0}
           py={0}
@@ -414,13 +414,13 @@ export default function LeftSection({
           color={colorChange ? "white" : "#111"}
           _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
           _active={{ bg: "transparent" }}
-          px={3}
+          px={1}
           fontWeight="600"
           fontSize="16px"
           letterSpacing="0.5px"
           display={{ base: "none", md: (forceHamburger || hideBudget) ? "none" : "inline-flex" }}
           pr={2}
-          mr={2}
+          mr={0}
           borderRight={{ base: 'none', md: 'none' }}
           borderRadius={0}
           lineHeight="1"
@@ -465,13 +465,13 @@ export default function LeftSection({
           color={colorChange ? "white" : "#111"}
           _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
           _active={{ bg: "transparent" }}
-          px={3}
+          px={1}
           fontWeight="600"
           fontSize="16px"
           letterSpacing="0.5px"
           display={{ base: "none", md: (forceHamburger || hideProjectStatus) ? "none" : "inline-flex" }}
           pr={2}
-          mr={2}
+          mr={0}
           borderRight={{ base: 'none', md: 'none' }}
           borderRadius={0}
           lineHeight="1"
@@ -514,7 +514,7 @@ export default function LeftSection({
           color={colorChange ? "white" : "#111"}
           _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
           _active={{ bg: "transparent" }}
-          px={3}
+          px={1}
           fontWeight="600"
           fontSize="16px"
           letterSpacing="0.5px"
@@ -553,12 +553,12 @@ export default function LeftSection({
             
       {/* Quick links */}
       <Link to="/rental-properties/best-rental-property-in-gurugram/">
-        <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={3} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideRental ? "none" : "inline-flex" }}>
+        <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={1} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideRental ? "none" : "inline-flex" }}>
           Rental
         </Button>
       </Link>
       <Link to="/buy-properties/best-resale-property-in-gurugram/">
-        <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={3} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideResale ? "none" : "inline-flex" }}>
+        <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={1} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideResale ? "none" : "inline-flex" }}>
           Resale
         </Button>
       </Link>
@@ -574,7 +574,7 @@ export default function LeftSection({
           color="white"
           _hover={{ bg: '#c53030' }}
           _active={{ bg: '#9b2c2c' }}
-          px={3}
+          px={1}
           fontWeight="800"
           fontSize="15px"
           borderRadius="md"
