@@ -7,8 +7,6 @@ export default function Contacts() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedContact, setSelectedContact] = useState(null);
-  const [showStatusModal, setShowStatusModal] = useState(false);
 
   // Fetch all contacts
   const fetchContacts = async () => {
@@ -41,37 +39,6 @@ export default function Contacts() {
   useEffect(() => {
     fetchContacts();
   }, []);
-
-  // Update contact status
-  const updateStatus = async (id, newStatus) => {
-    try {
-      const base = import.meta.env.VITE_API_BASE || '';
-      const token = localStorage.getItem('myToken');
-      const url = base ? `${base}/api/admin/contacts/${id}` : `/api/admin/contacts/${id}`;
-
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-
-      const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...headers,
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (response.ok) {
-        fetchContacts();
-        setShowStatusModal(false);
-        toast.success('Contact status updated successfully!');
-      } else {
-        throw new Error('Failed to update status');
-      }
-    } catch (error) {
-      console.error('Error updating status:', error);
-      toast.error('Failed to update status. Please try again.');
-    }
-  };
 
   // Delete contact
   const deleteContact = async (id) => {
@@ -182,58 +149,6 @@ export default function Contacts() {
       <AdminInsightsSidebar />
 
       <div className="max-w-7xl mx-auto md:pl-[300px] px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-600">Total</span>
-              <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
-                <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-gray-900">{contacts.length}</p>
-          </div>
-          
-          <div className="bg-white rounded-2xl p-5 border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-blue-600">New</span>
-              <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
-                </svg>
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-blue-900">{contacts.filter(c => c.status.toLowerCase() === 'new').length}</p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-5 border border-amber-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-amber-600">In Progress</span>
-              <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                <svg className="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-amber-900">{contacts.filter(c => c.status.toLowerCase() === 'in progress').length}</p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-5 border border-emerald-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-emerald-600">Completed</span>
-              <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
-                <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-emerald-900">{contacts.filter(c => c.status.toLowerCase() === 'completed').length}</p>
-          </div>
-        </div>
-
-        {/* Contacts List */}
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-emerald-500"></div>
@@ -336,18 +251,6 @@ export default function Contacts() {
                   {/* Actions */}
                   <div className="flex lg:flex-col gap-2 lg:ml-4">
                     <button
-                      onClick={() => {
-                        setSelectedContact(contact);
-                        setShowStatusModal(true);
-                      }}
-                      className="flex-1 lg:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-xl hover:from-emerald-600 hover:to-green-600 transition-all shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                      </svg>
-                      Update
-                    </button>
-                    <button
                       onClick={() => deleteContact(contact.id || contact._id)}
                       className="flex-1 lg:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold bg-white text-rose-600 rounded-xl hover:bg-rose-50 transition-all border border-rose-200 hover:border-rose-300 shadow-sm"
                     >
@@ -363,86 +266,6 @@ export default function Contacts() {
           </div>
         )}
 
-        {/* Status Update Modal */}
-        {showStatusModal && selectedContact && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000] flex items-center justify-center p-4 animate-in fade-in duration-200">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md mx-auto animate-in zoom-in-95 duration-200">
-              <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Update Status</h3>
-                  <p className="text-sm text-gray-500 mt-0.5">Change contact status</p>
-                </div>
-                <button
-                  onClick={() => setShowStatusModal(false)}
-                  className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors"
-                >
-                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
-                  </svg>
-                </button>
-              </div>
-
-              <div className="p-6 space-y-4">
-                <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Current Status</p>
-                  <span className={`inline-flex px-3 py-1.5 text-sm font-bold rounded-full ${getStatusColor(selectedContact.status)}`}>
-                    {selectedContact.status}
-                  </span>
-                </div>
-
-                <div className="space-y-2">
-                  <button
-                    onClick={() => updateStatus(selectedContact.id || selectedContact._id, 'New')}
-                    className="w-full group flex items-center gap-3 px-4 py-3.5 bg-blue-50 hover:bg-blue-100 text-blue-900 rounded-xl transition-all border border-blue-200 hover:border-blue-300 hover:shadow-lg"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-blue-100 group-hover:bg-blue-200 flex items-center justify-center transition-colors">
-                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
-                      </svg>
-                    </div>
-                    <span className="font-semibold">Mark as New</span>
-                  </button>
-                  
-                  <button
-                    onClick={() => updateStatus(selectedContact.id || selectedContact._id, 'In Progress')}
-                    className="w-full group flex items-center gap-3 px-4 py-3.5 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-xl transition-all border border-amber-200 hover:border-amber-300 hover:shadow-lg"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-amber-100 group-hover:bg-amber-200 flex items-center justify-center transition-colors">
-                      <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                    </div>
-                    <span className="font-semibold">Mark as In Progress</span>
-                  </button>
-                  
-                  <button
-                    onClick={() => updateStatus(selectedContact.id || selectedContact._id, 'Completed')}
-                    className="w-full group flex items-center gap-3 px-4 py-3.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 rounded-xl transition-all border border-emerald-200 hover:border-emerald-300 hover:shadow-lg"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-emerald-100 group-hover:bg-emerald-200 flex items-center justify-center transition-colors">
-                      <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                    </div>
-                    <span className="font-semibold">Mark as Completed</span>
-                  </button>
-                  
-                  <button
-                    onClick={() => updateStatus(selectedContact.id || selectedContact._id, 'Cancelled')}
-                    className="w-full group flex items-center gap-3 px-4 py-3.5 bg-rose-50 hover:bg-rose-100 text-rose-900 rounded-xl transition-all border border-rose-200 hover:border-rose-300 hover:shadow-lg"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-rose-100 group-hover:bg-rose-200 flex items-center justify-center transition-colors">
-                      <svg className="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
-                      </svg>
-                    </div>
-                    <span className="font-semibold">Mark as Cancelled</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
