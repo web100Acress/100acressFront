@@ -72,22 +72,23 @@ const OtherEnquiries = () => {
       (r.mobile || "").toLowerCase().includes(term) ||
       (r.email || "").toLowerCase().includes(term) ||
       (r.message || "").toLowerCase().includes(term) ||
+      (r.projectName || "").toLowerCase().includes(term) ||
       ((r.enquiryType === 'contact'
-        ? (r.message && r.message.includes('footer_instant_call') ? 'Footer Instant Call' : 'Contact Form')
-        : (r.projectName === 'Footer Instant Call' ? 'Footer Instant Call' : 'Project Enquiry')
+        ? (r.message && r.message.includes('footer_instant_call') ? 'Footer Call' : 'Contact Form')
+        : 'Project Enq'
       ) || "").toLowerCase().includes(term)
     );
   }, [rows, q]);
 
   const exportCSV = () => {
-    const headers = ["SrNo", "Name", "Mobile", "Email", "Message", "Source", "Created At"];
+    const headers = ["SrNo", "Name", "Mobile", "Email", "Message", "Source", "Project", "Created At"];
     const dataToExport = filtered;
 
     const lines = [headers.join(",")];
     dataToExport.forEach((item, idx) => {
       const source = item.enquiryType === 'contact'
-        ? (item.message && item.message.includes('footer_instant_call') ? 'Footer Instant Call' : 'Contact Form')
-        : (item.projectName === 'Footer Instant Call' ? 'Footer Instant Call' : 'Project Enquiry');
+        ? (item.message && item.message.includes('footer_instant_call') ? 'Footer Call' : 'Contact Form')
+        : 'Project Enq';
 
       const row = [
         (page - 1) * PAGE_SIZE + idx + 1,
@@ -96,6 +97,7 @@ const OtherEnquiries = () => {
         JSON.stringify(item.email || ""),
         JSON.stringify(item.message || ""),
         JSON.stringify(source),
+        JSON.stringify(item.enquiryType === 'user' ? (item.projectName || 'N/A') : 'N/A'),
         JSON.stringify(new Date(item.createdAt).toLocaleString())
       ];
       lines.push(row.join(","));
@@ -285,31 +287,29 @@ const OtherEnquiries = () => {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead>
                       <tr className="bg-gradient-to-r from-gray-50 to-gray-100">
-                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">No.</th>
-                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Name</th>
-                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Mobile</th>
-                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider min-w-[220px]">Email</th>
-                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider min-w-[250px]">Message</th>
-                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Source</th>
-                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date & Time</th>
-                        <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
+                        <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">No.</th>
+                        <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Name</th>
+                        <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Mobile</th>
+                        <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider min-w-[180px]">Email</th>
+                        <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider min-w-[200px]">Message</th>
+                        <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Type</th>
+                        <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider min-w-[150px]">Project</th>
+                        <th className="px-4 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date & Time</th>
+                        <th className="px-4 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {filtered.map((item, idx) => (
                         <tr key={item._id || idx} className="hover:bg-blue-50/50 transition-colors duration-150">
-                          <td className="px-6 py-4 text-sm text-gray-600 font-medium">
+                          <td className="px-4 py-4 text-sm text-gray-600 font-medium">
                             {(page - 1) * PAGE_SIZE + idx + 1}
                           </td>
-                          <td className="px-6 py-4 text-sm">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
-                                {(item.name || 'U').charAt(0).toUpperCase()}
-                              </div>
-                              <span className="text-gray-900 font-semibold">{item.name}</span>
+                          <td className="px-3 py-2 text-sm">
+                            <div className="flex items-center">
+                              <span className="text-gray-900 font-medium">{item.name}</span>
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-sm">
+                          <td className="px-4 py-4 text-sm">
                             <div className="flex items-center gap-2 text-gray-700">
                               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -317,42 +317,68 @@ const OtherEnquiries = () => {
                               {item.mobile}
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-sm">
-                            <div className="flex items-center gap-2 text-gray-700 max-w-[220px]">
+                          <td className="px-4 py-4 text-sm">
+                            <div className="flex items-center gap-2 text-gray-700 max-w-[180px]">
                               <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                               </svg>
                               <span className="truncate" title={item.email}>{item.email}</span>
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-700">
-                            <div className="max-w-[250px] truncate" title={item.message}>
-                              {item.message}
+                          <td className="px-3 py-2">
+                            <div className="max-w-[180px]">
+                              <div 
+                                className={`text-xs text-gray-600 ${!item.showFullMessage ? 'line-clamp-2' : ''} cursor-pointer leading-tight`}
+                                onClick={() => {
+                                  const newRows = [...rows];
+                                  const rowIndex = newRows.findIndex(r => r._id === item._id);
+                                  if (rowIndex > -1) {
+                                    newRows[rowIndex] = {
+                                      ...newRows[rowIndex],
+                                      showFullMessage: !newRows[rowIndex]?.showFullMessage
+                                    };
+                                    setRows(newRows);
+                                  }
+                                }}
+                              >
+                                {item.message}
+                              </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-sm">
+                          <td className="px-4 py-4 text-sm">
                             <div className="flex items-center gap-2">
-                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
                                 item.enquiryType === 'contact'
                                   ? (item.message && item.message.includes('footer_instant_call')
-                                      ? 'bg-blue-100 text-blue-800'
-                                      : 'bg-gray-100 text-gray-800')
+                                      ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white border border-purple-400 shadow-sm'
+                                      : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white border border-blue-400 shadow-sm')
                                   : (item.projectName === 'Footer Instant Call'
-                                      ? 'bg-blue-100 text-blue-800'
-                                      : 'bg-green-100 text-green-800')
+                                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white border border-orange-400 shadow-sm'
+                                      : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white border border-emerald-400 shadow-sm')
                               }`}>
                                 {item.enquiryType === 'contact'
                                   ? (item.message && item.message.includes('footer_instant_call')
-                                      ? 'Footer Instant Call'
-                                      : 'Contact Form')
-                                  : (item.projectName === 'Footer Instant Call'
-                                      ? 'Footer Instant Call'
-                                      : 'Project Enquiry')
+                                      ? 'Footer'
+                                      : 'Contact')
+                                  : 'Project'
                                 }
                               </span>
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
+                          <td className="px-4 py-4 text-sm text-gray-700">
+                            <div className="whitespace-normal min-w-[120px]">
+                              {item.enquiryType === 'user' ? (
+                                <span 
+                                  className="bg-gradient-to-r from-emerald-100 to-emerald-200 text-emerald-800 px-2 py-0.5 rounded-md text-xs font-semibold border border-emerald-300 inline-block max-w-full break-words"
+                                >
+                                  {item.projectName || 'N/A'}
+                                </span>
+                              ) : (
+                                <span className="text-gray-400 text-sm">—</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-4 py-4 text-sm text-gray-600 whitespace-nowrap">
                             <div className="flex flex-col gap-1">
                               <span className="font-medium">
                                 {new Date(item.createdAt).toLocaleDateString('en-IN', {
@@ -370,7 +396,7 @@ const OtherEnquiries = () => {
                               </span>
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-4 py-4 text-center">
                             <button
                               onClick={() => deleteRow(item._id)}
                               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-red-200 bg-red-50 text-red-700 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200 font-medium text-sm"
@@ -386,7 +412,7 @@ const OtherEnquiries = () => {
                       ))}
                       {filtered.length === 0 && (
                         <tr>
-                          <td className="px-6 py-16 text-center" colSpan={7}>
+                          <td className="px-6 py-16 text-center" colSpan={9}>
                             <div className="flex flex-col items-center justify-center">
                               <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
