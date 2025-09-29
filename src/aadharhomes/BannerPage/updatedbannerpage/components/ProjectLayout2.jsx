@@ -399,11 +399,11 @@ function ProjectLayout2() {
       <div className="bg-black py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-3xl p-8 border border-gray-700/30 shadow-2xl">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div className="text-center">
               {/* Content */}
-              <div className="flex-1 text-center lg:text-left">
+              <div className="mb-6">
                 <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">
-                  Download Project Brochure
+                  Download {projectViewDetails?.projectName || 'Project'} Brochure
                 </h3>
                 <p className="text-gray-300 text-base font-light leading-relaxed">
                   Get complete details, floor plans, amenities & pricing
@@ -411,7 +411,7 @@ function ProjectLayout2() {
               </div>
 
               {/* Download Button */}
-              <div className="flex-shrink-0">
+              <div className="flex justify-center">
                 <motion.button
                   onClick={handleBrochureDownload}
                   className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-3 rounded-full font-semibold text-base flex items-center space-x-2 hover:from-amber-600 hover:to-orange-700 transition-all duration-300 shadow-xl hover:shadow-2xl"
