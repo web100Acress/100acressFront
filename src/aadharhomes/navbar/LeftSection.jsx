@@ -82,7 +82,7 @@ export default function LeftSection({
   return (
     <Flex
       alignItems="center"
-      gap={{ base: 1, md: 3 }}
+      gap={{ base: 0.5, md: 1.5 }}
       order={{ base: 1, md: 2 }}
       flex={{ base: "initial", md: 1 }}
       justifyContent={{ base: "flex-start", md: forceHamburger ? "flex-start" : "center" }}
@@ -101,7 +101,7 @@ export default function LeftSection({
         aria-label="Menu"
         variant="ghost"
         color="#111"
-        mr={2}
+        mr={1}
         onClick={() => (isDrawerOpen ? closeDrawer() : openDrawer())}
         display={{ base: "inline-flex", md: (forceHamburger || showHamburgerOnDesktop) ? "inline-flex" : "none" }}
       />
@@ -357,7 +357,7 @@ export default function LeftSection({
           height="auto"
           minH="unset"
           pr={2}
-          mr={2}
+          mr={1}
           borderRight={{ base: 'none', md: 'none' }}
           borderRadius={0}
           py={0}
@@ -420,7 +420,7 @@ export default function LeftSection({
           letterSpacing="0.5px"
           display={{ base: "none", md: (forceHamburger || hideBudget) ? "none" : "inline-flex" }}
           pr={2}
-          mr={2}
+          mr={1}
           borderRight={{ base: 'none', md: 'none' }}
           borderRadius={0}
           lineHeight="1"
@@ -471,7 +471,7 @@ export default function LeftSection({
           letterSpacing="0.5px"
           display={{ base: "none", md: (forceHamburger || hideProjectStatus) ? "none" : "inline-flex" }}
           pr={2}
-          mr={2}
+          mr={1}
           borderRight={{ base: 'none', md: 'none' }}
           borderRadius={0}
           lineHeight="1"
