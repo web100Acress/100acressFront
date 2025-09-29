@@ -19,11 +19,25 @@ const OtherEnquiries = () => {
     try {
       setLoading(true);
       setError("");
-      const res = await api.get(`contact/viewAll`);
-      const data = res?.data?.data || [];
+
+      // Fetch from both contact and user endpoints
+      const [contactRes, userRes] = await Promise.all([
+        api.get(`contact/viewAll`),
+        api.get(`userViewAll`)
+      ]);
+
+      const contactData = contactRes?.data?.data || [];
+      const userData = userRes?.data?.data || [];
+
+      // Add a type field to distinguish between data sources
+      const contactDataWithType = contactData.map(item => ({ ...item, enquiryType: 'contact' }));
+      const userDataWithType = userData.map(item => ({ ...item, enquiryType: 'user' }));
+
+      // Combine both datasets
+      const combinedData = [...contactDataWithType, ...userDataWithType];
 
       // Sort by createdAt in descending order (newest first)
-      const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const sortedData = combinedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setAllData(sortedData);
 
       // Handle pagination on frontend since backend doesn't support it
@@ -35,8 +49,8 @@ const OtherEnquiries = () => {
       setTotalPages(Math.ceil(sortedData.length / PAGE_SIZE));
       setPage(p);
     } catch (e) {
-      console.error("Failed to load contact enquiries", e);
-      setError("Failed to load contact enquiries");
+      console.error("Failed to load enquiries", e);
+      setError("Failed to load enquiries");
     } finally {
       setLoading(false);
     }
@@ -57,28 +71,37 @@ const OtherEnquiries = () => {
       (r.name || "").toLowerCase().includes(term) ||
       (r.mobile || "").toLowerCase().includes(term) ||
       (r.email || "").toLowerCase().includes(term) ||
-      (r.message || "").toLowerCase().includes(term)
+      (r.message || "").toLowerCase().includes(term) ||
+      ((r.enquiryType === 'contact'
+        ? (r.message && r.message.includes('footer_instant_call') ? 'Footer Instant Call' : 'Contact Form')
+        : (r.projectName === 'Footer Instant Call' ? 'Footer Instant Call' : 'Project Enquiry')
+      ) || "").toLowerCase().includes(term)
     );
   }, [rows, q]);
 
   const exportCSV = () => {
-    const headers = ["SrNo", "Name", "Mobile", "Email", "Message", "Created At"];
+    const headers = ["SrNo", "Name", "Mobile", "Email", "Message", "Source", "Created At"];
     const dataToExport = filtered;
 
     const lines = [headers.join(",")];
     dataToExport.forEach((item, idx) => {
+      const source = item.enquiryType === 'contact'
+        ? (item.message && item.message.includes('footer_instant_call') ? 'Footer Instant Call' : 'Contact Form')
+        : (item.projectName === 'Footer Instant Call' ? 'Footer Instant Call' : 'Project Enquiry');
+
       const row = [
         (page - 1) * PAGE_SIZE + idx + 1,
         JSON.stringify(item.name || ""),
         JSON.stringify(item.mobile || ""),
         JSON.stringify(item.email || ""),
         JSON.stringify(item.message || ""),
+        JSON.stringify(source),
         JSON.stringify(new Date(item.createdAt).toLocaleString())
       ];
       lines.push(row.join(","));
     });
 
-    const filename = `contact-enquiries-page-${page}.csv`;
+    const filename = `all-enquiries-page-${page}.csv`;
     const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -90,10 +113,19 @@ const OtherEnquiries = () => {
 
   const deleteRow = async (id) => {
     if (!id) return;
-    if (!window.confirm(`Delete this contact enquiry?`)) return;
+    if (!window.confirm(`Delete this enquiry?`)) return;
 
     try {
-      await api.delete(`contact_delete/${id}/delete`);
+      // Find the item to determine its type
+      const item = rows.find(r => r._id === id);
+      if (!item) return;
+
+      if (item.enquiryType === 'contact') {
+        await api.delete(`contact_delete/${id}/delete`);
+      } else if (item.enquiryType === 'user') {
+        await api.delete(`userdataDelete/delete/${id}`);
+      }
+
       setRows(prev => prev.filter(r => r._id !== id));
     } catch (e) {
       console.error("Delete failed", e);
@@ -258,6 +290,7 @@ const OtherEnquiries = () => {
                         <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Mobile</th>
                         <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider min-w-[220px]">Email</th>
                         <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider min-w-[250px]">Message</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Source</th>
                         <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date & Time</th>
                         <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
                       </tr>
@@ -295,6 +328,28 @@ const OtherEnquiries = () => {
                           <td className="px-6 py-4 text-sm text-gray-700">
                             <div className="max-w-[250px] truncate" title={item.message}>
                               {item.message}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-sm">
+                            <div className="flex items-center gap-2">
+                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                item.enquiryType === 'contact'
+                                  ? (item.message && item.message.includes('footer_instant_call')
+                                      ? 'bg-blue-100 text-blue-800'
+                                      : 'bg-gray-100 text-gray-800')
+                                  : (item.projectName === 'Footer Instant Call'
+                                      ? 'bg-blue-100 text-blue-800'
+                                      : 'bg-green-100 text-green-800')
+                              }`}>
+                                {item.enquiryType === 'contact'
+                                  ? (item.message && item.message.includes('footer_instant_call')
+                                      ? 'Footer Instant Call'
+                                      : 'Contact Form')
+                                  : (item.projectName === 'Footer Instant Call'
+                                      ? 'Footer Instant Call'
+                                      : 'Project Enquiry')
+                                }
+                              </span>
                             </div>
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
