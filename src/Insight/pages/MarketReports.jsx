@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { TrendingUp, TrendingDown, BarChart3, PieChart, MapPin, Calendar, Filter, Download, ArrowRight, Building2, Home, DollarSign, Users } from "lucide-react";
 import InsightsSidebar from "../components/InsightsSidebar";
 import Navbar from "../../aadharhomes/navbar/Navbar";
 import LuxuryFooter from "../../Components/Actual_Components/LuxuryFooter";
+import api from "../../config/apiClient";
 
 const MarketReports = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("6months");
@@ -13,6 +14,7 @@ const MarketReports = () => {
     marketTrends: [],
     topPerformingAreas: [],
   });
+  const [projects, setProjects] = useState([]);
 
   const periods = [
     { value: "1month", label: "Last Month" },
@@ -21,14 +23,21 @@ const MarketReports = () => {
     { value: "1year", label: "Last Year" },
   ];
 
-  const cities = [
-    { value: "all", label: "All Cities" },
-    { value: "delhi", label: "Delhi NCR" },
-    { value: "mumbai", label: "Mumbai" },
-    { value: "bangalore", label: "Bangalore" },
-    { value: "pune", label: "Pune" },
-    { value: "hyderabad", label: "Hyderabad" },
-  ];
+  const cityOptions = useMemo(
+    () => Array.from(new Set((projects || []).map(p => p?.city).filter(Boolean))).sort(),
+    [projects]
+  );
+
+  const cities = useMemo(
+    () => [
+      { value: "all", label: "All Cities" },
+      ...cityOptions.map(city => ({
+        value: city.toLowerCase().replace(/\s+/g, '-'),
+        label: city
+      }))
+    ],
+    [cityOptions]
+  );
 
   const keyMetrics = [
     { label: "Total Properties", value: "12,580", change: "+8.5%", icon: Building2, trend: "up" },
@@ -36,6 +45,31 @@ const MarketReports = () => {
     { label: "Active Listings", value: "2,150", change: "-5.2%", icon: Home, trend: "down" },
     { label: "Market Activity", value: "85%", change: "+15.8%", icon: Users, trend: "up" },
   ];
+
+  // Fetch projects to get cities
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await api.get("/api/project/view-all");
+        
+        if (response.data && Array.isArray(response.data)) {
+          setProjects(response.data);
+          console.log('Fetched projects:', response.data);
+        } else {
+          console.error('Invalid response format:', response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+          url: error.config?.url
+        });
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   // Mock data for demonstration
   useEffect(() => {
