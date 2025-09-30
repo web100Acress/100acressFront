@@ -390,7 +390,7 @@ export default function InsightsSidebar() {
               <div className="h-px bg-gray-200 my-3"></div>
               {item('/admin/insights/market-reports', 'Market Reports', icons.trends, !collapsed)}
              
-              {/* {item('/admin/insights/investment', 'Investment Insights', icons.investment, !collapsed)} */}
+              {item('/admin/insights/investment', 'Investment Insights', icons.investment, !collapsed)}
               {/* {item('/admin/insights/area-analytics', 'Area Analytics', icons.area, !collapsed)} */}
               
                <div className="h-px bg-gray-200 my-3"></div>
