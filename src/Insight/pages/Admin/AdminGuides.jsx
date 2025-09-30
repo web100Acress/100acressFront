@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AdminInsightsSidebar from '../../components/AdminInsightsSidebar';
+import axios from 'axios';
 
 import { Plus, Edit, Trash2, Upload, Download, Search, Filter, X, BookOpen, Clock, BarChart3, Star, FileText, AlertCircle } from 'lucide-react';
 
@@ -9,69 +10,37 @@ import 'react-toastify/dist/ReactToastify.css';
 import api from '../../../config/apiClient';
 import { io } from 'socket.io-client';
 
+// Test API connection
+const testApiConnection = async () => {
+  const testUrl = 'http://localhost:3500/api/health';
+  try {
+    const response = await fetch(testUrl);
+    console.log('API Health Check:', {
+      status: response.status,
+      statusText: response.statusText,
+      url: testUrl
+    });
+    if (response.ok) {
+      const data = await response.json();
+      console.log('API Health Data:', data);
+    }
+  } catch (error) {
+    console.error('API Health Check Failed:', error);
+  }
+};
+
+// Run test connection
+setTimeout(testApiConnection, 1000);
+
 const AdminGuides = () => {
-  // WebSocket connection
+  // State declarations
   const [socket, setSocket] = useState(null);
-  
-  // Initialize WebSocket connection
-  useEffect(() => {
-    // Get the base URL from the API client
-    const baseURL = api.defaults.baseURL.replace('/api', '');
-    const newSocket = io(baseURL, {
-      transports: ['websocket'],
-      withCredentials: true,
-      extraHeaders: {
-        Authorization: `Bearer ${localStorage.getItem('myToken')?.replace(/^"|"$/g, '')}`
-      }
-    });
-    
-    setSocket(newSocket);
-    
-    // Clean up the socket connection on unmount
-    return () => newSocket.close();
-  }, []);
-  
-  // Listen for real-time updates
-  useEffect(() => {
-    if (!socket) return;
-    
-    // Listen for guide updates
-    socket.on('guide:created', (guide) => {
-      setGuides(prevGuides => {
-        // Check if guide already exists to avoid duplicates
-        const exists = prevGuides.some(g => g._id === guide._id);
-        return exists ? prevGuides : [guide, ...prevGuides];
-      });
-      toast.success('New guide created');
-    });
-    
-    socket.on('guide:updated', (updatedGuide) => {
-      setGuides(prevGuides => 
-        prevGuides.map(guide => 
-          guide._id === updatedGuide._id ? updatedGuide : guide
-        )
-      );
-      toast.success('Guide updated');
-    });
-    
-    socket.on('guide:deleted', (deletedId) => {
-      setGuides(prevGuides => 
-        prevGuides.filter(guide => guide._id !== deletedId)
-      );
-      toast.success('Guide deleted');
-    });
-    
-    return () => {
-      socket.off('guide:created');
-      socket.off('guide:updated');
-      socket.off('guide:deleted');
-    };
-  }, [socket]);
   const [guides, setGuides] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [currentGuide, setCurrentGuide] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -82,16 +51,153 @@ const AdminGuides = () => {
     content: '',
     image: '',
     file: null,
+    fileName: '',
     tags: '',
-    isFeatured: false,
-    fileName: ''
+    isFeatured: false
   });
-  const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
 
+  // Fetch guides function
+  const fetchGuides = async () => {
+    try {
+      setLoading(true);
+      const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3500/api/';
+      
+      // Try different endpoint variations
+      const endpoints = [
+        `${baseURL}guides`,
+        `${baseURL}guides/`,
+        `${baseURL.replace('/api', '')}guides`,
+        `${baseURL.replace('/api', '')}guides/`
+      ];
+
+      let lastError = null;
+      
+      for (const endpoint of endpoints) {
+        const url = endpoint.replace(/([^:]\/)\/+/g, '$1');
+        try {
+          console.log('Trying endpoint:', url);
+          const response = await axios.get(url, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('myToken')?.replace(/^"/, '').replace(/"$/, '')}`,
+              'Content-Type': 'application/json'
+            },
+            withCredentials: true,
+            timeout: 5000
+          });
+          
+          console.log('Successfully fetched from:', url);
+          console.log('Response data:', response.data);
+          setGuides(response.data.data || response.data || []);
+          return; // Exit on success
+          
+        } catch (error) {
+          lastError = error;
+          console.warn(`Failed to fetch from ${url}:`, error.message);
+          // Continue to next endpoint
+        }
+      }
+      
+      // If we get here, all endpoints failed
+      throw lastError || new Error('All endpoint attempts failed');
+    } catch (error) {
+      console.error('Error fetching guides:', error);
+      if (error.response) {
+        console.error('Error response:', {
+          status: error.response.status,
+          statusText: error.response.statusText,
+          data: error.response.data,
+          url: error.config?.url
+        });
+      }
+      toast.error('Failed to load guides');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initialize WebSocket connection
+  useEffect(() => {
+    const baseURL = (import.meta.env.VITE_API_URL || 'http://localhost:3500/api/').replace('/api', '');
+    console.log('Connecting to WebSocket at:', baseURL);
+    const newSocket = io(baseURL, {
+      transports: ['websocket'],
+      withCredentials: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000,
+      extraHeaders: {
+        Authorization: `Bearer ${localStorage.getItem('myToken')?.replace(/^"|"$/g, '')}`
+      }
+    });
+
+    newSocket.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    newSocket.on('connect_error', (error) => {
+      console.error('WebSocket connection error:', error);
+    });
+
+    newSocket.on('reconnect_attempt', (attempt) => {
+      console.log(`Reconnect attempt: ${attempt}`);
+    });
+
+    setSocket(newSocket);
+    
+    return () => {
+      newSocket.off('connect');
+      newSocket.off('connect_error');
+      newSocket.off('reconnect_attempt');
+      newSocket.close();
+    };
+  }, []);
+
+  // Initial data fetch
   useEffect(() => {
     fetchGuides();
   }, []);
+
+  // WebSocket event listeners
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleGuideCreated = (guide) => {
+      setGuides(prevGuides => {
+        const exists = prevGuides.some(g => g._id === guide._id);
+        return exists ? prevGuides : [guide, ...prevGuides];
+      });
+      toast.success('New guide created');
+    };
+
+    const handleGuideUpdated = (updatedGuide) => {
+      setGuides(prevGuides => 
+        prevGuides.map(guide => 
+          guide._id === updatedGuide._id ? updatedGuide : guide
+        )
+      );
+      toast.success('Guide updated');
+    };
+
+    const handleGuideDeleted = (deletedId) => {
+      setGuides(prevGuides => 
+        prevGuides.filter(guide => guide._id !== deletedId)
+      );
+      toast.success('Guide deleted');
+    };
+
+    socket.on('guide:created', handleGuideCreated);
+    socket.on('guide:updated', handleGuideUpdated);
+    socket.on('guide:deleted', handleGuideDeleted);
+
+    return () => {
+      socket.off('guide:created', handleGuideCreated);
+      socket.off('guide:updated', handleGuideUpdated);
+      socket.off('guide:deleted', handleGuideDeleted);
+    };
+  }, [socket]);
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -123,9 +229,14 @@ const AdminGuides = () => {
       
       // Append all form data to FormData
       Object.keys(formData).forEach(key => {
-        if (key === 'tags' && typeof formData[key] === 'string') {
+        if (key === 'tags' && formData[key]) {
+          // Handle tags - ensure it's a string
           formDataToSend.append('tags', formData[key]);
-        } else if (key !== 'file' && key !== 'image') {
+        } else if (key === 'isFeatured') {
+          // Handle boolean values
+          formDataToSend.append(key, formData[key] ? 'true' : 'false');
+        } else if (key !== 'file' && key !== 'image' && formData[key] !== null && formData[key] !== undefined) {
+          // Append all other non-file fields that have values
           formDataToSend.append(key, formData[key]);
         }
       });
@@ -135,30 +246,78 @@ const AdminGuides = () => {
         formDataToSend.append('file', formData.file);
       }
 
-      if (currentGuide) {
-        // Update existing guide
-        await api.put(`/guides/${currentGuide._id}`, formDataToSend, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        toast.success('Guide updated successfully');
-      } else {
-        // Create new guide
-        await api.post('/guides', formDataToSend, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        toast.success('Guide created successfully');
-      }
+      // Log the form data being sent (for debugging)
+      console.log('Submitting form data:', Object.fromEntries(formDataToSend));
+
+      try {
+        // Use the correct base URL from environment or default to port 3500
+        const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3500/api/';
+        console.log('Using hardcoded API Base URL:', baseURL);
+        
+        if (currentGuide) {
+          // Update existing guide
+          const url = `${baseURL}guides/${currentGuide._id}`.replace(/([^:]\/)\/+/g, '$1');
+          console.log('PUT URL:', url);
+          
+          const response = await axios.put(url, formDataToSend, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${localStorage.getItem('myToken')?.replace(/^"/, '').replace(/"$/, '')}`
+            },
+            withCredentials: true
+          });
+          console.log('Update response:', response);
+          toast.success('Guide updated successfully');
+        } else {
+          // Create new guide
+          const url = `${baseURL}guides`.replace(/([^:]\/)\/+/g, '$1');
+          console.log('POST URL:', url);
+          const response = await axios.post(url, formDataToSend, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${localStorage.getItem('myToken')?.replace(/^"/, '').replace(/"$/, '')}`
+            },
+            withCredentials: true
+          });
+          console.log('Create response:', response);
+          toast.success('Guide created successfully');
+          // Fetch all guides after successful upload
+          await fetchGuides();
+        }
       
-      setShowModal(false);
-      fetchGuides();
-      resetForm();
+        setShowModal(false);
+        resetForm();
+      } catch (apiError) {
+        console.error('API Error:', apiError);
+        if (apiError.response) {
+          console.error('Error response:', {
+            status: apiError.response.status,
+            statusText: apiError.response.statusText,
+            data: apiError.response.data,
+            headers: apiError.response.headers
+          });
+        } else if (apiError.request) {
+          console.error('No response received:', apiError.request);
+        } else {
+          console.error('Error:', apiError.message);
+        }
+        console.error('Error config:', apiError.config);
+        throw apiError;
+      }
     } catch (error) {
-      console.error('Error saving guide:', error);
-      toast.error(error.response?.data?.message || 'Failed to save guide');
+      console.error('Error in handleSubmit:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        headers: error.response?.headers
+      });
+      
+      const errorMessage = error.response?.data?.message || 
+                         error.message || 
+                         'Failed to save guide. Please try again.';
+      
+      toast.error(errorMessage);
     } finally {
       setIsUploading(false);
     }
