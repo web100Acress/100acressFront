@@ -25,7 +25,17 @@ const MarketReports = () => {
     { value: 'Q2 2023', label: 'Q2 2023' },
     { value: 'Q3 2023', label: 'Q3 2023' },
     { value: 'Q4 2023', label: 'Q4 2023' },
-    { value: 'Annual 2023', label: 'Annual 2023' }
+    { value: 'Annual 2023', label: 'Annual 2023' },
+    { value: 'Q1 2024', label: 'Q1 2024' },
+    { value: 'Q2 2024', label: 'Q2 2024' },
+    { value: 'Q3 2024', label: 'Q3 2024' },
+    { value: 'Q4 2024', label: 'Q4 2024' },
+    { value: 'Annual 2024', label: 'Annual 2024' },
+    { value: 'Q1 2025', label: 'Q1 2025' },
+    { value: 'Q2 2025', label: 'Q2 2025' },
+    { value: 'Q3 2025', label: 'Q3 2025' },
+    { value: 'Q4 2025', label: 'Q4 2025' },
+    { value: 'Annual 2025', label: 'Annual 2025' }
   ];
 
   // Fetch market reports
