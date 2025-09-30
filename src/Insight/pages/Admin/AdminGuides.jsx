@@ -1,28 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AdminInsightsSidebar from '../../components/AdminInsightsSidebar';
+import axios from 'axios';
 
 import { Plus, Edit, Trash2, Upload, Download, Search, Filter, X, BookOpen, Clock, BarChart3, Star, FileText, AlertCircle } from 'lucide-react';
 
-// // Mock components - replace with your actual imports
-// const AdminInsightsSidebar = () => <div />;
-const api = {
-  get: async (url, config) => ({ data: { data: [] } }),
-  post: async (url, data, config) => ({ data: {} }),
-  put: async (url, data, config) => ({ data: {} }),
-  delete: async (url, config) => ({ data: {} })
-};
-const toast = {
-  success: (msg) => console.log(msg),
-  error: (msg) => console.error(msg)
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import api from '../../../config/apiClient';
+import { io } from 'socket.io-client';
+
+// Test API connection
+const testApiConnection = async () => {
+  const testUrl = 'http://localhost:3500/api/health';
+  try {
+    const response = await fetch(testUrl);
+    console.log('API Health Check:', {
+      status: response.status,
+      statusText: response.statusText,
+      url: testUrl
+    });
+    if (response.ok) {
+      const data = await response.json();
+      console.log('API Health Data:', data);
+    }
+  } catch (error) {
+    console.error('API Health Check Failed:', error);
+  }
 };
 
+// Run test connection
+setTimeout(testApiConnection, 1000);
+
 const AdminGuides = () => {
+  // State declarations
+  const [socket, setSocket] = useState(null);
   const [guides, setGuides] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [currentGuide, setCurrentGuide] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -33,31 +51,153 @@ const AdminGuides = () => {
     content: '',
     image: '',
     file: null,
+    fileName: '',
     tags: '',
     isFeatured: false
   });
-  const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
 
+  // Fetch guides function
   const fetchGuides = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
-      const response = await api.get('/api/guides', {
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
-      });
-      setGuides(response.data.data || []);
+      const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3500/api/';
+      
+      // Try different endpoint variations
+      const endpoints = [
+        `${baseURL}guides`,
+        `${baseURL}guides/`,
+        `${baseURL.replace('/api', '')}guides`,
+        `${baseURL.replace('/api', '')}guides/`
+      ];
+
+      let lastError = null;
+      
+      for (const endpoint of endpoints) {
+        const url = endpoint.replace(/([^:]\/)\/+/g, '$1');
+        try {
+          console.log('Trying endpoint:', url);
+          const response = await axios.get(url, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('myToken')?.replace(/^"/, '').replace(/"$/, '')}`,
+              'Content-Type': 'application/json'
+            },
+            withCredentials: true,
+            timeout: 5000
+          });
+          
+          console.log('Successfully fetched from:', url);
+          console.log('Response data:', response.data);
+          setGuides(response.data.data || response.data || []);
+          return; // Exit on success
+          
+        } catch (error) {
+          lastError = error;
+          console.warn(`Failed to fetch from ${url}:`, error.message);
+          // Continue to next endpoint
+        }
+      }
+      
+      // If we get here, all endpoints failed
+      throw lastError || new Error('All endpoint attempts failed');
     } catch (error) {
       console.error('Error fetching guides:', error);
+      if (error.response) {
+        console.error('Error response:', {
+          status: error.response.status,
+          statusText: error.response.statusText,
+          data: error.response.data,
+          url: error.config?.url
+        });
+      }
       toast.error('Failed to load guides');
     } finally {
       setLoading(false);
     }
   };
 
+  // Initialize WebSocket connection
+  useEffect(() => {
+    const baseURL = (import.meta.env.VITE_API_URL || 'http://localhost:3500/api/').replace('/api', '');
+    console.log('Connecting to WebSocket at:', baseURL);
+    const newSocket = io(baseURL, {
+      transports: ['websocket'],
+      withCredentials: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000,
+      extraHeaders: {
+        Authorization: `Bearer ${localStorage.getItem('myToken')?.replace(/^"|"$/g, '')}`
+      }
+    });
+
+    newSocket.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    newSocket.on('connect_error', (error) => {
+      console.error('WebSocket connection error:', error);
+    });
+
+    newSocket.on('reconnect_attempt', (attempt) => {
+      console.log(`Reconnect attempt: ${attempt}`);
+    });
+
+    setSocket(newSocket);
+    
+    return () => {
+      newSocket.off('connect');
+      newSocket.off('connect_error');
+      newSocket.off('reconnect_attempt');
+      newSocket.close();
+    };
+  }, []);
+
+  // Initial data fetch
   useEffect(() => {
     fetchGuides();
   }, []);
+
+  // WebSocket event listeners
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleGuideCreated = (guide) => {
+      setGuides(prevGuides => {
+        const exists = prevGuides.some(g => g._id === guide._id);
+        return exists ? prevGuides : [guide, ...prevGuides];
+      });
+      toast.success('New guide created');
+    };
+
+    const handleGuideUpdated = (updatedGuide) => {
+      setGuides(prevGuides => 
+        prevGuides.map(guide => 
+          guide._id === updatedGuide._id ? updatedGuide : guide
+        )
+      );
+      toast.success('Guide updated');
+    };
+
+    const handleGuideDeleted = (deletedId) => {
+      setGuides(prevGuides => 
+        prevGuides.filter(guide => guide._id !== deletedId)
+      );
+      toast.success('Guide deleted');
+    };
+
+    socket.on('guide:created', handleGuideCreated);
+    socket.on('guide:updated', handleGuideUpdated);
+    socket.on('guide:deleted', handleGuideDeleted);
+
+    return () => {
+      socket.off('guide:created', handleGuideCreated);
+      socket.off('guide:updated', handleGuideUpdated);
+      socket.off('guide:deleted', handleGuideDeleted);
+    };
+  }, [socket]);
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -85,46 +225,99 @@ const AdminGuides = () => {
     setIsUploading(true);
     
     try {
-      const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
       const formDataToSend = new FormData();
       
+      // Append all form data to FormData
       Object.keys(formData).forEach(key => {
-        if (key === 'tags' && typeof formData[key] === 'string') {
+        if (key === 'tags' && formData[key]) {
+          // Handle tags - ensure it's a string
           formDataToSend.append('tags', formData[key]);
-        } else if (key !== 'file') {
+        } else if (key === 'isFeatured') {
+          // Handle boolean values
+          formDataToSend.append(key, formData[key] ? 'true' : 'false');
+        } else if (key !== 'file' && key !== 'image' && formData[key] !== null && formData[key] !== undefined) {
+          // Append all other non-file fields that have values
           formDataToSend.append(key, formData[key]);
         }
       });
       
+      // Append file if it exists
       if (formData.file) {
         formDataToSend.append('file', formData.file);
       }
 
-      let response;
-      if (currentGuide) {
-        response = await api.put(`/api/guides/${currentGuide._id}`, formDataToSend, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        toast.success('Guide updated successfully');
-      } else {
-        response = await api.post('/api/guides', formDataToSend, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        toast.success('Guide created successfully');
-      }
+      // Log the form data being sent (for debugging)
+      console.log('Submitting form data:', Object.fromEntries(formDataToSend));
+
+      try {
+        // Use the correct base URL from environment or default to port 3500
+        const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3500/api/';
+        console.log('Using hardcoded API Base URL:', baseURL);
+        
+        if (currentGuide) {
+          // Update existing guide
+          const url = `${baseURL}guides/${currentGuide._id}`.replace(/([^:]\/)\/+/g, '$1');
+          console.log('PUT URL:', url);
+          
+          const response = await axios.put(url, formDataToSend, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${localStorage.getItem('myToken')?.replace(/^"/, '').replace(/"$/, '')}`
+            },
+            withCredentials: true
+          });
+          console.log('Update response:', response);
+          toast.success('Guide updated successfully');
+        } else {
+          // Create new guide
+          const url = `${baseURL}guides`.replace(/([^:]\/)\/+/g, '$1');
+          console.log('POST URL:', url);
+          const response = await axios.post(url, formDataToSend, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${localStorage.getItem('myToken')?.replace(/^"/, '').replace(/"$/, '')}`
+            },
+            withCredentials: true
+          });
+          console.log('Create response:', response);
+          toast.success('Guide created successfully');
+          // Fetch all guides after successful upload
+          await fetchGuides();
+        }
       
-      setShowModal(false);
-      fetchGuides();
-      resetForm();
+        setShowModal(false);
+        resetForm();
+      } catch (apiError) {
+        console.error('API Error:', apiError);
+        if (apiError.response) {
+          console.error('Error response:', {
+            status: apiError.response.status,
+            statusText: apiError.response.statusText,
+            data: apiError.response.data,
+            headers: apiError.response.headers
+          });
+        } else if (apiError.request) {
+          console.error('No response received:', apiError.request);
+        } else {
+          console.error('Error:', apiError.message);
+        }
+        console.error('Error config:', apiError.config);
+        throw apiError;
+      }
     } catch (error) {
-      console.error('Error saving guide:', error);
-      toast.error(error.response?.data?.message || 'Failed to save guide');
+      console.error('Error in handleSubmit:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        headers: error.response?.headers
+      });
+      
+      const errorMessage = error.response?.data?.message || 
+                         error.message || 
+                         'Failed to save guide. Please try again.';
+      
+      toast.error(errorMessage);
     } finally {
       setIsUploading(false);
     }
@@ -135,15 +328,16 @@ const AdminGuides = () => {
     setFormData({
       title: guide.title,
       author: guide.author,
-      category: guide.category,
-      readTime: guide.readTime,
-      level: guide.level,
-      summary: guide.summary,
-      content: guide.content,
-      image: guide.image,
+      category: guide.category || 'Buying',
+      readTime: guide.readTime || '',
+      level: guide.level || 'Beginner',
+      summary: guide.summary || '',
+      content: guide.content || '',
+      image: guide.image || '',
+      file: null, // Don't pre-fill file input for security reasons
+      fileName: guide.fileName || '',
       tags: Array.isArray(guide.tags) ? guide.tags.join(', ') : guide.tags || '',
-      isFeatured: guide.isFeatured || false,
-      fileName: guide.fileName || ''
+      isFeatured: guide.isFeatured || false
     });
     setShowModal(true);
   };
@@ -151,10 +345,7 @@ const AdminGuides = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this guide?')) {
       try {
-        const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
-        await api.delete(`/api/guides/${id}`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
-        });
+        await api.delete(`/guides/${id}`);
         toast.success('Guide deleted successfully');
         fetchGuides();
       } catch (error) {
@@ -409,28 +600,18 @@ const AdminGuides = () => {
                   <X className="h-5 w-5" />
                 </button>
               </div>
-
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6">
-                <h3 className="text-2xl font-bold text-white">
-                  {currentGuide ? 'Edit Guide' : 'Create New Guide'}
-                </h3>
-                <p className="text-indigo-100 mt-1">
-                  {currentGuide ? 'Update the guide information' : 'Add a new educational resource'}
-                </p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="px-8 py-6 max-h-[calc(100vh-200px)] overflow-y-auto">
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <form onSubmit={handleSubmit} className="px-6 py-4 max-h-[calc(100vh-150px)] overflow-y-auto">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
                         Title <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
                         name="title"
                         required
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
                         value={formData.title}
                         onChange={handleChange}
                         placeholder="Enter guide title"
@@ -438,14 +619,14 @@ const AdminGuides = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
                         Author <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
                         name="author"
                         required
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
                         value={formData.author}
                         onChange={handleChange}
                         placeholder="Author name"
@@ -453,12 +634,12 @@ const AdminGuides = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
                         Category <span className="text-red-500">*</span>
                       </label>
                       <select
                         name="category"
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
                         value={formData.category}
                         onChange={handleChange}
                         required
@@ -473,14 +654,14 @@ const AdminGuides = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
                         Read Time <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
                         name="readTime"
                         required
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
                         value={formData.readTime}
                         onChange={handleChange}
                         placeholder="e.g., 5 min"
@@ -488,12 +669,12 @@ const AdminGuides = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
                         Level <span className="text-red-500">*</span>
                       </label>
                       <select
                         name="level"
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
                         value={formData.level}
                         onChange={handleChange}
                         required
@@ -505,13 +686,13 @@ const AdminGuides = () => {
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
                         Summary <span className="text-red-500">*</span>
                       </label>
                       <textarea
                         name="summary"
-                        rows={3}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+                        rows={2}
+                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
                         value={formData.summary}
                         onChange={handleChange}
                         required
@@ -520,13 +701,13 @@ const AdminGuides = () => {
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
                         Content <span className="text-red-500">*</span>
                       </label>
                       <textarea
                         name="content"
-                        rows={6}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+                        rows={4}
+                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
                         value={formData.content}
                         onChange={handleChange}
                         required
@@ -535,14 +716,14 @@ const AdminGuides = () => {
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
                         Image URL <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="url"
                         name="image"
                         required
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-transparent transition-all"
                         value={formData.image}
                         onChange={handleChange}
                         placeholder="https://example.com/image.jpg"
@@ -550,10 +731,10 @@ const AdminGuides = () => {
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">
                         File (PDF/PPT/DOC)
                       </label>
-                      <div className="relative border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:border-indigo-300 transition-colors bg-gray-50">
+                      <div className="relative border-2 border-dashed border-gray-200 rounded-lg p-4 text-center hover:border-indigo-300 transition-colors bg-gray-50">
                         <Upload className="mx-auto h-12 w-12 text-gray-400 mb-3" />
                         <div className="flex text-sm text-gray-600 justify-center">
                           <label className="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500">
@@ -588,57 +769,23 @@ const AdminGuides = () => {
                       />
                       <p className="mt-2 text-xs text-gray-500">Comma-separated list of tags</p>
                     </div>
-
-                    <div className="md:col-span-2">
-                      <div className="flex items-start p-4 rounded-xl bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200">
-                        <div className="flex items-center h-5">
-                          <input
-                            id="isFeatured"
-                            name="isFeatured"
-                            type="checkbox"
-                            className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer"
-                            checked={formData.isFeatured}
-                            onChange={handleChange}
-                          />
-                        </div>
-                        <div className="ml-3">
-                          <label htmlFor="isFeatured" className="font-semibold text-gray-900 cursor-pointer flex items-center gap-2">
-                            <Star className="w-4 h-4 text-amber-500" />
-                            Featured Guide
-                          </label>
-                          <p className="text-sm text-gray-600 mt-1">This guide will be prominently displayed on the homepage</p>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
 
-                <div className="mt-8 flex flex-col-reverse sm:flex-row gap-3 pt-6 border-t border-gray-200">
+                <div className="flex items-center justify-end gap-2 mt-4 border-t border-gray-100 pt-2">
                   <button
                     type="button"
-                    className="flex-1 px-6 py-3 rounded-xl border-2 border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all"
                     onClick={() => { setShowModal(false); resetForm(); }}
+                    className="px-2 py-1 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isUploading}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg shadow-indigo-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-2 py-1 text-xs font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 transition-all"
                   >
-                    {isUploading ? (
-                      <>
-                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        {currentGuide ? 'Updating...' : 'Creating...'}
-                      </>
-                    ) : (
-                      <>
-                        {currentGuide ? 'Update Guide' : 'Create Guide'}
-                      </>
-                    )}
+                    {isUploading ? 'Saving...' : (currentGuide ? 'Update Guide' : 'Create Guide')}
                   </button>
                 </div>
               </form>
