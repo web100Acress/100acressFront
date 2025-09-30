@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import { TrendingUp, TrendingDown, BarChart3, PieChart, MapPin, Calendar, Filter, Download, ArrowRight, Building2, Home, DollarSign, Users } from "lucide-react";
 import InsightsSidebar from "../components/InsightsSidebar";
 import Navbar from "../../aadharhomes/navbar/Navbar";
-import LuxuryFooter from "../../Components/Actual_Components/LuxuryFooter";
 import api from "../../config/apiClient";
 
 const MarketReports = () => {
