@@ -1,9 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, Button, Table, Form, Input, Select, Tabs, Card, message, Badge, Tag, Space, Tooltip, Empty, ConfigProvider } from 'antd';
-import { UploadOutlined, PlusOutlined, DeleteOutlined, DownloadOutlined, FileTextOutlined, BarChartOutlined, CalendarOutlined, EnvironmentOutlined, FileExcelOutlined, FilePdfOutlined, FileImageOutlined } from '@ant-design/icons';
-import { theme } from 'antd';
 import { Link } from 'react-router-dom';
 import AdminInsightsSidebar from '../../components/AdminInsightsSidebar';
+// import React, { useState, useEffect } from 'react';
+import { 
+  Form, 
+  Input, 
+  Select, 
+  Upload, 
+  Button, 
+  Table, 
+  Tabs, 
+  Card, 
+  message, 
+  Badge, 
+  Tag, 
+  Space, 
+  Tooltip, 
+  Empty 
+} from 'antd';
+import { 
+  UploadOutlined, 
+  PlusOutlined, 
+  DeleteOutlined, 
+  DownloadOutlined, 
+  FileTextOutlined, 
+  BarChartOutlined, 
+  CalendarOutlined, 
+  EnvironmentOutlined, 
+  FileExcelOutlined, 
+  FilePdfOutlined, 
+  FileImageOutlined 
+} from '@ant-design/icons';
 import api from '../../../config/apiClient';
 
 const { Option } = Select;
@@ -12,20 +39,6 @@ const { TextArea } = Input;
 const MarketReportsAdmin = () => {
   const [form] = Form.useForm();
   const [reports, setReports] = useState([]);
-  const { token } = theme.useToken();
-
-  // Custom theme configuration for Select components
-  const selectTheme = {
-    components: {
-      Select: {
-        zIndexPopup: 1100,
-        borderRadius: 8,
-        controlItemBgHover: token.controlItemBgHover,
-        optionSelectedBg: token.controlItemBgActive,
-        optionActiveBg: token.controlItemBgActive,
-      },
-    },
-  };
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('1');
   const [cities, setCities] = useState([]);
@@ -262,24 +275,6 @@ const MarketReportsAdmin = () => {
         </div>
 
         <div className="p-6 max-w-7xl mx-auto">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {statsCards.map((stat, index) => (
-              <div key={index} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 mb-1">{stat.title}</p>
-                    <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
-                  </div>
-                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center text-white text-2xl shadow-lg`}>
-                    {stat.icon}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Enhanced Tabs */}
           <Card className="rounded-2xl shadow-sm border-gray-200">
             <Tabs
               activeKey={activeTab}
@@ -335,17 +330,11 @@ const MarketReportsAdmin = () => {
                   children: (
                     <div className="mt-4">
                       <div className="max-w-3xl mx-auto">
-                        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6 border border-indigo-100">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">Create New Market Report</h3>
-                          <p className="text-gray-600">Fill in the details below to add a new market report to your collection.</p>
-                        </div>
-
-                        <ConfigProvider theme={selectTheme}>
                         <Form
                           form={form}
                           layout="vertical"
                           onFinish={onFinish}
-                          className="space-y-4"
+                          className="space-y-1"
                         >
                           <Form.Item
                             name="title"
@@ -369,20 +358,15 @@ const MarketReportsAdmin = () => {
                               <Select 
                                 placeholder="Select city" 
                                 size="large"
-                                className="w-full rounded-lg"
+                                className="rounded-lg"
                                 suffixIcon={<EnvironmentOutlined />}
-                                classNames={{
-                                  popup: 'select-dropdown'
-                                }}
-                                getPopupContainer={trigger => trigger.parentNode}
                               >
                                 {cities.map(city => (
-                                  <Option key={city} value={city} className="select-option">
-                                    <span className="block py-1">{city}</span>
-                                  </Option>
+                                  <Option key={city} value={city}>{city}</Option>
                                 ))}
                               </Select>
                             </Form.Item>
+
                             <Form.Item
                               name="period"
                               label={<span className="font-semibold text-gray-700">Report Period</span>}
@@ -391,36 +375,23 @@ const MarketReportsAdmin = () => {
                               <Select 
                                 placeholder="Select period" 
                                 size="large"
-                                className="w-full rounded-lg"
                                 suffixIcon={<CalendarOutlined />}
-                                classNames={{
-                                  popup: 'select-dropdown',
-                                  option: 'select-option'
-                                }}
-                                getPopupContainer={trigger => trigger.parentNode}
                               >
-                                {['Q1 2023', 'Q2 2023', 'Q3 2023', 'Q4 2023', 'Annual 2023'].map(period => (
-                                  <Option key={period} value={period} className="select-option">
-                                    <span className="block py-1">{period}</span>
-                                  </Option>
-                                ))}
+                                <Option value="Q1 2023">Q1 2023</Option>
+                                <Option value="Q2 2023">Q2 2023</Option>
+                                <Option value="Q3 2023">Q3 2023</Option>
+                                <Option value="Q4 2023">Q4 2023</Option>
+                                <Option value="Annual 2023">Annual 2023</Option>
                               </Select>
                             </Form.Item>
                           </div>
+
                           <Form.Item
                             name="type"
                             label={<span className="font-semibold text-gray-700">Report Type</span>}
                             rules={[{ required: true, message: 'Please select a report type' }]}
                           >
-                            <Select 
-                              placeholder="Select report type" 
-                              size="large"
-                              className="w-full"
-                              classNames={{
-                                popup: 'select-dropdown'
-                              }}
-                              getPopupContainer={trigger => trigger.parentNode}
-                            >
+                            <Select placeholder="Select report type" size="large">
                               <Option value="PDF">
                                 <Space>
                                   <FilePdfOutlined className="text-red-500" />
@@ -458,65 +429,23 @@ const MarketReportsAdmin = () => {
                             name="file"
                             label={<span className="font-semibold text-gray-700">Report File</span>}
                             valuePropName="fileList"
-                            getValueFromEvent={(e) => {
-                              if (Array.isArray(e)) {
-                                return e;
-                              }
-                              return e && e.fileList;
-                            }}
-                            rules={[{ 
-                              required: true, 
-                              message: 'Please upload a file',
-                              validator: (_, value) => {
-                                if (value && value[0]?.originFileObj) {
-                                  return Promise.resolve();
-                                }
-                                return Promise.reject('Please upload a file');
-                              }
-                            }]}
+                            getValueFromEvent={(e) => e.fileList}
+                            rules={[{ required: true, message: 'Please upload a file' }]}
                           >
-                            <Upload.Dragger
+                            <Upload
                               name="file"
-                              multiple={false}
-                              beforeUpload={(file) => {
-                                // Check file type
-                                const isAllowedType = [
-                                  'application/pdf',
-                                  'application/vnd.ms-excel',
-                                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                  'image/jpeg',
-                                  'image/png'
-                                ].includes(file.type);
-                                
-                                if (!isAllowedType) {
-                                  message.error('You can only upload PDF, Excel, or Image files!');
-                                  return Upload.LIST_IGNORE;
-                                }
-                                
-                                const isLt10M = file.size / 1024 / 1024 < 10;
-                                if (!isLt10M) {
-                                  message.error('File must be smaller than 10MB!');
-                                  return Upload.LIST_IGNORE;
-                                }
-                                
-                                return false; // Prevent auto upload
-                              }}
-                              fileList={form.getFieldValue('file')}
-                              onChange={({ fileList }) => {
-                                form.setFieldsValue({ file: fileList });
-                              }}
+                              maxCount={1}
+                              beforeUpload={() => false}
                               className="upload-container"
                             >
-                              <p className="ant-upload-drag-icon">
-                                <UploadOutlined className="text-3xl text-indigo-500" />
-                              </p>
-                              <p className="ant-upload-text font-medium text-gray-700">
-                                Click or drag file to this area to upload
-                              </p>
-                              <p className="ant-upload-hint text-gray-500 text-sm">
-                                Support for PDF, Excel, or Image files (max 10MB)
-                              </p>
-                            </Upload.Dragger>
+                              <Button 
+                                icon={<UploadOutlined />} 
+                                size="large"
+                                className="w-full rounded-lg border-dashed border-2 hover:border-indigo-500 hover:text-indigo-600"
+                              >
+                                Click to Upload (PDF, Excel, or Image)
+                              </Button>
+                            </Upload>
                           </Form.Item>
 
                           <Form.Item className="mb-0 pt-4">
@@ -532,7 +461,6 @@ const MarketReportsAdmin = () => {
                             </Button>
                           </Form.Item>
                         </Form>
-                        </ConfigProvider>
                       </div>
                     </div>
                   ),
@@ -551,25 +479,6 @@ const MarketReportsAdmin = () => {
         }
         .custom-table .ant-table-tbody > tr:hover > td {
           background: #f9fafb;
-        }
-        .select-dropdown {
-          z-index: 1100 !important;
-          border-radius: 8px;
-          box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-        }
-        
-        .select-dropdown .ant-select-item {
-          padding: 8px 16px;
-          transition: background-color 0.2s ease;
-        }
-        
-        .select-dropdown .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
-          background-color: #f3f4f6;
-        }
-        
-        .select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
-          background-color: #eef2ff;
-          font-weight: 500;
         }
       `}</style>
     </div>
