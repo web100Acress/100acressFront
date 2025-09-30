@@ -16,7 +16,8 @@ import {
   Tag, 
   Space, 
   Tooltip, 
-  Empty 
+  Empty,
+  Modal
 } from 'antd';
 import { 
   UploadOutlined, 
@@ -29,7 +30,9 @@ import {
   EnvironmentOutlined, 
   FileExcelOutlined, 
   FilePdfOutlined, 
-  FileImageOutlined 
+  FileImageOutlined,
+  EditOutlined,
+  SaveOutlined
 } from '@ant-design/icons';
 import api from '../../../config/apiClient';
 
@@ -42,6 +45,49 @@ const MarketReportsAdmin = () => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('1');
   const [cities, setCities] = useState([]);
+  const [editingReport, setEditingReport] = useState(null);
+  
+  // Get current date for dynamic period options
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth() + 1; // 1-12
+  
+  // Determine current quarter (1-4)
+  const currentQuarter = Math.ceil(currentMonth / 3);
+  
+  // Generate period options for current and next 2 quarters
+  const generatePeriodOptions = () => {
+    const options = [];
+    let year = currentYear;
+    let quarter = currentQuarter;
+    
+    // Add current and next 2 quarters
+    for (let i = 0; i < 4; i++) {
+      options.push({
+        value: `Q${quarter} ${year}`,
+        label: `Q${quarter} ${year}`,
+        sortOrder: year * 10 + quarter
+      });
+      
+      // Move to next quarter
+      quarter++;
+      if (quarter > 4) {
+        quarter = 1;
+        year++;
+      }
+    }
+    
+    // Add annual report options for current and next year
+    options.push(
+      { value: `Annual ${currentYear}`, label: `Annual ${currentYear}`, sortOrder: currentYear * 10 + 5 },
+      { value: `Annual ${currentYear + 1}`, label: `Annual ${currentYear + 1}`, sortOrder: (currentYear + 1) * 10 + 5 }
+    );
+    
+    // Sort by year and quarter
+    return options.sort((a, b) => a.sortOrder - b.sortOrder);
+  };
+  
+  const periodOptions = generatePeriodOptions();
 
   useEffect(() => {
     fetchReports();
@@ -80,6 +126,27 @@ const MarketReportsAdmin = () => {
     }
   };
 
+  const handleEdit = (report) => {
+    setEditingReport(report);
+    form.setFieldsValue({
+      ...report,
+      // Handle file field if needed
+      file: report.file ? [{
+        uid: '-1',
+        name: report.file.split('/').pop(),
+        status: 'done',
+        url: report.file
+      }] : []
+    });
+    setActiveTab('2'); // Switch to the form tab
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingReport(null);
+    form.resetFields();
+  };
+
   const onFinish = async (values) => {
     try {
       setLoading(true);
@@ -94,12 +161,17 @@ const MarketReportsAdmin = () => {
           if (key === 'file' && value[0]?.originFileObj) {
             console.log('Appending file:', value[0].originFileObj);
             formData.append('file', value[0].originFileObj);
-          } else {
+          } else if (key !== 'file') {
             console.log(`Appending ${key}:`, value);
             formData.append(key, value);
           }
         }
       });
+      
+      // If editing, include the report ID
+      if (editingReport) {
+        formData.append('_id', editingReport._id);
+      }
 
       // Log FormData contents
       for (let pair of formData.entries()) {
@@ -110,13 +182,34 @@ const MarketReportsAdmin = () => {
       const token = localStorage.getItem('myToken')?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
       console.log('Using token:', token ? 'Token exists' : 'No token found');
       
-      // Make the request with proper headers
-      const response = await api.post('/api/market-reports', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-        },
-      }).catch(error => {
+      try {
+        let response;
+        
+        if (editingReport) {
+          // Update existing report
+          response = await api.put(`/api/market-reports/${editingReport._id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            },
+          });
+        } else {
+          // Create new report
+          response = await api.post('/api/market-reports', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            },
+          });
+        }
+        
+        console.log('Server response:', response.data);
+        message.success(`Report ${editingReport ? 'updated' : 'added'} successfully!`);
+        form.resetFields();
+        setEditingReport(null);
+        fetchReports();
+        setActiveTab('1');
+      } catch (error) {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
@@ -133,13 +226,7 @@ const MarketReportsAdmin = () => {
           console.error('Error setting up request:', error.message);
           throw error;
         }
-      });
-      
-      console.log('Server response:', response.data);
-      message.success('Market report added successfully');
-      form.resetFields();
-      fetchReports();
-      setActiveTab('1');
+      }
     } catch (error) {
       console.error('Error adding report:', {
         message: error.message,
@@ -348,16 +435,89 @@ const MarketReportsAdmin = () => {
                   children: (
                     <div className="mt-4">
                       <Table 
-                        columns={columns} 
+                        columns={[
+                          {
+                            title: 'Title',
+                            dataIndex: 'title',
+                            key: 'title',
+                            render: (text, record) => (
+                              <div>
+                                <div className="font-medium text-gray-900">{text}</div>
+                                <div className="text-sm text-gray-500">{record.city} • {record.period}</div>
+                              </div>
+                            ),
+                          },
+                          {
+                            title: 'Type',
+                            dataIndex: 'type',
+                            key: 'type',
+                            render: (type) => {
+                              const iconProps = {
+                                PDF: { icon: <FilePdfOutlined className="text-red-500" />, color: 'red' },
+                                Excel: { icon: <FileExcelOutlined className="text-green-600" />, color: 'green' },
+                                Infographic: { icon: <FileImageOutlined className="text-blue-500" />, color: 'blue' },
+                              }[type] || { icon: <FileTextOutlined />, color: 'gray' };
+                              
+                              return (
+                                <Tag color={iconProps.color} className="flex items-center gap-1">
+                                  {iconProps.icon} {type}
+                                </Tag>
+                              );
+                            },
+                          },
+                          {
+                            title: 'Date',
+                            dataIndex: 'createdAt',
+                            key: 'date',
+                            render: (date) => new Date(date).toLocaleDateString(),
+                            sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+                          },
+                          {
+                            title: 'Actions',
+                            key: 'actions',
+                            render: (_, record) => (
+                              <Space size="middle">
+                                <Button 
+                                  type="link" 
+                                  icon={<EditOutlined />} 
+                                  onClick={() => handleEdit(record)}
+                                  className="text-blue-500"
+                                />
+                                <Button 
+                                  type="link" 
+                                  danger 
+                                  icon={<DeleteOutlined />} 
+                                  onClick={() => {
+                                    Modal.confirm({
+                                      title: 'Delete Report',
+                                      content: 'Are you sure you want to delete this report?',
+                                      okText: 'Yes, delete it',
+                                      okType: 'danger',
+                                      cancelText: 'No, keep it',
+                                      onOk() {
+                                        deleteReport(record._id);
+                                      },
+                                    });
+                                  }}
+                                />
+                              </Space>
+                            ),
+                          },
+                        ]}
                         dataSource={reports} 
                         rowKey="_id"
                         loading={loading}
                         pagination={{ 
                           pageSize: 10,
                           showSizeChanger: true,
-                          showTotal: (total) => `Total ${total} reports`
+                          showTotal: (total) => `Total ${total} reports`,
+                          showQuickJumper: true,
                         }}
                         className="custom-table"
+                        rowClassName="hover:bg-gray-50 cursor-pointer"
+                        onRow={(record) => ({
+                          onClick: () => handleEdit(record)
+                        })}
                         locale={{
                           emptyText: (
                             <Empty
@@ -452,11 +612,11 @@ const MarketReportsAdmin = () => {
                                   }, 100);
                                 }}
                               >
-                                <Option value="Q1 2023">Q1 2023</Option>
-                                <Option value="Q2 2023">Q2 2023</Option>
-                                <Option value="Q3 2023">Q3 2023</Option>
-                                <Option value="Q4 2023">Q4 2023</Option>
-                                <Option value="Annual 2023">Annual 2023</Option>
+                                {periodOptions.map(period => (
+                                  <Option key={period.value} value={period.value}>
+                                    {period.label}
+                                  </Option>
+                                ))}
                               </Select>
                             </Form.Item>
                           </div>
@@ -572,16 +732,27 @@ const MarketReportsAdmin = () => {
                           </Form.Item>
 
                           <Form.Item className="mb-0 pt-4">
-                            <Button 
-                              type="primary" 
-                              htmlType="submit" 
-                              loading={loading}
-                              icon={<PlusOutlined />}
-                              size="large"
-                              className="w-full md:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 border-0 rounded-lg shadow-lg h-12 px-8 font-semibold"
-                            >
-                              Add Report
-                            </Button>
+                            <div className="flex flex-col sm:flex-row gap-4">
+                              <Button 
+                                type="primary" 
+                                htmlType="submit" 
+                                loading={loading}
+                                icon={editingReport ? <SaveOutlined /> : <PlusOutlined />}
+                                size="large"
+                                className="w-full md:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 border-0 rounded-lg shadow-lg h-12 px-8 font-semibold"
+                              >
+                                {editingReport ? 'Update Report' : 'Add Report'}
+                              </Button>
+                              {editingReport && (
+                                <Button 
+                                  onClick={handleCancelEdit}
+                                  size="large"
+                                  className="w-full md:w-auto"
+                                >
+                                  Cancel
+                                </Button>
+                              )}
+                            </div>
                           </Form.Item>
                         </Form>
                       </div>

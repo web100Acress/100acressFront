@@ -262,10 +262,9 @@ const MarketReports = () => {
             </div>
           </div>
 
-          {/* Main Content Area */}
-          <div className="max-w-7xl mx-auto w-full mt-18">
-            {/* Filters Section */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mb-8 sm:mb-12 md:mb-16 border border-white/50">
+          {/* Filters Section - Moved Up */}
+          <div className="max-w-7xl mx-auto w-full -mt-8 sm:-mt-12 md:-mt-16 relative z-20 px-4 sm:px-6">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mb-8 sm:mb-12 md:mb-16 shadow-xl border border-white/50">
               <div className="flex flex-col gap-4 sm:gap-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2 sm:space-x-3">
