@@ -17,17 +17,15 @@ const MarketReportsAdmin = () => {
 
   useEffect(() => {
     fetchReports();
+    fetchCities();
   }, []);
 
   const fetchReports = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"/, '').replace(/^Bearer\s+/i, '') || '';
-      const response = await api.get('/api/market-reports', {
-        headers: {
-          ...(token && { Authorization: `Bearer ${token}` }),
-          'Content-Type': 'application/json'
-        }
+      const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
+      const response = await api.get('/market-reports', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       setReports(response.data?.data || []);
     } catch (error) {
@@ -58,21 +56,13 @@ const MarketReportsAdmin = () => {
       setLoading(true);
       const formData = new FormData();
       
-      // Append all form fields to formData
       Object.entries(values).forEach(([key, value]) => {
-        if (key === 'file' && value && value[0]?.originFileObj) {
-          formData.append('file', value[0].originFileObj);
-        } else if (key !== 'file' && value) {
-          formData.append(key, value);
-        }
+        if (value) formData.append(key, value);
       });
 
-      const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"/, '').replace(/^Bearer\s+/i, '') || '';
-      
       await api.post('/api/market-reports', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          ...(token && { Authorization: `Bearer ${token}` })
         },
       });
       
@@ -81,13 +71,8 @@ const MarketReportsAdmin = () => {
       fetchReports();
       setActiveTab('1');
     } catch (error) {
-      console.error('Error adding report:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-        url: error.config?.url
-      });
-      message.error(error.response?.data?.message || 'Failed to add market report');
+      console.error('Error adding report:', error);
+      message.error('Failed to add market report');
     } finally {
       setLoading(false);
     }
@@ -95,21 +80,12 @@ const MarketReportsAdmin = () => {
 
   const handleDelete = async (id) => {
     try {
-      const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"/, '').replace(/^Bearer\s+/i, '') || '';
-      await api.delete(`/api/market-reports/${id}`, {
-        headers: {
-          ...(token && { Authorization: `Bearer ${token}` })
-        }
-      });
+      await api.delete(`/api/market-reports/${id}`);
       message.success('Report deleted successfully');
       fetchReports();
     } catch (error) {
-      console.error('Error deleting report:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
-      });
-      message.error(error.response?.data?.message || 'Failed to delete report');
+      console.error('Error deleting report:', error);
+      message.error('Failed to delete report');
     }
   };
 
@@ -294,7 +270,6 @@ const MarketReportsAdmin = () => {
               activeKey={activeTab}
               onChange={setActiveTab}
               size="large"
-              tabBarStyle={{ marginBottom: 24 }}
               items={[
                 {
                   key: '1',
@@ -455,11 +430,11 @@ const MarketReportsAdmin = () => {
                               }
                               return e && e.fileList;
                             }}
-                            rules={[{
-                              required: true,
-                              message: 'Please upload a file!',
+                            rules={[{ 
+                              required: true, 
+                              message: 'Please upload a file',
                               validator: (_, value) => {
-                                if (value && value.length > 0 && value[0].originFileObj) {
+                                if (value && value[0]?.originFileObj) {
                                   return Promise.resolve();
                                 }
                                 return Promise.reject('Please upload a file');
@@ -470,6 +445,7 @@ const MarketReportsAdmin = () => {
                               name="file"
                               multiple={false}
                               beforeUpload={(file) => {
+                                // Check file type
                                 const isAllowedType = [
                                   'application/pdf',
                                   'application/vnd.ms-excel',
@@ -477,6 +453,7 @@ const MarketReportsAdmin = () => {
                                   'image/jpeg',
                                   'image/png'
                                 ].includes(file.type);
+                                
                                 if (!isAllowedType) {
                                   message.error('You can only upload PDF, Excel, or Image files!');
                                   return Upload.LIST_IGNORE;
