@@ -84,13 +84,26 @@ const MarketReportsAdmin = () => {
       setLoading(true);
       const formData = new FormData();
       
+      // Add all form values to FormData
       Object.entries(values).forEach(([key, value]) => {
-        if (value) formData.append(key, value);
+        if (value !== undefined && value !== null) {
+          // Handle array values (like file lists)
+          if (key === 'file' && value[0]?.originFileObj) {
+            formData.append('file', value[0].originFileObj);
+          } else {
+            formData.append(key, value);
+          }
+        }
       });
 
+      // Get auth token
+      const token = localStorage.getItem('myToken')?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
+      
+      // Make the request with proper headers
       await api.post('/api/market-reports', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         },
       });
       
@@ -462,13 +475,48 @@ const MarketReportsAdmin = () => {
                             name="file"
                             label={<span className="font-semibold text-gray-700">Report File</span>}
                             valuePropName="fileList"
-                            getValueFromEvent={(e) => e.fileList}
+                            getValueFromEvent={({ fileList }) => fileList}
                             rules={[{ required: true, message: 'Please upload a file' }]}
                           >
                             <Upload
                               name="file"
                               maxCount={1}
-                              beforeUpload={() => false}
+                              beforeUpload={(file) => {
+                                // Check file extension
+                                const fileExt = file.name.split('.').pop().toLowerCase();
+                                const allowedExtensions = ['pdf', 'xls', 'xlsx', 'xlsm', 'csv', 'jpeg', 'jpg', 'png'];
+                                
+                                // More permissive MIME type check
+                                const allowedTypes = [
+                                  'application/pdf',
+                                  'application/vnd.ms-excel',
+                                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                  'application/msword',
+                                  'application/vnd.ms-office',
+                                  'application/octet-stream',
+                                  'image/jpeg',
+                                  'image/png',
+                                  'image/jpg'
+                                ];
+                                
+                                const isAllowed = allowedTypes.includes(file.type) || 
+                                                allowedExtensions.includes(fileExt);
+                                
+                                if (!isAllowed) {
+                                  message.error('You can only upload PDF, Excel, or Image files!');
+                                  return Upload.LIST_IGNORE;
+                                }
+                                
+                                // Check file size (50MB)
+                                const isLt50M = file.size / 1024 / 1024 < 50;
+                                if (!isLt50M) {
+                                  message.error('File must be smaller than 50MB!');
+                                  return Upload.LIST_IGNORE;
+                                }
+                                
+                                console.log('Uploading file:', file.name, 'Type:', file.type, 'Size:', file.size);
+                                return false; // Don't upload, we'll handle it in onFinish
+                              }}
                               className="upload-container"
                             >
                               <Button 
