@@ -195,6 +195,7 @@ const InsightsPriceTrendsBanners = lazy(() => import("./Insight/admin/InsightsPr
 const Contacts = lazy(() => import("./Insight/components/Contacts"));
 const EnquiryManagement = lazy(() => import("./Insight/components/EnquiryManagement"));
 const MarketReportsAdmin = lazy(() => import("./Insight/pages/Admin/MarketReportsAdmin"));
+const AdminGuides = lazy(() => import("./Insight/pages/admin/AdminGuides"));
 
 
 
@@ -574,6 +575,10 @@ function App() {
                       <Route
                         path="insights/investment"
                         element={<LazyLoad><InvestmentInsights /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/guides"
+                        element={<LazyLoad><AdminGuides /></LazyLoad>}
                       />
                     </Route>
 
