@@ -360,6 +360,16 @@ const MarketReportsAdmin = () => {
                                 size="large"
                                 className="rounded-lg"
                                 suffixIcon={<EnvironmentOutlined />}
+                                autoFocus={false}
+                                onSelect={() => {
+                                  // Close dropdown after selection
+                                  setTimeout(() => {
+                                    const dropdowns = document.querySelectorAll('.ant-select-dropdown');
+                                    dropdowns.forEach(dropdown => {
+                                      dropdown.style.display = 'none';
+                                    });
+                                  }, 100);
+                                }}
                               >
                                 {cities.map(city => (
                                   <Option key={city} value={city}>{city}</Option>
@@ -376,6 +386,16 @@ const MarketReportsAdmin = () => {
                                 placeholder="Select period" 
                                 size="large"
                                 suffixIcon={<CalendarOutlined />}
+                                autoFocus={false}
+                                onSelect={() => {
+                                  // Close dropdown after selection
+                                  setTimeout(() => {
+                                    const dropdowns = document.querySelectorAll('.ant-select-dropdown');
+                                    dropdowns.forEach(dropdown => {
+                                      dropdown.style.display = 'none';
+                                    });
+                                  }, 100);
+                                }}
                               >
                                 <Option value="Q1 2023">Q1 2023</Option>
                                 <Option value="Q2 2023">Q2 2023</Option>
@@ -391,7 +411,20 @@ const MarketReportsAdmin = () => {
                             label={<span className="font-semibold text-gray-700">Report Type</span>}
                             rules={[{ required: true, message: 'Please select a report type' }]}
                           >
-                            <Select placeholder="Select report type" size="large">
+                            <Select 
+                              placeholder="Select report type" 
+                              size="large"
+                              autoFocus={false}
+                              onSelect={() => {
+                                // Close dropdown after selection
+                                setTimeout(() => {
+                                  const dropdowns = document.querySelectorAll('.ant-select-dropdown');
+                                  dropdowns.forEach(dropdown => {
+                                    dropdown.style.display = 'none';
+                                  });
+                                }, 100);
+                              }}
+                            >
                               <Option value="PDF">
                                 <Space>
                                   <FilePdfOutlined className="text-red-500" />
@@ -471,7 +504,7 @@ const MarketReportsAdmin = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style jsx global>{`
         .custom-table .ant-table-thead > tr > th {
           background: linear-gradient(to right, #f9fafb, #f3f4f6);
           font-weight: 600;
@@ -479,6 +512,27 @@ const MarketReportsAdmin = () => {
         }
         .custom-table .ant-table-tbody > tr:hover > td {
           background: #f9fafb;
+        }
+        
+        /* Fix for dropdown and bullet points */
+        .ant-select-dropdown {
+          z-index: 1100 !important;
+          pointer-events: auto !important;
+        }
+        .ant-select-item {
+          pointer-events: auto !important;
+        }
+        .ant-select-item-option {
+          z-index: 1101 !important;
+        }
+        .ant-select-item-option-active {
+          background-color: #f5f5f5 !important;
+        }
+        .ant-select-selector, .ant-select-selection-item {
+          pointer-events: auto !important;
+        }
+        .ant-select-arrow {
+          pointer-events: none !important;
         }
       `}</style>
     </div>
