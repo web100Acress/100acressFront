@@ -1,79 +1,129 @@
-import React, { useState, useEffect } from "react";
-import { TrendingUp, TrendingDown, BarChart3, PieChart, MapPin, Calendar, Filter, Download, ArrowRight, Building2, Home, DollarSign, Users } from "lucide-react";
+import React, { useState, useEffect, useMemo } from "react";
+import { FileText, FileSpreadsheet, Image as ImageIcon, Download as DownloadIcon, Calendar as CalendarIcon, MapPin, MapPin as MapPinIcon, Filter as FilterIcon, FileType, BarChart3, TrendingUp, ArrowRight, Download } from "lucide-react";
 import InsightsSidebar from "../components/InsightsSidebar";
 import Navbar from "../../aadharhomes/navbar/Navbar";
-import LuxuryFooter from "../../Components/Actual_Components/LuxuryFooter";
+import api from "../../config/apiClient";
+import { format } from 'date-fns';
 
 const MarketReports = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState("6months");
+  const [selectedPeriod, setSelectedPeriod] = useState("all");
   const [selectedCity, setSelectedCity] = useState("all");
-  const [marketData, setMarketData] = useState({
-    propertyPrices: [],
-    rentalYields: [],
-    marketTrends: [],
-    topPerformingAreas: [],
-  });
-
+  const [selectedType, setSelectedType] = useState("all");
+  const [marketReports, setMarketReports] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [cities, setCities] = useState([]);
+  const [types, setTypes] = useState([
+    { value: 'all', label: 'All Types' },
+    { value: 'PDF', label: 'PDF' },
+    { value: 'Excel', label: 'Excel' },
+    { value: 'Infographic', label: 'Infographic' }
+  ]);
+  
   const periods = [
-    { value: "1month", label: "Last Month" },
-    { value: "3months", label: "Last 3 Months" },
-    { value: "6months", label: "Last 6 Months" },
-    { value: "1year", label: "Last Year" },
+    { value: 'all', label: 'All Time' },
+    { value: 'Q1 2023', label: 'Q1 2023' },
+    { value: 'Q2 2023', label: 'Q2 2023' },
+    { value: 'Q3 2023', label: 'Q3 2023' },
+    { value: 'Q4 2023', label: 'Q4 2023' },
+    { value: 'Annual 2023', label: 'Annual 2023' },
+    { value: 'Q1 2024', label: 'Q1 2024' },
+    { value: 'Q2 2024', label: 'Q2 2024' },
+    { value: 'Q3 2024', label: 'Q3 2024' },
+    { value: 'Q4 2024', label: 'Q4 2024' },
+    { value: 'Annual 2024', label: 'Annual 2024' },
+    { value: 'Q1 2025', label: 'Q1 2025' },
+    { value: 'Q2 2025', label: 'Q2 2025' },
+    { value: 'Q3 2025', label: 'Q3 2025' },
+    { value: 'Q4 2025', label: 'Q4 2025' },
+    { value: 'Annual 2025', label: 'Annual 2025' }
   ];
 
-  const cities = [
-    { value: "all", label: "All Cities" },
-    { value: "delhi", label: "Delhi NCR" },
-    { value: "mumbai", label: "Mumbai" },
-    { value: "bangalore", label: "Bangalore" },
-    { value: "pune", label: "Pune" },
-    { value: "hyderabad", label: "Hyderabad" },
-  ];
-
-  const keyMetrics = [
-    { label: "Total Properties", value: "12,580", change: "+8.5%", icon: Building2, trend: "up" },
-    { label: "Avg Price/SqFt", value: "₹8,950", change: "+12.3%", icon: DollarSign, trend: "up" },
-    { label: "Active Listings", value: "2,150", change: "-5.2%", icon: Home, trend: "down" },
-    { label: "Market Activity", value: "85%", change: "+15.8%", icon: Users, trend: "up" },
-  ];
-
-  // Mock data for demonstration
+  // Fetch market reports
   useEffect(() => {
-    const mockData = {
-      propertyPrices: [
-        { month: "Jan", price: 8500, change: 2.1 },
-        { month: "Feb", price: 8700, change: 2.4 },
-        { month: "Mar", price: 8900, change: 2.3 },
-        { month: "Apr", price: 9200, change: 3.4 },
-        { month: "May", price: 9500, change: 3.3 },
-        { month: "Jun", price: 9800, change: 3.2 },
-      ],
-      rentalYields: [
-        { area: "Gurgaon", yield: 3.2, avgRent: 25000, avgPrice: 9500000 },
-        { area: "Noida", yield: 2.8, avgRent: 18000, avgPrice: 7700000 },
-        { area: "Delhi", yield: 2.5, avgRent: 22000, avgPrice: 10500000 },
-        { area: "Faridabad", yield: 3.8, avgRent: 12000, avgPrice: 3800000 },
-      ],
-      marketTrends: [
-        { trend: "Price Appreciation", percentage: 12.5, status: "up" },
-        { trend: "Rental Demand", percentage: 8.3, status: "up" },
-        { trend: "Inventory Levels", percentage: -15.2, status: "down" },
-        { trend: "Sales Volume", percentage: 22.1, status: "up" },
-      ],
-      topPerformingAreas: [
-        { area: "Dwarka Expressway", growth: 18.5, avgPrice: 12000000 },
-        { area: "New Gurgaon", growth: 15.2, avgPrice: 8500000 },
-        { area: "Greater Noida West", growth: 12.8, avgPrice: 4500000 },
-        { area: "Yamuna Expressway", growth: 11.3, avgPrice: 3800000 },
-      ],
+    const fetchMarketReports = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
+        const response = await api.get('/api/market-reports', {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        
+        const reports = response.data?.data || [];
+        setMarketReports(reports);
+        
+        // Extract unique cities from reports
+        const uniqueCities = [...new Set(reports.map(r => r.city).filter(Boolean))].sort();
+        setCities([
+          { value: 'all', label: 'All Cities' },
+          ...uniqueCities.map(city => ({
+            value: city.toLowerCase().replace(/\s+/g, '-'),
+            label: city
+          }))
+        ]);
+        
+      } catch (error) {
+        console.error('Error fetching market reports:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+          url: error.config?.url
+        });
+      } finally {
+        setLoading(false);
+      }
     };
-    setMarketData(mockData);
-  }, [selectedPeriod, selectedCity]);
+
+    fetchMarketReports();
+  }, []);
+  
+  // Filter reports based on selections
+  const filteredReports = useMemo(() => {
+    return marketReports.filter(report => {
+      const matchesCity = selectedCity === 'all' || 
+        report.city?.toLowerCase() === selectedCity.toLowerCase();
+      const matchesPeriod = selectedPeriod === 'all' || 
+        report.period === selectedPeriod;
+      const matchesType = selectedType === 'all' || 
+        report.type === selectedType;
+      
+      return matchesCity && matchesPeriod && matchesType;
+    });
+  }, [marketReports, selectedCity, selectedPeriod, selectedType]);
+
+  // Fetch projects to get cities (removed as we're getting cities from market reports)
+
+  // Get icon based on file type
+  const getFileIcon = (fileType) => {
+    if (!fileType) return <FileType className="w-5 h-5 text-gray-500" />;
+    
+    const type = fileType.toLowerCase();
+    if (type.includes('pdf')) return <FileText className="w-5 h-5 text-red-500" />;
+    if (type.includes('excel') || type.includes('spreadsheet')) return <FileSpreadsheet className="w-5 h-5 text-green-600" />;
+    if (type.includes('image')) return <ImageIcon className="w-5 h-5 text-blue-500" />;
+    return <FileType className="w-5 h-5 text-gray-500" />;
+  };
+
+  // Format file size
+  const formatFileSize = (bytes) => {
+    if (!bytes) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Set isMounted after component mounts
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Listen for sidebar state changes
-  React.useEffect(() => {
+  useEffect(() => {
+    if (!isMounted) return;
+    
     const checkSidebarState = () => {
       const sidebar = document.querySelector('aside[aria-label="Sidebar"]');
       if (sidebar) {
@@ -96,7 +146,40 @@ const MarketReports = () => {
 
     // Clean up
     return () => observer.disconnect();
-  }, []);
+  }, [isMounted]);
+
+  // Show loading state until component is mounted and data is loaded
+  if (!isMounted || loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br via-white to-blue-50">
+        <Navbar />
+        <div className="flex flex-col md:flex-row w-full min-h-[calc(100vh-4rem)]">
+          <div className="fixed md:sticky top-16 md:top-16 left-0 z-20 h-[calc(100vh-4rem)]">
+            <InsightsSidebar />
+          </div>
+          <div className="flex-1 p-8">
+            <div className="max-w-7xl mx-auto">
+              <div className="animate-pulse">
+                <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/4 mb-8"></div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="bg-white rounded-lg shadow p-6">
+                      <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/2 mb-6"></div>
+                      <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br via-white to-blue-50">
@@ -189,19 +272,41 @@ const MarketReports = () => {
             </div>
           </div>
 
-          {/* Main Content Area */}
-          <div className="max-w-7xl mx-auto w-full mt-18">
-            {/* Filters Section */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mb-8 sm:mb-12 md:mb-16 border border-white/50">
+          {/* Filters Section - Moved Up */}
+          <div className="max-w-7xl mx-auto w-full -mt-8 sm:-mt-12 md:-mt-16 relative z-20 px-4 sm:px-6">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mb-8 sm:mb-12 md:mb-16 shadow-xl border border-white/50">
               <div className="flex flex-col gap-4 sm:gap-6">
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600" />
-                  <h3 className="text-base sm:text-lg font-semibold text-slate-900">Market Filters</h3>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <FilterIcon className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600" />
+                    <h3 className="text-base sm:text-lg font-semibold text-slate-900">Market Reports</h3>
+                  </div>
+                  <span className="text-sm text-slate-500">
+                    {filteredReports.length} {filteredReports.length === 1 ? 'report' : 'reports'} found
+                  </span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full">
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1 sm:mb-2">
-                      <Calendar className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1" />
+                      <FileType className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1" />
+                      Report Type
+                    </label>
+                    <select
+                      value={selectedType}
+                      onChange={(e) => setSelectedType(e.target.value)}
+                      className="w-full border-2 border-slate-200 rounded-lg sm:rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                    >
+                      {types.map((type) => (
+                        <option key={type.value} value={type.value}>
+                          {type.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1 sm:mb-2">
+                      <CalendarIcon className="w-3 h-3 sm:w-4 sm:h-4 inline mr-1" />
                       Time Period
                     </label>
                     <select
@@ -235,12 +340,129 @@ const MarketReports = () => {
                     </select>
                   </div>
 
-                  <div className="flex items-end sm:col-span-2 lg:col-span-1">
-                    <button className="w-full px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg sm:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center">
-                      <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                      Generate Report
+                  <div className="flex items-end">
+                    <button 
+                      onClick={() => {
+                        setSelectedType('all');
+                        setSelectedPeriod('all');
+                        setSelectedCity('all');
+                      }}
+                      disabled={selectedType === 'all' && selectedPeriod === 'all' && selectedCity === 'all'}
+                      className={`w-full px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-lg sm:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center ${
+                        selectedType === 'all' && selectedPeriod === 'all' && selectedCity === 'all'
+                          ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                          : 'bg-white border-2 border-blue-500 text-blue-600 hover:bg-blue-50'
+                      }`}
+                    >
+                      Clear Filters
                     </button>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Reports Grid */}
+            {filteredReports.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredReports.map((report) => (
+                  <div key={report._id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+                    <div className="p-5">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center space-x-2">
+                          {getFileIcon(report.fileType)}
+                          <span className="text-sm font-medium text-gray-500 uppercase">
+                            {report.type || report.fileType?.split('/').pop()?.toUpperCase() || 'DOCUMENT'}
+                          </span>
+                        </div>
+                        {report.city && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {report.city}
+                          </span>
+                        )}
+                      </div>
+                      
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{report.title}</h3>
+                      
+                      {report.description && (
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                          {report.description}
+                        </p>
+                      )}
+                      
+                      <div className="flex items-center text-xs text-gray-500 space-x-3 mt-4 pt-3 border-t border-gray-100">
+                        {report.period && (
+                          <div className="flex items-center">
+                            <CalendarIcon className="w-3.5 h-3.5 mr-1 text-gray-400" />
+                            <span>{report.period}</span>
+                          </div>
+                        )}
+                        {report.fileSize && (
+                          <div className="text-xs text-gray-500">
+                            {formatFileSize(report.fileSize)}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="mt-4 pt-3 border-t border-gray-100">
+                        <a
+                          href={report.fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                          download
+                        >
+                          <DownloadIcon className="w-4 h-4 mr-2" />
+                          Download Report
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-2xl shadow-sm p-8 text-center border border-gray-100">
+                <FilterIcon className="w-12 h-12 mx-auto text-gray-300 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No reports found</h3>
+                <p className="text-gray-500 mb-4">
+                  {marketReports.length === 0 
+                    ? 'No market reports are currently available.' 
+                    : 'No reports match your current filters.'}
+                </p>
+                {(selectedType !== 'all' || selectedPeriod !== 'all' || selectedCity !== 'all') && (
+                  <button
+                    onClick={() => {
+                      setSelectedType('all');
+                      setSelectedPeriod('all');
+                      setSelectedCity('all');
+                    }}
+                    className="text-sm font-medium text-blue-600 hover:text-blue-500 hover:underline"
+                  >
+                    Clear all filters
+                  </button>
+                )}
+              </div>
+            )}
+            
+            {/* Admin CTA */}
+            <div className="mt-12 text-center">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100">
+                <div className="max-w-2xl mx-auto">
+                  <div className="flex justify-center mb-4">
+                    <div className="bg-blue-100 p-3 rounded-full">
+                      <BarChart3 className="w-6 h-6 text-blue-600" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Need more detailed reports?</h3>
+                  <p className="text-gray-600 mb-6">
+                    Access comprehensive market analytics and generate custom reports with our advanced tools.
+                  </p>
+                  <a
+                    href="/admin/insights/market-report-generator"
+                    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  >
+                    Go to Report Generator
+                    <ArrowRight className="ml-2 -mr-1 w-4 h-4" />
+                  </a>
                 </div>
               </div>
             </div>
