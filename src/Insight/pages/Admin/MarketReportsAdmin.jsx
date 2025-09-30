@@ -52,9 +52,10 @@ const MarketReportsAdmin = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
-      const response = await api.get('/market-reports', {
+      const response = await api.get('/api/market-reports', {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
+      console.log('Fetched reports:', response.data);
       setReports(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching reports:', {
@@ -84,36 +85,70 @@ const MarketReportsAdmin = () => {
       setLoading(true);
       const formData = new FormData();
       
+      console.log('Form values:', values);
+      
       // Add all form values to FormData
       Object.entries(values).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           // Handle array values (like file lists)
           if (key === 'file' && value[0]?.originFileObj) {
+            console.log('Appending file:', value[0].originFileObj);
             formData.append('file', value[0].originFileObj);
           } else {
+            console.log(`Appending ${key}:`, value);
             formData.append(key, value);
           }
         }
       });
 
+      // Log FormData contents
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ', pair[1]);
+      }
+
       // Get auth token
       const token = localStorage.getItem('myToken')?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
+      console.log('Using token:', token ? 'Token exists' : 'No token found');
       
       // Make the request with proper headers
-      await api.post('/api/market-reports', formData, {
+      const response = await api.post('/api/market-reports', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         },
+      }).catch(error => {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error('Response data:', error.response.data);
+          console.error('Response status:', error.response.status);
+          console.error('Response headers:', error.response.headers);
+          throw new Error(`Server responded with status ${error.response.status}: ${JSON.stringify(error.response.data)}`);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('No response received:', error.request);
+          throw new Error('No response received from server');
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.error('Error setting up request:', error.message);
+          throw error;
+        }
       });
       
+      console.log('Server response:', response.data);
       message.success('Market report added successfully');
       form.resetFields();
       fetchReports();
       setActiveTab('1');
     } catch (error) {
-      console.error('Error adding report:', error);
-      message.error('Failed to add market report');
+      console.error('Error adding report:', {
+        message: error.message,
+        stack: error.stack,
+        response: error.response?.data,
+        status: error.response?.status,
+        headers: error.response?.headers
+      });
+      message.error(error.message || 'Failed to add market report');
     } finally {
       setLoading(false);
     }
@@ -121,12 +156,19 @@ const MarketReportsAdmin = () => {
 
   const handleDelete = async (id) => {
     try {
-      await api.delete(`/api/market-reports/${id}`);
+      const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
+      await api.delete(`/api/market-reports/${id}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
       message.success('Report deleted successfully');
-      fetchReports();
+      await fetchReports();
     } catch (error) {
-      console.error('Error deleting report:', error);
-      message.error('Failed to delete report');
+      console.error('Error deleting report:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      message.error(error.response?.data?.message || 'Failed to delete report');
     }
   };
 

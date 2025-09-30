@@ -165,7 +165,7 @@ export default function AdminInsightsSidebar() {
               {/* Admin Management Section - Only the 3 requested items */}
               <div className="space-y-1 mb-4">
                 {item('/Admin/insights', 'Insights Dashboard', icons.insights)}
-                {item('/Admin/insights/market-reports', 'Market Reports', icons.trends)}
+                {item('/admin/insights/market-reports', 'Market Reports', icons.trends)}
                 {item('/Admin/insights/InsightsPriceTrendsBanners', 'Price Trends Banners', icons.trends)}
                 {item('/Admin/Insight/EnquiryManagement', 'Enquiries', icons.enquiry)}
                 {item('/Admin/insights/contacts', 'Contacts', icons.contact)}
@@ -206,18 +206,16 @@ export default function AdminInsightsSidebar() {
             )}
           </div>
 
-          {/* Enhanced menu */}
           <nav className="p-3 overflow-y-auto flex-1">
             <div className="space-y-1">
               {/* Admin items - Only the 3 requested items */}
               {item('/Admin/insights', 'Insights Dashboard', icons.insights, !collapsed)}
-              {item('/Admin/insights/market-reports', 'Market Reports', icons.trends)}
-              {item('/Admin/insights/InsightsPriceTrendsBanners', 'Price Trends Banners', icons.trends, !collapsed)}
+              {item('/admin/insights/market-report-generator', 'Market Reports', icons.trends, !collapsed)}
+              {item('/Admin/insights/InsightsPriceTrendsBanners', 'Price trends Banners', icons.trends, !collapsed)}
               {item('/Admin/insights/EnquiryManagement', 'Enquiries', icons.enquiry, !collapsed)}
               {item('/Admin/insights/contacts', 'Contacts', icons.contact, !collapsed)}
             </div>
           </nav>
-
           {/* Enhanced footer */}
           <div className="border-t border-gray-100 p-3">
             <button

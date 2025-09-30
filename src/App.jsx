@@ -197,6 +197,7 @@ const EnquiryManagement = lazy(() => import("./Insight/components/EnquiryManagem
 const MarketReportsAdmin = lazy(() => import("./Insight/pages/Admin/MarketReportsAdmin"));
 
 
+
 // Initialize QueryClient
 const queryClient = new QueryClient();
 
@@ -568,7 +569,7 @@ function App() {
                       />
                       <Route
                         path="insights/market-reports"
-                        element={<LazyLoad><MarketReportsAdmin /></LazyLoad>}
+                        element={<LazyLoad><MarketReports /></LazyLoad>}
                       />
                       <Route
                         path="insights/investment"
@@ -576,6 +577,9 @@ function App() {
                       />
                     </Route>
 
+                    {/* Admin route for Market Reports */}
+                    <Route path="/admin/insights/market-report-generator" element={<LazyLoad><MarketReportsAdmin /></LazyLoad>} />
+                    
                     {/* Blog route only user with role Blog will be able to login */}
                     <Route path="/seo/" element={<SeoPrivateRoute />}>
                       <Route path="blogs" element={<BlogManagementSidebar />} >
