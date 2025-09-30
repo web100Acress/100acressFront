@@ -389,11 +389,11 @@ export default function InsightsSidebar() {
 
               <div className="h-px bg-gray-200 my-3"></div>
 
-              {/* {item('/admin/insights/market-reports', 'Market Reports', icons.market, !collapsed, null, true)}
-              {item('/admin/insights/investment', 'Investment Insights', icons.investment, !collapsed)}
-              {item('/admin/insights/area-analytics', 'Area Analytics', icons.area, !collapsed)} */}
+              {item('/admin/insights/market-reports', 'Market Reports', icons.market, !collapsed, null, true)}
+              {/* {item('/admin/insights/investment', 'Investment Insights', icons.investment, !collapsed)} */}
+              {/* {item('/admin/insights/area-analytics', 'Area Analytics', icons.area, !collapsed)} */}
               
-              {/* <div className="h-px bg-gray-200 my-3"></div> */}
+               <div className="h-px bg-gray-200 my-3"></div>
               
               {/* {item('/blog-insights', 'Blog', icons.blog, !collapsed, null, true)}
               {item('/insights/news', 'News', icons.news, !collapsed, collapsed ? '5' : '5+')}
