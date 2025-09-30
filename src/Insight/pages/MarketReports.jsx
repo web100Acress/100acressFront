@@ -273,7 +273,7 @@ const MarketReports = () => {
           </div>
 
           {/* Filters Section - Moved Up */}
-          <div className="max-w-7xl mx-auto w-full -mt-8 sm:-mt-12 md:-mt-16 relative z-20 px-4 sm:px-6">
+          <div id="market-reports-section" className="max-w-7xl mx-auto w-full -mt-8 sm:-mt-12 md:-mt-16 relative z-20 px-4 sm:px-6">
             <div className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mb-8 sm:mb-12 md:mb-16 shadow-xl border border-white/50">
               <div className="flex flex-col gap-4 sm:gap-6">
                 <div className="flex items-center justify-between">
@@ -456,13 +456,18 @@ const MarketReports = () => {
                   <p className="text-gray-600 mb-6">
                     Access comprehensive market analytics and generate custom reports with our advanced tools.
                   </p>
-                  <a
-                    href="/admin/insights/market-report-generator"
-                    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  <button
+                    onClick={() => {
+                      const element = document.getElementById('market-reports-section');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }}
+                    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors cursor-pointer"
                   >
                     Go to Report Generator
                     <ArrowRight className="ml-2 -mr-1 w-4 h-4" />
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
