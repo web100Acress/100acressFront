@@ -395,9 +395,9 @@ export default function InsightsSidebar() {
               
                <div className="h-px bg-gray-200 my-3"></div>
               
-              {/* {item('/blog-insights', 'Blog', icons.blog, !collapsed, null, true)}
-              {item('/insights/news', 'News', icons.news, !collapsed, collapsed ? '5' : '5+')}
-              {item('/insights/guides', 'Guides', icons.guides, !collapsed)} */}
+              {/* {item('/blog-insights', 'Blog', icons.blog, !collapsed, null, true)} */}
+              {/* {item('/insights/news', 'News', icons.news, !collapsed, collapsed ? '5' : '5+')} */}
+              {item('/insights/guides', 'Guides', icons.guides, !collapsed)}
               
               {/* <div className="h-px bg-gray-200 my-3"></div> */}
               
