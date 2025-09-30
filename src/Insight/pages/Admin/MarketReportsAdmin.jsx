@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, Button, Table, Form, Input, Select, Tabs, Card, message, Badge, Tag, Space, Tooltip, Empty } from 'antd';
+import { Upload, Button, Table, Form, Input, Select, Tabs, Card, message, Badge, Tag, Space, Tooltip, Empty, ConfigProvider } from 'antd';
 import { UploadOutlined, PlusOutlined, DeleteOutlined, DownloadOutlined, FileTextOutlined, BarChartOutlined, CalendarOutlined, EnvironmentOutlined, FileExcelOutlined, FilePdfOutlined, FileImageOutlined } from '@ant-design/icons';
+import { theme } from 'antd';
 import { Link } from 'react-router-dom';
 import AdminInsightsSidebar from '../../components/AdminInsightsSidebar';
 import api from '../../../config/apiClient';
@@ -11,6 +12,20 @@ const { TextArea } = Input;
 const MarketReportsAdmin = () => {
   const [form] = Form.useForm();
   const [reports, setReports] = useState([]);
+  const { token } = theme.useToken();
+
+  // Custom theme configuration for Select components
+  const selectTheme = {
+    components: {
+      Select: {
+        zIndexPopup: 1100,
+        borderRadius: 8,
+        controlItemBgHover: token.controlItemBgHover,
+        optionSelectedBg: token.controlItemBgActive,
+        optionActiveBg: token.controlItemBgActive,
+      },
+    },
+  };
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('1');
   const [cities, setCities] = useState([]);
@@ -325,11 +340,12 @@ const MarketReportsAdmin = () => {
                           <p className="text-gray-600">Fill in the details below to add a new market report to your collection.</p>
                         </div>
 
+                        <ConfigProvider theme={selectTheme}>
                         <Form
                           form={form}
                           layout="vertical"
                           onFinish={onFinish}
-                          className="space-y-1"
+                          className="space-y-4"
                         >
                           <Form.Item
                             name="title"
@@ -353,15 +369,20 @@ const MarketReportsAdmin = () => {
                               <Select 
                                 placeholder="Select city" 
                                 size="large"
-                                className="rounded-lg"
+                                className="w-full rounded-lg"
                                 suffixIcon={<EnvironmentOutlined />}
+                                classNames={{
+                                  popup: 'select-dropdown'
+                                }}
+                                getPopupContainer={trigger => trigger.parentNode}
                               >
                                 {cities.map(city => (
-                                  <Option key={city} value={city}>{city}</Option>
+                                  <Option key={city} value={city} className="select-option">
+                                    <span className="block py-1">{city}</span>
+                                  </Option>
                                 ))}
                               </Select>
                             </Form.Item>
-
                             <Form.Item
                               name="period"
                               label={<span className="font-semibold text-gray-700">Report Period</span>}
@@ -370,23 +391,36 @@ const MarketReportsAdmin = () => {
                               <Select 
                                 placeholder="Select period" 
                                 size="large"
+                                className="w-full rounded-lg"
                                 suffixIcon={<CalendarOutlined />}
+                                classNames={{
+                                  popup: 'select-dropdown',
+                                  option: 'select-option'
+                                }}
+                                getPopupContainer={trigger => trigger.parentNode}
                               >
-                                <Option value="Q1 2023">Q1 2023</Option>
-                                <Option value="Q2 2023">Q2 2023</Option>
-                                <Option value="Q3 2023">Q3 2023</Option>
-                                <Option value="Q4 2023">Q4 2023</Option>
-                                <Option value="Annual 2023">Annual 2023</Option>
+                                {['Q1 2023', 'Q2 2023', 'Q3 2023', 'Q4 2023', 'Annual 2023'].map(period => (
+                                  <Option key={period} value={period} className="select-option">
+                                    <span className="block py-1">{period}</span>
+                                  </Option>
+                                ))}
                               </Select>
                             </Form.Item>
                           </div>
-
                           <Form.Item
                             name="type"
                             label={<span className="font-semibold text-gray-700">Report Type</span>}
                             rules={[{ required: true, message: 'Please select a report type' }]}
                           >
-                            <Select placeholder="Select report type" size="large">
+                            <Select 
+                              placeholder="Select report type" 
+                              size="large"
+                              className="w-full"
+                              classNames={{
+                                popup: 'select-dropdown'
+                              }}
+                              getPopupContainer={trigger => trigger.parentNode}
+                            >
                               <Option value="PDF">
                                 <Space>
                                   <FilePdfOutlined className="text-red-500" />
@@ -498,6 +532,7 @@ const MarketReportsAdmin = () => {
                             </Button>
                           </Form.Item>
                         </Form>
+                        </ConfigProvider>
                       </div>
                     </div>
                   ),
@@ -516,6 +551,25 @@ const MarketReportsAdmin = () => {
         }
         .custom-table .ant-table-tbody > tr:hover > td {
           background: #f9fafb;
+        }
+        .select-dropdown {
+          z-index: 1100 !important;
+          border-radius: 8px;
+          box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        
+        .select-dropdown .ant-select-item {
+          padding: 8px 16px;
+          transition: background-color 0.2s ease;
+        }
+        
+        .select-dropdown .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+          background-color: #f3f4f6;
+        }
+        
+        .select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+          background-color: #eef2ff;
+          font-weight: 500;
         }
       `}</style>
     </div>
