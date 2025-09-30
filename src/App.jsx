@@ -194,6 +194,8 @@ const InsightsManagement = lazy(() => import("./Insight/admin/InsightsManagement
 const InsightsPriceTrendsBanners = lazy(() => import("./Insight/admin/InsightsPriceTrendsBanners"));
 const Contacts = lazy(() => import("./Insight/components/Contacts"));
 const EnquiryManagement = lazy(() => import("./Insight/components/EnquiryManagement"));
+const MarketReportsAdmin = lazy(() => import("./Insight/pages/Admin/MarketReportsAdmin"));
+
 
 // Initialize QueryClient
 const queryClient = new QueryClient();
@@ -566,7 +568,7 @@ function App() {
                       />
                       <Route
                         path="insights/market-reports"
-                        element={<LazyLoad><MarketReports /></LazyLoad>}
+                        element={<LazyLoad><MarketReportsAdmin /></LazyLoad>}
                       />
                       <Route
                         path="insights/investment"
