@@ -50,13 +50,19 @@ const MarketReports = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await api.get("/api/project/view-all");
+        const token = localStorage.getItem("myToken")?.replace(/^"/, '').replace(/"$/, '').replace(/^Bearer\s+/i, '') || '';
+        const response = await api.get("/project/viewAll/data?sort=-createdAt", {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
         
-        if (response.data && Array.isArray(response.data)) {
-          setProjects(response.data);
-          console.log('Fetched projects:', response.data);
+        const payload = response.data;
+        const projectsData = Array.isArray(payload?.data) ? payload.data : [];
+        
+        if (Array.isArray(projectsData)) {
+          setProjects(projectsData);
+          console.log('Fetched projects:', projectsData);
         } else {
-          console.error('Invalid response format:', response.data);
+          console.error('Invalid response format:', payload);
         }
       } catch (error) {
         console.error("Error fetching projects:", {
