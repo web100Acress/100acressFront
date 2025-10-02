@@ -1,22 +1,18 @@
+import api from '../config/apiClient';
+
 // Utility to get project order data from backend API or localStorage fallback
 export const getProjectOrderData = async () => {
   try {
     console.log('🌐 Fetching project orders from API...');
-    const apiBase = import.meta.env.VITE_API_BASE || 'http://localhost:3500';
-    const apiUrl = `${apiBase}/api/project-orders`;
-    console.log('🌐 API URL:', apiUrl);
-    // First try to fetch from backend API
-    const response = await fetch(apiUrl);
+    // Use the configured api client which has proper CORS and auth setup
+    const response = await api.get('/api/project-orders');
     console.log('📡 API Response status:', response.status);
-    if (response.ok) {
-      const data = await response.json();
-      console.log('📡 API Response data:', data);
-      if (data.success && data.data) {
-        // Cache the data in localStorage for offline use
-        localStorage.setItem('projectOrders', JSON.stringify(data.data));
-        console.log('✅ Project orders fetched from API and cached');
-        return data.data;
-      }
+    
+    if (response.data && response.data.success && response.data.data) {
+      // Cache the data in localStorage for offline use
+      localStorage.setItem('projectOrders', JSON.stringify(response.data.data));
+      console.log('✅ Project orders fetched from API and cached');
+      return response.data.data;
     }
   } catch (error) {
     console.error('❌ Error fetching project orders from API:', error);
