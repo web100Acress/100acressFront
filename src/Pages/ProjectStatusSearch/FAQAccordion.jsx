@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function FAQAccordion({ projectStatus }) {
+export default function FAQAccordion({ projectStatus, customFAQs = null }) {
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggleFAQ = (index) => {
@@ -98,7 +98,7 @@ export default function FAQAccordion({ projectStatus }) {
     ]
   };
 
-  const currentFAQs = faqs[projectStatus] || [];
+  const currentFAQs = customFAQs || faqs[projectStatus] || [];
 
   return (
     <div className="space-y-0">

@@ -53,3 +53,4 @@ export const logTestingInfo = () => {
 if (typeof window !== 'undefined' && LOCAL_TESTING_CONFIG.isLocalhost()) {
   logTestingInfo();
 }
+

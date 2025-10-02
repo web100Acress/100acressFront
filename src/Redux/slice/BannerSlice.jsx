@@ -5,13 +5,29 @@ export const fetchActiveBanners = createAsyncThunk(
   'banner/fetchActiveBanners',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/banners/active`);
+      // Use local API for testing, production API for live
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const apiBase = isLocalhost 
+        ? (import.meta.env.VITE_API_BASE || 'http://localhost:3500')
+        : 'https://api.100acress.com';
+      
+      console.log('BannerSlice: fetchActiveBanners - API Base:', apiBase);
+      console.log('BannerSlice: fetchActiveBanners - Full URL:', `${apiBase}/api/banners/active`);
+      
+      const response = await fetch(`${apiBase}/api/banners/active`);
+      console.log('BannerSlice: fetchActiveBanners - Response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch banners');
+        const errorText = await response.text();
+        console.error('BannerSlice: fetchActiveBanners - Error response:', errorText);
+        throw new Error(`Failed to fetch banners: ${response.status} ${errorText}`);
       }
+      
       const data = await response.json();
+      console.log('BannerSlice: fetchActiveBanners - Response data:', data);
       return data.banners || [];
     } catch (error) {
+      console.error('BannerSlice: fetchActiveBanners - Error:', error);
       return rejectWithValue(error.message);
     }
   }

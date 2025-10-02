@@ -14,6 +14,7 @@ const DynamicHeroBanner = () => {
 
   // Helper function to filter hero banners
   const filterHeroBanners = (banners) => {
+    console.log('Filtering banners:', banners);
     return banners.filter(banner => {
       const hasSmallBannerProperties = banner.size || 
                                        banner.position || 
@@ -24,6 +25,18 @@ const DynamicHeroBanner = () => {
       
       const hasHeroBannerStructure = banner.image && 
                                      (banner.image.url || banner.image.cdn_url);
+      
+      console.log(`Banner ${banner._id}:`, {
+        hasSmallBannerProperties,
+        hasHeroBannerStructure,
+        image: banner.image,
+        size: banner.size,
+        position: banner.position,
+        desktopImage: banner.desktopImage,
+        mobileImage: banner.mobileImage,
+        type: banner.type,
+        bannerType: banner.bannerType
+      });
       
       return hasHeroBannerStructure && !hasSmallBannerProperties;
     });
@@ -103,7 +116,19 @@ const DynamicHeroBanner = () => {
     return (
       <HeroWrapper>
         <Link to="/developers/signature-global/" className="block relative w-full group" target="_self" aria-label="Signature Global">
-          <div className="hero-strip-99-default transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer" aria-hidden="true" style={{ backfaceVisibility: 'hidden' }} />
+          <div 
+            className="hero-strip-99-default transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer" 
+            aria-hidden="true" 
+            style={{ 
+              backfaceVisibility: 'hidden',
+              backgroundImage: 'url("/Images/Website-Hero-Image.jpg")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              height: '400px',
+              width: '100%'
+            }} 
+          />
         </Link>
       </HeroWrapper>
     );
@@ -149,6 +174,40 @@ const DynamicHeroBanner = () => {
   console.log('Hero banner count:', heroBanners.length);
   console.log('Loading state:', loading);
   console.log('Error state:', error);
+  
+  // If no hero banners but we have banners, show the first one as fallback
+  if (heroBanners.length === 0 && activeBanners.length > 0) {
+    console.log('No hero banners found, using first banner as fallback');
+    const fallbackBanner = activeBanners[0];
+    const imageUrl = fallbackBanner.image?.cdn_url || fallbackBanner.image?.url || fallbackBanner.cdn_url || fallbackBanner.imageUrl;
+    
+    return (
+      <HeroWrapper>
+        <div className="relative w-full">
+          <Link
+            to={fallbackBanner.slug ? `https://www.100acress.com/${fallbackBanner.slug}` : (fallbackBanner.link || "/developers/signature-global/")}
+            className="block relative w-full group"
+            target={(fallbackBanner.slug || fallbackBanner.link)?.startsWith('http') ? '_blank' : '_self'}
+            aria-label={fallbackBanner.title}
+          >
+            <div 
+              className="hero-strip-99-dynamic transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer"
+              style={{ 
+                backfaceVisibility: 'hidden',
+                backgroundImage: imageUrl ? `url("${imageUrl}")` : 'url("/Images/Website-Hero-Image.jpg")',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                height: '400px',
+                width: '100%'
+              }}
+              aria-hidden="true"
+            />
+          </Link>
+        </div>
+      </HeroWrapper>
+    );
+  }
   
   return (
     <HeroWrapper>
