@@ -13,7 +13,7 @@ import CenterLogo from "./CenterLogo";
 import RightSection from "./RightSection";
 import SearchBarOverlay from "./SearchBarOverlay";
 import MegaMenu from "./MegaMenu";
-import InsightsMega from "./InsightsMega";
+import InsightsMega from "../../Insight/pages/InsightsMega";
 // import CityMega from "./CityMega.jsx";
 // import BudgetMega from "./BudgetMega.jsx";
 // import StatusMega from "./StatusMega.jsx";

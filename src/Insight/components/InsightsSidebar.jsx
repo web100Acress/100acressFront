@@ -179,11 +179,31 @@ export default function InsightsSidebar() {
         <polyline points="6,9 12,15 18,9"/>
       </svg>
     ),
-    collapse: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-        <polyline points="15,18 9,12 15,6"/>
+    market: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+        <path d="M21 21V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"/>
+        <path d="M3 21h18"/>
+        <path d="M7 21V7"/>
+        <path d="M11 21V7"/>
+        <path d="M15 21V7"/>
+        <path d="M19 21V7"/>
+        <path d="M3 15h18"/>
+        <path d="M3 11h18"/>
       </svg>
-    )
+    ),
+    investment: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+        <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+        <path d="M12 8v8"/>
+        <path d="M8 12h8"/>
+      </svg>
+    ),
+    area: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+    ),
   };
 
   const item = (to, label, icon, showLabel = true, badge = null, isNew = false) => {
@@ -303,8 +323,11 @@ export default function InsightsSidebar() {
               {sectionHeader('Insights', expandedSections.insights, () => toggleSection('insights'))}
               {expandedSections.insights && (
                 <div className="space-y-1 mb-4">
-                  {item('/analytics', 'Property Insights', icons.property)}
+                  {item('/', 'Property Insights', icons.property)}
                   {item('/analytics/price-trends', 'Price Trends', icons.trends)}
+                  {item('/admin/insights/market-reports', 'Market Reports', icons.market, true, null, true)}
+                  {item('/admin/insights/investment', 'Investment Insights', icons.investment)}
+                  {item('/admin/insights/area-analytics', 'Area Analytics', icons.area)}
                 </div>
               )}
 
@@ -361,19 +384,25 @@ export default function InsightsSidebar() {
           <nav className="p-3 overflow-y-auto flex-1">
             <div className="space-y-1">
               {/* Quick access items */}
-              {item('/analytics', 'Property Insights', icons.property, !collapsed)}
+              {item('/property-market-trends/', 'Property Insights', icons.property, !collapsed)}
               {item('/analytics/price-trends', 'Price Trends', icons.trends, !collapsed)}
-              
+
               <div className="h-px bg-gray-200 my-3"></div>
+              {item('/admin/insights/market-reports', 'Market Reports', icons.trends, !collapsed)}
+             
+              {item('/admin/insights/investment', 'Investment Insights', icons.investment, !collapsed)}
+              {/* {item('/admin/insights/area-analytics', 'Area Analytics', icons.area, !collapsed)} */}
               
-              {item('/blog-insights', 'Blog', icons.blog, !collapsed, null, true)}
-              {item('/insights/news', 'News', icons.news, !collapsed, collapsed ? '5' : '5+')}
+               <div className="h-px bg-gray-200 my-3"></div>
+              
+              {/* {item('/blog-insights', 'Blog', icons.blog, !collapsed, null, true)} */}
+              {/* {item('/insights/news', 'News', icons.news, !collapsed, collapsed ? '5' : '5+')} */}
               {item('/insights/guides', 'Guides', icons.guides, !collapsed)}
               
-              <div className="h-px bg-gray-200 my-3"></div>
+              {/* <div className="h-px bg-gray-200 my-3"></div> */}
               
-              {item('/emi-calculator', 'EMI Calculator', icons.calculator, !collapsed)}
-              {item('/loan-eligibility', 'Loan Eligibility', icons.loan, !collapsed)}
+              {/* {item('/emi-calculator', 'EMI Calculator', icons.calculator, !collapsed)}
+              {item('/loan-eligibility', 'Loan Eligibility', icons.loan, !collapsed)} */}
             </div>
           </nav>
 

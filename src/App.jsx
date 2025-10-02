@@ -126,10 +126,12 @@ const GlobalBudgetPrice = lazy(() => import("./Pages/GlobalBudgetPrice"));
 const PriceTrends = lazy(() => import("./Insight/pages/PriceTrends"));
 const CityProjects = lazy(() => import("./Pages/ProjectCities/CityProjects"));
 // Analytics pages (MVP scaffold)
+const MarketReports = lazy(() => import("./Insight/pages/MarketReports"));
+const AreaAnalytics = lazy(() => import("./Insight/pages/AreaAnalytics"));
+const AnalyticsHome = lazy(() => import("./Insight/pages/AnalyticsHome"));
 const MarketAnalytics = lazy(() => import("./Insight/pages/MarketAnalytics"));
 const LocationIntelligence = lazy(() => import("./Insight/pages/LocationIntelligence"));
 const InvestmentInsights = lazy(() => import("./Insight/pages/InvestmentInsights"));
-const AnalyticsHome = lazy(() => import("./Insight/pages/AnalyticsHome"));
 const LoanEligibility = lazy(() => import("./Insight/pages/LoanEligibility"));
 
 // Admin components (already lazy loaded)
@@ -175,7 +177,8 @@ const JobPostingEdit = lazy(() => import("./AdminPage/JobPostingEdit"));
 const InsertProject = lazy(() => import("./AdminPage/InsertProject"));
 const AllListedProperties = lazy(() => import("./AdminPage/AllListedProperties"));
 const BlogViewAdmin = lazy(() => import("./AdminPage/BlogViewAdmin"));
-const BlogEnquiries = lazy(() => import("./AdminPage/BlogEnquiries"));
+// const BlogEnquiries = lazy(() => import("./AdminPage/BlogEnquiries"));
+const OtherEnquiries = lazy(() => import("./AdminPage/OtherEnquiries"));
 const SeoPrivateRoute = lazy(() => import("./Components/Blog_Components/SeoPrivateRoute"));
 const BlogManagement = lazy(() => import("./Components/Blog_Components/BlogManagement"));
 const BlogDashboard = lazy(() => import("./Components/Blog_Components/BlogDashboard"));
@@ -189,7 +192,12 @@ const InsightsNews = lazy(() => import("./Insight/pages/InsightsNews"));
 const InsightsGuides = lazy(() => import("./Insight/pages/InsightsGuides"));
 const InsightsManagement = lazy(() => import("./Insight/admin/InsightsManagement"));
 const InsightsPriceTrendsBanners = lazy(() => import("./Insight/admin/InsightsPriceTrendsBanners"));
-const InsightsPropertyInsightsBanners = lazy(() => import("./Insight/admin/InsightsPropertyInsightsBanners"));
+const Contacts = lazy(() => import("./Insight/components/Contacts"));
+const EnquiryManagement = lazy(() => import("./Insight/components/EnquiryManagement"));
+const MarketReportsAdmin = lazy(() => import("./Insight/pages/Admin/MarketReportsAdmin"));
+const AdminGuides = lazy(() => import("./Insight/pages/admin/AdminGuides"));
+
+
 
 // Initialize QueryClient
 const queryClient = new QueryClient();
@@ -368,7 +376,7 @@ function App() {
                   <Route path="/qr-generator" element={<QRGeneratorPage />} />
                       <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
                       {/* Analytics (public) */}
-                      <Route path="/analytics" element={<AnalyticsHome />} />
+                      <Route path="/property-market-trends/" element={<AnalyticsHome />} />
                       <Route path="/analytics/price-trends" element={<PriceTrends />} />
                       <Route path="/analytics/market" element={<MarketAnalytics />} />
                       <Route path="/analytics/location" element={<LocationIntelligence />} />
@@ -475,7 +483,8 @@ function App() {
                       <Route path="contact" element={<LazyLoad><AdminContact /></LazyLoad>} />
                       <Route path="editProject" element={<LazyLoad><EditProject /></LazyLoad>} />
                       <Route path="enquiries" element={<LazyLoad><Enquiries /></LazyLoad>} />
-                      <Route path="blog-enquiries" element={<LazyLoad><BlogEnquiries /></LazyLoad>} />
+                      {/* <Route path="blog-enquiries" element={<LazyLoad><BlogEnquiries /></LazyLoad>} /> */}
+                      <Route path="OtherEnquiries" element={<LazyLoad><OtherEnquiries /></LazyLoad>} />
                       <Route path="header" element={<LazyLoad><Header /></LazyLoad>} />
                       <Route path="Projects/property" element={<LazyLoad><Projects /></LazyLoad>} />
                       <Route path="resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />
@@ -551,15 +560,34 @@ function App() {
                         element={<LazyLoad><InsightsManagement /></LazyLoad>}
                       />
                       <Route
-                        path="insights/price-trends"
+                        path="insights/InsightsPriceTrendsBanners"
                         element={<LazyLoad><InsightsPriceTrendsBanners /></LazyLoad>}
                       />
                       <Route
-                        path="insights/property-insights"
-                        element={<LazyLoad><InsightsPropertyInsightsBanners /></LazyLoad>}
+                        path="insights/EnquiryManagement"
+                        element={<LazyLoad><EnquiryManagement /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/contacts"
+                        element={<LazyLoad><Contacts /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/market-reports"
+                        element={<LazyLoad><MarketReports /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/investment"
+                        element={<LazyLoad><InvestmentInsights /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/guides"
+                        element={<LazyLoad><AdminGuides /></LazyLoad>}
                       />
                     </Route>
 
+                    {/* Admin route for Market Reports */}
+                    <Route path="/admin/insights/market-report-generator" element={<LazyLoad><MarketReportsAdmin /></LazyLoad>} />
+                    
                     {/* Blog route only user with role Blog will be able to login */}
                     <Route path="/seo/" element={<SeoPrivateRoute />}>
                       <Route path="blogs" element={<BlogManagementSidebar />} >

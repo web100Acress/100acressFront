@@ -459,7 +459,7 @@ const Home = () => {
     </div>
 
     {/* SearchBar should NOT be blurred */}
-    <div className="relative w-full max-w-6xl mx-auto px-4 pb-1 py-8 -mt-20 z-10">
+    <div className="relative w-full max-w-6xl mx-auto px-4 pb-1 py-8 z-10" style={{ marginTop: '0px' }}>
       <SearchBar />
     </div>
 
@@ -538,7 +538,15 @@ const Home = () => {
                   />
                   <div className="mt-0 flex justify-center">
                     <button
-                      onClick={() => { setAuthDefaultView('register'); setAuthOpen(true); }}
+                      onClick={() => {
+                        const token = localStorage.getItem("myToken");
+                        if (token) {
+                          window.location.href = "/postproperty";
+                        } else {
+                          setAuthDefaultView('login');
+                          setAuthOpen(true);
+                        }
+                      }}
                       className="inline-flex px-5 md:px-6 py-2.5 md:py-3 rounded-xl bg-red-600 text-white text-xs md:text-sm font-semibold shadow hover:bg-red-700"
                     >
                       Post Property FREE

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function PriceTrendsCompare({
   duration,
@@ -7,9 +7,10 @@ export default function PriceTrendsCompare({
   seriesLoading,
   selectedCities,
   setCompareMode,
-  cityImages,
+  cityImages = {},
 }) {
   const hasSeries = seriesMap && Object.keys(seriesMap).length > 0;
+  const [imageErrors, setImageErrors] = useState({});
   
   const chartColors = [
     "#ef4444", "#0ea5e9", "#10b981", "#f59e0b", "#8b5cf6", 
@@ -18,48 +19,6 @@ export default function PriceTrendsCompare({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
-      {/* Hero Banner Section */}
-      <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[65vh] lg:h-[70vh] overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0">
-          <img 
-            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1973&q=80"
-            alt="Real Estate Analytics"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60"></div>
-        </div>
-        
-        {/* Content */}
-        <div className="relative z-10 flex items-center justify-center h-full px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 sm:mb-6 leading-tight">
-              Compare Property Trends
-              <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Across Multiple Cities
-              </span>
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed">
-              Analyze and compare real-time property price trends, rental yields, and market performance
-            </p>
-            
-            {/* Selected Cities Display */}
-            <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-2xl max-w-4xl mx-auto">
-              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-                {selectedCities.map((city, index) => (
-                  <div key={city} className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-200">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
-                      {index + 1}
-                    </div>
-                    <span className="text-gray-800 font-semibold">{city}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div className="w-full px-4 sm:px-6 lg:px-8 py-8 pl-4 md:pl-[276px] lg:pl-[276px] xl:pl-[276px]">
         {/* Enhanced Header */}
         <header className="mb-8 lg:mb-12">
@@ -79,7 +38,7 @@ export default function PriceTrendsCompare({
               Close Comparison
             </button>
           </div>
-      </header>
+        </header>
 
         {/* Enhanced Chart Section */}
         <section className="bg-white border-2 border-gray-200 rounded-3xl p-8 shadow-2xl mb-8">
@@ -143,11 +102,20 @@ export default function PriceTrendsCompare({
                   <div className="flex items-center gap-4 mb-4">
                     <div className="relative">
                       <span className="inline-flex w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg ring-4 ring-white">
-                        <img 
-                          alt={cname} 
-                          src={cityImages[cname] || 'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=300&q=80'} 
-                          className="w-full h-full object-cover" 
-                        />
+                        {!imageErrors[cname] ? (
+                          <img
+                            alt={cname}
+                            src={cityImages?.[cname] || ''}
+                            onError={() => setImageErrors((prev) => ({ ...prev, [cname]: true }))}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600">
+                            <span className="text-sm text-center p-2 font-medium">
+                              {cname}
+                            </span>
+                          </div>
+                        )}
                       </span>
                       <div 
                         className="absolute -top-1 -right-1 w-6 h-6 rounded-full border-2 border-white"
@@ -210,22 +178,29 @@ export default function PriceTrendsCompare({
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {selectedCities.map((cname, idx) => (
-              <div key={cname} className="group bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+              <div key={cname} className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="relative">
                     <span className="inline-flex w-14 h-14 rounded-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg ring-4 ring-white">
-                      <img 
-                        alt={cname} 
-                        src={cityImages[cname] || 'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=300&q=80'} 
-                        className="w-full h-full object-cover" 
-                      />
+                      {!imageErrors[cname] ? (
+                        <img
+                          alt={cname}
+                          src={cityImages?.[cname] || ''}
+                          onError={() => setImageErrors((prev) => ({ ...prev, [cname]: true }))}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600">
+                          <span className="text-sm text-center p-2 font-medium">
+                            {cname}
+                          </span>
+                        </div>
+                      )}
                     </span>
                     <div 
-                      className="absolute -top-1 -right-1 w-5 h-5 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"
+                      className="absolute -top-1 -right-1 w-6 h-6 rounded-full border-2 border-white"
                       style={{ backgroundColor: chartColors[idx % chartColors.length] }}
-                    >
-                      {idx + 1}
-                    </div>
+                    ></div>
                   </div>
                   <div>
                     <h3 className="font-bold text-lg text-gray-900 group-hover:text-blue-700 transition-colors">
