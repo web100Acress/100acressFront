@@ -241,3 +241,4 @@ console.log('FAQ data:', getFAQData('status', 'upcoming'));
 This static data system provides a centralized way to manage all content for the Global Filter Template, making it easy to maintain and update content across all page types.
 
 
+
