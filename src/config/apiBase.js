@@ -22,16 +22,15 @@ const getEnv = (key, defaultValue = '') => {
 const DEFAULT_BASE = (() => {
   try {
     if (typeof window !== 'undefined') {
-      const isHttps = window.location.protocol === 'https:';
       const isLocalhost = /^(localhost|127\.0\.0\.1|\[::1\]|192\.168|10\.|172\.(1[6-9]|2[0-9]|3[01]))/i.test(window.location.hostname);
       
-      // In development or when running locally
-      if (!isHttps && isLocalhost) {
+      // Always use local API when on localhost (regardless of protocol)
+      if (isLocalhost) {
         console.log('Using development API: http://localhost:3500');
         return 'http://localhost:3500';
       }
       
-      // In production or when accessed via HTTPS
+      // In production (non-localhost domain)
       console.log('Using production API: https://api.100acress.com');
       return 'https://api.100acress.com';
     }
