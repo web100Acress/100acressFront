@@ -160,3 +160,4 @@ curl http://localhost:3500/api/admin/banners
 - System automatically detects environment
 - All banner operations work the same way
 - Local changes don't affect live website
+

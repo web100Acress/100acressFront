@@ -34,6 +34,7 @@ export const fetchAllBanners = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('myToken');
+
       // Use environment-based API detection
       const isDevelopment = import.meta.env.DEV;
       const apiBase = isDevelopment 
@@ -50,20 +51,12 @@ export const fetchAllBanners = createAsyncThunk(
           'Content-Type': 'application/json'
         }
       });
-      
-      console.log('BannerSlice: fetchAllBanners - Response status:', response.status);
-      
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('BannerSlice: fetchAllBanners - Error response:', errorText);
-        throw new Error(`Failed to fetch banners: ${response.status} ${errorText}`);
+        throw new Error('Failed to fetch banners');
       }
-      
       const data = await response.json();
-      console.log('BannerSlice: fetchAllBanners - Response data:', data);
       return data.banners || [];
     } catch (error) {
-      console.error('BannerSlice: fetchAllBanners - Error:', error);
       return rejectWithValue(error.message);
     }
   }
@@ -114,13 +107,11 @@ const bannerSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchAllBanners.fulfilled, (state, action) => {
-        console.log('BannerSlice: fetchAllBanners.fulfilled - Payload:', action.payload);
         state.loading = false;
         state.allBanners = action.payload;
         state.error = null;
       })
       .addCase(fetchAllBanners.rejected, (state, action) => {
-        console.log('BannerSlice: fetchAllBanners.rejected - Error:', action.payload);
         state.loading = false;
         state.error = action.payload;
       });
