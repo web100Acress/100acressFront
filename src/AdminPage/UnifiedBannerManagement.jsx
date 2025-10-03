@@ -90,9 +90,9 @@ const UnifiedBannerManagement = () => {
         formData.append('bannerImage', selectedDesktopFile);
       }
 
-      // Use local API for testing, production API for live
-      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const apiBase = isLocalhost 
+      // Use environment-based API detection
+      const isDevelopment = import.meta.env.DEV;
+      const apiBase = isDevelopment 
         ? (import.meta.env.VITE_API_BASE || 'http://localhost:3500')
         : 'https://api.100acress.com';
 
@@ -180,9 +180,9 @@ const UnifiedBannerManagement = () => {
         formData.append('mobileBannerImage', selectedMobileFile);
       }
 
-      // Use local API for testing, production API for live
-      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const apiBase = isLocalhost 
+      // Use environment-based API detection
+      const isDevelopment = import.meta.env.DEV;
+      const apiBase = isDevelopment 
         ? (import.meta.env.VITE_API_BASE || 'http://localhost:3500')
         : 'https://api.100acress.com';
 
