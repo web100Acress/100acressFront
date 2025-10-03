@@ -9,6 +9,7 @@ import AboutBuilder from './AboutBuilder';
 import Gallery from './Gallery';
 import FloorPlan from './FloorPlan';
 import LocationSection from './LocationSection';
+import VideoSection from './VideoSection';
 import MasterPlan from './MasterPlan';
 import FAQSection from './FAQSection';
 import RelatedProjects from './RelatedProjects';
@@ -462,6 +463,15 @@ function ProjectLayout2() {
         educationPoints={projectViewDetails?.projectRedefine_Education || []}
         entertainmentPoints={projectViewDetails?.projectRedefine_Entertainment || []}
         projectViewDetails={projectViewDetails}
+        onShowCallback={handleShowCallback}
+      />
+
+      {/* Video Section */}
+      <VideoSection 
+        projectName={projectViewDetails?.projectName}
+        youtubeVideoUrl={projectViewDetails?.youtubeVideoUrl}
+        youtubeVideoTitle={projectViewDetails?.youtubeVideoTitle}
+        youtubeVideoDescription={projectViewDetails?.youtubeVideoDescription}
         onShowCallback={handleShowCallback}
       />
 
