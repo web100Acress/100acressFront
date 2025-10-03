@@ -9,7 +9,7 @@ import styled from "styled-components";
 import OurServices from "../Components/HomePageComponents/ourServices";
 import { Helmet } from "react-helmet";
 // import Footer from "../Components/Actual_Components/Footer";
-import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
+import Footer from "../Components/Actual_Components/Footer";
 import AuthModal from "../Components/AuthModal";
 import { Link } from "react-router-dom";
 import BackToTopButton from "./BackToTopButton";
@@ -797,7 +797,7 @@ const Home = () => {
  
         {/* <Footer /> */}
       </div> {/* Closing div for the blur container */}
-      <LuxuryFooter />
+      <Footer />
  
       </main>
     </Wrapper>

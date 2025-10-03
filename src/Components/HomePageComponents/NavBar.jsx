@@ -60,7 +60,15 @@ function FinalNavBar() {
         <div className='hdrCenter'>
           <div className='1euNB' style={{ cursor: "pointer" }}>
             <Link to={ROOT}>
-              <img src="../../Images/mainLogo.png" alt='100acress' width='140' loading="lazy" />
+              <img 
+                src={isScrolled 
+                  ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp"
+                  : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/red-logo.webp"
+                } 
+                alt='100acress' 
+                width='140' 
+                loading="lazy" 
+              />
             </Link>
           </div>
         </div>
@@ -86,7 +94,12 @@ function FinalNavBar() {
             }}>
             <div className='d-flex align-items-center justify-content-between  pr-3'>
               <div className='1euNB'>
-                <img src="../../Images/mainLogo.png" alt='100acress' width='140' loading="lazy"/>
+                <img 
+                  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp" 
+                  alt='100acress' 
+                  width='140' 
+                  loading="lazy"
+                />
                 
               </div>
               <div
