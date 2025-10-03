@@ -103,13 +103,24 @@ const DynamicHeroBanner = () => {
     return (
       <HeroWrapper>
         <Link to="/developers/signature-global/" className="block relative w-full group" target="_self" aria-label="Signature Global">
-          <div className="hero-strip-99-default transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer" aria-hidden="true" style={{ backfaceVisibility: 'hidden' }} />
+          <div 
+            className="hero-strip-99-default transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer" 
+            aria-hidden="true" 
+            style={{ 
+              backfaceVisibility: 'hidden',
+              backgroundImage: 'url("/Images/Website-Hero-Image.jpg")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              height: '400px',
+              width: '100%'
+            }} 
+          />
         </Link>
       </HeroWrapper>
     );
   }
 
-  // Slick carousel settings
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -241,7 +252,8 @@ const HeroWrapper = styled.div`
   }
 
 
-  .hero-strip-99-dynamic {
+  .hero-strip-99-dynamic,
+  .hero-strip-99-default {
     width: 100%;
     height: 340px;
     margin-top: 76px;
