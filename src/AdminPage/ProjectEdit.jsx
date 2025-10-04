@@ -12,6 +12,7 @@ const customStyle = {
 };
 
 const ProjectEdit = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [values, setValues] = useState({
     frontImage: "",
     thumbnailImage: "",
@@ -69,20 +70,64 @@ const ProjectEdit = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await api.get(
-          `/project/Edit/${id}`
-        );
-        if (res.status === 200){
-          console.log(res.data.dataedit);
-          setValues(res.data.dataedit);
-        }
-        else if(res.status >= 400 && res.status < 500){
-        }
-        else if(res.status >= 500){
-          alert("Server error. Please try again later.")
+        setIsLoading(true);
+        const res = await api.get(`/project/Edit/${id}`);
+        if (res.status === 200 && res.data.dataedit) {
+          // Ensure all required fields are initialized
+          const projectData = {
+            frontImage: {},
+            thumbnailImage: {},
+            otherImage: [],
+            project_floorplan_Image: [],
+            projectGallery: [],
+            highlightImage: '',
+            project_locationImage: '',
+            logo: '',
+            projectName: '',
+            builderName: '',
+            projectAddress: '',
+            city: '',
+            paymentPlan: '',
+            state: '',
+            country: '',
+            luxury: false,
+            spotlight: false,
+            projectOverview: '',
+            projectRedefine_Business: '',
+            projectRedefine_Connectivity: '',
+            projectRedefine_Education: '',
+            projectRedefine_Entertainment: '',
+            projectReraNo: '',
+            AboutDeveloper: '',
+            type: '',
+            project_url: '',
+            meta_title: '',
+            meta_description: '',
+            project_Status: '',
+            launchingDate: '',
+            totalLandArea: '',
+            totalUnit: '',
+            towerNumber: '',
+            mobileNumber: '',
+            possessionDate: '',
+            minPrice: '',
+            maxPrice: '',
+            Amenities: '',
+            project_Brochure: '',
+            ...res.data.dataedit // This will override defaults with API data
+          };
+          setValues(projectData);
+        } else if (res.status >= 400 && res.status < 500) {
+          // Handle client errors
+          console.error('Client error:', res);
+        } else if (res.status >= 500) {
+          alert("Server error. Please try again later.");
         }
       } catch (error) {
-        console.log(error);
+        console.error('Error fetching project data:', error);
+        alert("Failed to load project data. Please try again later.");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();

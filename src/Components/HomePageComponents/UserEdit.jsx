@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from "../../config/apiClient";
 import { message, Modal, Alert } from "antd";
-import LuxuryFooter from "../Actual_Components/LuxuryFooter";
+import Footer from "../Actual_Components/Footer";
 import { getApiBase as sharedGetApiBase } from "../../config/apiBase";
 
 
@@ -544,7 +544,7 @@ const UserEdit = () => {
         </div>
       </div>
 
-      <LuxuryFooter />
+        <Footer />
     </>
   );
 };
