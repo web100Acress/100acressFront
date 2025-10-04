@@ -58,10 +58,11 @@ const About = lazy(() => import("./Pages/About"));
 const AboutModern = lazy(() => import("./Pages/AboutModern"));
 const BuyViewDetails = lazy(() => import("./Pages/BuyViewDetails"));
 const ResetEmailPassword = lazy(() => import("./Pages/ResetEmailPassword"));
-const TermsAndConditions = lazy(() => import("./Pages/TermsAndConditions"));
+const TermsAndConditions = lazy(() => import("./Pages/privacy/TermsAndConditions"));
 const RentViewDetails = lazy(() => import("./Pages/RentViewDetails"));
 const RentPropViewCard = lazy(() => import("./Components/Actual_Components/RentPropViewCard"));
-const Privacy = lazy(() => import("./Pages/Privacy"));
+const Privacy = lazy(() => import("./Pages/privacy/Privacy"));
+const Disclaimer = lazy(() => import("./Pages/privacy/Disclaimer"));
 const ContactUs = lazy(() => import("./Pages/ContactUs"));
 const SearchData = lazy(() => import("./Pages/SearchData"));
 const UserViewProperty = lazy(() => import("./Pages/UserViewProperty"));
@@ -281,6 +282,7 @@ function App() {
                         <Route path="signin/" element={<SignIn />} />
                       </Route>
                       <Route path="/privacy-policy/" element={<Privacy />} />
+                      <Route path="/disclaimer/" element={<Disclaimer />} />
                       <Route
                         path="/terms-and-conditions/"
                         element={<TermsAndConditions />}

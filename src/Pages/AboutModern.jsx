@@ -1,216 +1,272 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../Components/Actual_Components/Footer";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { 
-  ForSaleIcon, 
-  GirlSearchingIcon, 
-  ResidentialProjectIcon, 
-  CommercialProjectIcon, 
-  ScoPlotsIcon, 
-  PlotnFloorIcon, 
-  MonthlyVisitIcon, 
-  AwardsIcon, 
-  RealestateIcon, 
-  LegalIcon, 
-  InteriorIcon, 
-  HomeloanIcon 
+import {
+  ForSaleIcon,
+  GirlSearchingIcon,
+  ResidentialProjectIcon,
+  CommercialProjectIcon,
+  ScoPlotsIcon,
+  PlotnFloorIcon,
+  MonthlyVisitIcon,
+  AwardsIcon,
+  RealestateIcon,
+  LegalIcon,
+  InteriorIcon,
+  HomeloanIcon,
 } from "../Assets/icons";
+
+const CountUp = ({ end, duration = 2000, suffix = "" }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const startTime = Date.now();
+    const endValue =
+      typeof end === "string" ? parseInt(end.replace(/[^0-9]/g, "")) : end;
+    const isString = typeof end === "string";
+
+    const animateCount = () => {
+      const now = Date.now();
+      const progress = Math.min((now - startTime) / duration, 1);
+      const currentCount = Math.floor(progress * endValue);
+
+      if (isString) {
+        const formattedCount =
+          currentCount.toLocaleString() + end.replace(/[0-9]/g, "");
+        setCount(formattedCount);
+      } else {
+        setCount(currentCount);
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(animateCount);
+      }
+    };
+
+    const timer = requestAnimationFrame(animateCount);
+    return () => cancelAnimationFrame(timer);
+  }, [end, duration, suffix]);
+
+  return (
+    <span>
+      {count}
+      {suffix}
+    </span>
+  );
+};
 
 const AboutModern = () => {
   const stats = [
-    { number: "1600+", label: "Residential Projects", icon: ResidentialProjectIcon },
-    { number: "900+", label: "Commercial Projects", icon: CommercialProjectIcon },
+    {
+      number: "1600+",
+      label: "Residential Projects",
+      icon: ResidentialProjectIcon,
+    },
+    {
+      number: "900+",
+      label: "Commercial Projects",
+      icon: CommercialProjectIcon,
+    },
     { number: "400+", label: "Plots & Floors", icon: PlotnFloorIcon },
     { number: "90+", label: "SCO Plots", icon: ScoPlotsIcon },
-    { number: "2.45L+", label: "Monthly Visitors", icon: MonthlyVisitIcon },
-    { number: "1000+", label: "Awards", icon: AwardsIcon }
+    { number: "3M+", label: "Monthly Visitors", icon: MonthlyVisitIcon },
+    { number: "1000+", label: "Awards", icon: AwardsIcon },
   ];
 
   const principles = [
     {
       title: "No Problem is Too Hard",
-      description: "We tackle every real estate challenge with determination and innovative solutions."
+      description:
+        "We tackle every real estate challenge with determination and innovative solutions.",
     },
     {
       title: "People First",
-      description: "Our clients' dreams and aspirations are at the heart of everything we do."
+      description:
+        "Our clients' dreams and aspirations are at the heart of everything we do.",
     },
     {
       title: "Transparency Always",
-      description: "Complete honesty in every transaction, with no hidden costs or surprises."
+      description:
+        "Complete honesty in every transaction, with no hidden costs or surprises.",
     },
     {
       title: "Local Expertise",
-      description: "Deep knowledge of Gurgaon and Delhi NCR markets for informed decisions."
+      description:
+        "Deep knowledge of Gurgaon and Delhi NCR markets for informed decisions.",
     },
     {
       title: "Long-term Relationships",
-      description: "We build lasting partnerships, not just one-time transactions."
+      description:
+        "We build lasting partnerships, not just one-time transactions.",
     },
     {
       title: "Continuous Improvement",
-      description: "Always learning and evolving to serve our clients better."
-    }
+      description: "Always learning and evolving to serve our clients better.",
+    },
   ];
 
   const services = [
     {
       title: "Real Estate Consulting",
-      description: "We provide the best services to help you get your dream home as per your expectations.",
-      icon: RealestateIcon
+      description:
+        "We provide the best services to help you get your dream home as per your expectations.",
+      icon: RealestateIcon,
     },
     {
       title: "Legal Advice",
-      description: "The major issue is trustworthy legal assistance. We will help you through all the aspects.",
-      icon: LegalIcon
+      description:
+        "The major issue is trustworthy legal assistance. We will help you through all the aspects.",
+      icon: LegalIcon,
     },
     {
       title: "Interior Design",
-      description: "We provide the best services to help you get your dream home as per your expectations.",
-      icon: InteriorIcon
+      description:
+        "We provide the best services to help you get your dream home as per your expectations.",
+      icon: InteriorIcon,
     },
     {
       title: "Home Loan",
-      description: "We will help you to provide the best home loan to complete your dream and guide.",
-      icon: HomeloanIcon
-    }
+      description:
+        "We will help you to provide the best home loan to complete your dream and guide.",
+      icon: HomeloanIcon,
+    },
   ];
 
   const teamMembers = [
     {
       name: "Rajesh Agrawal",
       role: "Director & Founder",
-      description: "Visionary leader with 20+ years in real estate"
+      description: "Visionary leader with 20+ years in real estate",
     },
     {
       name: "Priya Sharma",
       role: "Head of Sales",
-      description: "Expert in luxury residential properties"
+      description: "Expert in luxury residential properties",
     },
     {
       name: "Amit Kumar",
       role: "Commercial Specialist",
-      description: "Leading commercial real estate expert"
+      description: "Leading commercial real estate expert",
     },
     {
       name: "Neha Gupta",
       role: "Legal Advisor",
-      description: "Ensuring smooth and legal transactions"
+      description: "Ensuring smooth and legal transactions",
     },
     {
       name: "Rohit Singh",
       role: "Customer Relations",
-      description: "Dedicated to exceptional client service"
+      description: "Dedicated to exceptional client service",
     },
     {
       name: "Sneha Patel",
       role: "Marketing Director",
-      description: "Connecting clients with their dream properties"
-    }
+      description: "Connecting clients with their dream properties",
+    },
   ];
 
   const partners = [
     {
       name: "Godrej Properties",
       logo: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/godrej.jpg",
-      link: "/developers/godrej-properties/"
+      link: "/developers/godrej-properties/",
     },
     {
       name: "DLF Homes",
       logo: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/dlf.png",
-      link: "/developers/dlf-homes/"
+      link: "/developers/dlf-homes/",
     },
     {
       name: "Emaar India",
       logo: "https://cdn.in.emaar.com/wp-content/themes/emaar/inc/assets/images/emaar-india-logo-en.svg",
-      link: "/developers/emaar-india/"
+      link: "/developers/emaar-india/",
     },
     {
       name: "Birla Estates",
       logo: "https://www.birlaestates.com/images/birla-estate-logo.webp",
-      link: "/developers/birla-estate/"
+      link: "/developers/birla-estate/",
     },
     {
       name: "Adani Realty",
       logo: "https://www.adanirealty.com/-/media/project/realty/header/logo.ashx",
-      link: "/developers/adani-realty/"
+      link: "/developers/adani-realty/",
     },
     {
       name: "Experion",
       logo: "https://www.experion.co/img/logo/experion-logo.png",
-      link: "/developers/experion-developers/"
+      link: "/developers/experion-developers/",
     },
     {
       name: "Signature Global",
       logo: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
-      link: "/developers/signature-global/"
+      link: "/developers/signature-global/",
     },
     {
       name: "Sobha",
       logo: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/sobha.webp",
-      link: "/developers/sobha-developers/"
+      link: "/developers/sobha-developers/",
     },
     {
       name: "Central Park",
       logo: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/centralpark.jpg",
-      link: "/developers/central-park/"
+      link: "/developers/central-park/",
     },
     {
       name: "Trump Towers",
       logo: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/Trump-Tower.webp",
-      link: "/developers/trump-towers/"
+      link: "/developers/trump-towers/",
     },
     {
       name: "ELAN Group",
       logo: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/elan-logo.webp",
-      link: "/developers/elan-group/"
+      link: "/developers/elan-group/",
     },
     {
       name: "Puri Constructions",
       logo: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/puri+(1).webp",
-      link: "/developers/puri-developers/"
+      link: "/developers/puri-developers/",
     },
     {
       name: "M3M India",
       logo: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3m.webp",
-      link: "/developers/m3m-india/"
+      link: "/developers/m3m-india/",
     },
     {
       name: "SmartWorld Developers",
       logo: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/smartworld.webp",
-      link: "/developers/smartworld-developers/"
+      link: "/developers/smartworld-developers/",
     },
     {
       name: "BPTP Limited",
       logo: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/bptp.webp",
-      link: "/developers/bptp-limited/"
+      link: "/developers/bptp-limited/",
     },
     {
       name: "Whiteland Corporation",
       logo: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/whiteland.jpg",
-      link: "/developers/whiteland/"
+      link: "/developers/whiteland/",
     },
     {
       name: "Indiabulls Real Estate",
       logo: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/indiabulls.webp",
-      link: "/developers/indiabulls-real-estate/"
+      link: "/developers/indiabulls-real-estate/",
     },
     {
       name: "AIPL",
       logo: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/aipl.png",
-      link: "/developers/aipl/"
+      link: "/developers/aipl/",
     },
     {
       name: "Trevoc Group",
       logo: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/trevoc.webp",
-      link: "/developers/trevoc-group/"
+      link: "/developers/trevoc-group/",
     },
     {
       name: "Aarize",
       logo: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/project/tmfm0mywshnqqnmz7j9x",
-      link: "/developers/aarize-developers/"
-    }
+      link: "/developers/aarize-developers/",
+    },
   ];
 
   return (
@@ -228,14 +284,14 @@ const AboutModern = () => {
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0">
-          <img 
+          <img
             src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
             alt="Modern cityscape and real estate"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/50"></div>
         </div>
-        
+
         {/* Content */}
         <div className="relative z-10 container mx-auto px-6 text-center">
           {/* Main Headline */}
@@ -247,21 +303,28 @@ const AboutModern = () => {
               Since 2000
             </h1>
           </div>
-          
+
           {/* Subheading */}
-          <p className="text-lg md:text-xl lg:text-2xl mb-16 max-w-4xl mx-auto leading-relaxed text-gray-200 font-light">
-            Since 2000, we've been helping people find their dream homes, offices, and the right investments in property across Gurgaon and Delhi NCR.
+          <p className="text-lg md:text-xl lg:text-2xl mb-16 max-w-4xl mx-auto leading-relaxed text-gray-100 font-normal">
+            Since 2000, we've been helping people find their dream homes,
+            offices, and the right investments in property across Gurgaon and
+            Delhi NCR.
           </p>
-          
+
           {/* Stats Cards */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl mx-auto">
             {stats.map((stat, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="bg-white/10 backdrop-blur-md rounded-2xl p-6 text-center border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105"
               >
-                <div className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-2">{stat.number}</div>
-                <div className="text-sm md:text-base text-gray-200 font-medium">{stat.label}</div>
+                <div className="text-3xl md:text-4xl lg:text-4xl font-black text-white mb-2 w-95">
+                  <CountUp end={stat.number} duration={2000} />
+                  {stat.number.includes("+") && ""}
+                </div>
+                <div className="text-sm md:text-base text-gray-200 font-medium">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
@@ -277,15 +340,17 @@ const AboutModern = () => {
                 Turning property search into a personal experience
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed mb-8">
-                At 100acress.com, we treat every customer's investment with the same care as our own. 
-                Honesty, trust, and transparency are at the heart of everything we do. Instead of just 
-                showing you what is available, we guide you towards the right options that truly fit 
-                your needs and budget.
+                At 100acress.com, we treat every customer's investment with the
+                same care as our own. Honesty, trust, and transparency are at
+                the heart of everything we do. Instead of just showing you what
+                is available, we guide you towards the right options that truly
+                fit your needs and budget.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
-                What makes us different is our focus on long-term relationships, not just one-time deals. 
-                We believe buying a home or property is a life-changing decision, so we provide complete 
-                details, multiple choices, and genuine advice.
+                What makes us different is our focus on long-term relationships,
+                not just one-time deals. We believe buying a home or property is
+                a life-changing decision, so we provide complete details,
+                multiple choices, and genuine advice.
               </p>
             </div>
             <div className="relative">
@@ -305,15 +370,23 @@ const AboutModern = () => {
               Our operating principles
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              These core values guide everything we do and ensure exceptional service for our clients.
+              These core values guide everything we do and ensure exceptional
+              service for our clients.
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {principles.map((principle, index) => (
-              <div key={index} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{principle.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{principle.description}</p>
+              <div
+                key={index}
+                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300"
+              >
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  {principle.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {principle.description}
+                </p>
               </div>
             ))}
           </div>
@@ -321,7 +394,7 @@ const AboutModern = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-white">
+      {/* <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -345,7 +418,7 @@ const AboutModern = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Trusted By Section */}
       <section className="py-20 bg-gray-50">
@@ -355,10 +428,11 @@ const AboutModern = () => {
               Top Real Estate Developers
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We work with the most respected developers and builders in Gurgaon and Delhi NCR.
+              We work with the most respected developers and builders in Gurgaon
+              and Delhi NCR.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-6">
             {partners.map((partner, index) => (
               <Link
@@ -371,11 +445,13 @@ const AboutModern = () => {
                   alt={partner.name}
                   className="h-12 w-auto object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
                   onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling.style.display = 'block';
+                    e.currentTarget.style.display = "none";
+                    e.currentTarget.nextElementSibling.style.display = "block";
                   }}
                 />
-                <span className="text-lg font-semibold text-gray-700 hidden">{partner.name}</span>
+                <span className="text-lg font-semibold text-gray-700 hidden">
+                  {partner.name}
+                </span>
               </Link>
             ))}
           </div>
@@ -393,15 +469,22 @@ const AboutModern = () => {
               Comprehensive real estate solutions tailored to your needs.
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {services.map((service, index) => (
-              <div key={index} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 text-center">
+              <div
+                key={index}
+                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 text-center"
+              >
                 <div className="w-16 h-16 mx-auto mb-6 bg-primaryRed/10 rounded-full flex items-center justify-center">
                   <service.icon className="w-8 h-8 text-primaryRed" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{service.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{service.description}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  {service.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {service.description}
+                </p>
               </div>
             ))}
           </div>
@@ -423,7 +506,7 @@ const AboutModern = () => {
                     TOUCH
                   </h2>
                 </div>
-                
+
                 {/* Large Tilted Arrow */}
                 <div className="relative inline-block">
                   <div className="w-20 h-20 md:w-24 md:h-24 transform rotate-45 border-4 border-white border-r-0 border-b-0"></div>
@@ -437,28 +520,33 @@ const AboutModern = () => {
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-elegant">
                 <div className="space-y-6">
                   <div className="text-center space-y-2">
-                    <h3 className="text-2xl font-bold text-white">Get Instant Callback</h3>
-                    <p className="text-white/80">Get expert advice on your property investment</p>
+                    <h3 className="text-2xl font-bold text-white">
+                      Get Instant Callback
+                    </h3>
+                    <p className="text-white/80">
+                      Get expert advice on your property investment
+                    </p>
                   </div>
-                  
+
                   <div className="space-y-4">
-                    <input 
+                    <input
                       type="text"
-                      placeholder="Your Name" 
+                      placeholder="Your Name"
                       className="w-full bg-white/20 border border-white/30 text-white placeholder:text-white/60 backdrop-blur-sm h-12 text-lg px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50"
                     />
-                    <input 
+                    <input
                       type="tel"
-                      placeholder="Phone Number" 
+                      placeholder="Phone Number"
                       className="w-full bg-white/20 border border-white/30 text-white placeholder:text-white/60 backdrop-blur-sm h-12 text-lg px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50"
                     />
                     <button className="w-full bg-white text-primaryRed font-semibold h-12 text-lg rounded-lg shadow-lg hover:bg-gray-100 transition-all duration-300 hover:scale-[1.02]">
                       Contact
                     </button>
                   </div>
-                  
+
                   <p className="text-sm text-white/70 text-center">
-                    Get expert advice on your property investment. Our team will contact you within 24 hours.
+                    Get expert advice on your property investment. Our team will
+                    contact you within 24 hours.
                   </p>
                 </div>
               </div>
