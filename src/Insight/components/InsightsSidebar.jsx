@@ -326,29 +326,29 @@ export default function InsightsSidebar() {
                   {item('/', 'Property Insights', icons.property)}
                   {item('/analytics/price-trends', 'Price Trends', icons.trends)}
                   {item('/admin/insights/market-reports', 'Market Reports', icons.market, true, null, true)}
-                  {item('/admin/insights/investment', 'Investment Insights', icons.investment)}
-                  {item('/admin/insights/area-analytics', 'Area Analytics', icons.area)}
+                  {/* {item('/admin/insights/investment', 'Investment Insights', icons.investment)} */}
+                  {/* {item('/admin/insights/area-analytics', 'Area Analytics', icons.area)} */}
                 </div>
               )}
 
               {/* Resources Section */}
-              {sectionHeader('Resources', expandedSections.resources, () => toggleSection('resources'))}
+              {/* {sectionHeader('Resources', expandedSections.resources, () => toggleSection('resources'))}
               {expandedSections.resources && (
-                <div className="space-y-1 mb-4">
-                  {item('/blog-insights', 'Blog', icons.blog, true, null, true)}
-                  {item('/insights/news', 'News', icons.news, true, '5+')}
-                  {item('/insights/guides', 'Guides', icons.guides)}
-                </div>
-              )}
+                <div className="space-y-1 mb-4"> */}
+                  {/* {item('/blog-insights', 'Blog', icons.blog, true, null, true)} */}
+                  {/* {item('/insights/news', 'News', icons.news, true, '5+')} */}
+                  {/* {item('/insights/guides', 'Guides', icons.guides)} */}
+                {/* </div> */}
+              {/* )} */}
 
               {/* Tools Section */}
-              {sectionHeader('Tools', expandedSections.tools, () => toggleSection('tools'))}
+              {/* {sectionHeader('Tools', expandedSections.tools, () => toggleSection('tools'))}
               {expandedSections.tools && (
-                <div className="space-y-1">
-                  {item('/emi-calculator', 'EMI Calculator', icons.calculator)}
-                  {item('/loan-eligibility', 'Loan Eligibility', icons.loan)}
-                </div>
-              )}
+                <div className="space-y-1"> */}
+                  {/* {item('/emi-calculator', 'EMI Calculator', icons.calculator)} */}
+                  {/* {item('/loan-eligibility', 'Loan Eligibility', icons.loan)} */}
+                {/* </div> */}
+              {/* )} */}
             </div>
           </nav>
 
@@ -390,14 +390,14 @@ export default function InsightsSidebar() {
               <div className="h-px bg-gray-200 my-3"></div>
               {item('/admin/insights/market-reports', 'Market Reports', icons.trends, !collapsed)}
              
-              {item('/admin/insights/investment', 'Investment Insights', icons.investment, !collapsed)}
+              {/* {item('/admin/insights/investment', 'Investment Insights', icons.investment, !collapsed)} */}
               {/* {item('/admin/insights/area-analytics', 'Area Analytics', icons.area, !collapsed)} */}
               
-               <div className="h-px bg-gray-200 my-3"></div>
+               {/* <div className="h-px bg-gray-200 my-3"></div> */}
               
               {/* {item('/blog-insights', 'Blog', icons.blog, !collapsed, null, true)} */}
               {/* {item('/insights/news', 'News', icons.news, !collapsed, collapsed ? '5' : '5+')} */}
-              {item('/insights/guides', 'Guides', icons.guides, !collapsed)}
+              {/* {item('/insights/guides', 'Guides', icons.guides, !collapsed)} */}
               
               {/* <div className="h-px bg-gray-200 my-3"></div> */}
               
