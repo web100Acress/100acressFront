@@ -7,12 +7,60 @@ import 'react-toastify/dist/ReactToastify.css';
 import api from '../../../config/apiClient';
 import { io } from 'socket.io-client';
 
-// Constants
-const API_ENDPOINTS = {
-  GUIDES: '/guides',
-  UPLOAD: '/upload',
-  HEALTH: '/health'
+// Configure API client for guides endpoints
+const guidesApi = {
+  // Guide operations
+  getGuides: () => api.get('/guides'),
+  getGuide: (id) => api.get(`/guides/${id}`),
+  createGuide: (data) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, value);
+      }
+    });
+    return api.post('/guides', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
+  updateGuide: (id, data) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, value);
+      }
+    });
+    return api.put(`/guides/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
+  deleteGuide: (id) => api.delete(`/guides/${id}`),
+  
+  // File operations
+  uploadFile: (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.post('/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
+  
 };
+
+// Constants for UI labels and messages
+const GUIDE_CATEGORIES = [
+  'Buying', 'Selling', 'Renting', 'Investing', 'Market Trends', 'Home Improvement', 'Financing'
+];
+
+const GUIDE_LEVELS = [
+  'Beginner', 'Intermediate', 'Advanced'
+];
 
 const AdminGuides = () => {
   // State declarations
@@ -39,18 +87,13 @@ const AdminGuides = () => {
   });
   const navigate = useNavigate();
 
-  // Fetch guides function using centralized API client
+  // Fetch guides using centralized API client
   const fetchGuides = async () => {
     try {
       setLoading(true);
-      console.log('Fetching guides...');
-      
-      const response = await api.get(API_ENDPOINTS.GUIDES);
+      const response = await guidesApi.getGuides();
       const guidesData = response.data?.data || response.data || [];
-      
-      console.log('Successfully fetched guides:', guidesData);
       setGuides(Array.isArray(guidesData) ? guidesData : []);
-      
     } catch (error) {
       console.error('Error fetching guides:', error);
       const errorMessage = error.response?.data?.message || 'Failed to load guides';
