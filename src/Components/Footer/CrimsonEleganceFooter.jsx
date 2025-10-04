@@ -99,11 +99,14 @@ const CrimsonEleganceFooter = () => {
             <div className="space-y-8">
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <h2 className="text-5xl lg:text-6xl font-bold bg-gradient-accent bg-clip-text text-transparent">
-                    100acress
-                  </h2>
                   <p className="text-lg text-footer-text-muted font-medium">
-                    Real Estate Excellence
+                    About{" "}
+                    <Link
+                      to="https://www.100acress.com/"
+                      className="text-lg text-footer-text-muted font-medium hover:text-footer-accent transition-colors duration-300"
+                    >
+                      100acress.com
+                    </Link>
                   </p>
                 </div>
                 <p className="text-footer-text leading-relaxed text-lg max-w-2xl">
@@ -248,30 +251,54 @@ const CrimsonEleganceFooter = () => {
           </div>
 
           {/* Large Brand Watermark */}
-        
-            <div className="container mx-auto px-6 py-0">
-              <div className="flex flex-wrap gap-4">
-                {[
-                  "Sohna Road",
-                  "Golf Course Road",
-                  "Sector 65",
-                  "Sector 66",
-                  "Sector 67",
-                  "Sector 68",
-                  "Sector 70",
-                  "Sector 71",
-                ].map((location, index) => (
-                  <div
-                    key={index}
-                    className="bg-white rounded-lg h-6 px-4 flex items-center justify-center hover:scale-105 transition-all duration-300 cursor-pointer min-w-max"
-                  >
-                    <span className="text-red-900 font-medium text-sm text-center leading-tight whitespace-nowrap">
-                      {location}
-                    </span>
-                  </div>
-                ))}
-              </div>
+
+          <div className="container mx-auto px-6 py-0">
+            <div className="flex flex-wrap gap-2">
+              {[
+                "Sohna Road",
+                "Golf Course Road",
+                "Sector 65",
+                "Sector 66",
+                "Sector 67",
+                "Sector 68",
+                "Sector 70",
+                "Sector 71",
+                "Sohna Road",
+                "Golf Course Road",
+                "Sector 65",
+                "Sector 66",
+                "Sector 67",
+                "Sector 68",
+                "Sector 70",
+                "Sector 71",
+                "Sohna Road",
+                "Golf Course Road",
+                "Sector 65",
+                "Sector 66",
+                "Sector 67",
+                "Sector 68",
+                "Sector 70",
+                "Sector 71",
+                "Sohna Road",
+                "Golf Course Road",
+                "Sector 65",
+                "Sector 66",
+                "Sector 67",
+                "Sector 68",
+                "Sector 70",
+                "Sector 71",
+              ].map((location, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg h-6 px-2 flex items-center justify-center hover:scale-105 transition-all duration-300 cursor-pointer min-w-max"
+                >
+                  <span className="text-red-900 font-medium text-sm text-center leading-tight whitespace-nowrap">
+                    {location}
+                  </span>
+                </div>
+              ))}
             </div>
+          </div>
           {/* </div> */}
 
           <div className="relative flex items-center justify-center py-8">
