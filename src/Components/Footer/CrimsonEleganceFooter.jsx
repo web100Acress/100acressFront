@@ -1,4 +1,12 @@
-import { Phone, Mail, Linkedin, Facebook, Twitter, Youtube } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  Linkedin,
+  Facebook,
+  X,
+  Youtube,
+  Instagram,
+} from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
@@ -33,18 +41,45 @@ const CrimsonEleganceFooter = () => {
   ];
 
   const primeLocations = [
-    { name: "Projects in Sohna Road", href: "/property-in-gurugram/sohna-road/" },
-    { name: "Projects in Golf Course", href: "/property-in-gurugram/golf-course/" },
-    { name: "Projects in Northern Peripheral Road", href: "/property-in-gurugram/northern-peripheral-road/" },
-    { name: "Projects in Dwarka Expressway", href: "/property-in-gurugram/dwarka-expressway/" },
-    { name: "Projects in New Gurgaon", href: "/property-in-gurugram/new-gurgaon/" },
-    { name: "Projects in Southern Peripheral Road", href: "/property-in-gurugram/southern-peripheral-road/" },
-    { name: "Projects in Golf Course Extn Road", href: "/property-in-gurugram/golf-course-extn-road/" },
+    {
+      name: "Projects in Sohna Road",
+      href: "/property-in-gurugram/sohna-road/",
+    },
+    {
+      name: "Projects in Golf Course",
+      href: "/property-in-gurugram/golf-course/",
+    },
+    {
+      name: "Projects in Northern Peripheral Road",
+      href: "/property-in-gurugram/northern-peripheral-road/",
+    },
+    {
+      name: "Projects in Dwarka Expressway",
+      href: "/property-in-gurugram/dwarka-expressway/",
+    },
+    {
+      name: "Projects in New Gurgaon",
+      href: "/property-in-gurugram/new-gurgaon/",
+    },
+    {
+      name: "Projects in Southern Peripheral Road",
+      href: "/property-in-gurugram/southern-peripheral-road/",
+    },
+    {
+      name: "Projects in Golf Course Extn Road",
+      href: "/property-in-gurugram/golf-course-extn-road/",
+    },
   ];
 
   const toolsServices = [
-    { name: "Square Meter to Feet", href: "/convert-square-meter-to-square-feet/" },
-    { name: "Square Feet to Meter", href: "/convert-square-feet-to-square-meter/" },
+    {
+      name: "Square Meter to Feet",
+      href: "/convert-square-meter-to-square-feet/",
+    },
+    {
+      name: "Square Feet to Meter",
+      href: "/convert-square-feet-to-square-meter/",
+    },
     { name: "Acre to Square Feet", href: "/convert-acre-to-square-feet/" },
     { name: "Square Feet to Acre", href: "/convert-square-feet-to-acre/" },
     { name: "Buy Properties", href: "/buy-properties/" },
@@ -60,7 +95,7 @@ const CrimsonEleganceFooter = () => {
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-rose-gold rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-champagne rounded-full blur-3xl"></div>
       </div>
-      
+
       {/* Main Footer Content */}
       <div className="relative z-10">
         {/* Top Section */}
@@ -73,15 +108,19 @@ const CrimsonEleganceFooter = () => {
                   <h2 className="text-5xl lg:text-6xl font-bold bg-gradient-accent bg-clip-text text-transparent">
                     100acres
                   </h2>
-                  <p className="text-lg text-footer-text-muted font-medium">Real Estate Excellence</p>
+                  <p className="text-lg text-footer-text-muted font-medium">
+                    Real Estate Excellence
+                  </p>
                 </div>
                 <p className="text-footer-text leading-relaxed text-lg max-w-2xl">
-                  100acres.com Real Estate Company specializes in providing premier property solutions 
-                  tailored to meet your needs. We offer world-class luxury homes with stylish design, 
-                  premium features, and top-class amenities for a truly exclusive lifestyle.
+                  100acres.com Real Estate Company specializes in providing
+                  premier property solutions tailored to meet your needs. We
+                  offer world-class luxury homes with stylish design, premium
+                  features, and top-class amenities for a truly exclusive
+                  lifestyle.
                 </p>
               </div>
-              
+
               {/* Contact Info */}
               <div className="space-y-4">
                 <div className="flex items-center gap-4 text-footer-text hover:text-footer-accent transition-smooth">
@@ -94,7 +133,9 @@ const CrimsonEleganceFooter = () => {
                   <div className="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
                     <Mail className="w-5 h-5" />
                   </div>
-                  <span className="text-lg font-medium">support@100acres.com</span>
+                  <span className="text-lg font-medium">
+                    support@100acres.com
+                  </span>
                 </div>
               </div>
             </div>
@@ -103,26 +144,31 @@ const CrimsonEleganceFooter = () => {
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-elegant">
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-2xl font-bold text-footer-text">Get Instant Callback</h3>
-                  <p className="text-footer-text-muted">Get expert advice on your property investment</p>
+                  <h3 className="text-2xl font-bold text-footer-text">
+                    Get Instant Callback
+                  </h3>
+                  <p className="text-footer-text-muted">
+                    Get expert advice on your property investment
+                  </p>
                 </div>
-                
+
                 <div className="space-y-4">
-                  <Input 
-                    placeholder="Your Name" 
+                  <Input
+                    placeholder="Your Name"
                     className="bg-white/20 border-white/30 text-footer-text placeholder:text-footer-text-muted backdrop-blur-sm h-12 text-lg"
                   />
-                  <Input 
-                    placeholder="Phone Number" 
+                  <Input
+                    placeholder="Phone Number"
                     className="bg-white/20 border-white/30 text-footer-text placeholder:text-footer-text-muted backdrop-blur-sm h-12 text-lg"
                   />
                   <Button className="w-full bg-gradient-accent hover:bg-rose-gold text-burgundy-dark font-semibold h-12 text-lg shadow-soft hover:shadow-elegant transition-all duration-300 hover:scale-[1.02]">
                     Contact
                   </Button>
                 </div>
-                
+
                 <p className="text-sm text-footer-text-muted text-center">
-                  Get expert advice on your property investment. Our team will contact you within 24 hours.
+                  Get expert advice on your property investment. Our team will
+                  contact you within 24 hours.
                 </p>
               </div>
             </div>
@@ -220,16 +266,38 @@ const CrimsonEleganceFooter = () => {
               <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                 {/* Copyright */}
                 <div className="text-footer-text-muted text-center md:text-left">
-                  © 2024 100acres.com. All rights reserved.
+                  © 2025{" "}
+                  <a
+                    href="https://www.100acress.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-footer-accent transition-colors duration-300"
+                  >
+                    100acress.com
+                  </a>{" "}
+                  All rights reserved.
                 </div>
-                
+
                 {/* Social Media */}
                 <div className="flex items-center gap-4">
                   {[
-                    { Icon: Linkedin, href: "https://www.linkedin.com/company/100acress/" },
-                    { Icon: Facebook, href: "https://www.facebook.com/100Acress" },
-                    { Icon: Twitter, href: "https://twitter.com/100acressdotcom" },
-                    { Icon: Youtube, href: "https://www.youtube.com/@100acress" },
+                    {
+                      Icon: Instagram,
+                      href: "https://www.instagram.com/official100acress",
+                    },
+                    {
+                      Icon: Linkedin,
+                      href: "https://www.linkedin.com/company/100acress/",
+                    },
+                    {
+                      Icon: Facebook,
+                      href: "https://www.facebook.com/100Acress",
+                    },
+                    { Icon: X, href: "https://twitter.com/100acressdotcom" },
+                    {
+                      Icon: Youtube,
+                      href: "https://www.youtube.com/@100acress",
+                    },
                   ].map(({ Icon, href }, index) => (
                     <a
                       key={index}
