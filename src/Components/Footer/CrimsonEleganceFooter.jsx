@@ -8,7 +8,7 @@ import {
   Instagram,
 } from "lucide-react";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Input } from "../ui/Input";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import api from "../../config/apiClient";
