@@ -39,6 +39,7 @@ import LazyLoad from "react-lazyload";
 import "animate.css";
 import LoadingSpinner from "./Components/LoadingSpinner";
 import ErrorBoundary from "./Components/ErrorBoundary";
+import AdminGuides from "./Insight/pages/admin/AdminGuides";
 import LoginForm from "./Components/LoginForm";
 // import ConfettiAllCorners from "./Components/ConfettiAllCorners"; 
 
