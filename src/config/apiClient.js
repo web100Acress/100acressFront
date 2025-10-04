@@ -33,18 +33,32 @@ const getBaseUrl = () => {
   }
 };
 
+// Helper function to determine the base URL
+const getApiBaseUrl = () => {
+  // Use VITE_API_URL if available (set in .env), otherwise fallback to VITE_API_BASE or default
+  return import.meta.env.VITE_API_URL || 
+         import.meta.env.VITE_API_BASE || 
+         (import.meta.env.PROD ? 'https://api.100acress.com' : 'http://localhost:3500');
+};
+
 // Create axios instance with defaults
 const api = axios.create({
-  // Use the full backend URL
-  baseURL: 'http://localhost:3500',
+  baseURL: getApiBaseUrl(),
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  // Enable credentials for CORS
+  // CORS configuration
   withCredentials: true,
   crossDomain: true,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
+  },
   // XSRF token configuration
   xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-XSRF-TOKEN',
