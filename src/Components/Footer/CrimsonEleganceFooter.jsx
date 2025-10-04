@@ -10,8 +10,45 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import api from "../../config/apiClient";
 
 const CrimsonEleganceFooter = () => {
+  const [icName, setIcName] = useState("");
+  const [icPhone, setIcPhone] = useState("");
+  const [icSubmitting, setIcSubmitting] = useState(false);
+
+  const handleInstantCallSubmit = async (e) => {
+    e.preventDefault();
+    if (icSubmitting) return;
+
+    const phoneOk = /^([+]\d{2})?\d{10}$/.test(icPhone.trim());
+    const nameOk = icName.trim().length >= 2;
+    if (!nameOk || !phoneOk) {
+      alert("Please enter a valid name and 10-digit mobile number");
+      return;
+    }
+    try {
+      setIcSubmitting(true);
+      await api.post("/userInsert", {
+        name: icName.trim(),
+        mobile: icPhone.trim(),
+        email: "",
+        projectName: "Footer Instant Call",
+        address: (typeof window !== 'undefined' ? window.location.pathname : ""),
+        source: "footer_instant_call",
+      });
+      alert("Callback requested successfully");
+      setIcName("");
+      setIcPhone("");
+    } catch (err) {
+      const status = err?.response?.status;
+      const msg = err?.response?.data?.message || err?.message;
+      alert(status ? `Request failed (${status})${msg ? ": " + msg : ""}` : (msg || "Failed to submit. Please try again."));
+    } finally {
+      setIcSubmitting(false);
+    }
+  };
   const quickLinks = [
     { name: "Home", href: "/" },
     { name: "About Us", href: "/about-us/" },
@@ -182,19 +219,33 @@ const CrimsonEleganceFooter = () => {
                   </p>
                 </div>
 
-                <div className="space-y-4">
+                <form onSubmit={handleInstantCallSubmit} className="space-y-4">
                   <Input
                     placeholder="Your Name"
+                    value={icName}
+                    onChange={(e) => setIcName(e.target.value)}
                     className="bg-white/20 border-white/30 text-footer-text placeholder:text-footer-text-muted backdrop-blur-sm h-12 text-lg"
+                    required
+                    minLength={2}
                   />
                   <Input
+                    type="tel"
                     placeholder="Phone Number"
+                    value={icPhone}
+                    onChange={(e) => setIcPhone(e.target.value)}
                     className="bg-white/20 border-white/30 text-footer-text placeholder:text-footer-text-muted backdrop-blur-sm h-12 text-lg"
+                    required
+                    pattern="^([+]\d{2})?\d{10}$"
+                    title="Please enter a valid 10-digit phone number"
                   />
-                  <Button className="w-full bg-gradient-accent hover:bg-rose-gold text-burgundy-dark font-semibold h-12 text-lg shadow-soft hover:shadow-elegant transition-all duration-300 hover:scale-[1.02]">
-                    Contact
+                  <Button 
+                    type="submit"
+                    className="w-full bg-gradient-accent hover:bg-rose-gold text-burgundy-dark font-semibold h-12 text-lg shadow-soft hover:shadow-elegant transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={icSubmitting}
+                  >
+                    {icSubmitting ? 'Submitting...' : 'Contact'}
                   </Button>
-                </div>
+                </form>
 
                 <p className="text-sm text-footer-text-muted text-center">
                   Get expert advice on your property investment. Our team will
