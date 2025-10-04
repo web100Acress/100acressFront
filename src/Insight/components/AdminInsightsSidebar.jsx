@@ -222,7 +222,7 @@ export default function AdminInsightsSidebar() {
               {item('/Admin/insights', 'Insights Dashboard', icons.insights, !collapsed)}
               {item('/admin/insights/market-report-generator', 'Market Reports', icons.trends, !collapsed)}
               {item('/Admin/insights/InsightsPriceTrendsBanners', 'Price trends Banners', icons.trends, !collapsed)}
-              {item('/Admin/insights/guides', 'Guides', icons.guides, !collapsed, null, true)}
+              {item('/Admin/insights/guides', 'Guides', icons.guides, true, null, true)}
               {item('/Admin/insights/EnquiryManagement', 'Enquiries', icons.enquiry, !collapsed)}
               {item('/Admin/insights/contacts', 'Contacts', icons.contact, !collapsed)}
             </div>

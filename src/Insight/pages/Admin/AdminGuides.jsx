@@ -1,36 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AdminInsightsSidebar from '../../components/AdminInsightsSidebar';
-import axios from 'axios';
-
 import { Plus, Edit, Trash2, Upload, Download, Search, Filter, X, BookOpen, Clock, BarChart3, Star, FileText, AlertCircle } from 'lucide-react';
-
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../../config/apiClient';
 import { io } from 'socket.io-client';
 
-// Test API connection
-const testApiConnection = async () => {
-  const testUrl = 'http://localhost:3500/api/health';
-  try {
-    const response = await fetch(testUrl);
-    console.log('API Health Check:', {
-      status: response.status,
-      statusText: response.statusText,
-      url: testUrl
-    });
-    if (response.ok) {
-      const data = await response.json();
-      console.log('API Health Data:', data);
-    }
-  } catch (error) {
-    console.error('API Health Check Failed:', error);
-  }
+// Constants
+const API_ENDPOINTS = {
+  GUIDES: '/guides',
+  UPLOAD: '/upload',
+  HEALTH: '/health'
 };
-
-// Run test connection
-setTimeout(testApiConnection, 1000);
 
 const AdminGuides = () => {
   // State declarations
@@ -57,68 +39,33 @@ const AdminGuides = () => {
   });
   const navigate = useNavigate();
 
-  // Fetch guides function
+  // Fetch guides function using centralized API client
   const fetchGuides = async () => {
     try {
       setLoading(true);
-      const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3500/api/';
+      console.log('Fetching guides...');
       
-      // Try different endpoint variations
-      const endpoints = [
-        `${baseURL}guides`,
-        `${baseURL}guides/`,
-        `${baseURL.replace('/api', '')}guides`,
-        `${baseURL.replace('/api', '')}guides/`
-      ];
-
-      let lastError = null;
+      const response = await api.get(API_ENDPOINTS.GUIDES);
+      const guidesData = response.data?.data || response.data || [];
       
-      for (const endpoint of endpoints) {
-        const url = endpoint.replace(/([^:]\/)\/+/g, '$1');
-        try {
-          console.log('Trying endpoint:', url);
-          const response = await axios.get(url, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('myToken')?.replace(/^"/, '').replace(/"$/, '')}`,
-              'Content-Type': 'application/json'
-            },
-            withCredentials: true,
-            timeout: 5000
-          });
-          
-          console.log('Successfully fetched from:', url);
-          console.log('Response data:', response.data);
-          setGuides(response.data.data || response.data || []);
-          return; // Exit on success
-          
-        } catch (error) {
-          lastError = error;
-          console.warn(`Failed to fetch from ${url}:`, error.message);
-          // Continue to next endpoint
-        }
-      }
+      console.log('Successfully fetched guides:', guidesData);
+      setGuides(Array.isArray(guidesData) ? guidesData : []);
       
-      // If we get here, all endpoints failed
-      throw lastError || new Error('All endpoint attempts failed');
     } catch (error) {
       console.error('Error fetching guides:', error);
-      if (error.response) {
-        console.error('Error response:', {
-          status: error.response.status,
-          statusText: error.response.statusText,
-          data: error.response.data,
-          url: error.config?.url
-        });
-      }
-      toast.error('Failed to load guides');
+      const errorMessage = error.response?.data?.message || 'Failed to load guides';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  // Initialize WebSocket connection
+  // Initialize WebSocket connection using the same base URL as the API client
   useEffect(() => {
-    const baseURL = (import.meta.env.VITE_API_URL || 'http://localhost:3500/api/').replace('/api', '');
+    // Get base URL from API client or fallback to environment variable
+    const baseURL = api.defaults.baseURL?.replace('/api', '') || 
+                   (import.meta.env.VITE_API_URL || 'http://localhost:3500').replace('/api', '');
+    
     console.log('Connecting to WebSocket at:', baseURL);
     const newSocket = io(baseURL, {
       transports: ['websocket'],

@@ -196,7 +196,8 @@ const InsightsPriceTrendsBanners = lazy(() => import("./Insight/admin/InsightsPr
 const Contacts = lazy(() => import("./Insight/components/Contacts"));
 const EnquiryManagement = lazy(() => import("./Insight/components/EnquiryManagement"));
 const MarketReportsAdmin = lazy(() => import("./Insight/pages/Admin/MarketReportsAdmin"));
-const AdminGuides = lazy(() => import("./Insight/pages/admin/AdminGuides"));
+const AdminGuides = lazy(() => import("./Insight/pages/Admin/AdminGuides"));
+
 
 
 
@@ -581,11 +582,10 @@ function App() {
                         path="insights/investment"
                         element={<LazyLoad><InvestmentInsights /></LazyLoad>}
                       />
-                      <Route
-                        path="insights/guides"
-                        element={<LazyLoad><AdminGuides /></LazyLoad>}
-                      />
-                    </Route>
+                      </Route>
+
+                    {/* Admin route for Guides */}
+                    <Route path="/Admin/insights/guides" element={<LazyLoad><AdminGuides /></LazyLoad>} />
 
                     {/* Admin route for Market Reports */}
                     <Route path="/admin/insights/market-report-generator" element={<LazyLoad><MarketReportsAdmin /></LazyLoad>} />
