@@ -15,7 +15,7 @@ const CrimsonEleganceFooter = () => {
   const quickLinks = [
     { name: "Home", href: "/" },
     { name: "About Us", href: "/about-us/" },
-    { name: "Our Services", href: "/#our-services" },
+    { name: "Our Services", href: "/about-us/" },
     { name: "Luxury Properties", href: "/top-luxury-projects/" },
     { name: "Blog", href: "/blog/" },
     { name: "Career", href: "/career-with-us/" },
@@ -26,12 +26,12 @@ const CrimsonEleganceFooter = () => {
     { name: "Flats in Gurugram", href: "/projects-in-gurugram/" },
     { name: "Flats in Delhi", href: "/project-in-delhi/" },
     { name: "Flats in Noida", href: "/project-in-noida/" },
-    { name: "Flats in Goa", href: "/projects-in-goa/" },
-    { name: "Flats in Ayodhya", href: "/projects-in-ayodhya/" },
+    { name: "Flats in Goa", href: "/project-in-goa/" },
+    { name: "Flats in Ayodhya", href: "/project-in-ayodhya/" },
     { name: "Flats in Mumbai", href: "/project-in-mumbai/" },
     { name: "Flats in Panipat", href: "/projects-in-panipat/" },
-    { name: "Flats in Panchkula", href: "/projects-in-panchkula/" },
-    { name: "Flats in Kasauli", href: "/projects-in-kasauli/" },
+    { name: "Flats in Panchkula", href: "/project-in-panchkula/" },
+    { name: "Flats in Kasauli", href: "/project-in-kasauli/" },
     { name: "Flats in Sonipat", href: "/projects-in-sonipat/" },
     { name: "Flats in Karnal", href: "/projects-in-karnal/" },
     { name: "Flats in Jalandhar", href: "/projects-in-jalandhar/" },
@@ -74,12 +74,13 @@ const CrimsonEleganceFooter = () => {
     { name: "EMI Calculator", href: "/emi-calculator/" },
     {
       name: "Area Calculator",
-      href: "https://www.100acress.com/emi-calculator/",
+      href: "/emi-calculator/",
     },
-    { name: "Rasale Properties in Gurugram", href: "/buy-properties/" },
-    { name: "Rental Properties in Gurugram", href: "/rent-properties/" },
+    { name: "Rasale Properties in Gurugram", href: "/buy-properties/best-resale-property-in-gurugram/" },
+    { name: "Rental Properties in Gurugram", href: "/rental-properties/best-rental-property-in-gurugram/" },
     { name: "Privacy Policy", href: "/privacy-policy/" },
     { name: "Terms & Conditions", href: "/terms-and-conditions/" },
+    { name: "Disclaimer", href: "/disclaimer"},
   ];
 
   return (
@@ -98,7 +99,7 @@ const CrimsonEleganceFooter = () => {
             {/* About Section */}
             <div className="space-y-8">
               <div className="space-y-6">
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <p className="text-lg text-footer-text-muted font-medium">
                     About{" "}
                     <Link
@@ -108,13 +109,18 @@ const CrimsonEleganceFooter = () => {
                       100acress.com
                     </Link>
                   </p>
-                </div>
+                </div> */}
                 <p className="text-footer-text leading-relaxed text-lg max-w-2xl">
-                  100acress.com Real Estate Company specializes in providing
-                  premier property solutions tailored to meet your needs. We
-                  offer world-class luxury homes with stylish design, premium
-                  features, and top-class amenities for a truly exclusive
-                  lifestyle.
+                  <Link
+                    to="https://www.100acress.com/"
+                    className="hover:text-footer-accent transition-colors duration-300"
+                  >
+                    100acress.com
+                  </Link>{" "}
+                  Real Estate Company specializes in providing premier property
+                  solutions tailored to meet your needs. We offer world-class
+                  luxury homes with stylish design, premium features, and
+                  top-class amenities for a truly exclusive lifestyle.
                 </p>
               </div>
 
@@ -133,14 +139,17 @@ const CrimsonEleganceFooter = () => {
                     </span>
                   </a>
                 </div>
-                <div className="flex items-center gap-4 text-footer-text hover:text-footer-accent transition-smooth">
+                <a
+                  href="mailto:support@100acress.com"
+                  className="flex items-center gap-4 text-footer-text hover:text-footer-accent transition-smooth"
+                >
                   <div className="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
                     <Mail className="w-5 h-5" />
                   </div>
                   <span className="text-lg font-medium">
                     support@100acress.com
                   </span>
-                </div>
+                </a>
                 <a
                   href="https://wa.me/918500900100"
                   target="_blank"
@@ -279,38 +288,24 @@ const CrimsonEleganceFooter = () => {
           <div className="container mx-auto px-6 py-0">
             <div className="flex flex-wrap gap-2">
               {[
-                "Sohna Road",
-                "Golf Course Road",
-                "Sector 65",
-                "Sector 66",
-                "Sector 67",
-                "Sector 68",
-                "Sector 70",
-                "Sector 71",
-                "Sohna Road",
-                "Golf Course Road",
-                "Sector 65",
-                "Sector 66",
-                "Sector 67",
-                "Sector 68",
-                "Sector 70",
-                "Sector 71",
-                "Sohna Road",
-                "Golf Course Road",
-                "Sector 65",
-                "Sector 66",
-                "Sector 67",
-                "Sector 68",
-                "Sector 70",
-                "Sector 71",
-                "Sohna Road",
-                "Golf Course Road",
-                "Sector 65",
-                "Sector 66",
-                "Sector 67",
-                "Sector 68",
-                "Sector 70",
-                "Sector 71",
+                "1 BHK Flats in Gurgaon",
+                "2 BHK Flats in Gurgaon",
+                "3 BHK Flats in Gurgaon",
+                "4 BHK Flats in Gurgaon",
+                "5 BHK Flats in Gurgaon",
+                "Fully Furnished Flats in Gurgaon",
+                "Penthouse in Gurgaon",
+                "Semi Furnished Flats in Gurgaon",
+                "Unfurnished Flats in Gurgaon",
+                "Independent Floor for Sale in Gurgaon",
+                "Independent Houses For Sale in Gurgaon",
+                "Flats For Sale under 1 Cr in Gurgaon",
+                "Flats For Sale under 5 Cr in Gurgaon",
+                "Flats For Sale under 10 Cr in Gurgaon",
+                "Flats For Sale under 20 Cr In Gurgaon",                
+                "Affordable Homes in Gurgaon",
+                "Farmhouse in Gurgaon",
+                "Luxury Villas in Gurgaon",
               ].map((location, index) => (
                 <div
                   key={index}
@@ -357,22 +352,24 @@ const CrimsonEleganceFooter = () => {
                 <div className="flex items-center gap-4">
                   {[
                     {
+                      Icon: Facebook,
+                      href: "https://www.facebook.com/100Acress",
+                    },
+                    {
                       Icon: Instagram,
                       href: "https://www.instagram.com/official100acress",
+                    },
+                    {
+                      Icon: Youtube,
+                      href: "https://www.youtube.com/@100acress",
                     },
                     {
                       Icon: Linkedin,
                       href: "https://www.linkedin.com/company/100acress/",
                     },
-                    {
-                      Icon: Facebook,
-                      href: "https://www.facebook.com/100Acress",
-                    },
+                   
                     { Icon: X, href: "https://twitter.com/100acressdotcom" },
-                    {
-                      Icon: Youtube,
-                      href: "https://www.youtube.com/@100acress",
-                    },
+                  
                   ].map(({ Icon, href }, index) => (
                     <a
                       key={index}
