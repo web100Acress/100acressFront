@@ -18,7 +18,6 @@ const CrimsonEleganceFooter = () => {
     { name: "Our Services", href: "/#our-services" },
     { name: "Luxury Properties", href: "/top-luxury-projects/" },
     { name: "Blog", href: "/blog/" },
-    { name: "EMI Calculator", href: "/emi-calculator/" },
     { name: "Career", href: "/career-with-us/" },
     { name: "Contact", href: "/contact-us/" },
   ];
@@ -72,20 +71,15 @@ const CrimsonEleganceFooter = () => {
   ];
 
   const toolsServices = [
+    { name: "EMI Calculator", href: "/emi-calculator/" },
     {
-      name: "Square Meter to Feet",
-      href: "/convert-square-meter-to-square-feet/",
+      name: "Area Calculator",
+      href: "https://www.100acress.com/emi-calculator/",
     },
-    {
-      name: "Square Feet to Meter",
-      href: "/convert-square-feet-to-square-meter/",
-    },
-    { name: "Acre to Square Feet", href: "/convert-acre-to-square-feet/" },
-    { name: "Square Feet to Acre", href: "/convert-square-feet-to-acre/" },
-    { name: "Buy Properties", href: "/buy-properties/" },
-    { name: "Sell Properties", href: "/sell-properties/" },
-    { name: "Rent Properties", href: "/rent-properties/" },
-    { name: "Commercial", href: "/commercial-properties/" },
+    { name: "Rasale Properties in Gurugram", href: "/buy-properties/" },
+    { name: "Rental Properties in Gurugram", href: "/rent-properties/" },
+    { name: "Privacy Policy", href: "/privacy-policy/" },
+    { name: "Terms & Conditions", href: "/terms-and-conditions/" },
   ];
 
   return (
@@ -106,14 +100,14 @@ const CrimsonEleganceFooter = () => {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <h2 className="text-5xl lg:text-6xl font-bold bg-gradient-accent bg-clip-text text-transparent">
-                    100acres
+                    100acress
                   </h2>
                   <p className="text-lg text-footer-text-muted font-medium">
                     Real Estate Excellence
                   </p>
                 </div>
                 <p className="text-footer-text leading-relaxed text-lg max-w-2xl">
-                  100acres.com Real Estate Company specializes in providing
+                  100acress.com Real Estate Company specializes in providing
                   premier property solutions tailored to meet your needs. We
                   offer world-class luxury homes with stylish design, premium
                   features, and top-class amenities for a truly exclusive
@@ -254,12 +248,42 @@ const CrimsonEleganceFooter = () => {
           </div>
 
           {/* Large Brand Watermark */}
-          <div className="relative flex items-center justify-center pointer-events-none py-8">
-            <div className="text-[clamp(4rem,15vw,12rem)] font-bold text-footer-text-muted/10 select-none leading-none tracking-wider">
-              100acress
+        
+            <div className="container mx-auto px-6 py-0">
+              <div className="flex flex-wrap gap-4">
+                {[
+                  "Sohna Road",
+                  "Golf Course Road",
+                  "Sector 65",
+                  "Sector 66",
+                  "Sector 67",
+                  "Sector 68",
+                  "Sector 70",
+                  "Sector 71",
+                ].map((location, index) => (
+                  <div
+                    key={index}
+                    className="bg-white rounded-lg h-6 px-4 flex items-center justify-center hover:scale-105 transition-all duration-300 cursor-pointer min-w-max"
+                  >
+                    <span className="text-red-900 font-medium text-sm text-center leading-tight whitespace-nowrap">
+                      {location}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          {/* </div> */}
 
+          <div className="relative flex items-center justify-center py-8">
+            <a
+              href="https://www.100acress.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[clamp(2.5rem,10vw,8rem)] font-bold text-footer-text-muted/10 hover:text-footer-text-muted/20 select-none leading-none tracking-wider transition-opacity duration-300"
+            >
+              100acress.com
+            </a>
+          </div>
           {/* Bottom Section */}
           <div className="border-t border-white/10 pt-8">
             <div className="container mx-auto px-6 pb-8">
