@@ -19,22 +19,63 @@ const OtherEnquiries = () => {
     try {
       setLoading(true);
       setError("");
-
-      // Fetch from both contact and user endpoints
-      const [contactRes, userRes] = await Promise.all([
-        api.get(`contact/viewAll`),
-        api.get(`userViewAll`)
+      
+      // Fetch from all three sources: old contact, user enquiries, and new Insight contacts
+      const [contactRes, userRes, insightContactRes] = await Promise.all([
+        api.get(`contact/viewAll`).catch(err => {
+          console.error('Old contact fetch failed:', err);
+          return { data: { data: [] } };
+        }),
+        api.get(`userViewAll`).catch(err => {
+          console.error('User enquiries fetch failed:', err);
+          return { data: { data: [] } };
+        }),
+        api.get(`/api/admin/contacts?limit=1000`).catch(err => {
+          console.error('Insight contacts fetch failed:', err);
+          return { data: { data: [] } };
+        })
       ]);
 
       const contactData = contactRes?.data?.data || [];
       const userData = userRes?.data?.data || [];
+      const insightContactData = insightContactRes?.data?.data || [];
 
       // Add a type field to distinguish between data sources
-      const contactDataWithType = contactData.map(item => ({ ...item, enquiryType: 'contact' }));
-      const userDataWithType = userData.map(item => ({ ...item, enquiryType: 'user' }));
+      const contactDataWithType = contactData.map(item => ({ 
+        ...item, 
+        enquiryType: 'contact',
+        // Normalize field names for consistency
+        name: item.name || '',
+        mobile: item.mobile || '',
+        email: item.email || '',
+        message: item.message || ''
+      }));
 
-      // Combine both datasets
-      const combinedData = [...contactDataWithType, ...userDataWithType];
+      const userDataWithType = userData.map(item => ({ 
+        ...item, 
+        enquiryType: 'user',
+        name: item.name || '',
+        mobile: item.mobile || '',
+        email: item.email || ''
+      }));
+
+      // Map InsightContact data to match the display format
+      const insightContactDataWithType = insightContactData.map(item => ({
+        ...item,
+        enquiryType: 'insight',
+        // Map firstName/lastName to name for display
+        name: `${item.firstName || ''} ${item.lastName || ''}`.trim(),
+        // Map phone to mobile for display
+        mobile: item.phone || '',
+        email: item.email || '',
+        message: item.message || '',
+        // Keep original fields for reference
+        source: item.source || 'GetInTouch Form',
+        inquiryType: item.inquiryType || 'General'
+      }));
+
+      // Combine all three datasets
+      const combinedData = [...contactDataWithType, ...userDataWithType, ...insightContactDataWithType];
 
       // Sort by createdAt in descending order (newest first)
       const sortedData = combinedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -126,9 +167,13 @@ const OtherEnquiries = () => {
         await api.delete(`contact_delete/${id}/delete`);
       } else if (item.enquiryType === 'user') {
         await api.delete(`userdataDelete/delete/${id}`);
+      } else if (item.enquiryType === 'insight') {
+        await api.delete(`/api/admin/contacts/${id}`);
       }
 
       setRows(prev => prev.filter(r => r._id !== id));
+      // Also refetch to sync with backend
+      fetchData(page);
     } catch (e) {
       console.error("Delete failed", e);
       alert("Delete failed");
@@ -352,15 +397,19 @@ const OtherEnquiries = () => {
                                   ? (item.message && item.message.includes('footer_instant_call')
                                       ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white border border-purple-400 shadow-sm'
                                       : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white border border-blue-400 shadow-sm')
-                                  : (item.projectName === 'Footer Instant Call'
-                                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white border border-orange-400 shadow-sm'
-                                      : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white border border-emerald-400 shadow-sm')
+                                  : item.enquiryType === 'insight'
+                                    ? 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white border border-indigo-400 shadow-sm'
+                                    : (item.projectName === 'Footer Instant Call'
+                                        ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white border border-orange-400 shadow-sm'
+                                        : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white border border-emerald-400 shadow-sm')
                               }`}>
                                 {item.enquiryType === 'contact'
                                   ? (item.message && item.message.includes('footer_instant_call')
                                       ? 'Footer'
                                       : 'Contact')
-                                  : 'Project'
+                                  : item.enquiryType === 'insight'
+                                    ? item.source || 'GetInTouch'
+                                    : 'Project'
                                 }
                               </span>
                             </div>
