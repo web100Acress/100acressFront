@@ -19,7 +19,7 @@ const Builderaction = () => {
       link: "developers/adani-realty/",
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/adanireality.webp",
       backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/zcasashag5pnabbtk9ox",
-      subtitle: "Premium",
+      // subtitle: "Premium",
       rating: 4.8,
       projects: 15
     },
@@ -28,7 +28,7 @@ const Builderaction = () => {
       link: "/developers/m3m-india/", 
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3m.webp", 
       backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/m3mbuilderimage.jpg",
-      subtitle: "Luxury Living",
+      // subtitle: "Luxury Living",
       rating: 4.7,
       projects: 28
     },
@@ -37,37 +37,38 @@ const Builderaction = () => {
       link: "/developers/emaar-india/", 
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
       backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/q8duitnixfn97gmruqbr",
-      subtitle: "Global Standards",
+      // subtitle: "Global Standards",
       rating: 4.9,
       projects: 22
     },
     { 
-      title: "Experion", 
+      title: "Experion Developers", 
       link: "/developers/experion-developers/", 
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/experion.webp",
       backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/loedvckg91xfhdnqulho",
-      subtitle: "Smart Homes",
+      // subtitle: "Smart Homes",
       rating: 4.6,
       projects: 12
     },
     { 
-      title: "Signature", 
+      title: "Signature Global", 
       link: "/developers/signature-global/", 
       image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
       backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/dhxv9npqtof8mlrwvanx",
-      subtitle: "Affordable Luxury",
+      // subtitle: "Affordable Luxury",
       rating: 4.5,
       projects: 18
     },
-    { 
-      title: "Signature", 
-      link: "/developers/signature-global/", 
-      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
-      backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/dhxv9npqtof8mlrwvanx",
-      subtitle: "Affordable Luxury",
+
+    {
+      title: "Elan Group",
+      link: "/developers/elan-group/",
+      image: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1757160649396-download.jpeg",
+      backgroungURL: "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/uploads/1757160649396-download.jpeg",
+      // subtitle: "Affordable Luxury",
       rating: 4.5,
       projects: 18
-    },
+    }
   ];
   
   return (
@@ -119,7 +120,7 @@ const Builderaction = () => {
         </div>
 
         {/* Enhanced Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 -ml-6">
           {projects.map((project, index) => (
             <div
               key={index}
