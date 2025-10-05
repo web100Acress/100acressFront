@@ -51,18 +51,15 @@ const api = axios.create({
   },
   // CORS configuration
   withCredentials: true,
-  crossDomain: true,
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
-  },
   // XSRF token configuration
   xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-XSRF-TOKEN',
 });
+
+// Simple rate limiting to prevent infinite requests
+const requestTracker = new Map();
+const RATE_LIMIT_WINDOW = 1000; // 1 second
+const MAX_REQUESTS_PER_WINDOW = 5;
 
 // Request interceptor
 api.interceptors.request.use(
@@ -71,6 +68,23 @@ api.interceptors.request.use(
     if (config.url.startsWith('http')) {
       return config;
     }
+
+    // Rate limiting check
+    const requestKey = `${config.method?.toUpperCase()}_${config.url}`;
+    const now = Date.now();
+    const requests = requestTracker.get(requestKey) || [];
+    
+    // Remove old requests outside the window
+    const recentRequests = requests.filter(time => now - time < RATE_LIMIT_WINDOW);
+    
+    if (recentRequests.length >= MAX_REQUESTS_PER_WINDOW) {
+      console.warn(`Rate limit exceeded for ${requestKey}. Blocking request.`);
+      return Promise.reject(new Error('Rate limit exceeded'));
+    }
+    
+    // Track this request
+    recentRequests.push(now);
+    requestTracker.set(requestKey, recentRequests);
 
     // Ensure URL is properly formatted
     if (typeof config.url === 'string') {
@@ -95,12 +109,6 @@ api.interceptors.request.use(
       } else {
         config.params = { _: Date.now() };
       }
-    } else if (config.method?.toLowerCase() === 'get') {
-      // Add cache-busting for GET requests
-      config.params = {
-        ...config.params,
-        _: Date.now(),
-      };
     }
 
     // Log the request in development
