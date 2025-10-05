@@ -113,7 +113,7 @@ const CrimsonEleganceFooter = () => {
       name: "Area Calculator",
       href: "/emi-calculator/",
     },
-    { name: "Rasale Properties in Gurugram", href: "/buy-properties/best-resale-property-in-gurugram/" },
+    { name: "Resale Properties in Gurugram", href: "/buy-properties/best-resale-property-in-gurugram/" },
     { name: "Rental Properties in Gurugram", href: "/rental-properties/best-rental-property-in-gurugram/" },
     { name: "Privacy Policy", href: "/privacy-policy/" },
     { name: "Terms & Conditions", href: "/terms-and-conditions/" },
