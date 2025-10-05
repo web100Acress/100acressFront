@@ -42,6 +42,7 @@ const SearchData = () => {
   const [projectType, setProjectType] = useState("");
   const [priceRange, setPriceRange] = useState("");
   const [showFilters, setShowFilters] = useState(false); // State to manage filter visibility
+  const [fallbackLoading, setFallbackLoading] = useState(false);
 
   const isEmptySearch = !key1 && !key2;
 
@@ -73,38 +74,34 @@ const SearchData = () => {
           return;
         }
 
-        const res = await api.get(
-          `/property/search/${key}`
-        );
-        const searchArr = (res.data.searchdata || []).map((item) => ({
-          ...item,
-          sourceType: "search",
-        }));
-        setSearchData(searchArr);
+        const [projectResult, rentResult, buyResult] = await Promise.allSettled([
+          api.get(`/property/search/${key}`),
+          api.get(`/rentproperty/search/${key}`),
+          api.get(`/buyproperty/search/${key}`),
+        ]);
 
-        const rentRes = await api.get(
-          `/rentproperty/search/${key}`
-        );
-        const rentArr = (rentRes.data.data || []).map((item) => ({
-          ...item,
-          sourceType: "rent",
-        }));
-        setRentSearchData(rentArr);
+        const localSearchArr = projectResult.status === "fulfilled"
+          ? (projectResult.value?.data?.searchdata || []).map((item) => ({ ...item, sourceType: "search" }))
+          : [];
+        setSearchData(localSearchArr);
 
-        const buyRes = await api.get(
-          `/buyproperty/search/${key}`
-        );
-        const buyArr = (buyRes.data.data || []).map((item) => ({
-          ...item,
-          sourceType: "buy",
-        }));
-        setBuySearchData(buyArr);
+        const localRentArr = rentResult.status === "fulfilled"
+          ? (rentResult.value?.data?.data || []).map((item) => ({ ...item, sourceType: "rent" }))
+          : [];
+        setRentSearchData(localRentArr);
 
-        if (
-          searchArr.length === 0 &&
-          rentArr.length === 0 &&
-          buyArr.length === 0
-        ) {
+        const localBuyArr = buyResult.status === "fulfilled"
+          ? (buyResult.value?.data?.data || []).map((item) => ({ ...item, sourceType: "buy" }))
+          : [];
+        setBuySearchData(localBuyArr);
+
+        const isAllEmpty =
+          (Array.isArray(localSearchArr) ? localSearchArr.length : 0) === 0 &&
+          (Array.isArray(localRentArr) ? localRentArr.length : 0) === 0 &&
+          (Array.isArray(localBuyArr) ? localBuyArr.length : 0) === 0;
+
+        if (isAllEmpty) {
+          setFallbackLoading(true);
           const allProjectsRes = await api.get(
             "/project/viewAll/data"
           );
@@ -126,11 +123,13 @@ const SearchData = () => {
           setRentSearchData([]);
           setSearchData(allProjectsArr);
           setIsFallbackMode(true);
+          setFallbackLoading(false);
         } else {
           setIsFallbackMode(false);
         }
       } catch (error) {
         if (error.response && error.response.status === 404) {
+          setFallbackLoading(true);
           const allProjectsRes = await api.get(
             "/project/viewAll/data"
           );
@@ -152,6 +151,7 @@ const SearchData = () => {
           setRentSearchData([]);
           setSearchData(allProjectsArr);
           setIsFallbackMode(true);
+          setFallbackLoading(false);
         } else {
           console.log(error.message);
         }
@@ -347,14 +347,17 @@ const SearchData = () => {
       )}
 
       {/* Rendering searchData if available (filtered in fallback mode) */}
-      {combinedSearchData?.length > 0 ||
-      (isFallbackMode && filteredFallbackProjects.length > 0) ? (
+      {fallbackLoading ? (
+        <CustomSkeleton />
+      ) : combinedSearchData?.length > 0 ||
+        (isFallbackMode && filteredFallbackProjects.length > 0) ? (
         <section className="flex flex-col items-center bg-white">
           <CommonInside
-            title={`Results For ${key1}`}
+            title={isFallbackMode ? "All Projects" : `Results For ${key1}`}
             Actualdata={
               isFallbackMode ? filteredFallbackProjects : combinedSearchData
             }
+            suppressEmptyMessage={isFallbackMode}
           />
         </section>
       ) : (
