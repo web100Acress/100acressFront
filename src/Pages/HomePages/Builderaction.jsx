@@ -59,10 +59,19 @@ const Builderaction = () => {
       rating: 4.5,
       projects: 18
     },
+    { 
+      title: "Signature", 
+      link: "/developers/signature-global/", 
+      image: "https://d16gdc5rm7f21b.cloudfront.net/100acre/builder/signature.webp",
+      backgroungURL: "https://d16gdc5rm7f21b.cloudfront.net/100acre/project/dhxv9npqtof8mlrwvanx",
+      subtitle: "Affordable Luxury",
+      rating: 4.5,
+      projects: 18
+    },
   ];
   
   return (
-    <div className="py-3 sm:py-5 lg:py-6 bg-gradient-to-br from-gray-50 via-white to-red-50/40 overflow-hidden">
+    <div className="py-3 sm:py-5 lg:py-6 bg-gradient-to-br to-red-50/40 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Enhanced Header Section */}
@@ -110,7 +119,7 @@ const Builderaction = () => {
         </div>
 
         {/* Enhanced Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 lg:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {projects.map((project, index) => (
             <div
               key={index}
@@ -120,7 +129,7 @@ const Builderaction = () => {
             >
               <Link 
                 to={project.link} 
-                className="block bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-2 overflow-hidden border border-gray-100 group-hover:border-red-200"
+                className="block bg-white rounded-3xl hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-2 overflow-hidden border border-gray-100 group-hover:border-red-200"
               >
                 {/* Image Container with Overlay */}
                 <div className="relative h-44 sm:h-48 overflow-hidden rounded-t-3xl">
@@ -149,13 +158,13 @@ const Builderaction = () => {
                 </div>
 
                 {/* Content Section */}
-                <div className="p-4">
+                <div className="p-2">
                   {/* Title and Subtitle */}
-                  <div className="mb-3">
-                    <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-red-600 transition-colors duration-300">
+                  <div className="mb-1">
+                    <h3 className="text-xl font-bold text-gray-900 mb-0 group-hover:text-red-600 transition-colors duration-300 text-center">
                       {project.title}
                     </h3>
-                    <p className="text-sm text-gray-500 font-medium">
+                    <p className="text-sm text-gray-500 font-medium text-center">
                       {project.subtitle}
                     </p>
                   </div>
@@ -163,14 +172,14 @@ const Builderaction = () => {
                   
 
                   {/* CTA Button */}
-                  <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-500 to-red-600 p-[1px] group-hover:from-red-600 group-hover:to-red-700 transition-all duration-300">
+                  {/* <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-500 to-red-600 p-[1px] group-hover:from-red-600 group-hover:to-red-700 transition-all duration-300">
                     <div className="bg-gradient-to-r from-red-500 to-red-600 group-hover:from-red-600 group-hover:to-red-700 rounded-2xl px-6 py-3 text-center transition-all duration-300">
                       <div className="text-white font-semibold text-sm group-hover:scale-105 transition-transform duration-300">
                         View All Projects
                       </div>
                       
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Hover Effect Border */}
