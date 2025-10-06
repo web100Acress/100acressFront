@@ -55,12 +55,14 @@ const PropViewCardPro = lazy(() => import("./Components/Actual_Components/PropVi
 const NewSellProperty = lazy(() => import("./aadharhomes/NewSellProperty"));
 const BuyPropViewCard = lazy(() => import("./Components/Actual_Components/BuyPropViewCard"));
 const About = lazy(() => import("./Pages/About"));
+const AboutModern = lazy(() => import("./Pages/AboutModern"));
 const BuyViewDetails = lazy(() => import("./Pages/BuyViewDetails"));
 const ResetEmailPassword = lazy(() => import("./Pages/ResetEmailPassword"));
-const TermsAndConditions = lazy(() => import("./Pages/TermsAndConditions"));
+const TermsAndConditions = lazy(() => import("./Pages/privacy/TermsAndConditions"));
 const RentViewDetails = lazy(() => import("./Pages/RentViewDetails"));
 const RentPropViewCard = lazy(() => import("./Components/Actual_Components/RentPropViewCard"));
-const Privacy = lazy(() => import("./Pages/Privacy"));
+const Privacy = lazy(() => import("./Pages/privacy/Privacy"));
+const Disclaimer = lazy(() => import("./Pages/privacy/Disclaimer"));
 const ContactUs = lazy(() => import("./Pages/ContactUs"));
 const SearchData = lazy(() => import("./Pages/SearchData"));
 const UserViewProperty = lazy(() => import("./Pages/UserViewProperty"));
@@ -68,13 +70,12 @@ const Activity = lazy(() => import("./Pages/Activity"));
 const CareerWithUs = lazy(() => import("./Pages/CareerWithUs"));
 const UserEditProperty = lazy(() => import("./Pages/UserEditProperty"));
 const Blogging = lazy(() => import("./Pages/Blogging"));
-const ResidentialProjects = lazy(() => import("./Components/HomePageComponents/ResidentialProjects"));
 const ProjectStatusSearch = lazy(() => import("./Pages/ProjectStatusSearch"));
-const CommercialProject = lazy(() => import("./Components/HomePageComponents/CommercialProject"));
-const ScoPlots = lazy(() => import("./Components/HomePageComponents/ScoPlots"));
-const BuilderIndependentFloor = lazy(() => import("./Components/HomePageComponents/BuilderIndependentFloor"));
+// Global Template Components
+const ProjectStatusSearchGlobal = lazy(() => import("./Pages/ProjectStatusSearch/ProjectStatusSearchGlobal"));
+const CityProjectsGlobal = lazy(() => import("./Pages/ProjectCities/CityProjectsGlobal"));
+const ProjectTypeGlobal = lazy(() => import("./Pages/ProjectType/ProjectTypeGlobal"));
 const DeenDayalPlots = lazy(() => import("./Components/HomePageComponents/DeenDayalPlots"));
-const PlotsInGurugramPage = lazy(() => import("./Pages/PlotsInGurugramPage"));
 const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
 const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
 const UserEdit = lazy(() => import("./Components/HomePageComponents/UserEdit"));
@@ -89,11 +90,11 @@ const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation")
 // const Pushkar = lazy(() => import("./Pages/ProjectCities/Pushkar"));
 const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
 const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
-const VillasProjects = lazy(() => import("./Components/HomePageComponents/VillasProjects"));
-const LuxuryVillasForSalePage = lazy(() => import("./Pages/LuxuryVillasForSalePage"));
-const ScoPlotsInGurugramPage = lazy(() => import("./Pages/ScoPlotsInGurugramPage"));
 // const Panchkula = lazy(() => import("./Pages/ProjectCities/Panchkula"));
 const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
+// New dynamic project type route
+const ProjectTypePage = lazy(() => import("./Pages/ProjectType/[type]"));
+const ProjectTypeDemo = lazy(() => import("./Components/ProjectTypeDemo"));
 const Bptp = lazy(() => import("./Pages/Bptp"));
 const Orris = lazy(() => import("./Pages/Orris"));
 const Jms = lazy(() => import("./Pages/Jms"));
@@ -194,6 +195,11 @@ const InsightsManagement = lazy(() => import("./Insight/admin/InsightsManagement
 const InsightsPriceTrendsBanners = lazy(() => import("./Insight/admin/InsightsPriceTrendsBanners"));
 const Contacts = lazy(() => import("./Insight/components/Contacts"));
 const EnquiryManagement = lazy(() => import("./Insight/components/EnquiryManagement"));
+const MarketReportsAdmin = lazy(() => import("./Insight/pages/Admin/MarketReportsAdmin"));
+const AdminGuides = lazy(() => import("./Insight/pages/Admin/AdminGuides"));
+
+
+
 
 // Initialize QueryClient
 const queryClient = new QueryClient();
@@ -277,11 +283,12 @@ function App() {
                         <Route path="signin/" element={<SignIn />} />
                       </Route>
                       <Route path="/privacy-policy/" element={<Privacy />} />
+                      <Route path="/disclaimer/" element={<Disclaimer />} />
                       <Route
                         path="/terms-and-conditions/"
                         element={<TermsAndConditions />}
                       />
-                      <Route path="/projects-in-gurugram/" element={<CityProjects />} />
+                      <Route path="/projects-in-gurugram/" element={<CityProjectsGlobal />} />
                       <Route
                         path="/projects-in-gurugram/budget"
                         element={<BudgetPrice />}
@@ -326,7 +333,7 @@ function App() {
                         path="/buy-properties/best-resale-property-in-gurugram/"
                         element={<BuyPropViewCard />}
                       />
-                      <Route path="/about-us/" element={<About />} />
+                      <Route path="/about-us/" element={<AboutModern />} />
                       <Route
                         path="/rental-properties/:pUrl/:id/"
                         element={<RentViewDetails />}
@@ -338,37 +345,37 @@ function App() {
                       <Route path="/propviewcard" element={<PropViewCardPro />} />
                       <Route
                         path="/property/residential/"
-                        element={<ResidentialProjects />}
+                        element={<ProjectTypeGlobal />}
                       />
                       <Route
                         path="/projects/upcoming-projects-in-gurgaon/"
-                        element={<ProjectStatusSearch />}
+                        element={<ProjectStatusSearchGlobal />}
                       />
                       <Route
                         path="/projects/commercial/"
-                        element={<CommercialProject />}
+                        element={<ProjectTypeGlobal />}
                       />
-                      <Route path="/sco/plots/" element={<ScoPlotsInGurugramPage />} />
+                      <Route path="/sco/plots/" element={<ProjectTypeGlobal />} />
                       <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} />
                       <Route
                         path="/projects/independentfloors/"
-                        element={<BuilderIndependentFloor />}
+                        element={<ProjectTypeGlobal />}
                       />
-                      <Route path="/project-in-delhi/" element={<CityProjects />} />
-                      <Route path="/project-in-noida/" element={<CityProjects />} />
-                      <Route path="/project-in-panipat/" element={<CityProjects />} />
-                      <Route path="/project-in-panchkula/" element={<CityProjects />} />
-                      <Route path="/project-in-kasauli/" element={<CityProjects />} />
-                      <Route path="/projects-in-sonipat/" element={<CityProjects />} />
-                      <Route path="/projects-in-karnal/" element={<CityProjects />} />
-                      <Route path="/projects-in-jalandhar/" element={<CityProjects />} />
-                      <Route path="/project-in-ayodhya/" element={<CityProjects />} />
-                      <Route path="/project-in-mumbai/" element={<CityProjects />} />
-                      <Route path="/projects-in-dubai/" element={<CityProjects />} />
+                      <Route path="/project-in-delhi/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-noida/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-panipat/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-panchkula/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-kasauli/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-sonipat/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-karnal/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-jalandhar/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-ayodhya/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-mumbai/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-dubai/" element={<CityProjectsGlobal />} />
                       {/* Dynamic city projects route (generic template). Keep after specific routes to avoid conflicts. */}
-                      <Route path="/projects-in-:citySlug/" element={<CityProjects />} />
-                      <Route path="/project-in-:citySlug/" element={<CityProjects />} />
-                      <Route path="/projects-in-pushkar/" element={<CityProjects />} />
+                      <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-:citySlug/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-pushkar/" element={<CityProjectsGlobal />} />
                   <Route path="/qr-generator" element={<QRGeneratorPage />} />
                       <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
                       {/* Analytics (public) */}
@@ -380,13 +387,16 @@ function App() {
                       <Route path="/loan-eligibility" element={<LoanEligibility />} />
                       <Route
                         path="/project-in-underconstruction/"
-                        element={<ProjectStatusSearch />}
+                        element={<ProjectStatusSearchGlobal />}
                       />
-                      <Route path="/projects-in-newlaunch/" element={<ProjectStatusSearch />} />
+                      <Route path="/projects-in-newlaunch/" element={<ProjectStatusSearchGlobal />} />
                       <Route path="/project-in-goa/" element={<CityProjects />} />
-                      <Route path="/plots-in-gurugram/" element={<PlotsInGurugramPage />} />
-                      <Route path="/projects/villas/" element={<LuxuryVillasForSalePage />} />
+                      <Route path="/plots-in-gurugram/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />
+                      {/* New dynamic project type routes */}
+                      <Route path="/project-type/:type" element={<ProjectTypeGlobal />} />
+                      <Route path="/project-types-demo" element={<ProjectTypeDemo />} />
                       <Route
                         path="/userdashboard/"
                         element={
@@ -572,8 +582,14 @@ function App() {
                         path="insights/investment"
                         element={<LazyLoad><InvestmentInsights /></LazyLoad>}
                       />
-                    </Route>
+                      </Route>
 
+                    {/* Admin route for Guides */}
+                    <Route path="/Admin/insights/guides" element={<LazyLoad><AdminGuides /></LazyLoad>} />
+
+                    {/* Admin route for Market Reports */}
+                    <Route path="/admin/insights/market-report-generator" element={<LazyLoad><MarketReportsAdmin /></LazyLoad>} />
+                    
                     {/* Blog route only user with role Blog will be able to login */}
                     <Route path="/seo/" element={<SeoPrivateRoute />}>
                       <Route path="blogs" element={<BlogManagementSidebar />} >

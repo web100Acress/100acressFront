@@ -5,13 +5,24 @@ export const fetchActiveSmallBanners = createAsyncThunk(
   'smallBanner/fetchActiveSmallBanners',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/small-banners/active`);
+      // Use environment-based API detection
+      const isDevelopment = import.meta.env.DEV;
+      const apiBase = isDevelopment 
+        ? (import.meta.env.VITE_API_BASE || 'http://localhost:3500')
+        : 'https://api.100acress.com';
+      
+      console.log('SmallBannerSlice: fetchActiveSmallBanners - Environment:', isDevelopment ? 'Development' : 'Production');
+      console.log('SmallBannerSlice: fetchActiveSmallBanners - API Base:', apiBase);
+      console.log('SmallBannerSlice: fetchActiveSmallBanners - Full URL:', `${apiBase}/api/small-banners/active`);
+      
+      const response = await fetch(`${apiBase}/api/small-banners/active`);
       if (!response.ok) {
         throw new Error('Failed to fetch small banners');
       }
       const data = await response.json();
       return data.banners || [];
     } catch (error) {
+      console.error('SmallBannerSlice: fetchActiveSmallBanners - Error:', error);
       return rejectWithValue(error.message);
     }
   }
@@ -23,11 +34,13 @@ export const fetchAllSmallBanners = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('myToken');
-      // Use local API for testing, production API for live
-      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const apiBase = isLocalhost 
+      // Use environment-based API detection
+      const isDevelopment = import.meta.env.DEV;
+      const apiBase = isDevelopment 
         ? (import.meta.env.VITE_API_BASE || 'http://localhost:3500')
         : 'https://api.100acress.com';
+      
+      console.log('SmallBannerSlice: fetchAllSmallBanners - Environment:', isDevelopment ? 'Development' : 'Production');
       console.log('SmallBannerSlice: fetchAllSmallBanners - API Base:', apiBase);
       console.log('SmallBannerSlice: fetchAllSmallBanners - Token:', token ? 'Present' : 'Missing');
       

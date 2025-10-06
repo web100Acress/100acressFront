@@ -4,11 +4,60 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+     
   <url>
     <loc>https://www.100acress.com/</loc>
     <lastmod>2025-09-16T09:04:16+00:00</lastmod>
     <priority>1.0</priority>
   </url>
+<!-- todays 05 oct -->
+<url>
+    <loc>https://www.100acress.com/disclaimer/</loc>
+    <lastmod>2025-09-16T09:04:16+00:00</lastmod>
+    <priority>1.0</priority>
+</url>
+<url>
+    <loc>https://www.100acress.com/terms-and-conditions/</loc>
+    <lastmod>2025-09-16T09:04:16+00:00</lastmod>
+    <priority>1.0</priority>
+</url>
+<url>
+    <loc>https://www.100acress.com/privacy-policy/</loc>
+    <lastmod>2025-09-16T09:04:16+00:00</lastmod>
+    <priority>1.0</priority>
+</url>
+<url>
+    <loc>https://www.100acress.com/rof-sector-36-sohna/</loc>
+    <lastmod>2025-09-16T09:04:16+00:00</lastmod>
+    <priority>1.0</priority>
+  </url>
+   <url>
+    <loc>https://www.100acress.com/trehan-luxury-floors-sector-2-sohna/</loc>
+    <lastmod>2025-09-16T09:04:16+00:00</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <!-- todays add 03 oct -->
+  <url>
+    <loc>https://www.100acress.com/m3m-it-sez-industrial-plots/</loc>
+    <lastmod>2025-09-16T09:04:16+00:00</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/m3m-ifc/</loc>
+    <lastmod>2025-09-16T09:04:16+00:00</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/bptp-downtown-66/</loc>
+    <lastmod>2025-09-16T09:04:16+00:00</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.100acress.com/emaar-sector-86-gurgaon/</loc>
+    <lastmod>2025-09-16T09:04:16+00:00</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <!-- 03 oct end add -->
   <url>
     <loc>https://www.100acress.com/bnw-fashiontv-acacia/</loc>
     <lastmod>2025-09-16T09:04:16+00:00</lastmod>
@@ -883,11 +932,7 @@
     <lastmod>2025-09-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://www.100acress.com/trinity-infratech-plots/</loc>
-    <lastmod>2025-09-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url>
+  
   <url>
     <loc>https://www.100acress.com/swastik-greens/</loc>
     <lastmod>2025-09-16T09:04:16+00:00</lastmod>
@@ -1393,11 +1438,7 @@
     <lastmod>2025-09-16T09:04:16+00:00</lastmod>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://www.100acress.com/trinity-sector-88b-gurgaon/</loc>
-    <lastmod>2025-09-16T09:04:16+00:00</lastmod>
-    <priority>0.8</priority>
-  </url>
+
   <url>
     <loc>https://www.100acress.com/krisumi-waterside-residences/</loc>
     <lastmod>2025-09-16T09:04:16+00:00</lastmod>

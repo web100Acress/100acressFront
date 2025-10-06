@@ -37,13 +37,17 @@ const Api_service = () => {
       }
       requestThrottle.set('trending', now);
       
-      // Use dynamic project ordering
-      const trendingOrder = await getTrendingDesiredOrder();
-      console.log('Trending order from admin:', trendingOrder);
+      let trendingOrder = [];
+      try {
+        trendingOrder = await getTrendingDesiredOrder() || [];
+        console.log('📋 Trending order:', trendingOrder);
+      } catch (orderError) {
+        console.warn('Could not get trending order, will use default order:', orderError);
+      }
       
       await getProjectsByCategory('trending', trendingOrder, trending);
     } catch (error) {
-      console.error("Error fetching trending data:", error);
+      console.error("❌ Error in getTrending:", error);
     }
   };
 
@@ -59,15 +63,19 @@ const Api_service = () => {
       }
       requestThrottle.set('spotlight', now);
       
-      // Use dynamic project ordering
-      console.log('📋 Getting recommended order...');
-      const recommendedOrder = await getRecommendedDesiredOrder();
-      console.log('📋 Recommended order:', recommendedOrder);
-      console.log('🌐 Making API call to getProjectsByCategory...');
+      // Try to get recommended order, but don't fail if it doesn't exist
+      let recommendedOrder = [];
+      try {
+        recommendedOrder = await getRecommendedDesiredOrder() || [];
+        console.log('📋 Recommended order:', recommendedOrder);
+      } catch (orderError) {
+        console.warn('Could not get recommended order, will use default order:', orderError);
+      }
+      
       await getProjectsByCategory('spotlight', recommendedOrder, spotlight);
       console.log('✅ getSpotlight completed');
     } catch (error) {
-      console.error("❌ Error fetching spotlight data:", error);
+      console.error("❌ Error in getSpotlight:", error);
     }
   }, [dispatch]);
 
@@ -166,32 +174,53 @@ const Api_service = () => {
   }
 
   // Generic function to get projects by category with dynamic ordering
-  const getProjectsByCategory = async(category, projectNames, dispatchAction) => {
+  const getProjectsByCategory = async (category, projectNames = [], dispatchAction) => {
     try {
+      // If no project names are provided, use the category-specific endpoint
+      if (!projectNames || projectNames.length === 0) {
+        console.log(`📡 No project names provided for ${category}, using direct endpoint`);
+        try {
+          const response = await api.get(`${API_ROUTES.projectsBase()}/${category}`);
+          console.log(`✅ Successfully fetched ${category} projects directly`);
+          dispatch(dispatchAction(response.data.data || []));
+          return;
+        } catch (directError) {
+          console.error(`❌ Direct ${category} endpoint failed:`, directError);
+          throw directError; // Re-throw to be caught by the outer catch
+        }
+      }
+
+      // If we have project names, try the category endpoint with specific projects
+      try {
         const projectNamesString = projectNames.join(',');
         const apiUrl = `${API_ROUTES.projectsBase()}/category?category=${category}&projects=${projectNamesString}`;
         console.log('🌐 API URL:', apiUrl);
-        console.log('📊 Project names:', projectNames);
-        console.log('📊 Project names string:', projectNamesString);
         
         const response = await api.get(apiUrl);
         console.log('📡 API Response:', response.data);
-        const projects = response.data.data;
-        console.log('📊 Projects data:', projects);
+        const projects = response.data.data || [];
         
-        // Sort projects according to the desired order
-        const sortedProjects = sortByDesiredOrder(
-            projects,
-            projectNames,
-            "projectName"
-        );
-        console.log('📊 Sorted projects:', sortedProjects);
+        // Sort projects according to the desired order if we have projects to sort
+        let sortedProjects = projects;
+        if (projects.length > 0 && projectNames.length > 0) {
+          sortedProjects = sortByDesiredOrder(projects, projectNames, "projectName") || projects;
+          console.log('📊 Sorted projects:', sortedProjects);
+        }
         
         dispatch(dispatchAction(sortedProjects));
-        console.log('✅ Dispatched to Redux store');
-    } catch(error) {
-        console.error(`❌ Error fetching ${category} data:`, error);
-        console.error('❌ Error details:', error.response?.data || error.message);
+        console.log(`✅ Dispatched ${category} projects to Redux store`);
+      } catch (categoryError) {
+        console.error(`❌ Category endpoint failed for ${category}, falling back to direct endpoint`);
+        // Fallback to direct endpoint if category endpoint fails
+        const response = await api.get(`${API_ROUTES.projectsBase()}/${category}`);
+        console.log(`✅ Successfully fetched ${category} projects via fallback`);
+        dispatch(dispatchAction(response.data.data || []));
+      }
+    } catch (error) {
+      console.error(`❌ Error in getProjectsByCategory (${category}):`, error);
+      console.error('❌ Error details:', error.response?.data || error.message);
+      // Dispatch empty array to prevent UI errors
+      dispatch(dispatchAction([]));
     }
   }
 // //////////////////////////////////////////////////////////////////////////////////////////

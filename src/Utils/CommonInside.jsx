@@ -19,6 +19,7 @@ const CommonInside = ({
   metaContent,
   linkhref,
   details,
+  suppressEmptyMessage,
 }) => {
   // Format price elegantly in Cr or L
   const formatPriceRange = (min, max, fallback) => {
@@ -77,6 +78,7 @@ const CommonInside = ({
 
   // If no valid data, show a message
   if (validData.length === 0) {
+    if (suppressEmptyMessage) return null;
     return (
       <div className="text-center py-10">
         <h2 className="text-xl font-semibold text-gray-600">No properties found</h2>

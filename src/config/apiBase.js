@@ -19,19 +19,37 @@ const getEnv = (key, defaultValue = '') => {
   return defaultValue;
 };
 
+// Clear stale production API overrides BEFORE computing DEFAULT_BASE
+if (typeof window !== 'undefined') {
+  try {
+    const isLocalhost = /^(localhost|127\.0\.0\.1|\[::1\]|192\.168|10\.|172\.(1[6-9]|2[0-9]|3[01]))/i.test(window.location.hostname);
+    if (isLocalhost) {
+      const override = localStorage.getItem('apiBaseOverride');
+      if (override) {
+        const parsed = JSON.parse(override);
+        if (parsed && parsed.url && !parsed.url.includes('localhost') && !parsed.url.includes('127.0.0.1')) {
+          localStorage.removeItem('apiBaseOverride');
+          console.log('🧹 Cleared stale production API override (now using local API)');
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Error during initial API override cleanup:', e);
+  }
+}
+
 const DEFAULT_BASE = (() => {
   try {
     if (typeof window !== 'undefined') {
-      const isHttps = window.location.protocol === 'https:';
       const isLocalhost = /^(localhost|127\.0\.0\.1|\[::1\]|192\.168|10\.|172\.(1[6-9]|2[0-9]|3[01]))/i.test(window.location.hostname);
       
-      // In development or when running locally
-      if (!isHttps && isLocalhost) {
+      // Always use local API when on localhost (regardless of protocol)
+      if (isLocalhost) {
         console.log('Using development API: http://localhost:3500');
         return 'http://localhost:3500';
       }
       
-      // In production or when accessed via HTTPS
+      // In production (non-localhost domain)
       console.log('Using production API: https://api.100acress.com');
       return 'https://api.100acress.com';
     }
@@ -47,8 +65,14 @@ const DEFAULT_BASE = (() => {
 
 // Get the current API base URL
 export const getApiBase = () => {
-  // Check for localStorage override
+  // On localhost, always use local API (overrides already cleared during module init)
   if (typeof window !== 'undefined') {
+    const isLocalhost = /^(localhost|127\.0\.0\.1|\[::1\]|192\.168|10\.|172\.(1[6-9]|2[0-9]|3[01]))/i.test(window.location.hostname);
+    if (isLocalhost) {
+      return 'http://localhost:3500';
+    }
+    
+    // On production domain, check for localStorage override
     try {
       const override = localStorage.getItem('apiBaseOverride');
       if (override) {

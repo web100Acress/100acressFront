@@ -452,31 +452,34 @@ export default function Navbar() {
   };
 
   const ShowLogOutMessage = () => {
-    message.success("Logged Out Successfully !")
+    message.success("Logged Out Successfully !");
   };
 
   const HandleUserLogout = async () => {
     try {
       await axios.get(`${API_BASE}/postPerson/logout`, {
         headers: { Authorization: authToken ? `Bearer ${authToken}` : undefined },
+        withCredentials: true,
       });
-      
-      // Clear favorites from localStorage
-      localStorage.removeItem('favoriteProjects');
-      localStorage.removeItem('favoriteProjectsData');
-      
-      // Clear other user data
-      localStorage.removeItem("myToken");
-      localStorage.removeItem("mySellerId");
-      localStorage.removeItem("userRole");
-      localStorage.removeItem("userData");
-      localStorage.removeItem("firstName");
-      localStorage.removeItem("avatarUrl");
-      
+    } catch (error) {
+      const status = error?.response?.status;
+      const data = error?.response?.data;
+      console.error("Logout failed (ignored):", { status, data, error });
+    } finally {
+      // Always clear local storage even if API fails
+      try {
+        localStorage.removeItem('favoriteProjects');
+        localStorage.removeItem('favoriteProjectsData');
+        localStorage.removeItem("myToken");
+        localStorage.removeItem("mySellerId");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("userData");
+        localStorage.removeItem("firstName");
+        localStorage.removeItem("avatarUrl");
+      } catch {}
+      try { ShowLogOutMessage(); } catch {}
       history("/");
       window.location.reload(false);
-    } catch (error) {
-      console.error("Logout failed:", error);
     }
   };
 

@@ -1,100 +1,75 @@
-import React, {useEffect, useState } from "react";
-import Footer from "../Components/Actual_Components/Footer";
-import { Helmet } from "react-helmet";
-import NoPropertiesMessage from "../Components/NoPropertiesMessage ";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Api_Service from "../Redux/utils/Api_Service";
-import CommonInside from "../Utils/CommonInside";
-import axios from "axios";
-import { API_ROUTES_PROJECTS } from "../Redux/utils/Constant_Service";
+import GlobalFilterTemplate from "../Components/GlobalFilterTemplate/GlobalFilterTemplate";
+import Footer from "../Components/Actual_Components/Footer";
 
-const GlobalBudgetPrice = () => {  
-  const {getAllProjects} = Api_Service(); 
-  const [allProjects, setAllProjects] = useState([]);
+const GlobalBudgetPrice = () => {
+  const { getAllProjects } = Api_Service();
+  
+  // Get all projects from Redux store
+  const upcomingProjects = useSelector(store => store?.allsectiondata?.allupcomingproject || []);
+  const underConstructionProjects = useSelector(store => store?.allsectiondata?.underconstruction || []);
+  const readyToMoveProjects = useSelector(store => store?.allsectiondata?.readytomove || []);
+  const newLaunchProjects = useSelector(store => store?.allsectiondata?.newlaunch || []);
+  
+  // Combine all projects for budget page
+  const allProjects = [
+    ...upcomingProjects,
+    ...underConstructionProjects,
+    ...readyToMoveProjects,
+    ...newLaunchProjects
+  ];
+  
+  const [isLoading, setIsLoading] = useState(true);
   const [filteredProjects, setFilteredProjects] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const minprice = useSelector(store => store?.PriceBased?.minprice);
-  const maxprice = useSelector(store => store?.PriceBased?.maxprice);
 
-  // Fetch all projects when component mounts
+  // Fetch projects on component mount
   useEffect(() => {
-    const fetchAllProjects = async () => {
+    const fetchProjects = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
-        // Fetch all projects without any filters
-        const response = await axios.get(`${API_ROUTES_PROJECTS}/projectsearch?limit=1000`);
-        setAllProjects(response.data.data || []);
+        // Fetch all types of projects for budget page
+        await getAllProjects("allupcomingproject", 0);
+        await getAllProjects("underconstruction", 0);
+        await getAllProjects("readytomove", 0);
+        await getAllProjects("newlaunch", 0);
       } catch (error) {
-        console.error("Error fetching all projects:", error);
+        console.error("Error fetching projects:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchAllProjects();
-  }, []);
-
-  // Filter projects by price range
-  useEffect(() => {
-    if (minprice !== undefined && maxprice !== undefined && allProjects.length > 0) {
-      setIsLoading(true);
-      
-      const filtered = allProjects.filter(project => {
-        const projectMinPrice = project.minPrice || 0;
-        const projectMaxPrice = project.maxPrice || Infinity;
-        
-        // A project should appear if its price range overlaps with the selected budget range
-        return projectMinPrice <= maxprice && projectMaxPrice >= minprice;
-      });
-      
-      setFilteredProjects(filtered);
+    if (allProjects.length === 0) {
+      fetchProjects();
+    } else {
       setIsLoading(false);
     }
-  }, [minprice, maxprice, allProjects]);
+  }, []);
 
-  const getPriceRangeText = () => {
-    if (maxprice === Infinity) {
-      return `Above ₹${minprice} Cr`;
-    } else if (minprice === 0) {
-      return `Under ₹${maxprice} Cr`;
-    } else {
-      return `₹${minprice} Cr - ₹${maxprice} Cr`;
-    }
-  };
+  useEffect(() => {
+    console.log('Budget page - allProjects updated:', allProjects.length);
+    console.log('Budget page - project breakdown:', {
+      upcoming: upcomingProjects.length,
+      underconstruction: underConstructionProjects.length,
+      readytomove: readyToMoveProjects.length,
+      newlaunch: newLaunchProjects.length,
+      total: allProjects.length
+    });
+    setFilteredProjects(allProjects);
+  }, [allProjects, upcomingProjects, underConstructionProjects, readyToMoveProjects, newLaunchProjects]);
 
   return (
-    <div style={{ overflowX: "hidden" }}>
-      <Helmet>
-        <meta
-          name="description"
-          content="Find properties across all cities in your budget range. Browse apartments, villas, and investment properties at 100acress. Contact us now!"
-        />
-        <title>
-          Properties in Budget Range - All Cities - 100acress
-        </title>
-        <link
-          rel="canonical"
-          href="https://www.100acress.com/budget-properties/"
-        />
-      </Helmet>
-      
-      {isLoading ? (
-        <div className="my-10 text-center">
-          <p className="text-gray-600">Loading properties...</p>
-        </div>
-      ) : filteredProjects.length === 0 ? (
-        <div className="my-10">
-          <NoPropertiesMessage/>      
-        </div>
-      ) : (
-        <CommonInside 
-          Actualdata={filteredProjects}
-          title={`Properties in Budget Range: ${getPriceRangeText()}`}
-        />
-      )}
+    <>
+      <GlobalFilterTemplate
+        pageType="budget"
+        projects={filteredProjects}
+        isLoading={isLoading}
+      />
       <Footer />
-    </div>
+    </>
   );
 };
 
-export default GlobalBudgetPrice; 
+export default GlobalBudgetPrice;

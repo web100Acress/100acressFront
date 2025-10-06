@@ -56,6 +56,12 @@ export default function Hero({
   
   // Dynamic headlines based on project status
   const getDynamicTitle = () => {
+    // If title prop is provided and not default, use it
+    if (title && title !== 'Project Status Search') {
+      return title;
+    }
+    
+    // Otherwise use dynamic titles based on project status
     switch(projectStatus) {
       case 'upcoming': return 'Discover Upcoming Projects Across India';
       case 'newlaunch': return 'Find Premium Homes Designed for Your Lifestyle';
@@ -66,6 +72,12 @@ export default function Hero({
   };
   
   const getDynamicSubtitle = () => {
+    // If subtitle prop is provided and not default, use it
+    if (subtitle && subtitle !== 'Premium projects crafted with quality, sustainability, and exceptional after‑sales service.') {
+      return subtitle;
+    }
+    
+    // Otherwise use dynamic subtitles based on project status
     switch(projectStatus) {
       case 'upcoming': return 'Be the first to invest in tomorrow\'s most promising developments';
       case 'newlaunch': return 'Experience luxury living with modern amenities and prime locations';
