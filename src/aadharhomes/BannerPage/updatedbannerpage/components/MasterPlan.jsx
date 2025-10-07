@@ -73,11 +73,7 @@ const MasterPlan = ({ projectName = "", masterPlanImage = null }) => {
               </div>
 
               {/* Click to Expand Text */}
-              <div className="mt-4 text-center">
-                <p className="text-gray-400 text-sm font-medium">
-                  Click to view full-size master plan
-                </p>
-              </div>
+            
             </div>
           </div>
         </div>
