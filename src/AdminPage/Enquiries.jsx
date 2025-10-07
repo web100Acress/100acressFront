@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { getApiBase } from '../config/apiBase';
 
@@ -19,10 +19,25 @@ const Enquiries = () => {
   const [includeDeletedExport, setIncludeDeletedExport] = useState(false);
   const [showDeleted, setShowDeleted] = useState(false);
 
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [filterStatus, setFilterStatus] = useState("all"); // all, verified, unverified
+  const [filterProject, setFilterProject] = useState("");
+  const [sortBy, setSortBy] = useState("date"); // date, name, project
+  const [sortOrder, setSortOrder] = useState("desc"); // asc, desc
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
   const tokenRaw = localStorage.getItem("myToken") || "";
   const token = tokenRaw.replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
+
+  // Ref for the select all checkbox to handle indeterminate state
+  const selectAllRef = useRef(null);
+
+  // Effect to handle select all checkbox indeterminate state
+  useEffect(() => {
+    if (selectAllRef.current) {
+      selectAllRef.current.indeterminate = selectedIds.length > 0 && selectedIds.length < data.length;
+    }
+  }, [selectedIds, data.length]);
 
   useEffect(() => {
     const styleSheet = document.createElement("style");
@@ -169,7 +184,23 @@ const Enquiries = () => {
   const downloadExelFile = async () => {
     try {
       const base = getApiBase();
-      const response = await fetch(`${base}/userViewAll/dowloadData?includeDeleted=${includeDeletedExport ? 1 : 0}`, {
+
+      // If specific items are selected, export only those
+      if (selectedIds.length > 0) {
+        messageApi.info(`Exporting ${selectedIds.length} selected enquiries...`);
+      } else {
+        messageApi.info('Exporting all enquiries...');
+        setSelectedIds([]); // Clear selection after export
+        return;
+      }
+
+      // Prepare the request with selected IDs
+      const queryParams = new URLSearchParams({
+        includeDeleted: includeDeletedExport ? 1 : 0,
+        selectedIds: selectedIds.join(',')
+      });
+
+      const response = await fetch(`${base}/userViewAll/dowloadData?${queryParams}`, {
         method: 'GET',
         headers: {
           'Authorization': token ? `Bearer ${token}` : undefined,
@@ -179,69 +210,69 @@ const Enquiries = () => {
       if (!response.ok) {
         throw new Error(`Failed to download file: ${response.statusText}`);
       }
+
       const contentLength = response.headers.get('Content-Length');
       const contentDisposition = response.headers.get('Content-Disposition');
-      console.log("ContentLength", contentLength);
-      console.log("ContentDisposition", contentDisposition);
 
       if (!contentLength) {
         console.error('Content-Length header is missing. Progress cannot be tracked.');
         return;
       }
-      const total = parseInt(contentLength, 10);
 
+      const total = parseInt(contentLength, 10);
       const reader = response.body.getReader();
       const chunks = [];
-
       let receivedLength = 0;
 
       while (true) {
         const { done, value } = await reader.read();
-
         if (done) break;
 
         chunks.push(value);
         receivedLength += value.length;
 
         const progress = Math.round((receivedLength / total) * 100);
-        console.log(`Download progress: ${progress}%`);
-        setDownloadProgress(progress); 
+        setDownloadProgress(progress);
       }
 
       const blob = new Blob(chunks, { type: response.headers.get('Content-Type') });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
+
       const fileName = contentDisposition
         ? contentDisposition.split('filename=')[1]?.replace(/"/g, '')
-        : 'download.xlsx';
-      link.download = fileName;
+        : `selected_enquiries_${selectedIds.length}_${new Date().toISOString().slice(0, 10)}.xlsx`;
 
+      link.download = fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
       window.URL.revokeObjectURL(url);
+
       setDownloadProgress(0);
-      console.log('File downloaded successfully.');
+      messageApi.success(`Successfully exported ${selectedIds.length} selected enquiries!`);
+
+      // Clear selection after successful download
+      setSelectedIds([]);
 
     } catch (error) {
       console.error('Error downloading the file:', error);
       messageApi.open({
         type: "error",
-        content: "Error downloading file. Please try again.",
-        duration: 2,
+        content: "Error downloading selected enquiries. Please try again.",
+        duration: 3,
       });
-      setDownloadProgress(0); 
+      setDownloadProgress(0);
     }
   }
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex">
       <Sidebar />
-      <div className="flex-1 p-8 ml-[250px] transition-colors duration-300">
+      <div className="flex-1 p-4 ml-[250px] transition-colors duration-300">
         {contextHolder}
-        <div className="enquiries-header">
+        <div className="enquiries-header" style={{ marginBottom: '1.5rem' }}>
           <div className="search-container">
             <input
               type="text"
@@ -255,15 +286,25 @@ const Enquiries = () => {
               Search
             </button>
           </div>
+
+          {/* Filtration Controls */}
+          <div className="filtration-controls">
+          </div>
+
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            {/* <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14 }}>
-              <input
-                type="checkbox"
-                checked={includeDeletedExport}
-                onChange={(e) => setIncludeDeletedExport(e.target.checked)}
-              />
-              Include Deleted in Export
-            </label> */}
+            {selectedIds.length > 0 && (
+              <>
+                <div className="selected-count">
+                  {selectedIds.length} selected
+                </div>
+                <button
+                  className="clear-selection-button"
+                  onClick={() => setSelectedIds([])}
+                >
+                  Clear Selection
+                </button>
+              </>
+            )}
             {downloadProgress > 0 ?
               <button
                 className="download-button download-in-progress"
@@ -273,18 +314,34 @@ const Enquiries = () => {
               </button>
               :
               <button
-                className="download-button download-ready"
+                className={`download-button ${selectedIds.length > 0 ? 'download-selected' : 'download-ready'}`}
                 onClick={downloadExelFile}
+                disabled={data.length === 0}
               >
-                Export to CSV📥
+                {selectedIds.length > 0 ? `Export Selected (${selectedIds.length})📥` : 'Export All📥'}
               </button>
             }
           </div>
         </div>
-        <div className="table-container">
+
+        <div className="table-container" style={{ marginBottom: '1rem' }}>
           <table className="enquiries-table">
             <thead>
               <tr>
+                <th className="table-header" style={{ width: '50px' }}>
+                  <input
+                    ref={selectAllRef}
+                    type="checkbox"
+                    checked={selectedIds.length === data.length && data.length > 0}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedIds(data.map(item => item._id));
+                      } else {
+                        setSelectedIds([]);
+                      }
+                    }}
+                  />
+                </th>
                 {[
                   "Sr.No",
                   "Name",
@@ -294,8 +351,19 @@ const Enquiries = () => {
                   "Date",
                   ...(showDeleted ? ["Deleted At"] : []),
                   "Actions",
-                ].map((header) => (
-                  <th key={header} className="table-header">
+                ].map((header, index) => (
+                  <th key={header} className="table-header" style={{
+                    width: index === 0 ? '80px' :  // Sr.No
+                          index === 1 ? '150px' :  // Name
+                          index === 2 ? '120px' :  // Mobile
+                          index === 3 ? '200px' :  // Project Name
+                          index === 4 ? '100px' :  // Email Received
+                          index === 5 ? '180px' :  // Date
+                          showDeleted && index === 6 ? '180px' :  // Deleted At
+                          index === (showDeleted ? 7 : 6) ? '100px' :  // Actions
+                          'auto',
+                    minWidth: '80px'
+                  }}>
                     {header}
                   </th>
                 ))}
@@ -307,33 +375,46 @@ const Enquiries = () => {
                 {data
                   .filter((r) => !(/footer\s*instant\s*call/i.test((r?.projectName || '').trim())))
                   .map((item, index) => (
-                  <tr key={index} className="table-row">
+                  <tr key={index} className={`table-row ${selectedIds.includes(item._id) ? 'selected-row' : ''}`}>
                     <td className="table-cell">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(item._id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds([...selectedIds, item._id]);
+                          } else {
+                            setSelectedIds(selectedIds.filter(id => id !== item._id));
+                          }
+                        }}
+                      />
+                    </td>
+                    <td className="table-cell" style={{ width: '80px', minWidth: '80px' }}>
                       {index + 1 + (currentPage - 1) * pageSize}
                     </td>
-                    <td className="table-cell">
+                    <td className="table-cell" style={{ width: '150px', minWidth: '120px' }}>
                       {item.name}
                     </td>
-                    <td className="table-cell">
+                    <td className="table-cell" style={{ width: '120px', minWidth: '100px' }}>
                       {item.mobile}
                     </td>
-                    <td className="table-cell">
+                    <td className="table-cell" style={{ width: '200px', minWidth: '150px' }}>
                       {item.projectName}
                     </td>
-                    <td className="table-cell">
+                    <td className="table-cell" style={{ width: '100px', minWidth: '80px' }}>
                       <span className={`email-badge ${item.emailReceived ? 'email-verified' : 'email-unverified'}`}>
                         {item.emailReceived ? 'True' : 'False'}
                       </span>
                     </td>
-                    <td className="table-cell">
+                    <td className="table-cell" style={{ width: '180px', minWidth: '150px' }}>
                       {formatDateTime(item.createdAt)}
                     </td>
                     {showDeleted && (
-                      <td className="table-cell">
+                      <td className="table-cell" style={{ width: '180px', minWidth: '150px' }}>
                         {item.deletedAt ? formatDateTime(item.deletedAt) : '-'}
                       </td>
                     )}
-                    <td className="table-cell">
+                    <td className="table-cell" style={{ width: '100px', minWidth: '80px' }}>
                       <button
                         className="pagination-button"
                         onClick={() => handleDelete(item)}
@@ -348,7 +429,7 @@ const Enquiries = () => {
             ) : (
               <tbody>
                 <tr>
-                  <td colSpan={showDeleted ? "8" : "7"} className="no-data-message">
+                  <td colSpan={showDeleted ? "10" : "9"} className="no-data-message">
                     {loading ? <p>Loading data...</p> : <p>No data available.</p>}
                   </td>
                 </tr>
@@ -512,14 +593,26 @@ const enquiryStyles = `
 }
 
 .download-ready:hover {
-  background-color: #3b66df; 
+  background-color: #3b66df;
   box-shadow: 0 6px 20px rgba(74, 125, 255, 0.4);
-  transform: translateY(-2px); 
+  transform: translateY(-2px);
+}
+
+.download-selected {
+  background-color: #28a745;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.download-selected:hover {
+  background-color: #218838;
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+  transform: translateY(-2px);
 }
 
 .download-in-progress {
   background-color: #e0e0e0; 
   cursor: not-allowed;
+{{ ... }}
   color: #888; 
   box-shadow: none;
 }
@@ -529,34 +622,115 @@ const enquiryStyles = `
   color: #344767; 
 }
 
-/* Table Styling */
-.table-container {
-  overflow-x-auto;
+/* Filtration Controls */
+.filtration-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #344767;
+  white-space: nowrap;
+}
+
+.filter-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   background-color: #ffffff;
-  border-radius: 16px; 
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12); 
+  color: #344767;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #ea5c5c;
+}
+
+.filter-apply-button {
+  padding: 0.5rem 1rem;
+  background-color: #ea5c5c;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.filter-apply-button:hover {
+  background-color: #d63333;
+}
+
+.selected-count {
+  padding: 0.5rem 1rem;
+  background-color: #e6f7ff;
+  color: #0f766e;
+  border: 1px solid #99f6e4;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.clear-selection-button {
+  padding: 0.5rem 1rem;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clear-selection-button:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.table-container {
+  overflow-x: auto;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   margin-bottom: 2rem;
-  border: 1px solid #e0e0e0; 
+  border: 1px solid #e0e0e0;
+  width: 100%;
 }
 
 .enquiries-table {
   width: 100%;
-  border-collapse: separate; 
-  border-spacing: 0; 
-  min-width: 800px; 
-  font-size: 0.95rem; 
+  border-collapse: separate;
+  border-spacing: 0 12px;
+  min-width: 1600px;
+  font-size: 0.95rem;
 }
 
 .table-header {
-  padding: 18px 24px; 
+  padding: 20px 32px;
   text-align: center;
-  font-size: 0.85rem; 
-  font-weight: 700; 
-  color: #6c7a89; 
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6c7a89;
   text-transform: uppercase;
-  letter-spacing: 0.08em; 
-  background-color: #f6f9fc; 
-  border-bottom: 2px solid #e8eaf1; 
+  letter-spacing: 0.08em;
+  background-color: #f6f9fc;
+  border-bottom: 2px solid #e8eaf1;
+  width: 100%;
 }
 
 .table-header:first-child {
@@ -576,15 +750,24 @@ const enquiryStyles = `
   transition: background-color 0.3s ease;
 }
 
+.table-body .table-row.selected-row {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+}
+
+.table-body .table-row.selected-row:hover {
+  background-color: #ffeaa7;
+}
+
 .table-cell {
-  padding: 16px 24px; 
+  padding: 20px 32px;
   text-align: center;
   font-size: 0.95rem;
   color: #344767;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-bottom: 1px solid #e8eaf1; 
+  border-bottom: 1px solid #e8eaf1;
 }
 
 .table-body .table-row:last-child .table-cell {
