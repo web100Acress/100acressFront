@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
 import { statusConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
-import Footer from "../../Components/Actual_Components/Footer";
 
 const ProjectStatusSearchGlobal = () => {
   const { allProjectData } = useContext(DataContext);
@@ -255,7 +254,6 @@ const ProjectStatusSearchGlobal = () => {
         projects={memoizedProjectData || []}
         isLoading={false}
       />
-      <Footer />
     </>
   );
 };
