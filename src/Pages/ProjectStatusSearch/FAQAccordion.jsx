@@ -10,24 +10,32 @@ export default function FAQAccordion({ projectStatus, customFAQs = null }) {
   const faqs = {
     upcoming: [
       {
-        question: "What new projects are launching soon in Gurgaon?",
-        answer: "Check out the latest projects by Oberoi Realty, Central Park, DLF, M3M, Signature Global, and Elan Group in Gurgaon. Dwarka Expressway and New Gurgaon are hotspots for new residential and commercial launches."
+        question: "1.What are the top upcoming projects in Gurgaon?",
+        answer: "Some of the most sought-after upcoming projects in Gurgaon include Trident Realty 104, Satya Group 104, Central Park 104, AIPL Lake City, ArtTech The Story House, Max Estate 361, and Elan Sohna Road."
       },
       {
-        question: "Which upcoming projects in Gurgaon have the best amenities?",
-        answer: "Projects like Elan Sohna Road, Indiabulls Height, Rof Pravasa, DLF Privana South and M3M Golf Estate offer luxury amenities, including clubhouses, pools, and sports facilities for a premium lifestyle."
+        question: "2. Which locations in Gurgaon are best for upcoming residential projects?",
+        answer: " Prime locations for upcoming projects include Dwarka Expressway, Southern Peripheral Road (SPR), Golf Course Extension Road, Sohna Road, and New Gurgaon, all offering strong connectivity and growth potential."
       },
       {
-        question: "Are there any affordable upcoming housing projects?",
-        answer: "Yes, several developers are launching projects under the Deen Dayal Jan Awas Yojna. Look for options in Sohna and the newer sectors of Gurgaon."
+        question: "3. Are there affordable options among Gurgaon’s upcoming projects?",
+        answer: "Yes, projects like Satya Group 104, ArtTech The Story House, and Wal Pravah Senior Living provide budget-friendly housing options while maintaining modern amenities."
       },
       {
-        question: "What is the expected possession date for top upcoming projects?",
-        answer: "Most upcoming projects aim for possession within 3-4 years of their launch. Always verify the RERA-approved completion date before investing."
+        question: "4. What amenities do upcoming projects in Gurgaon usually offer?",
+        answer: "Most new launches come with swimming pools, clubhouses, gyms, landscaped gardens, sports courts, children’s play areas, 24x7 security, and parking facilities, ensuring a premium lifestyle."
       },
       {
-        question: "Which locations in Gurgaon are best for future investment?",
-        answer: "Dwarka Expressway, Southern Peripheral Road (SPR), and Golf Course Extension Road are prime locations with high appreciation potential due to infrastructure."
+        question: "5. Which upcoming projects in Gurgaon offer luxury living?",
+        answer: "Luxury options include Trident Realty 104, Central Park 104, Elan Sohna Road, and Oberoi Realty Gurgaon, featuring spacious layouts, high-end amenities, and premium architecture."
+      },
+      {
+        question: "6. What is the typical possession timeline for upcoming projects in Gurgaon?",
+        answer: " Most projects aim for possession within 3–4 years of launch. Buyers should always check the RERA-approved completion date before investing."
+      },
+      {
+        question: "7. Why invest in upcoming projects in Gurgaon?",
+        answer: " Investing in upcoming projects in Gurgaon offers pre-launch pricing, modern amenities, strong connectivity, and excellent long-term appreciation, making them ideal for both homebuyers and investors."
       }
     ],
     newlaunch: [
