@@ -7,13 +7,13 @@ import { getStaticData, getFAQData, getTrustBoosters } from './staticData';
 export const getCityPageData = (cityName) => {
   const cityData = getStaticData('city', cityName);
   return {
-    title: cityData?.title || "Discover Premium Projects",
-    description: cityData?.description || "Explore the best properties with modern amenities",
-    metaTitle: cityData?.metaTitle || "Best Properties - 100acress",
+    title: cityData?.title || "Luxury Awaits in Gurgaon’s Latest New Launch Projects",
+    description: cityData?.description || " Experience modern living with new launch projects in Gurgaon crafted for your lifestyle and future growth.",
+    metaTitle: cityData?.metaTitle || "Explore the Latest New Launch Projects in Gurgaon",
     canonical: cityData?.canonical || "https://www.100acress.com/",
     keywords: cityData?.keywords || "real estate, properties, homes",
     heroTitle: cityData?.heroTitle || "Discover Premium Projects",
-    heroSubtitle: cityData?.heroSubtitle || "Find your perfect home with modern amenities",
+    heroSubtitle: cityData?.heroSubtitle || "Discover the latest new launch projects in Gurgaon with modern apartments, villas, and premium amenities for a luxurious lifestyle.",
     faqs: getFAQData('city', cityName),
     trustBoosters: getTrustBoosters('city', cityName)
   };

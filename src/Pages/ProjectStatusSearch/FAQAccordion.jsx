@@ -10,54 +10,62 @@ export default function FAQAccordion({ projectStatus, customFAQs = null }) {
   const faqs = {
     upcoming: [
       {
-        question: "What new projects are launching soon in Gurgaon?",
-        answer: "Check out the latest projects by Oberoi Realty, Central Park, DLF, M3M, Signature Global, and Elan Group in Gurgaon. Dwarka Expressway and New Gurgaon are hotspots for new residential and commercial launches."
+        question: "1.What are the top upcoming projects in Gurgaon?",
+        answer: "Some of the most sought-after upcoming projects in Gurgaon include Trident Realty 104, Satya Group 104, Central Park 104, AIPL Lake City, ArtTech The Story House, Max Estate 361, and Elan Sohna Road."
       },
       {
-        question: "Which upcoming projects in Gurgaon have the best amenities?",
-        answer: "Projects like Elan Sohna Road, Indiabulls Height, Rof Pravasa, DLF Privana South and M3M Golf Estate offer luxury amenities, including clubhouses, pools, and sports facilities for a premium lifestyle."
+        question: "2. Which locations in Gurgaon are best for upcoming residential projects?",
+        answer: " Prime locations for upcoming projects include Dwarka Expressway, Southern Peripheral Road (SPR), Golf Course Extension Road, Sohna Road, and New Gurgaon, all offering strong connectivity and growth potential."
       },
       {
-        question: "Are there any affordable upcoming housing projects?",
-        answer: "Yes, several developers are launching projects under the Deen Dayal Jan Awas Yojna. Look for options in Sohna and the newer sectors of Gurgaon."
+        question: "3. Are there affordable options among Gurgaon’s upcoming projects?",
+        answer: "Yes, projects like Satya Group 104, ArtTech The Story House, and Wal Pravah Senior Living provide budget-friendly housing options while maintaining modern amenities."
       },
       {
-        question: "What is the expected possession date for top upcoming projects?",
-        answer: "Most upcoming projects aim for possession within 3-4 years of their launch. Always verify the RERA-approved completion date before investing."
+        question: "4. What amenities do upcoming projects in Gurgaon usually offer?",
+        answer: "Most new launches come with swimming pools, clubhouses, gyms, landscaped gardens, sports courts, children’s play areas, 24x7 security, and parking facilities, ensuring a premium lifestyle."
       },
       {
-        question: "Which locations in Gurgaon are best for future investment?",
-        answer: "Dwarka Expressway, Southern Peripheral Road (SPR), and Golf Course Extension Road are prime locations with high appreciation potential due to infrastructure."
+        question: "5. Which upcoming projects in Gurgaon offer luxury living?",
+        answer: "Luxury options include Trident Realty 104, Central Park 104, Elan Sohna Road, and Oberoi Realty Gurgaon, featuring spacious layouts, high-end amenities, and premium architecture."
+      },
+      {
+        question: "6. What is the typical possession timeline for upcoming projects in Gurgaon?",
+        answer: " Most projects aim for possession within 3–4 years of launch. Buyers should always check the RERA-approved completion date before investing."
+      },
+      {
+        question: "7. Why invest in upcoming projects in Gurgaon?",
+        answer: " Investing in upcoming projects in Gurgaon offers pre-launch pricing, modern amenities, strong connectivity, and excellent long-term appreciation, making them ideal for both homebuyers and investors."
       }
     ],
     newlaunch: [
       {
-        question: "What are the best newly launched residential projects in Gurgaon?",
-        answer: "Consider top projects like Smart World One DXP and Godrej Aristocrat, M3M Mansion. They feature modern designs and are strategically located in rapidly developing sectors."
+        question: "1.What makes new launch projects in Gurgaon a good investment?",
+        answer: "They offer lower prices, modern features, and great value growth thanks to Gurgaon’s rapid development and strong business presence."
       },
       {
-        question: "What is the starting price for a new 3BHK flat in Gurgaon?",
-        answer: "Prices for newly launched 3BHK flats generally start from ₹3.5 Crore. The final cost varies based on location, developer reputation, and amenities."
+        question: "2. Which are the best areas to buy new launch projects in Gurgaon?",
+        answer: "Top localities include Dwarka Expressway, Golf Course Extension Road, Sohna Road, and New Gurgaon, known for premium developments and excellent connectivity."
       },
       {
-        question: "Which new launches are near the Dwarka Expressway?",
-        answer: "Leading builders like M3M, Sobha, Puri, and Emaar have significant new projects along the Dwarka Expressway, offering superior connectivity and modern homes."
+        question: "3.How can I find RERA-approved new launch projects in Gurgaon?",
+        answer: "You can visit trusted real estate platforms like 100acress.com to explore verified, RERA-registered new launch projects with complete details."
       },
       {
-        question: "Are there any new luxury apartment projects available?",
-        answer: "Yes, premier developers such as DLF and M3M Or Signature Global have recently launched luxury projects with world-class amenities and premium specifications in prime locations."
+        question: "4. What are the typical payment plans for new launch projects in Gurgaon?",
+        answer: "Most developers offer construction-linked plans or flexible installment options, letting you pay in stages as the project progresses, making it easier to manage finances."
       },
       {
-        question: "What are the typical payment plans for new launch projects?",
-        answer: "Most developers offer construction-linked payment plans (e.g., 25:25:25:25). This structure links payments to construction milestones, easing financing."
+        question: "5.Are new launch projects in Gurgaon suitable for end-users or investors?",
+        answer: "Both! End-users get modern, comfortable homes, while investors benefit from high ROI and rental demand in Gurgaon’s fast-developing areas."
       },
       {
-        question: "Which newly launched projects offer good rental returns?",
-        answer: "For high rental yields, target projects near major business hubs like Cyber City, Golf Course Road, and Sohna Road, which attract strong professional demand."
+        question: "6.What amenities can I expect in Gurgaon’s new launch projects?",
+        answer: "Most projects offer clubhouses, swimming pools, gyms, landscaped gardens, and smart home features, ensuring a premium living experience."
       },
       {
-        question: "How can I verify the credibility of a new project?",
-        answer: "Check the project's RERA registration number, review the developer's delivery track record, and read customer reviews to ensure a safe investment."
+        question: "7. How do I choose the right new launch project in Gurgaon?",
+        answer: "Check the builder’s reputation, location, RERA status, amenities, and future development plans around the area before investing."
       }
     ],
     underconstruction: [
