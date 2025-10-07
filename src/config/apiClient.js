@@ -27,7 +27,6 @@ const getBaseUrl = () => {
     
     return base;
   } catch (error) {
-    console.error('Error getting base URL:', error);
     // Fallback to current origin with /api
     return window.location.origin + '/api';
   }
@@ -35,10 +34,15 @@ const getBaseUrl = () => {
 
 // Helper function to determine the base URL
 const getApiBaseUrl = () => {
-  // Use VITE_API_URL if available (set in .env), otherwise fallback to VITE_API_BASE or default
-  return import.meta.env.VITE_API_URL || 
-         import.meta.env.VITE_API_BASE || 
-         (import.meta.env.PROD ? 'https://api.100acress.com' : 'http://localhost:3500');
+  // Force localhost in development for testing
+  if (process.env.NODE_ENV !== 'production') {
+    return 'http://localhost:3500';
+  }
+
+  // Use VITE_API_URL if available (set in .env), otherwise fallback to production
+  return import.meta.env.VITE_API_URL ||
+         import.meta.env.VITE_API_BASE ||
+         'https://api.100acress.com';
 };
 
 // Create axios instance with defaults
