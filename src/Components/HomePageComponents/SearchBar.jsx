@@ -17,6 +17,7 @@ function SearchBar() {
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [previousSearches, setPreviousSearches] = useState([]);
   const searchRef = useRef(null);
   const debounceTimer = useRef(null);
 
@@ -39,6 +40,23 @@ function SearchBar() {
   }, []);
 
   const [isSmallerThan500] = useMediaQuery("(max-width: 500px)");
+
+  // Load previous searches from localStorage
+  useEffect(() => {
+    const storedSearches = localStorage.getItem('previousSearches');
+    if (storedSearches) {
+      setPreviousSearches(JSON.parse(storedSearches));
+    }
+  }, []);
+
+  // Save search to localStorage
+  const saveSearchToLocalStorage = (query) => {
+    if (!query.trim()) return;
+
+    const updatedSearches = [query, ...previousSearches.filter(s => s !== query)].slice(0, 10); // Keep only latest 10 unique searches
+    setPreviousSearches(updatedSearches);
+    localStorage.setItem('previousSearches', JSON.stringify(updatedSearches));
+  };
 
   // Fetch search suggestions as user types
   const fetchSuggestions = async (query) => {
@@ -109,6 +127,11 @@ function SearchBar() {
   };
 
   const handleSearch = () => {
+    if (searchQuery.trim()) {
+      // Save search to localStorage before performing search
+      saveSearchToLocalStorage(searchQuery.trim());
+    }
+
     const searchData = {
       query: searchQuery,
     };
@@ -375,7 +398,7 @@ function SearchBar() {
 
         {/* Suggestions Dropdown - Positioned above banners */}
       <AnimatePresence>
-        {showSuggestions && (searchQuery.length >= 1) && (
+        {showSuggestions && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -390,47 +413,82 @@ function SearchBar() {
               marginTop: '0.5rem'
             }}
           >
-            {isLoadingSuggestions ? (
-              <div className="p-4 text-center text-gray-500">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600 mx-auto mb-2"></div>
-                Searching...
-              </div>
-            ) : suggestions.length > 0 ? (
+            {/* Show previous searches when focused but no query */}
+            {searchQuery.length === 0 && previousSearches.length > 0 && (
               <>
-                {suggestions.map((suggestion, index) => (
+                <div className="p-3 bg-gray-50 border-b border-gray-200">
+                  <div className="text-sm font-medium text-gray-600">Previous Searches</div>
+                </div>
+                {previousSearches.map((search, index) => (
                   <div
-                    key={index}
+                    key={`previous-${index}`}
                     className="p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
-                    onClick={() => handleSuggestionClick(suggestion)}
+                    onClick={() => {
+                      setSearchQuery(search);
+                      setShowSuggestions(false);
+                      handleSearch();
+                    }}
                   >
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0 mr-3 mt-1">
-                        {suggestion.type === 'project' && <FiMapPin className="text-gray-400 w-4 h-4" />}
-                        {suggestion.type === 'buy' && <span className="text-green-600 text-xs">🏠</span>}
-                        {suggestion.type === 'rent' && <span className="text-blue-600 text-xs">🏢</span>}
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 mr-3">
+                        <FiSearch className="text-gray-400 w-4 h-4" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-gray-900 truncate">{suggestion.text}</div>
-                        {suggestion.subtitle && (
-                          <div className="text-sm text-gray-500 mt-1 truncate">{suggestion.subtitle}</div>
-                        )}
-                        {suggestion.price && (
-                          <div className="text-sm font-semibold text-green-600 mt-1">₹{suggestion.price}</div>
-                        )}
-                        {suggestion.description && (
-                          <div className="text-xs text-gray-400 mt-1 line-clamp-2">{suggestion.description}</div>
-                        )}
+                        <div className="font-medium text-gray-900 truncate">{search}</div>
                       </div>
-                      <FiChevronRight className="text-gray-400 w-4 h-4 mt-1 flex-shrink-0" />
+                      <FiChevronRight className="text-gray-400 w-4 h-4 flex-shrink-0" />
                     </div>
                   </div>
                 ))}
               </>
-            ) : searchQuery.length >= 1 ? (
-              <div className="p-4 text-center text-gray-500">
-                No suggestions found for "{searchQuery}"
-              </div>
-            ) : null}
+            )}
+
+            {/* Show API suggestions when typing */}
+            {searchQuery.length >= 1 && (
+              <>
+                {isLoadingSuggestions ? (
+                  <div className="p-4 text-center text-gray-500">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600 mx-auto mb-2"></div>
+                    Searching...
+                  </div>
+                ) : suggestions.length > 0 ? (
+                  <>
+                    {suggestions.map((suggestion, index) => (
+                      <div
+                        key={`api-${index}`}
+                        className="p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
+                        onClick={() => handleSuggestionClick(suggestion)}
+                      >
+                        <div className="flex items-start">
+                          <div className="flex-shrink-0 mr-3 mt-1">
+                            {suggestion.type === 'project' && <FiMapPin className="text-gray-400 w-4 h-4" />}
+                            {suggestion.type === 'buy' && <span className="text-green-600 text-xs">🏠</span>}
+                            {suggestion.type === 'rent' && <span className="text-blue-600 text-xs">🏢</span>}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-gray-900 truncate">{suggestion.text}</div>
+                            {suggestion.subtitle && (
+                              <div className="text-sm text-gray-500 mt-1 truncate">{suggestion.subtitle}</div>
+                            )}
+                            {suggestion.price && (
+                              <div className="text-sm font-semibold text-green-600 mt-1">₹{suggestion.price}</div>
+                            )}
+                            {suggestion.description && (
+                              <div className="text-xs text-gray-400 mt-1 line-clamp-2">{suggestion.description}</div>
+                            )}
+                          </div>
+                          <FiChevronRight className="text-gray-400 w-4 h-4 mt-1 flex-shrink-0" />
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                ) : searchQuery.length >= 1 ? (
+                  <div className="p-4 text-center text-gray-500">
+                    No suggestions found for "{searchQuery}"
+                  </div>
+                ) : null}
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
