@@ -386,7 +386,7 @@ function SearchBar() {
               maxWidth: '500px',
               left: '10%',
               transform: 'translateX(-50%)',
-              top: '150px',  /* Position above banners */
+              top: '150px',
               marginTop: '0.5rem'
             }}
           >
