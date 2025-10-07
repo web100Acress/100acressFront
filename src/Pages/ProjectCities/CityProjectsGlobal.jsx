@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Api_service from "../../Redux/utils/Api_Service";
 import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
 import { cityConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
-import Footer from "../../Components/Actual_Components/Footer";
 
 // Utility: title case a slug or plain string
 const toTitle = (str = "") => str
@@ -135,7 +134,6 @@ const CityProjectsGlobal = () => {
         projects={results || []}
         isLoading={isLoading}
       />
-      <Footer />
     </>
   );
 };

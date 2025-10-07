@@ -66,7 +66,7 @@ const CrimsonEleganceFooter = () => {
     { name: "Flats in Goa", href: "/project-in-goa/" },
     { name: "Flats in Ayodhya", href: "/project-in-ayodhya/" },
     { name: "Flats in Mumbai", href: "/project-in-mumbai/" },
-    { name: "Flats in Panipat", href: "/projects-in-panipat/" },
+    { name: "Flats in Panipat", href: "/project-in-panipat/" },
     { name: "Flats in Panchkula", href: "/project-in-panchkula/" },
     { name: "Flats in Kasauli", href: "/project-in-kasauli/" },
     { name: "Flats in Sonipat", href: "/projects-in-sonipat/" },
