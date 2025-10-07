@@ -384,9 +384,9 @@ function SearchBar() {
             style={{
               width: '90%',
               maxWidth: '500px',
-              left: '50%',
+              left: '10%',
               transform: 'translateX(-50%)',
-              top: '300px',  /* Position above banners */
+              top: '150px',  /* Position above banners */
               marginTop: '0.5rem'
             }}
           >
