@@ -519,6 +519,7 @@ export default function PriceTrendsCityPicker({
           </div>
         </div>
         )}
+        
 
         {/* Enhanced View More/Less Buttons */}
         {!pickerLoading &&
