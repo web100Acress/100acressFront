@@ -651,64 +651,26 @@ function SearchBar() {
             </motion.button>
           </div>
         </div>
-        {/* Top Localities (single row, overflow hidden, arrow navigation) */}
-        <div className="trending-searches mt-6 relative">
-          <div className="flex items-center gap-2">
-            {/* Prev */}
-            <button
-              type="button"
-              onClick={handlePrev}
-              className="nav-btn h-9 w-9 md:h-10 md:w-10 flex items-center justify-center shrink-0 rounded-full bg-white shadow-sm hover:shadow border border-gray-200 text-gray-700 transition active:scale-[0.98]"
-              aria-label="Previous"
-            >
-              <FiChevronLeft />
-            </button>
-            {/* Viewport */}
-            <div className="relative flex-1 overflow-hidden">
-              <div className="flex flex-nowrap gap-2 sm:gap-3 whitespace-nowrap">
-                {visibleLocalities.map((loc) => (
-                  <a
-                    key={loc.name}
-                    href={loc.link}
-                    className="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-800 text-xs sm:text-sm hover:bg-gray-50 transition shadow-sm max-w-[160px] sm:max-w-[220px] truncate"
-                    title={loc.name}
-                  >
-                    <span className="truncate">{loc.name}</span>
-                  </a>
-                ))}
-              </div>
-      </div>
-            {/* Next */}
-            <button
-              type="button"
-              onClick={handleNext}
-              className="nav-btn h-9 w-9 md:h-10 md:w-10 flex items-center justify-center shrink-0 rounded-full bg-white shadow-sm hover:shadow border border-gray-200 text-gray-700 transition active:scale-[0.98]"
-              aria-label="Next"
-            >
-              <FiChevronRight />
-            </button>
-          </div>
-        </div>
-        </div>
-        </div>
 
-        {/* Suggestions Dropdown - Positioned above banners */}
-      <AnimatePresence>
-        {showSuggestions && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="suggestions-dropdown fixed bg-white bg-opacity-98 backdrop-blur-lg rounded-xl shadow-2xl overflow-hidden max-h-[500px] overflow-y-auto border border-gray-200/50 z-50"
-            style={{
-              width: '90%',
-              maxWidth: '500px',
-              left: '10%',
-              transform: 'translateX(-50%)',
-              top: '150px',
-              marginTop: '0.5rem'
-            }}
-          >
+        {/* Suggestions Dropdown - Outside glass container */}
+        <div className="relative w-full">
+          <AnimatePresence>
+            {showSuggestions && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute bg-white bg-opacity-98 backdrop-blur-lg rounded-xl shadow-2xl overflow-hidden max-h-[500px] overflow-y-auto border border-gray-200/50"
+                style={{
+                  width: '100%',
+                  left: '0',
+                  right: '0',
+                  marginTop: '0.5rem',
+                  marginBottom: '1rem',
+                  zIndex: 9999,
+                  position: 'relative'
+                }}
+              >
             {/* Show previous searches when focused but no query */}
             {searchQuery.length === 0 && previousSearches.length > 0 && (
               <>
@@ -845,6 +807,50 @@ function SearchBar() {
           </motion.div>
         )}
       </AnimatePresence>
+        </div>
+        {/* Top Localities (single row, overflow hidden, arrow navigation) */}
+        <div className="trending-searches mt-6 relative">
+          <div className="flex items-center gap-2">
+            {/* Prev */}
+            <button
+              type="button"
+              onClick={handlePrev}
+              className="nav-btn h-9 w-9 md:h-10 md:w-10 flex items-center justify-center shrink-0 rounded-full bg-white shadow-sm hover:shadow border border-gray-200 text-gray-700 transition active:scale-[0.98]"
+              aria-label="Previous"
+            >
+              <FiChevronLeft />
+            </button>
+            {/* Viewport */}
+            <div className="relative flex-1 overflow-hidden">
+              <div className="flex flex-nowrap gap-2 sm:gap-3 whitespace-nowrap">
+                {visibleLocalities.map((loc) => (
+                  <a
+                    key={loc.name}
+                    href={loc.link}
+                    className="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-800 text-xs sm:text-sm hover:bg-gray-50 transition shadow-sm max-w-[160px] sm:max-w-[220px] truncate"
+                    title={loc.name}
+                  >
+                    <span className="truncate">{loc.name}</span>
+                  </a>
+                ))}
+              </div>
+      </div>
+            {/* Next */}
+            <button
+              type="button"
+              onClick={handleNext}
+              className="nav-btn h-9 w-9 md:h-10 md:w-10 flex items-center justify-center shrink-0 rounded-full bg-white shadow-sm hover:shadow border border-gray-200 text-gray-700 transition active:scale-[0.98]"
+              aria-label="Next"
+            >
+              <FiChevronRight />
+            </button>
+          </div>
+        </div>
+        </div>
+        </div>
+
+        {/* Suggestions Dropdown - Positioned above trending searches */}
+        
 
       {/* Desktop Banner */}
       <div className="hidden md:block mt-2 lg:w-[750px] lg:h-[132px] md:h-[132px] md:w-[650px] mx-auto">
@@ -918,12 +924,12 @@ const Wrapper = styled.section`
     position: absolute;
     left: 0;
     right: 0;
-    z-index: 50;
+    z-index: 9999 !important;
     margin-top: 0.5rem;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    width: 90%;  /* Reduced from 100% */
-    max-width: 500px;  /* Reduced from no max-width limit */
+    width: 100%;
+    max-width: 500px;
     margin-left: auto;
     margin-right: auto;
   }
