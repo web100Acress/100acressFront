@@ -513,13 +513,13 @@ function SearchBar() {
 
   const handleNext = () => {
     if (currentIndex + itemsPerPage < localities.length) {
-      setCurrentIndex((prev) => prev + itemsPerPage);
+      setCurrentIndex((prev) => prev + nextpage);
     }
   };
 
   const handlePrev = () => {
     if (currentIndex > 0) {
-      setCurrentIndex((prev) => prev - itemsPerPage);
+      setCurrentIndex((prev) => prev - nextpage);
     }
   };
   const settings = {
