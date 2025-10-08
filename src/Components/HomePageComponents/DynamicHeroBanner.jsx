@@ -49,19 +49,9 @@ const DynamicHeroBanner = () => {
     }
   }, [activeBanners, dispatch]);
 
-  // Auto-rotate banners if multiple hero banners exist
+  // Auto-rotate disabled to remove animations
   useEffect(() => {
-    const heroBanners = filterHeroBanners(activeBanners);
-
-    if (heroBanners.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentIndex((prevIndex) =>
-          prevIndex === heroBanners.length - 1 ? 0 : prevIndex + 1
-        );
-      }, 5000); // Change banner every 5 seconds
-
-      return () => clearInterval(interval);
-    }
+    // no-op: keep first banner static
   }, [activeBanners]);
 
   // Update current banner when index changes
@@ -127,7 +117,7 @@ const DynamicHeroBanner = () => {
           aria-label="Signature Global"
         >
           <div
-            className="hero-strip-99-default transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer"
+            className="hero-strip-99-default"
             aria-hidden="true"
             style={{
               backfaceVisibility: "hidden",
@@ -147,15 +137,15 @@ const DynamicHeroBanner = () => {
   const sliderSettings = {
     dots: true,
     infinite: true,
-    speed: 800,
+    speed: 0,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 5000,
-    fade: true,
+    autoplay: false,
+    autoplaySpeed: 0,
+    fade: false,
     cssEase: "linear",
     arrows: true,
-    pauseOnHover: true,
+    pauseOnHover: false,
     beforeChange: (oldIndex, newIndex) => {
       setCurrentIndex(newIndex);
     },
@@ -165,10 +155,10 @@ const DynamicHeroBanner = () => {
         settings: {
           arrows: false,
           dots: true,
-          autoplay: true,
-          autoplaySpeed: 4000,
+          autoplay: false,
+          autoplaySpeed: 0,
           fade: false,
-          cssEase: "ease-out",
+          cssEase: "linear",
         },
       },
     ],
@@ -220,7 +210,7 @@ const DynamicHeroBanner = () => {
                     aria-label={banner.title}
                   >
                     <div
-                      className="hero-strip-99-dynamic transform-gpu transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] will-change-transform cursor-pointer"
+                      className="hero-strip-99-dynamic"
                       style={{
                         backfaceVisibility: "hidden",
                         backgroundImage: imageUrl
@@ -271,7 +261,7 @@ const HeroWrapper = styled.div`
     height: 340px;
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%;
-    animation: loading 1.5s infinite;
+    animation: none;
     margin-top: 76px;
     position: relative;
     overflow: hidden;
@@ -287,7 +277,7 @@ const HeroWrapper = styled.div`
     border: 4px solid #f3f3f3;
     border-top: 4px solid #3498db;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: none;
   }
 
   .hero-strip-99-dynamic,
@@ -297,7 +287,7 @@ const HeroWrapper = styled.div`
     margin-top: 76px;
     position: relative;
     overflow: hidden;
-    transition: opacity 0.5s ease-in-out;
+    transition: none;
   }
 
   .hero-strip-99-dynamic.active {

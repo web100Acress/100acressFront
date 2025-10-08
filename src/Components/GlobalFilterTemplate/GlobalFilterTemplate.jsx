@@ -700,9 +700,9 @@ const GlobalFilterTemplate = ({
               {!isLoading && displayedProjects.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-12">
                   <div className="text-6xl mb-4">🏠</div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">No Properties Found</h3>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Finding a Perfect Match for you</h3>
                   <p className="text-gray-600 text-center max-w-md">
-                    We couldn't find any properties matching your criteria. Try adjusting your filters or search terms.
+                  Homes that get you - because perfect matches aren’t just for people.
                   </p>
                 </div>
               )}

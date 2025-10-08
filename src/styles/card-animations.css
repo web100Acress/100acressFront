@@ -1,0 +1,269 @@
+/* Ultra-Premium Image-Only Animations */
+/* Enable by adding class `enable-card-animations` on <body> */
+/* Cards stay static, only images animate for clean professional look */
+
+:root {
+  /* Buttery-smooth physics-based easing curves */
+  --card-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --card-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --card-duration: 700ms;
+  --card-duration-slow: 900ms;
+}
+
+/* ========================================
+   1) CommonProject.jsx - Grid Cards
+   Static Card, Animated Image Only
+   ======================================== */
+body.enable-card-animations article.group {
+  /* Card stays completely static */
+  transform: none !important;
+  transition: none !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Image container for proper overflow handling */
+body.enable-card-animations article.group > div:first-child,
+body.enable-card-animations article.group .image-wrapper {
+  overflow: hidden;
+  position: relative;
+  border-radius: inherit;
+}
+
+/* No overlay - clean image animation only */
+
+/* ONLY the image animates */
+body.enable-card-animations article.group img {
+  transition: transform var(--card-duration-slow) var(--card-ease-spring),
+              filter var(--card-duration) ease-out !important;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+  filter: brightness(1) saturate(1) contrast(1);
+  display: block;
+}
+
+body.enable-card-animations article.group:hover img {
+  transform: scale(1.08) translateZ(0) rotate(0.5deg) !important;
+  filter: brightness(1.08) saturate(1.1) contrast(1.02);
+}
+
+/* ========================================
+   2) ModernRecommendedSection - Carousel
+   Static Card, Animated Image Only
+   ======================================== */
+body.enable-card-animations .property-card {
+  /* Card completely static */
+  transform: none !important;
+  transition: none !important;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Image container setup */
+body.enable-card-animations .property-card .image-container {
+  overflow: hidden;
+  position: relative;
+}
+
+/* No overlays - pure image animation */
+
+/* ONLY the image animates - ultra smooth zoom */
+body.enable-card-animations .property-card .image-container .property-image {
+  transition: transform var(--card-duration-slow) var(--card-ease-spring),
+              filter var(--card-duration) ease-out !important;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+  filter: brightness(1) saturate(1) contrast(1);
+  display: block;
+}
+
+body.enable-card-animations .property-card:hover .image-container .property-image,
+body.enable-card-animations .property-card.hovered .image-container .property-image {
+  transform: scale(1.10) translateZ(0) rotate(-0.5deg) !important;
+  filter: brightness(1.1) saturate(1.15) contrast(1.03);
+}
+
+/* Existing overlay enhancement */
+body.enable-card-animations .property-card .image-container .image-overlay {
+  transition: opacity var(--card-duration) var(--card-ease-out) !important;
+  opacity: 0;
+  z-index: 1;
+}
+
+body.enable-card-animations .property-card:hover .image-container .image-overlay,
+body.enable-card-animations .property-card.hovered .image-container .image-overlay {
+  opacity: 0.2 !important;
+}
+
+/* ========================================
+   3) ModernRealEstate/ProjectCard.jsx
+   Static Card, Animated Image Only
+   ======================================== */
+body.enable-card-animations .group {
+  /* Card stays static */
+  transform: none !important;
+  transition: none !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Image wrapper for overflow control */
+body.enable-card-animations .group > div:first-child {
+  overflow: hidden;
+  position: relative;
+  border-radius: inherit;
+}
+
+/* No overlay effects */
+
+/* ONLY the image animates */
+body.enable-card-animations .group img {
+  transition: transform var(--card-duration-slow) var(--card-ease-spring),
+              filter var(--card-duration) ease-out !important;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+  filter: brightness(1) saturate(1);
+  display: block;
+}
+
+body.enable-card-animations .group:hover img {
+  transform: scale(1.07) translateZ(0) rotate(-0.3deg) !important;
+  filter: brightness(1.06) saturate(1.08);
+}
+
+/* Overlay elements can still fade in smoothly */
+body.enable-card-animations .group .group-hover\:opacity-100 {
+  transition: opacity 450ms var(--card-ease-out) !important;
+  opacity: 0 !important;
+}
+
+body.enable-card-animations .group:hover .group-hover\:opacity-100 {
+  opacity: 1 !important;
+}
+
+/* ========================================
+   4) Legacy Cards - Static Card, Animated Image
+   ======================================== */
+body.enable-card-animations .modern-card {
+  /* Card static */
+  transform: none !important;
+  transition: none !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+body.enable-card-animations .modern-card .image-section {
+  overflow: hidden;
+  position: relative;
+}
+
+/* No overlay on legacy cards */
+
+/* ONLY image animates */
+body.enable-card-animations .modern-card .image-section .property-image {
+  transition: transform var(--card-duration-slow) var(--card-ease-spring),
+              filter 600ms ease-out !important;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+  display: block;
+}
+
+body.enable-card-animations .modern-card:hover .image-section .property-image {
+  transform: scale(1.08) translateZ(0) !important;
+  filter: brightness(1.06) saturate(1.08);
+}
+
+body.enable-card-animations .w9HDn0 {
+  /* Card static */
+  transition: none !important;
+  transform: none !important;
+}
+
+/* ========================================
+   5) Hero Section - Static Container, Animated Background
+   ======================================== */
+body.enable-card-animations .hero-strip-99-dynamic,
+body.enable-card-animations .hero-strip-99-default {
+  background-size: cover;
+  background-position: center;
+  transition: transform var(--card-duration-slow) var(--card-ease-spring),
+              filter var(--card-duration) ease-out !important;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+  filter: brightness(1) contrast(1);
+  position: relative;
+  overflow: hidden;
+}
+
+body.enable-card-animations .hero-strip-99-dynamic:hover,
+body.enable-card-animations .hero-strip-99-default:hover {
+  transform: scale(1.08) translateZ(0) !important;
+  filter: brightness(1.12) contrast(1.05);
+}
+
+/* Hero groups - image animation only */
+body.enable-card-animations .group .hero-strip-99-dynamic,
+body.enable-card-animations .group .hero-strip-99-default {
+  transition: transform 950ms var(--card-ease-spring),
+              filter var(--card-duration) ease-out !important;
+}
+
+body.enable-card-animations .group:hover .hero-strip-99-dynamic,
+body.enable-card-animations .group:hover .hero-strip-99-default {
+  transform: scale(1.06) translateZ(0) !important;
+  filter: brightness(1.1) contrast(1.04);
+}
+
+/* ========================================
+   6) Premium Polish & Accessibility
+   ======================================== */
+
+/* Focus states - card outline only, no transform */
+body.enable-card-animations article.group:focus-within,
+body.enable-card-animations .property-card:focus-within,
+body.enable-card-animations .group:focus-within {
+  outline: 3px solid rgba(59, 130, 246, 0.6);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  transition: outline-offset 300ms ease-out,
+              box-shadow 300ms ease-out;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  body.enable-card-animations *,
+  body.enable-card-animations *::before,
+  body.enable-card-animations *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* Touch device optimization - minimal animation */
+@media (hover: none) and (pointer: coarse) {
+  body.enable-card-animations article.group:hover img,
+  body.enable-card-animations .property-card:hover .property-image,
+  body.enable-card-animations .group:hover img {
+    transform: scale(1.05) !important;
+    transition-duration: 300ms;
+  }
+}
+
+/* Performance optimization */
+body.enable-card-animations img {
+  -webkit-transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+}
+
+/* Optional: Subtle cursor indicator on hoverable images */
+body.enable-card-animations article.group:hover,
+body.enable-card-animations .property-card:hover,
+body.enable-card-animations .group:hover {
+  cursor: pointer;
+}

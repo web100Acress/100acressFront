@@ -3,6 +3,8 @@
 import React,{Suspense} from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
+import "./styles/disable-animations.css";
+import "./styles/card-animations.css";
 import App from "./App.jsx";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -30,6 +32,11 @@ const ScrollToTop = ({ children }) => {
 
   return children; // Render the children components
 };
+
+// Enable card animations globally but keep hero static
+if (typeof document !== 'undefined' && document.body) {
+  document.body.classList.add('enable-card-animations');
+}
 
 root.render(
   <>
