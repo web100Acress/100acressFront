@@ -1,0 +1,144 @@
+/* Opt-in smooth hover animations for homepage cards */
+/* Enable by adding class `enable-card-animations` on <body> (set in index.jsx) */
+
+/* Common timing and easing */
+:root {
+  /* Ultra-smooth springy ease and longer duration */
+  --card-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --card-duration: 450ms;
+}
+
+/* 1) CommonProject.jsx cards (Tailwind group-based grid cards) */
+body.enable-card-animations article.group {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important;
+  transform: none !important;
+  transition: none !important;
+}
+body.enable-card-animations article.group:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important;
+  transform: none !important;
+}
+body.enable-card-animations article.group img {
+  transition: transform var(--card-duration) var(--card-ease) !important;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+body.enable-card-animations article.group:hover img {
+  transform: scale(1.015) translateZ(0) !important;
+}
+/* keep text color stable; if you want slight tint, uncomment
+body.enable-card-animations article.group:hover h2,
+body.enable-card-animations article.group:hover h3 { color: #b91c1c !important; }
+*/
+
+/* 2) ModernRecommendedSection.jsx cards (carousel property-card) - Subtle & Smooth */
+/* CARD ITSELF - NO TRANSFORM OR SHADOW CHANGE */
+body.enable-card-animations .property-card {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  transform: none !important;
+  transition: none !important;
+}
+body.enable-card-animations .property-card:hover,
+body.enable-card-animations .property-card.hovered {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  transform: none !important;
+}
+/* IMAGE - ONLY THIS ANIMATES */
+body.enable-card-animations .property-card .image-container .property-image {
+  transition: transform var(--card-duration) var(--card-ease), opacity var(--card-duration) ease-out !important;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+body.enable-card-animations .property-card:hover .image-container .property-image,
+body.enable-card-animations .property-card.hovered .image-container .property-image {
+  transform: scale(1.015) translateZ(0) !important;
+}
+/* OVERLAY - SUBTLE FADE */
+body.enable-card-animations .property-card .image-container .image-overlay {
+  transition: opacity var(--card-duration) var(--card-ease) !important;
+}
+body.enable-card-animations .property-card:hover .image-container .image-overlay,
+body.enable-card-animations .property-card.hovered .image-container .image-overlay {
+  opacity: 0.3 !important;
+}
+
+/* 3) ModernRealEstate/ProjectCard.jsx (group-based) */
+body.enable-card-animations .group {
+  transform: none !important;
+  transition: none !important;
+}
+body.enable-card-animations .group:hover {
+  transform: none !important;
+}
+body.enable-card-animations .group img {
+  transition: transform var(--card-duration) var(--card-ease) !important;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+body.enable-card-animations .group:hover img {
+  transform: scale(1.015) translateZ(0) !important;
+}
+/* Fade in overlay actions smoothly */
+body.enable-card-animations .group .group-hover\:opacity-100 {
+  transition: opacity var(--card-duration) ease-out !important;
+  opacity: 0 !important;
+}
+body.enable-card-animations .group:hover .group-hover\:opacity-100 {
+  opacity: 1 !important;
+}
+
+/* 4) Legacy cards */
+body.enable-card-animations .modern-card {
+  transform: none !important;
+  transition: none !important;
+}
+body.enable-card-animations .modern-card:hover {
+  transform: none !important;
+}
+body.enable-card-animations .modern-card .image-section .property-image {
+  transition: transform var(--card-duration) var(--card-ease) !important;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+body.enable-card-animations .modern-card:hover .image-section .property-image {
+  transform: scale(1.015) translateZ(0) !important;
+}
+body.enable-card-animations .w9HDn0 {
+  transition: none !important;
+  transform: none !important;
+}
+body.enable-card-animations .w9HDn0:hover {
+  transform: none !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 5) Hero Section Banner - Smooth scale animation on hover */
+body.enable-card-animations .hero-strip-99-dynamic,
+body.enable-card-animations .hero-strip-99-default {
+  background-size: cover;
+  background-position: center;
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+body.enable-card-animations .hero-strip-99-dynamic:hover,
+body.enable-card-animations .hero-strip-99-default:hover {
+  transform: scale(1.03) translateZ(0) !important;
+}
+
+/* Hero section - smooth scale animation for background images */
+body.enable-card-animations .group .hero-strip-99-dynamic,
+body.enable-card-animations .group .hero-strip-99-default {
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body.enable-card-animations .group:hover .hero-strip-99-dynamic,
+body.enable-card-animations .group:hover .hero-strip-99-default {
+  transform: scale(1.03) translateZ(0) !important;
+}
