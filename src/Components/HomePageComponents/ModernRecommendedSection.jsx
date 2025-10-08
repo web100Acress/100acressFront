@@ -393,7 +393,7 @@ const PropertyCard = ({
       {/* Image Section */}
       <div className="image-container">
         <img
-          src={project?.frontImage?.url || project?.thumbnailImage?.url}
+          src={project?.frontImage?.url}
           alt={project?.projectName}
           className={`property-image ${imageLoaded ? 'loaded' : ''}`}
           onLoad={() => setImageLoaded(true)}
@@ -403,14 +403,6 @@ const PropertyCard = ({
         {/* Overlay with gradient */}
         <div className="image-overlay" />
         
-        {/* Share Button */}
-        <button
-          onClick={handleShare}
-          className="share-btn"
-        >
-          <MdShare />
-        </button>
-
         {/* Wishlist (Heart) Button */}
         <button
           onClick={handleWishlist}
@@ -419,9 +411,9 @@ const PropertyCard = ({
           title={isFav ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           {isFav ? (
-            <MdFavorite size={20} color="#ef4444" />
+            <MdFavorite size={6} color="#ef4444" className="wishlist-icon" />
           ) : (
-            <MdFavoriteBorder size={20} color="#6b7280" />
+            <MdFavoriteBorder size={6} color="#6b7280" className="wishlist-icon" />
           )}
         </button>
 
@@ -721,58 +713,47 @@ const CardWrapper = styled.div`
       opacity: 0;
       transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
     }
+.wishlist-btn {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  width: 20px !important;
+  height: 20px !important;
+  
+  background: rgba(255, 255, 255, 0.9) !important; /* soft white with slight transparency */
+  border: 1px solid rgba(229, 231, 235, 0.8) !important; /* subtle neutral border */
+  border-radius: 50% !important;
+  
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  
+  cursor: pointer !important;
+  z-index: 10 !important;
+  
+  color: #6b7280 !important; /* neutral gray icon */
+  font-size: 16px !important; /* icon fits perfectly inside circle */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08) !important;
+  backdrop-filter: blur(4px) !important; /* subtle glass effect */
+  
+  transition: all 0.25s ease-in-out !important;
+}
 
-    .share-btn {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 40px;
-      height: 40px;
-      background: #f3f4f6; /* neutral light gray */
-      border: none;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 10;
-      color: #6b7280; /* icon color */
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+/* Hover animation */
+.wishlist-btn:hover {
+  background: #ffffff !important;
+  border-color: #fca5a5 !important; /* gentle red border glow */
+  color: #ef4444 !important; /* light red for heart or wishlist icon */
+  transform: scale(1.15) translateY(-1px) !important;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12) !important;
+}
 
-      &:hover {
-        background: #ffffff;
-        transform: scale(1.1);
-        color: #dc2626;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-      }
-    }
+/* Active feedback (on click) */
+.wishlist-btn:active {
+  transform: scale(1.05) !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1) !important;
+}
 
-    .wishlist-btn {
-      position: absolute;
-      top: 16px;
-      right: 64px; /* to the left of share */
-      width: 40px;
-      height: 40px;
-      background: #f3f4f6; /* neutral light gray */
-      border: none;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 10;
-      color: #6b7280; /* default icon color */
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-
-      &:hover {
-        background: #ffffff;
-        transform: scale(1.1);
-        color: #ef4444;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-      }
-    }
 
     .price-badge {
       position: absolute;
@@ -831,7 +812,7 @@ const CardWrapper = styled.div`
       pointer-events: auto;
 
       .project-name {
-        font-size: 24px;
+        font-size: 18px;
         font-weight: 700;
         margin: 0;
         text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
@@ -906,7 +887,7 @@ const CardWrapper = styled.div`
       margin-bottom: 10px;
 
       .project-name {
-        font-size: 20px;
+        font-size: 17px;
         text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
       }
     }
@@ -948,7 +929,7 @@ const CardWrapper = styled.div`
       margin-bottom: 8px;
 
       .project-name {
-        font-size: 18px;
+        font-size: 16px;
         text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
       }
     }
@@ -984,7 +965,6 @@ const CardWrapper = styled.div`
     .image-container .property-image,
     .image-container .image-overlay,
     .view-details-btn,
-    .share-btn,
     .wishlist-btn {
       transition: none !important;
     }
