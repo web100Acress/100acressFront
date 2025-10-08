@@ -6,18 +6,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Slider from 'react-slick';
 import SmallBannerSection from './SmallBannerSection';
 import { useMediaQuery } from '@chakra-ui/react';
+import api from '../../config/apiClient';
 
 function SearchBar() {
   const [activeLink, setActiveLink] = useState("Buy");
   const [searchQuery, setSearchQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [previousSearches, setPreviousSearches] = useState([]);
+  const [itemsPerPage, setItemsPerPage] = useState(6);
+
   const searchRef = useRef(null);
+  const debounceTimer = useRef(null);
 
   const trendingSearches = [
-    "Luxury Apartments in Mumbai",
+    "Luxury Apartment in Mumbai",
     "Villas in Bangalore",
     "Plots in Hyderabad",
     "Commercial Space in Delhi",
@@ -34,7 +41,289 @@ function SearchBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const [isSmallerThan500] = useMediaQuery("(max-width: 500px)");
+  // Enhanced number conversion system with advanced features
+  const numberWords = {
+    // Basic numbers
+    'zero': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4',
+    'five': '5', 'six': '6', 'seven': '7', 'eight': '8', 'nine': '9',
+
+    // Teens
+    'ten': '10', 'eleven': '11', 'twelve': '12', 'thirteen': '13', 'fourteen': '14',
+    'fifteen': '15', 'sixteen': '16', 'seventeen': '17', 'eighteen': '18', 'nineteen': '19',
+
+    // Tens
+    'twenty': '20', 'thirty': '30', 'forty': '40', 'fifty': '50',
+    'sixty': '60', 'seventy': '70', 'eighty': '80', 'ninety': '90',
+
+    // Large numbers
+    'hundred': '100', 'thousand': '1000', 'lakh': '100000', 'crore': '10000000',
+
+    // Common abbreviations
+    'k': '1000', 'thou': '1000', 'grand': '1000',
+    'm': '1000000', 'mil': '1000000', 'million': '1000000',
+    'cr': '10000000', 'c': '10000000', 'crores': '10000000',
+    'l': '100000', 'lac': '100000', 'lakhs': '100000',
+    'b': '1000000000', 'bil': '1000000000', 'billion': '1000000000'
+  };
+
+  const numberDigits = {
+    '0': 'zero', '1': 'one', '2': 'two', '3': 'three', '4': 'four',
+    '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine',
+    '10': 'ten', '11': 'eleven', '12': 'twelve', '13': 'thirteen', '14': 'fourteen',
+    '15': 'fifteen', '16': 'sixteen', '17': 'seventeen', '18': 'eighteen', '19': 'nineteen',
+    '20': 'twenty', '30': 'thirty', '40': 'forty', '50': 'fifty',
+    '60': 'sixty', '70': 'seventy', '80': 'eighty', '90': 'ninety',
+    '100': 'hundred', '1000': 'thousand', '100000': 'lakh', '10000000': 'crore',
+    '1000000': 'million', '1000000000': 'billion'
+  };
+
+  // Function to parse combined number words like "twenty one" → 21
+  const parseCombinedNumber = (words) => {
+    let total = 0;
+    let current = 0;
+
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i].toLowerCase();
+      const nextWord = words[i + 1]?.toLowerCase();
+
+      if (numberWords[word]) {
+        const value = parseInt(numberWords[word]);
+
+        // Check for "hundred", "thousand", etc. patterns
+        if (value === 100 && nextWord && numberWords[nextWord]) {
+          // "two hundred" pattern
+          if (current === 0) current = 1;
+          total += current * 100;
+          current = parseInt(numberWords[nextWord]) || 0;
+          if (nextWord && parseInt(numberWords[nextWord]) < 100) {
+            total += current;
+            current = 0;
+          }
+          i++; // Skip next word as we processed it
+        } else if (value >= 1000) {
+          // "two thousand" pattern
+          total += current * value;
+          current = 0;
+        } else if (value >= 10 && value < 100) {
+          // "twenty one" pattern
+          if (nextWord && numberWords[nextWord] && parseInt(numberWords[nextWord]) < 10) {
+            total += value + parseInt(numberWords[nextWord]);
+            i++; // Skip next word
+          } else {
+            total += value;
+          }
+        } else {
+          // Single digit
+          current += value;
+        }
+      }
+    }
+
+    return (total + current).toString();
+  };
+
+  // Enhanced function to get all formats of a number query
+  const getNumberFormats = (query) => {
+    const formats = new Set([query.toLowerCase()]);
+    const originalQuery = query.toLowerCase();
+
+    // Handle abbreviations first
+    const abbrPatterns = [
+      /\b(\d+(?:\.\d+)?)\s*(k|thou|grand|thousand)\b/gi,
+      /\b(\d+(?:\.\d+)?)\s*(m|mil|million)\b/gi,
+      /\b(\d+(?:\.\d+)?)\s*(cr|c|crores)\b/gi,
+      /\b(\d+(?:\.\d+)?)\s*(l|lac|lakhs)\b/gi,
+      /\b(\d+(?:\.\d+)?)\s*(b|bil|billion)\b/gi
+    ];
+
+    abbrPatterns.forEach(pattern => {
+      const matches = originalQuery.match(pattern);
+      if (matches) {
+        matches.forEach(match => {
+          const expanded = match.replace(pattern, (m, num, abbr) => {
+            const multiplier = numberWords[abbr.toLowerCase()] || '1';
+            return (parseFloat(num) * parseInt(multiplier)).toString();
+          });
+          formats.add(expanded);
+        });
+      }
+    });
+
+    // Check if query is a direct number word
+    if (numberWords[originalQuery]) {
+      formats.add(numberWords[originalQuery]);
+    }
+
+    // Check if query is a direct number digit
+    if (numberDigits[originalQuery]) {
+      formats.add(numberDigits[originalQuery]);
+    }
+
+    // Handle combined number words
+    const words = originalQuery.split(/\s+/);
+    if (words.length > 1) {
+      const combinedNumber = parseCombinedNumber(words);
+      if (combinedNumber !== '0') {
+        formats.add(combinedNumber);
+        // Also add the reverse (digits to words)
+        if (numberDigits[combinedNumber]) {
+          formats.add(numberDigits[combinedNumber]);
+        }
+      }
+    }
+
+    // Check each word individually
+    words.forEach(word => {
+      if (numberWords[word]) {
+        formats.add(numberWords[word]);
+      }
+      if (numberDigits[word]) {
+        formats.add(numberDigits[word]);
+      }
+    });
+
+    // Handle mixed patterns like "tower one", "one tower 42"
+    const mixedPatterns = [
+      /\b(tower|flat|apartment|house|building|property|room|bedroom|bathroom|bhk)\s+(\w+)\b/gi,
+      /\b(\w+)\s+(tower|flat|apartment|house|building|property|room|bedroom|bathroom|bhk)\s*(\d+)?\b/gi,
+      /\b(\w+)\s+(\d+)\b/gi
+    ];
+
+    mixedPatterns.forEach(pattern => {
+      const matches = originalQuery.match(pattern);
+      if (matches) {
+        matches.forEach(match => {
+          // Extract numbers and convert them
+          const numberMatches = match.match(/\b\d+\b/g);
+          if (numberMatches) {
+            numberMatches.forEach(num => {
+              if (numberDigits[num]) {
+                const wordVersion = match.replace(num, numberDigits[num]);
+                formats.add(wordVersion);
+              }
+            });
+          }
+
+          // Extract words and convert them
+          const wordMatches = match.match(/\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)\b/gi);
+          if (wordMatches) {
+            wordMatches.forEach(word => {
+              if (numberWords[word.toLowerCase()]) {
+                const digitVersion = match.replace(new RegExp(`\\b${word}\\b`, 'gi'), numberWords[word.toLowerCase()]);
+                formats.add(digitVersion);
+              }
+            });
+          }
+        });
+      }
+    });
+
+    return Array.from(formats);
+  };
+
+  // Enhanced search function with fuzzy matching
+  const performAdvancedSearch = async (query) => {
+    const allFormats = getNumberFormats(query);
+
+    // Also add fuzzy matches (prefix/suffix matching)
+    const fuzzyMatches = [];
+    Object.keys(numberWords).forEach(word => {
+      if (word.includes(query.toLowerCase()) || query.toLowerCase().includes(word)) {
+        fuzzyMatches.push(numberWords[word]);
+      }
+    });
+
+    Object.keys(numberDigits).forEach(digit => {
+      if (digit.includes(query.toLowerCase()) || query.toLowerCase().includes(digit)) {
+        fuzzyMatches.push(numberDigits[digit]);
+      }
+    });
+
+    const allSearchTerms = [...new Set([...allFormats, ...fuzzyMatches])];
+
+    const searchPromises = allSearchTerms.map(format =>
+      api.get(`/search/suggestions/${encodeURIComponent(format)}`)
+        .then(response => ({ format, data: response.data.suggestions || [] }))
+        .catch(() => ({ format, data: [] }))
+    );
+
+    return Promise.all(searchPromises).then(results => {
+      const combinedSuggestions = new Map();
+
+      results.forEach(({ format, data }) => {
+        data.forEach(suggestion => {
+          const key = `${suggestion.type}-${suggestion.text}`;
+          if (!combinedSuggestions.has(key) ||
+              format === query.toLowerCase() || // Prioritize original format
+              combinedSuggestions.get(key).format !== query.toLowerCase()) {
+            combinedSuggestions.set(key, { ...suggestion, format });
+          }
+        });
+      });
+
+      return Array.from(combinedSuggestions.values());
+    });
+  };
+
+  // Load previous searches from localStorage
+  useEffect(() => {
+    const storedSearches = localStorage.getItem('previousSearches');
+    if (storedSearches) {
+      setPreviousSearches(JSON.parse(storedSearches));
+    }
+  }, []);
+
+  // Save search to localStorage
+  const saveSearchToLocalStorage = (query) => {
+    if (!query.trim()) return;
+
+    const updatedSearches = [query, ...previousSearches.filter(s => s !== query)].slice(0, 10); // Keep only latest 10 unique searches
+    setPreviousSearches(updatedSearches);
+    localStorage.setItem('previousSearches', JSON.stringify(updatedSearches));
+  };
+
+  // Fetch search suggestions as user types - Enhanced for advanced features
+  const fetchSuggestions = async (query) => {
+    if (!query || query.length < 1) {
+      setSuggestions([]);
+      return;
+    }
+
+    setIsLoadingSuggestions(true);
+    try {
+      // Use the enhanced advanced search
+      const combinedSuggestions = await performAdvancedSearch(query);
+      setSuggestions(combinedSuggestions);
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+      setSuggestions([]);
+    } finally {
+      setIsLoadingSuggestions(false);
+    }
+  };
+
+  // Debounced search suggestions
+  useEffect(() => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      if (searchQuery.trim()) {
+        fetchSuggestions(searchQuery.trim());
+        setShowSuggestions(true);
+      } else {
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    }, 200);
+
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, [searchQuery]);
 
   const handleLinkClick = (linkName) => {
     setActiveLink(linkName);
@@ -63,16 +352,47 @@ function SearchBar() {
   };
 
   const handleSearch = () => {
+    if (searchQuery.trim()) {
+      // Save all formats of the search to localStorage
+      const allFormats = getNumberFormats(searchQuery.trim());
+      allFormats.forEach(format => {
+        saveSearchToLocalStorage(format);
+      });
+    }
+
     const searchData = {
       query: searchQuery,
-      collectionName: activeLink,
     };
     const key = encodeURIComponent(JSON.stringify(searchData));
     window.location.href = `/searchdata/${key}`;
   };
 
+  const handleSuggestionClick = (suggestion) => {
+    // Hide suggestions dropdown
+    setShowSuggestions(false);
+
+    // Save both formats of the suggestion to localStorage
+    const suggestionText = suggestion.text || suggestion;
+    const allFormats = getNumberFormats(suggestionText);
+    allFormats.forEach(format => {
+      saveSearchToLocalStorage(format);
+    });
+
+    // Navigate to the suggestion's URL
+    if (suggestion.url) {
+      window.location.href = suggestion.url;
+    } else {
+      // If no URL, update search query and perform search
+      setSearchQuery(suggestionText);
+      handleSearch();
+    }
+  };
+
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') handleSearch();
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearch();
+    }
   };
 
   const handleUseCurrentLocation = () => {
@@ -103,6 +423,23 @@ function SearchBar() {
     );
   };
 
+  // Property-related keywords and their complete suggestions
+  const propertyKeywords = {
+    'resale': ['resale properties in gurugram', 'resale flats in gurugram', 'resale apartments in gurugram'],
+    'rental': ['rental properties in gurugram', 'rent properties in gurugram', 'rental flats in gurugram'],
+    'rent': ['rent properties in gurugram', 'rental properties in gurugram', 'rent flats in gurugram'],
+    'buy': ['buy properties in gurugram', 'buy flats in gurugram', 'buy apartments in gurugram'],
+    'purchase': ['purchase properties in gurugram', 'buy properties in gurugram'],
+    'properties': ['properties in gurugram', 'flats in gurugram', 'apartments in gurugram'],
+    'flats': ['flats in gurugram', 'apartments in gurugram', 'properties in gurugram'],
+    'apartments': ['apartments in gurugram', 'flats in gurugram', 'properties in gurugram'],
+    'plots': ['plots in gurugram', 'plot for sale in gurugram', 'land in gurugram'],
+    'villas': ['villas in gurugram', 'independent houses in gurugram', 'bunglows in gurugram'],
+    'commercial': ['commercial properties in gurugram', 'office space in gurugram', 'shops in gurugram'],
+    'office': ['office space in gurugram', 'commercial properties in gurugram'],
+    'shop': ['shops in gurugram', 'commercial properties in gurugram']
+  };
+
   const localities = [
     { name: "Sohna Road", link: "/property-in-gurugram/sohna-road/" },
     { name: "Golf Course Road", link: "/property-in-gurugram/golf-course/" },
@@ -116,9 +453,52 @@ function SearchBar() {
     { name: "Golf Course Extn Road", link: "/property-in-gurugram/golf-course-extn-road/" },
   ];
 
-  // Responsive items per page: 3 on mobile (<=640px), 7 on larger screens
-  const [itemsPerPage, setItemsPerPage] = useState(7);
-  const nextpage = 1;
+  // Location-based suggestions using existing localities
+  const locationKeywords = {};
+  localities.forEach(loc => {
+    const locationName = loc.name.toLowerCase();
+    locationKeywords[locationName] = [`properties in ${loc.name}`, `flats in ${loc.name}`, `${loc.name} properties`];
+  });
+
+  // Generate smart property suggestions based on query
+  const generatePropertySuggestions = (query) => {
+    const suggestions = [];
+    const lowerQuery = query.toLowerCase();
+
+    // Check for property type matches
+    Object.entries(propertyKeywords).forEach(([keyword, suggestionList]) => {
+      if (lowerQuery.includes(keyword)) {
+        suggestions.push(...suggestionList);
+      }
+    });
+
+    // Check for location matches
+    Object.entries(locationKeywords).forEach(([location, suggestionList]) => {
+      if (lowerQuery.includes(location)) {
+        suggestions.push(...suggestionList);
+      }
+    });
+
+    // Check for partial matches in query words
+    const queryWords = lowerQuery.split(/\s+/);
+    queryWords.forEach(word => {
+      // Property type partial matches
+      Object.entries(propertyKeywords).forEach(([keyword, suggestionList]) => {
+        if (keyword.startsWith(word) || word.startsWith(keyword)) {
+          suggestions.push(...suggestionList);
+        }
+      });
+
+      // Location partial matches
+      Object.entries(locationKeywords).forEach(([location, suggestionList]) => {
+        if (location.startsWith(word) || word.startsWith(location.split(' ')[0])) {
+          suggestions.push(...suggestionList);
+        }
+      });
+    });
+
+    return [...new Set(suggestions)].slice(0, 5); // Limit to 5 suggestions
+  };
 
   useEffect(() => {
     const updateItemsPerPage = () => {
@@ -130,8 +510,6 @@ function SearchBar() {
     window.addEventListener('resize', updateItemsPerPage);
     return () => window.removeEventListener('resize', updateItemsPerPage);
   }, []);
-
-  const visibleLocalities = localities.slice(currentIndex, currentIndex + itemsPerPage);
 
   const handleNext = () => {
     if (currentIndex + itemsPerPage < localities.length) {
@@ -198,6 +576,9 @@ function SearchBar() {
 
   const [flickerIndex, setFlickerIndex] = useState(0);
 
+  // Calculate visible localities based on current itemsPerPage and currentIndex
+  const visibleLocalities = localities.slice(currentIndex, currentIndex + itemsPerPage);
+
   return (
     <Wrapper>
       <div className="w-full max-w-6xl mx-auto px-1 mt-2">
@@ -223,9 +604,9 @@ function SearchBar() {
         </div>
 
         {/* Search Bar */}
-        <div 
+        <div
           ref={searchRef}
-          className={`search-bar flex items-center bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-full p-1 sm:p-0.5 shadow-lg transition-all duration-300 ${
+          className={`search-bar flex items-center bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-full p-1 sm:p-0.5 shadow-lg transition-all duration-300 relative ${
             isFocused ? 'ring-2 ring-white/50' : ''
           }`}
         >
@@ -258,7 +639,7 @@ function SearchBar() {
             <FiMic className="w-5 h-5" />
           </button>
           <div className="relative">
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               className="search-btn flex items-center justify-center bg-[#e53e3e] hover:bg-[#cc2f3b] text-white px-4 py-3 sm:px-5 md:px-6 rounded-full font-medium transition-all duration-200 hover:shadow-lg text-sm sm:text-base min-w-[50px] h-[50px] sm:h-12 md:h-14 sm:min-w-[120px]"
@@ -270,28 +651,6 @@ function SearchBar() {
             </motion.button>
           </div>
         </div>
-
-        {/* Suggestions Dropdown */}
-        <AnimatePresence>
-          {showSuggestions && searchQuery && (
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="suggestions mt-2 bg-white bg-opacity-90 backdrop-blur-lg rounded-xl shadow-xl overflow-hidden"
-            >
-              {Array(5).fill(0).map((_, i) => (
-                <div key={i} className="p-3 hover:bg-gray-50 cursor-pointer transition-colors">
-                  <div className="flex items-center">
-                    <FiMapPin className="text-gray-400 mr-2" />
-                    <span>{searchQuery} Suggestion {i + 1}</span>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Top Localities (single row, overflow hidden, arrow navigation) */}
         <div className="trending-searches mt-6 relative">
           <div className="flex items-center gap-2">
@@ -314,11 +673,11 @@ function SearchBar() {
                     className="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-800 text-xs sm:text-sm hover:bg-gray-50 transition shadow-sm max-w-[160px] sm:max-w-[220px] truncate"
                     title={loc.name}
                   >
-                    {loc.name}
+                    <span className="truncate">{loc.name}</span>
                   </a>
                 ))}
               </div>
-            </div>
+      </div>
             {/* Next */}
             <button
               type="button"
@@ -330,23 +689,177 @@ function SearchBar() {
             </button>
           </div>
         </div>
+        </div>
+        </div>
+
+        {/* Suggestions Dropdown - Positioned above banners */}
+      <AnimatePresence>
+        {showSuggestions && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="suggestions-dropdown fixed bg-white bg-opacity-98 backdrop-blur-lg rounded-xl shadow-2xl overflow-hidden max-h-[500px] overflow-y-auto border border-gray-200/50 z-50"
+            style={{
+              width: '90%',
+              maxWidth: '500px',
+              left: '10%',
+              transform: 'translateX(-50%)',
+              top: '150px',
+              marginTop: '0.5rem'
+            }}
+          >
+            {/* Show previous searches when focused but no query */}
+            {searchQuery.length === 0 && previousSearches.length > 0 && (
+              <>
+                <div className="p-3 bg-gray-50 border-b border-gray-200">
+                  <div className="text-sm font-medium text-gray-600">Previous Searches</div>
+                </div>
+                {previousSearches.slice(0, 2).map((search, index) => (
+                  <div
+                    key={`previous-${index}`}
+                    className="p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
+                    onClick={() => {
+                      const allFormats = getNumberFormats(search);
+                      allFormats.forEach(format => {
+                        saveSearchToLocalStorage(format);
+                      });
+                      setSearchQuery(search);
+                      setShowSuggestions(false);
+                      handleSearch();
+                    }}
+                  >
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 mr-3">
+                        <FiSearch className="text-gray-400 w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900 truncate">{search}</div>
+                      </div>
+                      <FiChevronRight className="text-gray-400 w-4 h-4 flex-shrink-0" />
+                    </div>
+                  </div>
+                ))}
+                {previousSearches.length > 2 && (
+                  <div className="p-3 bg-gray-50 border-t border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
+                    <div className="flex items-center justify-center gap-2 text-blue-600 font-medium">
+                      <span>View All Previous Searches</span>
+                      <FiChevronRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Show API suggestions when typing */}
+            {searchQuery.length >= 1 && (
+              <>
+                {/* Show smart property suggestions first */}
+                {generatePropertySuggestions(searchQuery).length > 0 && (
+                  <>
+                    <div className="p-3 bg-blue-50 border-b border-gray-200">
+                      <div className="text-sm font-medium text-blue-600">Smart Suggestions</div>
+                    </div>
+                    {/* esme agar hme 4 smart suggestion me suggest krana hai to 4 ya manage kr saktev hai */}
+                    {generatePropertySuggestions(searchQuery).slice(0, 3).map((suggestion, index) => (
+                      <div
+                        key={`smart-${index}`}
+                        className="p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
+                        onClick={() => {
+                          setSearchQuery(suggestion);
+                          setShowSuggestions(false);
+                          handleSearch();
+                        }}
+                      >
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 mr-3">
+                            <FiMapPin className="text-blue-400 w-4 h-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-gray-900 truncate">{suggestion}</div>
+                          </div>
+                          <FiChevronRight className="text-gray-400 w-4 h-4 flex-shrink-0" />
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+
+                {isLoadingSuggestions ? (
+                  <div className="p-4 text-center text-gray-500">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600 mx-auto mb-2"></div>
+                    Searching...
+                  </div>
+                ) : suggestions.length > 0 ? (
+                  <>
+                    {generatePropertySuggestions(searchQuery).length > 0 && (
+                      <div className="p-3 bg-gray-50 border-b border-gray-200">
+                        <div className="text-sm font-medium text-gray-600">Search Results</div>
+                      </div>
+                    )}
+                        {/* esme agar hme 4 search result me suggest krana hai to 4 ya manage kr saktev hai */}
+                    {suggestions.slice(0, 2).map((suggestion, index) => (
+                      <div
+                        key={`api-${index}`}
+                        className="p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
+                        onClick={() => handleSuggestionClick(suggestion)}
+                      >
+                        <div className="flex items-start">
+                          <div className="flex-shrink-0 mr-3 mt-1">
+                            {suggestion.type === 'project' && <FiMapPin className="text-gray-400 w-4 h-4" />}
+                            {suggestion.type === 'buy' && <span className="text-green-600 text-xs">🏠</span>}
+                            {suggestion.type === 'rent' && <span className="text-blue-600 text-xs">🏢</span>}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-gray-900 truncate">{suggestion.text}</div>
+                            {suggestion.subtitle && (
+                              <div className="text-sm text-gray-500 mt-1 truncate">{suggestion.subtitle}</div>
+                            )}
+                            {suggestion.price && (
+                              <div className="text-sm font-semibold text-green-600 mt-1">₹{suggestion.price}</div>
+                            )}
+                            {suggestion.description && (
+                              <div className="text-xs text-gray-400 mt-1 line-clamp-2">{suggestion.description}</div>
+                            )}
+                          </div>
+                          <FiChevronRight className="text-gray-400 w-4 h-4 mt-1 flex-shrink-0" />
+                        </div>
+                      </div>
+                    ))}
+                    {suggestions.length > 4 && (
+                      <div className="p-3 bg-gray-50 border-t border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
+                        <div className="flex items-center justify-center gap-2 text-blue-600 font-medium">
+                          <span>View All Results</span>
+                          <FiChevronRight className="w-4 h-4" />
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : searchQuery.length >= 1 ? (
+                  <div className="p-4 text-center text-gray-500">
+                    No suggestions found for "{searchQuery}"
+                  </div>
+                ) : null}
+              </>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Desktop Banner */}
+      <div className="hidden md:block mt-2 lg:w-[750px] lg:h-[132px] md:h-[132px] md:w-[650px] mx-auto">
+        <div className="section pt-4 md:pt-6">
+          <SmallBannerSection />
+        </div>
       </div>
 
-      {/* Removed bottom Top Localities chips section as requested */}
-    </div>
-
-    <div className="hidden md:block mt-2 lg:w-[750px] lg:h-[132px] md:h-[132px] md:w-[650px] mx-auto">
-      <div className="section pt-4 md:pt-6">
-        <SmallBannerSection />
+      {/* Mobile Banner */}
+      <div className="block sm:hidden w-full max-w-[360px] h-[198px] mt-6 mx-auto">
+        <div className="section">
+          <SmallBannerSection />
+        </div>
       </div>
-    </div>
-
-    <div className="block sm:hidden w-full max-w-[360px] h-[198px] mt-6 mx-auto">
-      <div className="section">
-        <SmallBannerSection />
-      </div>
-    </div>
-  </Wrapper>
+    </Wrapper>
   );
 }
 
@@ -401,13 +914,18 @@ const Wrapper = styled.section`
     }
   }
   
-  .suggestions {
+  .suggestions-dropdown {
     position: absolute;
     left: 0;
     right: 0;
     z-index: 50;
     margin-top: 0.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 90%;  /* Reduced from 100% */
+    max-width: 500px;  /* Reduced from no max-width limit */
+    margin-left: auto;
+    margin-right: auto;
   }
   
   @media (max-width: 768px) {
@@ -466,6 +984,13 @@ const Wrapper = styled.section`
     .search-btn:hover { box-shadow: none !important; background: transparent !important; }
     .search-btn svg { color: #e53e3e !important; } /* unified red */
     .search-btn:hover svg { color: #cc2f3b !important; }
+
+    /* Compact suggestions dropdown on mobile */
+    .suggestions-dropdown {
+      width: 95% !important;  /* Even more compact on mobile */
+      max-width: 400px !important;
+      font-size: 14px;  /* Smaller text on mobile */
+    }
   }
   
   @media (max-width: 480px) {

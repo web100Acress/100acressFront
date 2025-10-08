@@ -469,16 +469,15 @@ export const staticData = {
     }
   },
 
-  // Project Status Pages Data
   status: {
     upcoming: {
-      title: "Discover Upcoming Projects Across India",
-      description: "Be the first to invest in tomorrow's most promising developments. Explore upcoming residential and commercial projects with modern amenities and prime locations.",
+      title: "Upcoming Projects in Gurgaon with Luxury & Comfort",
+      description: "Find luxury homes in Gurgaon’s upcoming projects featuring spacious apartments, designer villas, and world-class facilities for families and investors.",
       metaTitle: "Upcoming Projects in India - New Launch Properties | 100acress",
       canonical: "https://www.100acress.com/projects/upcoming-projects-in-gurgaon/",
       keywords: "upcoming projects, new launch projects, upcoming residential projects, upcoming commercial projects, property launches",
-      heroTitle: "Discover Upcoming Projects Across India",
-      heroSubtitle: "Be the first to invest in tomorrow's most promising developments",
+      heroTitle: "Explore Upcoming Projects with High Investment Potential",
+      heroSubtitle: "From premium apartments to budget-friendly homes, Gurgaon has it all in upcoming projects.",
       faqs: [
         {
           question: "What new projects are launching soon in Gurgaon?",

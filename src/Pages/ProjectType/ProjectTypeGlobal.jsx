@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import Api_Service from "../../Redux/utils/Api_Service";
 import GlobalFilterTemplate from "../../Components/GlobalFilterTemplate/GlobalFilterTemplate";
 import { projectTypeConfigs } from "../../Components/GlobalFilterTemplate/config/pageConfigs";
-import Footer from "../../Components/Actual_Components/Footer";
 
 const ProjectTypeGlobal = () => {
   const { type } = useParams();
@@ -157,7 +156,6 @@ const ProjectTypeGlobal = () => {
         isLoading={isLoading}
         pageConfig={pageConfig}
       />
-      <Footer />
     </>
   );
 };
