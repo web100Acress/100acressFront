@@ -642,8 +642,8 @@ const CardWrapper = styled.div`
       position: absolute !important;
       top: 10px !important;
       right: 10px !important;
-      width: 28px !important;
-      height: 28px !important;
+      width: 18px !important;
+      height: 18px !important;
       
       background: rgba(255, 255, 255, 0.92) !important;
       border: none !important;
