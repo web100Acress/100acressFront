@@ -752,7 +752,8 @@ function SearchBar() {
                     <div className="p-3 bg-blue-50 border-b border-gray-200">
                       <div className="text-sm font-medium text-blue-600">Smart Suggestions</div>
                     </div>
-                    {generatePropertySuggestions(searchQuery).map((suggestion, index) => (
+                    {/* esme agar hme 4 smart suggestion me suggest krana hai to 4 ya manage kr saktev hai */}
+                    {generatePropertySuggestions(searchQuery).slice(0, 3).map((suggestion, index) => (
                       <div
                         key={`smart-${index}`}
                         className="p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
@@ -788,6 +789,7 @@ function SearchBar() {
                         <div className="text-sm font-medium text-gray-600">Search Results</div>
                       </div>
                     )}
+                        {/* esme agar hme 4 search result me suggest krana hai to 4 ya manage kr saktev hai */}
                     {suggestions.slice(0, 2).map((suggestion, index) => (
                       <div
                         key={`api-${index}`}
