@@ -48,6 +48,8 @@ export default function PriceTrendsCityPicker({
   const [gridCols, setGridCols] = useState(6);
   const [bannerData, setBannerData] = useState(null);
   const [bannerLoading, setBannerLoading] = useState(false);
+  const [imageErrors, setImageErrors] = useState({});
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   // Fetch banner data on component mount
   useEffect(() => {
@@ -56,16 +58,16 @@ export default function PriceTrendsCityPicker({
       try {
         const token = localStorage.getItem("myToken");
         const base = import.meta.env.VITE_API_BASE;
-    
+
         const headers = token
           ? { Authorization: `Bearer ${token}` }
           : {}; // 👈 agar token nahi hai to empty headers bhejenge
-    
+
         const response = await fetch(
           `${base}/api/admin/insights-price-trends-banners`,
           { headers }
         );
-    
+
         if (response.ok) {
           const result = await response.json();
           const activeBanner = (result.banners || []).find(
@@ -81,7 +83,7 @@ export default function PriceTrendsCityPicker({
         setBannerLoading(false);
       }
     };
-    
+
     fetchBannerData();
   }, []);
 
@@ -148,9 +150,9 @@ export default function PriceTrendsCityPicker({
     [visibleCities]
   );
 
-  const [imageErrors, setImageErrors] = useState({});
-  const [hoveredCard, setHoveredCard] = useState(null);
+  const [selectedStory, setSelectedStory] = useState(null);
 
+  // Render function for city cards
   const renderCard = (city) => {
     // Handle both object and string formats for backward compatibility
     const cname = typeof city === 'object' ? city.name : city;
@@ -290,33 +292,6 @@ export default function PriceTrendsCityPicker({
 
         {/* Popular Cities with Compare toggle (rounded box) */}
         <div className="mb-6 sm:mb-8 bg-white border-2 border-gray-200 rounded-2xl sm:rounded-3xl shadow-sm p-3 sm:p-4">
-          <div className="flex items-center gap-3 sm:gap-4 mb-2 sm:mb-3">
-            <h3 className="text-lg sm:text-xl lg:text-2xl font-extrabold tracking-tight text-gray-900">
-              Popular Cities
-            </h3>
-            <label className={`${compareMode
-              ? 'bg-blue-50 text-blue-700 border-blue-300 shadow-sm'
-              : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:text-blue-700'} inline-flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 transition-all cursor-pointer`}>
-              <input
-                type="checkbox"
-                checked={compareMode}
-                onChange={(e) => {
-                  setCompareMode(e.target.checked);
-                  setSelectedCities([]);
-                }}
-                className="w-4 h-4 sm:w-5 sm:h-5 rounded text-blue-600 focus:ring-blue-500 focus:ring-2"
-              />
-              <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M5 3a1 1 0 011 1v8h2l-3 4-3-4h2V4a1 1 0 011-1zm10 14a1 1 0 01-1-1V8h-2l3-4 3 4h-2v8a1 1 0 01-1 1z"/>
-              </svg>
-              <span>Compare cities</span>
-              {compareMode && (
-                <span className="ml-1 inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs bg-blue-100 text-blue-700 border border-blue-200">
-                  {selectedCities.length}
-                </span>
-              )}
-            </label>
-          </div>
           <div className="flex flex-wrap gap-2 sm:gap-3">
             {popularChips.map((chip) => (
               <button
@@ -364,6 +339,145 @@ export default function PriceTrendsCityPicker({
           </div>
         ) : (
           <div className="space-y-8 sm:space-y-12">
+            <div className="mt-6">
+              {/* insta story code type */}
+            {/* <div className="space-y-8 sm:space-y-12">
+            <div className="mt-6">
+                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                  <div
+                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
+                    onClick={() => setSelectedStory('residential')}
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80"
+                      alt="Residential"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
+                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏠</div>
+                  </div>
+                  <div
+                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
+                    onClick={() => setSelectedStory('commercial')}
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80"
+                      alt="Commercial"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
+                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏢</div>
+                  </div>
+                  <div
+                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
+                    onClick={() => setSelectedStory('industrial')}
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=400&q=80"
+                      alt="Industrial"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
+                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏭</div>
+                  </div>
+                  <div
+                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
+                    onClick={() => setSelectedStory('price')}
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=400&q=80"
+                      alt="Price Trends"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
+                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">💰</div>
+                  </div>
+                  <div
+                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
+                    onClick={() => setSelectedStory('analytics')}
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&q=80"
+                      alt="Analytics"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
+                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">📊</div>
+                  </div>
+                  <div
+                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-teal-500 to-green-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
+                    onClick={() => setSelectedStory('investment')}
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&w=400&q=80"
+                      alt="Investment"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
+                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">💹</div>
+                  </div>
+                  <div
+                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
+                    onClick={() => setSelectedStory('rental')}
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80"
+                      alt="Rental"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
+                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏠‍</div>
+                  </div>
+                  <div
+                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
+                    onClick={() => setSelectedStory('luxury')}
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80"
+                      alt="Luxury"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
+                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏰</div>
+                  </div>
+                </div>
+              </div>
+              </div> */}
+            <div className="mb-6 sm:mb-8">
+              <div className="flex items-center justify-between">
+                <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight text-gray-900">
+                  Popular Cities
+                </h2>
+                <label className={`${compareMode
+                  ? 'bg-blue-50 text-blue-700 border-blue-300 shadow-sm'
+                  : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:text-blue-700'} inline-flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 transition-all cursor-pointer ml-4`}>
+                  <input
+                    type="checkbox"
+                    checked={compareMode}
+                    onChange={(e) => {
+                      setCompareMode(e.target.checked);
+                      setSelectedCities([]);
+                    }}
+                    className="w-4 h-4 sm:w-5 sm:h-5 rounded text-blue-600 focus:ring-blue-500 focus:ring-2"
+                  />
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M5 3a1 1 0 011 1v8h2l-3 4-3-4h2V4a1 1 0 011-1zm10 14a1 1 0 01-1-1V8h-2l3-4 3 4h-2v8a1 1 0 01-1 1z"/>
+                  </svg>
+                  <span>Compare cities</span>
+                  {compareMode && (
+                    <span className="ml-1 inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs bg-blue-100 text-blue-700 border border-blue-200">
+                      {selectedCities.length}
+                    </span>
+                  )}
+                </label>
+              </div>
+              </div>
+
+              {/* Instagram Story Type Component */}
+            </div>
+
+
+
             {/* Dynamic City Categories from Admin API */}
             {cityCategories.map((category, index) => (
               <section key={category.id || index}>
@@ -516,7 +630,189 @@ export default function PriceTrendsCityPicker({
             </div>
           </>
         )}
+
+        {/* Story Modal */}
+        {selectedStory && (
+          <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4" onClick={() => setSelectedStory(null)}>
+            <div className="relative max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+              {/* Story Card - Instagram Style */}
+              <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl overflow-hidden shadow-2xl">
+                {/* Story Header */}
+                <div className="relative h-96 overflow-hidden">
+                  {/* Story Image Background */}
+                  <div className="absolute inset-0">
+                    {selectedStory === 'residential' && (
+                      <img
+                        src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80"
+                        alt="Residential"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                    {selectedStory === 'commercial' && (
+                      <img
+                        src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+                        alt="Commercial"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                    {selectedStory === 'industrial' && (
+                      <img
+                        src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80"
+                        alt="Industrial"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                    {selectedStory === 'price' && (
+                      <img
+                        src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80"
+                        alt="Price Trends"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                    {selectedStory === 'analytics' && (
+                      <img
+                        src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80"
+                        alt="Analytics"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
+                  </div>
+
+                  {/* Top Header Bar */}
+                  <div className="relative z-10 p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 p-[2px]">
+                          <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center text-2xl">
+                            {selectedStory === 'residential' && '🏠'}
+                            {selectedStory === 'commercial' && '🏢'}
+                            {selectedStory === 'industrial' && '🏭'}
+                            {selectedStory === 'price' && '💰'}
+                            {selectedStory === 'analytics' && '📊'}
+                          </div>
+                        </div>
+                        <div>
+                          <h3 className="text-white font-bold text-sm">PropertyHub</h3>
+                          <p className="text-gray-300 text-xs">2 hours ago</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setSelectedStory(null)}
+                        className="w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/50 transition-colors"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="mt-3 flex gap-1">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="h-0.5 flex-1 bg-white/30 rounded-full overflow-hidden">
+                          <div className={`h-full bg-white ${i === 1 ? 'w-full' : 'w-0'} transition-all duration-3000`} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Story Title - Center Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="text-center">
+                      <h2 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">
+                        {selectedStory === 'residential' && 'RESIDENTIAL'}
+                        {selectedStory === 'commercial' && 'COMMERCIAL'}
+                        {selectedStory === 'industrial' && 'INDUSTRIAL'}
+                        {selectedStory === 'price' && 'PRICE TRENDS'}
+                        {selectedStory === 'analytics' && 'ANALYTICS'}
+                      </h2>
+                      <p className="text-xl text-white/90 drop-shadow-lg">
+                        {selectedStory === 'residential' && 'Find Your Dream Home'}
+                        {selectedStory === 'commercial' && 'Business Spaces'}
+                        {selectedStory === 'industrial' && 'Industrial Properties'}
+                        {selectedStory === 'price' && 'Market Insights'}
+                        {selectedStory === 'analytics' && 'Data Driven Decisions'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Story Content - Bottom Card */}
+                <div className="bg-white rounded-t-3xl -mt-6 relative z-10 p-6">
+                  {/* Property Info Card Style */}
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 mb-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-16 h-16 rounded-xl overflow-hidden bg-white shadow-md">
+                        <img
+                          src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=200&q=80"
+                          alt="Property"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-900 text-lg">
+                          {selectedStory === 'residential' && 'Luxury Apartments'}
+                          {selectedStory === 'commercial' && 'Office Spaces'}
+                          {selectedStory === 'industrial' && 'Warehouses'}
+                          {selectedStory === 'price' && 'Market Analysis'}
+                          {selectedStory === 'analytics' && 'Data Reports'}
+                        </h4>
+                        <p className="text-sm text-gray-600">Premium Properties</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 text-sm text-gray-700">
+                      {selectedStory === 'residential' && (
+                        <>
+                          <p>• Apartment complexes and housing societies</p>
+                          <p>• Individual homes and villas</p>
+                          <p>• Gated communities</p>
+                        </>
+                      )}
+                      {selectedStory === 'commercial' && (
+                        <>
+                          <p>• Office spaces and business centers</p>
+                          <p>• Retail shops and showrooms</p>
+                          <p>• Shopping malls and complexes</p>
+                        </>
+                      )}
+                      {selectedStory === 'industrial' && (
+                        <>
+                          <p>• Manufacturing units and factories</p>
+                          <p>• Warehouses and storage facilities</p>
+                          <p>• Industrial parks and SEZs</p>
+                        </>
+                      )}
+                      {selectedStory === 'price' && (
+                        <>
+                          <p>• Current market rates and trends</p>
+                          <p>• Price comparison across cities</p>
+                          <p>• Investment opportunities</p>
+                        </>
+                      )}
+                      {selectedStory === 'analytics' && (
+                        <>
+                          <p>• Market insights and reports</p>
+                          <p>• Growth predictions</p>
+                          <p>• Investment analysis tools</p>
+                        </>
+                      )}
+                    </div>
+                  </div>                
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }

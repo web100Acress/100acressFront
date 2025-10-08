@@ -715,7 +715,7 @@ function SearchBar() {
                 <div className="p-3 bg-gray-50 border-b border-gray-200">
                   <div className="text-sm font-medium text-gray-600">Previous Searches</div>
                 </div>
-                {previousSearches.map((search, index) => (
+                {previousSearches.slice(0, 2).map((search, index) => (
                   <div
                     key={`previous-${index}`}
                     className="p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
@@ -740,6 +740,14 @@ function SearchBar() {
                     </div>
                   </div>
                 ))}
+                {previousSearches.length > 2 && (
+                  <div className="p-3 bg-gray-50 border-t border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
+                    <div className="flex items-center justify-center gap-2 text-blue-600 font-medium">
+                      <span>View All Previous Searches</span>
+                      <FiChevronRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                )}
               </>
             )}
 
@@ -752,7 +760,8 @@ function SearchBar() {
                     <div className="p-3 bg-blue-50 border-b border-gray-200">
                       <div className="text-sm font-medium text-blue-600">Smart Suggestions</div>
                     </div>
-                    {generatePropertySuggestions(searchQuery).map((suggestion, index) => (
+                    {/* esme agar hme 4 smart suggestion me suggest krana hai to 4 ya manage kr saktev hai */}
+                    {generatePropertySuggestions(searchQuery).slice(0, 3).map((suggestion, index) => (
                       <div
                         key={`smart-${index}`}
                         className="p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
@@ -788,7 +797,8 @@ function SearchBar() {
                         <div className="text-sm font-medium text-gray-600">Search Results</div>
                       </div>
                     )}
-                    {suggestions.map((suggestion, index) => (
+                        {/* esme agar hme 4 search result me suggest krana hai to 4 ya manage kr saktev hai */}
+                    {suggestions.slice(0, 2).map((suggestion, index) => (
                       <div
                         key={`api-${index}`}
                         className="p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
@@ -816,6 +826,14 @@ function SearchBar() {
                         </div>
                       </div>
                     ))}
+                    {suggestions.length > 4 && (
+                      <div className="p-3 bg-gray-50 border-t border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
+                        <div className="flex items-center justify-center gap-2 text-blue-600 font-medium">
+                          <span>View All Results</span>
+                          <FiChevronRight className="w-4 h-4" />
+                        </div>
+                      </div>
+                    )}
                   </>
                 ) : searchQuery.length >= 1 ? (
                   <div className="p-4 text-center text-gray-500">

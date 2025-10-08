@@ -568,20 +568,21 @@ export default function LeftSection({
         onMouseLeave={() => { if (onCloseInsights) closeFnWithDelay(insightsTimer, onCloseInsights); }}
       >
         <Button
-          size="sm"
           variant="solid"
           bg="#e53e3e"
           color="white"
           _hover={{ bg: '#c53030' }}
           _active={{ bg: '#9b2c2c' }}
-          px={1}
+          px={2}
+          py={0}
+          height="16px"
+          lineHeight="16px"
+          fontSize="16px"
           fontWeight="800"
-          fontSize="15px"
           borderRadius="md"
           boxShadow="0 6px 16px rgba(229,62,62,0.25)"
           ml={{ base: 0, md: 1 }}
           display={{ base: "none", md: "inline-flex" }}
-          onMouseEnter={() => { if (onOpenInsights) { clearTimer(insightsTimer); onOpenInsights(); } }}
           onMouseLeave={() => { if (onCloseInsights) closeFnWithDelay(insightsTimer, onCloseInsights); }}
         >
           Market Trends
