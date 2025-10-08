@@ -399,7 +399,7 @@ const SectionWrapper = styled.section`
     overflow: visible;
     width: 100%;
     max-width: none;
-    height: 280px;
+    min-height: 280px;
     margin: 0;
     background: transparent;
     border-radius: 0;
@@ -535,6 +535,18 @@ const SectionWrapper = styled.section`
     }
   }
 
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .carousel-container {
+      min-height: 260px;
+    }
+  }
+
+  @media (min-width: 1025px) and (max-width: 1440px) {
+    .carousel-container {
+      min-height: 280px;
+    }
+  }
+
   @media (max-width: 480px) {
     .carousel-container {
       padding: 6px 0 44px 0;
@@ -578,12 +590,7 @@ const CardWrapper = styled.div`
   cursor: pointer;
   margin: 0 5px;
   position: relative;
-  min-height: 240px;
-  max-height: 240px;
-
-  height: 100%;
-  aspect-ratio: 16/9;
-  max-width: 580px;
+  height: 240px;
   width: 100%;
 
   &:hover {
@@ -799,8 +806,7 @@ const CardWrapper = styled.div`
   }
 
   @media (max-width: 768px) {
-    min-height: 280px;
-    max-height: 280px;
+    height: 280px;
 
     .image-container {
       .left-content-overlay {
@@ -855,8 +861,7 @@ const CardWrapper = styled.div`
   }
 
   @media (max-width: 480px) {
-    min-height: 250px;
-    max-height: 250px;
+    height: 250px;
 
     .image-container {
       .left-content-overlay {
