@@ -715,7 +715,7 @@ function SearchBar() {
                 <div className="p-3 bg-gray-50 border-b border-gray-200">
                   <div className="text-sm font-medium text-gray-600">Previous Searches</div>
                 </div>
-                {previousSearches.map((search, index) => (
+                {previousSearches.slice(0, 2).map((search, index) => (
                   <div
                     key={`previous-${index}`}
                     className="p-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
@@ -740,6 +740,14 @@ function SearchBar() {
                     </div>
                   </div>
                 ))}
+                {previousSearches.length > 2 && (
+                  <div className="p-3 bg-gray-50 border-t border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
+                    <div className="flex items-center justify-center gap-2 text-blue-600 font-medium">
+                      <span>View All Previous Searches</span>
+                      <FiChevronRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                )}
               </>
             )}
 
