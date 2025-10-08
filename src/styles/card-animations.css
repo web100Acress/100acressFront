@@ -224,7 +224,7 @@ body.enable-card-animations .group:hover .hero-strip-99-default {
    ======================================== */
 
 /* Focus states - card outline only, no transform */
-body.enable-card-animations article.group:focus-within,
+/* body.enable-card-animations article.group:focus-within,
 body.enable-card-animations .property-card:focus-within,
 body.enable-card-animations .group:focus-within {
   outline: 3px solid rgba(59, 130, 246, 0.6);
@@ -232,7 +232,7 @@ body.enable-card-animations .group:focus-within {
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
   transition: outline-offset 300ms ease-out,
               box-shadow 300ms ease-out;
-}
+} */
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
