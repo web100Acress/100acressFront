@@ -340,6 +340,9 @@ export default function PriceTrendsCityPicker({
         ) : (
           <div className="space-y-8 sm:space-y-12">
             <div className="mt-6">
+              {/* insta story code type */}
+            {/* <div className="space-y-8 sm:space-y-12">
+            <div className="mt-6">
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                   <div
                     className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
@@ -439,6 +442,7 @@ export default function PriceTrendsCityPicker({
                   </div>
                 </div>
               </div>
+              </div> */}
             <div className="mb-6 sm:mb-8">
               <div className="flex items-center justify-between">
                 <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight text-gray-900">
@@ -466,6 +470,7 @@ export default function PriceTrendsCityPicker({
                     </span>
                   )}
                 </label>
+              </div>
               </div>
 
               {/* Instagram Story Type Component */}
