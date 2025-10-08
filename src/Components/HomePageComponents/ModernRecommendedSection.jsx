@@ -45,78 +45,7 @@ const ModernRecommendedSection = () => {
   // Autoplay and navigation disabled per request
 
   // Mock data for testing if no spotlight data
-  const mockSpotlightData = [
-    // {
-    //   _id: 'mock1',
-    //   projectName: 'Luxury Villa Complex',
-    //   city: 'Gurugram',
-    //   sector: 'Sector 102',
-    //   area: 'Dwarka Expressway',
-    //   projectAddress: 'Near IGI Airport',
-    //   minPrice: 2.5,
-    //   maxPrice: 5.2,
-    //   project_url: 'luxury-villa',
-    //   // frontImage: { url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop' },
-    //   BhK_Details: [{ bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }],
-    //   description: 'Premium luxury villas with world-class amenities and modern architecture in prime location.'
-    // },
-    // {
-    //   _id: 'mock2',
-    //   projectName: 'Modern Apartment Tower',
-    //   city: 'Gurugram',
-    //   sector: 'Sector 43',
-    //   area: 'Golf Course Road',
-    //   projectAddress: 'Opposite DLF Cyber City',
-    //   minPrice: 1.8,
-    //   maxPrice: 3.5,
-    //   project_url: 'modern-apartment',
-    //   // frontImage: { url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop' },
-    //   BhK_Details: [{ bhk_type: '2 BHK' }, { bhk_type: '3 BHK' }],
-    //   description: 'Contemporary apartments featuring smart home technology and sustainable living solutions.'
-    // },
-    // {
-    //   _id: 'mock3',
-    //   projectName: 'Premium Residency',
-    //   city: 'Gurugram',
-    //   sector: 'Sector 39',
-    //   area: 'Sohna Road',
-    //   projectAddress: 'Near Medanta Hospital',
-    //   minPrice: 3.2,
-    //   maxPrice: 6.8,
-    //   project_url: 'premium-residency',
-    //   // frontImage: { url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop' },
-    //   BhK_Details: [{ bhk_type: '4 BHK' }, { bhk_type: '5 BHK' }],
-    //   description: 'Exclusive residential complex with premium finishes and exceptional lifestyle amenities.'
-    // },
-    // {
-    //   _id: 'mock4',
-    //   projectName: 'Elite Gardens',
-    //   city: 'Gurugram',
-    //   sector: 'Sector 67',
-    //   area: 'Golf Course Extension',
-    //   projectAddress: 'Near Cyber Hub',
-    //   minPrice: 2.1,
-    //   maxPrice: 4.5,
-    //   project_url: 'elite-gardens',
-    //   // frontImage: { url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop' },
-    //   BhK_Details: [{ bhk_type: '2 BHK' }, { bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }],
-    //   description: 'Beautifully landscaped community with green spaces and family-friendly environment.'
-    // },
-    // {
-    //   _id: 'mock5',
-    //   projectName: 'Royal Heights',
-    //   city: 'Gurugram',
-    //   sector: 'Sector 84',
-    //   area: 'NH-8',
-    //   projectAddress: 'Near Manesar',
-    //   minPrice: 4.5,
-    //   maxPrice: 8.2,
-    //   project_url: 'royal-heights',
-    //   // frontImage: { url: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop' },
-    //   BhK_Details: [{ bhk_type: '3 BHK' }, { bhk_type: '4 BHK' }, { bhk_type: '5 BHK' }],
-    //   description: 'Ultra-luxury residences with panoramic city views and bespoke lifestyle services.'
-    // }
-  ];
+  const mockSpotlightData = [];
 
   // Use mock data if no spotlight data is available
   const displayData = spotlight && spotlight.length > 0 ? spotlight : mockSpotlightData;
@@ -411,9 +340,9 @@ const PropertyCard = ({
           title={isFav ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           {isFav ? (
-            <MdFavorite size={6} color="#ef4444" className="wishlist-icon" />
+            <MdFavorite size={14} color="#ef4444" className="wishlist-icon" />
           ) : (
-            <MdFavoriteBorder size={6} color="#6b7280" className="wishlist-icon" />
+            <MdFavoriteBorder size={14} color="#6b7280" className="wishlist-icon" />
           )}
         </button>
 
@@ -455,13 +384,12 @@ const PropertyCard = ({
 
 // Styled Components
 const SectionWrapper = styled.section`
-  background: transparent; /* Remove background color */
+  background: transparent;
   position: relative;
   overflow: hidden;
   margin-top: 0;
-  padding-top: 20px; /* Reduce padding to make cards shorter */
+  padding-top: 20px;
 
-  /* Remove container background */
   .container {
     background: transparent;
   }
@@ -470,11 +398,11 @@ const SectionWrapper = styled.section`
     position: relative;
     overflow: visible;
     width: 100%;
-    max-width: none; /* Remove max-width constraint for full width */
-    height: 350px; /* Reduce height to make cards shorter */
+    max-width: none;
+    height: 280px;
     margin: 0;
-    background: transparent; /* Remove background */
-    border-radius: 0; /* avoid showing page bg at rounded edges */
+    background: transparent;
+    border-radius: 0;
   }
 
   .modern-swiper {
@@ -560,12 +488,11 @@ const SectionWrapper = styled.section`
   }
 
   @media (max-width: 768px) {
-    padding-top: 8px; /* add a bit of breathing space above section on mobile */
+    padding-top: 8px;
 
-    /* Swipe hint styles */
     .swipe-hint {
-      color: #6b7280; /* gray-500 */
-      font-size: 0.875rem; /* text-sm */
+      color: #6b7280;
+      font-size: 0.875rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -582,17 +509,15 @@ const SectionWrapper = styled.section`
     }
 
     .carousel-container {
-      padding: 8px 0 52px 0; /* reduce top padding to bring cards closer to heading */
-      min-height: 400px;
-      max-width: none; /* Remove max-width constraint for mobile too */
+      padding: 8px 0 52px 0;
+      min-height: 330px;
+      max-width: none;
       overflow: visible;
       position: relative;
     }
 
-    /* Edge fade indicators removed to keep solid white background */
-
     .modern-swiper {
-      padding: 4px 0 32px 0; /* tighten internal spacing */
+      padding: 4px 0 32px 0;
     }
 
     .custom-nav-btn {
@@ -612,9 +537,9 @@ const SectionWrapper = styled.section`
 
   @media (max-width: 480px) {
     .carousel-container {
-      padding: 6px 0 44px 0; /* further reduce gap on small phones */
-      min-height: 350px;
-      max-width: none; /* Remove max-width constraint for small phones too */
+      padding: 6px 0 44px 0;
+      min-height: 300px;
+      max-width: none;
       overflow: visible;
     }
 
@@ -637,7 +562,6 @@ const SectionWrapper = styled.section`
     }
   }
 
-  /* Extra breathing room on large desktops */
   @media (min-width: 1280px) {
     padding-top: 48px;
   }
@@ -645,8 +569,8 @@ const SectionWrapper = styled.section`
 
 const CardWrapper = styled.div`
   background: white;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
               box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -654,8 +578,8 @@ const CardWrapper = styled.div`
   cursor: pointer;
   margin: 0 5px;
   position: relative;
-  min-height: 300px; /* Reduce card height */
-  max-height: 300px; /* Reduce card height */
+  min-height: 240px;
+  max-height: 240px;
 
   height: 100%;
   aspect-ratio: 16/9;
@@ -663,13 +587,13 @@ const CardWrapper = styled.div`
   width: 100%;
 
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
   }
 
   &.hovered {
-    transform: translateY(-8px);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
   }
 
   .image-container {
@@ -677,7 +601,7 @@ const CardWrapper = styled.div`
     width: 100%;
     height: 100%;
     overflow: hidden;
-    border-radius: 16px;
+    border-radius: 12px;
 
     .card-link {
       display: block;
@@ -713,53 +637,52 @@ const CardWrapper = styled.div`
       opacity: 0;
       transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
     }
-.wishlist-btn {
-  position: absolute !important;
-  top: 10px !important;
-  right: 10px !important;
-  width: 20px !important;
-  height: 20px !important;
-  
-  background: rgba(255, 255, 255, 0.9) !important; /* soft white with slight transparency */
-  border: 1px solid rgba(229, 231, 235, 0.8) !important; /* subtle neutral border */
-  border-radius: 50% !important;
-  
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  
-  cursor: pointer !important;
-  z-index: 10 !important;
-  
-  color: #6b7280 !important; /* neutral gray icon */
-  font-size: 16px !important; /* icon fits perfectly inside circle */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08) !important;
-  backdrop-filter: blur(4px) !important; /* subtle glass effect */
-  
-  transition: all 0.25s ease-in-out !important;
-}
 
-/* Hover animation */
-.wishlist-btn:hover {
-  background: #ffffff !important;
-  border-color: #fca5a5 !important; /* gentle red border glow */
-  color: #ef4444 !important; /* light red for heart or wishlist icon */
-  transform: scale(1.15) translateY(-1px) !important;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12) !important;
-}
+    .wishlist-btn {
+      position: absolute !important;
+      top: 10px !important;
+      right: 10px !important;
+      width: 28px !important;
+      height: 28px !important;
+      
+      background: rgba(255, 255, 255, 0.92) !important;
+      border: none !important;
+      border-radius: 50% !important;
+      
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      
+      cursor: pointer !important;
+      z-index: 10 !important;
+      
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+      backdrop-filter: blur(6px) !important;
+      
+      transition: all 0.2s ease-in-out !important;
 
-/* Active feedback (on click) */
-.wishlist-btn:active {
-  transform: scale(1.05) !important;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1) !important;
-}
+      .wishlist-icon {
+        width: 14px !important;
+        height: 14px !important;
+      }
+    }
 
+    .wishlist-btn:hover {
+      background: #ffffff !important;
+      transform: scale(1.08) !important;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16) !important;
+    }
+
+    .wishlist-btn:active {
+      transform: scale(0.96) !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12) !important;
+    }
 
     .price-badge {
       position: absolute;
-      bottom: 16px;
-      left: 16px;
-      padding: 6px 10px;
+      bottom: 12px;
+      left: 12px;
+      padding: 4px 8px;
       border-radius: 6px;
       display: flex;
       align-items: center;
@@ -772,7 +695,7 @@ const CardWrapper = styled.div`
       .price-text {
         color: white;
         font-weight: 700;
-        font-size: 28px;
+        font-size: 22px;
         text-align: center;
         line-height: 1.2;
         text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7), 1px 1px 2px rgba(0, 0, 0, 0.4);
@@ -791,11 +714,11 @@ const CardWrapper = styled.div`
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
-      padding: 20px;
+      padding: 16px;
       background: linear-gradient(
         135deg,
-        rgba(0, 0, 0, 0.7) 0%,
-        rgba(0, 0, 0, 0.4) 50%,
+        rgba(0, 0, 0, 0.65) 0%,
+        rgba(0, 0, 0, 0.35) 50%,
         rgba(0, 0, 0, 0.1) 100%
       );
       color: white;
@@ -808,11 +731,11 @@ const CardWrapper = styled.div`
       align-items: flex-start;
       justify-content: flex-start;
       width: 100%;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       pointer-events: auto;
 
       .project-name {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 700;
         margin: 0;
         text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
@@ -824,34 +747,34 @@ const CardWrapper = styled.div`
     .location-info {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 14px;
+      gap: 4px;
+      font-size: 12px;
       font-weight: 500;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
       pointer-events: auto;
 
       .location-icon {
-        font-size: 16px;
+        font-size: 14px;
         color: #dc2626;
       }
     }
 
     .view-details-btn {
       position: absolute;
-      bottom: 16px;
-      right: 16px;
+      bottom: 12px;
+      right: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 8px 16px;
+      gap: 4px;
+      padding: 6px 12px;
       background: transparent;
       color: #dc2626;
       text-decoration: none;
-      border-radius: 8px;
+      border-radius: 6px;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 12px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: none;
       cursor: pointer;
@@ -868,7 +791,7 @@ const CardWrapper = styled.div`
   }
 
   &:hover .image-container .property-image {
-    transform: scale(1.06);
+    transform: scale(1.05);
   }
 
   &:hover .image-container .image-overlay {
@@ -876,90 +799,117 @@ const CardWrapper = styled.div`
   }
 
   @media (max-width: 768px) {
-    min-height: 350px;
-    max-height: 350px;
+    min-height: 280px;
+    max-height: 280px;
 
-    .left-content-overlay {
-      padding: 16px;
-    }
-
-    .content-header {
-      margin-bottom: 10px;
-
-      .project-name {
-        font-size: 17px;
-        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    .image-container {
+      .left-content-overlay {
+        padding: 14px;
       }
-    }
 
-    .location-info {
-      font-size: 13px;
-      margin-bottom: 12px;
+      .content-header {
+        margin-bottom: 8px;
 
-      .location-icon {
-        font-size: 15px;
+        .project-name {
+          font-size: 15px;
+          text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+        }
       }
-    }
 
-    .price-badge {
-      width: auto;
-      height: auto;
+      .location-info {
+        font-size: 11px;
+        margin-bottom: 10px;
 
-      .price-text {
-        font-size: 24px;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.4);
+        .location-icon {
+          font-size: 13px;
+        }
       }
-    }
 
-    .view-details-btn {
-      font-size: 13px;
-      padding: 6px 12px;
+      .price-badge {
+        width: auto;
+        height: auto;
+
+        .price-text {
+          font-size: 20px;
+          text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.4);
+        }
+      }
+
+      .view-details-btn {
+        font-size: 11px;
+        padding: 5px 10px;
+      }
+
+      .wishlist-btn {
+        width: 26px !important;
+        height: 26px !important;
+        top: 8px !important;
+        right: 8px !important;
+
+        .wishlist-icon {
+          width: 13px !important;
+          height: 13px !important;
+        }
+      }
     }
   }
 
   @media (max-width: 480px) {
-    min-height: 300px;
-    max-height: 300px;
+    min-height: 250px;
+    max-height: 250px;
 
-    .left-content-overlay {
-      padding: 14px;
-    }
-
-    .content-header {
-      margin-bottom: 8px;
-
-      .project-name {
-        font-size: 16px;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+    .image-container {
+      .left-content-overlay {
+        padding: 12px;
       }
-    }
 
-    .location-info {
-      font-size: 12px;
-      margin-bottom: 10px;
+      .content-header {
+        margin-bottom: 6px;
 
-      .location-icon {
-        font-size: 14px;
+        .project-name {
+          font-size: 14px;
+          text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+        }
       }
-    }
 
-    .price-badge {
-      width: auto;
-      height: auto;
+      .location-info {
+        font-size: 10px;
+        margin-bottom: 8px;
 
-      .price-text {
-        font-size: 22px;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.4);
+        .location-icon {
+          font-size: 12px;
+        }
       }
-    }
 
-    .view-details-btn {
-      font-size: 12px;
-      padding: 5px 10px;
+      .price-badge {
+        width: auto;
+        height: auto;
+
+        .price-text {
+          font-size: 18px;
+          text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.4);
+        }
+      }
+
+      .view-details-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+      }
+
+      .wishlist-btn {
+        width: 24px !important;
+        height: 24px !important;
+        top: 8px !important;
+        right: 8px !important;
+
+        .wishlist-icon {
+          width: 12px !important;
+          height: 12px !important;
+        }
+      }
     }
   }
 
-  /* Respect reduced motion preferences */
   @media (prefers-reduced-motion: reduce) {
     transition: none !important;
     .image-container .property-image,

@@ -44,7 +44,7 @@ body.enable-card-animations article.group img {
 }
 
 body.enable-card-animations article.group:hover img {
-  transform: scale(1.12) translateZ(0) rotate(0.5deg) !important;
+  transform: scale(1.08) translateZ(0) rotate(0.5deg) !important;
   filter: brightness(1.08) saturate(1.1) contrast(1.02);
 }
 
@@ -81,7 +81,7 @@ body.enable-card-animations .property-card .image-container .property-image {
 
 body.enable-card-animations .property-card:hover .image-container .property-image,
 body.enable-card-animations .property-card.hovered .image-container .property-image {
-  transform: scale(1.14) translateZ(0) rotate(-0.5deg) !important;
+  transform: scale(1.10) translateZ(0) rotate(-0.5deg) !important;
   filter: brightness(1.1) saturate(1.15) contrast(1.03);
 }
 
@@ -130,7 +130,7 @@ body.enable-card-animations .group img {
 }
 
 body.enable-card-animations .group:hover img {
-  transform: scale(1.10) translateZ(0) rotate(-0.3deg) !important;
+  transform: scale(1.07) translateZ(0) rotate(-0.3deg) !important;
   filter: brightness(1.06) saturate(1.08);
 }
 
@@ -173,7 +173,7 @@ body.enable-card-animations .modern-card .image-section .property-image {
 }
 
 body.enable-card-animations .modern-card:hover .image-section .property-image {
-  transform: scale(1.12) translateZ(0) !important;
+  transform: scale(1.08) translateZ(0) !important;
   filter: brightness(1.06) saturate(1.08);
 }
 
@@ -202,7 +202,7 @@ body.enable-card-animations .hero-strip-99-default {
 
 body.enable-card-animations .hero-strip-99-dynamic:hover,
 body.enable-card-animations .hero-strip-99-default:hover {
-  transform: scale(1.12) translateZ(0) !important;
+  transform: scale(1.08) translateZ(0) !important;
   filter: brightness(1.12) contrast(1.05);
 }
 
@@ -215,7 +215,7 @@ body.enable-card-animations .group .hero-strip-99-default {
 
 body.enable-card-animations .group:hover .hero-strip-99-dynamic,
 body.enable-card-animations .group:hover .hero-strip-99-default {
-  transform: scale(1.1) translateZ(0) !important;
+  transform: scale(1.06) translateZ(0) !important;
   filter: brightness(1.1) contrast(1.04);
 }
 
@@ -224,7 +224,7 @@ body.enable-card-animations .group:hover .hero-strip-99-default {
    ======================================== */
 
 /* Focus states - card outline only, no transform */
-/* body.enable-card-animations article.group:focus-within,
+body.enable-card-animations article.group:focus-within,
 body.enable-card-animations .property-card:focus-within,
 body.enable-card-animations .group:focus-within {
   outline: 3px solid rgba(59, 130, 246, 0.6);
@@ -232,7 +232,7 @@ body.enable-card-animations .group:focus-within {
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
   transition: outline-offset 300ms ease-out,
               box-shadow 300ms ease-out;
-} */
+}
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
