@@ -164,13 +164,12 @@ const Projects = () => {
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   };
 
   // Unique options for filters
   const typeOptions = useMemo(() => {
     if (!viewAll || viewAll.length === 0) {
-      // If no data yet, at least show common project types (removed Industrial Projects)
       return ['Industrial Plots', 'Farm House'];
     }
 
