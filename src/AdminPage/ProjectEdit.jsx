@@ -13,8 +13,9 @@ const customStyle = {
 
 const ProjectEdit = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [projectTypes, setProjectTypes] = useState([]);
   const [values, setValues] = useState({
-    frontImage: "",
     thumbnailImage: "",
     otherImage: [],
     project_floorplan_Image: [],
@@ -66,70 +67,103 @@ const ProjectEdit = () => {
   const floorPlanLength = project_floorplan_Image.length;
   const projectGalleryLength = projectGallery.length;
 
-  console.log(values,"admin")
+  // Fetch all project types for dropdown
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchProjectTypes = async () => {
       try {
-        setIsLoading(true);
-        const res = await api.get(`/project/Edit/${id}`);
-        if (res.status === 200 && res.data.dataedit) {
-          // Ensure all required fields are initialized
-          const projectData = {
-            frontImage: {},
-            thumbnailImage: {},
-            otherImage: [],
-            project_floorplan_Image: [],
-            projectGallery: [],
-            highlightImage: '',
-            project_locationImage: '',
-            logo: '',
-            projectName: '',
-            builderName: '',
-            projectAddress: '',
-            city: '',
-            paymentPlan: '',
-            state: '',
-            country: '',
-            luxury: false,
-            spotlight: false,
-            projectOverview: '',
-            projectRedefine_Business: '',
-            projectRedefine_Connectivity: '',
-            projectRedefine_Education: '',
-            projectRedefine_Entertainment: '',
-            projectReraNo: '',
-            AboutDeveloper: '',
-            type: '',
-            project_url: '',
-            meta_title: '',
-            meta_description: '',
-            project_Status: '',
-            launchingDate: '',
-            totalLandArea: '',
-            totalUnit: '',
-            towerNumber: '',
-            mobileNumber: '',
-            possessionDate: '',
-            minPrice: '',
-            maxPrice: '',
-            Amenities: '',
-            project_Brochure: '',
-            ...res.data.dataedit // This will override defaults with API data
-          };
-          setValues(projectData);
-        } else if (res.status >= 400 && res.status < 500) {
-          // Handle client errors
-          console.error('Client error:', res);
-        } else if (res.status >= 500) {
-          alert("Server error. Please try again later.");
+        const res = await api.get('/project/viewAll/data?sort=-createdAt');
+        if (res.data?.data) {
+          // Extract unique project types and sort them
+          const uniqueTypes = [...new Set(
+            res.data.data
+              .map(project => project.type)
+              .filter(Boolean) // Remove any null/undefined values
+          )];
+
+          // Add "Industrial Plots" if not already present
+          if (!uniqueTypes.includes('Industrial Plots')) {
+            uniqueTypes.push('Industrial Plots');
+          }
+
+          // Sort the final list
+          uniqueTypes.sort();
+
+          setProjectTypes(uniqueTypes);
         }
       } catch (error) {
-        console.error('Error fetching project data:', error);
-        alert("Failed to load project data. Please try again later.");
-      } finally {
-        setIsLoading(false);
+        console.error("Error fetching project types:", error);
+        // Fallback: set default project types including Industrial Plots
+        setProjectTypes(['Industrial Plots']);
       }
     };
+    fetchProjectTypes();
+  }, []);
+
+  // Function to fetch project data
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await api.get(`/project/Edit/${id}`);
+      if (res.status === 200 && res.data.dataedit) {
+        // Ensure all required fields are initialized
+        const projectData = {
+          frontImage: {},
+          thumbnailImage: {},
+          project_floorplan_Image: [],
+          projectGallery: [],
+          highlightImage: '',
+          project_locationImage: '',
+          logo: '',
+          type: '',
+          builderName: '',
+          projectAddress: '',
+          city: '',
+          paymentPlan: '',
+          state: '',
+          country: '',
+          luxury: false,
+          spotlight: false,
+          projectOverview: '',
+          projectRedefine_Business: '',
+          projectRedefine_Connectivity: '',
+          projectRedefine_Education: '',
+          projectRedefine_Entertainment: '',
+          projectReraNo: '',
+          AboutDeveloper: '',
+          type: '',
+          project_url: '',
+          meta_title: '',
+          meta_description: '',
+          project_Status: '',
+          launchingDate: '',
+          totalLandArea: '',
+          totalUnit: '',
+          towerNumber: '',
+          mobileNumber: '',
+          possessionDate: '',
+          minPrice: '',
+          maxPrice: '',
+          Amenities: '',
+          project_Brochure: '',
+          ...res.data.dataedit // This will override defaults with API data
+        };
+        setValues(projectData);
+      } else if (res.status >= 400 && res.status < 500) {
+        // Handle client errors
+        console.error('Client error:', res);
+      } else if (res.status >= 500) {
+        alert("Server error. Please try again later.");
+      }
+    } catch (error) {
+      console.error('Error fetching project data:', error);
+      alert("Failed to load project data. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch project data when id changes
+  useEffect(() => {
     fetchData();
   }, [id]);
 
@@ -419,13 +453,11 @@ const ProjectEdit = () => {
     }
   };
 
-  const [loading, setLoading] = useState(false);
-
   const groupedSections = [
     {
       icon: <MdInfo className="text-2xl text-blue-500 mr-2" />, title: "Basic Info", fields: [
         { label: "Property Name", name: "projectName", icon: <MdInfo className="inline mr-1" /> },
-        { label: "Type", name: "type", icon: <MdInfo className="inline mr-1" /> },
+        { label: "Project Type", name: "type", icon: <MdInfo className="inline mr-1" />, select: true, options: projectTypes || [] },
         { label: "Project Status", name: "project_Status", icon: <MdInfo className="inline mr-1" /> },
         { label: "Project URL", name: "project_url", icon: <MdInfo className="inline mr-1" />, placeholder: "project-name" },
         { label: "Builder Name", name: "builderName", icon: <MdInfo className="inline mr-1" /> },

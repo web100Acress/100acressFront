@@ -25,6 +25,7 @@ const CITY_ALIASES = {
   panchkula: "Panchkula",
   kasauli: "Kasauli",
   sonipat: "Sonipat",
+  alwar: "Alwar",
   jalandhar: "Jalandhar",
   karnal: "Karnal",
   goa: "Goa",

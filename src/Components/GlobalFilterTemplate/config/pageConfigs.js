@@ -10,7 +10,7 @@ export const pageConfigs = {
     projectTypes: [
       "Commercial Property", "Residential Flats", "SCO Plots", "Deen Dayal Plots",
       "Residential Plots", "Independent Floors", "Builder Floors", "Affordable Homes",
-      "Villas", "Farm House"
+      "Villas", "Farm House", "Industrial Projects", "Industrial Plots"
     ],
     priceRanges: [
       { value: '<1', label: 'Under 1 Cr' },
@@ -33,7 +33,7 @@ export const pageConfigs = {
     projectTypes: [
       "Commercial Property", "Residential Flats", "SCO Plots", "Deen Dayal Plots",
       "Residential Plots", "Independent Floors", "Builder Floors", "Affordable Homes",
-      "Villas", "Farm House"
+      "Villas", "Farm House", "Industrial Projects", "Industrial Plots"
     ],
     priceRanges: [
       { value: '<1', label: 'Under 1 Cr' },
@@ -56,7 +56,7 @@ export const pageConfigs = {
     projectTypes: [
       "Commercial Property", "Residential Flats", "SCO Plots", "Deen Dayal Plots",
       "Residential Plots", "Independent Floors", "Builder Floors", "Affordable Homes",
-      "Villas", "Farm House"
+      "Villas", "Farm House", "Industrial Projects", "Industrial Plots"
     ],
     projectStatus: [
       "Upcoming Projects", "New Launch", "Under Construction", "Ready to Move"
@@ -74,7 +74,7 @@ export const pageConfigs = {
     projectTypes: [
       "Commercial Property", "Residential Flats", "SCO Plots", "Deen Dayal Plots",
       "Residential Plots", "Independent Floors", "Builder Floors", "Affordable Homes",
-      "Villas", "Farm House"
+      "Villas", "Farm House", "Industrial Projects", "Industrial Plots"
     ],
     badgeColor: 'bg-purple-500',
     badgeText: 'New',
@@ -192,6 +192,57 @@ export const projectTypeConfigs = {
       console.log('Commercial filter check for:', project.projectName, 'Result:', isCommercial);
       return isCommercial;
     }
+  },
+  "farmhouse": {
+    title: "Farm House Projects",
+    description: "Discover Premium Farm House Projects – Your Gateway to Serene Living and Agricultural Investment.",
+    query: "farmhouse",
+    reduxKey: "farmhouse",
+    badgeColor: "bg-green-500",
+    badgeText: "Farm House",
+    typeFilter: (project) => {
+      return project.type?.toLowerCase().includes('farm') ||
+             project.projectType?.toLowerCase().includes('farm') ||
+             project.category?.toLowerCase().includes('farm') ||
+             project.propertyType?.toLowerCase().includes('farm') ||
+             project.projectName?.toLowerCase().includes('farm') ||
+             project.description?.toLowerCase().includes('farm') ||
+             project.type === 'Farm House';
+    }
+  },
+  "industrial-plots": {
+    title: "Industrial Plots",
+    description: "Discover Premium Industrial Plots – Your Gateway to Industrial Investment and Business Expansion.",
+    query: "industrialplots",
+    reduxKey: "industrialplots",
+    badgeColor: "bg-gray-500",
+    badgeText: "Industrial Plot",
+    typeFilter: (project) => {
+      return project.type?.toLowerCase().includes('industrial') ||
+             project.projectType?.toLowerCase().includes('industrial') ||
+             project.category?.toLowerCase().includes('industrial') ||
+             project.propertyType?.toLowerCase().includes('industrial') ||
+             project.projectName?.toLowerCase().includes('industrial') ||
+             project.description?.toLowerCase().includes('industrial') ||
+             project.type === 'Industrial Plots';
+    }
+  },
+  "industrial-projects": {
+    title: "Industrial Projects",
+    description: "Discover Premium Industrial Projects – Your Gateway to Industrial Investment and Business Expansion.",
+    query: "industrialprojects",
+    reduxKey: "industrialprojects",
+    badgeColor: "bg-gray-600",
+    badgeText: "Industrial Project",
+    typeFilter: (project) => {
+      return project.type?.toLowerCase().includes('industrial') ||
+             project.projectType?.toLowerCase().includes('industrial') ||
+             project.category?.toLowerCase().includes('industrial') ||
+             project.propertyType?.toLowerCase().includes('industrial') ||
+             project.projectName?.toLowerCase().includes('industrial') ||
+             project.description?.toLowerCase().includes('industrial') ||
+             project.type === 'Industrial Projects';
+    }
   }
 };
 
@@ -242,6 +293,12 @@ export const cityConfigs = {
     description: "Value, Location, and Comfort — Discover premium projects in prime Noida locations.",
     badgeColor: "bg-green-500",
     badgeText: "Noida"
+  },
+  alwar: {
+    title: "Best Projects in Alwar",
+    description: "Value, Location, and Comfort — Discover premium projects in prime Alwar locations.",
+    badgeColor: "bg-yellow-500",
+    badgeText: "Alwar"
   }
 };
 
