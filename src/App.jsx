@@ -393,6 +393,9 @@ function App() {
                       <Route path="/project-in-goa/" element={<CityProjects />} />
                       <Route path="/plots-in-gurugram/" element={<ProjectTypeGlobal />} />
                       <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/industrial-projects/" element={<ProjectTypeGlobal />} />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />
                       {/* New dynamic project type routes */}
                       <Route path="/project-type/:type" element={<ProjectTypeGlobal />} />

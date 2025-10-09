@@ -262,6 +262,20 @@ export default function LeftSection({
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Commercial Projects</Text>
                   </Button>
+                  <Button as={Link} to="/projects/farmhouse/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Farm House</Text>
+                  </Button>
+                  <Button as={Link} to="/projects/industrial-projects/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Industrial Projects</Text>
+                  </Button>
                 </SimpleGrid>
                 <Box h="1px" bg="#eee" my={2} />
               </>
@@ -548,6 +562,9 @@ export default function LeftSection({
           <MenuItem as={Link} to="/property/residential/">Residential Projects</MenuItem>
           <MenuItem as={Link} to="/projects/independentfloors/">Independent Floors</MenuItem>
           <MenuItem as={Link} to="/projects/commercial/">Commercial Projects</MenuItem>
+          <MenuItem as={Link} to="/projects/farmhouse/">Farm House</MenuItem>
+          <MenuItem as={Link} to="/projects/industrial-plots/">Industrial Plots</MenuItem>
+       
         </MenuList>
       </Menu>
             

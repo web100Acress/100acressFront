@@ -727,6 +727,10 @@ const InsertProject = () => {
                       <option value="Affordable Homes">Affordable Homes</option>
                       <option value="Villas">Villas</option>
                       <option value="Farm Houses">Farm House</option>
+                      <option value="Industrial Plots">
+                        Industrial Plots
+                      </option>
+                      
                     </select>
                   </div>
 

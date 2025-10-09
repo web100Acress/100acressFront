@@ -168,10 +168,31 @@ const Projects = () => {
   };
 
   // Unique options for filters
-  const typeOptions = useMemo(
-    () => Array.from(new Set((viewAll || []).map(v => v?.type).filter(Boolean))).sort(),
-    [viewAll]
-  );
+  const typeOptions = useMemo(() => {
+    if (!viewAll || viewAll.length === 0) {
+      // If no data yet, at least show common project types
+      return ['Industrial Projects', 'Industrial Plots', 'Farm House'];
+    }
+
+    const uniqueTypes = Array.from(new Set((viewAll || []).map(v => v?.type).filter(Boolean)));
+
+    // Add common project types if not already present
+    if (!uniqueTypes.includes('Industrial Projects')) {
+      uniqueTypes.push('Industrial Projects');
+    }
+    if (!uniqueTypes.includes('Industrial Plots')) {
+      uniqueTypes.push('Industrial Plots');
+    }
+    if (!uniqueTypes.includes('Farm House')) {
+      uniqueTypes.push('Farm House');
+    }
+    if (!uniqueTypes.includes('Residential Plots')) {
+      uniqueTypes.push('Residential Plots');
+    }
+
+    // Sort the final list alphabetically
+    return uniqueTypes.sort();
+  }, [viewAll]);
   const cityOptions = useMemo(
     () => Array.from(new Set((viewAll || []).map(v => v?.city).filter(Boolean))).sort(),
     [viewAll]
@@ -191,12 +212,28 @@ const Projects = () => {
 
   // Apply combined filters
   const filteredProjects = viewAll.filter((item) => {
+    const searchTermLower = (searchTerm || "").toLowerCase();
+
+    // Enhanced search: search in multiple fields
     const name = (item?.projectName || "").toLowerCase();
-    const addr = (item?.projectAddress || "").toLowerCase();
-    const matchesName = name.includes((searchTerm || "").toLowerCase());
+    const type = (item?.type || "").toLowerCase();
+    const city = (item?.city || "").toLowerCase();
+    const builder = (item?.builderName || "").toLowerCase();
+    const address = (item?.projectAddress || "").toLowerCase();
+    const status = (item?.project_Status || "").toLowerCase();
+
+    // Check if search term matches any of these fields
+    const matchesSearch = !searchTerm ||
+      name.includes(searchTermLower) ||
+      type.includes(searchTermLower) ||
+      city.includes(searchTermLower) ||
+      builder.includes(searchTermLower) ||
+      address.includes(searchTermLower) ||
+      status.includes(searchTermLower);
+
     const matchesType = !filterType || item?.type === filterType;
     const matchesCity = !filterCity || item?.city === filterCity;
-    const matchesAddress = !filterAddress || addr.includes(filterAddress.toLowerCase());
+    const matchesAddress = !filterAddress || address.includes(filterAddress.toLowerCase());
     const matchesBuilder = !filterBuilder || item?.builderName === filterBuilder;
     const statusVal = (item?.project_Status ?? '').toString().trim();
     const matchesStatus = !filterStatus
@@ -209,7 +246,8 @@ const Projects = () => {
     const matchesMobile = !filterHasMobile || (filterHasMobile === "with" ? hasMobile : !hasMobile);
     const hasPayment = Boolean((item?.paymentPlan ?? "").toString().trim());
     const matchesPayment = !filterHasPayment || (filterHasPayment === "with" ? hasPayment : !hasPayment);
-    return matchesName && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment;
+
+    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment;
   });
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -286,7 +324,7 @@ const Projects = () => {
           <div className="search-container">
             <input
               type="text"
-              placeholder="Search project name..."
+              placeholder="Search projects, types, cities, builders..."
               className="search-input"
               value={searchTerm}
               onChange={handleSearch}
@@ -367,14 +405,14 @@ const Projects = () => {
               <option value="with">Payment: With</option>
               <option value="without">Payment: Without</option>
             </select>
-            {/* <button type="button" className="reset-filters-button" onClick={resetFilters}>
+            <button type="button" className="reset-filters-button" onClick={resetFilters}>
               Reset
-            </button> */}
+            </button>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            {/* <button type="button" className="refresh-button" onClick={handleRefreshData}>
+            <button type="button" className="refresh-button" onClick={handleRefreshData}>
               🔄 Refresh Data
-            </button> */}
+            </button>
             {/* <button type="button" className="export-csv-button" onClick={handleExportCSV}>Export CSV</button> */}
             
             <Link to={"/admin/project-insert"}>
