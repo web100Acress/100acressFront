@@ -29,6 +29,21 @@ export const projectTypeRoutes = {
     path: "/projects/commercial/",
     title: "Commercial Projects",
     description: "Discover Premium Commercial Projects – Your Gateway to Business Investment and Growth."
+  },
+  "farmhouse": {
+    path: "/projects/farmhouse/",
+    title: "Farm House Projects",
+    description: "Discover Premium Farm House Projects – Your Gateway to Serene Living and Agricultural Investment."
+  },
+  "industrial-plots": {
+    path: "/projects/industrial-plots/",
+    title: "Industrial Plots",
+    description: "Discover Premium Industrial Plots – Your Gateway to Industrial Investment and Business Expansion."
+  },
+  "industrial-projects": {
+    path: "/projects/industrial-projects/",
+    title: "Industrial Projects",
+    description: "Discover Premium Industrial Projects – Your Gateway to Industrial Investment and Business Expansion."
   }
 };
 

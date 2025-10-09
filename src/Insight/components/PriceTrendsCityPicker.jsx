@@ -338,207 +338,186 @@ export default function PriceTrendsCityPicker({
             </div>
           </div>
         ) : (
-          <div className="space-y-8 sm:space-y-12">
-            <div className="mt-6">
-              {/* insta story code type */}
-            {/* <div className="space-y-8 sm:space-y-12">
-            <div className="mt-6">
-                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('residential')}
-                  >
+          <div className="mt-6">
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+            <div
+              className="flex-shrink-0 w-24 h-36 rounded-xl overflow-hidden cursor-pointer relative group border-4 border-gray-200"
+              onClick={() => setSelectedStory('residential')}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80"
+                alt="Residential"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-white overflow-hidden border-2 border-white">
                     <img
-                      src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80"
-                      alt="Residential"
+                      src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80"
+                      alt="Agent"
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏠</div>
                   </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('commercial')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80"
-                      alt="Commercial"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏢</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('industrial')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=400&q=80"
-                      alt="Industrial"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏭</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('price')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=400&q=80"
-                      alt="Price Trends"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">💰</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('analytics')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&q=80"
-                      alt="Analytics"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">📊</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-teal-500 to-green-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('investment')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&w=400&q=80"
-                      alt="Investment"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">💹</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('rental')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80"
-                      alt="Rental"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏠‍</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('luxury')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80"
-                      alt="Luxury"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏰</div>
-                  </div>
+                  <span className="text-white text-xs font-semibold">Residential</span>
                 </div>
               </div>
-              </div> */}
-            <div className="mb-6 sm:mb-8">
-              <div className="flex items-center justify-between">
-                <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight text-gray-900">
-                  Popular Cities
-                </h2>
-                <label className={`${compareMode
-                  ? 'bg-blue-50 text-blue-700 border-blue-300 shadow-sm'
-                  : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:text-blue-700'} inline-flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 transition-all cursor-pointer ml-4`}>
-                  <input
-                    type="checkbox"
-                    checked={compareMode}
-                    onChange={(e) => {
-                      setCompareMode(e.target.checked);
-                      setSelectedCities([]);
-                    }}
-                    className="w-4 h-4 sm:w-5 sm:h-5 rounded text-blue-600 focus:ring-blue-500 focus:ring-2"
-                  />
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M5 3a1 1 0 011 1v8h2l-3 4-3-4h2V4a1 1 0 011-1zm10 14a1 1 0 01-1-1V8h-2l3-4 3 4h-2v8a1 1 0 01-1 1z"/>
-                  </svg>
-                  <span>Compare cities</span>
-                  {compareMode && (
-                    <span className="ml-1 inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs bg-blue-100 text-blue-700 border border-blue-200">
-                      {selectedCities.length}
-                    </span>
-                  )}
-                </label>
-              </div>
-              </div>
-
-              {/* Instagram Story Type Component */}
             </div>
-
-
-
-            {/* Dynamic City Categories from Admin API */}
-            {cityCategories.map((category, index) => (
-              <section key={category.id || index}>
-                <div className="flex items-center gap-4 mb-4 sm:mb-6">
-                  <div
-                    className="w-1 h-6 sm:h-8 rounded-full"
-                    style={{ backgroundColor: category.color || '#3B82F6' }}
-                  ></div>
-                  <h2 className="text-lg sm:text-2xl font-bold text-gray-800 uppercase tracking-wider">
-                    {category.name || category.title}
-                  </h2>
+            <div
+              className="flex-shrink-0 w-24 h-36 rounded-xl overflow-hidden cursor-pointer relative group border-4 border-gray-200"
+              onClick={() => setSelectedStory('commercial')}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80"
+                alt="Commercial"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-white overflow-hidden border-2 border-white">
+                    <img
+                      src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100&q=80"
+                      alt="Agent"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-white text-xs font-semibold">Commercial</span>
                 </div>
-                <div
-                  className={`grid gap-4 sm:gap-6 ${
-                    gridCols === 1
-                      ? "grid-cols-1"
-                      : gridCols === 2
-                      ? "grid-cols-2"
-                      : gridCols === 3
-                      ? "grid-cols-3"
-                      : gridCols === 4
-                      ? "grid-cols-4"
-                      : gridCols === 5
-                      ? "grid-cols-5"
-                      : "grid-cols-6"
-                  }`}
-                >
-                  {(category.cities || []).map(renderCard)}
+              </div>
+            </div>
+            <div
+              className="flex-shrink-0 w-24 h-36 rounded-xl overflow-hidden cursor-pointer relative group border-4 border-gray-200"
+              onClick={() => setSelectedStory('industrial')}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=400&q=80"
+                alt="Industrial"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-white overflow-hidden border-2 border-white">
+                    <img
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80"
+                      alt="Agent"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-white text-xs font-semibold">Industrial</span>
                 </div>
-              </section>
-            ))}
-
-            {/* Fallback for uncategorized cities */}
-            {cityCategories.length === 0 && displayedCities && displayedCities.length > 0 && (
-              <section>
-                <div className="flex items-center gap-4 mb-4 sm:mb-6">
-                  <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-gray-600 to-gray-700 rounded-full"></div>
-                  <h2 className="text-lg sm:text-2xl font-bold text-gray-800 uppercase tracking-wider">
-                    All Cities
-                  </h2>
+              </div>
+            </div>
+            <div
+              className="flex-shrink-0 w-24 h-36 rounded-xl overflow-hidden cursor-pointer relative group border-4 border-gray-200"
+              onClick={() => setSelectedStory('price')}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=400&q=80"
+                alt="Price Trends"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-white overflow-hidden border-2 border-white">
+                    <img
+                      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80"
+                      alt="Agent"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-white text-xs font-semibold">Price Trends</span>
                 </div>
-                <div
-                  className={`grid gap-4 sm:gap-6 ${
-                    gridCols === 1
-                      ? "grid-cols-1"
-                      : gridCols === 2
-                      ? "grid-cols-2"
-                      : gridCols === 3
-                      ? "grid-cols-3"
-                      : gridCols === 4
-                      ? "grid-cols-4"
-                      : gridCols === 5
-                      ? "grid-cols-5"
-                      : "grid-cols-6"
-                  }`}
-                >
-                  {displayedCities.map(renderCard)}
+              </div>
+            </div>
+            <div
+              className="flex-shrink-0 w-24 h-36 rounded-xl overflow-hidden cursor-pointer relative group border-4 border-gray-200"
+              onClick={() => setSelectedStory('analytics')}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&q=80"
+                alt="Analytics"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-white overflow-hidden border-2 border-white">
+                    <img
+                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80"
+                      alt="Agent"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-white text-xs font-semibold">Analytics</span>
                 </div>
-              </section>
-            )}
+              </div>
+            </div>
+            <div
+              className="flex-shrink-0 w-24 h-36 rounded-xl overflow-hidden cursor-pointer relative group border-4 border-gray-200"
+              onClick={() => setSelectedStory('investment')}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&w=400&q=80"
+                alt="Investment"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-white overflow-hidden border-2 border-white">
+                    <img
+                      src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80"
+                      alt="Agent"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-white text-xs font-semibold">Investment</span>
+                </div>
+              </div>
+            </div>
+            <div
+              className="flex-shrink-0 w-24 h-36 rounded-xl overflow-hidden cursor-pointer relative group border-4 border-gray-200"
+              onClick={() => setSelectedStory('rental')}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80"
+                alt="Rental"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-white overflow-hidden border-2 border-white">
+                    <img
+                      src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80"
+                      alt="Agent"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-white text-xs font-semibold">Rental</span>
+                </div>
+              </div>
+            </div>
+            <div
+              className="flex-shrink-0 w-24 h-36 rounded-xl overflow-hidden cursor-pointer relative group border-4 border-gray-200"
+              onClick={() => setSelectedStory('luxury')}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80"
+                alt="Luxury"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-white overflow-hidden border-2 border-white">
+                    <img
+                      src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80"
+                      alt="Agent"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-white text-xs font-semibold">Luxury</span>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
         )}
 
         {/* Enhanced View More/Less Buttons */}
