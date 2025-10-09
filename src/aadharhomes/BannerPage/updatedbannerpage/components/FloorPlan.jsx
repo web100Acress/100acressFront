@@ -4,12 +4,89 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
   const [activeTab, setActiveTab] = useState(0);
   const [isImageUnlocked, setIsImageUnlocked] = useState(false);
 
-  // Check localStorage for image unlock status on component mount
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  // Handle scroll position and arrow visibility
   useEffect(() => {
-    const unlockKey = `floorplan_unlocked_${bhkDetails[0]?.bhk_type || 'default'}`;
-    const isUnlocked = localStorage.getItem(unlockKey) === 'true';
-    setIsImageUnlocked(isUnlocked);
-  }, [bhkDetails]);
+    const container = document.getElementById('tab-container');
+    if (!container || bhkDetails.length <= 4) return;
+
+    const updateArrows = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = container;
+      setShowLeftArrow(scrollLeft > 0);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 1);
+    };
+
+    updateArrows();
+    container.addEventListener('scroll', updateArrows);
+    window.addEventListener('resize', updateArrows);
+
+    return () => {
+      container.removeEventListener('scroll', updateArrows);
+      window.removeEventListener('resize', updateArrows);
+    };
+  }, [bhkDetails.length]);
+
+  // Mouse wheel scrolling
+  const handleWheel = (e) => {
+    const container = document.getElementById('tab-container');
+    if (container && bhkDetails.length > 4) {
+      e.preventDefault();
+      container.scrollBy({ left: e.deltaY > 0 ? 100 : -100, behavior: 'smooth' });
+    }
+  };
+
+  // Mouse drag scrolling
+  const handleMouseDown = (e) => {
+    const container = document.getElementById('tab-container');
+    if (container && bhkDetails.length > 4) {
+      setIsDragging(true);
+      setStartX(e.pageX - container.offsetLeft);
+      setScrollLeft(container.scrollLeft);
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const container = document.getElementById('tab-container');
+    if (container) {
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 2;
+      container.scrollLeft = scrollLeft - walk;
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Touch scrolling for mobile
+  const handleTouchStart = (e) => {
+    const container = document.getElementById('tab-container');
+    if (container && bhkDetails.length > 4) {
+      setStartX(e.touches[0].pageX - container.offsetLeft);
+      setScrollLeft(container.scrollLeft);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (!startX) return;
+    const container = document.getElementById('tab-container');
+    if (container) {
+      const x = e.touches[0].pageX - container.offsetLeft;
+      const walk = (x - startX) * 2;
+      container.scrollLeft = scrollLeft - walk;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setStartX(0);
+  };
 
   // Handle form submission success - unlock images
   const handleFormSuccess = () => {
@@ -31,7 +108,17 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
   const activeBhkDetails = bhkDetails[activeTab];
 
   return (
-    <section className="py-10 bg-black text-white relative overflow-hidden">
+    <>
+      <style jsx>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+      <section className="py-10 bg-black text-white relative overflow-hidden">
       {/* Background decorative lines */}
       <div className="absolute top-0 right-0 -z-0 opacity-20">
         <svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,22 +143,86 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
           {/* Left Side: Image and Super Area */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-4 mb-4">
-              {bhkDetails.map((bhk, index) => (
-                <button 
-                  key={index}
-                  onClick={() => setActiveTab(index)}
-                  className={`px-6 py-2 text-sm font-medium border transition-all duration-300 rounded-md ${
-                    activeTab === index 
-                      ? 'bg-amber-500 text-black border-amber-500'
-                      : 'border-amber-500 text-amber-500 hover:bg-amber-500/10'
-                  }`}>
-                  {bhk.bhk_type}
-                </button>
-              ))}
+            {/* Horizontal Scrollable Tab Bar */}
+            <div className="relative mb-3 flex items-center">
+              {/* Left Navigation Arrow */}
+              <button
+                onClick={() => {
+                  const container = document.getElementById('tab-container');
+                  if (container) {
+                    container.scrollBy({ left: -200, behavior: 'smooth' });
+                  }
+                }}
+                className={`flex-shrink-0 z-20 group ${
+                  !showLeftArrow ? 'opacity-0 pointer-events-none scale-75' : 'opacity-100 scale-100'
+                } transition-all duration-300`}
+              >
+                <div className="relative">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-full blur opacity-30 group-hover:opacity-50 transition-all duration-300"></div>
+                  <div className="relative  group-hover:bg-gray-800/95 text-amber-400 group-hover:text-amber-300 border-2 border-amber-500/40 group-hover:border-amber-400/60 rounded-full p-3 shadow-xl group-hover:shadow-amber-500/25 transition-all duration-300 backdrop-blur-sm">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </button>
+
+              {/* Scrollable Tab Container */}
+              <div
+                id="tab-container"
+                className="flex items-center gap-3 overflow-x-auto scrollbar-hide flex-1 mx-4 rounded-full shadow-2xl backdrop-blur-md py-3"
+                onWheel={handleWheel}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
+                {bhkDetails.map((bhk, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveTab(index)}
+                    className={`relative whitespace-nowrap px-7 py-3.5 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 ${
+                      activeTab === index
+                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xl shadow-amber-500/40 ring-2 ring-amber-400/50'
+                        : 'bg-white/10 text-amber-300 border-2 border-amber-400/50 hover:border-amber-300 hover:bg-white/20 hover:text-amber-200 hover:shadow-lg hover:shadow-amber-400/20'
+                    }`}
+                    style={{
+                      fontSize: 'clamp(0.875rem, 1vw, 1rem)',
+                      minWidth: 'fit-content'
+                    }}
+                  >
+                    {bhk.bhk_type}
+                  </button>
+                ))}
+              </div>
+
+              {/* Right Navigation Arrow */}
+              <button
+                onClick={() => {
+                  const container = document.getElementById('tab-container');
+                  if (container) {
+                    container.scrollBy({ left: 200, behavior: 'smooth' });
+                  }
+                }}
+                className={`flex-shrink-0 z-20 group ${
+                  !showRightArrow ? 'opacity-0 pointer-events-none scale-75' : 'opacity-100 scale-100'
+                } transition-all duration-300`}
+              >
+                <div className="relative">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-amber-400 rounded-full blur opacity-30 group-hover:opacity-50 transition-all duration-300"></div>
+                  <div className="relative bg-gray-900/90 group-hover:bg-gray-800/95 text-amber-400 group-hover:text-amber-300 border-2 border-amber-500/40 group-hover:border-amber-400/60 rounded-full p-3 shadow-xl group-hover:shadow-amber-500/25 transition-all duration-300 backdrop-blur-sm">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </button>
             </div>
 
-            <div className="bg-gray-800/50 p-3 rounded-lg border border-gray-700 mb-4 relative">
+            <div className="bg-gray-800/50 p-3 rounded-lg border border-gray-700 relative">
               {activePlan && (
                 <>
                   <img 
@@ -166,6 +317,7 @@ const FloorPlan = ({ floorPlans = [], bhkDetails = [], onShowCallback = () => {}
         </div>
       </div>
     </section>
+    </>
   );
 };
 
