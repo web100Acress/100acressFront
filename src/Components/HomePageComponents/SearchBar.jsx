@@ -19,6 +19,8 @@ function SearchBar() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [previousSearches, setPreviousSearches] = useState([]);
   const [itemsPerPage, setItemsPerPage] = useState(6);
+  const [latitude, setLatitude] = useState(28.6139); // Default to Delhi/NCR coordinates
+  const [longitude, setLongitude] = useState(77.2090);
 
   const searchRef = useRef(null);
   const debounceTimer = useRef(null);
@@ -31,14 +33,21 @@ function SearchBar() {
     "New Launch in Pune"
   ];
 
+  // Get user's location on component mount
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowSuggestions(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+        },
+        (error) => {
+          console.warn('Unable to get location, using default coordinates:', error);
+          // Keep default Delhi/NCR coordinates
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 } // 5 minutes cache
+      );
+    }
   }, []);
 
   // Enhanced number conversion system with advanced features
@@ -221,7 +230,7 @@ function SearchBar() {
     return Array.from(formats);
   };
 
-  // Enhanced search function with fuzzy matching
+  // Enhanced search function with fuzzy matching and fallback
   const performAdvancedSearch = async (query) => {
     const allFormats = getNumberFormats(query);
 
@@ -293,10 +302,29 @@ function SearchBar() {
     try {
       // Use the enhanced advanced search
       const combinedSuggestions = await performAdvancedSearch(query);
-      setSuggestions(combinedSuggestions);
+
+      // If no suggestions found, add smart property suggestions as fallback
+      if (combinedSuggestions.length === 0) {
+        const smartSuggestions = generatePropertySuggestions(query);
+        const fallbackSuggestions = smartSuggestions.map(suggestion => ({
+          text: suggestion,
+          type: 'smart',
+          url: null
+        }));
+        setSuggestions([...combinedSuggestions, ...fallbackSuggestions]);
+      } else {
+        setSuggestions(combinedSuggestions);
+      }
     } catch (error) {
       console.error('Error fetching suggestions:', error);
-      setSuggestions([]);
+      // Fallback to smart suggestions if API fails
+      const smartSuggestions = generatePropertySuggestions(query);
+      const fallbackSuggestions = smartSuggestions.map(suggestion => ({
+        text: suggestion,
+        type: 'smart',
+        url: null
+      }));
+      setSuggestions(fallbackSuggestions);
     } finally {
       setIsLoadingSuggestions(false);
     }
@@ -354,12 +382,12 @@ function SearchBar() {
   const handleSearch = () => {
     if (!searchQuery.trim()) return;
 
-    // Check if search query is a builder name and redirect to builder page
-    if (handleBuilderRedirect(searchQuery)) {
-      return; // Builder redirect handled
-    }
+    // DISABLED: Builder redirect - always do project search instead
+    // if (handleBuilderRedirect(searchQuery)) {
+    //   return; // Builder redirect handled
+    // }
 
-    // Regular property search logic
+    // Regular property search logic - always search for projects
     const allFormats = getNumberFormats(searchQuery);
     allFormats.forEach(format => {
       saveSearchToLocalStorage(format);
@@ -372,6 +400,7 @@ function SearchBar() {
       nearby: true,
     };
     const key = encodeURIComponent(JSON.stringify(searchData));
+    // Always redirect to search page - it will handle project search and fallbacks
     window.location.href = `/searchdata/${key}`;
   };
 
@@ -379,11 +408,15 @@ function SearchBar() {
     // Hide suggestions dropdown
     setShowSuggestions(false);
 
+    // DISABLED: Builder redirect - always do project search instead
     // Check if suggestion text is a builder name and redirect to builder page
+    // const suggestionText = suggestion.text || suggestion;
+    // if (handleBuilderRedirect(suggestionText)) {
+    //   return; // Builder redirect handled
+    // }
+
+    // Always treat suggestions as search queries for projects
     const suggestionText = suggestion.text || suggestion;
-    if (handleBuilderRedirect(suggestionText)) {
-      return; // Builder redirect handled
-    }
 
     // Save both formats of the suggestion to localStorage
     const allFormats = getNumberFormats(suggestionText);
@@ -391,14 +424,15 @@ function SearchBar() {
       saveSearchToLocalStorage(format);
     });
 
-    // Navigate to the suggestion's URL
-    if (suggestion.url) {
-      window.location.href = suggestion.url;
-    } else {
-      // If no URL, update search query and perform search
-      setSearchQuery(suggestionText);
-      handleSearch();
-    }
+    // Navigate to search results page
+    const searchData = {
+      location: { lat: latitude, lng: longitude },
+      query: suggestionText,
+      collectionName: activeLink,
+      nearby: true,
+    };
+    const key = encodeURIComponent(JSON.stringify(searchData));
+    window.location.href = `/searchdata/${key}`;
   };
 
   const handleKeyDown = (e) => {
@@ -948,7 +982,16 @@ function SearchBar() {
                     </>
                   ) : searchQuery.length >= 1 ? (
                     <div className="p-4 text-center text-gray-500">
-                      No suggestions found for "{searchQuery}"
+                      <div className="mb-3">No suggestions found for "{searchQuery}"</div>
+                      <button
+                        onClick={() => {
+                          setShowSuggestions(false);
+                          handleSearch();
+                        }}
+                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                      >
+                        Search Anyway
+                      </button>
                     </div>
                   ) : null}
                 </>
