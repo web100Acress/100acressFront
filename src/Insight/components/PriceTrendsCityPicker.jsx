@@ -15,7 +15,7 @@ export default function PriceTrendsCityPicker({
 }) {
   const toggleCitySelect = (city) => {
     // Handle both object and string formats
-    const cname = typeof city === 'object' ? city.name : city;
+    const cname = typeof city === "object" ? city.name : city;
     setSelectedCities((list) =>
       list.includes(cname) ? list.filter((c) => c !== cname) : [...list, cname]
     );
@@ -25,14 +25,14 @@ export default function PriceTrendsCityPicker({
   const getCityBanner = (cname) => {
     // First try to find the city in the dynamic categories to get its banner
     for (const category of cityCategories) {
-      const cityData = (category.cities || []).find(city => {
-        if (typeof city === 'object') {
+      const cityData = (category.cities || []).find((city) => {
+        if (typeof city === "object") {
           return city.name === cname;
         } else {
           return city === cname;
         }
       });
-      if (cityData && typeof cityData === 'object' && cityData.banner?.url) {
+      if (cityData && typeof cityData === "object" && cityData.banner?.url) {
         return cityData.banner.url;
       }
     }
@@ -59,9 +59,7 @@ export default function PriceTrendsCityPicker({
         const token = localStorage.getItem("myToken");
         const base = import.meta.env.VITE_API_BASE;
 
-        const headers = token
-          ? { Authorization: `Bearer ${token}` }
-          : {}; // 👈 agar token nahi hai to empty headers bhejenge
+        const headers = token ? { Authorization: `Bearer ${token}` } : {}; // 👈 agar token nahi hai to empty headers bhejenge
 
         const response = await fetch(
           `${base}/api/admin/insights-price-trends-banners`,
@@ -139,23 +137,20 @@ export default function PriceTrendsCityPicker({
   }, [expanded, perPage, visibleCities]);
 
   // Quick filter chips for popular cities - dynamically generated from visibleCities
-  const popularChips = useMemo(
-    () => {
-      if (!Array.isArray(visibleCities) || visibleCities.length === 0) return [];
-      // Get first 12 cities as popular chips, handling both string and object formats
-      return visibleCities.slice(0, 12).map(city => {
-        return typeof city === 'object' ? city.name : city;
-      });
-    },
-    [visibleCities]
-  );
+  const popularChips = useMemo(() => {
+    if (!Array.isArray(visibleCities) || visibleCities.length === 0) return [];
+    // Get first 12 cities as popular chips, handling both string and object formats
+    return visibleCities.slice(0, 12).map((city) => {
+      return typeof city === "object" ? city.name : city;
+    });
+  }, [visibleCities]);
 
   const [selectedStory, setSelectedStory] = useState(null);
 
   // Render function for city cards
   const renderCard = (city) => {
     // Handle both object and string formats for backward compatibility
-    const cname = typeof city === 'object' ? city.name : city;
+    const cname = typeof city === "object" ? city.name : city;
     const imageUrl = getCityBanner(cname);
     const hasError = imageErrors[cname];
     const isSelected = compareMode && selectedCities.includes(cname);
@@ -283,7 +278,8 @@ export default function PriceTrendsCityPicker({
                   </span>
                 </h2>
                 <p className="text-lg sm:text-xl lg:text-2xl opacity-95 font-medium leading-relaxed max-w-2xl mx-auto">
-                  Unlock exclusive luxury homes across India's premier destinations
+                  Unlock exclusive luxury homes across India's premier
+                  destinations
                 </p>
               </div>
             </div>
@@ -340,143 +336,166 @@ export default function PriceTrendsCityPicker({
         ) : (
           <div className="space-y-8 sm:space-y-12">
             <div className="mt-6">
-              {/* insta story code type */}
-            {/* <div className="space-y-8 sm:space-y-12">
-            <div className="mt-6">
-                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('residential')}
+              {/* 6 Instagram Story Type Cards */}
+              <div className="mb-6">
+  <div className="flex items-center gap-4 mb-6">
+    <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full"></div>
+    <h2 className="text-2xl font-bold text-gray-800 uppercase tracking-wider">
+      Property Stories
+    </h2>
+  </div>
+
+  <div className="flex gap-6 sm:gap-8 overflow-x-auto pb-4 scrollbar-hide justify-start min-h-[200px]">
+    {[
+      {
+        id: "residential",
+        title: "RESIDENTIAL",
+        subtitle: "Find Your Home",
+      
+    
+        bgImage:
+          "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80",
+      },
+      {
+        id: "commercial",
+        title: "COMMERCIAL",
+        subtitle: "Business Spaces",
+      
+      
+        bgImage:
+          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80",
+      },
+      {
+        id: "industrial",
+        title: "INDUSTRIAL",
+        subtitle: "Industrial Properties",
+      
+       
+        bgImage:
+          "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=400&q=80",
+      },
+      {
+        id: "price",
+        title: "PRICE TRENDS",
+        subtitle: "Market Insights here",
+      
+     
+        bgImage:
+          "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=400&q=80",
+      },
+      {
+        id: "analytics",
+        title: "ANALYTICS",
+        subtitle: "Data Driven Decisions",
+       
+      
+        bgImage:
+          "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&q=80",
+      },
+      {
+        id: "investment",
+        title: "INVESTMENT",
+        subtitle: "Smart Investments",
+       
+        
+        bgImage:
+          "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=400&q=80",
+      },
+      {
+        id: "luxury",
+        title: "LUXURY",
+        subtitle: "Premium Properties",
+      
+    
+        bgImage:
+          "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=400&q=80",
+      },
+    ].map((story, index) => (
+      <div
+        key={`${story.id}-${index}`}
+        onClick={() => setSelectedStory(story.id)}
+        className="flex-shrink-0 cursor-pointer group"
+      >
+        <div className="relative bg-gradient-to-br from-white via-gray-50 to-white rounded-2xl p-3 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-110 hover:-translate-y-2 border border-gray-200 hover:border-purple-300 overflow-hidden w-40 sm:w-44">
+
+          <div className={`absolute inset-0 bg-gradient-to-br ${story.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-xl`}></div>
+          
+          {/* Circle Story Image */}
+          <div className="relative w-20 h-20 sm:w-20 sm:h-20 mx-auto">
+            <div className="w-full h-full rounded-full overflow-hidden border-4 border-white shadow-xl group-hover:shadow-2xl transition-all duration-500 group-hover:scale-110 relative bg-white ring-4 ring-purple-100 group-hover:ring-purple-300">
+              <img
+                src={story.bgImage}
+                alt={story.title}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50 group-hover:to-black/30 transition-all duration-300" />
+              {/* Animated pulse ring */}
+              <div className={`absolute inset-0 rounded-full bg-gradient-to-r ${story.color} opacity-0 group-hover:opacity-60 animate-ping`} style={{ animationDuration: '2s' }} />
+            </div>
+          </div>
+
+          {/* Story Title - Below Circle */}
+          <div className="mt-5 text-center relative z-10">
+            <h3 className="text-sm sm:text-base font-bold text-gray-800 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 transition-all duration-300 leading-tight">
+              {story.title}
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-600 group-hover:text-gray-700 mt-1.5 leading-tight font-medium">
+              {story.subtitle}
+            </p>
+            
+            {/* Animated underline */}
+            <div className={`w-0 group-hover:w-12 h-0.5 bg-gradient-to-r ${story.color} mx-auto mt-2 transition-all duration-500 rounded-full`}></div>
+          </div>
+
+          {/* Shimmer effect */}
+          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"></div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+              {/* end */}
+              <div className="mb-6 sm:mb-8">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight text-gray-900">
+                    Popular Cities
+                  </h2>
+                  <label
+                    className={`${
+                      compareMode
+                        ? "bg-blue-50 text-blue-700 border-blue-300 shadow-sm"
+                        : "bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:text-blue-700"
+                    } inline-flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 transition-all cursor-pointer ml-4`}
                   >
-                    <img
-                      src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80"
-                      alt="Residential"
-                      className="w-full h-full object-cover"
+                    <input
+                      type="checkbox"
+                      checked={compareMode}
+                      onChange={(e) => {
+                        setCompareMode(e.target.checked);
+                        setSelectedCities([]);
+                      }}
+                      className="w-4 h-4 sm:w-5 sm:h-5 rounded text-blue-600 focus:ring-blue-500 focus:ring-2"
                     />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏠</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('commercial')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80"
-                      alt="Commercial"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏢</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('industrial')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=400&q=80"
-                      alt="Industrial"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏭</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('price')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=400&q=80"
-                      alt="Price Trends"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">💰</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('analytics')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&q=80"
-                      alt="Analytics"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">📊</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-teal-500 to-green-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('investment')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&w=400&q=80"
-                      alt="Investment"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">💹</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('rental')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80"
-                      alt="Rental"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏠‍</div>
-                  </div>
-                  <div
-                    className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform shadow-lg relative group"
-                    onClick={() => setSelectedStory('luxury')}
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80"
-                      alt="Luxury"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
-                    <div className="absolute bottom-2 left-2 text-white text-xs font-bold">🏰</div>
-                  </div>
+                    <svg
+                      className="w-4 h-4 sm:w-5 sm:h-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M5 3a1 1 0 011 1v8h2l-3 4-3-4h2V4a1 1 0 011-1zm10 14a1 1 0 01-1-1V8h-2l3-4 3 4h-2v8a1 1 0 01-1 1z" />
+                    </svg>
+                    <span>Compare cities</span>
+                    {compareMode && (
+                      <span className="ml-1 inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs bg-blue-100 text-blue-700 border border-blue-200">
+                        {selectedCities.length}
+                      </span>
+                    )}
+                  </label>
                 </div>
-              </div>
-              </div> */}
-            <div className="mb-6 sm:mb-8">
-              <div className="flex items-center justify-between">
-                <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight text-gray-900">
-                  Popular Cities
-                </h2>
-                <label className={`${compareMode
-                  ? 'bg-blue-50 text-blue-700 border-blue-300 shadow-sm'
-                  : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:text-blue-700'} inline-flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 transition-all cursor-pointer ml-4`}>
-                  <input
-                    type="checkbox"
-                    checked={compareMode}
-                    onChange={(e) => {
-                      setCompareMode(e.target.checked);
-                      setSelectedCities([]);
-                    }}
-                    className="w-4 h-4 sm:w-5 sm:h-5 rounded text-blue-600 focus:ring-blue-500 focus:ring-2"
-                  />
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M5 3a1 1 0 011 1v8h2l-3 4-3-4h2V4a1 1 0 011-1zm10 14a1 1 0 01-1-1V8h-2l3-4 3 4h-2v8a1 1 0 01-1 1z"/>
-                  </svg>
-                  <span>Compare cities</span>
-                  {compareMode && (
-                    <span className="ml-1 inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs bg-blue-100 text-blue-700 border border-blue-200">
-                      {selectedCities.length}
-                    </span>
-                  )}
-                </label>
-              </div>
               </div>
 
               {/* Instagram Story Type Component */}
             </div>
-
-
 
             {/* Dynamic City Categories from Admin API */}
             {cityCategories.map((category, index) => (
@@ -484,7 +503,7 @@ export default function PriceTrendsCityPicker({
                 <div className="flex items-center gap-4 mb-4 sm:mb-6">
                   <div
                     className="w-1 h-6 sm:h-8 rounded-full"
-                    style={{ backgroundColor: category.color || '#3B82F6' }}
+                    style={{ backgroundColor: category.color || "#3B82F6" }}
                   ></div>
                   <h2 className="text-lg sm:text-2xl font-bold text-gray-800 uppercase tracking-wider">
                     {category.name || category.title}
@@ -511,49 +530,49 @@ export default function PriceTrendsCityPicker({
             ))}
 
             {/* Fallback for uncategorized cities */}
-            {cityCategories.length === 0 && displayedCities && displayedCities.length > 0 && (
-              <section>
-                <div className="flex items-center gap-4 mb-4 sm:mb-6">
-                  <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-gray-600 to-gray-700 rounded-full"></div>
-                  <h2 className="text-lg sm:text-2xl font-bold text-gray-800 uppercase tracking-wider">
-                    All Cities
-                  </h2>
-                </div>
-                <div
-                  className={`grid gap-4 sm:gap-6 ${
-                    gridCols === 1
-                      ? "grid-cols-1"
-                      : gridCols === 2
-                      ? "grid-cols-2"
-                      : gridCols === 3
-                      ? "grid-cols-3"
-                      : gridCols === 4
-                      ? "grid-cols-4"
-                      : gridCols === 5
-                      ? "grid-cols-5"
-                      : "grid-cols-6"
-                  }`}
-                >
-                  {displayedCities.map(renderCard)}
-                </div>
-              </section>
-            )}
+            {cityCategories.length === 0 &&
+              displayedCities &&
+              displayedCities.length > 0 && (
+                <section>
+                  <div className="flex items-center gap-4 mb-4 sm:mb-6">
+                    <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-gray-600 to-gray-700 rounded-full"></div>
+                    <h2 className="text-lg sm:text-2xl font-bold text-gray-800 uppercase tracking-wider">
+                      All Cities
+                    </h2>
+                  </div>
+                  <div
+                    className={`grid gap-4 sm:gap-6 ${
+                      gridCols === 1
+                        ? "grid-cols-1"
+                        : gridCols === 2
+                        ? "grid-cols-2"
+                        : gridCols === 3
+                        ? "grid-cols-3"
+                        : gridCols === 4
+                        ? "grid-cols-4"
+                        : gridCols === 5
+                        ? "grid-cols-5"
+                        : "grid-cols-6"
+                    }`}
+                  >
+                    {displayedCities.map(renderCard)}
+                  </div>
+                </section>
+              )}
           </div>
         )}
 
         {/* Enhanced View More/Less Buttons */}
-        {!pickerLoading &&
-          visibleCities &&
-          !expanded && (
-            <div className="flex items-center justify-center mt-12">
-              <button
-                onClick={() => setExpanded(true)}
-                className="px-8 py-4 rounded-2xl border-2 border-gray-300 bg-white hover:bg-gray-50 text-lg font-semibold text-gray-700 hover:text-gray-900 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                View More Cities
-              </button>
-            </div>
-          )}
+        {!pickerLoading && visibleCities && !expanded && (
+          <div className="flex items-center justify-center mt-12">
+            <button
+              onClick={() => setExpanded(true)}
+              className="px-8 py-4 rounded-2xl border-2 border-gray-300 bg-white hover:bg-gray-50 text-lg font-semibold text-gray-700 hover:text-gray-900 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              View More Cities
+            </button>
+          </div>
+        )}
 
         {!pickerLoading &&
           expanded &&
@@ -633,43 +652,49 @@ export default function PriceTrendsCityPicker({
 
         {/* Story Modal */}
         {selectedStory && (
-          <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4" onClick={() => setSelectedStory(null)}>
-            <div className="relative max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4"
+            onClick={() => setSelectedStory(null)}
+          >
+            <div
+              className="relative max-w-md w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
               {/* Story Card - Instagram Style */}
               <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl overflow-hidden shadow-2xl">
                 {/* Story Header */}
                 <div className="relative h-96 overflow-hidden">
                   {/* Story Image Background */}
                   <div className="absolute inset-0">
-                    {selectedStory === 'residential' && (
+                    {selectedStory === "residential" && (
                       <img
                         src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80"
                         alt="Residential"
                         className="w-full h-full object-cover"
                       />
                     )}
-                    {selectedStory === 'commercial' && (
+                    {selectedStory === "commercial" && (
                       <img
                         src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
                         alt="Commercial"
                         className="w-full h-full object-cover"
                       />
                     )}
-                    {selectedStory === 'industrial' && (
+                    {selectedStory === "industrial" && (
                       <img
                         src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80"
                         alt="Industrial"
                         className="w-full h-full object-cover"
                       />
                     )}
-                    {selectedStory === 'price' && (
+                    {selectedStory === "price" && (
                       <img
                         src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80"
                         alt="Price Trends"
                         className="w-full h-full object-cover"
                       />
                     )}
-                    {selectedStory === 'analytics' && (
+                    {selectedStory === "analytics" && (
                       <img
                         src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80"
                         alt="Analytics"
@@ -685,15 +710,17 @@ export default function PriceTrendsCityPicker({
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 p-[2px]">
                           <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center text-2xl">
-                            {selectedStory === 'residential' && '🏠'}
-                            {selectedStory === 'commercial' && '🏢'}
-                            {selectedStory === 'industrial' && '🏭'}
-                            {selectedStory === 'price' && '💰'}
-                            {selectedStory === 'analytics' && '📊'}
+                            {selectedStory === "residential" && "🏠"}
+                            {selectedStory === "commercial" && "🏢"}
+                            {selectedStory === "industrial" && "🏭"}
+                            {selectedStory === "price" && "💰"}
+                            {selectedStory === "analytics" && "📊"}
                           </div>
                         </div>
                         <div>
-                          <h3 className="text-white font-bold text-sm">PropertyHub</h3>
+                          <h3 className="text-white font-bold text-sm">
+                            PropertyHub
+                          </h3>
                           <p className="text-gray-300 text-xs">2 hours ago</p>
                         </div>
                       </div>
@@ -708,8 +735,15 @@ export default function PriceTrendsCityPicker({
                     {/* Progress Bar */}
                     <div className="mt-3 flex gap-1">
                       {[1, 2, 3].map((i) => (
-                        <div key={i} className="h-0.5 flex-1 bg-white/30 rounded-full overflow-hidden">
-                          <div className={`h-full bg-white ${i === 1 ? 'w-full' : 'w-0'} transition-all duration-3000`} />
+                        <div
+                          key={i}
+                          className="h-0.5 flex-1 bg-white/30 rounded-full overflow-hidden"
+                        >
+                          <div
+                            className={`h-full bg-white ${
+                              i === 1 ? "w-full" : "w-0"
+                            } transition-all duration-3000`}
+                          />
                         </div>
                       ))}
                     </div>
@@ -719,18 +753,21 @@ export default function PriceTrendsCityPicker({
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div className="text-center">
                       <h2 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">
-                        {selectedStory === 'residential' && 'RESIDENTIAL'}
-                        {selectedStory === 'commercial' && 'COMMERCIAL'}
-                        {selectedStory === 'industrial' && 'INDUSTRIAL'}
-                        {selectedStory === 'price' && 'PRICE TRENDS'}
-                        {selectedStory === 'analytics' && 'ANALYTICS'}
+                        {selectedStory === "residential" && "RESIDENTIAL"}
+                        {selectedStory === "commercial" && "COMMERCIAL"}
+                        {selectedStory === "industrial" && "INDUSTRIAL"}
+                        {selectedStory === "price" && "PRICE TRENDS"}
+                        {selectedStory === "analytics" && "ANALYTICS"}
                       </h2>
                       <p className="text-xl text-white/90 drop-shadow-lg">
-                        {selectedStory === 'residential' && 'Find Your Dream Home'}
-                        {selectedStory === 'commercial' && 'Business Spaces'}
-                        {selectedStory === 'industrial' && 'Industrial Properties'}
-                        {selectedStory === 'price' && 'Market Insights'}
-                        {selectedStory === 'analytics' && 'Data Driven Decisions'}
+                        {selectedStory === "residential" &&
+                          "Find Your Dream Home"}
+                        {selectedStory === "commercial" && "Business Spaces"}
+                        {selectedStory === "industrial" &&
+                          "Industrial Properties"}
+                        {selectedStory === "price" && "Market Insights"}
+                        {selectedStory === "analytics" &&
+                          "Data Driven Decisions"}
                       </p>
                     </div>
                   </div>
@@ -750,46 +787,49 @@ export default function PriceTrendsCityPicker({
                       </div>
                       <div>
                         <h4 className="font-bold text-gray-900 text-lg">
-                          {selectedStory === 'residential' && 'Luxury Apartments'}
-                          {selectedStory === 'commercial' && 'Office Spaces'}
-                          {selectedStory === 'industrial' && 'Warehouses'}
-                          {selectedStory === 'price' && 'Market Analysis'}
-                          {selectedStory === 'analytics' && 'Data Reports'}
+                          {selectedStory === "residential" &&
+                            "Luxury Apartments"}
+                          {selectedStory === "commercial" && "Office Spaces"}
+                          {selectedStory === "industrial" && "Warehouses"}
+                          {selectedStory === "price" && "Market Analysis"}
+                          {selectedStory === "analytics" && "Data Reports"}
                         </h4>
-                        <p className="text-sm text-gray-600">Premium Properties</p>
+                        <p className="text-sm text-gray-600">
+                          Premium Properties
+                        </p>
                       </div>
                     </div>
 
                     <div className="space-y-2 text-sm text-gray-700">
-                      {selectedStory === 'residential' && (
+                      {selectedStory === "residential" && (
                         <>
                           <p>• Apartment complexes and housing societies</p>
                           <p>• Individual homes and villas</p>
                           <p>• Gated communities</p>
                         </>
                       )}
-                      {selectedStory === 'commercial' && (
+                      {selectedStory === "commercial" && (
                         <>
                           <p>• Office spaces and business centers</p>
                           <p>• Retail shops and showrooms</p>
                           <p>• Shopping malls and complexes</p>
                         </>
                       )}
-                      {selectedStory === 'industrial' && (
+                      {selectedStory === "industrial" && (
                         <>
                           <p>• Manufacturing units and factories</p>
                           <p>• Warehouses and storage facilities</p>
                           <p>• Industrial parks and SEZs</p>
                         </>
                       )}
-                      {selectedStory === 'price' && (
+                      {selectedStory === "price" && (
                         <>
                           <p>• Current market rates and trends</p>
                           <p>• Price comparison across cities</p>
                           <p>• Investment opportunities</p>
                         </>
                       )}
-                      {selectedStory === 'analytics' && (
+                      {selectedStory === "analytics" && (
                         <>
                           <p>• Market insights and reports</p>
                           <p>• Growth predictions</p>
@@ -797,7 +837,7 @@ export default function PriceTrendsCityPicker({
                         </>
                       )}
                     </div>
-                  </div>                
+                  </div>
                 </div>
               </div>
             </div>
