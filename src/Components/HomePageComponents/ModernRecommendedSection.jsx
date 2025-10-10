@@ -427,7 +427,7 @@ const SectionWrapper = styled.section`
   position: relative;
   overflow: hidden;
   margin-top: 0;
-  padding: 0px 0 10px; // Reduced top padding to decrease gap between heading and cards
+  padding: 60px 0 10px; // Reduced top padding to decrease gap between heading and cards
 
   &::before {
     content: '';
