@@ -164,22 +164,18 @@ const Projects = () => {
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   };
 
   // Unique options for filters
   const typeOptions = useMemo(() => {
     if (!viewAll || viewAll.length === 0) {
-      // If no data yet, at least show common project types
-      return ['Industrial Projects', 'Industrial Plots', 'Farm House'];
+      return ['Industrial Plots', 'Farm House'];
     }
 
     const uniqueTypes = Array.from(new Set((viewAll || []).map(v => v?.type).filter(Boolean)));
 
-    // Add common project types if not already present
-    if (!uniqueTypes.includes('Industrial Projects')) {
-      uniqueTypes.push('Industrial Projects');
-    }
+    // Add common project types if not already present (removed Industrial Projects)
     if (!uniqueTypes.includes('Industrial Plots')) {
       uniqueTypes.push('Industrial Plots');
     }

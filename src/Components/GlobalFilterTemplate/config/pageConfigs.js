@@ -293,6 +293,12 @@ export const cityConfigs = {
     description: "Value, Location, and Comfort — Discover premium projects in prime Noida locations.",
     badgeColor: "bg-green-500",
     badgeText: "Noida"
+  },
+  alwar: {
+    title: "Best Projects in Alwar",
+    description: "Value, Location, and Comfort — Discover premium projects in prime Alwar locations.",
+    badgeColor: "bg-yellow-500",
+    badgeText: "Alwar"
   }
 };
 

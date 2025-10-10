@@ -20,15 +20,16 @@ export default function CenterLogo({ colorChange, isSearchOpen, centerOnCompact 
         <Image
           src={
             colorChange
-              ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp"
-              : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/red-logo.webp"
+              ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/logowhite.webp.webp"
+              : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/red.100acresslogo.webp"
           }
           alt="100acress logo"
-          height={{ base: '48px', md: '60px' }}
-          minH={{ base: '48px', md: '60px' }}
-          maxH={{ base: '48px', md: '60px' }}
-          width="auto"
-          maxW="unset"
+          height={{ base: '45px', sm: '50px', md: '60px' }}
+          minH={{ base: '45px', sm: '50px', md: '60px' }}
+          maxH={{ base: '45px', sm: '50px', md: '60px' }}
+          width={{ base: '169.04px', sm: '187.82px', md: '225.38px' }}
+          minW={{ base: '169.04px', sm: '187.82px', md: '225.38px' }}
+          maxW={{ base: '169.04px', sm: '187.82px', md: '225.38px' }}
           objectFit="contain"
           draggable={false}
           transition="opacity 200ms ease"
