@@ -7,7 +7,7 @@ import { getStaticData, getFAQData, getTrustBoosters } from './staticData';
 export const getCityPageData = (cityName) => {
   const cityData = getStaticData('city', cityName);
   return {
-    title: cityData?.title || "Luxury Awaits in Gurgaon’s Latest New Launch Projects",
+    title: cityData?.title || "Secure Your Future with Top Under-Construction Projects.",
     description: cityData?.description || " Experience modern living with new launch projects in Gurgaon crafted for your lifestyle and future growth.",
     metaTitle: cityData?.metaTitle || "Explore the Latest New Launch Projects in Gurgaon",
     canonical: cityData?.canonical || "https://www.100acress.com/",

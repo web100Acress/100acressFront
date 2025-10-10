@@ -519,30 +519,42 @@ export const staticData = {
       ]
     },
     underconstruction: {
-      title: "Explore Under Construction Properties",
-      description: "Track progress and secure your dream home as it's being built. Find under construction properties with flexible payment plans and great investment potential.",
-      metaTitle: "Under Construction Properties - Track Progress & Invest | 100acress",
+      title: "Secure Your Future with Top Under-Construction Projects.",
+      description: "Premium under-construction homes crafted for modern lifestyles, featuring advanced amenities, smart layouts, and strong returns on investment",
+      metaTitle: "Premium Under-Construction Homes for Smart Investors",
       canonical: "https://www.100acress.com/project-in-underconstruction/",
       keywords: "under construction properties, ongoing projects, construction status, property development, under construction homes",
-      heroTitle: "Explore Under Construction Properties",
-      heroSubtitle: "Track progress and secure your dream home as it's being built",
+      heroTitle: "Premium Under-Construction Homes for Smart Investors",
+      heroSubtitle: "Discover under-construction projects with modern designs, premium amenities, and strong investment returns. Secure your future with smart real estate choices.",
       faqs: [
         {
-          question: "Which are the top under-construction projects in Gurgaon?",
-          answer: "Top under-construction Gurgaon projects include Central Park Flamingo Floors, M3M Altitude, Whiteland Arena 76, Sobha Horizon & DLF Grove."
+          question: "Q.1 Which are the top under-construction projects in Gurgaon?",
+          answer: "Leading projects include DLF Privana South, Godrej Miraya, Elan The Presidential, M3M Mansion, Krisumi Waterfall, Signature Global Twin Tower, and Keystone Seasons."
         },
         {
-          question: "What are the top under-construction properties in Gurgaon?",
-          answer: "Look for projects by reputed developers like Central Park, M3M, Signature Global, Vatika and Godrej in developing sectors. They offer a good mix of amenities and investment potential."
+          question: "Q.2 What are the top under-construction properties in Gurgaon?",
+          answer: "Luxury projects feature smart layouts, wellness amenities, and include developments on Golf Course Road, Southern Peripheral Road, and Dwarka Expressway."
         },
         {
-          question: "Is it cheaper to buy an under-construction property?",
-          answer: "Generally, yes. Under-construction properties are often priced lower than ready-to-move-in ones, offering a potential for higher capital appreciation."
+          question: "Q.3 Is it cheaper to buy an under-construction property?",
+          answer: "Yes, early-phase properties are more economical with lower prices, flexible payment plans, and potential capital appreciation."
         },
         {
-          question: "What legal checks are necessary before buying an under-construction property?",
-          answer: "Ensure the project is RERA registered, and the developer has all necessary approvals, including the commencement certificate and clear land title."
-        }
+          question: "Q.4 What legal checks are necessary before buying an under-construction property?",
+          answer: "Verify RERA registration, clear land titles, approved plans, commencement certificate, and the developer’s track record."
+        },
+        {
+          question: "Q5:Why is RERA registration important?",
+          answer: "RERA ensures legal transparency, protects buyer investments, and enforces builder commitments on delivery and amenities."
+        },
+        {
+          question: "Q6: How do under-construction projects offer high ROI?",
+          answer: "Projects on key corridors like Dwarka Expressway and Golf Course Road have strong appreciation potential due to infrastructure growth."
+        },
+        {
+          question: "Q7: Can buyers customize units in under-construction projects?",
+          answer: "Yes, many luxury projects allow customization of layouts, interiors, and finishes during early development."
+        },
       ],
       trustBoosters: [
         {
@@ -563,8 +575,8 @@ export const staticData = {
       ]
     },
     readytomove: {
-      title: "Ready to Move Properties Available Now",
-      description: "Move in immediately and start living your dream lifestyle. Explore ready to move properties with immediate possession and no construction delays.",
+      title: "Ready To Move Projects | Instant Possession Homes",
+      description: "Find the best RERA-registered ready to move projects in Gurugram with premium features and prime locations. Start living your dream lifestyle now.",
       metaTitle: "Ready to Move Properties - Immediate Possession | 100acress",
       canonical: "https://www.100acress.com/projects-in-gurugram/property-ready-to-move/",
       keywords: "ready to move properties, immediate possession, completed projects, ready homes, move in ready",
@@ -572,21 +584,34 @@ export const staticData = {
       heroSubtitle: "Move in immediately and start living your dream lifestyle",
       faqs: [
         {
-          question: "Which are the best ready-to-move projects in Gurgaon?",
-          answer: "Explore luxury options like DLF The Crest on Golf Course Road or Sobha International City near Dwarka Expressway for immediate possession."
+          question: "Q1: Which are the best ready-to-move projects in Gurugram?",
+          answer: "ETop projects include M3M St Andrews, Greenopolis, AMB Selfie Street, and Raheja Sampada offering premium amenities and immediate possession."
         },
         {
-          question: "Where can I find affordable ready-to-move flats?",
-          answer: "Look into projects like Raheja Sampada in Sector 92 or Signature Global Park in Sohna for budget-friendly, move-in ready homes."
+          question: "Q2: Where can I find affordable ready-to-move flats in Gurugram?",
+          answer: "Affordable options are available in sectors like Dwarka Expressway, New Gurgaon, and Sohna Road with good amenities and prices under ₹2 Cr."
         },
         {
-          question: "What are the advantages of buying a ready-to-move property?",
-          answer: "You get immediate possession, no construction delays, and can inspect the actual property, like at Emaar Gurgaon Greens, before you buy."
+          question: "Q3: What benefits come with buying ready-to-move properties?",
+          answer: "Immediate possession, no construction delays, GST savings on property price, and potential for instant rental income."
         },
         {
-          question: "Are there ready-to-move commercial properties available?",
-          answer: "Yes, projects such as AIPL Joy Street on Golf Course Extn Road and Trehan IRIS Broadway offer ready shops and offices for businesses."
+          question: "Q4: Are ready-to-move commercial properties available in Gurugram?",
+          answer: "Yes, projects like AIPL Joy Street and Trehan IRIS Broadway provide ready shops and office spaces for business use."
+        },
+        {
+          question: "Q5: How do I verify the legal status of ready-to-move projects?",
+          answer: "Check the project’s RERA registration and possession certificate on official state RERA websites for secure purchases."
+        },
+        {
+          question: "Q6: Can I get home loans on ready-to-move properties?",
+          answer: "Yes, legally clear ready-to-move properties are eligible for home loans from banks and financial institutions."
+        },
+        {
+          question: "Q7:What amenities are commonly included in ready-to-move projects?",
+          answer: "Swimming pools, gyms, parks, clubhouse, 24/7 security, and landscaped gardens are standard features in premium ready-to-move projects."
         }
+       
       ],
       trustBoosters: [
         {
