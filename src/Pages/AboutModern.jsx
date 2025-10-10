@@ -293,36 +293,35 @@ const AboutModern = () => {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 container mx-auto px-6 text-center">
+        <div className="relative z-10 container mx-auto px-4 text-center">
           {/* Main Headline */}
-          <div className="mb-8">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-4 text-white leading-tight">
+          <div className="mb-32 sm:mb-12 mt-16 sm:mt-40">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-3 sm:mb-4 text-white leading-tight">
               Trusted Real Estate Experts
             </h1>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-primaryRed leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-primaryRed leading-tight">
               Since 2000
             </h1>
           </div>
 
           {/* Subheading */}
-          <p className="text-lg md:text-xl lg:text-2xl mb-16 max-w-4xl mx-auto leading-relaxed text-gray-100 font-normal">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-4 sm:mb-16 max-w-4xl mx-auto leading-relaxed text-gray-100 font-normal px-4">
             Since 2000, we've been helping people find their dream homes,
             offices, and the right investments in property across Gurgaon and
             Delhi NCR.
           </p>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6 max-w-7xl mx-auto">
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="bg-white/10 backdrop-blur-md rounded-2xl p-6 text-center border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105"
+                className="bg-white/10 backdrop-blur-md rounded-2xl p-3 sm:p-4 lg:p-6 text-center border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105"
               >
-                <div className="text-3xl md:text-4xl lg:text-4xl font-black text-white mb-2 w-95">
+                <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white mb-1 sm:mb-2 min-h-[2rem] sm:min-h-[2.5rem] lg:min-h-[3rem] flex items-center justify-center">
                   <CountUp end={stat.number} duration={2000} />
-                  {stat.number.includes("+") && ""}
                 </div>
-                <div className="text-sm md:text-base text-gray-200 font-medium">
+                <div className="text-xs sm:text-sm md:text-base text-gray-200 font-medium leading-tight">
                   {stat.label}
                 </div>
               </div>
@@ -433,23 +432,23 @@ const AboutModern = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
             {partners.map((partner, index) => (
               <Link
                 key={index}
                 to={partner.link}
-                className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center group hover:scale-105"
+                className="bg-white rounded-lg p-3 sm:p-4 lg:p-6 shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center group hover:scale-105 min-h-[80px] sm:min-h-[100px]"
               >
                 <img
                   src={partner.logo}
                   alt={partner.name}
-                  className="h-12 w-auto object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
+                  className="h-8 sm:h-10 lg:h-12 w-auto object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300 max-w-full"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                     e.currentTarget.nextElementSibling.style.display = "block";
                   }}
                 />
-                <span className="text-lg font-semibold text-gray-700 hidden">
+                <span className="text-xs sm:text-sm font-semibold text-gray-700 hidden">
                   {partner.name}
                 </span>
               </Link>
@@ -499,10 +498,10 @@ const AboutModern = () => {
             <div className="flex-1 text-center lg:text-left">
               <div className="space-y-8">
                 <div className="space-y-4">
-                  <h2 className="text-6xl md:text-8xl font-black text-white leading-tight">
+                  <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white leading-tight">
                     GET IN
                   </h2>
-                  <h2 className="text-6xl md:text-8xl font-black text-white/80 leading-tight">
+                  <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white/80 leading-tight">
                     TOUCH
                   </h2>
                 </div>
