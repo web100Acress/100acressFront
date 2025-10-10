@@ -46,12 +46,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Preload main module for faster startup -->
     <link rel="modulepreload" href="/src/index.jsx" />
-    <!-- Preload LCP hero image with high priority -->
+
+    <!-- Load Google Fonts non-blocking -->
     <link
       rel="preload"
-      as="image"
+      as="images"
       fetchpriority="high"
-      href="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/banner/experion-trillion-banner.webp"
+      onload="this.onload=null;this.rel='stylesheet'"
+      href="https://d16gdc5rm7f21b.cloudfront.net/uploads/1760011742319-signature-global-banner.webp"
     />
     <!-- Load Google Fonts non-blocking -->
     <link

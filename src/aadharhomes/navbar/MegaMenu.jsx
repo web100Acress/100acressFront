@@ -58,7 +58,7 @@ export default function MegaMenu({ isOpen, onClose, handlePriceClick }) {
                   <Link to="/project-in-kasauli/">Projects in Kasauli</Link>
                   <Link to="/projects-in-sonipat/">Projects in Sonipat</Link>
                   <Link to="/projects-in-alwar/">Projects in Alwar</Link>
-                  {/* <Link to="/projects-in-karnal/">Projects in Karnal</Link> */}
+                  <Link to="/projects-in-karnal/">Projects in Karnal</Link>
                   <Link to="/projects-in-jalandhar/">Projects in Jalandhar</Link>
                   <Link to="/projects-in-pushkar/">Projects in Pushkar</Link>
                   <Link to="/projects-in-dubai/" style={{ color: "#e53e3e", fontWeight: 600 }}>Projects in Dubai *</Link>

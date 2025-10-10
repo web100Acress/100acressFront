@@ -336,7 +336,7 @@ export default function Navbar() {
     { name: "Kasauli", path: "/project-in-kasauli/" },
     { name: "Sonipat", path: "/projects-in-sonipat/" },
     // { name: "Alwar", path: "/projects-in-alwar/" },
-    // { name: "Karnal", path: "/projects-in-karnal/" },
+    { name: "Karnal", path: "/projects-in-karnal/" },
 
     { name: "Jalandhar", path: "/projects-in-jalandhar/" },
     { name: "Pushkar", path: "/projects-in-pushkar/" },
