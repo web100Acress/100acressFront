@@ -10,9 +10,7 @@ import {
   MdFavoriteBorder,
   MdFavorite,
   MdBed,
-  MdBathtub,
   MdSquareFoot,
-  MdDirectionsCar,
   MdVerifiedUser
 } from 'react-icons/md';
 import { FaWhatsapp } from 'react-icons/fa';
@@ -96,6 +94,37 @@ const ModernRecommendedSection = () => {
       }
     }
     return project?.project_Status || project?.possession || 'Ready to Move';
+  };
+
+  const parsePaymentPlan = (paymentPlan) => {
+    if (!paymentPlan) return null;
+    
+    // Handle string format (e.g., "20:40:40" or "20-40-40")
+    if (typeof paymentPlan === 'string') {
+      const parts = paymentPlan.split(/[:-]/).map(p => p.trim()).filter(Boolean);
+      if (parts.length >= 3) {
+        return [
+          { percentage: parts[0] + '%', label: 'Booking' },
+          { percentage: parts[1] + '%', label: 'Construction' },
+          { percentage: parts[2] + '%', label: 'Possession' }
+        ];
+      }
+      // If it's a descriptive string, show it as-is
+      return [{ percentage: paymentPlan, label: '' }];
+    }
+    
+    // Handle array format
+    if (Array.isArray(paymentPlan) && paymentPlan.length > 0) {
+      return paymentPlan.map((plan, idx) => {
+        const labels = ['Booking', 'Construction', 'Possession'];
+        return {
+          percentage: plan.includes('%') ? plan : plan + '%',
+          label: labels[idx] || ''
+        };
+      });
+    }
+    
+    return null;
   };
 
   if (!displayData || displayData.length === 0) {
@@ -199,6 +228,7 @@ const ModernRecommendedSection = () => {
                   formatPrice={formatPrice}
                   formatLocation={formatLocation}
                   formatPossession={formatPossession}
+                  parsePaymentPlan={parsePaymentPlan}
                   favTick={favTick}
                   isAuthenticated={isAuthenticated}
                   onShowAuth={() => setShowAuth(true)}
@@ -223,11 +253,15 @@ const PropertyCard = ({
   formatPrice,
   formatLocation,
   formatPossession,
+  parsePaymentPlan,
   favTick,
   isAuthenticated,
   onShowAuth
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  
+  // Parse payment plan for this project
+  const paymentPlanData = parsePaymentPlan(project?.paymentPlan);
 
   const handleWishlist = (e) => {
     e.preventDefault();
@@ -350,36 +384,28 @@ const PropertyCard = ({
               <span className="info-label">Possession</span>
             </div>
           </div>
-          <div className="info-item">
-            <MdBathtub className="info-icon" />
-            <div className="info-content">
-              <span className="info-value">{project?.bathrooms || 2}</span>
-              <span className="info-label">Baths</span>
-            </div>
-          </div>
-          <div className="info-item">
-            <MdDirectionsCar className="info-icon" />
-            <div className="info-content">
-              <span className="info-value">{project?.parking || 2}</span>
-              <span className="info-label">Parks</span>
-            </div>
-          </div>
         </div>
 
-        <div className="metrics-section">
-          <div className="metric-card">
-            <span className="metric-label">Token Price</span>
-            <span className="metric-value">{project?.tokenPrice || '$50'}</span>
+        {paymentPlanData && paymentPlanData.length > 0 && (
+          <div className="payment-plan-section">
+            <div className="payment-header">
+              <span className="payment-title">Payment Plan</span>
+            </div>
+            <div className="payment-options">
+              {paymentPlanData.map((plan, index) => (
+                <React.Fragment key={index}>
+                  <div className="payment-option">
+                    <div className="payment-percentage">{plan.percentage}</div>
+                    {plan.label && <div className="payment-label">{plan.label}</div>}
+                  </div>
+                  {index < paymentPlanData.length - 1 && (
+                    <div className="payment-divider">→</div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
           </div>
-          <div className="metric-card">
-            <span className="metric-label">Projected IRR</span>
-            <span className="metric-value highlight">{project?.irr || '18.9%'}</span>
-          </div>
-          <div className="metric-card">
-            <span className="metric-label">Projected APR</span>
-            <span className="metric-value highlight">{project?.apr || '15.2%'}</span>
-          </div>
-        </div>
+        )}
 
         <div className="price-section">
           <div className="price-label">Starting From</div>
@@ -474,7 +500,7 @@ const CardWrapper = styled.div`
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
   margin: 0 4px;
-  height: 420px;
+  height: 380px;
   width: 100%;
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -689,7 +715,7 @@ const CardWrapper = styled.div`
     right: 0;
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(20px);
-    padding: 20px;
+    padding: 14px 16px;
     opacity: 0;
     transform: translateY(30px);
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -699,29 +725,29 @@ const CardWrapper = styled.div`
 
     .info-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 16px;
-      padding-bottom: 16px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
       border-bottom: 1px solid rgba(226, 232, 240, 0.8);
 
       .info-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 6px;
-        padding: 10px;
-        border-radius: 12px;
+        gap: 4px;
+        padding: 8px;
+        border-radius: 10px;
         background: linear-gradient(135deg, #f8fafc, #f1f5f9);
         transition: all 0.3s ease;
 
         &:hover {
           background: linear-gradient(135deg, #fef2f2, #fee2e2);
-          transform: translateY(-2px);
+          transform: translateY(-1px);
         }
 
         .info-icon {
-          font-size: 20px;
+          font-size: 18px;
           color: #dc2626;
         }
 
@@ -732,59 +758,87 @@ const CardWrapper = styled.div`
           gap: 2px;
 
           .info-value {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: #111827;
           }
 
           .info-label {
-            font-size: 10px;
+            font-size: 9px;
             color: #6b7280;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
           }
         }
       }
     }
 
-    .metrics-section {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
+    .payment-plan-section {
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border-radius: 10px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
 
-      .metric-card {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        padding: 10px;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #f8fafc, #ffffff);
-        border: 1px solid rgba(226, 232, 240, 0.6);
-        transition: all 0.3s ease;
+      .payment-header {
+        text-align: center;
+        margin-bottom: 8px;
 
-        &:hover {
-          border-color: rgba(220, 38, 38, 0.3);
-          box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
-        }
-
-        .metric-label {
-          font-size: 9px;
-          color: #6b7280;
+        .payment-title {
+          font-size: 10px;
+          font-weight: 700;
+          color: #059669;
           text-transform: uppercase;
-          font-weight: 700;
-          letter-spacing: 0.5px;
+          letter-spacing: 0.8px;
+        }
+      }
+
+      .payment-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+
+        .payment-option {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 3px;
+          padding: 8px 4px;
+          background: white;
+          border-radius: 8px;
+          border: 1.5px solid rgba(16, 185, 129, 0.3);
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: translateY(-1px);
+            border-color: rgba(16, 185, 129, 0.6);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+          }
+
+          .payment-percentage {
+            font-size: 16px;
+            font-weight: 800;
+            color: #059669;
+            line-height: 1;
+          }
+
+          .payment-label {
+            font-size: 8px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+          }
         }
 
-        .metric-value {
-          font-size: 13px;
+        .payment-divider {
+          font-size: 12px;
           font-weight: 700;
-          color: #111827;
-
-          &.highlight {
-            color: #10b981;
-          }
+          color: #10b981;
+          flex-shrink: 0;
         }
       }
     }
@@ -793,22 +847,22 @@ const CardWrapper = styled.div`
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      padding: 16px;
+      gap: 2px;
+      padding: 10px 16px;
       background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-      border-radius: 12px;
+      border-radius: 10px;
       border: 1px solid rgba(220, 38, 38, 0.2);
 
       .price-label {
-        font-size: 11px;
+        font-size: 9px;
         color: #6b7280;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.8px;
       }
 
       .price {
-        font-size: 28px;
+        font-size: 24px;
         font-weight: 800;
         background: linear-gradient(135deg, #dc2626, #ef4444);
         -webkit-background-clip: text;
@@ -820,7 +874,7 @@ const CardWrapper = styled.div`
   }
 
   @media (max-width: 768px) {
-    height: 380px;
+    height: 340px;
     border-radius: 16px;
 
     .rera-badge {
@@ -858,61 +912,81 @@ const CardWrapper = styled.div`
     }
 
     .bottom-info {
-      padding: 16px;
+      padding: 12px 14px;
 
       .info-grid {
         gap: 8px;
-        margin-bottom: 12px;
-        padding-bottom: 12px;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
 
         .info-item {
-          padding: 8px;
+          padding: 6px;
 
           .info-icon {
-            font-size: 18px;
+            font-size: 16px;
           }
 
           .info-content {
             .info-value {
-              font-size: 13px;
+              font-size: 12px;
             }
 
             .info-label {
-              font-size: 9px;
+              font-size: 8px;
             }
           }
         }
       }
 
-      .metrics-section {
-        gap: 8px;
-        margin-bottom: 12px;
+      .payment-plan-section {
+        margin-bottom: 10px;
+        padding: 8px 10px;
 
-        .metric-card {
-          padding: 8px;
+        .payment-header {
+          margin-bottom: 6px;
 
-          .metric-label {
-            font-size: 8px;
+          .payment-title {
+            font-size: 9px;
+          }
+        }
+
+        .payment-options {
+          gap: 4px;
+
+          .payment-option {
+            padding: 6px 4px;
+
+            .payment-percentage {
+              font-size: 14px;
+            }
+
+            .payment-label {
+              font-size: 7px;
+            }
           }
 
-          .metric-value {
-            font-size: 12px;
+          .payment-divider {
+            font-size: 10px;
           }
         }
       }
 
       .price-section {
-        padding: 12px;
+        padding: 8px 12px;
+
+        .price-label {
+          font-size: 8px;
+        }
 
         .price {
-          font-size: 24px;
+          font-size: 20px;
         }
       }
     }
   }
 
   @media (max-width: 480px) {
-    height: 360px;
+    height: 320px;
   }
 `;
 
