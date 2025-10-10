@@ -491,10 +491,9 @@ const AboutModern = () => {
       </section>
 
       {/* Get In Touch Section - Updated */}
-      <section className="py-20 bg-gradient-to-r from-primaryRed to-red-600">
+      {/* <section className="py-20 bg-gradient-to-r from-primaryRed to-red-600">
         <div className="container mx-auto px-6">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-            {/* Left Side - GET IN TOUCH with Arrow */}
             <div className="flex-1 text-center lg:text-left">
               <div className="space-y-8">
                 <div className="space-y-4">
@@ -505,8 +504,6 @@ const AboutModern = () => {
                     TOUCH
                   </h2>
                 </div>
-
-                {/* Large Tilted Arrow */}
                 <div className="relative inline-block">
                   <div className="w-20 h-20 md:w-24 md:h-24 transform rotate-45 border-4 border-white border-r-0 border-b-0"></div>
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 bg-white transform rotate-45"></div>
@@ -514,7 +511,7 @@ const AboutModern = () => {
               </div>
             </div>
 
-            {/* Right Side - Contact Form */}
+            
             <div className="flex-1 max-w-md">
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-elegant">
                 <div className="space-y-6">
@@ -552,7 +549,7 @@ const AboutModern = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <Footer />
     </>
