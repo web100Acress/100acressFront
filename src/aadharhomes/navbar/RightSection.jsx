@@ -319,28 +319,33 @@ export default function RightSection({
             <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
           </>
         )}
-
-        {/* Mobile Post property CTA removed as requested */}
-
       </Box>
 
       {/* Desktop Post Property CTA with moving red border */}
       <Box display={{ base: 'none', md: 'inline-flex' }} ml={0.5}>
-        <Link to="/postproperty/">
-          <MovingBorderButton
-            borderRadius="1.75rem"
-            className="text-black"
-            bgColor="#ffffff"
-            ringColor={colorChange ? "#FACC15" : "#ef4444"}
-          >
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontWeight: 700 }}>
-              <span style={{ fontSize: '14px' }}>Post Property</span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: '#FACC15', color: '#e11d48', padding: '4px 14px', fontSize: '12px', fontWeight: 900, lineHeight: 1, clipPath: 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)' }}>
-                FREE
-              </span>
-            </span>
-          </MovingBorderButton>
-        </Link>
+        {/* <Link to="/postproperty/"> */}
+        <div onClick={() => {
+  if (token) {
+    window.location.href = '/postproperty/';
+  } else {
+    setShowAuth(true);
+  }
+}}>
+  <MovingBorderButton
+    borderRadius="1.75rem"
+    className="text-black cursor-pointer"
+    bgColor="#ffffff"
+    ringColor={colorChange ? "#FACC15" : "#ef4444"}
+  >
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontWeight: 700 }}>
+      <span style={{ fontSize: '14px' }}>Post Property</span>
+      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: '#FACC15', color: '#e11d48', padding: '4px 14px', fontSize: '12px', fontWeight: 900, lineHeight: 1, clipPath: 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)' }}>
+        FREE
+      </span>
+    </span>
+  </MovingBorderButton>
+</div>
+        {/* </Link> */}
       </Box>
     </Flex>
   );

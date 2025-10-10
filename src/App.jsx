@@ -1,29 +1,4 @@
- // Sticky floating "List Property" button on mobile (right side)
-function MobileStickyListProperty() {
-  const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
-  const postTarget = token ? "/postproperty" : "/auth/signin";
-  return (
-    <div className="md:hidden fixed z-[10010]" style={{ right: 0, top: '45%' }}>
-      <Link
-        to={postTarget}
-        className="block bg-red-600 text-white font-extrabold tracking-wide shadow-lg"
-        style={{
-          writingMode: 'vertical-rl',
-          textOrientation: 'upright',
-          padding: '10px 6px',
-          borderRadius: '10px 0 0 10px',
-          transform: 'translateY(-50%)',
-          position: 'relative',
-          right: 0,
-          letterSpacing: '1px'
-        }}
-      >
-        LIST PROPERTY
-      </Link>
-    </div>
-  );
-}
-import React, { lazy, Suspense, useState, useEffect } from "react";
+ import React, { lazy, Suspense, useState, useEffect } from "react";
 import "./App.css";
 import { styled } from "styled-components";
 import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
@@ -49,8 +24,8 @@ const EMICalculatorPage = lazy(() => import("./Pages/EMICalculatorPage"));
 // const Properties = lazy(() => import("./Pages/ProjectCities/Properties"));
 const PropertyKnow = lazy(() => import("./Components/KnowAbouts/PropertyKnow"));
 const PageNotFound = lazy(() => import("./Pages/PageNotFound"));
-const SignUp = lazy(() => import("./aadharhomes/SignUp"));
-const SignIn = lazy(() => import("./aadharhomes/SignIn"));
+// const SignUp = lazy(() => import("./aadharhomes/SignUp"));
+// const SignIn = lazy(() => import("./aadharhomes/SignIn"));
 const PropViewCardPro = lazy(() => import("./Components/Actual_Components/PropViewCardPro"));
 const NewSellProperty = lazy(() => import("./aadharhomes/NewSellProperty"));
 const BuyPropViewCard = lazy(() => import("./Components/Actual_Components/BuyPropViewCard"));
@@ -264,23 +239,23 @@ function App() {
                           token !== null ? (
                             <NewSellProperty />
                           ) : (
-                            <Navigate to="/auth/signin" />
+                            <Navigate to="/" replace={true} />
                           )
                         }
                       />
-                      <Route path="/auth/" element={<SignUp />}>
+                      <Route path="/auth/" element={<div>Auth routes commented out</div>}>
                         <Route path="signup/">
-                          <Route index element={<SignupForm />} />
+                          <Route index element={<div>Signup commented out</div>} />
                           <Route
                             path="email-verification/"
-                            element={<EmailVerification />}
+                            element={<div>Email verification commented out</div>}
                           />
                           <Route
                             path="otp-verification/"
-                            element={<OTPVerification />}
+                            element={<div>OTP verification commented out</div>}
                           />
                         </Route>
-                        <Route path="signin/" element={<SignIn />} />
+                        <Route path="signin/" element={<div>Signin commented out</div>} />
                       </Route>
                       <Route path="/privacy-policy/" element={<Privacy />} />
                       <Route path="/disclaimer/" element={<Disclaimer />} />
@@ -614,8 +589,6 @@ function App() {
       </DataProvider>
       {/* Global mobile bottom navigation (hidden on project pages) */}
       {!isProjectPage && <MobileBottomNav />}
-      {/* Global mobile sticky List Property button (hidden on project pages) */}
-      {!isProjectPage && <MobileStickyListProperty />}
     </>
   );
 }
