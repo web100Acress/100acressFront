@@ -173,7 +173,7 @@ const ModernRecommendedSection = () => {
             centeredSlides={false}
             slidesPerView={1}
             slidesPerGroup={1}
-            spaceBetween={24}
+            spaceBetween={12}
             loop={true}
             allowTouchMove={true}
             simulateTouch={true}
@@ -187,31 +187,31 @@ const ModernRecommendedSection = () => {
               320: {
                 slidesPerView: 1,
                 slidesPerGroup: 1,
-                spaceBetween: 20,
+                spaceBetween: 12,
                 centeredSlides: true,
               },
               640: {
                 slidesPerView: 2,
                 slidesPerGroup: 1,
-                spaceBetween: 24,
+                spaceBetween: 12,
                 centeredSlides: false,
               },
               768: {
                 slidesPerView: 3,
                 slidesPerGroup: 1,
-                spaceBetween: 20,
+                spaceBetween: 12,
                 centeredSlides: false,
               },
               1024: {
                 slidesPerView: 4,
                 slidesPerGroup: 1,
-                spaceBetween: 20,
+                spaceBetween: 12,
                 centeredSlides: false,
               },
               1280: {
                 slidesPerView: 4,
                 slidesPerGroup: 1,
-                spaceBetween: 24,
+                spaceBetween: 12,
                 centeredSlides: false,
               },
             }}
@@ -327,24 +327,24 @@ const PropertyCard = ({
 
       <div className="action-buttons">
         <button
-          onClick={handleShare}
-          className="action-btn whatsapp-btn"
-          aria-label="Share on WhatsApp"
-          title="Share on WhatsApp"
-        >
-          <FaWhatsapp size={18} />
-        </button>
-        <button
           onClick={handleWishlist}
           className="action-btn wishlist-btn"
           aria-label="Toggle wishlist"
           title={isFav ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           {isFav ? (
-            <MdFavorite size={18} />
+            <MdFavorite size={16} />
           ) : (
-            <MdFavoriteBorder size={18} />
+            <MdFavoriteBorder size={16} />
           )}
+        </button>
+        <button
+          onClick={handleShare}
+          className="action-btn whatsapp-btn"
+          aria-label="Share on WhatsApp"
+          title="Share on WhatsApp"
+        >
+          <FaWhatsapp size={16} />
         </button>
       </div>
 
@@ -499,7 +499,7 @@ const CardWrapper = styled.div`
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
-  margin: 0 4px;
+  margin: 0 2px;
   height: 380px;
   width: 100%;
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
@@ -531,7 +531,8 @@ const CardWrapper = styled.div`
     
     .content-overlay {
       opacity: 0;
-      transform: translateY(-30px);
+      transform: translateY(-20px);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .bottom-info {
@@ -589,12 +590,13 @@ const CardWrapper = styled.div`
     top: 16px;
     right: 16px;
     display: flex;
+    flex-direction: column;
     gap: 10px;
     z-index: 20;
 
     .action-btn {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.5);
@@ -617,12 +619,13 @@ const CardWrapper = styled.div`
       }
 
       &.whatsapp-btn {
-        color: #25D366;
-        
-        &:hover {
-          background: linear-gradient(135deg, #25D366, #20BA5A);
-          color: white;
-          box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        svg {
+          transition: all 0.3s ease;
+        }
+
+        &:hover svg {
+          color: #25D366;
+          transform: scale(1.1);
         }
       }
 
@@ -648,12 +651,17 @@ const CardWrapper = styled.div`
 
     .image-overlay {
       position: absolute;
-      inset: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
       background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, 0.4) 70%,
-        rgba(0, 0, 0, 0.8) 100%
+        to top,
+        rgba(0, 0, 0, 0.95) 0%,
+        rgba(0, 0, 0, 0.85) 20%,
+        rgba(0, 0, 0, 0.65) 50%,
+        rgba(0, 0, 0, 0.35) 75%,
+        rgba(0, 0, 0, 0) 100%
       );
       z-index: 2;
       transition: opacity 0.5s ease;
@@ -686,22 +694,24 @@ const CardWrapper = styled.div`
     color: white;
     z-index: 10;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
 
     .property-title {
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 700;
       margin: 0 0 8px 0;
-      line-height: 1.3;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      line-height: 1.2;
+      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 1);
       letter-spacing: -0.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .property-location {
       font-size: 14px;
       font-weight: 500;
-      opacity: 0.95;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+      opacity: 0.98;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 1);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -717,8 +727,8 @@ const CardWrapper = styled.div`
     backdrop-filter: blur(20px);
     padding: 14px 16px;
     opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(100%);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     z-index: 15;
     box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
     border-top: 1px solid rgba(220, 38, 38, 0.1);
@@ -876,6 +886,7 @@ const CardWrapper = styled.div`
   @media (max-width: 768px) {
     height: 340px;
     border-radius: 16px;
+    margin: 0 2px;
 
     .rera-badge {
       top: 12px;
@@ -894,8 +905,22 @@ const CardWrapper = styled.div`
       gap: 8px;
 
       .action-btn {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    .image-container {
+      .image-overlay {
+        height: 180px;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.92) 0%,
+          rgba(0, 0, 0, 0.8) 25%,
+          rgba(0, 0, 0, 0.6) 55%,
+          rgba(0, 0, 0, 0.3) 80%,
+          rgba(0, 0, 0, 0) 100%
+        );
       }
     }
 
@@ -903,7 +928,7 @@ const CardWrapper = styled.div`
       padding: 20px;
 
       .property-title {
-        font-size: 18px;
+        font-size: 16px;
       }
 
       .property-location {
