@@ -152,7 +152,7 @@ const ModernRecommendedSection = () => {
         defaultView="Login" 
       />
       <div className="w-full px-4 pt-0 pb-4">
-        <div className="text-center mb-8 px-2 pt-2">
+        <div className="text-center mb-4 px-2 pt-2">
           <div className="inline-flex items-center gap-4 mb-3">
             <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-red-500 to-red-600 hidden sm:block"></div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent leading-tight">
@@ -423,11 +423,11 @@ const PropertyCard = ({
 };
 
 const SectionWrapper = styled.section`
-  background: linear-gradient(to bottom, #ffffff 0%, #f9fafb 100%);
+  background: #ffffff; // Pure white background like the rest of the website
   position: relative;
   overflow: hidden;
   margin-top: 0;
-  padding: 60px 0 80px;
+  padding: 0px 0 10px; // Reduced top padding to decrease gap between heading and cards
 
   &::before {
     content: '';
@@ -485,7 +485,7 @@ const SectionWrapper = styled.section`
   }
 
   @media (max-width: 768px) {
-    padding: 40px 0 60px;
+    padding: 40px 0 8px; // Reduced mobile bottom gap further
 
     .carousel-container {
       min-height: 440px;
@@ -703,6 +703,13 @@ const CardWrapper = styled.div`
     z-index: 10;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 1;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.85) 0%,
+      rgba(0, 0, 0, 0.7) 40%,
+      rgba(0, 0, 0, 0.6) 70%,
+      rgba(0, 0, 0, 0) 100%
+    );
 
     .property-title {
       font-size: 18px;
@@ -714,6 +721,10 @@ const CardWrapper = styled.div`
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      // background: rgba(0, 0, 0, 0.4);
+      // padding: 6px 12px;
+      // border-radius: 6px;
+      // backdrop-filter: blur(8px);
     }
 
     .property-location {
@@ -724,6 +735,11 @@ const CardWrapper = styled.div`
       display: flex;
       align-items: center;
       gap: 6px;
+      // background: rgba(0, 0, 0, 0.35);
+      // padding: 4px 12px;
+      // border-radius: 6px;
+      // backdrop-filter: blur(8px);
+      // width: fit-content;
     }
   }
 
@@ -936,13 +952,26 @@ const CardWrapper = styled.div`
 
     .content-overlay {
       padding: 20px;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.9) 0%,
+        rgba(0, 0, 0, 0.75) 40%,
+        rgba(0, 0, 0, 0.45) 70%,
+        rgba(0, 0, 0, 0) 100%
+      );
 
       .property-title {
         font-size: 16px;
+        // background: rgba(0, 0, 0, 0.45);
+        // padding: 5px 10px;
+        // border-radius: 5px;
       }
 
       .property-location {
         font-size: 13px;
+        // background: rgba(0, 0, 0, 0.4);
+        // padding: 3px 10px;
+        // border-radius: 5px;
       }
     }
 
