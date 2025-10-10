@@ -68,12 +68,16 @@ const ModernRecommendedSection = () => {
     }
     
     if (project?.area) {
-      locationParts.push(project.area);
+      // Remove Gurugram/Gurgaon from area
+      const area = project.area.replace(/,?\s*(Gurugram|Gurgaon)\s*/gi, '').trim();
+      if (area) locationParts.push(area);
     } else if (project?.projectAddress) {
-      locationParts.push(project.projectAddress);
+      // Remove Gurugram/Gurgaon from address
+      const address = project.projectAddress.replace(/,?\s*(Gurugram|Gurgaon)\s*/gi, '').trim();
+      if (address) locationParts.push(address);
     }
     
-    if (project?.city) {
+    if (project?.city && project?.city.toLowerCase() !== 'gurugram' && project?.city.toLowerCase() !== 'gurgaon') {
       locationParts.push(project.city);
     }
     
@@ -545,7 +549,7 @@ const CardWrapper = styled.div`
     }
 
     .image-overlay {
-      opacity: 0.3;
+      opacity: 0.2;
     }
 
     .rera-badge {
@@ -654,18 +658,21 @@ const CardWrapper = styled.div`
       bottom: 0;
       left: 0;
       right: 0;
-      height: 200px;
+      height: 220px;
       background: linear-gradient(
         to top,
         rgba(0, 0, 0, 0.95) 0%,
-        rgba(0, 0, 0, 0.85) 20%,
-        rgba(0, 0, 0, 0.65) 50%,
-        rgba(0, 0, 0, 0.35) 75%,
+        rgba(0, 0, 0, 0.88) 15%,
+        rgba(0, 0, 0, 0.75) 30%,
+        rgba(0, 0, 0, 0.6) 45%,
+        rgba(0, 0, 0, 0.4) 60%,
+        rgba(0, 0, 0, 0.2) 75%,
         rgba(0, 0, 0, 0) 100%
       );
       z-index: 2;
       transition: opacity 0.5s ease;
       pointer-events: none;
+      opacity: 1;
     }
 
     .property-image {
@@ -678,6 +685,7 @@ const CardWrapper = styled.div`
       object-position: center;
       transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0;
+      z-index: 1;
       
       &.loaded {
         opacity: 1;
@@ -694,6 +702,7 @@ const CardWrapper = styled.div`
     color: white;
     z-index: 10;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
 
     .property-title {
       font-size: 18px;
@@ -912,13 +921,14 @@ const CardWrapper = styled.div`
 
     .image-container {
       .image-overlay {
-        height: 180px;
+        height: 200px;
         background: linear-gradient(
           to top,
-          rgba(0, 0, 0, 0.92) 0%,
-          rgba(0, 0, 0, 0.8) 25%,
-          rgba(0, 0, 0, 0.6) 55%,
-          rgba(0, 0, 0, 0.3) 80%,
+          rgba(0, 0, 0, 0.95) 0%,
+          rgba(0, 0, 0, 0.85) 20%,
+          rgba(0, 0, 0, 0.7) 40%,
+          rgba(0, 0, 0, 0.5) 60%,
+          rgba(0, 0, 0, 0.25) 80%,
           rgba(0, 0, 0, 0) 100%
         );
       }
