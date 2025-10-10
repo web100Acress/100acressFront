@@ -775,67 +775,84 @@ export default function PriceTrendsCityPicker({
 
                 {/* Story Content - Bottom Card */}
                 <div className="bg-white rounded-t-3xl -mt-6 relative z-10 p-6">
-                  {/* Property Info Card Style */}
-                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 mb-4">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-16 h-16 rounded-xl overflow-hidden bg-white shadow-md">
+                  {/* Property Action Buttons - Side Style */}
+                  <div className="space-y-3">
+                    {/* Visit Profile Button */}
+                    <button className="w-full flex items-center gap-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 rounded-xl border border-blue-200 hover:border-blue-300 transition-all duration-200 group">
+                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-white shadow-sm flex-shrink-0">
                         <img
                           src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=200&q=80"
-                          alt="Property"
-                          className="w-full h-full object-cover"
+                          alt="Profile"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                         />
                       </div>
-                      <div>
-                        <h4 className="font-bold text-gray-900 text-lg">
-                          {selectedStory === "residential" &&
-                            "Luxury Apartments"}
-                          {selectedStory === "commercial" && "Office Spaces"}
-                          {selectedStory === "industrial" && "Warehouses"}
-                          {selectedStory === "price" && "Market Analysis"}
-                          {selectedStory === "analytics" && "Data Reports"}
+                      <div className="flex-1 text-left">
+                        <h4 className="font-semibold text-gray-900 text-sm group-hover:text-blue-700 transition-colors">
+                          {selectedStory === "residential" && "Visit Residential Profile"}
+                          {selectedStory === "commercial" && "Visit Commercial Profile"}
+                          {selectedStory === "industrial" && "Visit Industrial Profile"}
+                          {selectedStory === "price" && "View Price Analysis"}
+                          {selectedStory === "analytics" && "View Analytics Report"}
                         </h4>
-                        <p className="text-sm text-gray-600">
-                          Premium Properties
+                        <p className="text-xs text-gray-600 group-hover:text-gray-700">
+                          Learn more about this category
                         </p>
                       </div>
-                    </div>
+                      <svg className="w-4 h-4 text-blue-500 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
 
-                    <div className="space-y-2 text-sm text-gray-700">
-                      {selectedStory === "residential" && (
-                        <>
-                          <p>• Apartment complexes and housing societies</p>
-                          <p>• Individual homes and villas</p>
-                          <p>• Gated communities</p>
-                        </>
-                      )}
-                      {selectedStory === "commercial" && (
-                        <>
-                          <p>• Office spaces and business centers</p>
-                          <p>• Retail shops and showrooms</p>
-                          <p>• Shopping malls and complexes</p>
-                        </>
-                      )}
-                      {selectedStory === "industrial" && (
-                        <>
-                          <p>• Manufacturing units and factories</p>
-                          <p>• Warehouses and storage facilities</p>
-                          <p>• Industrial parks and SEZs</p>
-                        </>
-                      )}
-                      {selectedStory === "price" && (
-                        <>
-                          <p>• Current market rates and trends</p>
-                          <p>• Price comparison across cities</p>
-                          <p>• Investment opportunities</p>
-                        </>
-                      )}
-                      {selectedStory === "analytics" && (
-                        <>
-                          <p>• Market insights and reports</p>
-                          <p>• Growth predictions</p>
-                          <p>• Investment analysis tools</p>
-                        </>
-                      )}
+                    {/* Go to Listings Button */}
+                    <button className="w-full flex items-center gap-3 p-3 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 rounded-xl border border-green-200 hover:border-green-300 transition-all duration-200 group">
+                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-white shadow-sm flex-shrink-0">
+                        <img
+                          src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=200&q=80"
+                          alt="Listings"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        />
+                      </div>
+                      <div className="flex-1 text-left">
+                        <h4 className="font-semibold text-gray-900 text-sm group-hover:text-green-700 transition-colors">
+                          {selectedStory === "residential" && "Browse Residential Properties"}
+                          {selectedStory === "commercial" && "Browse Commercial Properties"}
+                          {selectedStory === "industrial" && "Browse Industrial Properties"}
+                          {selectedStory === "price" && "View Market Listings"}
+                          {selectedStory === "analytics" && "Explore Data Insights"}
+                        </h4>
+                        <p className="text-xs text-gray-600 group-hover:text-gray-700">
+                          Find relevant properties
+                        </p>
+                      </div>
+                      <svg className="w-4 h-4 text-green-500 group-hover:text-green-600 group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                    {/* Contact Icons - WhatsApp & Call */}
+                    <div className="flex items-center justify-center gap-3 pt-2">
+                    <div className="px-2 pb-2">
+          <button
+            onClick={(e) => handleWhatsAppClick(e, project)}
+            className="w-full bg-[#e9f7f0] hover:bg-green-600 text-[#249f62] py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors duration-200"
+          >
+            <svg className="w-5 h-5 fill-[#249f62]" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.690"/>
+            </svg>
+            WhatsApp
+          </button>
+        </div>
+
+        <div className="px-2 pb-2">
+          <button
+            onClick={(e) => handleCallClick(e, project)}
+            className="w-full bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors duration-200"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+            </svg>
+            Call Now
+          </button>
+        </div>  
                     </div>
                   </div>
                 </div>
