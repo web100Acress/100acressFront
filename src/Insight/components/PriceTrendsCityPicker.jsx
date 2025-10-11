@@ -336,6 +336,8 @@ export default function PriceTrendsCityPicker({
         ) : (
           <div className="space-y-8 sm:space-y-12">
             <div className="mt-6">
+
+              
               {/* 6 Instagram Story Type Cards */}
               <div className="mb-6">
                 <div className="flex items-center gap-4 mb-6">
@@ -472,6 +474,9 @@ export default function PriceTrendsCityPicker({
               </div>
 
               {/* end */}
+
+
+
               <div className="mb-6 sm:mb-8">
                 <div className="flex items-center justify-between">
                   <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight text-gray-900">
