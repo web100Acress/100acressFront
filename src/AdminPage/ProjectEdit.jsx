@@ -705,7 +705,7 @@ const ProjectEdit = () => {
       icon: <MdInfo className="text-2xl text-blue-500 mr-2" />, title: "Basic Info", fields: [
         { label: "Property Name", name: "projectName", icon: <MdInfo className="inline mr-1" /> },
         { label: "Project Type", name: "type", icon: <MdInfo className="inline mr-1" />, select: true, options: projectTypes || [] },
-        { label: "Project Status", name: "project_Status", icon: <MdInfo className="inline mr-1" /> },
+        { label: "Project Status", name: "project_Status", icon: <MdInfo className="inline mr-1" />, select: true, options: ["newlaunch", "readytomove", "underconstruction", "completed", "soldout"] },
         { label: "Project URL", name: "project_url", icon: <MdInfo className="inline mr-1" />, placeholder: "project-name" },
         { label: "Builder Name", name: "builderName", icon: <MdInfo className="inline mr-1" /> },
         { label: "Address", name: "projectAddress", icon: <MdInfo className="inline mr-1" /> },
