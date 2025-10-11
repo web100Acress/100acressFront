@@ -78,10 +78,6 @@ function FinalNavBar() {
           <button className='profBtn' aria-label='Profile/Login' onClick={() => setShowAuth(true)}>
             <FiUser size={18} />
           </button>
-          <div className='_6bnYTum' role="button" aria-label="List Property">
-            <span className='_lpText'>LIST PROPERTY</span>
-            <span className='_73exMP'>FREE</span>
-          </div>
         </div>
 
         {showNav && (
@@ -171,10 +167,6 @@ function FinalNavBar() {
             </li>
           </ul>
           <ul className='ulfx _2grx flex-column'>
-            <li className='_6bnYTum' role="button" aria-label="List Property">
-              <span className='_lpText'>LIST PROPERTY</span>
-              <span className='_73exMP'>FREE</span>
-            </li>
             <li>
               <Link to="/rental" className='linkEl'>Rental</Link>
             </li>
@@ -366,10 +358,6 @@ function FinalNavBar() {
           <ul className='ulfx _2grx'>
             <li>
               <BsFolder />
-            </li>
-            <li className='_6bnYTum' role="button" aria-label="List Property">
-              <span className='_lpText'>LIST PROPERTY</span>
-              <span className='_73exMP'>FREE</span>
             </li>
             <li>
               <Link to="/rental" className='linkEl'>Rental</Link>

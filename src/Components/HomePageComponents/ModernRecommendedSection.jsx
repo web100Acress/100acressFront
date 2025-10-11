@@ -1,22 +1,25 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { useSelector } from "react-redux";
 import { Skeleton } from 'antd';
+import { format } from 'date-fns';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper/modules';
 import { 
   MdLocationPin, 
-  MdShare,
   MdArrowForward,
   MdFavoriteBorder,
-  MdFavorite
+  MdFavorite,
+  MdBed,
+  MdSquareFoot,
+  MdVerifiedUser
 } from 'react-icons/md';
+import { FaWhatsapp } from 'react-icons/fa';
 import styled from 'styled-components';
 import Api_Service from "../../Redux/utils/Api_Service";
 import { isFavorite as favCheck, toggleFavorite, subscribe, hydrateFavoritesFromServer } from "../../Utils/favorites";
 import { AuthContext } from "../../AuthContext";
 import AuthModal from "../../Components/AuthModal";
 
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -30,24 +33,17 @@ const ModernRecommendedSection = () => {
   const { getSpotlight } = Api_Service();
   const { isAuthenticated } = useContext(AuthContext);
 
-  // Fetch spotlight data on component mount
   useEffect(() => {
     getSpotlight();
   }, [getSpotlight]);
 
-  // Keep favorites in sync and hydrated
   useEffect(() => {
     hydrateFavoritesFromServer();
     const unsub = subscribe(() => setFavTick((v) => v + 1));
     return () => { if (typeof unsub === 'function') unsub(); };
   }, []);
 
-  // Autoplay and navigation disabled per request
-
-  // Mock data for testing if no spotlight data
   const mockSpotlightData = [];
-
-  // Use mock data if no spotlight data is available
   const displayData = spotlight && spotlight.length > 0 ? spotlight : mockSpotlightData;
 
   const truncateText = (text, wordLimit) => {
@@ -67,32 +63,74 @@ const ModernRecommendedSection = () => {
   const formatLocation = (project) => {
     const locationParts = [];
     
-    // Add sector if available
     if (project?.sector) {
       locationParts.push(project.sector);
     }
     
-    // Add area/address if available
     if (project?.area) {
-      locationParts.push(project.area);
+      // Remove Gurugram/Gurgaon from area
+      const area = project.area.replace(/,?\s*(Gurugram|Gurgaon)\s*/gi, '').trim();
+      if (area) locationParts.push(area);
     } else if (project?.projectAddress) {
-      locationParts.push(project.projectAddress);
+      // Remove Gurugram/Gurgaon from address
+      const address = project.projectAddress.replace(/,?\s*(Gurugram|Gurgaon)\s*/gi, '').trim();
+      if (address) locationParts.push(address);
     }
     
-    // Add city if available
-    if (project?.city) {
+    if (project?.city && project?.city.toLowerCase() !== 'gurugram' && project?.city.toLowerCase() !== 'gurgaon') {
       locationParts.push(project.city);
     }
     
-    // If no location data, provide default
     if (locationParts.length === 0) {
-      return 'Sector 102 • Dwarka Expressway • Gurugram';
+      return 'Spain, Costa del Sol';
     }
     
-    return locationParts.join(' • ');
+    return locationParts.join(', ');
   };
 
-  // Show loading state if no data
+  const formatPossession = (project) => {
+    if (project?.possessionDate) {
+      try {
+        return format(new Date(project.possessionDate), 'MMM yyyy');
+      } catch (error) {
+        console.error('Error formatting possession date:', error);
+        return project?.project_Status || 'Ready to Move';
+      }
+    }
+    return project?.project_Status || project?.possession || 'Ready to Move';
+  };
+
+  const parsePaymentPlan = (paymentPlan) => {
+    if (!paymentPlan) return null;
+    
+    // Handle string format (e.g., "20:40:40" or "20-40-40")
+    if (typeof paymentPlan === 'string') {
+      const parts = paymentPlan.split(/[:-]/).map(p => p.trim()).filter(Boolean);
+      if (parts.length >= 3) {
+        return [
+          { percentage: parts[0] + '%', label: 'Booking' },
+          { percentage: parts[1] + '%', label: 'Construction' },
+          { percentage: parts[2] + '%', label: 'Possession' }
+        ];
+      }
+      // If it's a descriptive string, show it as-is
+      return [{ percentage: paymentPlan, label: '' }];
+    }
+    
+    // Handle array format
+    if (Array.isArray(paymentPlan) && paymentPlan.length > 0) {
+      return paymentPlan.map((plan, idx) => {
+        const labels = ['Booking', 'Construction', 'Possession'];
+        return {
+          percentage: plan.includes('%') ? plan : plan + '%',
+          label: labels[idx] || ''
+        };
+      });
+    }
+    
+    return null;
+  };
+
   if (!displayData || displayData.length === 0) {
     return (
       <SectionWrapper>
@@ -114,27 +152,23 @@ const ModernRecommendedSection = () => {
         defaultView="Login" 
       />
       <div className="w-full px-4 pt-0 pb-4">
-        {/* Header Section */}
-        <div className="text-center mb-2 sm:mb-4 px-2 pt-2">
-          <div className="inline-flex sm:inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-1 sm:mb-0">
-            <div className="w-12 h-1 bg-gradient-to-r from-red-400 to-red-600 rounded-full hidden sm:block"></div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight tracking-tight">
-              <span className="text-red-600 sm:ml-2 block sm:inline">100acress</span>
-              <span className="block sm:inline"> Recommended</span>
+        <div className="text-center mb-4 px-2 pt-2">
+          <div className="inline-flex items-center gap-4 mb-3">
+            <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-red-500 to-red-600 hidden sm:block"></div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent leading-tight">
+              <span className="text-red-600">100acress</span> Recommended
             </h2>
-            <div className="w-12 h-1 bg-gradient-to-r from-red-600 to-red-400 rounded-full hidden sm:block"></div>
+            <div className="w-16 h-0.5 bg-gradient-to-r from-red-600 to-transparent hidden sm:block"></div>
           </div>
-          <p className="hidden sm:block text-gray-600 text-lg max-w-2xl mx-auto mb-0 px-1">
-          Find top-rated properties that offer luxury living, prime locations, and great investment opportunities.
+          <p className="hidden sm:block text-gray-600 text-base max-w-2xl mx-auto">
+            Discover premium properties handpicked for luxury living and exceptional investment returns
           </p>
         </div>
 
-        {/* Mobile swipe hint */}
-        <div className="sm:hidden text-center text-gray-500 text-sm mb-1 swipe-hint" aria-hidden="true">
-          Swipe to see more <MdArrowForward className="inline-block align-middle swipe-hint-icon" />
+        <div className="sm:hidden text-center text-gray-500 text-sm mb-3 flex items-center justify-center gap-2">
+          Swipe to explore <MdArrowForward className="animate-pulse" />
         </div>
 
-        {/* Carousel Container */}
         <div className="carousel-container">
           <Swiper
             ref={swiperRef}
@@ -143,7 +177,7 @@ const ModernRecommendedSection = () => {
             centeredSlides={false}
             slidesPerView={1}
             slidesPerGroup={1}
-            spaceBetween={24}
+            spaceBetween={12}
             loop={true}
             allowTouchMove={true}
             simulateTouch={true}
@@ -157,31 +191,31 @@ const ModernRecommendedSection = () => {
               320: {
                 slidesPerView: 1,
                 slidesPerGroup: 1,
-                spaceBetween: 20,
+                spaceBetween: 12,
                 centeredSlides: true,
               },
               640: {
                 slidesPerView: 2,
                 slidesPerGroup: 1,
-                spaceBetween: 24,
+                spaceBetween: 12,
                 centeredSlides: false,
               },
               768: {
                 slidesPerView: 3,
                 slidesPerGroup: 1,
-                spaceBetween: 20,
+                spaceBetween: 12,
                 centeredSlides: false,
               },
               1024: {
                 slidesPerView: 4,
                 slidesPerGroup: 1,
-                spaceBetween: 20,
+                spaceBetween: 12,
                 centeredSlides: false,
               },
               1280: {
                 slidesPerView: 4,
                 slidesPerGroup: 1,
-                spaceBetween: 24,
+                spaceBetween: 12,
                 centeredSlides: false,
               },
             }}
@@ -197,6 +231,8 @@ const ModernRecommendedSection = () => {
                   truncateText={truncateText}
                   formatPrice={formatPrice}
                   formatLocation={formatLocation}
+                  formatPossession={formatPossession}
+                  parsePaymentPlan={parsePaymentPlan}
                   favTick={favTick}
                   isAuthenticated={isAuthenticated}
                   onShowAuth={() => setShowAuth(true)}
@@ -205,9 +241,6 @@ const ModernRecommendedSection = () => {
             ))}
           </Swiper>
 
-          {/* Navigation arrows removed */}
-
-          {/* Custom Pagination */}
           <div className="swiper-pagination custom-pagination"></div>
         </div>
       </div>
@@ -223,18 +256,22 @@ const PropertyCard = ({
   truncateText,
   formatPrice,
   formatLocation,
+  formatPossession,
+  parsePaymentPlan,
   favTick,
   isAuthenticated,
   onShowAuth
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  
+  // Parse payment plan for this project
+  const paymentPlanData = parsePaymentPlan(project?.paymentPlan);
 
   const handleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
     
     if (!isAuthenticated) {
-      // Show login popup
       onShowAuth();
       return;
     }
@@ -257,49 +294,18 @@ const PropertyCard = ({
     e.preventDefault();
     e.stopPropagation();
     
-    // Create share URL
-    const shareUrl = `${window.location.origin}/${project?.project_url}/`;
     const shareText = `Check out this amazing property: ${project?.projectName}`;
+    const shareUrl = `${window.location.origin}/${project?.project_url}/`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
     
-    // Use Web Share API if available, otherwise copy to clipboard
-    if (navigator.share) {
-      navigator.share({
-        title: project?.projectName,
-        text: shareText,
-        url: shareUrl,
-      }).catch((error) => {
-        console.log('Error sharing:', error);
-        // Fallback to copying URL
-        copyToClipboard(shareUrl);
-      });
-    } else {
-      // Fallback for browsers that don't support Web Share API
-      copyToClipboard(shareUrl);
-    }
-  };
-
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Link copied to clipboard!');
-    }).catch(() => {
-      // Fallback for older browsers
-      const textArea = document.createElement('textarea');
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      alert('Link copied to clipboard!');
-    });
+    window.open(whatsappUrl, '_blank');
   };
 
   const handleCardClick = (e) => {
-    // Don't navigate if clicking on share or view details buttons
     if (e.target.closest('.share-btn') || e.target.closest('.view-details-btn')) {
       e.preventDefault();
       return;
     }
-    // Navigate to project page
     window.location.href = `/${project?.project_url}/`;
   };
 
@@ -309,7 +315,6 @@ const PropertyCard = ({
     window.location.href = `/${project?.project_url}/`;
   };
 
-  // Recompute favorite when favTick changes
   const isFav = favCheck(project?._id || project?.id || project?.slug);
 
   return (
@@ -319,8 +324,36 @@ const PropertyCard = ({
       className={`property-card ${isHovered ? 'hovered' : ''}`}
       onClick={handleCardClick}
     >
-      {/* Image Section */}
+      <div className="rera-badge">
+        <MdVerifiedUser className="rera-icon" />
+        <span>RERA</span>
+      </div>
+
+      <div className="action-buttons">
+        <button
+          onClick={handleWishlist}
+          className="action-btn wishlist-btn"
+          aria-label="Toggle wishlist"
+          title={isFav ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          {isFav ? (
+            <MdFavorite size={16} />
+          ) : (
+            <MdFavoriteBorder size={16} />
+          )}
+        </button>
+        <button
+          onClick={handleShare}
+          className="action-btn whatsapp-btn"
+          aria-label="Share on WhatsApp"
+          title="Share on WhatsApp"
+        >
+          <FaWhatsapp size={16} />
+        </button>
+      </div>
+
       <div className="image-container">
+        <div className="image-overlay"></div>
         <img
           src={project?.frontImage?.url}
           alt={project?.projectName}
@@ -328,70 +361,82 @@ const PropertyCard = ({
           onLoad={() => setImageLoaded(true)}
           loading="lazy"
         />
-        
-        {/* Overlay with gradient */}
-        <div className="image-overlay" />
-        
-        {/* Wishlist (Heart) Button */}
-        <button
-          onClick={handleWishlist}
-          className="wishlist-btn"
-          aria-label="Toggle wishlist"
-          title={isFav ? 'Remove from wishlist' : 'Add to wishlist'}
-        >
-          {isFav ? (
-            <MdFavorite size={14} color="#ef4444" className="wishlist-icon" />
-          ) : (
-            <MdFavoriteBorder size={14} color="#6b7280" className="wishlist-icon" />
-          )}
-        </button>
+      </div>
 
-        {/* Price Badge */}
-        <div className="price-badge">
-          <span className="price-text">
-            {formatPrice(project?.minPrice)}
-          </span>
+      <div className="content-overlay">
+        <h3 className="property-title">
+          {truncateText(project?.projectName, 5)}
+        </h3>
+        <div className="property-location">
+          <span>{formatLocation(project)}</span>
         </div>
+      </div>
 
-        {/* Left Side Content Overlay */}
-        <div className="left-content-overlay">
-          <div className="content-header">
-            <h3 className="project-name">
-              {truncateText(project?.projectName, 4)}
-            </h3>
+      <div className="bottom-info">
+        <div className="info-grid">
+          <div className="info-item">
+            <MdSquareFoot className="info-icon" />
+            <div className="info-content">
+              <span className="info-value">{project?.totalLandArea || project?.projectArea || project?.landArea || '5 Acres'}</span>
+              <span className="info-label">Land Area</span>
+            </div>
           </div>
-
-          <div className="location-info">
-            <MdLocationPin className="location-icon" />
-            <span>
-              {formatLocation(project)}
-            </span>
+          <div className="info-item">
+            <MdBed className="info-icon" />
+            <div className="info-content">
+              <span className="info-value">{formatPossession(project)}</span>
+              <span className="info-label">Possession</span>
+            </div>
           </div>
         </div>
 
-        {/* View Details Button */}
-        <button 
-          onClick={handleViewDetails}
-          className="view-details-btn"
-        >
-          <span>View Details</span>
-          <MdArrowForward />
-        </button>
+        {paymentPlanData && paymentPlanData.length > 0 && (
+          <div className="payment-plan-section">
+            <div className="payment-header">
+              <span className="payment-title">Payment Plan</span>
+            </div>
+            <div className="payment-options">
+              {paymentPlanData.map((plan, index) => (
+                <React.Fragment key={index}>
+                  <div className="payment-option">
+                    <div className="payment-percentage">{plan.percentage}</div>
+                    {plan.label && <div className="payment-label">{plan.label}</div>}
+                  </div>
+                  {index < paymentPlanData.length - 1 && (
+                    <div className="payment-divider">→</div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="price-section">
+          <div className="price-label">Starting From</div>
+          <div className="price">
+            {formatPrice(project?.minPrice || project?.price)}
+          </div>
+        </div>
       </div>
     </CardWrapper>
   );
 };
 
-// Styled Components
 const SectionWrapper = styled.section`
-  background: transparent;
+  background: #ffffff; // Pure white background like the rest of the website
   position: relative;
   overflow: hidden;
   margin-top: 0;
-  padding-top: 20px;
+  padding: 60px 0 10px; // Reduced top padding to decrease gap between heading and cards
 
-  .container {
-    background: transparent;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(220, 38, 38, 0.1), transparent);
   }
 
   .carousel-container {
@@ -399,208 +444,206 @@ const SectionWrapper = styled.section`
     overflow: visible;
     width: 100%;
     max-width: none;
-    min-height: 280px;
+    min-height: 460px;
     margin: 0;
     background: transparent;
-    border-radius: 0;
   }
 
   .modern-swiper {
     width: 100%;
     height: 100%;
+    padding-bottom: 50px;
     
     .swiper-slide {
       height: auto;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .swiper-wrapper {
-      align-items: center;
-    }
-  }
-
-  .custom-nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 60px;
-    height: 60px;
-    background: rgba(255, 255, 255, 0.95);
-    border: 2px solid #dc2626;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 100;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    color: #dc2626;
-    font-size: 28px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-
-    &:hover {
-      transform: translateY(-50%) scale(1.1);
-      background: #dc2626;
-      color: white;
-      box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
-    }
-
-    &.swiper-button-prev {
-      left: 20px;
-    }
-    
-    &.swiper-button-next {
-      right: 20px;
-    }
-
-    &.swiper-button-disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      transform: translateY(-50%) scale(0.9);
-      
-      &:hover {
-        transform: translateY(-50%) scale(0.9);
-        background: rgba(255, 255, 255, 0.95);
-        color: #dc2626;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-      }
+      align-items: stretch;
     }
   }
 
   .custom-pagination {
-    bottom: 0;
+    bottom: 10px;
     
     .swiper-pagination-bullet {
-      width: 10px;
-      height: 10px;
-      background: #d1d5db;
-      opacity: 0.5;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 5px;
+      width: 8px;
+      height: 8px;
+      background: #cbd5e1;
+      opacity: 1;
+      transition: all 0.3s ease;
+      margin: 0 6px;
       
       &.swiper-pagination-bullet-active {
-        background: #dc2626;
-        opacity: 1;
-        transform: scale(1.2);
-        width: 20px;
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        width: 24px;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);
       }
     }
   }
 
   @media (max-width: 768px) {
-    padding-top: 8px;
-
-    .swipe-hint {
-      color: #6b7280;
-      font-size: 0.875rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      .swipe-hint-icon {
-        animation: swipeRight 1.2s ease-in-out infinite;
-      }
-    }
-
-    @keyframes swipeRight {
-      0% { transform: translateX(0); opacity: 0.6; }
-      50% { transform: translateX(6px); opacity: 1; }
-      100% { transform: translateX(0); opacity: 0.6; }
-    }
+    padding: 40px 0 8px; // Reduced mobile bottom gap further
 
     .carousel-container {
-      padding: 8px 0 52px 0;
-      min-height: 330px;
-      max-width: none;
-      overflow: visible;
-      position: relative;
+      min-height: 440px;
     }
 
     .modern-swiper {
-      padding: 4px 0 32px 0;
+      padding-bottom: 45px;
     }
-
-    .custom-nav-btn {
-      width: 50px;
-      height: 50px;
-      font-size: 24px;
-      
-      &.swiper-button-prev {
-        left: 10px;
-      }
-      
-      &.swiper-button-next {
-        right: 10px;
-      }
-    }
-  }
-
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .carousel-container {
-      min-height: 260px;
-    }
-  }
-
-  @media (min-width: 1025px) and (max-width: 1440px) {
-    .carousel-container {
-      min-height: 280px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .carousel-container {
-      padding: 6px 0 44px 0;
-      min-height: 300px;
-      max-width: none;
-      overflow: visible;
-    }
-
-    .modern-swiper {
-      padding: 2px 0 24px 0;
-    }
-
-    .custom-nav-btn {
-      width: 45px;
-      height: 45px;
-      font-size: 20px;
-      
-      &.swiper-button-prev {
-        left: 5px;
-      }
-      
-      &.swiper-button-next {
-        right: 5px;
-      }
-    }
-  }
-
-  @media (min-width: 1280px) {
-    padding-top: 48px;
   }
 `;
 
 const CardWrapper = styled.div`
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, box-shadow;
-  cursor: pointer;
-  margin: 0 5px;
   position: relative;
-  height: 240px;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  margin: 0 2px;
+  height: 380px;
   width: 100%;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 
-  &:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(239, 68, 68, 0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
   }
 
-  &.hovered {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  &:hover, &.hovered {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(220, 38, 38, 0.08);
+    border-color: rgba(220, 38, 38, 0.2);
+
+    &::before {
+      opacity: 1;
+    }
+    
+    .content-overlay {
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .bottom-info {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .property-image {
+      transform: scale(1.08);
+    }
+
+    .image-overlay {
+      opacity: 0.2;
+    }
+
+    .rera-badge {
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .rera-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    padding: 8px 16px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1f2937;
+    z-index: 20;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+
+    .rera-icon {
+      font-size: 16px;
+      color: #10b981;
+      filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.5));
+    }
+  }
+
+  .action-buttons {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 20;
+
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      color: #374151;
+
+      &:hover {
+        transform: scale(1.15) translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      &.whatsapp-btn {
+        svg {
+          transition: all 0.3s ease;
+        }
+
+        &:hover svg {
+          color: #25D366;
+          transform: scale(1.1);
+        }
+      }
+
+      &.wishlist-btn {
+        svg {
+          transition: all 0.3s ease;
+        }
+
+        &:hover svg {
+          color: #dc2626;
+          transform: scale(1.1);
+        }
+      }
+    }
   }
 
   .image-container {
@@ -608,321 +651,406 @@ const CardWrapper = styled.div`
     width: 100%;
     height: 100%;
     overflow: hidden;
-    border-radius: 12px;
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
 
-    .card-link {
-      display: block;
-      width: 100%;
-      height: 100%;
-      text-decoration: none;
-      color: inherit;
+    .image-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 220px;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.95) 0%,
+        rgba(0, 0, 0, 0.88) 15%,
+        rgba(0, 0, 0, 0.75) 30%,
+        rgba(0, 0, 0, 0.6) 45%,
+        rgba(0, 0, 0, 0.4) 60%,
+        rgba(0, 0, 0, 0.2) 75%,
+        rgba(0, 0, 0, 0) 100%
+      );
+      z-index: 2;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+      opacity: 1;
     }
 
     .property-image {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
-                  opacity 420ms cubic-bezier(0.4, 0, 0.2, 1);
-      will-change: transform, opacity;
+      object-position: center;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0;
+      z-index: 1;
       
       &.loaded {
         opacity: 1;
       }
     }
+  }
 
-    .image-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        transparent 60%,
-        rgba(0, 0, 0, 0.3) 100%
-      );
-      opacity: 0;
-      transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  .content-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px;
+    color: white;
+    z-index: 10;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.85) 0%,
+      rgba(0, 0, 0, 0.7) 40%,
+      rgba(0, 0, 0, 0.6) 70%,
+      rgba(0, 0, 0, 0) 100%
+    );
+
+    .property-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      line-height: 1.2;
+      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 1);
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      // background: rgba(0, 0, 0, 0.4);
+      // padding: 6px 12px;
+      // border-radius: 6px;
+      // backdrop-filter: blur(8px);
     }
 
-    .wishlist-btn {
-      position: absolute !important;
-      top: 10px !important;
-      right: 10px !important;
-      width: 18px !important;
-      height: 18px !important;
-      
-      background: rgba(255, 255, 255, 0.92) !important;
-      border: none !important;
-      border-radius: 50% !important;
-      
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      
-      cursor: pointer !important;
-      z-index: 10 !important;
-      
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
-      backdrop-filter: blur(6px) !important;
-      
-      transition: all 0.2s ease-in-out !important;
-
-      .wishlist-icon {
-        width: 14px !important;
-        height: 14px !important;
-      }
-    }
-
-    .wishlist-btn:hover {
-      background: #ffffff !important;
-      transform: scale(1.08) !important;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16) !important;
-    }
-
-    .wishlist-btn:active {
-      transform: scale(0.96) !important;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12) !important;
-    }
-
-    .price-badge {
-      position: absolute;
-      bottom: 12px;
-      left: 12px;
-      padding: 4px 8px;
-      border-radius: 6px;
+    .property-location {
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0.98;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 1);
       display: flex;
       align-items: center;
-      justify-content: center;
-      background: transparent;
-      border: none;
-      z-index: 10;
-      overflow: visible;
+      gap: 6px;
+      // background: rgba(0, 0, 0, 0.35);
+      // padding: 4px 12px;
+      // border-radius: 6px;
+      // backdrop-filter: blur(8px);
+      // width: fit-content;
+    }
+  }
 
-      .price-text {
-        color: white;
-        font-weight: 700;
-        font-size: 22px;
-        text-align: center;
-        line-height: 1.2;
-        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7), 1px 1px 2px rgba(0, 0, 0, 0.4);
-        position: relative;
-        z-index: 2;
+  .bottom-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    padding: 14px 16px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 15;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
+    border-top: 1px solid rgba(220, 38, 38, 0.1);
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+
+      .info-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 8px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: linear-gradient(135deg, #fef2f2, #fee2e2);
+          transform: translateY(-1px);
+        }
+
+        .info-icon {
+          font-size: 18px;
+          color: #dc2626;
+        }
+
+        .info-content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 2px;
+
+          .info-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: #111827;
+          }
+
+          .info-label {
+            font-size: 9px;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+          }
+        }
       }
     }
 
-    .left-content-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+    .payment-plan-section {
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border-radius: 10px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+
+      .payment-header {
+        text-align: center;
+        margin-bottom: 8px;
+
+        .payment-title {
+          font-size: 10px;
+          font-weight: 700;
+          color: #059669;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+        }
+      }
+
+      .payment-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+
+        .payment-option {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 3px;
+          padding: 8px 4px;
+          background: white;
+          border-radius: 8px;
+          border: 1.5px solid rgba(16, 185, 129, 0.3);
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: translateY(-1px);
+            border-color: rgba(16, 185, 129, 0.6);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+          }
+
+          .payment-percentage {
+            font-size: 16px;
+            font-weight: 800;
+            color: #059669;
+            line-height: 1;
+          }
+
+          .payment-label {
+            font-size: 8px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+          }
+        }
+
+        .payment-divider {
+          font-size: 12px;
+          font-weight: 700;
+          color: #10b981;
+          flex-shrink: 0;
+        }
+      }
+    }
+
+    .price-section {
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      align-items: flex-start;
-      padding: 16px;
-      background: linear-gradient(
-        135deg,
-        rgba(0, 0, 0, 0.65) 0%,
-        rgba(0, 0, 0, 0.35) 50%,
-        rgba(0, 0, 0, 0.1) 100%
-      );
-      color: white;
-      z-index: 5;
-      pointer-events: none;
-    }
+      align-items: center;
+      gap: 2px;
+      padding: 10px 16px;
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      border-radius: 10px;
+      border: 1px solid rgba(220, 38, 38, 0.2);
 
-    .content-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      width: 100%;
-      margin-bottom: 8px;
-      pointer-events: auto;
-
-      .project-name {
-        font-size: 16px;
+      .price-label {
+        font-size: 9px;
+        color: #6b7280;
         font-weight: 700;
-        margin: 0;
-        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-        line-height: 1.2;
-        width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+
+      .price {
+        font-size: 24px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.5px;
       }
     }
-
-    .location-info {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      font-weight: 500;
-      margin-bottom: 12px;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-      pointer-events: auto;
-
-      .location-icon {
-        font-size: 14px;
-        color: #dc2626;
-      }
-    }
-
-    .view-details-btn {
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      padding: 6px 12px;
-      background: transparent;
-      color: #dc2626;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 12px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border: none;
-      cursor: pointer;
-      z-index: 10;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-
-      &:hover {
-        background: rgba(220, 38, 38, 0.1);
-        transform: translateY(-2px);
-        color: #b91c1c;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-      }
-    }
-  }
-
-  &:hover .image-container .property-image {
-    transform: scale(1.05);
-  }
-
-  &:hover .image-container .image-overlay {
-    opacity: 1;
   }
 
   @media (max-width: 768px) {
-    height: 280px;
+    height: 340px;
+    border-radius: 16px;
+    margin: 0 2px;
+
+    .rera-badge {
+      top: 12px;
+      left: 12px;
+      padding: 6px 12px;
+      font-size: 11px;
+
+      .rera-icon {
+        font-size: 14px;
+      }
+    }
+
+    .action-buttons {
+      top: 12px;
+      right: 12px;
+      gap: 8px;
+
+      .action-btn {
+        width: 32px;
+        height: 32px;
+      }
+    }
 
     .image-container {
-      .left-content-overlay {
-        padding: 14px;
+      .image-overlay {
+        height: 200px;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.95) 0%,
+          rgba(0, 0, 0, 0.85) 20%,
+          rgba(0, 0, 0, 0.7) 40%,
+          rgba(0, 0, 0, 0.5) 60%,
+          rgba(0, 0, 0, 0.25) 80%,
+          rgba(0, 0, 0, 0) 100%
+        );
+      }
+    }
+
+    .content-overlay {
+      padding: 20px;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.9) 0%,
+        rgba(0, 0, 0, 0.75) 40%,
+        rgba(0, 0, 0, 0.45) 70%,
+        rgba(0, 0, 0, 0) 100%
+      );
+
+      .property-title {
+        font-size: 16px;
+        // background: rgba(0, 0, 0, 0.45);
+        // padding: 5px 10px;
+        // border-radius: 5px;
       }
 
-      .content-header {
-        margin-bottom: 8px;
-
-        .project-name {
-          font-size: 15px;
-          text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-        }
+      .property-location {
+        font-size: 13px;
+        // background: rgba(0, 0, 0, 0.4);
+        // padding: 3px 10px;
+        // border-radius: 5px;
       }
+    }
 
-      .location-info {
-        font-size: 11px;
+    .bottom-info {
+      padding: 12px 14px;
+
+      .info-grid {
+        gap: 8px;
         margin-bottom: 10px;
+        padding-bottom: 10px;
 
-        .location-icon {
-          font-size: 13px;
+        .info-item {
+          padding: 6px;
+
+          .info-icon {
+            font-size: 16px;
+          }
+
+          .info-content {
+            .info-value {
+              font-size: 12px;
+            }
+
+            .info-label {
+              font-size: 8px;
+            }
+          }
         }
       }
 
-      .price-badge {
-        width: auto;
-        height: auto;
+      .payment-plan-section {
+        margin-bottom: 10px;
+        padding: 8px 10px;
 
-        .price-text {
+        .payment-header {
+          margin-bottom: 6px;
+
+          .payment-title {
+            font-size: 9px;
+          }
+        }
+
+        .payment-options {
+          gap: 4px;
+
+          .payment-option {
+            padding: 6px 4px;
+
+            .payment-percentage {
+              font-size: 14px;
+            }
+
+            .payment-label {
+              font-size: 7px;
+            }
+          }
+
+          .payment-divider {
+            font-size: 10px;
+          }
+        }
+      }
+
+      .price-section {
+        padding: 8px 12px;
+
+        .price-label {
+          font-size: 8px;
+        }
+
+        .price {
           font-size: 20px;
-          text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.4);
-        }
-      }
-
-      .view-details-btn {
-        font-size: 11px;
-        padding: 5px 10px;
-      }
-
-      .wishlist-btn {
-        width: 26px !important;
-        height: 26px !important;
-        top: 8px !important;
-        right: 8px !important;
-
-        .wishlist-icon {
-          width: 13px !important;
-          height: 13px !important;
         }
       }
     }
   }
 
   @media (max-width: 480px) {
-    height: 250px;
-
-    .image-container {
-      .left-content-overlay {
-        padding: 12px;
-      }
-
-      .content-header {
-        margin-bottom: 6px;
-
-        .project-name {
-          font-size: 14px;
-          text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
-        }
-      }
-
-      .location-info {
-        font-size: 10px;
-        margin-bottom: 8px;
-
-        .location-icon {
-          font-size: 12px;
-        }
-      }
-
-      .price-badge {
-        width: auto;
-        height: auto;
-
-        .price-text {
-          font-size: 18px;
-          text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.4);
-        }
-      }
-
-      .view-details-btn {
-        font-size: 10px;
-        padding: 4px 8px;
-      }
-
-      .wishlist-btn {
-        width: 24px !important;
-        height: 24px !important;
-        top: 8px !important;
-        right: 8px !important;
-
-        .wishlist-icon {
-          width: 12px !important;
-          height: 12px !important;
-        }
-      }
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none !important;
-    .image-container .property-image,
-    .image-container .image-overlay,
-    .view-details-btn,
-    .wishlist-btn {
-      transition: none !important;
-    }
+    height: 320px;
   }
 `;
 
