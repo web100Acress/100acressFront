@@ -18,6 +18,8 @@ const ProjectEdit = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [projectTypes, setProjectTypes] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([]);
+  const [builderOptions, setBuilderOptions] = useState([]);
   const [values, setValues] = useState({
     thumbnailImage: "",
     otherImage: [],
@@ -136,6 +138,54 @@ const ProjectEdit = () => {
       }
     };
     fetchProjectTypes();
+  }, []);
+
+  // Fetch all project statuses for dropdown
+  useEffect(() => {
+    const fetchProjectStatuses = async () => {
+      try {
+        const res = await api.get('/project/viewAll/data?sort=-createdAt');
+        if (res.data?.data) {
+          // Extract unique project statuses and sort them
+          const uniqueStatuses = [...new Set(
+            res.data.data
+              .map(project => project.project_Status)
+              .filter(Boolean) // Remove any null/undefined values
+          )].sort();
+
+          setStatusOptions(uniqueStatuses);
+        }
+      } catch (error) {
+        console.error("Error fetching project statuses:", error);
+        // Fallback: set default project statuses
+        setStatusOptions(['newlaunch', 'readytomove', 'underconstruction']);
+      }
+    };
+    fetchProjectStatuses();
+  }, []);
+
+  // Fetch all project builders for dropdown
+  useEffect(() => {
+    const fetchProjectBuilders = async () => {
+      try {
+        const res = await api.get('/project/viewAll/data?sort=-createdAt');
+        if (res.data?.data) {
+          // Extract unique builder names and sort them
+          const uniqueBuilders = [...new Set(
+            res.data.data
+              .map(project => project.builderName)
+              .filter(Boolean) // Remove any null/undefined values
+          )].sort();
+
+          setBuilderOptions(uniqueBuilders);
+        }
+      } catch (error) {
+        console.error("Error fetching project builders:", error);
+        // Fallback: set empty array
+        setBuilderOptions([]);
+      }
+    };
+    fetchProjectBuilders();
   }, []);
 
   // Function to fetch project data
@@ -705,9 +755,9 @@ const ProjectEdit = () => {
       icon: <MdInfo className="text-2xl text-blue-500 mr-2" />, title: "Basic Info", fields: [
         { label: "Property Name", name: "projectName", icon: <MdInfo className="inline mr-1" /> },
         { label: "Project Type", name: "type", icon: <MdInfo className="inline mr-1" />, select: true, options: projectTypes || [] },
-        { label: "Project Status", name: "project_Status", icon: <MdInfo className="inline mr-1" />, select: true, options: ["newlaunch", "readytomove", "underconstruction", "completed", "soldout"] },
+        { label: "Project Status", name: "project_Status", icon: <MdInfo className="inline mr-1" />, select: true, options: statusOptions },
         { label: "Project URL", name: "project_url", icon: <MdInfo className="inline mr-1" />, placeholder: "project-name" },
-        { label: "Builder Name", name: "builderName", icon: <MdInfo className="inline mr-1" /> },
+        { label: "Builder Name", name: "builderName", icon: <MdInfo className="inline mr-1" />, select: true, options: builderOptions },
         { label: "Address", name: "projectAddress", icon: <MdInfo className="inline mr-1" /> },
         { label: "City", name: "city", icon: <MdInfo className="inline mr-1" /> },
         { label: "State", name: "state", icon: <MdInfo className="inline mr-1" /> },
