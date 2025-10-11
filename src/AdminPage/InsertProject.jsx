@@ -943,7 +943,7 @@ const InsertProject = () => {
                   </h2>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                  <div>
+                  {/* <div>
                     <Tippy
                       content={
                         <span>Project Overview (trending/featured/none)</span>
@@ -972,7 +972,7 @@ const InsertProject = () => {
                       <option value="featured">Featured</option>
                       <option value="none">None</option>
                     </select>
-                  </div>
+                  </div> */}
 
                   <div>
                     <Tippy
