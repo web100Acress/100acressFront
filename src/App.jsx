@@ -9,6 +9,7 @@ import { Toaster as Sonner } from "./Components/ui/sonner";
 import { TooltipProvider } from "./Components/ui/Tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PrivateRoute from "./Components/PrivateRoute";
+import HrPrivateRoute from "./Components/HrPrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
 import LazyLoad from "react-lazyload";
 import "animate.css";
@@ -65,7 +66,6 @@ const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation")
 // const Pushkar = lazy(() => import("./Pages/ProjectCities/Pushkar"));
 const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
 const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
-// const Panchkula = lazy(() => import("./Pages/ProjectCities/Panchkula"));
 const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
 // New dynamic project type route
 const ProjectTypePage = lazy(() => import("./Pages/ProjectType/[type]"));
@@ -74,6 +74,9 @@ const Bptp = lazy(() => import("./Pages/Bptp"));
 const Orris = lazy(() => import("./Pages/Orris"));
 const Jms = lazy(() => import("./Pages/Jms"));
 const Rof = lazy(() => import("./Pages/Rof"));
+const HrSidebar = lazy(() => import("./Hr/HrSidebar"));
+const HrDashboard = lazy(() => import("./Hr/HrDashboard"));
+const Hr = lazy(() => import("./Hr/Hr"));
 const EmaarIndia = lazy(() => import("./Pages/EmaarIndia"));
 const M3mIndia = lazy(() => import("./Pages/M3mIndia"));
 const Microtek = lazy(() => import("./Pages/Microtek"));
@@ -561,6 +564,17 @@ function App() {
                         element={<LazyLoad><InvestmentInsights /></LazyLoad>}
                       />
                       </Route>
+
+                    {/* HR Department Routing */}
+                    <Route path="/hr" element={<HrPrivateRoute />}>
+                      <Route index element={<LazyLoad><Hr /></LazyLoad>} />
+                      <Route path="dashboard" element={<LazyLoad><HrDashboard /></LazyLoad>} />
+                      <Route path="employees" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Employee Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage employee records and information.</p></div>} />
+                      <Route path="payroll" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Payroll Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Handle payroll processing and salary management.</p></div>} />
+                      <Route path="attendance" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Attendance Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track employee attendance and working hours.</p></div>} />
+                      <Route path="recruitment" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Recruitment</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage job postings and recruitment process.</p></div>} />
+                      <Route path="reports" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">HR Reports</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Generate and view HR analytics and reports.</p></div>} />
+                    </Route>
 
                     {/* Admin route for Guides */}
                     <Route path="/Admin/insights/guides" element={<LazyLoad><AdminGuides /></LazyLoad>} />

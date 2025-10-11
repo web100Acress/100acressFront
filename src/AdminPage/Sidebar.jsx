@@ -9,7 +9,7 @@ import { FaHome, FaYoutube } from "react-icons/fa";
 import { MdImage, MdCategory } from "react-icons/md";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaRegUserCircle } from "react-icons/fa";
-import { BiSolidGraduation }  from "react-icons/bi"; // Corrected import syntax for BiSolidGraduation
+import { BiSolidGraduation } from "react-icons/bi";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import axios from "axios";
 import { toast } from "react-toastify";
