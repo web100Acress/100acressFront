@@ -7,8 +7,16 @@ import { RealestateIcon,LegalIcon,HomeloanIcon, InteriorIcon } from "../../Asset
 import "aos/dist/aos.css";
 import AOS from "aos";
 import CraneTool from "../Actual_Components/cranetool.svg";
+import { useState, useRef } from "react";
+import ProblemSelector from "../OurServices/problemselector.jsx";
+import SolutionInfo from "../OurServices/SolutionInfo.jsx";
+import ContactForm from "../OurServices/ContactForm.jsx";
 
 function OurServices() {
+  const [step, setStep] = useState(0); // 0: hidden, 1: problem, 2: solution, 3: form
+  const [selectedProblem, setSelectedProblem] = useState(null);
+  const assistRef = useRef(null);
+
   const sliderSettings = {
     dots: false,
   infinite: true,
@@ -24,6 +32,44 @@ function OurServices() {
   useEffect(() => {
       AOS.init();
     }, []);
+  useEffect(() => {
+    console.log('🔄 ourServices: step changed to:', step);
+    if (step > 0 && assistRef.current) {
+      console.log('📍 ourServices: scrolling to assist section');
+      assistRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [step]);
+
+  const openAssist = (e) => {
+    console.log('🚀 ourServices: openAssist called');
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    setStep(1);
+    console.log('✅ ourServices: step set to 1 (problem selector)');
+  };
+
+  const handleSelectProblem = (item) => {
+    console.log('🎯 ourServices: problem selected:', item);
+    setSelectedProblem(item);
+    setStep(2);
+    console.log('✅ ourServices: step set to 2 (solution info)');
+  };
+
+  const handleTalkToExpert = () => {
+    console.log('💬 ourServices: talk to expert clicked');
+    setStep(3);
+    console.log('✅ ourServices: step set to 3 (contact form)');
+  };
+
+  const handleBack = () => {
+    console.log('⬅️ ourServices: back button clicked, current step:', step);
+    if (step > 1) {
+      const newStep = step - 1;
+      setStep(newStep);
+      console.log('✅ ourServices: step set to:', newStep);
+    } else {
+      console.log('⚠️ ourServices: cannot go back, already at step 1');
+    }
+  };
   
   return (
     <div className="section font-poppins font-light">
@@ -34,7 +80,7 @@ function OurServices() {
         <div className="md:hidden h-64">
           <Slider {...sliderSettings} >
             <div className="flex flex-col items-center bg-white p-4 rounded-lg hover:shadow-[#FF9933]/20 hover:border-[#FF9933]/30 border border-transparent transition-all duration-300">
-              <Link to={`/contact-us/`} target="_top" className="text-center">
+              <div role="button" tabIndex={0} onClick={openAssist} onKeyDown={(e)=>{ if(e.key==='Enter' || e.key===' ') openAssist(e); }} className="text-center">
               <div className="mb-4">
                   <RealestateIcon/>
                 </div>
@@ -44,7 +90,7 @@ function OurServices() {
                     We Provide the best services to help you get your dream home as per your expectations.
                   </p>
                 </div>
-              </Link>
+              </div>
             </div>
             <div className="flex flex-col items-center bg-white p-4 rounded-lg hover:shadow-[#FF9933]/20 hover:border-[#FF9933]/30 border border-transparent transition-all duration-300">
               <Link to={`/contact-us/`} target="_top" className="text-center">
@@ -126,7 +172,7 @@ function OurServices() {
  
         <div data-aos="fade-left" className="hidden md:grid md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-6">
           <div  data-aos="fade-left" className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
-          <Link to={`/contact-us/`} target="_top" className="text-center">
+          <div role="button" tabIndex={0} onClick={openAssist} onKeyDown={(e)=>{ if(e.key==='Enter' || e.key===' ') openAssist(e); }} className="text-center">
                 <div className="mb-4">
                   <RealestateIcon/>
                 </div>
@@ -136,7 +182,7 @@ function OurServices() {
                   Get expert real estate consulting to find the right property, whether it’s flats, apartments, or new residential projects.
                   </p>
                 </div>
-              </Link>
+              </div>
           </div>
           <div  className="flex flex-col items-center bg-white p-4 rounded-lg shadow-lg">
           <Link to={`/contact-us/`} target="_top" className="text-center">
@@ -196,6 +242,14 @@ function OurServices() {
           </div>
         
         </div>
+
+        {step > 0 && (
+          <div ref={assistRef} className="mt-8 border-t border-gray-100 pt-6">
+            {step === 1 && <ProblemSelector onSelect={handleSelectProblem} />}
+            {step === 2 && <SolutionInfo selectedProblem={selectedProblem} onNext={handleTalkToExpert} onBack={handleBack} />}
+            {step === 3 && <ContactForm selectedProblem={selectedProblem} onBack={handleBack} />}
+          </div>
+        )}
       </div>
     </div>
   );
