@@ -49,6 +49,40 @@ const InsertProject = () => {
   const [showCustomBuilderInput, setShowCustomBuilderInput] = useState(false);
   const [customBuilderName, setCustomBuilderName] = useState("");
 
+  // State for cities list and dropdown (similar to builders but for cities)
+  const [citiesList, setCitiesList] = useState([]);
+  const [filteredCities, setFilteredCities] = useState([]);
+  const [loadingCities, setLoadingCities] = useState(true);
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  const [citySearchTerm, setCitySearchTerm] = useState("");
+  const [showCustomCityInput, setShowCustomCityInput] = useState(false);
+  const [customCityName, setCustomCityName] = useState("");
+
+  // Function to fetch cities from backend
+  const fetchCitiesFromBackend = async () => {
+    try {
+      const { data } = await api.get("project/viewAll/data?sort=-createdAt");
+      if (data?.data) {
+        // Extract unique city names and sort them
+        const uniqueCities = [...new Set(
+          data.data
+            .map(project => project.city)
+            .filter(Boolean) // Remove any null/undefined values
+        )].sort();
+        setCitiesList(uniqueCities);
+        setFilteredCities(uniqueCities);
+        return uniqueCities;
+      }
+      return [];
+    } catch (error) {
+      console.error("Error fetching cities:", error);
+      message.error("Failed to load cities list");
+      return [];
+    } finally {
+      setLoadingCities(false);
+    }
+  };
+
   // Function to fetch builders from backend
   const fetchBuildersFromBackend = async () => {
     try {
@@ -74,9 +108,10 @@ const InsertProject = () => {
     }
   };
 
-  // Load builders on component mount
+  // Load builders and cities on component mount
   useEffect(() => {
     fetchBuildersFromBackend();
+    fetchCitiesFromBackend();
   }, []);
 
   const [editFromData, setEditFromData] = useState({
@@ -132,13 +167,52 @@ const InsertProject = () => {
   const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
 
 
-  // Filter builders based on search term
+  // Filter cities based on search term
   useEffect(() => {
-    const filtered = buildersList.filter((builder) =>
-      builder.toLowerCase().includes(builderSearchTerm.toLowerCase())
+    const filtered = citiesList.filter((city) =>
+      city.toLowerCase().includes(citySearchTerm.toLowerCase())
     );
-    setFilteredBuilders(filtered);
-  }, [builderSearchTerm, buildersList]);
+    setFilteredCities(filtered);
+  }, [citySearchTerm, citiesList]);
+
+  // Handle city selection
+  const handleCitySelect = (cityName) => {
+    if (cityName === "Other") {
+      setShowCustomCityInput(true);
+      setCitySearchTerm("");
+      setIsCityDropdownOpen(false);
+    } else {
+      setEditFromData((prev) => ({
+        ...prev,
+        city: cityName,
+      }));
+      setCitySearchTerm(cityName);
+      setIsCityDropdownOpen(false);
+      setShowCustomCityInput(false);
+      setCustomCityName("");
+    }
+  };
+
+  // Handle city input change - allow direct typing of new cities
+  const handleCityInputChange = (e) => {
+    const value = e.target.value;
+    setCitySearchTerm(value);
+
+    // If user types a new city name, set it directly
+    if (value && !filteredCities.includes(value)) {
+      setEditFromData((prev) => ({
+        ...prev,
+        city: value,
+      }));
+    }
+
+    setIsCityDropdownOpen(true);
+  };
+
+  // Handle city input focus
+  const handleCityInputFocus = () => {
+    setIsCityDropdownOpen(true);
+  };
 
   // Handle builder selection
   const handleBuilderSelect = (builderName) => {
@@ -245,11 +319,90 @@ const InsertProject = () => {
     }
   };
 
-  // Handle custom builder cancel
-  const handleCustomBuilderCancel = () => {
-    setShowCustomBuilderInput(false);
-    setCustomBuilderName("");
-    setBuilderSearchTerm("");
+  // Handle custom city name input
+  const handleCustomCitySubmit = async () => {
+    if (customCityName.trim()) {
+      try {
+        // Show loading message
+        messageApi.open({
+          key: "addCity",
+          type: "loading",
+          content: "Adding new city...",
+        });
+
+        // For now, just add locally since there's no city API endpoint
+        // In the future, you could add a city API endpoint similar to builder
+        const response = { status: 200 }; // Simulate success
+
+        if (response.status === 200) {
+          // Success - update local state
+          setEditFromData((prev) => ({
+            ...prev,
+            city: customCityName.trim(),
+          }));
+          setCitySearchTerm(customCityName.trim());
+          setShowCustomCityInput(false);
+
+          // Add to local cities list for immediate availability
+          if (!citiesList.includes(customCityName.trim())) {
+            const newCitiesList = [...citiesList, customCityName.trim()].sort();
+            setCitiesList(newCitiesList);
+            setFilteredCities(newCitiesList.filter(city =>
+              city.toLowerCase().includes(citySearchTerm.toLowerCase())
+            ));
+          }
+
+          // Clear input
+          setCustomCityName("");
+
+          // Success message
+          messageApi.open({
+            key: "addCity",
+            type: "success",
+            content: "City added successfully!",
+            duration: 3,
+          });
+        }
+      } catch (error) {
+        console.error("Error adding city:", error);
+
+        // Fallback: still update local state even if API fails
+        setEditFromData((prev) => ({
+          ...prev,
+          city: customCityName.trim(),
+        }));
+        setCitySearchTerm(customCityName.trim());
+        setShowCustomCityInput(false);
+
+        // Add to local cities list for immediate availability
+        const newCity = customCityName.trim();
+        if (!citiesList.includes(newCity)) {
+          const newCitiesList = [...citiesList, newCity].sort();
+          setCitiesList(newCitiesList);
+          setFilteredCities(newCitiesList.filter(city =>
+            city.toLowerCase().includes(citySearchTerm.toLowerCase())
+          ));
+        }
+
+        // Clear input
+        setCustomCityName("");
+
+        // Warning message
+        messageApi.open({
+          key: "addCity",
+          type: "warning",
+          content: "City added locally. Backend city management can be added later.",
+          duration: 5,
+        });
+      }
+    }
+  };
+
+  // Handle custom city cancel
+  const handleCustomCityCancel = () => {
+    setShowCustomCityInput(false);
+    setCustomCityName("");
+    setCitySearchTerm("");
   };
 
   // Handle click outside to close dropdown
@@ -258,13 +411,16 @@ const InsertProject = () => {
       if (isBuilderDropdownOpen && !event.target.closest(".builder-dropdown")) {
         setIsBuilderDropdownOpen(false);
       }
+      if (isCityDropdownOpen && !event.target.closest(".city-dropdown")) {
+        setIsCityDropdownOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isBuilderDropdownOpen]);
+  }, [isBuilderDropdownOpen, isCityDropdownOpen]);
 
   const resetData = () => {
     setEditFromData({
@@ -826,7 +982,7 @@ const InsertProject = () => {
                       onChange={handleChangeProjectData}
                     />
                   </div>
-                  <div>
+                  <div className="relative city-dropdown">
                     <Tippy
                       content={<span>City</span>}
                       animation="scale"
@@ -839,15 +995,75 @@ const InsertProject = () => {
                         <MdLocationOn /> City
                       </label>
                     </Tippy>
-                    <input
-                      type="text"
-                      id="city"
-                      name="city"
-                      placeholder="e.g., Gurugram"
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
-                      value={editFromData.city}
-                      onChange={handleChangeProjectData}
-                    />
+                    <div className="relative">
+                      <input
+                        type="text"
+                        id="city"
+                        name="city"
+                        placeholder="Search and select city..."
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 pr-10"
+                        value={citySearchTerm}
+                        onChange={handleCityInputChange}
+                        onFocus={handleCityInputFocus}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setIsCityDropdownOpen(!isCityDropdownOpen)
+                        }
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        <MdKeyboardArrowDown
+                          className={`transition-transform ${
+                            isCityDropdownOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Dropdown */}
+                    {isCityDropdownOpen && (
+                      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                        <div className="p-2 border-b border-gray-200">
+                          <div className="relative">
+                            <MdSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                            <input
+                              type="text"
+                              placeholder="Search cities..."
+                              className="w-full pl-8 pr-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-red-500"
+                              value={citySearchTerm}
+                              onChange={(e) =>
+                                setCitySearchTerm(e.target.value)
+                              }
+                              autoFocus
+                            />
+                          </div>
+                        </div>
+                        <div className="max-h-48 overflow-y-auto">
+                          {filteredCities.length > 0 ? (
+                            filteredCities.map((city, index) => (
+                              <button
+                                key={index}
+                                type="button"
+                                className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                                onClick={() => handleCitySelect(city)}
+                              >
+                                {city}
+                              </button>
+                            ))
+                          ) : (
+                            <div className="px-3 py-2 text-sm text-gray-500">
+                              No cities found
+                            </div>
+                          )}
+                          {/* Other option */}
+                      
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Custom City Input */}
+                    
                   </div>
                   <div>
                     <Tippy
