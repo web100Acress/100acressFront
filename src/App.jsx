@@ -90,7 +90,7 @@ const Possessionin2025 = lazy(() => import("./Pages/Possessionin2025"));
 const NewLaunch = lazy(() => import("./Pages/NewLaunch"));
 // const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
 const SignatureGlobal = lazy(() => import("./Pages/SignatureGlobal"));
-const DlfSco = lazy(() => import("./Pages/DlfSco"));
+// const DlfSco = lazy(() => import("./Pages/DlfSco"));
 const ProjectLayout2 = lazy(() => import("./aadharhomes/BannerPage/updatedbannerpage/components/ProjectLayout2"));
 const Possessionin2026 = lazy(() => import("./Pages/Possessionin2026"));
 const BuilderPage = lazy(() => import("./Pages/BuilderPages/BuilderPage"));
@@ -337,7 +337,7 @@ function App() {
                         element={<ProjectTypeGlobal />}
                       />
                       <Route path="/sco/plots/" element={<ProjectTypeGlobal />} />
-                      <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} />
+                      {/* <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} /> */}
                       <Route
                         path="/projects/independentfloors/"
                         element={<ProjectTypeGlobal />}
