@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useMemo } from "react";
-import Sidebar from "./Sidebar";
+import HrSidebar from "../Hr/HrSidebar";
 import { Link } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import { FaFileExport, FaSearch } from "react-icons/fa"; // Added icons for a cleaner UI
@@ -269,8 +269,8 @@ const JobPosting = () => {
 
   return (
     <div className="flex bg-gray-100 min-h-screen">
-      <Sidebar />
-      <div className="flex-1 p-8 md:p-10 lg:p-12 ml-0 md:ml-64">
+      <HrSidebar />
+      <div className="flex-1 p-8 md:p-10 lg:p-12 ml-0 md:ml-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
           <div className="flex items-center space-x-4 mb-4 md:mb-0">
             <div className="relative">
