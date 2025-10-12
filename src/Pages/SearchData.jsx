@@ -100,7 +100,11 @@ const SearchData = () => {
           (Array.isArray(localRentArr) ? localRentArr.length : 0) === 0 &&
           (Array.isArray(localBuyArr) ? localBuyArr.length : 0) === 0;
 
-        if (isAllEmpty) {
+        // Always trigger fallback for invalid searches (no results or very few results)
+        const totalResults = localSearchArr.length + localRentArr.length + localBuyArr.length;
+        const shouldUseFallback = isAllEmpty || totalResults < 3; // Consider searches with less than 3 results as invalid
+
+        if (shouldUseFallback) {
           setFallbackLoading(true);
           const allProjectsRes = await api.get(
             "/project/viewAll/data"
@@ -128,33 +132,31 @@ const SearchData = () => {
           setIsFallbackMode(false);
         }
       } catch (error) {
-        if (error.response && error.response.status === 404) {
-          setFallbackLoading(true);
-          const allProjectsRes = await api.get(
-            "/project/viewAll/data"
-          );
-          let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
-            projectName: item.projectName,
-            project_url: item.project_url,
-            frontImage: item.frontImage,
-            price: item.price,
-            type: item.type,
-            projectAddress: item.projectAddress,
-            city: item.city,
-            state: item.state,
-            minPrice: item.minPrice,
-            maxPrice: item.maxPrice,
-            sourceType: "project",
-          }));
-          allProjectsArr = allProjectsArr.sort(() => Math.random() - 0.5);
-          setBuySearchData([]);
-          setRentSearchData([]);
-          setSearchData(allProjectsArr);
-          setIsFallbackMode(true);
-          setFallbackLoading(false);
-        } else {
-          console.log(error.message);
-        }
+        // Any error should trigger fallback mode (show random properties)
+        console.log('Search error, triggering fallback:', error.message);
+        setFallbackLoading(true);
+        const allProjectsRes = await api.get(
+          "/project/viewAll/data"
+        );
+        let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
+          projectName: item.projectName,
+          project_url: item.project_url,
+          frontImage: item.frontImage,
+          price: item.price,
+          type: item.type,
+          projectAddress: item.projectAddress,
+          city: item.city,
+          state: item.state,
+          minPrice: item.minPrice,
+          maxPrice: item.maxPrice,
+          sourceType: "project",
+        }));
+        allProjectsArr = allProjectsArr.sort(() => Math.random() - 0.5);
+        setBuySearchData([]);
+        setRentSearchData([]);
+        setSearchData(allProjectsArr);
+        setIsFallbackMode(true);
+        setFallbackLoading(false);
       }
     };
     // EHFBHEDB
@@ -172,6 +174,10 @@ const SearchData = () => {
   const filteredFallbackProjects = useMemo(() => {
     let data = searchData;
     if (!isFallbackMode) return data;
+    
+    // Store original data as fallback
+    const originalData = [...data];
+    
     if (cityFilter) {
       data = data.filter(
         (item) =>
@@ -205,7 +211,9 @@ const SearchData = () => {
         return (!min || price >= min) && (!max || price <= max);
       });
     }
-    return data;
+    
+    // If filtering results in empty array, return original data to ensure something is always shown
+    return data.length > 0 ? data : originalData;
   }, [
     searchData,
     cityFilter,

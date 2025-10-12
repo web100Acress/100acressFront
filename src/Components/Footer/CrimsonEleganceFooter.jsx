@@ -370,6 +370,36 @@ const CrimsonEleganceFooter = () => {
             </div>
           </div>
           {/* </div> */}
+          <div className="max-w-7xl mx-auto px-4">
+  {/* Bottom Tag Section */}
+  <div className="relative flex justify-center py-8">
+    <div className="w-full border-t border-white/10 pt-8">
+      <div className="flex flex-wrap justify-center gap-3">
+        {[
+          "Residential Flats in Gurgaon",
+          "Retail Shops in Gurgaon",
+          "Builder Floor in Gurgaon",
+          "Farmhouse in Gurgaon",
+          "Industrial Plots in Gurgaon",
+          "Independent Floor in Gurgaon",
+          "SCO Plots in Gurgaon",
+          "Shop Cum Office Plots in Gurgaon",
+          "Luxury Villas in Gurgaon",
+        ].map((location, index) => (
+          <div
+            key={index}
+            className="bg-white rounded-lg px-3 py-1 flex items-center justify-center hover:scale-105 transition-all duration-300 cursor-pointer shadow-sm"
+          >
+            <span className="text-red-900 font-medium text-sm text-center leading-tight whitespace-nowrap">
+              {location}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
 
           <div className="relative flex items-center justify-center py-8">
             <a
