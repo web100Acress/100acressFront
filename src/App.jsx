@@ -147,13 +147,13 @@ const ProjectOrderManager = lazy(() => import("./AdminPage/ProjectOrderManager")
 const ProjectOrderManagement = lazy(() => import("./AdminPage/ProjectOrderManagement"));
 const BlogEdit = lazy(() => import("./AdminPage/BlogEdit"));
 const BlogWrite = lazy(() => import("./AdminPage/BlogWrite"));
-const Career = lazy(() => import("./AdminPage/Career"));
-// const JobPosting = lazy(() => import("./AdminPage/JobPosting"));
-const CareerView = lazy(() => import("./AdminPage/CareerView"));
-const CareerEdit = lazy(() => import("./AdminPage/CareerEdit"));
-// const JobPostingView = lazy(() => import("./AdminPage/JobPostingView"));
-// const JobApplications = lazy(() => import("./AdminPage/JobApplications"));
-// const JobPostingEdit = lazy(() => import("./AdminPage/JobPostingEdit"));
+const Career = lazy(() => import("./Hr/Career"));
+const JobPosting = lazy(() => import("./Hr/JobPosting"));
+const CareerView = lazy(() => import("./Hr/CareerView"));
+const CareerEdit = lazy(() => import("./Hr/CareerEdit"));
+const JobPostingView = lazy(() => import("./Hr/JobPostingView"));
+const JobApplications = lazy(() => import("./Hr/JobApplications"));
+const JobPostingEdit = lazy(() => import("./Hr/JobPostingEdit"));
 const InsertProject = lazy(() => import("./AdminPage/InsertProject"));
 const AllListedProperties = lazy(() => import("./AdminPage/AllListedProperties"));
 const BlogViewAdmin = lazy(() => import("./AdminPage/BlogViewAdmin"));
@@ -475,18 +475,6 @@ function App() {
                       <Route path="resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />
                       {/* <Route path="jobposting" element={<LazyLoad><JobPosting /></LazyLoad>} /> */}
                       <Route path="blog" element={<LazyLoad><Blog /></LazyLoad>} />
-                      {/* <Route
-                        path="jobposting/view/:id"
-                        element={<LazyLoad> <JobPostingView /></LazyLoad>}
-                      /> */}
-                      {/* <Route
-                        path="jobposting/applications/:id"
-                        element={<LazyLoad> <JobApplications /></LazyLoad>}
-                      /> */}
-                      {/* <Route
-                        path="jobposting/edit/:id"
-                        element={<LazyLoad> <JobPostingEdit /></LazyLoad>}
-                      /> */}
                       <Route path="rent/view/:id" element={<LazyLoad> <RentView /></LazyLoad>} />
                       <Route path="rent/view/edit/:id" element={<LazyLoad> <RentEdit /></LazyLoad>} />
                       <Route
@@ -571,6 +559,9 @@ function App() {
                       <Route index element={<LazyLoad><Hr /></LazyLoad>} />
                       <Route path="dashboard" element={<LazyLoad><HrDashboard /></LazyLoad>} />
                       <Route path="jobposting" element={<LazyLoad><HrJobPosting /></LazyLoad>} />
+                      <Route path="jobposting/view/:id" element={<LazyLoad><JobPostingView /></LazyLoad>} />
+                      <Route path="jobposting/applications/:id" element={<LazyLoad><JobApplications /></LazyLoad>} />
+                      <Route path="jobposting/edit/:id" element={<LazyLoad><JobPostingEdit /></LazyLoad>} />
                       <Route path="employees" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Employee Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage employee records and information.</p></div>} />
                       <Route path="payroll" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Payroll Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Handle payroll processing and salary management.</p></div>} />
                       <Route path="attendance" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Attendance Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track employee attendance and working hours.</p></div>} />
