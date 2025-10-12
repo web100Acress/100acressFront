@@ -444,7 +444,7 @@ const SectionWrapper = styled.section`
     overflow: visible;
     width: 100%;
     max-width: none;
-    min-height: 460px;
+    min-height: 420px;
     margin: 0;
     background: transparent;
   }
@@ -452,7 +452,7 @@ const SectionWrapper = styled.section`
   .modern-swiper {
     width: 100%;
     height: 100%;
-    padding-bottom: 50px;
+    padding-bottom: 10px;
     
     .swiper-slide {
       height: auto;
