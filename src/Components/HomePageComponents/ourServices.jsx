@@ -8,7 +8,7 @@ import "aos/dist/aos.css";
 import AOS from "aos";
 import CraneTool from "../Actual_Components/cranetool.svg";
 import { useState, useRef } from "react";
-import ProblemSelector from "../OurServices/problemselector.jsx";
+import ProblemSelector from "../OurServices/ProblemSelector.jsx";
 import SolutionInfo from "../OurServices/SolutionInfo.jsx";
 import ContactForm from "../OurServices/ContactForm.jsx";
 
