@@ -9,7 +9,7 @@ import styled from "styled-components";
 import OurServices from "../Components/HomePageComponents/ourServices";
 import { Helmet } from "react-helmet";
 // import Footer from "../Components/Actual_Components/Footer";
-import LuxuryFooter from "../Components/Actual_Components/LuxuryFooter";
+import Footer from "../Components/Actual_Components/Footer";
 import AuthModal from "../Components/AuthModal";
 import { Link } from "react-router-dom";
 import BackToTopButton from "./BackToTopButton";
@@ -27,7 +27,7 @@ import CommonProject from "../Utils/CommonProject";
 import Builderaction from "./HomePages/Builderaction";
 import Api_Service from "../Redux/utils/Api_Service";
 import { useSelector } from "react-redux";
-import Chatbot from "../Components/HomePageComponents/Chatbot";
+// import Chatbot from "../Components/HomePageComponents/Chatbot";
 import { AuthContext } from "../AuthContext";
 import FloatingShorts from "../Components/FloatingShorts";
 import DynamicHeroBanner from "../Components/HomePageComponents/DynamicHeroBanner";
@@ -319,9 +319,11 @@ const Home = () => {
     switch (activeFilter) {
       case "Trending":
         setDisplayedProjects(memoizedProjects.trending);
+        setPath("/projects-in-gurugram/");
         break;
       case "Featured":
         setDisplayedProjects(memoizedProjects.featured);
+        setPath("/projects-in-gurugram/");
         break;
       case "Upcoming":
         setDisplayedProjects(memoizedProjects.upcoming);
@@ -337,9 +339,11 @@ const Home = () => {
         break;
       case "Affordable":
         setDisplayedProjects(memoizedProjects.affordable.slice(0, 4));
+        setPath("/projects-in-gurugram/budget");
         break;
       case "Budget":
         setDisplayedProjects(memoizedProjects.budget);
+        setPath("/budget-properties/");
         break;
       case "Luxury":
         setDisplayedProjects(memoizedProjects.luxury.slice(0, 4));
@@ -455,7 +459,7 @@ const Home = () => {
     </div>
 
     {/* SearchBar should NOT be blurred */}
-    <div className="relative w-full max-w-6xl mx-auto px-4 pb-1 py-8 -mt-20 z-10">
+    <div className="relative w-full max-w-6xl mx-auto px-4 pb-1 py-8 z-10" style={{ marginTop: '0px' }}>
       <SearchBar />
     </div>
 
@@ -534,7 +538,15 @@ const Home = () => {
                   />
                   <div className="mt-0 flex justify-center">
                     <button
-                      onClick={() => { setAuthDefaultView('register'); setAuthOpen(true); }}
+                      onClick={() => {
+                        const token = localStorage.getItem("myToken");
+                        if (token) {
+                          window.location.href = "/postproperty";
+                        } else {
+                          setAuthDefaultView('login');
+                          setAuthOpen(true);
+                        }
+                      }}
                       className="inline-flex px-5 md:px-6 py-2.5 md:py-3 rounded-xl bg-red-600 text-white text-xs md:text-sm font-semibold shadow hover:bg-red-700"
                     >
                       Post Property FREE
@@ -572,16 +584,13 @@ const Home = () => {
         {/* <div ref={setRef("dubai")} data-section="dubai" style={{ height: "10px" }}></div>
         <div>
           {DubaiProjects.length === 0 ? <CustomSkeleton /> : (
-            <CommonProject data={DubaiProjects} title="Projects in Dubai" animation="zoom-out-left" path="/projects-in-dubai/" />
-          )}
-        </div> */}
-
               {/* Filter Buttons */}
-              <div className="flex items-center justify-start gap-3 mx-3 lg:mx-6 xl:ml-14 md:mx-6 pt-2 overflow-x-auto no-scrollbar">
+              <div className="flex items-center justify-start gap-2 sm:gap-3 mx-2 sm:mx-3 md:mx-6 xl:ml-14 pt-2 overflow-x-auto no-scrollbar whitespace-nowrap snap-x snap-mandatory scroll-px-3">
+
                 
                 <button
                   onClick={() => setActiveFilter("Trending")}
-                  className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                  className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
                     activeFilter === "Trending" 
                       ? "bg-black text-white shadow-lg" 
                       : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
@@ -591,7 +600,7 @@ const Home = () => {
                 </button>
                 <button
                   onClick={() => setActiveFilter("Featured")}
-                  className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                  className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
                     activeFilter === "Featured" 
                       ? "bg-black text-white shadow-lg" 
                       : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
@@ -601,7 +610,7 @@ const Home = () => {
                 </button>
                 <button
                   onClick={() => setActiveFilter("Upcoming")}
-                  className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                  className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
                     activeFilter === "Upcoming" 
                       ? "bg-black text-white shadow-lg" 
                       : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
@@ -611,7 +620,7 @@ const Home = () => {
                 </button>
                 <button
                   onClick={() => setActiveFilter("Commercial")}
-                  className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                  className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
                     activeFilter === "Commercial" 
                       ? "bg-black text-white shadow-lg" 
                       : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
@@ -621,7 +630,7 @@ const Home = () => {
                 </button>
                 <button
                   onClick={() => setActiveFilter("Affordable")}
-                  className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                  className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
                     activeFilter === "Affordable" 
                       ? "bg-black text-white shadow-lg" 
                       : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
@@ -631,7 +640,7 @@ const Home = () => {
                 </button>
                 <button
                   onClick={() => setActiveFilter("SCO")}
-                  className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                  className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
                     activeFilter === "SCO" 
                       ? "bg-black text-white shadow-lg" 
                       : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
@@ -641,7 +650,7 @@ const Home = () => {
                 </button>
                 <button
                   onClick={() => setActiveFilter("Budget")}
-                  className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+                  className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
                     activeFilter === "Budget" 
                       ? "bg-black text-white shadow-lg" 
                       : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
@@ -651,7 +660,7 @@ const Home = () => {
                 </button>
                 <button
                   onClick={() => setActiveFilter("Luxury")}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  className={`px-3 py-2 sm:px-4 sm:py-2 rounded-full text-sm sm:text-xs font-medium transition-all duration-300 flex-shrink-0 snap-start ${
                     activeFilter === "Luxury" 
                       ? "bg-black text-white shadow-lg" 
                       : "bg-white border-2 border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
@@ -746,12 +755,12 @@ const Home = () => {
             </div>
 
             {/* Projects in Dubai */}
-            <div ref={setRef("dubai")} data-section="dubai" style={{ height: "10px" }}></div>
+            {/* <div ref={setRef("dubai")} data-section="dubai" style={{ height: "10px" }}></div>
             <div>
               {DubaiProjects.length === 0 ? <CustomSkeleton /> : (
                 <CommonProject data={DubaiProjects} title="Projects in Dubai" animation="zoom-out-left" path="/projects-in-dubai/" compact />
               )}
-            </div>
+            </div> */}
 
             <Cities />
 
@@ -788,7 +797,7 @@ const Home = () => {
  
         {/* <Footer /> */}
       </div> {/* Closing div for the blur container */}
-      <LuxuryFooter />
+      <Footer />
  
       </main>
     </Wrapper>

@@ -161,7 +161,6 @@ h1{
       margin-top: 30px;
   }
   .blog-card {
-      display: inline-block;
       position: relative;
       width: 100%;
       margin-bottom: 30px;

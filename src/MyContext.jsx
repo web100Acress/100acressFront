@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { getApiBase } from "./config/apiBase";
 import { sortByDesiredOrder } from "./Utils/ProjectSorting";
-import { Affordable_Desired_Order, Luxury_Desired_Order, Trending_Desired_Order } from "./Pages/datafeed/Desiredorder";
+import { getAffordableDesiredOrder, getLuxuryDesiredOrder, getTrendingDesiredOrder } from "./Utils/ProjectOrderData";
 export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: Infinity });

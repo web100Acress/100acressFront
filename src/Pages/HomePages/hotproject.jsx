@@ -6,7 +6,7 @@ import { ForwardIcon, BackwardIcon,SpotlightPriceIcon, SpotlightHomeIcon } from 
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sortByDesiredOrder } from '../../Utils/ProjectSorting';
-import { Recommendedreordered } from '../datafeed/Desiredorder';
+import { getRecommendedDesiredOrder } from '../../Utils/ProjectOrderData';
 import Api_service from '../../Redux/utils/Api_Service';
 
 
@@ -119,16 +119,30 @@ const ImageGallery = React.memo(() => {
   const {getSpotlight} = Api_service();
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [columnsPerPage, setColumnsPerPage] = useState(4);
+  const [recommendedOrder, setRecommendedOrder] = useState([]);
   const hotproject = useSelector(store => store?.project?.spotlight);
 
 
   useEffect(() => {
     getSpotlight();
+    
+    // Load recommended order data
+    const loadRecommendedOrder = async () => {
+      try {
+        const order = await getRecommendedDesiredOrder();
+        setRecommendedOrder(order);
+      } catch (error) {
+        console.error('Error loading recommended order:', error);
+        setRecommendedOrder([]);
+      }
+    };
+    
+    loadRecommendedOrder();
   }, []);
 
   const spotlight = sortByDesiredOrder(
     hotproject.filter((project) => project != null), 
-    Recommendedreordered,
+    recommendedOrder,
     "projectName"
   );
   

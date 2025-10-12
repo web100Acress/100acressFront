@@ -1,9 +1,7 @@
-
-
   import React, { useEffect, useRef, useState } from "react";
   import { Box, Flex, IconButton, Button, Menu, MenuButton, MenuItem, MenuList, useDisclosure, useBreakpointValue, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Portal, useToast } from "@chakra-ui/react";
   import { SearchIcon } from "@chakra-ui/icons";
-  import { Link } from "react-router-dom";
+  // import { Link } from "react-router-dom";
   import AuthModal from "../../Components/AuthModal";
   import api from "../../config/apiClient";
   import { Button as MovingBorderButton } from "../../Components/ui/moving-border";
@@ -64,7 +62,7 @@ export default function RightSection({
   return (
     <Flex
       alignItems="center"
-      gap={{ base: 1, md: 2 }}
+      gap={{ base: 0.5, md: 1 }}
       order={{ base: 3, md: 3 }}
       justifyContent={{ base: "flex-end", md: "flex-end" }}
       flex={{ base: "initial", md: 1 }}
@@ -95,7 +93,7 @@ export default function RightSection({
         {token ? (
           isMobile ? (
             <>
-              <Button onClick={() => (isAcctOpen ? onAcctClose() : onAcctOpen())} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
+              <Button onClick={() => (isAcctOpen ? onAcctClose() : onAcctOpen())} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={1}>
                 <Flex align="center" gap={2}>
                   <Box as="span" border="1px solid rgba(0,0,0,0.1)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden" bg="gray.100">
                     {avatarUrl ? (
@@ -198,7 +196,7 @@ export default function RightSection({
             </>
           ) : (
             <Menu placement="bottom-end" isLazy strategy="fixed">
-              <MenuButton as={Button} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
+              <MenuButton as={Button} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={1}>
                 <Flex align="center" gap={2}>
                   <Box as="span" border="1px solid rgba(0,0,0,0.1)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" overflow="hidden" bg="gray.100">
                     {avatarUrl ? (
@@ -303,7 +301,7 @@ export default function RightSection({
           )
         ) : (
           <>
-            <Button onClick={showModal} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={2}>
+            <Button onClick={showModal} aria-label="Profile" variant="ghost" bg="transparent" _hover={{ bg: "transparent" }} px={1}>
               <Flex align="center" gap={2}>
                 <Box as="span" border="1px solid rgba(0,0,0,0.1)" borderRadius="full" w="32px" h="32px" display="inline-flex" alignItems="center" justifyContent="center" bg="gray.100">
                   <Box as="span" lineHeight={0} color="gray.500">
@@ -319,28 +317,33 @@ export default function RightSection({
             <AuthModal open={showAuth} onClose={() => setShowAuth(false)} defaultView="login" />
           </>
         )}
-
-        {/* Mobile Post property CTA removed as requested */}
-
       </Box>
 
       {/* Desktop Post Property CTA with moving red border */}
-      <Box display={{ base: 'none', md: 'inline-flex' }} ml={2}>
-        <Link to="/postproperty/">
-          <MovingBorderButton
-            borderRadius="1.75rem"
-            className="text-black"
-            bgColor="#ffffff"
-            ringColor={colorChange ? "#FACC15" : "#ef4444"}
-          >
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontWeight: 700 }}>
-              <span style={{ fontSize: '14px' }}>Post Property</span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: '#FACC15', color: '#e11d48', padding: '4px 14px', fontSize: '12px', fontWeight: 900, lineHeight: 1, clipPath: 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)' }}>
-                FREE
-              </span>
-            </span>
-          </MovingBorderButton>
-        </Link>
+      <Box display={{ base: 'none', md: 'inline-flex' }} ml={0.5}>
+        {/* <Link to="/postproperty/"> */}
+        <div onClick={() => {
+  if (token) {
+    window.location.href = '/postproperty/';
+  } else {
+    setShowAuth(true);
+  }
+}}>
+  <MovingBorderButton
+    borderRadius="1.75rem"
+    className="text-black cursor-pointer"
+    bgColor="#ffffff"
+    ringColor={colorChange ? "#FACC15" : "#ef4444"}
+  >
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontWeight: 700 }}>
+      <span style={{ fontSize: '14px' }}>Post Property</span>
+      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: '#FACC15', color: '#e11d48', padding: '4px 14px', fontSize: '12px', fontWeight: 900, lineHeight: 1, clipPath: 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)' }}>
+        FREE
+      </span>
+    </span>
+  </MovingBorderButton>
+</div>
+        {/* </Link> */}
       </Box>
     </Flex>
   );

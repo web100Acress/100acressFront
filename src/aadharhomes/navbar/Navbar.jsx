@@ -13,7 +13,7 @@ import CenterLogo from "./CenterLogo";
 import RightSection from "./RightSection";
 import SearchBarOverlay from "./SearchBarOverlay";
 import MegaMenu from "./MegaMenu";
-import InsightsMega from "./InsightsMega";
+import InsightsMega from "../../Insight/pages/InsightsMega";
 // import CityMega from "./CityMega.jsx";
 // import BudgetMega from "./BudgetMega.jsx";
 // import StatusMega from "./StatusMega.jsx";
@@ -335,7 +335,9 @@ export default function Navbar() {
     { name: "Panchkula", path: "/project-in-panchkula/" },
     { name: "Kasauli", path: "/project-in-kasauli/" },
     { name: "Sonipat", path: "/projects-in-sonipat/" },
+    // { name: "Alwar", path: "/projects-in-alwar/" },
     { name: "Karnal", path: "/projects-in-karnal/" },
+
     { name: "Jalandhar", path: "/projects-in-jalandhar/" },
     { name: "Pushkar", path: "/projects-in-pushkar/" },
     { name: "Dubai", path: "/projects-in-dubai/" },
@@ -452,31 +454,34 @@ export default function Navbar() {
   };
 
   const ShowLogOutMessage = () => {
-    message.success("Logged Out Successfully !")
+    message.success("Logged Out Successfully !");
   };
 
   const HandleUserLogout = async () => {
     try {
       await axios.get(`${API_BASE}/postPerson/logout`, {
         headers: { Authorization: authToken ? `Bearer ${authToken}` : undefined },
+        withCredentials: true,
       });
-      
-      // Clear favorites from localStorage
-      localStorage.removeItem('favoriteProjects');
-      localStorage.removeItem('favoriteProjectsData');
-      
-      // Clear other user data
-      localStorage.removeItem("myToken");
-      localStorage.removeItem("mySellerId");
-      localStorage.removeItem("userRole");
-      localStorage.removeItem("userData");
-      localStorage.removeItem("firstName");
-      localStorage.removeItem("avatarUrl");
-      
+    } catch (error) {
+      const status = error?.response?.status;
+      const data = error?.response?.data;
+      console.error("Logout failed (ignored):", { status, data, error });
+    } finally {
+      // Always clear local storage even if API fails
+      try {
+        localStorage.removeItem('favoriteProjects');
+        localStorage.removeItem('favoriteProjectsData');
+        localStorage.removeItem("myToken");
+        localStorage.removeItem("mySellerId");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("userData");
+        localStorage.removeItem("firstName");
+        localStorage.removeItem("avatarUrl");
+      } catch {}
+      try { ShowLogOutMessage(); } catch {}
       history("/");
       window.location.reload(false);
-    } catch (error) {
-      console.error("Logout failed:", error);
     }
   };
 

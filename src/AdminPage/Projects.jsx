@@ -4,7 +4,7 @@ import { getApiBase } from '../config/apiBase';
 
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
-import { message } from "antd"; // Assuming Ant Design message is available
+import { message } from "antd"; 
 
 const Projects = () => {
   const [viewAll, setViewAll] = useState([]);
@@ -19,6 +19,11 @@ const Projects = () => {
   const [filterBuilder, setFilterBuilder] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterState, setFilterState] = useState("");
+  const [filterHasMobile, setFilterHasMobile] = useState("");
+  const [filterHasPayment, setFilterHasPayment] = useState("");
+  const [filterProjectOverview, setFilterProjectOverview] = useState("");
+
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const [messageApi, contextHolder] = message.useMessage(); // For Ant Design messages
 
@@ -34,6 +39,24 @@ const Projects = () => {
       document.head.removeChild(styleSheet);
     };
   }, []); // Run once on mount to inject styles
+
+  // Listen for project update messages from other components
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data && event.data.type === 'PROJECT_UPDATED') {
+        // Refresh the data when a project is updated
+        setRefreshTrigger(prev => prev + 1);
+        messageApi.open({
+          type: "success",
+          content: "Project updated successfully. Data refreshed.",
+          duration: 2,
+        });
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [messageApi]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,7 +88,7 @@ const Projects = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [refreshTrigger]);
 
   const handleDeleteUser = async (id) => {
     try {
@@ -91,6 +114,8 @@ const Projects = () => {
         });
         // Filter out the deleted item from the state to update UI
         setViewAll(prevViewAll => (Array.isArray(prevViewAll) ? prevViewAll.filter(item => item._id !== id) : []));
+        // Refresh data to ensure consistency
+        setRefreshTrigger(prev => prev + 1);
       } else {
 
         messageApi.open({
@@ -134,25 +159,37 @@ const Projects = () => {
     }
   };
 
-  const handleDeleteButtonClick = (id) => {
-    const confirmDeletion = window.confirm(
-      "Are you sure you want to delete this project?"
-    );
-    if (confirmDeletion) {
-      handleDeleteUser(id);
-    }
+  const handleRefreshData = () => {
+    setRefreshTrigger(prev => prev + 1);
   };
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   };
 
   // Unique options for filters
-  const typeOptions = useMemo(
-    () => Array.from(new Set((viewAll || []).map(v => v?.type).filter(Boolean))).sort(),
-    [viewAll]
-  );
+  const typeOptions = useMemo(() => {
+    if (!viewAll || viewAll.length === 0) {
+      return ['Industrial Plots', 'Farm House'];
+    }
+
+    const uniqueTypes = Array.from(new Set((viewAll || []).map(v => v?.type).filter(Boolean)));
+
+    // Add common project types if not already present (removed Industrial Projects)
+    if (!uniqueTypes.includes('Industrial Plots')) {
+      uniqueTypes.push('Industrial Plots');
+    }
+    if (!uniqueTypes.includes('Farm House')) {
+      uniqueTypes.push('Farm House');
+    }
+    if (!uniqueTypes.includes('Residential Plots')) {
+      uniqueTypes.push('Residential Plots');
+    }
+
+    // Sort the final list alphabetically
+    return uniqueTypes.sort();
+  }, [viewAll]);
   const cityOptions = useMemo(
     () => Array.from(new Set((viewAll || []).map(v => v?.city).filter(Boolean))).sort(),
     [viewAll]
@@ -170,22 +207,169 @@ const Projects = () => {
     [viewAll]
   );
 
+  // Helper function to check if project is high value
+  const isHighValueProject = (minPrice) => {
+    if (!minPrice) return false;
+
+    let priceValue;
+    if (typeof minPrice === 'string') {
+      // Remove commas and convert to number
+      priceValue = parseInt(minPrice.replace(/,/g, ''));
+    } else if (typeof minPrice === 'number') {
+      priceValue = minPrice;
+    } else {
+      return false;
+    }
+
+    return !isNaN(priceValue) && priceValue > 5000000;
+  };
+
+  // Project overview options based on project status and other criteria
+  const projectOverviewOptions = useMemo(() => {
+    if (!viewAll || viewAll.length === 0) {
+      return [];
+    }
+
+    const overviewCounts = { trending: 0, featured: 0, none: 0 };
+
+    viewAll.forEach(project => {
+      try {
+        // Check if project has trending or featured field in the database
+        const isTrendingInDB = project.projectOverview === "trending";
+        const isFeaturedInDB = project.projectOverview === "featured";
+
+        if (isTrendingInDB) {
+          overviewCounts.trending++;
+          console.log(`✅ Project ${project.projectName} is marked as trending in DB`);
+        }
+        // Define featured projects (ONLY database field - no fallback criteria)
+        else if (isFeaturedInDB) {
+          overviewCounts.featured++;
+          console.log(`✅ Project ${project.projectName} is marked as featured in DB`);
+        } else {
+          overviewCounts.none++;
+        }
+      } catch (error) {
+        console.error(`Error processing project ${project.projectName}:`, error);
+        overviewCounts.none++;
+      }
+    });
+
+    return [
+      { value: 'trending', label: `Trending (${overviewCounts.trending})` },
+      { value: 'featured', label: `Featured (${overviewCounts.featured})` },
+      { value: 'none', label: `none (${overviewCounts.none})` }
+    ];
+  }, [viewAll, isHighValueProject]);
+
   // Apply combined filters
   const filteredProjects = viewAll.filter((item) => {
+    const searchTermLower = (searchTerm || "").toLowerCase();
+
+    // Enhanced search: search in multiple fields
     const name = (item?.projectName || "").toLowerCase();
-    const addr = (item?.projectAddress || "").toLowerCase();
-    const matchesName = name.includes((searchTerm || "").toLowerCase());
+    const type = (item?.type || "").toLowerCase();
+    const city = (item?.city || "").toLowerCase();
+    const builder = (item?.builderName || "").toLowerCase();
+    const address = (item?.projectAddress || "").toLowerCase();
+    const status = (item?.project_Status || "").toLowerCase();
+
+    // Check if search term matches any of these fields
+    const matchesSearch = !searchTerm ||
+      name.includes(searchTermLower) ||
+      type.includes(searchTermLower) ||
+      city.includes(searchTermLower) ||
+      builder.includes(searchTermLower) ||
+      address.includes(searchTermLower) ||
+      status.includes(searchTermLower);
+
     const matchesType = !filterType || item?.type === filterType;
     const matchesCity = !filterCity || item?.city === filterCity;
-    const matchesAddress = !filterAddress || addr.includes(filterAddress.toLowerCase());
+    const matchesAddress = !filterAddress || address.includes(filterAddress.toLowerCase());
     const matchesBuilder = !filterBuilder || item?.builderName === filterBuilder;
-    const matchesStatus = !filterStatus || item?.project_Status === filterStatus;
+    const statusVal = (item?.project_Status ?? '').toString().trim();
+    const matchesStatus = !filterStatus
+      ? true
+      : (filterStatus === '__missing__'
+          ? statusVal.length === 0
+          : item?.project_Status === filterStatus);
     const matchesState = !filterState || item?.state === filterState;
-    return matchesName && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState;
+    const hasMobile = Boolean((item?.mobileNumber ?? "").toString().trim());
+    const matchesMobile = !filterHasMobile || (filterHasMobile === "with" ? hasMobile : !hasMobile);
+    const hasPayment = Boolean((item?.paymentPlan ?? "").toString().trim());
+    const matchesPayment = !filterHasPayment || (filterHasPayment === "with" ? hasPayment : !hasPayment);
+
+    // Project overview filtering logic
+    let matchesOverview = true;
+    if (filterProjectOverview) {
+      try {
+        // Check if project has trending or featured field in the database
+        const isTrendingInDB = item.projectOverview === "trending";
+        const isFeaturedInDB = item.projectOverview === "featured";
+
+        if (filterProjectOverview === 'trending') {
+          matchesOverview = isTrendingInDB;
+        } else if (filterProjectOverview === 'featured') {
+          matchesOverview = isFeaturedInDB;
+        } else if (filterProjectOverview === 'none') {
+          matchesOverview = !isTrendingInDB && !isFeaturedInDB;
+        }
+      } catch (error) {
+        console.error(`Error filtering project ${item.projectName}:`, error);
+        matchesOverview = filterProjectOverview === 'none';
+      }
+    }
+
+    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview;
   });
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredProjects.slice(indexOfFirstRow, indexOfLastRow);
+
+  // Export filtered data to CSV
+  const handleExportCSV = () => {
+    try {
+      const columns = [
+        { key: 'projectName', label: 'Name' },
+        { key: 'type', label: 'Type' },
+        { key: 'city', label: 'City' },
+        { key: 'state', label: 'State' },
+        { key: 'project_Status', label: 'Status' },
+        { key: 'builderName', label: 'Builder' },
+        { key: 'projectAddress', label: 'Address' },
+        { key: 'mobileNumber', label: 'Mobile' },
+        { key: 'project_url', label: 'Slug' },
+      ];
+
+      const csvEscape = (val) => {
+        const s = (val ?? '').toString();
+        // Replace quotes with doubled quotes and wrap the value in quotes
+        const escaped = '"' + s.replace(/"/g, '""') + '"';
+        return escaped;
+      };
+
+      const header = columns.map(c => csvEscape(c.label)).join(',');
+      const lines = filteredProjects.map(item =>
+        columns.map(c => csvEscape(item?.[c.key])).join(',')
+      );
+      const csvContent = ['\ufeff' + header, ...lines].join('\n'); // BOM for Excel
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const date = new Date().toISOString().slice(0,10);
+      a.download = `projects_${date}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      messageApi.open({ type: 'success', content: `Exported ${filteredProjects.length} rows.`, duration: 2 });
+    } catch (err) {
+      console.error('CSV export failed', err);
+      messageApi.open({ type: 'error', content: 'Failed to export CSV', duration: 2 });
+    }
+  };
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -199,6 +383,9 @@ const Projects = () => {
     setFilterBuilder("");
     setFilterStatus("");
     setFilterState("");
+    setFilterHasMobile("");
+    setFilterHasPayment("");
+    setFilterProjectOverview("");
     setCurrentPage(1);
   };
 
@@ -211,7 +398,7 @@ const Projects = () => {
           <div className="search-container">
             <input
               type="text"
-              placeholder="Search project name..."
+              placeholder="Search projects, types, cities, builders..."
               className="search-input"
               value={searchTerm}
               onChange={handleSearch}
@@ -259,6 +446,7 @@ const Projects = () => {
               onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
             >
               <option value="">All Statuses</option>
+              <option value="__missing__">No status</option>
               {statusOptions.map(opt => (
                 <option key={opt} value={opt}>{opt}</option>
               ))}
@@ -273,17 +461,45 @@ const Projects = () => {
                 <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
-            {/* <button type="button" className="reset-filters-button" onClick={resetFilters}>
-              Reset
-            </button> */}
-          </div>
-          <Link to={"/admin/project-insert"}>
-            <button
-              className="add-new-project-button"
+              {/* <select
+                className="filter-select"
+                value={filterHasMobile}
+                onChange={(e) => { setFilterHasMobile(e.target.value); setCurrentPage(1); }}
+              >
+                <option value="">Mobile: All</option>
+                <option value="with">Mobile: With</option>
+                <option value="without">Mobile: Without</option>
+              </select> */}
+            <select
+              className="filter-select"
+              value={filterHasPayment}
+              onChange={(e) => { setFilterHasPayment(e.target.value); setCurrentPage(1); }}
             >
-              Add New Project ➕
-            </button>
-          </Link>
+              <option value="">Payment: All</option>
+              <option value="with">Payment: With</option>
+              <option value="without">Payment: Without</option>
+            </select>
+
+            <select
+              className="filter-select"
+              value={filterProjectOverview}
+              onChange={(e) => { setFilterProjectOverview(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">Project Overview</option>
+              {projectOverviewOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <Link to={"/admin/project-insert"}>
+              <button
+                className="add-new-project-button"
+              >
+                Add New Project ➕
+              </button>
+            </Link>
+          </div>
         </div>
 
         <div className="table-container">
@@ -375,7 +591,7 @@ const Projects = () => {
                         </Link>
 
                         <button
-                          onClick={() => handleDeleteButtonClick(id)}
+                          onClick={() => handleDeleteUser(id)}
                           type="button"
                           className="action-button delete-button"
                         >
@@ -470,7 +686,7 @@ const projectStyles = `
   align-items: center;
   margin-bottom: 3rem; /* More space below header */
   flex-wrap: nowrap; /* keep in one row on larger screens */
-  gap: 0.8rem; /* tighter gap so items fit in one row */
+  gap: 0.5rem; /* tighter gap so items fit in one row */
 }
 
 .search-container {
@@ -480,20 +696,20 @@ const projectStyles = `
   border-radius: 14px; /* Even softer rounded corners */
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1); /* Deeper, more elegant shadow */
   overflow: hidden;
-  max-width: 520px; /* slightly narrower to make room for filters */
-  flex: 0 1 420px; /* allow shrinking if needed */
+  max-width: 360px; /* even narrower to make room for filters */
+  flex: 0 1 320px; /* allow shrinking if needed */
   min-width: 280px; /* avoid too small on medium screens */
   border: 1px solid #d8e2ed; /* Subtle border for definition */
 }
 
 .search-input {
-  padding: 14px 20px; /* Increased padding */
+  padding: 10px 16px; /* compact padding */
   border: none;
   border-bottom: 3px solid #f44336; /* Prominent red accent */
   color: #333d4e;
   outline: none;
   flex-grow: 1;
-  font-size: 1.05rem; /* Slightly larger text */
+  font-size: 0.98rem; /* slightly smaller text */
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -509,11 +725,11 @@ const projectStyles = `
 .search-button {
   background: linear-gradient(45deg, #f44336 0%, #e53935 100%); /* Red gradient */
   color: #ffffff;
-  padding: 14px 25px; /* More padding */
+  padding: 10px 18px; /* compact padding */
   border: none;
   border-radius: 0 14px 14px 0;
   cursor: pointer;
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   font-weight: 600;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4); /* Matching shadow for button */
@@ -528,26 +744,33 @@ const projectStyles = `
 .filters-container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background-color: transparent; /* merge visually with header */
   border: none;
   border-radius: 12px;
-  padding: 6px 4px;
+  padding: 4px 2px;
   box-shadow: none;
   flex: 1 1 0; /* take remaining space */
-  flex-wrap: nowrap; /* single row */
-  overflow-x: auto; /* allow horizontal scroll if needed */
+  flex-wrap: wrap; /* allow multiple rows */
+  overflow-x: visible; /* no horizontal scroll when wrapping */
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Firefox */
 }
 
 .filters-container::-webkit-scrollbar { display: none; }
 
+.filters-break {
+  flex-basis: 100%; /* force next items to start on a new line */
+  height: 0; /* no extra height */
+}
+
 .filters-container .filter-input,
 .filters-container .filter-select {
-  min-width: 120px;
-  width: 140px; /* consistent width */
+  min-width: 90px;
+  width: 112px; /* slightly larger for better readability */
   flex: 0 0 auto; /* prevent shrinking too small */
+  padding: 8px 10px; /* comfortable */
+  font-size: 0.9rem;
 }
 
 .filters-container .reset-filters-button {
@@ -575,7 +798,7 @@ const projectStyles = `
 @media (min-width: 1400px) {
   .filters-container .filter-input,
   .filters-container .filter-select {
-    width: 170px;
+    width: 150px;
   }
   .projects-header {
     gap: 1rem;
@@ -603,6 +826,25 @@ const projectStyles = `
   background: linear-gradient(45deg, #43a047 0%, #388e3c 100%); /* Darker green gradient on hover */
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
+}
+
+.refresh-button {
+  background: linear-gradient(45deg, #2196f3 0%, #1976d2 100%);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.35);
+}
+
+.refresh-button:hover {
+  background: linear-gradient(45deg, #1976d2 0%, #1565c0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(33, 150, 243, 0.45);
 }
 
 /* Table Styling */

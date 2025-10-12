@@ -173,6 +173,11 @@ const BlogWriteModal = () => {
     e.stopPropagation();
     const file = e.dataTransfer?.files?.[0];
     if (file) {
+      // STRICT: Check if dropped file is WebP
+      if (file.type !== 'image/webp') {
+        messageApi.error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
+        return;
+      }
       handleFileChange({ target: { files: [file] } });
     }
   };
@@ -1102,6 +1107,12 @@ const BlogWriteModal = () => {
     if (url && url.trim() !== '') {
       try {
         new URL(url); // Will throw if invalid URL
+        // STRICT: Check if URL ends with .webp
+        if (!url.toLowerCase().endsWith('.webp')) {
+          messageApi.warning('Only WebP images are allowed. Please use a .webp image URL.');
+          setFrontImagePreview('');
+          return;
+        }
         setFrontImagePreview(url);
       } catch (err) {
         // Don't show error while typing, only when submitting
@@ -1125,9 +1136,9 @@ const BlogWriteModal = () => {
       return;
     }
 
-    // Check file type
-    if (!file.type.match('image.*')) {
-      messageApi.error('Please select a valid image file');
+    // Check file type - STRICT: Only WebP images allowed
+    if (file.type !== 'image/webp') {
+      messageApi.error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
       return;
     }
 
@@ -1180,10 +1191,17 @@ const BlogWriteModal = () => {
   const uploadInlineImage = async () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
+    input.setAttribute('accept', 'image/webp');
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
+      
+      // STRICT: Only WebP images allowed
+      if (file.type !== 'image/webp') {
+        messageApi.error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
+        return;
+      }
+      
       // If SVG, bypass cropper to preserve vector quality
       if (file.type === 'image/svg+xml') {
         try {
@@ -1329,10 +1347,9 @@ const BlogWriteModal = () => {
       // Handle file upload with better error handling
       if (frontImage) {
         try {
-          // Validate file type
-          const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
-          if (!validTypes.includes(frontImage.type)) {
-            throw new Error('Invalid file type. Please upload a JPG, PNG, WebP, GIF, or SVG image.');
+          // Validate file type - STRICT: Only WebP images allowed
+          if (frontImage.type !== 'image/webp') {
+            throw new Error('Jab bola hai WebP me karne ko to karona aalsii WebP me karke wapis dalo.');
           }
           
           // Validate file size (10MB limit)
@@ -2293,7 +2310,7 @@ const BlogWriteModal = () => {
                   <input
                     type="file"
                     id="featured-image-upload"
-                    accept="image/*"
+                    accept="image/webp"
                     onChange={handleFileChange}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     key={frontImagePreview ? 'has-image' : 'no-image'}
@@ -2304,7 +2321,7 @@ const BlogWriteModal = () => {
                       {frontImagePreview ? 'Click to change image' : 'Upload an image'}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {frontImagePreview ? 'or drag and drop a new image' : 'Drag and drop or click to browse'}
+                      {frontImagePreview ? 'or drag and drop a new WebP image' : 'Drag and drop or click to browse (WebP only)'}
                     </p>
                   </div>
                   </div>
@@ -2324,7 +2341,7 @@ const BlogWriteModal = () => {
                     <input
                       type="text"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Paste image URL here"
+                      placeholder="Paste WebP image URL here"
                       onPaste={async (e) => {
                         try {
                           const pastedText = e.clipboardData.getData('text/plain');
@@ -2341,7 +2358,7 @@ const BlogWriteModal = () => {
                       value={frontImage || ''}
                     />
                     <p className="mt-1 text-xs text-gray-500">
-                      Paste direct image URL (e.g., https://example.com/image.jpg)
+                      Paste direct WebP image URL (e.g., https://example.com/image.webp)
                     </p>
                   </div>
                 </div>
@@ -2614,17 +2631,25 @@ const BlogWriteModal = () => {
                 <input type="checkbox" checked={gridUseFrameTitle} onChange={(e)=>setGridUseFrameTitle(e.target.checked)} />
                 Outer frame & grid title
               </label> */}
-              <button
+                <button
                 type="button"
                 onClick={async () => {
                   // Select up to 4 images, upload, then insert grid
                   const input = document.createElement('input');
                   input.type = 'file';
-                  input.accept = 'image/*';
+                  input.accept = 'image/webp';
                   input.multiple = true;
                   input.onchange = async () => {
                     const files = Array.from(input.files || []).slice(0, 4);
                     if (!files.length) return;
+                    
+                    // STRICT: Check all files are WebP
+                    const nonWebpFiles = files.filter(file => file.type !== 'image/webp');
+                    if (nonWebpFiles.length > 0) {
+                      messageApi.error('Only WebP images are allowed. Please convert all images to WebP format.');
+                      return;
+                    }
+                    
                     messageApi.open({ key: 'gridUpload', type: 'loading', content: 'Uploading images...', duration: 0 });
                     try {
                       const urls = [];

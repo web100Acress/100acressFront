@@ -1,29 +1,4 @@
- // Sticky floating "List Property" button on mobile (right side)
-function MobileStickyListProperty() {
-  const token = typeof window !== "undefined" ? localStorage.getItem("myToken") : null;
-  const postTarget = token ? "/postproperty" : "/auth/signin";
-  return (
-    <div className="md:hidden fixed z-[10010]" style={{ right: 0, top: '45%' }}>
-      <Link
-        to={postTarget}
-        className="block bg-red-600 text-white font-extrabold tracking-wide shadow-lg"
-        style={{
-          writingMode: 'vertical-rl',
-          textOrientation: 'upright',
-          padding: '10px 6px',
-          borderRadius: '10px 0 0 10px',
-          transform: 'translateY(-50%)',
-          position: 'relative',
-          right: 0,
-          letterSpacing: '1px'
-        }}
-      >
-        LIST PROPERTY
-      </Link>
-    </div>
-  );
-}
-import React, { lazy, Suspense, useState, useEffect } from "react";
+ import React, { lazy, Suspense, useState, useEffect } from "react";
 import "./App.css";
 import { styled } from "styled-components";
 import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
@@ -34,6 +9,7 @@ import { Toaster as Sonner } from "./Components/ui/sonner";
 import { TooltipProvider } from "./Components/ui/Tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PrivateRoute from "./Components/PrivateRoute";
+import HrPrivateRoute from "./Components/HrPrivateRoute";
 import PublicRoute from "./Components/PublicRoute";
 import LazyLoad from "react-lazyload";
 import "animate.css";
@@ -49,18 +25,20 @@ const EMICalculatorPage = lazy(() => import("./Pages/EMICalculatorPage"));
 // const Properties = lazy(() => import("./Pages/ProjectCities/Properties"));
 const PropertyKnow = lazy(() => import("./Components/KnowAbouts/PropertyKnow"));
 const PageNotFound = lazy(() => import("./Pages/PageNotFound"));
-const SignUp = lazy(() => import("./aadharhomes/SignUp"));
-const SignIn = lazy(() => import("./aadharhomes/SignIn"));
+// const SignUp = lazy(() => import("./aadharhomes/SignUp"));
+// const SignIn = lazy(() => import("./aadharhomes/SignIn"));
 const PropViewCardPro = lazy(() => import("./Components/Actual_Components/PropViewCardPro"));
 const NewSellProperty = lazy(() => import("./aadharhomes/NewSellProperty"));
 const BuyPropViewCard = lazy(() => import("./Components/Actual_Components/BuyPropViewCard"));
 const About = lazy(() => import("./Pages/About"));
+const AboutModern = lazy(() => import("./Pages/AboutModern"));
 const BuyViewDetails = lazy(() => import("./Pages/BuyViewDetails"));
 const ResetEmailPassword = lazy(() => import("./Pages/ResetEmailPassword"));
-const TermsAndConditions = lazy(() => import("./Pages/TermsAndConditions"));
+const TermsAndConditions = lazy(() => import("./Pages/privacy/TermsAndConditions"));
 const RentViewDetails = lazy(() => import("./Pages/RentViewDetails"));
 const RentPropViewCard = lazy(() => import("./Components/Actual_Components/RentPropViewCard"));
-const Privacy = lazy(() => import("./Pages/Privacy"));
+const Privacy = lazy(() => import("./Pages/privacy/Privacy"));
+const Disclaimer = lazy(() => import("./Pages/privacy/Disclaimer"));
 const ContactUs = lazy(() => import("./Pages/ContactUs"));
 const SearchData = lazy(() => import("./Pages/SearchData"));
 const UserViewProperty = lazy(() => import("./Pages/UserViewProperty"));
@@ -68,18 +46,17 @@ const Activity = lazy(() => import("./Pages/Activity"));
 const CareerWithUs = lazy(() => import("./Pages/CareerWithUs"));
 const UserEditProperty = lazy(() => import("./Pages/UserEditProperty"));
 const Blogging = lazy(() => import("./Pages/Blogging"));
-const ResidentialProjects = lazy(() => import("./Components/HomePageComponents/ResidentialProjects"));
-const UpComingProjects = lazy(() => import("./Components/HomePageComponents/UpComingProjects"));
-const CommercialProject = lazy(() => import("./Components/HomePageComponents/CommercialProject"));
-const ScoPlots = lazy(() => import("./Components/HomePageComponents/ScoPlots"));
-const BuilderIndependentFloor = lazy(() => import("./Components/HomePageComponents/BuilderIndependentFloor"));
+const ProjectStatusSearch = lazy(() => import("./Pages/ProjectStatusSearch"));
+// Global Template Components
+const ProjectStatusSearchGlobal = lazy(() => import("./Pages/ProjectStatusSearch/ProjectStatusSearchGlobal"));
+const CityProjectsGlobal = lazy(() => import("./Pages/ProjectCities/CityProjectsGlobal"));
+const ProjectTypeGlobal = lazy(() => import("./Pages/ProjectType/ProjectTypeGlobal"));
 const DeenDayalPlots = lazy(() => import("./Components/HomePageComponents/DeenDayalPlots"));
-const PlotsInGurugramPage = lazy(() => import("./Pages/PlotsInGurugramPage"));
 const NewsandArtical = lazy(() => import("./Pages/NewsandArtical"));
 const UserDashBoard = lazy(() => import("./Components/HomePageComponents/UserDashBoard"));
 const UserEdit = lazy(() => import("./Components/HomePageComponents/UserEdit"));
 const BlogView = lazy(() => import("./Pages/BlogView"));
-const BlogInsights = lazy(() => import("./Pages/BlogInsights"));
+const BlogInsights = lazy(() => import("./Insight/pages/BlogInsights"));
 const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation"));
 // Per-city pages are now handled by CityProjects; imports removed
 // const DelhiProject = lazy(() => import("./Pages/ProjectCities/DelhiProject"));
@@ -89,16 +66,17 @@ const GurugramPrimeLocation = lazy(() => import("./Pages/GurugramPrimeLocation")
 // const Pushkar = lazy(() => import("./Pages/ProjectCities/Pushkar"));
 const QRGeneratorPage = lazy(() => import("./Pages/QRGeneratorPage"));
 const BudgetPrice = lazy(() => import("./Pages/BudgetPrice"));
-const ReadyToMoveProject = lazy(() => import("./Pages/ReadyToMoveProject"));
-const VillasProjects = lazy(() => import("./Components/HomePageComponents/VillasProjects"));
-const LuxuryVillasForSalePage = lazy(() => import("./Pages/LuxuryVillasForSalePage"));
-const ScoPlotsInGurugramPage = lazy(() => import("./Pages/ScoPlotsInGurugramPage"));
-// const Panchkula = lazy(() => import("./Pages/ProjectCities/Panchkula"));
 const PossessionAfter2028 = lazy(() => import("./Pages/PossessionAfter2028"));
+// New dynamic project type route
+const ProjectTypePage = lazy(() => import("./Pages/ProjectType/[type]"));
+const ProjectTypeDemo = lazy(() => import("./Components/ProjectTypeDemo"));
 const Bptp = lazy(() => import("./Pages/Bptp"));
 const Orris = lazy(() => import("./Pages/Orris"));
 const Jms = lazy(() => import("./Pages/Jms"));
 const Rof = lazy(() => import("./Pages/Rof"));
+const HrSidebar = lazy(() => import("./Hr/HrSidebar"));
+const HrDashboard = lazy(() => import("./Hr/HrDashboard"));
+const Hr = lazy(() => import("./Hr/Hr"));
 const EmaarIndia = lazy(() => import("./Pages/EmaarIndia"));
 const M3mIndia = lazy(() => import("./Pages/M3mIndia"));
 const Microtek = lazy(() => import("./Pages/Microtek"));
@@ -107,7 +85,6 @@ const Possessionin2025 = lazy(() => import("./Pages/Possessionin2025"));
 // const Mumbai = lazy(() => import("./Pages/ProjectCities/Mumbai"));
 // const KasauliProject = lazy(() => import("./Pages/ProjectCities/KasauliProject"));
 // const Sonipat = lazy(() => import("./Pages/ProjectCities/Sonipat"));
-const UnderConstruction = lazy(() => import("./Pages/UnderConstruction"));
 const NewLaunch = lazy(() => import("./Pages/NewLaunch"));
 // const Ayodhya = lazy(() => import("./Pages/ProjectCities/Ayodhya"));
 const SignatureGlobal = lazy(() => import("./Pages/SignatureGlobal"));
@@ -125,14 +102,16 @@ const ViewAllProperty = lazy(() => import("./Pages/ViewAllProperty"));
 const BlogWriteModal = lazy(() => import("./AdminPage/BlogWriteModal"));
 // const Dubai = lazy(() => import("./Pages/ProjectCities/Dubai"));
 const GlobalBudgetPrice = lazy(() => import("./Pages/GlobalBudgetPrice"));
-const PriceTrends = lazy(() => import("./analytics/pages/PriceTrends"));
+const PriceTrends = lazy(() => import("./Insight/pages/PriceTrends"));
 const CityProjects = lazy(() => import("./Pages/ProjectCities/CityProjects"));
 // Analytics pages (MVP scaffold)
-const MarketAnalytics = lazy(() => import("./analytics/pages/MarketAnalytics"));
-const LocationIntelligence = lazy(() => import("./analytics/pages/LocationIntelligence"));
-const InvestmentInsights = lazy(() => import("./analytics/pages/InvestmentInsights"));
-const AnalyticsHome = lazy(() => import("./analytics/pages/AnalyticsHome"));
-const LoanEligibility = lazy(() => import("./analytics/pages/LoanEligibility"));
+const MarketReports = lazy(() => import("./Insight/pages/MarketReports"));
+const AreaAnalytics = lazy(() => import("./Insight/pages/AreaAnalytics"));
+const AnalyticsHome = lazy(() => import("./Insight/pages/AnalyticsHome"));
+const MarketAnalytics = lazy(() => import("./Insight/pages/MarketAnalytics"));
+const LocationIntelligence = lazy(() => import("./Insight/pages/LocationIntelligence"));
+const InvestmentInsights = lazy(() => import("./Insight/pages/InvestmentInsights"));
+const LoanEligibility = lazy(() => import("./Insight/pages/LoanEligibility"));
 
 // Admin components (already lazy loaded)
 const Addnew = lazy(() => import("./AdminPage/Addnew"));
@@ -164,6 +143,7 @@ const ProjectEditBHK = lazy(() => import("./AdminPage/ProjectEditBHK"));
 const ProjectAddHighligths = lazy(() => import("./AdminPage/ProjectAddHighligths"));
 const ProjectEditHighlight = lazy(() => import("./AdminPage/ProjectEditHighlight"));
 const ProjectOrderManager = lazy(() => import("./AdminPage/ProjectOrderManager"));
+const ProjectOrderManagement = lazy(() => import("./AdminPage/ProjectOrderManagement"));
 const BlogEdit = lazy(() => import("./AdminPage/BlogEdit"));
 const BlogWrite = lazy(() => import("./AdminPage/BlogWrite"));
 const Career = lazy(() => import("./AdminPage/Career"));
@@ -176,7 +156,8 @@ const JobPostingEdit = lazy(() => import("./AdminPage/JobPostingEdit"));
 const InsertProject = lazy(() => import("./AdminPage/InsertProject"));
 const AllListedProperties = lazy(() => import("./AdminPage/AllListedProperties"));
 const BlogViewAdmin = lazy(() => import("./AdminPage/BlogViewAdmin"));
-const BlogEnquiries = lazy(() => import("./AdminPage/BlogEnquiries"));
+// const BlogEnquiries = lazy(() => import("./AdminPage/BlogEnquiries"));
+const OtherEnquiries = lazy(() => import("./AdminPage/OtherEnquiries"));
 const SeoPrivateRoute = lazy(() => import("./Components/Blog_Components/SeoPrivateRoute"));
 const BlogManagement = lazy(() => import("./Components/Blog_Components/BlogManagement"));
 const BlogDashboard = lazy(() => import("./Components/Blog_Components/BlogDashboard"));
@@ -185,8 +166,18 @@ const BlogManagementSidebar = lazy(() => import("./Components/Blog_Components/Bl
 const AdminDashboard = lazy(() => import("./AdminPage/AdminDashboard"));
 const ShortsSettings = lazy(() => import("./AdminPage/ShortsSettings"));
 const BannerManagement = lazy(() => import("./AdminPage/BannerManagement"));
-const InsightsNews = lazy(() => import("./Pages/InsightsNews"));
-const InsightsGuides = lazy(() => import("./Pages/InsightsGuides"));
+const UnifiedBannerManagement = lazy(() => import("./AdminPage/UnifiedBannerManagement"));
+const InsightsNews = lazy(() => import("./Insight/pages/InsightsNews"));
+const InsightsGuides = lazy(() => import("./Insight/pages/InsightsGuides"));
+const InsightsManagement = lazy(() => import("./Insight/admin/InsightsManagement"));
+const InsightsPriceTrendsBanners = lazy(() => import("./Insight/admin/InsightsPriceTrendsBanners"));
+const Contacts = lazy(() => import("./Insight/components/Contacts"));
+const EnquiryManagement = lazy(() => import("./Insight/components/EnquiryManagement"));
+const MarketReportsAdmin = lazy(() => import("./Insight/pages/Admin/MarketReportsAdmin"));
+const AdminGuides = lazy(() => import("./Insight/pages/Admin/AdminGuides"));
+
+
+
 
 // Initialize QueryClient
 const queryClient = new QueryClient();
@@ -251,30 +242,31 @@ function App() {
                           token !== null ? (
                             <NewSellProperty />
                           ) : (
-                            <Navigate to="/auth/signin" />
+                            <Navigate to="/" replace={true} />
                           )
                         }
                       />
-                      <Route path="/auth/" element={<SignUp />}>
+                      <Route path="/auth/" element={<div>Auth routes commented out</div>}>
                         <Route path="signup/">
-                          <Route index element={<SignupForm />} />
+                          <Route index element={<div>Signup commented out</div>} />
                           <Route
                             path="email-verification/"
-                            element={<EmailVerification />}
+                            element={<div>Email verification commented out</div>}
                           />
                           <Route
                             path="otp-verification/"
-                            element={<OTPVerification />}
+                            element={<div>OTP verification commented out</div>}
                           />
                         </Route>
-                        <Route path="signin/" element={<SignIn />} />
+                        <Route path="signin/" element={<div>Signin commented out</div>} />
                       </Route>
                       <Route path="/privacy-policy/" element={<Privacy />} />
+                      <Route path="/disclaimer/" element={<Disclaimer />} />
                       <Route
                         path="/terms-and-conditions/"
                         element={<TermsAndConditions />}
                       />
-                      <Route path="/projects-in-gurugram/" element={<CityProjects />} />
+                      <Route path="/projects-in-gurugram/" element={<CityProjectsGlobal />} />
                       <Route
                         path="/projects-in-gurugram/budget"
                         element={<BudgetPrice />}
@@ -285,7 +277,7 @@ function App() {
                       />
                       <Route
                         path="/projects-in-gurugram/property-ready-to-move/"
-                        element={<ReadyToMoveProject />}
+                        element={<ProjectStatusSearch />}
                       />
                       <Route
                         path="/projects-in-gurugram/property-possession-after-2026/"
@@ -319,7 +311,7 @@ function App() {
                         path="/buy-properties/best-resale-property-in-gurugram/"
                         element={<BuyPropViewCard />}
                       />
-                      <Route path="/about-us/" element={<About />} />
+                      <Route path="/about-us/" element={<AboutModern />} />
                       <Route
                         path="/rental-properties/:pUrl/:id/"
                         element={<RentViewDetails />}
@@ -331,41 +323,41 @@ function App() {
                       <Route path="/propviewcard" element={<PropViewCardPro />} />
                       <Route
                         path="/property/residential/"
-                        element={<ResidentialProjects />}
+                        element={<ProjectTypeGlobal />}
                       />
                       <Route
                         path="/projects/upcoming-projects-in-gurgaon/"
-                        element={<UpComingProjects />}
+                        element={<ProjectStatusSearchGlobal />}
                       />
                       <Route
                         path="/projects/commercial/"
-                        element={<CommercialProject />}
+                        element={<ProjectTypeGlobal />}
                       />
-                      <Route path="/sco/plots/" element={<ScoPlotsInGurugramPage />} />
+                      <Route path="/sco/plots/" element={<ProjectTypeGlobal />} />
                       <Route path="/dlf-homes-sco-plots/" element={<DlfSco />} />
                       <Route
                         path="/projects/independentfloors/"
-                        element={<BuilderIndependentFloor />}
+                        element={<ProjectTypeGlobal />}
                       />
-                      <Route path="/project-in-delhi/" element={<CityProjects />} />
-                      <Route path="/project-in-noida/" element={<CityProjects />} />
-                      <Route path="/project-in-panipat/" element={<CityProjects />} />
-                      <Route path="/project-in-panchkula/" element={<CityProjects />} />
-                      <Route path="/project-in-kasauli/" element={<CityProjects />} />
-                      <Route path="/projects-in-sonipat/" element={<CityProjects />} />
-                      <Route path="/projects-in-karnal/" element={<CityProjects />} />
-                      <Route path="/projects-in-jalandhar/" element={<CityProjects />} />
-                      <Route path="/project-in-ayodhya/" element={<CityProjects />} />
-                      <Route path="/project-in-mumbai/" element={<CityProjects />} />
-                      <Route path="/projects-in-dubai/" element={<CityProjects />} />
+                      <Route path="/project-in-delhi/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-noida/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-panipat/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-panchkula/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-kasauli/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-sonipat/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-karnal/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-jalandhar/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-ayodhya/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-mumbai/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-dubai/" element={<CityProjectsGlobal />} />
                       {/* Dynamic city projects route (generic template). Keep after specific routes to avoid conflicts. */}
-                      <Route path="/projects-in-:citySlug/" element={<CityProjects />} />
-                      <Route path="/project-in-:citySlug/" element={<CityProjects />} />
-                      <Route path="/projects-in-pushkar/" element={<CityProjects />} />
+                      <Route path="/projects-in-:citySlug/" element={<CityProjectsGlobal />} />
+                      <Route path="/project-in-:citySlug/" element={<CityProjectsGlobal />} />
+                      <Route path="/projects-in-pushkar/" element={<CityProjectsGlobal />} />
                   <Route path="/qr-generator" element={<QRGeneratorPage />} />
                       <Route path="/emi-calculator/" element={<EMICalculatorPage />} />
                       {/* Analytics (public) */}
-                      <Route path="/analytics" element={<AnalyticsHome />} />
+                      <Route path="/property-market-trends/" element={<AnalyticsHome />} />
                       <Route path="/analytics/price-trends" element={<PriceTrends />} />
                       <Route path="/analytics/market" element={<MarketAnalytics />} />
                       <Route path="/analytics/location" element={<LocationIntelligence />} />
@@ -373,13 +365,19 @@ function App() {
                       <Route path="/loan-eligibility" element={<LoanEligibility />} />
                       <Route
                         path="/project-in-underconstruction/"
-                        element={<UnderConstruction />}
+                        element={<ProjectStatusSearchGlobal />}
                       />
-                      <Route path="/projects-in-newlaunch/" element={<NewLaunch />} />
+                      <Route path="/projects-in-newlaunch/" element={<ProjectStatusSearchGlobal />} />
                       <Route path="/project-in-goa/" element={<CityProjects />} />
-                      <Route path="/plots-in-gurugram/" element={<PlotsInGurugramPage />} />
-                      <Route path="/projects/villas/" element={<LuxuryVillasForSalePage />} />
+                      <Route path="/plots-in-gurugram/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/villas/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/farmhouse/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/industrial-plots/" element={<ProjectTypeGlobal />} />
+                      <Route path="/projects/industrial-projects/" element={<ProjectTypeGlobal />} />
                       <Route path="/news-and-articals/" element={<NewsandArtical />} />
+                      {/* New dynamic project type routes */}
+                      <Route path="/project-type/:type" element={<ProjectTypeGlobal />} />
+                      <Route path="/project-types-demo" element={<ProjectTypeDemo />} />
                       <Route
                         path="/userdashboard/"
                         element={
@@ -397,8 +395,10 @@ function App() {
                       <Route path="/blog/:id" element={<BlogView />} />
                       <Route path="/blogging" element={<Blogging />} />
                       <Route path="/blog-insights" element={<BlogInsights />} />
-                      <Route path="/insights/news/" element={<InsightsNews />} />
-                      <Route path="/insights/guides/" element={<InsightsGuides />} />
+                      <Route path="/insights/price-trends" element={<PriceTrends />} />
+                      <Route path="/insights/property-insights" element={<AnalyticsHome />} />
+                      <Route path="/insights/news" element={<InsightsNews />} />
+                      <Route path="/insights/guides" element={<InsightsGuides />} />
                       <Route
                         path="/resetpassword/:token"
                         element={<ForgetPassword />}
@@ -467,7 +467,8 @@ function App() {
                       <Route path="contact" element={<LazyLoad><AdminContact /></LazyLoad>} />
                       <Route path="editProject" element={<LazyLoad><EditProject /></LazyLoad>} />
                       <Route path="enquiries" element={<LazyLoad><Enquiries /></LazyLoad>} />
-                      <Route path="blog-enquiries" element={<LazyLoad><BlogEnquiries /></LazyLoad>} />
+                      {/* <Route path="blog-enquiries" element={<LazyLoad><BlogEnquiries /></LazyLoad>} /> */}
+                      <Route path="OtherEnquiries" element={<LazyLoad><OtherEnquiries /></LazyLoad>} />
                       <Route path="header" element={<LazyLoad><Header /></LazyLoad>} />
                       <Route path="Projects/property" element={<LazyLoad><Projects /></LazyLoad>} />
                       <Route path="resale-enquiries" element={<LazyLoad><Rent /></LazyLoad>} />
@@ -497,6 +498,7 @@ function App() {
                       <Route path="contactpage" element={<LazyLoad> <ContactPage /></LazyLoad>} />
                       <Route path="shorts" element={<LazyLoad><ShortsSettings /></LazyLoad>} />
                       <Route path="banner-management" element={<LazyLoad><BannerManagement /></LazyLoad>} />
+                      <Route path="unified-banner-management" element={<LazyLoad><UnifiedBannerManagement /></LazyLoad>} />
                       <Route
                         path="ContactUs/UserProfile"
                         element={<LazyLoad> <UserProfile /></LazyLoad>}
@@ -530,11 +532,56 @@ function App() {
                         element={<LazyLoad><ProjectOrderManager /></LazyLoad>}
                       />
                       <Route
+                        path="project-order-management"
+                        element={<LazyLoad><ProjectOrderManagement /></LazyLoad>}
+                      />
+                      <Route
                         path="dashboard"
                         element={<LazyLoad><AdminDashboard /></LazyLoad>}
                       />
+                      <Route
+                        path="insights"
+                        element={<LazyLoad><InsightsManagement /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/InsightsPriceTrendsBanners"
+                        element={<LazyLoad><InsightsPriceTrendsBanners /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/EnquiryManagement"
+                        element={<LazyLoad><EnquiryManagement /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/contacts"
+                        element={<LazyLoad><Contacts /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/market-reports"
+                        element={<LazyLoad><MarketReports /></LazyLoad>}
+                      />
+                      <Route
+                        path="insights/investment"
+                        element={<LazyLoad><InvestmentInsights /></LazyLoad>}
+                      />
+                      </Route>
+
+                    {/* HR Department Routing */}
+                    <Route path="/hr" element={<HrPrivateRoute />}>
+                      <Route index element={<LazyLoad><Hr /></LazyLoad>} />
+                      <Route path="dashboard" element={<LazyLoad><HrDashboard /></LazyLoad>} />
+                      <Route path="employees" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Employee Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage employee records and information.</p></div>} />
+                      <Route path="payroll" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Payroll Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Handle payroll processing and salary management.</p></div>} />
+                      <Route path="attendance" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Attendance Management</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Track employee attendance and working hours.</p></div>} />
+                      <Route path="recruitment" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">Recruitment</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Manage job postings and recruitment process.</p></div>} />
+                      <Route path="reports" element={<div className="p-6"><h1 className="text-3xl font-bold text-gray-800 dark:text-white">HR Reports</h1><p className="mt-4 text-gray-600 dark:text-gray-300">Generate and view HR analytics and reports.</p></div>} />
                     </Route>
 
+                    {/* Admin route for Guides */}
+                    <Route path="/Admin/insights/guides" element={<LazyLoad><AdminGuides /></LazyLoad>} />
+
+                    {/* Admin route for Market Reports */}
+                    <Route path="/admin/insights/market-report-generator" element={<LazyLoad><MarketReportsAdmin /></LazyLoad>} />
+                    
                     {/* Blog route only user with role Blog will be able to login */}
                     <Route path="/seo/" element={<SeoPrivateRoute />}>
                       <Route path="blogs" element={<BlogManagementSidebar />} >
@@ -556,8 +603,6 @@ function App() {
       </DataProvider>
       {/* Global mobile bottom navigation (hidden on project pages) */}
       {!isProjectPage && <MobileBottomNav />}
-      {/* Global mobile sticky List Property button (hidden on project pages) */}
-      {!isProjectPage && <MobileStickyListProperty />}
     </>
   );
 }

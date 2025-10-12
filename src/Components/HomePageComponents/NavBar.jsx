@@ -60,7 +60,15 @@ function FinalNavBar() {
         <div className='hdrCenter'>
           <div className='1euNB' style={{ cursor: "pointer" }}>
             <Link to={ROOT}>
-              <img src="../../Images/mainLogo.png" alt='100acress' width='140' loading="lazy" />
+              <img 
+                src={isScrolled 
+                  ? "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp"
+                  : "https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/red-logo.webp"
+                } 
+                alt='100acress' 
+                width='140' 
+                loading="lazy" 
+              />
             </Link>
           </div>
         </div>
@@ -70,10 +78,6 @@ function FinalNavBar() {
           <button className='profBtn' aria-label='Profile/Login' onClick={() => setShowAuth(true)}>
             <FiUser size={18} />
           </button>
-          <div className='_6bnYTum' role="button" aria-label="List Property">
-            <span className='_lpText'>LIST PROPERTY</span>
-            <span className='_73exMP'>FREE</span>
-          </div>
         </div>
 
         {showNav && (
@@ -86,7 +90,12 @@ function FinalNavBar() {
             }}>
             <div className='d-flex align-items-center justify-content-between  pr-3'>
               <div className='1euNB'>
-                <img src="../../Images/mainLogo.png" alt='100acress' width='140' loading="lazy"/>
+                <img 
+                  src="https://100acress-media-bucket.s3.ap-south-1.amazonaws.com/100acre/logo/white-logo.webp" 
+                  alt='100acress' 
+                  width='140' 
+                  loading="lazy"
+                />
                 
               </div>
               <div
@@ -158,10 +167,6 @@ function FinalNavBar() {
             </li>
           </ul>
           <ul className='ulfx _2grx flex-column'>
-            <li className='_6bnYTum' role="button" aria-label="List Property">
-              <span className='_lpText'>LIST PROPERTY</span>
-              <span className='_73exMP'>FREE</span>
-            </li>
             <li>
               <Link to="/rental" className='linkEl'>Rental</Link>
             </li>
@@ -353,10 +358,6 @@ function FinalNavBar() {
           <ul className='ulfx _2grx'>
             <li>
               <BsFolder />
-            </li>
-            <li className='_6bnYTum' role="button" aria-label="List Property">
-              <span className='_lpText'>LIST PROPERTY</span>
-              <span className='_73exMP'>FREE</span>
             </li>
             <li>
               <Link to="/rental" className='linkEl'>Rental</Link>

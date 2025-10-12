@@ -42,6 +42,7 @@ const SearchData = () => {
   const [projectType, setProjectType] = useState("");
   const [priceRange, setPriceRange] = useState("");
   const [showFilters, setShowFilters] = useState(false); // State to manage filter visibility
+  const [fallbackLoading, setFallbackLoading] = useState(false);
 
   const isEmptySearch = !key1 && !key2;
 
@@ -73,41 +74,86 @@ const SearchData = () => {
           return;
         }
 
-        const res = await api.get(
-          `/property/search/${key}`
-        );
-        const searchArr = (res.data.searchdata || []).map((item) => ({
-          ...item,
-          sourceType: "search",
-        }));
-        setSearchData(searchArr);
+        const [projectResult, rentResult, buyResult] = await Promise.allSettled([
+          // Use multiple search parameters to find projects by name, builder, type, etc.
+          key1 && key1.trim() ? api.get(`/projectsearch?projectName=${encodeURIComponent(key)}&builderName=${encodeURIComponent(key)}&type=${encodeURIComponent(key)}&limit=50`) : Promise.reject(new Error('No query')),
+          // Keep other endpoints for compatibility but they likely don't exist
+          key1 && key1.trim() ? api.get(`/rentproperty/search/${encodeURIComponent(key)}`) : Promise.reject(new Error('No query')),
+          key1 && key1.trim() ? api.get(`/buyproperty/search/${encodeURIComponent(key)}`) : Promise.reject(new Error('No query')),
+        ]);
 
-        const rentRes = await api.get(
-          `/rentproperty/search/${key}`
-        );
-        const rentArr = (rentRes.data.data || []).map((item) => ({
-          ...item,
-          sourceType: "rent",
-        }));
-        setRentSearchData(rentArr);
+        const localSearchArr = projectResult.status === "fulfilled"
+          ? (projectResult.value?.data?.data || []).map((item) => ({ ...item, sourceType: "search" }))
+          : [];
+        setSearchData(localSearchArr);
 
-        const buyRes = await api.get(
-          `/buyproperty/search/${key}`
-        );
-        const buyArr = (buyRes.data.data || []).map((item) => ({
-          ...item,
-          sourceType: "buy",
-        }));
-        setBuySearchData(buyArr);
+        const localRentArr = rentResult.status === "fulfilled"
+          ? (rentResult.value?.data?.data || []).map((item) => ({ ...item, sourceType: "rent" }))
+          : [];
+        setRentSearchData(localRentArr);
 
-        if (
-          searchArr.length === 0 &&
-          rentArr.length === 0 &&
-          buyArr.length === 0
-        ) {
-          const allProjectsRes = await api.get(
-            "/project/viewAll/data"
-          );
+        const localBuyArr = buyResult.status === "fulfilled"
+          ? (buyResult.value?.data?.data || []).map((item) => ({ ...item, sourceType: "buy" }))
+          : [];
+        setBuySearchData(localBuyArr);
+
+        const isAllEmpty =
+          (Array.isArray(localSearchArr) ? localSearchArr.length : 0) === 0 &&
+          (Array.isArray(localRentArr) ? localRentArr.length : 0) === 0 &&
+          (Array.isArray(localBuyArr) ? localBuyArr.length : 0) === 0;
+
+        // Always trigger fallback for empty searches or when no specific results found
+        const totalResults = localSearchArr.length + localRentArr.length + localBuyArr.length;
+        const shouldUseFallback = isAllEmpty || totalResults < 1 || !key1 || !key1.trim();
+
+        if (shouldUseFallback) {
+          setFallbackLoading(true);
+
+          // If we have a search query, try client-side search through all projects
+          if (key1 && key1.trim()) {
+            const allProjectsRes = await api.get("/project/viewAll/data");
+            let allProjectsArr = (allProjectsRes.data.data || []);
+
+            // Client-side search filter
+            const searchTerm = key1.toLowerCase();
+            const filteredProjects = allProjectsArr.filter((item) => {
+              return (
+                (item.projectName && item.projectName.toLowerCase().includes(searchTerm)) ||
+                (item.builderName && item.builderName.toLowerCase().includes(searchTerm)) ||
+                (item.type && item.type.toLowerCase().includes(searchTerm)) ||
+                (item.projectAddress && item.projectAddress.toLowerCase().includes(searchTerm)) ||
+                (item.city && item.city.toLowerCase().includes(searchTerm)) ||
+                (item.state && item.state.toLowerCase().includes(searchTerm)) ||
+                (item.project_discripation && item.project_discripation.toLowerCase().includes(searchTerm))
+              );
+            });
+
+            if (filteredProjects.length > 0) {
+              // Show filtered results
+              const mappedProjects = filteredProjects.map((item) => ({
+                projectName: item.projectName,
+                project_url: item.project_url,
+                frontImage: item.frontImage,
+                price: item.price,
+                type: item.type,
+                projectAddress: item.projectAddress,
+                city: item.city,
+                state: item.state,
+                minPrice: item.minPrice,
+                maxPrice: item.maxPrice,
+                sourceType: "project",
+              }));
+              setBuySearchData([]);
+              setRentSearchData([]);
+              setSearchData(mappedProjects);
+              setIsFallbackMode(true);
+              setFallbackLoading(false);
+              return;
+            }
+          }
+
+          // If no filtered results or no search query, show all projects
+          const allProjectsRes = await api.get("/project/viewAll/data");
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
             projectName: item.projectName,
             project_url: item.project_url,
@@ -126,14 +172,16 @@ const SearchData = () => {
           setRentSearchData([]);
           setSearchData(allProjectsArr);
           setIsFallbackMode(true);
+          setFallbackLoading(false);
         } else {
           setIsFallbackMode(false);
         }
       } catch (error) {
-        if (error.response && error.response.status === 404) {
-          const allProjectsRes = await api.get(
-            "/project/viewAll/data"
-          );
+        // Any error should trigger fallback mode (show all projects)
+        console.log('Search error, triggering fallback:', error.message);
+        setFallbackLoading(true);
+        try {
+          const allProjectsRes = await api.get("/project/viewAll/data");
           let allProjectsArr = (allProjectsRes.data.data || []).map((item) => ({
             projectName: item.projectName,
             project_url: item.project_url,
@@ -147,14 +195,19 @@ const SearchData = () => {
             maxPrice: item.maxPrice,
             sourceType: "project",
           }));
+          // Shuffle the array to show random projects
           allProjectsArr = allProjectsArr.sort(() => Math.random() - 0.5);
           setBuySearchData([]);
           setRentSearchData([]);
           setSearchData(allProjectsArr);
           setIsFallbackMode(true);
-        } else {
-          console.log(error.message);
+        } catch (fallbackError) {
+          console.error('Fallback also failed:', fallbackError);
+          // Show empty state with message
+          setSearchData([]);
+          setIsFallbackMode(true);
         }
+        setFallbackLoading(false);
       }
     };
     // EHFBHEDB
@@ -172,6 +225,10 @@ const SearchData = () => {
   const filteredFallbackProjects = useMemo(() => {
     let data = searchData;
     if (!isFallbackMode) return data;
+    
+    // Store original data as fallback
+    const originalData = [...data];
+    
     if (cityFilter) {
       data = data.filter(
         (item) =>
@@ -205,7 +262,9 @@ const SearchData = () => {
         return (!min || price >= min) && (!max || price <= max);
       });
     }
-    return data;
+    
+    // If filtering results in empty array, return original data to ensure something is always shown
+    return data.length > 0 ? data : originalData;
   }, [
     searchData,
     cityFilter,
@@ -347,14 +406,17 @@ const SearchData = () => {
       )}
 
       {/* Rendering searchData if available (filtered in fallback mode) */}
-      {combinedSearchData?.length > 0 ||
-      (isFallbackMode && filteredFallbackProjects.length > 0) ? (
+      {fallbackLoading ? (
+        <CustomSkeleton />
+      ) : combinedSearchData?.length > 0 ||
+        (isFallbackMode && filteredFallbackProjects.length > 0) ? (
         <section className="flex flex-col items-center bg-white">
           <CommonInside
-            title={`Results For ${key1}`}
+            title={isFallbackMode ? "All Projects" : `Results For ${key1}`}
             Actualdata={
               isFallbackMode ? filteredFallbackProjects : combinedSearchData
             }
+            suppressEmptyMessage={isFallbackMode}
           />
         </section>
       ) : (

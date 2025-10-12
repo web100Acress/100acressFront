@@ -3,123 +3,269 @@ import { getApiBase } from './apiBase';
 
 // Helper function to get the base URL with proper protocol
 const getBaseUrl = () => {
-  const base = getApiBase();
-  // Ensure the URL has a protocol
-  if (base.startsWith('http')) {
+  try {
+    let base = getApiBase();
+    
+    // If no protocol specified, add http/https based on environment
+    if (!base.match(/^https?:\/\//)) {
+      const isProduction = process.env.NODE_ENV === 'production';
+      const protocol = isProduction ? 'https:' : 'http:';
+      base = `${protocol}//${base}`;
+    }
+    
+    // Ensure we're using HTTPS in production
+    if (process.env.NODE_ENV === 'production' && base.startsWith('http:')) {
+      base = 'https:' + base.substring(5);
+    }
+    
+    // Remove trailing slashes
+    base = base.replace(/\/+$/, '');
+    
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Using API base URL:', base);
+    }
+    
     return base;
+  } catch (error) {
+    console.error('Error getting base URL:', error);
+    // Fallback to current origin with /api
+    return window.location.origin + '/api';
   }
-  // Default to https in production, http in development
-  const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
-  return `${protocol}//${base.replace(/^\/\//, '')}`;
+};
+
+// Helper function to determine the base URL
+const getApiBaseUrl = () => {
+  // Use VITE_API_URL if available (set in .env), otherwise fallback to VITE_API_BASE or default
+  return import.meta.env.VITE_API_URL || 
+         import.meta.env.VITE_API_BASE || 
+         (import.meta.env.PROD ? 'https://api.100acress.com' : 'http://localhost:3500');
 };
 
 // Create axios instance with defaults
 const api = axios.create({
-  // Ensure trailing slash so joining with 'path' works correctly
-  baseURL: (() => {
-    const b = getBaseUrl();
-    return b.endsWith('/') ? b : `${b}/`;
-  })(),
+  baseURL: getApiBaseUrl(),
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  // Do NOT send credentials by default; enable per request when token exists
-  withCredentials: false,
-  crossDomain: true,
-  // Add this to handle CORS credentials properly
-  withXSRFToken: true,
+  // CORS configuration
+  withCredentials: true,
+  // XSRF token configuration
   xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-XSRF-TOKEN',
 });
 
+// Simple rate limiting to prevent infinite requests
+const requestTracker = new Map();
+const RATE_LIMIT_WINDOW = 1000; // 1 second
+const MAX_REQUESTS_PER_WINDOW = 5;
+
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
+    // Skip interceptor for external URLs
+    if (config.url.startsWith('http')) {
+      return config;
+    }
+
+    // Rate limiting check
+    const requestKey = `${config.method?.toUpperCase()}_${config.url}`;
+    const now = Date.now();
+    const requests = requestTracker.get(requestKey) || [];
+    
+    // Remove old requests outside the window
+    const recentRequests = requests.filter(time => now - time < RATE_LIMIT_WINDOW);
+    
+    if (recentRequests.length >= MAX_REQUESTS_PER_WINDOW) {
+      console.warn(`Rate limit exceeded for ${requestKey}. Blocking request.`);
+      return Promise.reject(new Error('Rate limit exceeded'));
+    }
+    
+    // Track this request
+    recentRequests.push(now);
+    requestTracker.set(requestKey, recentRequests);
+
+    // Ensure URL is properly formatted
+    if (typeof config.url === 'string') {
+      // Remove leading/trailing slashes to prevent double slashes
+      config.url = config.url.replace(/^\/+|\/+$/g, '');
+    }
+
+    // Add auth token if exists
     const token = localStorage.getItem('myToken') || localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token.replace(/^"|"$/g, '')}`;
-      // Only send credentials when we actually authenticate
       config.withCredentials = true;
     }
 
-    // If sending FormData, let the browser set the proper multipart boundaries
+    // Handle FormData (for file uploads)
     if (config.data instanceof FormData) {
-      try {
-        delete config.headers['Content-Type'];
-      } catch (_) {}
+      delete config.headers['Content-Type']; // Let browser set the boundary
+      
+      // Add cache busting for file uploads
+      if (config.params) {
+        config.params._ = Date.now();
+      } else {
+        config.params = { _: Date.now() };
+      }
+    }
 
-    }
-    // Normalize base join: keep absolute URLs untouched
-    const url = typeof config.url === 'string' ? config.url : '';
-    if (url && !/^https?:\/\//i.test(url)) {
-      // Ensure instance baseURL has trailing slash, and do not duplicate slashes
-      const base = (api.defaults.baseURL || '').replace(/\/+$/, '');
-      config.baseURL = url.startsWith('/') ? base : `${base}/`;
-    }
-    
-    // Add cache-busting parameter for GET requests
-    if (config.method === 'get') {
-      config.params = {
-        ...config.params,
-        _t: Date.now(), // Add timestamp to prevent caching
-      };
-    }
-    
+    // Log the request in development
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`%c ${config.method?.toUpperCase()} ${config.url}`, 
-        'color: white; background-color: #2274A5; padding: 2px 5px; border-radius: 3px;');
+      console.groupCollapsed(`%c ${config.method?.toUpperCase()} ${config.url}`, 
+        'background: #2196F3; color: white; padding: 2px 8px; border-radius: 4px;');
+      console.log('Request:', {
+        baseURL: config.baseURL,
+        url: config.url,
+        method: config.method,
+        headers: config.headers,
+        params: config.params,
+        data: config.data
+      });
+      console.groupEnd();
     }
     
     return config;
   },
   (error) => {
-    return Promise.reject(error);
+    console.error('Request interceptor error:', error);
+    return Promise.reject({
+      ...error,
+      message: error.message || 'Request failed',
+      config: error.config,
+      isAxiosError: true
+    });
   }
 );
 
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
+    // Log successful responses in development
+    if (process.env.NODE_ENV !== 'production') {
+      console.groupCollapsed(`%c ${response.status} ${response.config.url}`, 
+        'background: #4CAF50; color: white; padding: 2px 8px; border-radius: 4px;');
+      console.log('Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        data: response.data,
+        headers: response.headers
+      });
+      console.groupEnd();
+    }
+    
+    // Handle empty responses
+    if (response.status === 204) {
+      return { ...response, data: { success: true } };
+    }
+    
     return response;
   },
-  (error) => {
-    const config = error.config || {};
-    // Retry on 429 (Too Many Requests) and 503 (Service Unavailable)
-    const status = error.response?.status;
-    const shouldRetry = status === 429 || status === 503 || error.code === 'ECONNABORTED';
-    if (shouldRetry) {
-      config.__retryCount = config.__retryCount || 0;
-      const maxRetries = 3;
-      if (config.__retryCount < maxRetries) {
-        config.__retryCount += 1;
-        // Exponential backoff with jitter: base 500ms
-        const delay = Math.min(500 * Math.pow(2, config.__retryCount - 1), 4000);
-        const jitter = Math.floor(Math.random() * 250);
-        const backoff = delay + jitter;
-        return new Promise((resolve) => setTimeout(resolve, backoff)).then(() => api(config));
+  async (error) => {
+    const originalRequest = error.config;
+    
+    // Log the error in development (suppress expected 404s for search endpoints)
+    const isSearch404 =
+      error?.response?.status === 404 &&
+      typeof originalRequest?.url === 'string' &&
+      (/^(rentproperty|buyproperty|property)\/search\//.test(originalRequest.url));
+
+    if (process.env.NODE_ENV !== 'production' && !isSearch404) {
+      console.groupCollapsed(`%c ${error.response?.status || 'NETWORK_ERR'} ${originalRequest?.url || ''}`, 
+        'background: #F44336; color: white; padding: 2px 8px; border-radius: 4px;');
+      
+      if (error.response) {
+        // Server responded with a status code outside 2xx
+        console.error('Response Error:', {
+          status: error.response.status,
+          statusText: error.response.statusText,
+          data: error.response.data,
+          headers: error.response.headers
+        });
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error('No response received:', error.request);
+      } else {
+        // Something happened in setting up the request
+        console.error('Request setup error:', error.message);
       }
+      
+      console.groupEnd();
     }
-    // Handle CORS errors
-    if (error.code === 'ERR_NETWORK') {
-      console.error('Network Error:', error.message);
-      // Optionally show a user-friendly message
-      // You can add a notification system call here
+
+    // Handle network errors
+    if (error.code === 'ERR_NETWORK' || !error.response) {
+      console.error('Network Error - Please check your connection and try again');
+      return Promise.reject({
+        ...error,
+        message: 'Network Error: Unable to connect to the server. Please check your internet connection.',
+        isNetworkError: true
+      });
     }
+    
+    const { status } = error.response;
     
     // Handle 401 Unauthorized
-    if (error.response?.status === 401) {
-      // Handle unauthorized access
+    if (status === 401) {
+      // Clear auth data
       localStorage.removeItem('myToken');
       localStorage.removeItem('token');
-      // Redirect to login or show login modal
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
+      
+      // Only redirect if not already on login page
+      if (!window.location.pathname.includes('/login')) {
+        const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
+        window.location.href = `/login?returnUrl=${returnUrl}`;
       }
+      
+      return Promise.reject({
+        ...error,
+        message: 'Your session has expired. Please log in again.',
+        isUnauthorized: true
+      });
     }
     
-    return Promise.reject(error);
+    // Handle rate limiting (429) and service unavailable (503)
+    if (status === 429 || status === 503) {
+      const retryAfter = parseInt(error.response.headers?.['retry-after']) || 1;
+      const retryCount = originalRequest.__retryCount || 0;
+      const maxRetries = 3;
+      
+      if (retryCount < maxRetries) {
+        originalRequest.__retryCount = retryCount + 1;
+        
+        // Exponential backoff with jitter
+        const delay = Math.min(1000 * Math.pow(2, retryCount), 10000);
+        const jitter = Math.random() * 1000;
+        const backoff = delay + jitter;
+        
+        console.warn(`Retrying request (${retryCount + 1}/${maxRetries}) after ${backoff}ms`);
+        
+        return new Promise(resolve => {
+          setTimeout(() => resolve(api(originalRequest)), backoff);
+        });
+      }
+      
+      return Promise.reject({
+        ...error,
+        message: 'Server is busy. Please try again later.',
+        isRetryError: true
+      });
+    }
+    
+    // Handle other error statuses
+    const errorMessage = error.response?.data?.message || 
+                        error.response?.data?.error || 
+                        error.message || 
+                        'An unexpected error occurred';
+    
+    return Promise.reject({
+      ...error,
+      message: errorMessage,
+      status: status,
+      response: error.response,
+      isAxiosError: true
+    });
   }
 );
 

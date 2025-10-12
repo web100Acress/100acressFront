@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { spotlight, trending ,featured,upcoming,affordable,luxury,scoplots,commercial,budget,projectindelhi} from "../slice/projectSlice";
-import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, dubai, pushkar} from "../slice/StateProject";  
-import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026,plotsingurugram} from "../slice/AllSectionData";
+import {gurugram,delhi,noida,goa,ayodhya,mumbai,panipat,panchkula,kasauli,karnal,jalandhar, sonipat, alwar, dubai, pushkar} from "../slice/StateProject";  
+import {allupcomingproject,builderindependentfloor,commercialProjectAll,deendayalplots,dlfsco,luxuryAll,luxuryvillas,newlaunch, readytomove, residential, scoplotsall, underconstruction,possessionafter2026,plotsingurugram,farmhouse,industrialplots,industrialprojects} from "../slice/AllSectionData";
 import { signatureglobal,m3m,dlf,experion,elan,bptp,adani,smartworld,trevoc,indiabulls,centralpark,emaarindia, godrej, whiteland, aipl, birla, sobha, trump, puri, aarize} from "../slice/BuilderSlice";
 import {Possessionin2025,Possessionin2026} from "../slice/PossessionSlice";
 import {bptpplots,orrisplots} from "../slice/ProjectOverviewSlice";
@@ -11,7 +11,7 @@ import {resale} from "../slice/ResaleSlice";
 import api from "../../config/apiClient";
 import { API_ROUTES, API_ROUTES_PROJECTS } from "./Constant_Service";
 import { sortByDesiredOrder } from "../../Utils/ProjectSorting";
-import { Affordable_Desired_Order, BUDGET_DESIRED_ORDER, COMMERCIAL_DESIRED_ORDER, DesiredLuxuryOrder, Recommendedreordered, SCO_DESIRED_ORDER, Trending_Desired_Order } from "../../Pages/datafeed/Desiredorder";
+import { getAffordableDesiredOrder, getBudgetDesiredOrder, getCommercialDesiredOrder, getLuxuryDesiredOrder, getRecommendedDesiredOrder, getSCODesiredOrder, getTrendingDesiredOrder } from "../../Utils/ProjectOrderData";
 import { emaar } from "../slice/ProjectstatusSlice";
 import { useCallback } from "react";
 import { maxpriceproject,minpriceproject } from "../slice/PriceBasedSlice";
@@ -21,27 +21,61 @@ const propertyOrderControllers = new Map();
 // De-dup in-flight requests per builder and provide a small cache to avoid rapid repeated calls
 const propertyOrderInFlight = new Map(); // key -> Promise
 const propertyOrderCache = new Map();    // key -> { data, ts }
+const requestThrottle = new Map();       // key -> timestamp
 
 const Api_service = () => {
   const dispatch = useDispatch();
 
   const getTrending = async () => {
     try {
-      const response = await api.get(`${API_ROUTES.projectsBase()}/trending`);
-      const Trendingprojects = response.data.data;
-      dispatch(trending(sortByDesiredOrder((Trendingprojects),Trending_Desired_Order,"projectName")));
+      // Throttle requests to prevent 429 errors
+      const now = Date.now();
+      const lastCall = requestThrottle.get('trending') || 0;
+      if (now - lastCall < 2000) { // 2 second throttle
+        console.log('Trending request throttled, skipping');
+        return;
+      }
+      requestThrottle.set('trending', now);
+      
+      let trendingOrder = [];
+      try {
+        trendingOrder = await getTrendingDesiredOrder() || [];
+        console.log('📋 Trending order:', trendingOrder);
+      } catch (orderError) {
+        console.warn('Could not get trending order, will use default order:', orderError);
+      }
+      
+      await getProjectsByCategory('trending', trendingOrder, trending);
     } catch (error) {
-      console.error("Error fetching trending data:", error);
+      console.error("❌ Error in getTrending:", error);
     }
   };
 
   const getSpotlight = useCallback(async () => {
     try {
-      const response = await api.get(`${API_ROUTES.projectsBase()}/spotlight`);
-      const Spotlightprojects = response.data.data;
-      dispatch(spotlight(sortByDesiredOrder((Spotlightprojects),Recommendedreordered,"projectName")));
+      console.log('🔍 getSpotlight called');
+      // Throttle requests to prevent 429 errors
+      const now = Date.now();
+      const lastCall = requestThrottle.get('spotlight') || 0;
+      if (now - lastCall < 2000) { // 2 second throttle
+        console.log('Spotlight request throttled, skipping');
+        return;
+      }
+      requestThrottle.set('spotlight', now);
+      
+      // Try to get recommended order, but don't fail if it doesn't exist
+      let recommendedOrder = [];
+      try {
+        recommendedOrder = await getRecommendedDesiredOrder() || [];
+        console.log('📋 Recommended order:', recommendedOrder);
+      } catch (orderError) {
+        console.warn('Could not get recommended order, will use default order:', orderError);
+      }
+      
+      await getProjectsByCategory('spotlight', recommendedOrder, spotlight);
+      console.log('✅ getSpotlight completed');
     } catch (error) {
-      console.error("Error fetching spotlight data:", error);
+      console.error("❌ Error in getSpotlight:", error);
     }
   }, [dispatch]);
 
@@ -69,9 +103,18 @@ const Api_service = () => {
 
   const getAffordable = async() =>{
     try{
-        const response = await api.get(`${API_ROUTES.projectsBase()}/affordable`);
-        const Featuredprojects = response.data.data;
-        dispatch(affordable(sortByDesiredOrder((Featuredprojects),Affordable_Desired_Order,"projectName")));
+      // Throttle requests to prevent 429 errors
+      const now = Date.now();
+      const lastCall = requestThrottle.get('affordable') || 0;
+      if (now - lastCall < 2000) { // 2 second throttle
+        console.log('Affordable request throttled, skipping');
+        return;
+      }
+      requestThrottle.set('affordable', now);
+      
+      // Use dynamic project ordering
+      const affordableOrder = await getAffordableDesiredOrder();
+      await getProjectsByCategory('affordable', affordableOrder, affordable);
     }catch(error){
         console.error("Error fetching Affordable data:", error);
     }
@@ -79,9 +122,9 @@ const Api_service = () => {
 
   const getLuxury = async() =>{
     try{
-        const response = await api.get(`${API_ROUTES.projectsBase()}/luxury`);
-        const Featuredprojects = response.data.data;
-        dispatch(luxury(Featuredprojects));
+        // Use dynamic project ordering
+        const luxuryOrder = await getLuxuryDesiredOrder();
+        await getProjectsByCategory('luxury', luxuryOrder, luxury);
     }catch(error){
         console.error("Error fetching Luxury data:", error);
     }
@@ -89,9 +132,9 @@ const Api_service = () => {
 
   const getScoplots = async() =>{
     try{
-        const response = await api.get(`${API_ROUTES.projectsBase()}/scoplots`);
-        const Featuredprojects = response.data.data;
-        dispatch(scoplots(sortByDesiredOrder((Featuredprojects),SCO_DESIRED_ORDER,"projectName")));
+        // Use dynamic project ordering
+        const scoOrder = await getSCODesiredOrder();
+        await getProjectsByCategory('sco', scoOrder, scoplots);
     }catch(error){
         console.error("Error fetching Sco data:", error);
     }
@@ -99,9 +142,9 @@ const Api_service = () => {
 
   const getCommercial = async() =>{
     try{
-        const response = await api.get(`${API_ROUTES.projectsBase()}/commercial`);
-        const Featuredprojects = response.data.data;
-        dispatch(commercial(sortByDesiredOrder((Featuredprojects),COMMERCIAL_DESIRED_ORDER,"projectName")));
+        // Use dynamic project ordering
+        const commercialOrder = await getCommercialDesiredOrder();
+        await getProjectsByCategory('commercial', commercialOrder, commercial);
     }catch(error){
         console.error("Error fetching Commercial data:", error);
     }
@@ -109,20 +152,75 @@ const Api_service = () => {
 // weeeeeeeeeeeeeeeeeehfeiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
   const getBudgetHomes = async() => {
     try {
-        const response = await api.get(`${API_ROUTES.projectsBase()}/budgethomes`);
+        // Get dynamic budget project names from ProjectOrderData
+        const budgetOrder = await getBudgetDesiredOrder();
+        const budgetProjectNames = budgetOrder.join(',');
+        
+        const response = await api.get(`${API_ROUTES.projectsBase()}/budgethomes?projects=${budgetProjectNames}`);
         const Featuredprojects = response.data.data;
         console.log('Budget Projects:', Featuredprojects.map(p => p.projectName));
         
         // Sort projects according to the desired order
         const sortedProjects = sortByDesiredOrder(
             Featuredprojects,
-            BUDGET_DESIRED_ORDER,
+            budgetOrder,
             "projectName"
         );
         
         dispatch(budget(sortedProjects));
     } catch(error) {
         console.error("Error fetching BudgetHomes data:", error);
+    }
+  }
+
+  // Generic function to get projects by category with dynamic ordering
+  const getProjectsByCategory = async (category, projectNames = [], dispatchAction) => {
+    try {
+      // If no project names are provided, use the category-specific endpoint
+      if (!projectNames || projectNames.length === 0) {
+        console.log(`📡 No project names provided for ${category}, using direct endpoint`);
+        try {
+          const response = await api.get(`${API_ROUTES.projectsBase()}/${category}`);
+          console.log(`✅ Successfully fetched ${category} projects directly`);
+          dispatch(dispatchAction(response.data.data || []));
+          return;
+        } catch (directError) {
+          console.error(`❌ Direct ${category} endpoint failed:`, directError);
+          throw directError; // Re-throw to be caught by the outer catch
+        }
+      }
+
+      // If we have project names, try the category endpoint with specific projects
+      try {
+        const projectNamesString = projectNames.join(',');
+        const apiUrl = `${API_ROUTES.projectsBase()}/category?category=${category}&projects=${projectNamesString}`;
+        console.log('🌐 API URL:', apiUrl);
+        
+        const response = await api.get(apiUrl);
+        console.log('📡 API Response:', response.data);
+        const projects = response.data.data || [];
+        
+        // Sort projects according to the desired order if we have projects to sort
+        let sortedProjects = projects;
+        if (projects.length > 0 && projectNames.length > 0) {
+          sortedProjects = sortByDesiredOrder(projects, projectNames, "projectName") || projects;
+          console.log('📊 Sorted projects:', sortedProjects);
+        }
+        
+        dispatch(dispatchAction(sortedProjects));
+        console.log(`✅ Dispatched ${category} projects to Redux store`);
+      } catch (categoryError) {
+        console.error(`❌ Category endpoint failed for ${category}, falling back to direct endpoint`);
+        // Fallback to direct endpoint if category endpoint fails
+        const response = await api.get(`${API_ROUTES.projectsBase()}/${category}`);
+        console.log(`✅ Successfully fetched ${category} projects via fallback`);
+        dispatch(dispatchAction(response.data.data || []));
+      }
+    } catch (error) {
+      console.error(`❌ Error in getProjectsByCategory (${category}):`, error);
+      console.error('❌ Error details:', error.response?.data || error.message);
+      // Dispatch empty array to prevent UI errors
+      dispatch(dispatchAction([]));
     }
   }
 // //////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +287,9 @@ const Api_service = () => {
       dispatch(dubai(ProjectbyState)); 
     } if (query === 'Pushkar') {
   dispatch(pushkar(ProjectbyState));
-}
+} else if (query === 'Alwar') {
+      dispatch(alwar(ProjectbyState));
+    }
 
   } catch (error) {
     console.error("Error fetching project data based on state:", error);
@@ -225,7 +325,8 @@ const Api_service = () => {
         dispatch(scoplotsall(AllProjectbyQuery));
       }else
       if(query === "luxury"){
-        dispatch(luxuryAll(sortByDesiredOrder((AllProjectbyQuery),DesiredLuxuryOrder,"projectName")));
+        const luxuryOrder = await getLuxuryDesiredOrder();
+        dispatch(luxuryAll(sortByDesiredOrder((AllProjectbyQuery),luxuryOrder,"projectName")));
       }else
       if(query === "deendayalplots"){
         dispatch(deendayalplots(AllProjectbyQuery));
@@ -244,6 +345,15 @@ const Api_service = () => {
       }else
       if(query === "plotsingurugram"){
         dispatch(plotsingurugram(AllProjectbyQuery))
+      }else
+      if(query === "farmhouse"){
+        dispatch(farmhouse(AllProjectbyQuery))
+      }else
+      if(query === "industrialplots"){
+        dispatch(industrialplots(AllProjectbyQuery))
+      }else
+      if(query === "industrialprojects"){
+        dispatch(industrialprojects(AllProjectbyQuery))
       }
     }catch(error){
       console.error("Error fetching ",error);

@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   const { decodedToken } = useJwt(localStorageToken);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isContentWriter, setIsContentWriter] = useState(false);
+  const [isHr, setIsHr] = useState(false);
 
   const [agentData, setAgentData] = useState({
     name: "",
@@ -101,6 +102,9 @@ export const AuthProvider = ({ children }) => {
               } else if (roleNormalized === "contentwriter" || roleNormalized === "blog") {
                 setIsContentWriter(true);
                 history("/seo/blogs");
+              } else if (roleNormalized === "hr") {
+                setIsHr(true);
+                history("/hr/dashboard");
               } else {
                 history("/userdashboard/");
               }
@@ -329,6 +333,8 @@ export const AuthProvider = ({ children }) => {
         setIsAdmin,
         isContentWriter,
         setIsContentWriter,
+        isHr,
+        setIsHr,
         showLogin,
       }}
     >

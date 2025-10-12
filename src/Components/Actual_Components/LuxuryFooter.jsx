@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import api from "../../config/apiClient";
 import { motion } from "framer-motion"
 import { Facebook, Instagram, Youtube, Phone, MessageCircle, Mail, ArrowRight, Linkedin, Sparkles, Star, Twitter } from "lucide-react"
+import { Link } from "react-router-dom";
 
 const LuxuryFooter = () => {
   const footerVariants = {
@@ -399,23 +400,42 @@ const LuxuryFooter = () => {
 
               {/* Right: Policy Links */}
               <div className="justify-self-center sm:justify-self-end flex items-center">
-                <div className="flex flex-wrap justify-center sm:justify-end space-x-4 lg:space-x-6 text-xs sm:text-sm">
-                  {[
-                    "Privacy Policy", "Terms of Service", "Cookie Policy"
-                  ].map((link, index) => (
-                    <motion.a
-                      key={index}
-                      href="#"
-                      className="text-white hover:text-white/90 transition-colors duration-300 relative group hover:underline underline-offset-4 decoration-white"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      {link}
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
-                    </motion.a>
-                  ))}
-                </div>
-              </div>
+  <div className="flex flex-wrap justify-center sm:justify-end space-x-4 lg:space-x-6 text-xs sm:text-sm">
+    {/* Privacy Policy React Router Link */}
+    <Link
+      to="/privacy-policy/"
+      className="text-white hover:text-white/90 transition-colors duration-300 relative group hover:underline underline-offset-4 decoration-white"
+      target="_top"
+      style={{ color: "#ffffff" }}
+    >
+      Privacy Policy
+      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+    </Link>
+
+    {/* Terms of Service */}
+    <motion.a
+      href="#"
+      className="text-white hover:text-white/90 transition-colors duration-300 relative group hover:underline underline-offset-4 decoration-white"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      Terms of Service
+      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+    </motion.a>
+
+    {/* Cookie Policy */}
+    <motion.a
+      href="#"
+      className="text-white hover:text-white/90 transition-colors duration-300 relative group hover:underline underline-offset-4 decoration-white"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      Cookie Policy
+      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+    </motion.a>
+  </div>
+</div>
+
             </div>
           </div>
         </motion.div>

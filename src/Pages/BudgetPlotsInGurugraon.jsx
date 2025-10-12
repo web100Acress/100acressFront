@@ -1,12 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { EyeIcon } from "lucide-react";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { budgetPlots } from "./datafeed/Desiredorder";
+import { getBudgetPlots } from "../Utils/ProjectOrderData";
 
 const BudgetPlotsInGurugraon = () => {
+  const [budgetPlots, setBudgetPlots] = useState([]);
+
+  useEffect(() => {
+    const loadBudgetPlots = async () => {
+      try {
+        const plots = await getBudgetPlots();
+        setBudgetPlots(plots);
+      } catch (error) {
+        console.error('Error loading budget plots:', error);
+        setBudgetPlots([]);
+      }
+    };
+    
+    loadBudgetPlots();
+  }, []);
 
   useEffect(() => { AOS.init(); }, []);
 
@@ -28,12 +43,18 @@ const BudgetPlotsInGurugraon = () => {
       </div>
       </div>
       <div className="grid  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-cols-1 mx-0 gap-3 lg:gap-4 pb-2 pt-3">
-        {budgetPlots.map((project, index) => (
-          <Link to={project.link} key={index} className="card group" aria-label={project.title}>
-            <img src={project.image} alt={project.title} loading="lazy" className="card-image transition-transform duration-300 group-hover:scale-105" />
-            <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300">{project.title}</button>
-          </Link>
-        ))}
+        {budgetPlots.length === 0 ? (
+          <div className="col-span-full text-center py-8">
+            <div className="text-gray-500">Loading budget plots...</div>
+          </div>
+        ) : (
+          budgetPlots.map((project, index) => (
+            <Link to={project.link} key={index} className="card group" aria-label={project.title}>
+              <img src={project.image} alt={project.title} loading="lazy" className="card-image transition-transform duration-300 group-hover:scale-105" />
+              <button className="card-button bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-500/30 transition-all duration-300">{project.title}</button>
+            </Link>
+          ))
+        )}
       </div>
     </div>
   </Wrapper>

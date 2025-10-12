@@ -82,7 +82,7 @@ export default function LeftSection({
   return (
     <Flex
       alignItems="center"
-      gap={{ base: 1, md: 3 }}
+      gap={{ base: 0, md: 0.5 }}
       order={{ base: 1, md: 2 }}
       flex={{ base: "initial", md: 1 }}
       justifyContent={{ base: "flex-start", md: forceHamburger ? "flex-start" : "center" }}
@@ -101,7 +101,7 @@ export default function LeftSection({
         aria-label="Menu"
         variant="ghost"
         color="#111"
-        mr={2}
+        mr={0}
         onClick={() => (isDrawerOpen ? closeDrawer() : openDrawer())}
         display={{ base: "inline-flex", md: (forceHamburger || showHamburgerOnDesktop) ? "inline-flex" : "none" }}
       />
@@ -262,6 +262,20 @@ export default function LeftSection({
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Commercial Projects</Text>
                   </Button>
+                  <Button as={Link} to="/projects/farmhouse/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Farm House</Text>
+                  </Button>
+                  <Button as={Link} to="/projects/industrial-projects/" onClick={closeDrawer}
+                    w="100%" variant="ghost" display="flex" flexDir="column"
+                    justifyContent="center" alignItems="center" textAlign="center"
+                    py={3} px={4} minH={{ base: 14, md: 12 }}
+                    borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
+                    <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Industrial Projects</Text>
+                  </Button>
                 </SimpleGrid>
                 <Box h="1px" bg="#eee" my={2} />
               </>
@@ -357,7 +371,7 @@ export default function LeftSection({
           height="auto"
           minH="unset"
           pr={2}
-          mr={2}
+          mr={0}
           borderRight={{ base: 'none', md: 'none' }}
           borderRadius={0}
           py={0}
@@ -414,13 +428,13 @@ export default function LeftSection({
           color={colorChange ? "white" : "#111"}
           _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
           _active={{ bg: "transparent" }}
-          px={3}
+          px={1}
           fontWeight="600"
           fontSize="16px"
           letterSpacing="0.5px"
           display={{ base: "none", md: (forceHamburger || hideBudget) ? "none" : "inline-flex" }}
           pr={2}
-          mr={2}
+          mr={0}
           borderRight={{ base: 'none', md: 'none' }}
           borderRadius={0}
           lineHeight="1"
@@ -465,13 +479,13 @@ export default function LeftSection({
           color={colorChange ? "white" : "#111"}
           _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
           _active={{ bg: "transparent" }}
-          px={3}
+          px={1}
           fontWeight="600"
           fontSize="16px"
           letterSpacing="0.5px"
           display={{ base: "none", md: (forceHamburger || hideProjectStatus) ? "none" : "inline-flex" }}
           pr={2}
-          mr={2}
+          mr={0}
           borderRight={{ base: 'none', md: 'none' }}
           borderRadius={0}
           lineHeight="1"
@@ -514,7 +528,7 @@ export default function LeftSection({
           color={colorChange ? "white" : "#111"}
           _hover={{ bg: "transparent", color: colorChange ? "white" : "#111" }}
           _active={{ bg: "transparent" }}
-          px={3}
+          px={1}
           fontWeight="600"
           fontSize="16px"
           letterSpacing="0.5px"
@@ -548,46 +562,50 @@ export default function LeftSection({
           <MenuItem as={Link} to="/property/residential/">Residential Projects</MenuItem>
           <MenuItem as={Link} to="/projects/independentfloors/">Independent Floors</MenuItem>
           <MenuItem as={Link} to="/projects/commercial/">Commercial Projects</MenuItem>
+          <MenuItem as={Link} to="/projects/farmhouse/">Farm House</MenuItem>
+          <MenuItem as={Link} to="/projects/industrial-plots/">Industrial Plots</MenuItem>
+       
         </MenuList>
       </Menu>
-
+            
       {/* Quick links */}
       <Link to="/rental-properties/best-rental-property-in-gurugram/">
-        <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={3} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideRental ? "none" : "inline-flex" }}>
+        <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={1} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideRental ? "none" : "inline-flex" }}>
           Rental
         </Button>
       </Link>
       <Link to="/buy-properties/best-resale-property-in-gurugram/">
-        <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={3} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideResale ? "none" : "inline-flex" }}>
+        <Button size="sm" variant="ghost" bg="transparent" color={colorChange ? "white" : "#e53e3e"} _hover={{ bg: "transparent", color: colorChange ? "white" : "#e53e3e" }} px={1} fontWeight="600" fontSize="16px" display={{ base: "none", md: forceHamburger || hideResale ? "none" : "inline-flex" }}>
           Resale
         </Button>
       </Link>
       {/* Insights (highlighted + opens mega dropdown on hover) */}
-{/*       <Link to="/analytics" 
+      <Link to="/property-market-trends/" 
         onMouseEnter={() => { if (onOpenInsights) { clearTimer(insightsTimer); onOpenInsights(); } }}
         onMouseLeave={() => { if (onCloseInsights) closeFnWithDelay(insightsTimer, onCloseInsights); }}
       >
         <Button
-          size="sm"
           variant="solid"
           bg="#e53e3e"
           color="white"
           _hover={{ bg: '#c53030' }}
           _active={{ bg: '#9b2c2c' }}
-          px={3}
+          px={2}
+          py={0}
+          height="16px"
+          lineHeight="16px"
+          fontSize="16px"
           fontWeight="800"
-          fontSize="15px"
           borderRadius="md"
           boxShadow="0 6px 16px rgba(229,62,62,0.25)"
           ml={{ base: 0, md: 1 }}
           display={{ base: "none", md: "inline-flex" }}
-          onMouseEnter={() => { if (onOpenInsights) { clearTimer(insightsTimer); onOpenInsights(); } }}
           onMouseLeave={() => { if (onCloseInsights) closeFnWithDelay(insightsTimer, onCloseInsights); }}
         >
-          Insights
+          Market Trends
         </Button>
       </Link>
-      */}
+     
     </Flex>
   );
 }
