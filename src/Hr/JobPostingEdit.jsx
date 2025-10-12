@@ -70,7 +70,7 @@ const JobPostingEdit = () => {
   return (
     <div className="flex bg-gray-100 min-h-screen">
       <HrSidebar />
-      <div className="flex-1 p-8 md:p-10 lg:p-12 ml-0 md:ml-64 transition-all duration-300">
+      <div className="flex-1 p-8 md:p-10 lg:p-12 ml-0 md:ml-6 transition-all duration-300">
         <div className="w-full">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">Edit Job Posting</h2>
 

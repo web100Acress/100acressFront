@@ -79,7 +79,7 @@ const JobApplications = () => {
   return (
     <div className="flex bg-gray-100 min-h-screen">
       <HrSidebar />
-      <div className="flex-1 p-8 md:p-10 lg:p-12 ml-0 md:ml-64">
+      <div className="flex-1 p-8 md:p-10 lg:p-12 ml-0 md:ml-6">
         <div className="w-full">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-3xl font-bold text-gray-800">Job Applications</h2>

@@ -177,10 +177,9 @@ const Contacts = lazy(() => import("./Insight/components/Contacts"));
 const EnquiryManagement = lazy(() => import("./Insight/components/EnquiryManagement"));
 const MarketReportsAdmin = lazy(() => import("./Insight/pages/Admin/MarketReportsAdmin"));
 const AdminGuides = lazy(() => import("./Insight/pages/Admin/AdminGuides"));
-
-
-
-
+const AdminJobPosting = lazy(() => import("./AdminPage/AdminJobPosting"));
+const AdminJobPostingView = lazy(() => import("./AdminPage/AdminJobPostingView"));
+const AdminJobPostingEdit = lazy(() => import("./AdminPage/AdminJobPostingEdit"));
 // Initialize QueryClient
 const queryClient = new QueryClient();
 
@@ -554,6 +553,9 @@ function App() {
                         path="insights/investment"
                         element={<LazyLoad><InvestmentInsights /></LazyLoad>}
                       />
+                      <Route path="jobposting" element={<LazyLoad><AdminJobPosting /></LazyLoad>} />
+                      <Route path="jobposting/view/:id" element={<LazyLoad><AdminJobPostingView /></LazyLoad>} />
+                      <Route path="jobposting/edit/:id" element={<LazyLoad><AdminJobPostingEdit /></LazyLoad>} />
                       </Route>
 
                     {/* HR Department Routing */}
