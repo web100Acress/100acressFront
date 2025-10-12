@@ -219,7 +219,6 @@ const ProjectEdit = () => {
           projectRedefine_Entertainment: '',
           projectReraNo: '',
           AboutDeveloper: '',
-          type: '',
           project_url: '',
           meta_title: '',
           meta_description: '',
