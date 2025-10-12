@@ -6,6 +6,7 @@ import { DataProvider } from "./MyContext";
 import { AuthProvider } from "./AuthContext";
 import { Toaster } from "./Components/ui/Toaster";
 import { Toaster as Sonner } from "./Components/ui/sonner";
+import { Toaster as HotToaster } from "react-hot-toast";
 import { TooltipProvider } from "./Components/ui/Tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PrivateRoute from "./Components/PrivateRoute";
@@ -230,6 +231,7 @@ function App() {
                 <Suspense fallback={<LoadingSpinner />}>
                   <Toaster position="top-right" />
                   <Sonner position="top-right" richColors />
+                  <HotToaster position="top-right" />
                   
 
                   {/* Your existing routes */}
