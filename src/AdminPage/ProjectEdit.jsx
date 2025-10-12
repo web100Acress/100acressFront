@@ -3,6 +3,9 @@ import Sidebar from "./Sidebar";
 import { useParams, Link } from "react-router-dom";
 import api from "../config/apiClient";
 import { MdOutlineDeleteOutline, MdInfo, MdAttachMoney, MdDateRange, MdBarChart, MdDescription, MdStar, MdCheckCircle, MdUpdate } from "react-icons/md";
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale.css';
 const customStyle = {
   position: "absolute",
   top: "100px",
@@ -15,6 +18,8 @@ const ProjectEdit = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [projectTypes, setProjectTypes] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([]);
+  const [builderOptions, setBuilderOptions] = useState([]);
   const [values, setValues] = useState({
     thumbnailImage: "",
     otherImage: [],
@@ -47,16 +52,28 @@ const ProjectEdit = () => {
     launchingDate: "",
     totalLandArea: "",
     totalUnit: "",
-    towerNumber: "",
     mobileNumber: "",
     possessionDate: "",
     minPrice: "",
     maxPrice: "",
     Amenities:"",
-    project_Brochure: "",
-  });
+    project_Brochure: "" });
+
+  // City and State dropdown states
+  const [citiesList, setCitiesList] = useState([]);
+  const [filteredCities, setFilteredCities] = useState([]);
+  const [loadingCities, setLoadingCities] = useState(true);
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  const [citySearchTerm, setCitySearchTerm] = useState("");
+
+  const [statesList, setStatesList] = useState([]);
+  const [filteredStates, setFilteredStates] = useState([]);
+  const [loadingStates, setLoadingStates] = useState(true);
+  const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
+  const [stateSearchTerm, setStateSearchTerm] = useState("");
 
   const { id } = useParams();
+
   // Safely derive arrays from values to avoid destructuring errors
   const project_floorplan_Image = Array.isArray(values?.project_floorplan_Image)
     ? values.project_floorplan_Image
@@ -66,6 +83,31 @@ const ProjectEdit = () => {
     : [];
   const floorPlanLength = project_floorplan_Image.length;
   const projectGalleryLength = projectGallery.length;
+
+  // Fetch project data when id changes
+  useEffect(() => {
+    fetchData();
+  }, [id]);
+
+  // Load cities and states on component mount
+  useEffect(() => {
+    fetchCitiesFromBackend();
+    fetchStatesFromBackend();
+  }, []);
+
+  // Initialize city search term when values.city changes
+  useEffect(() => {
+    if (values.city) {
+      setCitySearchTerm(values.city);
+    }
+  }, [values.city]);
+
+  // Initialize state search term when values.state changes
+  useEffect(() => {
+    if (values.state) {
+      setStateSearchTerm(values.state);
+    }
+  }, [values.state]);
 
   // Fetch all project types for dropdown
   useEffect(() => {
@@ -78,8 +120,7 @@ const ProjectEdit = () => {
             res.data.data
               .map(project => project.type)
               .filter(Boolean) // Remove any null/undefined values
-          )];
-
+          )].sort();
           // Add "Industrial Plots" if not already present
           if (!uniqueTypes.includes('Industrial Plots')) {
             uniqueTypes.push('Industrial Plots');
@@ -97,6 +138,54 @@ const ProjectEdit = () => {
       }
     };
     fetchProjectTypes();
+  }, []);
+
+  // Fetch all project statuses for dropdown
+  useEffect(() => {
+    const fetchProjectStatuses = async () => {
+      try {
+        const res = await api.get('/project/viewAll/data?sort=-createdAt');
+        if (res.data?.data) {
+          // Extract unique project statuses and sort them
+          const uniqueStatuses = [...new Set(
+            res.data.data
+              .map(project => project.project_Status)
+              .filter(Boolean) // Remove any null/undefined values
+          )].sort();
+
+          setStatusOptions(uniqueStatuses);
+        }
+      } catch (error) {
+        console.error("Error fetching project statuses:", error);
+        // Fallback: set default project statuses
+        setStatusOptions(['newlaunch', 'readytomove', 'underconstruction']);
+      }
+    };
+    fetchProjectStatuses();
+  }, []);
+
+  // Fetch all project builders for dropdown
+  useEffect(() => {
+    const fetchProjectBuilders = async () => {
+      try {
+        const res = await api.get('/project/viewAll/data?sort=-createdAt');
+        if (res.data?.data) {
+          // Extract unique builder names and sort them
+          const uniqueBuilders = [...new Set(
+            res.data.data
+              .map(project => project.builderName)
+              .filter(Boolean) // Remove any null/undefined values
+          )].sort();
+
+          setBuilderOptions(uniqueBuilders);
+        }
+      } catch (error) {
+        console.error("Error fetching project builders:", error);
+        // Fallback: set empty array
+        setBuilderOptions([]);
+      }
+    };
+    fetchProjectBuilders();
   }, []);
 
   // Function to fetch project data
@@ -162,10 +251,218 @@ const ProjectEdit = () => {
     }
   };
 
-  // Fetch project data when id changes
+  // Function to fetch cities from backend
+  const fetchCitiesFromBackend = async () => {
+    try {
+      setLoadingCities(true);
+
+      // Fetch from multiple sources to get comprehensive city list
+      const [projectsResponse, propertiesResponse] = await Promise.allSettled([
+        api.get("project/viewAll/data?sort=-createdAt&limit=1000"),
+        api.get("postPerson/propertyoneEdit/all?limit=1000")
+      ]);
+
+      let allCities = [];
+
+      // Extract cities from projects
+      if (projectsResponse.status === 'fulfilled' && projectsResponse.value?.data?.data) {
+        const projectCities = projectsResponse.value.data.data
+          .map(project => project.city)
+          .filter(Boolean);
+        allCities.push(...projectCities);
+      }
+
+      // Extract cities from properties
+      if (propertiesResponse.status === 'fulfilled' && propertiesResponse.value?.data?.data) {
+        const propertyCities = propertiesResponse.value.data.data
+          .map(property => property.city)
+          .filter(Boolean);
+        allCities.push(...propertyCities);
+      }
+
+      // Get unique cities and sort them
+      const uniqueCities = [...new Set(allCities)].sort();
+
+      console.log(`Fetched ${uniqueCities.length} unique cities from backend`);
+      setCitiesList(uniqueCities);
+      setFilteredCities(uniqueCities);
+      return uniqueCities;
+
+    } catch (error) {
+      console.error("Error fetching cities:", error);
+      // Fallback to just projects if properties API fails
+      try {
+        const { data } = await api.get("project/viewAll/data?sort=-createdAt");
+        if (data?.data) {
+          const uniqueCities = [...new Set(
+            data.data.map(project => project.city).filter(Boolean)
+          )].sort();
+          setCitiesList(uniqueCities);
+          setFilteredCities(uniqueCities);
+          return uniqueCities;
+        }
+      } catch (fallbackError) {
+        console.error("Fallback city fetch also failed:", fallbackError);
+      }
+      return [];
+    } finally {
+      setLoadingCities(false);
+    }
+  };
+
+  // Function to fetch states from backend
+  const fetchStatesFromBackend = async () => {
+    try {
+      setLoadingStates(true);
+
+      // Fetch from multiple sources to get comprehensive state list
+      const [projectsResponse, propertiesResponse] = await Promise.allSettled([
+        api.get("project/viewAll/data?sort=-createdAt&limit=1000"),
+        api.get("postPerson/propertyoneEdit/all?limit=1000")
+      ]);
+
+      let allStates = [];
+
+      // Extract states from projects
+      if (projectsResponse.status === 'fulfilled' && projectsResponse.value?.data?.data) {
+        const projectStates = projectsResponse.value.data.data
+          .map(project => project.state)
+          .filter(Boolean);
+        allStates.push(...projectStates);
+      }
+
+      // Extract states from properties
+      if (propertiesResponse.status === 'fulfilled' && propertiesResponse.value?.data?.data) {
+        const propertyStates = propertiesResponse.value.data.data
+          .map(property => property.state)
+          .filter(Boolean);
+        allStates.push(...propertyStates);
+      }
+
+      // Get unique states and sort them
+      const uniqueStates = [...new Set(allStates)].sort();
+
+      console.log(`Fetched ${uniqueStates.length} unique states from backend`);
+      setStatesList(uniqueStates);
+      setFilteredStates(uniqueStates);
+      return uniqueStates;
+
+    } catch (error) {
+      console.error("Error fetching states:", error);
+      // Fallback to just projects if properties API fails
+      try {
+        const { data } = await api.get("project/viewAll/data?sort=-createdAt");
+        if (data?.data) {
+          const uniqueStates = [...new Set(
+            data.data.map(project => project.state).filter(Boolean)
+          )].sort();
+          setStatesList(uniqueStates);
+          setFilteredStates(uniqueStates);
+          return uniqueStates;
+        }
+      } catch (fallbackError) {
+        console.error("Fallback state fetch also failed:", fallbackError);
+      }
+      return [];
+    } finally {
+      setLoadingStates(false);
+    }
+  };
+
+  // Filter cities based on search term
   useEffect(() => {
-    fetchData();
-  }, [id]);
+    const filtered = citiesList.filter((city) =>
+      city.toLowerCase().includes(citySearchTerm.toLowerCase())
+    );
+    setFilteredCities(filtered);
+  }, [citySearchTerm, citiesList]);
+
+  // Filter states based on search term
+  useEffect(() => {
+    const filtered = statesList.filter((state) =>
+      state.toLowerCase().includes(stateSearchTerm.toLowerCase())
+    );
+    setFilteredStates(filtered);
+  }, [stateSearchTerm, statesList]);
+
+  // Handle city selection
+  const handleCitySelect = (cityName) => {
+    setValues((prev) => ({
+      ...prev,
+      city: cityName,
+    }));
+    setCitySearchTerm(cityName);
+    setIsCityDropdownOpen(false);
+  };
+
+  // Handle state selection
+  const handleStateSelect = (stateName) => {
+    setValues((prev) => ({
+      ...prev,
+      state: stateName,
+    }));
+    setStateSearchTerm(stateName);
+    setIsStateDropdownOpen(false);
+  };
+
+  // Handle city input change - allow direct typing of new cities
+  const handleCityInputChange = (e) => {
+    const value = e.target.value;
+    setCitySearchTerm(value);
+
+    // If user types a new city name, set it directly
+    if (value && !filteredCities.includes(value)) {
+      setValues((prev) => ({
+        ...prev,
+        city: value,
+      }));
+    }
+
+    setIsCityDropdownOpen(true);
+  };
+
+  // Handle state input change - allow direct typing of new states
+  const handleStateInputChange = (e) => {
+    const value = e.target.value;
+    setStateSearchTerm(value);
+
+    // If user types a new state name, set it directly
+    if (value && !filteredStates.includes(value)) {
+      setValues((prev) => ({
+        ...prev,
+        state: value,
+      }));
+    }
+
+    setIsStateDropdownOpen(true);
+  };
+
+  // Handle city input focus
+  const handleCityInputFocus = () => {
+    setIsCityDropdownOpen(true);
+  };
+
+  // Handle state input focus
+  const handleStateInputFocus = () => {
+    setIsStateDropdownOpen(true);
+  };
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isCityDropdownOpen && !event.target.closest(".city-dropdown")) {
+        setIsCityDropdownOpen(false);
+      }
+      if (isStateDropdownOpen && !event.target.closest(".state-dropdown")) {
+        setIsStateDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isCityDropdownOpen, isStateDropdownOpen]);
 
   const handleFileChange = (event) => {
     const input = event.target;
@@ -458,9 +755,9 @@ const ProjectEdit = () => {
       icon: <MdInfo className="text-2xl text-blue-500 mr-2" />, title: "Basic Info", fields: [
         { label: "Property Name", name: "projectName", icon: <MdInfo className="inline mr-1" /> },
         { label: "Project Type", name: "type", icon: <MdInfo className="inline mr-1" />, select: true, options: projectTypes || [] },
-        { label: "Project Status", name: "project_Status", icon: <MdInfo className="inline mr-1" /> },
+        { label: "Project Status", name: "project_Status", icon: <MdInfo className="inline mr-1" />, select: true, options: statusOptions },
         { label: "Project URL", name: "project_url", icon: <MdInfo className="inline mr-1" />, placeholder: "project-name" },
-        { label: "Builder Name", name: "builderName", icon: <MdInfo className="inline mr-1" /> },
+        { label: "Builder Name", name: "builderName", icon: <MdInfo className="inline mr-1" />, select: true, options: builderOptions },
         { label: "Address", name: "projectAddress", icon: <MdInfo className="inline mr-1" /> },
         { label: "City", name: "city", icon: <MdInfo className="inline mr-1" /> },
         { label: "State", name: "state", icon: <MdInfo className="inline mr-1" /> },
@@ -676,6 +973,104 @@ const ProjectEdit = () => {
                           <option value="">Select {field.label}</option>
                           {field.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                         </select>
+                      ) : field.name === 'city' ? (
+                        /* City Dropdown */
+                        <div className="relative city-dropdown">
+                          <Tippy content={<span>City</span>} animation="scale" theme="light-border">
+                            <div className="relative">
+                              <input
+                                type="text"
+                                value={citySearchTerm}
+                                onChange={handleCityInputChange}
+                                onFocus={handleCityInputFocus}
+                                placeholder="Type or select city"
+                                className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2 text-gray-800 pr-10"
+                                autoComplete="off"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                              >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                              </button>
+                            </div>
+                          </Tippy>
+
+                          {/* Dropdown */}
+                          {isCityDropdownOpen && (
+                            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                              {loadingCities ? (
+                                <div className="px-4 py-2 text-gray-500">Loading cities...</div>
+                              ) : filteredCities.length > 0 ? (
+                                <>
+                                  {filteredCities.map((city, index) => (
+                                    <div
+                                      key={index}
+                                      onClick={() => handleCitySelect(city)}
+                                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-800"
+                                    >
+                                      {city}
+                                    </div>
+                                  ))}
+                                </>
+                              ) : (
+                                <div className="px-4 py-2 text-gray-500">No cities found</div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ) : field.name === 'state' ? (
+                        /* State Dropdown */
+                        <div className="relative state-dropdown">
+                          <Tippy content={<span>State</span>} animation="scale" theme="light-border">
+                            <div className="relative">
+                              <input
+                                type="text"
+                                value={stateSearchTerm}
+                                onChange={handleStateInputChange}
+                                onFocus={handleStateInputFocus}
+                                placeholder="Type or select state"
+                                className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2 text-gray-800 pr-10"
+                                autoComplete="off"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setIsStateDropdownOpen(!isStateDropdownOpen)}
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                              >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                              </button>
+                            </div>
+                          </Tippy>
+
+                          {/* Dropdown */}
+                          {isStateDropdownOpen && (
+                            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                              {loadingStates ? (
+                                <div className="px-4 py-2 text-gray-500">Loading states...</div>
+                              ) : filteredStates.length > 0 ? (
+                                <>
+                                  {filteredStates.map((state, index) => (
+                                    <div
+                                      key={index}
+                                      onClick={() => handleStateSelect(state)}
+                                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-800"
+                                    >
+                                      {state}
+                                    </div>
+                                  ))}
+                                </>
+                              ) : (
+                                <div className="px-4 py-2 text-gray-500">No states found</div>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       ) : field.textarea ? (
                         <textarea name={field.name} value={values[field.name] || ''} onChange={e => setValues({ ...values, [field.name]: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none dark:bg-gray-900 dark:text-white" />
                       ) : (

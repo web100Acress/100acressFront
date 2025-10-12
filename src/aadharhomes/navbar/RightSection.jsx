@@ -24,6 +24,7 @@ export default function RightSection({
   showModal,
   showAuth,
   setShowAuth,
+  isHr,
 }) {
   const { isOpen: isAcctOpen, onOpen: onAcctOpen, onClose: onAcctClose } = useDisclosure();
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -182,6 +183,17 @@ export default function RightSection({
                           <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">Blog</Box>
                         </Button>
                       )}
+                      {isHr && (
+                        <Button variant="ghost" w="100%" display="flex" flexDir="column" justifyContent="center" alignItems="center" textAlign="center" py={3} px={4} minH={{ base: 14, md: 12 }} bg="white" borderWidth="1px" borderColor="#e5e7eb" rounded="xl" boxShadow="xs" transition="all 0.15s ease" _hover={{ bg: 'white', boxShadow: 'sm' }} _active={{ bg: 'white', boxShadow: 'xs' }} onClick={() => { onAcctClose(); go('/hr/dashboard'); }} my={3} mx={3} position="relative" zIndex={1}>
+                          <Box as="span" lineHeight={0} mb={1}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </Box>
+                          <Box as="span" color="#111" fontSize={{ base: 'sm', md: 'md' }} fontWeight="600" whiteSpace="normal" wordBreak="break-word" lineHeight="1.25">HR</Box>
+                        </Button>
+                      )}
                     </Box>
                     <Box px={4} pb={3}>
                       <Button colorScheme="red" w="100%" borderRadius="md" fontWeight="600" onClick={() => { onAcctClose(); HandleUserLogout(); ShowLogOutMessage(); }}>
@@ -284,6 +296,17 @@ export default function RightSection({
                       Blog
                     </MenuItem>
                   )}
+                  {isHr && (
+                    <MenuItem onClick={() => go('/hr/dashboard')} fontSize="14px" py={2.5} _hover={{ bg: '#f9fafb' }}>
+                      <Box as="span" lineHeight={0} mr={3}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4Z" stroke="#111" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M9.5 12l1.5 1.5L14.5 10" stroke="#16a34a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </Box>
+                      HR
+                    </MenuItem>
+                  )}  
                   <Box h="1px" bg="#eee" />
                   <MenuItem onClick={() => { HandleUserLogout(); ShowLogOutMessage(); }} fontSize="14px" py={2.5} _hover={{ bg: '#fef2f2' }}>
                     <Box as="span" lineHeight={0} mr={3}>

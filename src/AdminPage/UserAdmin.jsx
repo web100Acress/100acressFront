@@ -29,6 +29,7 @@ const UserAdmin = () => {
     { label: "Agent", value: "agent" },
     { label: "Owner", value: "owner" },
     { label: "Builder", value: "builder" },
+    { label: "HR", value: "hr" },
   ];
 
   // Normalize any incoming role value to one of ROLE_OPTIONS values
@@ -47,6 +48,8 @@ const UserAdmin = () => {
     switch (canonicalizeRole(role)) {
       case 'admin':
         return 'bg-red-100 text-red-700 border-red-200';
+      case 'hr':
+        return 'bg-green-100 text-green-700 border-green-200';
       case 'agent':
         return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       case 'builder':
@@ -257,6 +260,8 @@ const UserAdmin = () => {
     switch (r) {
       case "admin":
         return { label: "Admin", classes: "bg-red-100 text-red-700" };
+      case "hr":
+        return { label: "HR", classes: "bg-green-100 text-green-700" };
       case "blog":
         return {
           label: "Content Writer",

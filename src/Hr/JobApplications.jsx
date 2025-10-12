@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import Sidebar from "./Sidebar";
+import Sidebar from "../AdminPage/Sidebar";
 import api from "../config/apiClient";
 import { FaUserCircle, FaEnvelope, FaPhone, FaFileAlt, FaExclamationCircle } from 'react-icons/fa';
 

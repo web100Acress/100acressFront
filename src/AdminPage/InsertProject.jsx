@@ -49,6 +49,72 @@ const InsertProject = () => {
   const [showCustomBuilderInput, setShowCustomBuilderInput] = useState(false);
   const [customBuilderName, setCustomBuilderName] = useState("");
 
+  // State for states list and dropdown (similar to builders but for states)
+  const [statesList, setStatesList] = useState([]);
+  const [filteredStates, setFilteredStates] = useState([]);
+  const [loadingStates, setLoadingStates] = useState(true);
+  const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
+  const [stateSearchTerm, setStateSearchTerm] = useState("");
+  const [showCustomStateInput, setShowCustomStateInput] = useState(false);
+  const [customStateName, setCustomStateName] = useState("");
+
+  // State for cities list and dropdown (similar to builders but for cities)
+  const [citiesList, setCitiesList] = useState([]);
+  const [filteredCities, setFilteredCities] = useState([]);
+  const [loadingCities, setLoadingCities] = useState(true);
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  const [citySearchTerm, setCitySearchTerm] = useState("");
+  const [showCustomCityInput, setShowCustomCityInput] = useState(false);
+  const [customCityName, setCustomCityName] = useState("");
+
+  // Function to fetch states from backend
+  const fetchStatesFromBackend = async () => {
+    try {
+      const { data } = await api.get("project/viewAll/data?sort=-createdAt");
+      if (data?.data) {
+        // Extract unique state names and sort them
+        const uniqueStates = [...new Set(
+          data.data
+            .map(project => project.state)
+            .filter(Boolean) // Remove any null/undefined values
+        )].sort();
+        setStatesList(uniqueStates);
+        setFilteredStates(uniqueStates);
+        return uniqueStates;
+      }
+      return [];
+    } catch (error) {
+      console.error("Error fetching states:", error);
+      message.error("Failed to load states list");
+      return [];
+    } finally {
+      setLoadingStates(false);
+    }
+  };
+  const fetchCitiesFromBackend = async () => {
+    try {
+      const { data } = await api.get("project/viewAll/data?sort=-createdAt");
+      if (data?.data) {
+        // Extract unique city names and sort them
+        const uniqueCities = [...new Set(
+          data.data
+            .map(project => project.city)
+            .filter(Boolean) // Remove any null/undefined values
+        )].sort();
+        setCitiesList(uniqueCities);
+        setFilteredCities(uniqueCities);
+        return uniqueCities;
+      }
+      return [];
+    } catch (error) {
+      console.error("Error fetching cities:", error);
+      message.error("Failed to load cities list");
+      return [];
+    } finally {
+      setLoadingCities(false);
+    }
+  };
+
   // Function to fetch builders from backend
   const fetchBuildersFromBackend = async () => {
     try {
@@ -74,9 +140,11 @@ const InsertProject = () => {
     }
   };
 
-  // Load builders on component mount
+  // Load builders, cities, and states on component mount
   useEffect(() => {
     fetchBuildersFromBackend();
+    fetchCitiesFromBackend();
+    fetchStatesFromBackend();
   }, []);
 
   const [editFromData, setEditFromData] = useState({
@@ -132,13 +200,73 @@ const InsertProject = () => {
   const [messageApi, contextHolder] = message.useMessage(); // Ant Design message hook
 
 
-  // Filter builders based on search term
+  // Filter states based on search term
   useEffect(() => {
-    const filtered = buildersList.filter((builder) =>
-      builder.toLowerCase().includes(builderSearchTerm.toLowerCase())
+    const filtered = statesList.filter((state) =>
+      state.toLowerCase().includes(stateSearchTerm.toLowerCase())
     );
-    setFilteredBuilders(filtered);
-  }, [builderSearchTerm, buildersList]);
+    setFilteredStates(filtered);
+  }, [stateSearchTerm, statesList]);
+
+  // Handle state selection
+  const handleStateSelect = (stateName) => {
+    if (stateName === "Other") {
+      setShowCustomStateInput(true);
+      setStateSearchTerm("");
+      setIsStateDropdownOpen(false);
+    } else {
+      setEditFromData((prev) => ({
+        ...prev,
+        state: stateName,
+      }));
+      setStateSearchTerm(stateName);
+      setIsStateDropdownOpen(false);
+      setShowCustomStateInput(false);
+      setCustomStateName("");
+    }
+  };
+
+  // Handle state input change - allow direct typing of new states
+  const handleStateInputChange = (e) => {
+    const value = e.target.value;
+    setStateSearchTerm(value);
+
+    // If user types a new state name, set it directly
+    if (value && !filteredStates.includes(value)) {
+      setEditFromData((prev) => ({
+        ...prev,
+        state: value,
+      }));
+    }
+
+    setIsStateDropdownOpen(true);
+  };
+
+  // Handle state input focus
+  const handleStateInputFocus = () => {
+    setIsStateDropdownOpen(true);
+  };
+
+  // Handle city input change - allow direct typing of new cities
+  const handleCityInputChange = (e) => {
+    const value = e.target.value;
+    setCitySearchTerm(value);
+
+    // If user types a new city name, set it directly
+    if (value && !filteredCities.includes(value)) {
+      setEditFromData((prev) => ({
+        ...prev,
+        city: value,
+      }));
+    }
+
+    setIsCityDropdownOpen(true);
+  };
+
+  // Handle city input focus
+  const handleCityInputFocus = () => {
+    setIsCityDropdownOpen(true);
+  };
 
   // Handle builder selection
   const handleBuilderSelect = (builderName) => {
@@ -245,11 +373,169 @@ const InsertProject = () => {
     }
   };
 
-  // Handle custom builder cancel
-  const handleCustomBuilderCancel = () => {
-    setShowCustomBuilderInput(false);
-    setCustomBuilderName("");
-    setBuilderSearchTerm("");
+  // Handle custom city name input
+  const handleCustomCitySubmit = async () => {
+    if (customCityName.trim()) {
+      try {
+        // Show loading message
+        messageApi.open({
+          key: "addCity",
+          type: "loading",
+          content: "Adding new city...",
+        });
+
+        // For now, just add locally since there's no city API endpoint
+        // In the future, you could add a city API endpoint similar to builder
+        const response = { status: 200 }; // Simulate success
+
+        if (response.status === 200) {
+          // Success - update local state
+          setEditFromData((prev) => ({
+            ...prev,
+            city: customCityName.trim(),
+          }));
+          setCitySearchTerm(customCityName.trim());
+          setShowCustomCityInput(false);
+
+          // Add to local cities list for immediate availability
+          if (!citiesList.includes(customCityName.trim())) {
+            const newCitiesList = [...citiesList, customCityName.trim()].sort();
+            setCitiesList(newCitiesList);
+            setFilteredCities(newCitiesList.filter(city =>
+              city.toLowerCase().includes(citySearchTerm.toLowerCase())
+            ));
+          }
+
+          // Clear input
+          setCustomCityName("");
+
+          // Success message
+          messageApi.open({
+            key: "addCity",
+            type: "success",
+            content: "City added successfully!",
+            duration: 3,
+          });
+        }
+      } catch (error) {
+        console.error("Error adding city:", error);
+
+        // Fallback: still update local state even if API fails
+        setEditFromData((prev) => ({
+          ...prev,
+          city: customCityName.trim(),
+        }));
+        setCitySearchTerm(customCityName.trim());
+        setShowCustomCityInput(false);
+
+        // Add to local cities list for immediate availability
+        const newCity = customCityName.trim();
+        if (!citiesList.includes(newCity)) {
+          const newCitiesList = [...citiesList, newCity].sort();
+          setCitiesList(newCitiesList);
+          setFilteredCities(newCitiesList.filter(city =>
+            city.toLowerCase().includes(citySearchTerm.toLowerCase())
+          ));
+        }
+
+        // Clear input
+        setCustomCityName("");
+
+        // Warning message
+        messageApi.open({
+          key: "addCity",
+          type: "warning",
+          content: "City added locally. Backend city management can be added later.",
+          duration: 5,
+        });
+      }
+    }
+  };
+
+  // Handle custom state name input
+  const handleCustomStateSubmit = async () => {
+    if (customStateName.trim()) {
+      try {
+        // Show loading message
+        messageApi.open({
+          key: "addState",
+          type: "loading",
+          content: "Adding new state...",
+        });
+
+        // For now, just add locally since there's no state API endpoint
+        // In the future, you could add a state API endpoint similar to builder
+        const response = { status: 200 }; // Simulate success
+
+        if (response.status === 200) {
+          // Success - update local state
+          setEditFromData((prev) => ({
+            ...prev,
+            state: customStateName.trim(),
+          }));
+          setStateSearchTerm(customStateName.trim());
+          setShowCustomStateInput(false);
+
+          // Add to local states list for immediate availability
+          if (!statesList.includes(customStateName.trim())) {
+            const newStatesList = [...statesList, customStateName.trim()].sort();
+            setStatesList(newStatesList);
+            setFilteredStates(newStatesList.filter(state =>
+              state.toLowerCase().includes(stateSearchTerm.toLowerCase())
+            ));
+          }
+
+          // Clear input
+          setCustomStateName("");
+
+          // Success message
+          messageApi.open({
+            key: "addState",
+            type: "success",
+            content: "State added successfully!",
+            duration: 3,
+          });
+        }
+      } catch (error) {
+        console.error("Error adding state:", error);
+
+        // Fallback: still update local state even if API fails
+        setEditFromData((prev) => ({
+          ...prev,
+          state: customStateName.trim(),
+        }));
+        setStateSearchTerm(customStateName.trim());
+        setShowCustomStateInput(false);
+
+        // Add to local states list for immediate availability
+        const newState = customStateName.trim();
+        if (!statesList.includes(newState)) {
+          const newStatesList = [...statesList, newState].sort();
+          setStatesList(newStatesList);
+          setFilteredStates(newStatesList.filter(state =>
+            state.toLowerCase().includes(stateSearchTerm.toLowerCase())
+          ));
+        }
+
+        // Clear input
+        setCustomStateName("");
+
+        // Warning message
+        messageApi.open({
+          key: "addState",
+          type: "warning",
+          content: "State added locally. Backend state management can be added later.",
+          duration: 5,
+        });
+      }
+    }
+  };
+
+  // Handle custom state cancel
+  const handleCustomStateCancel = () => {
+    setShowCustomStateInput(false);
+    setCustomStateName("");
+    setStateSearchTerm("");
   };
 
   // Handle click outside to close dropdown
@@ -258,13 +544,19 @@ const InsertProject = () => {
       if (isBuilderDropdownOpen && !event.target.closest(".builder-dropdown")) {
         setIsBuilderDropdownOpen(false);
       }
+      if (isStateDropdownOpen && !event.target.closest(".state-dropdown")) {
+        setIsStateDropdownOpen(false);
+      }
+      if (isCityDropdownOpen && !event.target.closest(".city-dropdown")) {
+        setIsCityDropdownOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isBuilderDropdownOpen]);
+  }, [isBuilderDropdownOpen, isStateDropdownOpen, isCityDropdownOpen]);
 
   const resetData = () => {
     setEditFromData({
@@ -651,7 +943,7 @@ const InsertProject = () => {
                   </h2>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                  <div>
+                  {/* <div>
                     <Tippy
                       content={
                         <span>Project Overview (trending/featured/none)</span>
@@ -680,7 +972,7 @@ const InsertProject = () => {
                       <option value="featured">Featured</option>
                       <option value="none">None</option>
                     </select>
-                  </div>
+                  </div> */}
 
                   <div>
                     <Tippy
@@ -803,7 +1095,7 @@ const InsertProject = () => {
                   </h2>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                  <div>
+                  <div className="relative state-dropdown">
                     <Tippy
                       content={<span>State</span>}
                       animation="scale"
@@ -816,17 +1108,121 @@ const InsertProject = () => {
                         <MdLocationOn /> State
                       </label>
                     </Tippy>
-                    <input
-                      type="text"
-                      id="state"
-                      name="state"
-                      placeholder="e.g., Haryana"
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
-                      value={editFromData.state}
-                      onChange={handleChangeProjectData}
-                    />
+                    <div className="relative">
+                      <input
+                        type="text"
+                        id="state"
+                        name="state"
+                        placeholder="select state..."
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 pr-10"
+                        value={stateSearchTerm}
+                        onChange={handleStateInputChange}
+                        onFocus={handleStateInputFocus}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setIsStateDropdownOpen(!isStateDropdownOpen)
+                        }
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        <MdKeyboardArrowDown
+                          className={`transition-transform ${
+                            isStateDropdownOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Dropdown */}
+                    {isStateDropdownOpen && (
+                      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                        <div className="p-2 border-b border-gray-200">
+                          <div className="relative">
+                            <MdSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                            <input
+                              type="text"
+                              placeholder="Search states..."
+                              className="w-full pl-8 pr-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-red-500"
+                              value={stateSearchTerm}
+                              onChange={(e) =>
+                                setStateSearchTerm(e.target.value)
+                              }
+                              autoFocus
+                            />
+                          </div>
+                        </div>
+                        <div className="max-h-48 overflow-y-auto">
+                          {filteredStates.length > 0 ? (
+                            filteredStates.map((state, index) => (
+                              <button
+                                key={index}
+                                type="button"
+                                className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                                onClick={() => handleStateSelect(state)}
+                              >
+                                {state}
+                              </button>
+                            ))
+                          ) : (
+                            <div className="px-3 py-2 text-sm text-gray-500">
+                              No states found
+                            </div>
+                          )}
+                          {/* Other option */}
+                          {/* <div className="border-t border-gray-200 mt-1">
+                            <button
+                              type="button"
+                              className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 focus:bg-blue-50 focus:outline-none text-blue-600 font-medium"
+                              onClick={() => handleStateSelect("Other")}
+                            >
+                              + Add New State
+                            </button>
+                          </div> */}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Custom State Input */}
+                    {/* {showCustomStateInput && (
+                      <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                        <label className="block text-sm font-medium text-blue-800 mb-2">
+                          Enter New State Name:
+                        </label>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            placeholder="Enter state name..."
+                            className="flex-1 p-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                            value={customStateName}
+                            onChange={(e) => setCustomStateName(e.target.value)}
+                            onKeyPress={(e) => {
+                              if (e.key === "Enter") {
+                                handleCustomStateSubmit();
+                              }
+                            }}
+                            autoFocus
+                          />
+                          <button
+                            type="button"
+                            onClick={handleCustomStateSubmit}
+                            className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium"
+                            disabled={!customStateName.trim()}
+                          >
+                            Add
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleCustomStateCancel}
+                            className="px-3 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm font-medium"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )} */}
                   </div>
-                  <div>
+                  <div className="relative city-dropdown">
                     <Tippy
                       content={<span>City</span>}
                       animation="scale"
@@ -839,15 +1235,75 @@ const InsertProject = () => {
                         <MdLocationOn /> City
                       </label>
                     </Tippy>
-                    <input
-                      type="text"
-                      id="city"
-                      name="city"
-                      placeholder="e.g., Gurugram"
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
-                      value={editFromData.city}
-                      onChange={handleChangeProjectData}
-                    />
+                    <div className="relative">
+                      <input
+                        type="text"
+                        id="city"
+                        name="city"
+                        placeholder="select city..."
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 pr-10"
+                        value={citySearchTerm}
+                        onChange={handleCityInputChange}
+                        onFocus={handleCityInputFocus}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setIsCityDropdownOpen(!isCityDropdownOpen)
+                        }
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        <MdKeyboardArrowDown
+                          className={`transition-transform ${
+                            isCityDropdownOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Dropdown */}
+                    {isCityDropdownOpen && (
+                      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                        <div className="p-2 border-b border-gray-200">
+                          <div className="relative">
+                            <MdSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                            <input
+                              type="text"
+                              placeholder="Search cities..."
+                              className="w-full pl-8 pr-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-red-500"
+                              value={citySearchTerm}
+                              onChange={(e) =>
+                                setCitySearchTerm(e.target.value)
+                              }
+                              autoFocus
+                            />
+                          </div>
+                        </div>
+                        <div className="max-h-48 overflow-y-auto">
+                          {filteredCities.length > 0 ? (
+                            filteredCities.map((city, index) => (
+                              <button
+                                key={index}
+                                type="button"
+                                className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                                onClick={() => handleCitySelect(city)}
+                              >
+                                {city}
+                              </button>
+                            ))
+                          ) : (
+                            <div className="px-3 py-2 text-sm text-gray-500">
+                              No cities found
+                            </div>
+                          )}
+                          {/* Other option */}
+                      
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Custom City Input */}
+                    
                   </div>
                   <div>
                     <Tippy
