@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "./Sidebar";
+import Sidebar from "../AdminPage/Sidebar";
 import api from '../config/apiClient';
 import { useParams, Link } from 'react-router-dom';
 import { FaMapMarkerAlt, FaBriefcase, FaUserTie, FaTasks, FaClipboardList, FaCode } from 'react-icons/fa'; // Importing icons

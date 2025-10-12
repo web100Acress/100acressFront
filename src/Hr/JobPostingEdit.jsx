@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "./Sidebar";
+import Sidebar from "../AdminPage/Sidebar";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../config/apiClient";
 import { FaSave, FaSpinner } from 'react-icons/fa';

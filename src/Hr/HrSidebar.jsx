@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+
 import {
   FaTachometerAlt,
   FaBars,
   FaTimes,
   FaSignOutAlt
 } from 'react-icons/fa';
+import { BiSolidGraduation } from 'react-icons/bi';
 
 const HrSidebar = () => {
   const location = useLocation();
@@ -32,13 +34,11 @@ const HrSidebar = () => {
       path: '/hr/leave',
       icon: <FaTachometerAlt className="text-xl" />
     },
-   
     {
       name: 'Onboarding',
       path: '/hr/onboarding',
       icon: <FaTachometerAlt className="text-xl" />
-    },
-    
+    }
   ];
 
   const handleLogout = () => {
@@ -91,13 +91,13 @@ const HrSidebar = () => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+          <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
             {navigationItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 className={`
-                  flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-200 group relative
+                  flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative
                   ${location.pathname === item.path
                     ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-600/25'
                     : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
@@ -106,7 +106,7 @@ const HrSidebar = () => {
                 onClick={() => setIsOpen(false)}
               >
                 <div className={`
-                  p-2 rounded-md transition-all duration-200
+                  p-1.5 rounded-md transition-all duration-200
                   ${location.pathname === item.path
                     ? 'text-white bg-white/20'
                     : 'text-gray-400 group-hover:text-white group-hover:bg-gray-700/50'
@@ -123,12 +123,12 @@ const HrSidebar = () => {
           </nav>
 
           {/* Logout Button - Fixed at bottom */}
-          <div className="px-4 pb-6 mt-auto">
+          <div className="px-4 pb-4 mt-auto">
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-3 w-full px-3 py-3 rounded-lg text-red-300 hover:bg-red-600/20 hover:text-red-300 transition-all duration-200 group border-t border-gray-700 pt-4"
+              className="flex items-center space-x-3 w-full px-3 py-2.5 rounded-lg text-red-300 hover:bg-red-600/20 hover:text-red-300 transition-all duration-200 group border-t border-gray-700 pt-3"
             >
-              <div className="p-2 rounded-md text-red-400 group-hover:text-white group-hover:bg-red-600/20 transition-all duration-200">
+              <div className="p-1.5 rounded-md text-red-400 group-hover:text-white group-hover:bg-red-600/20 transition-all duration-200">
                 <FaSignOutAlt className="text-xl" />
               </div>
               <span className="font-medium">Logout</span>
