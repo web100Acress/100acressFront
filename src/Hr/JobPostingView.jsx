@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../AdminPage/Sidebar";
+import HrSidebar from "./HrSidebar";
 import api from '../config/apiClient';
 import { useParams, Link } from 'react-router-dom';
 import { FaMapMarkerAlt, FaBriefcase, FaUserTie, FaTasks, FaClipboardList, FaCode } from 'react-icons/fa'; // Importing icons
@@ -24,16 +24,16 @@ const JobPostingView = () => {
     fetchJobPostingData();
   }, [id]);
 
-  return (
-    <div className="flex bg-gray-100 min-h-screen">
-      <Sidebar />
-       <div className="flex-1 p-8 md:p-10 lg:p-12 ml-0 md:ml-64">
+   return (
+    <div className="flex bg-gray-100 min-h-screen">
+      <HrSidebar />
+      <div className="flex-1 p-8 md:p-10 lg:p-12 ml-0 md:ml-64">
         <div className="w-full bg-white p-6 rounded-lg shadow-md">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-3xl font-bold text-gray-800">Job Posting Details</h2>
             <Link
               className="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition duration-300"
-              to={`/admin/jobposting/applications/${id}`}
+              to={`/hr/jobposting/applications/${id}`}
             >
               View Applications
             </Link>

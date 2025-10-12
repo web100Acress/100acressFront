@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import Sidebar from "../AdminPage/Sidebar";
+import HrSidebar from "./HrSidebar";
 import api from "../config/apiClient";
 import { FaUserCircle, FaEnvelope, FaPhone, FaFileAlt, FaExclamationCircle } from 'react-icons/fa';
 
@@ -78,7 +78,7 @@ const JobApplications = () => {
 
   return (
     <div className="flex bg-gray-100 min-h-screen">
-      <Sidebar />
+      <HrSidebar />
       <div className="flex-1 p-8 md:p-10 lg:p-12 ml-0 md:ml-64">
         <div className="w-full">
           <div className="flex items-center justify-between mb-6">
