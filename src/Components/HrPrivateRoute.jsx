@@ -5,15 +5,15 @@ import { flushSync } from "react-dom";
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner";
 
-const PrivateRoute = () => {
+const HrPrivateRoute = () => {
   const rawToken = localStorage.getItem("myToken");
-  const { isAdmin, setIsAdmin } = useContext(AuthContext);
+  const { isHr, setIsHr } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  // Admin Verification on Component Mount or token change
+  // HR Verification on Component Mount or token change
   useEffect(() => {
-    const verifyAccess = async () => {
+    const verifyHrAccess = async () => {
       if (!rawToken) {
         setLoading(false);
         return navigate("/");
@@ -22,35 +22,34 @@ const PrivateRoute = () => {
         // Sanitize token from localStorage: remove quotes and any leading 'Bearer '
         const cleaned = (rawToken || "").replace(/^"|"$/g, "").replace(/^Bearer\s+/i, "");
 
-        // Check if admin
-        const { data: adminData } = await axios.get("auth/isAdmin", {
+        // Check if HR
+        const { data: hrData } = await axios.get("auth/isHr", {
           headers: cleaned ? { Authorization: `Bearer ${cleaned}` } : undefined,
         });
 
         flushSync(() => {
-          setIsAdmin(adminData?.success === true);
+          setIsHr(hrData?.success === true);
         });
 
-        // If not admin, redirect to user dashboard
-        if (adminData?.success !== true) {
+        // If not HR, redirect to user dashboard
+        if (hrData?.success !== true) {
           navigate("/userdashboard");
         }
         setLoading(false);
       } catch (error) {
-        console.error("Admin access verification error:", error);
+        console.error("HR access verification error:", error);
         flushSync(() => {
-          setIsAdmin(false);
+          setIsHr(false);
         });
         navigate("/");
         setLoading(false);
       }
     };
-    verifyAccess();
-  }, [rawToken, navigate, setIsAdmin]);
+    verifyHrAccess();
+  }, [rawToken, navigate, setIsHr]);
 
   if (loading) return <LoadingSpinner />;
-  return isAdmin ? <Outlet /> : null; // Show outlet only if admin
+  return isHr ? <Outlet /> : null; // Show outlet only if HR
 };
 
-export default PrivateRoute;
-
+export default HrPrivateRoute;

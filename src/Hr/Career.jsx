@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import Sidebar from "./Sidebar";
+import Sidebar from "../AdminPage/Sidebar";
 import { Link } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import axios from "axios";

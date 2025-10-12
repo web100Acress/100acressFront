@@ -21,6 +21,7 @@ const Projects = () => {
   const [filterState, setFilterState] = useState("");
   const [filterHasMobile, setFilterHasMobile] = useState("");
   const [filterHasPayment, setFilterHasPayment] = useState("");
+  const [filterProjectOverview, setFilterProjectOverview] = useState("");
 
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -206,6 +207,61 @@ const Projects = () => {
     [viewAll]
   );
 
+  // Helper function to check if project is high value
+  const isHighValueProject = (minPrice) => {
+    if (!minPrice) return false;
+
+    let priceValue;
+    if (typeof minPrice === 'string') {
+      // Remove commas and convert to number
+      priceValue = parseInt(minPrice.replace(/,/g, ''));
+    } else if (typeof minPrice === 'number') {
+      priceValue = minPrice;
+    } else {
+      return false;
+    }
+
+    return !isNaN(priceValue) && priceValue > 5000000;
+  };
+
+  // Project overview options based on project status and other criteria
+  const projectOverviewOptions = useMemo(() => {
+    if (!viewAll || viewAll.length === 0) {
+      return [];
+    }
+
+    const overviewCounts = { trending: 0, featured: 0, none: 0 };
+
+    viewAll.forEach(project => {
+      try {
+        // Check if project has trending or featured field in the database
+        const isTrendingInDB = project.projectOverview === "trending";
+        const isFeaturedInDB = project.projectOverview === "featured";
+
+        if (isTrendingInDB) {
+          overviewCounts.trending++;
+          console.log(`✅ Project ${project.projectName} is marked as trending in DB`);
+        }
+        // Define featured projects (ONLY database field - no fallback criteria)
+        else if (isFeaturedInDB) {
+          overviewCounts.featured++;
+          console.log(`✅ Project ${project.projectName} is marked as featured in DB`);
+        } else {
+          overviewCounts.none++;
+        }
+      } catch (error) {
+        console.error(`Error processing project ${project.projectName}:`, error);
+        overviewCounts.none++;
+      }
+    });
+
+    return [
+      { value: 'trending', label: `Trending (${overviewCounts.trending})` },
+      { value: 'featured', label: `Featured (${overviewCounts.featured})` },
+      { value: 'none', label: `none (${overviewCounts.none})` }
+    ];
+  }, [viewAll, isHighValueProject]);
+
   // Apply combined filters
   const filteredProjects = viewAll.filter((item) => {
     const searchTermLower = (searchTerm || "").toLowerCase();
@@ -243,7 +299,28 @@ const Projects = () => {
     const hasPayment = Boolean((item?.paymentPlan ?? "").toString().trim());
     const matchesPayment = !filterHasPayment || (filterHasPayment === "with" ? hasPayment : !hasPayment);
 
-    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment;
+    // Project overview filtering logic
+    let matchesOverview = true;
+    if (filterProjectOverview) {
+      try {
+        // Check if project has trending or featured field in the database
+        const isTrendingInDB = item.projectOverview === "trending";
+        const isFeaturedInDB = item.projectOverview === "featured";
+
+        if (filterProjectOverview === 'trending') {
+          matchesOverview = isTrendingInDB;
+        } else if (filterProjectOverview === 'featured') {
+          matchesOverview = isFeaturedInDB;
+        } else if (filterProjectOverview === 'none') {
+          matchesOverview = !isTrendingInDB && !isFeaturedInDB;
+        }
+      } catch (error) {
+        console.error(`Error filtering project ${item.projectName}:`, error);
+        matchesOverview = filterProjectOverview === 'none';
+      }
+    }
+
+    return matchesSearch && matchesType && matchesCity && matchesAddress && matchesBuilder && matchesStatus && matchesState && matchesMobile && matchesPayment && matchesOverview;
   });
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -308,6 +385,7 @@ const Projects = () => {
     setFilterState("");
     setFilterHasMobile("");
     setFilterHasPayment("");
+    setFilterProjectOverview("");
     setCurrentPage(1);
   };
 
@@ -401,16 +479,19 @@ const Projects = () => {
               <option value="with">Payment: With</option>
               <option value="without">Payment: Without</option>
             </select>
-            <button type="button" className="reset-filters-button" onClick={resetFilters}>
-              Reset
-            </button>
+
+            <select
+              className="filter-select"
+              value={filterProjectOverview}
+              onChange={(e) => { setFilterProjectOverview(e.target.value); setCurrentPage(1); }}
+            >
+              <option value="">Project Overview</option>
+              {projectOverviewOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <button type="button" className="refresh-button" onClick={handleRefreshData}>
-              🔄 Refresh Data
-            </button>
-            {/* <button type="button" className="export-csv-button" onClick={handleExportCSV}>Export CSV</button> */}
-            
             <Link to={"/admin/project-insert"}>
               <button
                 className="add-new-project-button"
