@@ -137,31 +137,7 @@ const ContactUs = () => {
       </Helmet>
 
       {/* Floating Action Buttons */}
-      <div className="fixed bottom-6 right-6 z-50 space-y-4">
-        {/* WhatsApp Button */}
-        <a
-          href="https://wa.me/919999999999"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 flex items-center"
-        >
-          <FaWhatsapp className="text-2xl" />
-          <span className="ml-2 font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-            WhatsApp
-          </span>
-        </a>
-
-        {/* Call Now Button */}
-        <a
-          href="tel:+918500900100"
-          className="group bg-gradient-to-r from-red-800 to-red-900 hover:from-red-900 hover:to-red-950 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 flex items-center"
-        >
-          <FaPhone className="text-xl" />
-          <span className="ml-2 font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-            Call Now
-          </span>
-        </a>
-      </div>
+      
 
       <main className="container mx-auto px-4 py-16">
         {/* Hero Section */}
