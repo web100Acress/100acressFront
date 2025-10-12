@@ -123,7 +123,7 @@ const ContactUs = () => {
 
 
   return (
-    <div className="overflow-x-hidden min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200">
+    <div className="overflow-x-hidden min-h-screen bg-gradient-to-br from-red-50 via-red-100 to-red-200">
       <Helmet>
         <title>Contact Us | Reach Out to 100acress.com Experts Guidance</title>
         <meta
@@ -143,7 +143,7 @@ const ContactUs = () => {
           href="https://wa.me/919999999999"
           target="_blank"
           rel="noopener noreferrer"
-          className="group bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 flex items-center"
+          className="group bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 flex items-center"
         >
           <FaWhatsapp className="text-2xl" />
           <span className="ml-2 font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
@@ -153,8 +153,8 @@ const ContactUs = () => {
 
         {/* Call Now Button */}
         <a
-          href="tel:+919999999999"
-          className="group bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 flex items-center"
+          href="tel:+918500900100"
+          className="group bg-gradient-to-r from-red-800 to-red-900 hover:from-red-900 hover:to-red-950 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 flex items-center"
         >
           <FaPhone className="text-xl" />
           <span className="ml-2 font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
@@ -165,13 +165,9 @@ const ContactUs = () => {
 
       <main className="container mx-auto px-4 py-16">
         {/* Hero Section */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center bg-gradient-to-r from-gray-600 to-gray-800 text-white px-6 py-2 rounded-full text-sm font-semibold mb-6 shadow-lg">
-            <FaPhone className="mr-2 animate-pulse" />
-            Get In Touch
-          </div>
+        <div className="text-center mb-16 pt-20">
           <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{fontFamily: "'Poppins', sans-serif"}}>
-            <span className="bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-red-700 to-red-900 bg-clip-text text-transparent">
               Let's Connect
             </span>
           </h1>
@@ -188,12 +184,12 @@ const ContactUs = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Sales Card */}
-            <div className="group relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-102 hover:-translate-y-2 border border-gray-200 overflow-hidden">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full -translate-y-10 translate-x-10 opacity-50"></div>
+            <div className="relative bg-gradient-to-br from-red-50 to-red-100 rounded-3xl p-6 shadow-lg border border-red-200 overflow-hidden">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full -translate-y-10 translate-x-10 opacity-50"></div>
               <div className="relative">
                 <div className="flex items-center mb-4">
-                  <div className="bg-gradient-to-br from-gray-600 to-gray-700 p-3 rounded-2xl mr-4 group-hover:rotate-12 transition-transform duration-300 shadow-lg">
-                    <HandShakeIcon />
+                  <div className="bg-gradient-to-br from-red-600 to-red-700 p-3 rounded-2xl mr-4 shadow-lg">
+                    <HandShakeIcon iconstyle={{ filter: 'brightness(0) invert(1)' }} />
                   </div>
                   <h4 className="text-xl font-bold text-gray-900" style={{fontFamily: "'Poppins', sans-serif"}}>
                     Sales & Properties
@@ -202,19 +198,19 @@ const ContactUs = () => {
                 <p className="text-gray-600 mb-6 leading-relaxed" style={{fontFamily: "'Inter', sans-serif"}}>
                   Find your perfect property with our expert guidance and personalized service.
                 </p>
-                <button className="w-full bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white py-3 px-6 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                <a href="/" className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-3 px-6 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl inline-block text-center">
                   Start Your Search
-                </button>
+                </a>
               </div>
             </div>
 
             {/* Help & Support Card */}
-            <div className="group relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-102 hover:-translate-y-2 border border-gray-200 overflow-hidden">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full -translate-y-10 translate-x-10 opacity-50"></div>
+            <div className="relative bg-gradient-to-br from-red-50 to-red-100 rounded-3xl p-6 shadow-lg border border-red-200 overflow-hidden">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full -translate-y-10 translate-x-10 opacity-50"></div>
               <div className="relative">
                 <div className="flex items-center mb-4">
-                  <div className="bg-gradient-to-br from-gray-700 to-gray-800 p-3 rounded-2xl mr-4 group-hover:rotate-12 transition-transform duration-300 shadow-lg">
-                    <HeadPhoneIcon />
+                  <div className="bg-gradient-to-br from-red-700 to-red-800 p-3 rounded-2xl mr-4 shadow-lg">
+                    <HeadPhoneIcon iconstyle={{ filter: 'brightness(0) invert(1)' }} />
                   </div>
                   <h4 className="text-xl font-bold text-gray-900" style={{fontFamily: "'Poppins', sans-serif"}}>
                     Customer Support
@@ -223,19 +219,19 @@ const ContactUs = () => {
                 <p className="text-gray-600 mb-6 leading-relaxed" style={{fontFamily: "'Inter', sans-serif"}}>
                   Get instant help with your queries, property details, and technical support.
                 </p>
-                <button className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white py-3 px-6 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                <a href="tel:+918500900100" className="w-full bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white py-3 px-6 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl inline-block text-center">
                   Get Help Now
-                </button>
+                </a>
               </div>
             </div>
 
             {/* Media & Press Card */}
-            <div className="group relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-102 hover:-translate-y-2 border border-gray-200 overflow-hidden">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full -translate-y-10 translate-x-10 opacity-50"></div>
+            <div className="relative bg-gradient-to-br from-red-50 to-red-100 rounded-3xl p-6 shadow-lg border border-red-200 overflow-hidden">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full -translate-y-10 translate-x-10 opacity-50"></div>
               <div className="relative">
                 <div className="flex items-center mb-4">
-                  <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-3 rounded-2xl mr-4 group-hover:rotate-12 transition-transform duration-300 shadow-lg">
-                    <PlayButtonIcon />
+                  <div className="bg-gradient-to-br from-red-800 to-red-900 p-3 rounded-2xl mr-4 shadow-lg">
+                    <PlayButtonIcon iconstyle={{ filter: 'brightness(0) invert(1)' }} />
                   </div>
                   <h4 className="text-xl font-bold text-gray-900" style={{fontFamily: "'Poppins', sans-serif"}}>
                     Media & Press
@@ -244,9 +240,9 @@ const ContactUs = () => {
                 <p className="text-gray-600 mb-6 leading-relaxed" style={{fontFamily: "'Inter', sans-serif"}}>
                   Access our latest news, press releases, and media resources.
                 </p>
-                <button className="w-full bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white py-3 px-6 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                <a href="/property-market-trends/" className="w-full bg-gradient-to-r from-red-800 to-red-900 hover:from-red-900 hover:to-red-950 text-white py-3 px-6 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl inline-block text-center">
                   View Resources
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -271,9 +267,9 @@ const ContactUs = () => {
           </div>
           
           {/* Contact Form */}
-          <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100">
+          <div className="p-8 bg-gradient-to-br from-red-50 to-red-100">
             <h3 className="text-2xl font-bold text-gray-900 mb-6" style={{fontFamily: "'Poppins', sans-serif"}}>
-              Visit Our Office
+            Consult a Property Expert Now
             </h3>
             
             <form onSubmit={handleInquirySubmitData} className="space-y-4">
@@ -291,14 +287,13 @@ const ContactUs = () => {
                     onChange={handleInquiryDataChange}
                     onFocus={() => setFocusedField('name')}
                     onBlur={() => setFocusedField('')}
-                            className={`w-full px-4 py-3 pl-10 rounded-xl border-2 transition-all duration-300 ${
+                            className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-300 ${
                               focusedField === 'name' 
-                                ? 'border-gray-600 shadow-lg ring-2 ring-gray-200 bg-white' 
-                                : 'border-gray-200 hover:border-gray-300 bg-white'
-                            } focus:outline-none focus:ring-2 focus:ring-gray-200`}
+                                ? 'border-red-600 shadow-lg ring-2 ring-red-200 bg-white' 
+                                : 'border-red-200 hover:border-red-300 bg-white'
+                            } focus:outline-none focus:ring-2 focus:ring-red-200`}
                     value={formDataInquiry.name}
                   />
-                  <FaPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 </div>
                 {formValidationErrors.name && (
                   <p className="text-red-500 text-sm mt-1">{formValidationErrors.name}</p>
@@ -319,14 +314,13 @@ const ContactUs = () => {
                     onChange={handleInquiryDataChange}
                     onFocus={() => setFocusedField('mobile')}
                     onBlur={() => setFocusedField('')}
-                            className={`w-full px-4 py-3 pl-10 rounded-xl border-2 transition-all duration-300 ${
+                            className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-300 ${
                               focusedField === 'mobile' 
-                                ? 'border-gray-600 shadow-lg ring-2 ring-gray-200 bg-white' 
-                                : 'border-gray-200 hover:border-gray-300 bg-white'
-                            } focus:outline-none focus:ring-2 focus:ring-gray-200`}
+                                ? 'border-red-600 shadow-lg ring-2 ring-red-200 bg-white' 
+                                : 'border-red-200 hover:border-red-300 bg-white'
+                            } focus:outline-none focus:ring-2 focus:ring-red-200`}
                     value={formDataInquiry.mobile}
                   />
-                  <FaPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 </div>
                 {formValidationErrors.mobile && (
                   <p className="text-red-500 text-sm mt-1">{formValidationErrors.mobile}</p>
@@ -348,9 +342,9 @@ const ContactUs = () => {
                   onBlur={() => setFocusedField('')}
                           className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-300 resize-none ${
                             focusedField === 'message' 
-                              ? 'border-gray-600 shadow-lg ring-2 ring-gray-200 bg-white' 
-                              : 'border-gray-200 hover:border-gray-300 bg-white'
-                          } focus:outline-none focus:ring-2 focus:ring-gray-200`}
+                              ? 'border-red-600 shadow-lg ring-2 ring-red-200 bg-white' 
+                              : 'border-red-200 hover:border-red-300 bg-white'
+                          } focus:outline-none focus:ring-2 focus:ring-red-200`}
                   value={formDataInquiry.message}
                 />
                 {formValidationErrors.message && (
@@ -365,7 +359,7 @@ const ContactUs = () => {
                         className={`w-full py-3 px-6 rounded-xl font-bold transition-all duration-300 transform ${
                           !isFormValid || isSubmitting
                             ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-gradient-to-r from-gray-600 to-gray-800 hover:from-gray-700 hover:to-gray-900 hover:scale-105 shadow-lg hover:shadow-xl'
+                            : 'bg-gradient-to-r from-red-600 to-red-800 hover:from-red-700 hover:to-red-900 hover:scale-105 shadow-lg hover:shadow-xl'
                         } text-white`}
               >
                 {isSubmitting ? (
@@ -393,20 +387,20 @@ const ContactUs = () => {
         
         <div className="grid md:grid-cols-3 gap-8">
                   {/* Phone Card */}
-                  <a href="tel:+919999999999" className="group flex items-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-100">
-                    <div className="bg-gray-100 p-4 rounded-xl mr-4 group-hover:bg-gray-200 transition-colors duration-300">
-                      <FaPhone className="text-gray-600 text-xl" />
+                  <a href="tel:+919999999999" className="group flex items-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-red-100">
+                    <div className="bg-red-100 p-4 rounded-xl mr-4 group-hover:bg-red-200 transition-colors duration-300">
+                      <FaPhone className="text-red-600 text-xl" />
                     </div>
                     <div>
                       <h4 className="font-bold text-gray-900 mb-1" style={{fontFamily: "'Poppins', sans-serif"}}>Call Us</h4>
-                      <p className="text-gray-600 font-semibold" style={{fontFamily: "'Inter', sans-serif"}}>+91 99999 99999</p>
+                      <p className="text-gray-600 font-semibold" style={{fontFamily: "'Inter', sans-serif"}}>+91 8500-900-100</p>
                     </div>
                   </a>
 
                   {/* Email Card */}
-                  <a href="mailto:info@100acress.com" className="group flex items-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-100">
-                    <div className="bg-gray-100 p-4 rounded-xl mr-4 group-hover:bg-gray-200 transition-colors duration-300">
-                      <FaEnvelope className="text-gray-600 text-xl" />
+                  <a href="mailto:info@100acress.com" className="group flex items-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-red-100">
+                    <div className="bg-red-100 p-4 rounded-xl mr-4 group-hover:bg-red-200 transition-colors duration-300">
+                      <FaEnvelope className="text-red-600 text-xl" />
                     </div>
                     <div>
                       <h4 className="font-bold text-gray-900 mb-1" style={{fontFamily: "'Poppins', sans-serif"}}>Email Us</h4>
@@ -415,9 +409,9 @@ const ContactUs = () => {
                   </a>
 
                   {/* Address Card */}
-                  <div className="group flex items-center p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
-                    <div className="bg-gray-100 p-4 rounded-xl mr-4">
-                      <FaMapMarkerAlt className="text-gray-600 text-xl" />
+                  <div className="group flex items-center p-6 bg-white rounded-2xl shadow-lg border border-red-100">
+                    <div className="bg-red-100 p-4 rounded-xl mr-4">
+                      <FaMapMarkerAlt className="text-red-600 text-xl" />
                     </div>
                     <div>
                       <h4 className="font-bold text-gray-900 mb-1" style={{fontFamily: "'Poppins', sans-serif"}}>Our Address</h4>
@@ -428,7 +422,7 @@ const ContactUs = () => {
       </div>
 
       {/* Trust Section */}
-      <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
+      <div className="bg-white rounded-3xl shadow-2xl p-8 border border-red-200">
         <div className="text-center mb-8">
           <h3 className="text-3xl font-bold text-gray-900 mb-2" style={{fontFamily: "'Poppins', sans-serif"}}>
             Why Choose 100acress?
@@ -440,8 +434,8 @@ const ContactUs = () => {
         
                 <div className="grid md:grid-cols-3 gap-8">
                   <div className="text-center group">
-                    <div className="bg-gray-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 group-hover:bg-gray-200 transition-colors duration-300">
-                      <FaShieldAlt className="text-2xl text-gray-600 mx-auto" />
+                    <div className="bg-red-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 group-hover:bg-red-200 transition-colors duration-300">
+                      <FaShieldAlt className="text-2xl text-red-600 mx-auto" />
                     </div>
                     <h4 className="text-lg font-semibold text-gray-900 mb-2" style={{fontFamily: "'Poppins', sans-serif"}}>
                       Verified Listings
@@ -452,8 +446,8 @@ const ContactUs = () => {
                   </div>
                   
                   <div className="text-center group">
-                    <div className="bg-gray-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 group-hover:bg-gray-200 transition-colors duration-300">
-                      <FaHeadset className="text-2xl text-gray-600 mx-auto" />
+                    <div className="bg-red-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 group-hover:bg-red-200 transition-colors duration-300">
+                      <FaHeadset className="text-2xl text-red-600 mx-auto" />
                     </div>
                     <h4 className="text-lg font-semibold text-gray-900 mb-2" style={{fontFamily: "'Poppins', sans-serif"}}>
                       Expert Support
@@ -464,8 +458,8 @@ const ContactUs = () => {
                   </div>
                   
                   <div className="text-center group">
-                    <div className="bg-gray-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 group-hover:bg-gray-200 transition-colors duration-300">
-                      <FaClock className="text-2xl text-gray-600 mx-auto" />
+                    <div className="bg-red-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 group-hover:bg-red-200 transition-colors duration-300">
+                      <FaClock className="text-2xl text-red-600 mx-auto" />
                     </div>
                     <h4 className="text-lg font-semibold text-gray-900 mb-2" style={{fontFamily: "'Poppins', sans-serif"}}>
                       24x7 Assistance
