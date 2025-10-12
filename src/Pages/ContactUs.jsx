@@ -363,7 +363,7 @@ const ContactUs = () => {
         
         <div className="grid md:grid-cols-3 gap-8">
                   {/* Phone Card */}
-                  <a href="tel:+919999999999" className="group flex items-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-red-100">
+                  <a href="tel:+918500900100" className="group flex items-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-red-100">
                     <div className="bg-red-100 p-4 rounded-xl mr-4 group-hover:bg-red-200 transition-colors duration-300">
                       <FaPhone className="text-red-600 text-xl" />
                     </div>
