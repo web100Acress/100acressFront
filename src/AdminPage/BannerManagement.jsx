@@ -173,7 +173,7 @@ const BannerManagement = () => {
   const handleToggleActive = async (bannerId, currentStatus) => {
     try {
       const token = localStorage.getItem('myToken');
-      const response = await fetch(`/api/admin/banners/${bannerId}/toggle`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/admin/banners/${bannerId}/toggle`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
