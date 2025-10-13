@@ -77,15 +77,25 @@ const HrSidebar = () => {
         <div className="flex flex-col h-full">
           <div className="px-4 py-4 border-b border-gray-700 bg-gray-800/50">
             <Link to="/hr/dashboard" className="flex items-center space-x-3 hover:bg-gray-700/50 rounded-lg p-2 transition-all duration-200 cursor-pointer group">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-blue-500/25">
-                <span className="text-white font-semibold text-lg">
-                  {localStorage.getItem('firstName')?.charAt(0)?.toUpperCase() || 'H'}
-                </span>
+              <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg">
+                {JSON.parse(localStorage.getItem('agentData'))?.profileImage ? (
+                  <img
+                    src={JSON.parse(localStorage.getItem('agentData')).profileImage}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
+                    <span className="text-white font-semibold text-lg">
+                      {localStorage.getItem('firstName')?.charAt(0)?.toUpperCase() || 'H'}
+                    </span>
+                  </div>
+                )}
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium text-white group-hover:text-blue-300 transition-colors">
                   {JSON.parse(localStorage.getItem('agentData'))?.name || 'HR User'}
-                </p>           
+                </p>
               </div>
             </Link>
           </div>

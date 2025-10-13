@@ -226,6 +226,8 @@ const InsertProject = () => {
     }
   };
 
+  
+
   // Handle state input change - allow direct typing of new states
   const handleStateInputChange = (e) => {
     const value = e.target.value;

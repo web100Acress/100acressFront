@@ -291,19 +291,11 @@ const JobPosting = () => {
 
       <div className="flex-1 p-8 md:p-10 lg:p-1 ml-0 md:ml-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-0">
-          <div className="flex-1 p-8 md:p-10 lg:p-4 ml-0 md:ml-5">
-            <div className="text-center mb-0">
-              <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 mb-2 tracking-tight">
-                JOB POSTING
-              </h1>
-            </div>
          
-          <div className="w-32 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
-          </div>
         </div>
 
-        <div className="flex items-center justify-between gap-4 mb-8">
-          <div className="w-64">
+        <div className="flex items-center justify-between gap-4 mb-2">
+        <div className="w-64">
             <input
               type="text"
               placeholder="Search..."
@@ -312,6 +304,17 @@ const JobPosting = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+          
+        <div className="flex-1 p-8 md:p-10 lg:p-4 ml-0 md:ml-5">
+            <div className="text-center mb-0">
+              <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 mb-2 tracking-tight">
+                JOB POSTING
+              </h1>
+            </div>
+         
+          <div className="w-32 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
+          </div>
+         
           <div className="flex items-center gap-3">
             <button
               onClick={exportToCsv}
@@ -643,7 +646,7 @@ const JobPosting = () => {
                             Edit
                           </button>
                         </Link>
-                        <button
+                        {/* <button
                           onClick={() => {
                             if (localStorage.getItem("userRole") !== "hr") {
                               alert(
@@ -656,11 +659,13 @@ const JobPosting = () => {
                           className="bg-gray-700 text-white font-semibold py-1 px-3 rounded-md hover:bg-gray-800 transition duration-300"
                         >
                           Applicants
-                        </button>
+                        </button> */}
                         <button
                           onClick={() => handleDeleteButtonClick(item._id)}
                           className="bg-red-500 text-white font-semibold py-1 px-3 rounded-md hover:bg-red-600 transition duration-300"
-                        ></button>
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))
