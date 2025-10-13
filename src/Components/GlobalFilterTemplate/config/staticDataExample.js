@@ -1,5 +1,5 @@
 // Example of how to use static data in GlobalFilterTemplate
-import { getStaticData, getFAQData, getTrustBoosters } from './staticData';
+import { getStaticData, getFAQData, getTrustBoosters, getBudgetPageData } from './staticData';
 
 // Example usage for different page types:
 
@@ -56,36 +56,14 @@ export const getTypePageData = (type) => {
 };
 
 // 4. Budget Pages
-export const getBudgetPageData = (budgetRange) => {
-  console.log('getBudgetPageData called with budgetRange:', budgetRange);
-  const budgetData = getStaticData('budget', budgetRange);
-  console.log('Budget data retrieved:', budgetData);
-  return {
-    title: budgetData?.title || "Properties by Budget",
-    description: budgetData?.description || "Find properties within your budget",
-    metaTitle: budgetData?.metaTitle || "Budget Properties - 100acress",
-    canonical: budgetData?.canonical || "https://www.100acress.com/",
-    keywords: budgetData?.keywords || "budget properties, affordable homes",
-    heroTitle: budgetData?.heroTitle || "Properties by Budget",
-    heroSubtitle: budgetData?.heroSubtitle || "Find properties within your budget",
-    faqs: getFAQData('budget', budgetRange),
-    trustBoosters: getTrustBoosters('budget', budgetRange)
-  };
-};
+// Note: getBudgetPageData is imported from staticData.js
 
 // 5. Dynamic page data based on URL
 export const getPageDataFromURL = (pathname, searchParams = {}) => {
   console.log('getPageDataFromURL called with pathname:', pathname);
   console.log('Search params:', searchParams);
   
-  // Extract page type and specific key from URL
-  if (pathname.includes('/projects-in-') || pathname.includes('/project-in-')) {
-    const city = pathname.split('/projects-in-')[1]?.split('/')[0] || 
-                 pathname.split('/project-in-')[1]?.split('/')[0];
-    console.log('Detected city page:', city);
-    return getCityPageData(city);
-  }
-  
+  // Check for status pages FIRST (before city pages)
   if (pathname.includes('/project-in-underconstruction')) {
     console.log('Detected underconstruction status page');
     return getStatusPageData('underconstruction');
@@ -102,6 +80,14 @@ export const getPageDataFromURL = (pathname, searchParams = {}) => {
   
   if (pathname.includes('/property-ready-to-move')) {
     return getStatusPageData('readytomove');
+  }
+  
+  // Extract page type and specific key from URL (city pages)
+  if (pathname.includes('/projects-in-') || pathname.includes('/project-in-')) {
+    const city = pathname.split('/projects-in-')[1]?.split('/')[0] || 
+                 pathname.split('/project-in-')[1]?.split('/')[0];
+    console.log('Detected city page:', city);
+    return getCityPageData(city);
   }
   
   if (pathname.includes('/property/residential')) {

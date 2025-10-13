@@ -144,32 +144,32 @@ export default function LeftSection({
               <>
                 <Box fontWeight="700" fontSize={{ base: "14px", md: "12px" }} color="#e53e3e" textTransform="uppercase" letterSpacing={{ base: "0.6px", md: "0.2px" }} mb={{ base: 2, md: 1 }} mt={{ base: 1, md: 0 }} px={{ base: 1, md: 0 }}>Budget</Box>
                 <SimpleGrid columns={{ base: 2, md: 1 }} spacing={2}>
-                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(0, 1); closeDrawer(); }}
+                  <Button as={Link} to="/budget-properties/under-1-cr" onClick={() => { handlePriceClick(0, 1); closeDrawer(); }}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     Under ₹1 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(1, 5); closeDrawer(); }}
+                  <Button as={Link} to="/budget-properties/1-5-cr" onClick={() => { handlePriceClick(1, 5); closeDrawer(); }}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     ₹1 Cr - ₹5 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(5, 10); closeDrawer(); }}
+                  <Button as={Link} to="/budget-properties/5-10-cr" onClick={() => { handlePriceClick(5, 10); closeDrawer(); }}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     ₹5 Cr - ₹10 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(10, 20); closeDrawer(); }}
+                  <Button as={Link} to="/budget-properties/10-20-cr" onClick={() => { handlePriceClick(10, 20); closeDrawer(); }}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     ₹10 Cr - ₹20 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(20, 50); closeDrawer(); }}
+                  <Button as={Link} to="/budget-properties/20-50-cr" onClick={() => { handlePriceClick(20, 50); closeDrawer(); }}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     ₹20 Cr - ₹50 Cr
                   </Button>
-                  <Button as={Link} to="/budget-properties/" onClick={() => { handlePriceClick(50, Infinity); closeDrawer(); }}
+                  <Button as={Link} to="/budget-properties/above-50-cr" onClick={() => { handlePriceClick(50, Infinity); closeDrawer(); }}
                     w="100%" variant="ghost" justifyContent="center" textAlign="center" py={3}
                     borderWidth="1px" borderColor="#eaeaea" _hover={{ bg: "gray.50" }} rounded="md">
                     Above ₹50 Cr
@@ -460,12 +460,12 @@ export default function LeftSection({
           onMouseEnter={() => { clearTimer(budgetTimer); setIsBudgetOpen(true); }}
           onMouseLeave={() => closeWithDelay(budgetTimer, setIsBudgetOpen)}
         >
-          <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(10, 20)}>₹10 Cr - ₹20 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(20, 50)}>₹20 Cr - ₹50 Cr</MenuItem>
-          <MenuItem as={Link} to="/budget-properties/" onClick={() => handlePriceClick(50, Infinity)}>Above ₹50 Cr</MenuItem>
+          <MenuItem as={Link} to="/budget-properties/under-1-cr" onClick={() => handlePriceClick(0, 1)}>Under ₹1 Cr</MenuItem>
+          <MenuItem as={Link} to="/budget-properties/1-5-cr" onClick={() => handlePriceClick(1, 5)}>₹1 Cr - ₹5 Cr</MenuItem>
+          <MenuItem as={Link} to="/budget-properties/5-10-cr" onClick={() => handlePriceClick(5, 10)}>₹5 Cr - ₹10 Cr</MenuItem>
+          <MenuItem as={Link} to="/budget-properties/10-20-cr" onClick={() => handlePriceClick(10, 20)}>₹10 Cr - ₹20 Cr</MenuItem>
+          <MenuItem as={Link} to="/budget-properties/20-50-cr" onClick={() => handlePriceClick(20, 50)}>₹20 Cr - ₹50 Cr</MenuItem>
+          <MenuItem as={Link} to="/budget-properties/above-50-cr" onClick={() => handlePriceClick(50, Infinity)}>Above ₹50 Cr</MenuItem>
         </MenuList>
       </Menu>
 
