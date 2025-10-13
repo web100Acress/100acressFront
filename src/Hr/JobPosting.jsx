@@ -646,7 +646,7 @@ const JobPosting = () => {
                             Edit
                           </button>
                         </Link>
-                        <button
+                        {/* <button
                           onClick={() => {
                             if (localStorage.getItem("userRole") !== "hr") {
                               alert(
@@ -659,7 +659,7 @@ const JobPosting = () => {
                           className="bg-gray-700 text-white font-semibold py-1 px-3 rounded-md hover:bg-gray-800 transition duration-300"
                         >
                           Applicants
-                        </button>
+                        </button> */}
                         <button
                           onClick={() => handleDeleteButtonClick(item._id)}
                           className="bg-red-500 text-white font-semibold py-1 px-3 rounded-md hover:bg-red-600 transition duration-300"
