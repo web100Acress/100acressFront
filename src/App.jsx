@@ -274,7 +274,27 @@ function App() {
                         element={<BudgetPrice />}
                       />
                       <Route
-                        path="/budget-properties/"
+                        path="/budget-properties/under-1-cr"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/budget-properties/1-5-cr"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/budget-properties/5-10-cr"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/budget-properties/10-20-cr"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/budget-properties/20-50-cr"
+                        element={<GlobalBudgetPrice />}
+                      />
+                      <Route
+                        path="/budget-properties/above-50-cr"
                         element={<GlobalBudgetPrice />}
                       />
                       <Route

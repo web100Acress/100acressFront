@@ -152,8 +152,8 @@ const ModernRecommendedSection = () => {
         defaultView="Login" 
       />
       <div className="w-full px-4 pt-0 pb-4">
-        <div className="text-center mb-4 px-2 pt-2">
-          <div className="inline-flex items-center gap-4 mb-3">
+        <div className="text-center mb-0 px-2 pt-0">
+          <div className="inline-flex items-center gap-4 mb-0">
             <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-red-500 to-red-600 hidden sm:block"></div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent leading-tight">
               <span className="text-red-600">100acress</span> Recommended
@@ -178,7 +178,7 @@ const ModernRecommendedSection = () => {
             slidesPerView={1}
             slidesPerGroup={1}
             spaceBetween={12}
-            loop={true}
+            loop={displayData.length > 4}
             allowTouchMove={true}
             simulateTouch={true}
             autoplay={false}
@@ -427,7 +427,7 @@ const SectionWrapper = styled.section`
   position: relative;
   overflow: hidden;
   margin-top: 0;
-  padding: 60px 0 10px; // Reduced top padding to decrease gap between heading and cards
+  padding: 40px 0 0; // Removed bottom padding to eliminate gap
 
   &::before {
     content: '';
@@ -444,15 +444,16 @@ const SectionWrapper = styled.section`
     overflow: visible;
     width: 100%;
     max-width: none;
-    min-height: 420px;
+    min-height: 400px;
     margin: 0;
+    margin-bottom: 0;
     background: transparent;
   }
 
   .modern-swiper {
     width: 100%;
     height: 100%;
-    padding-bottom: 10px;
+    padding-bottom: 0;
     
     .swiper-slide {
       height: auto;
@@ -485,14 +486,14 @@ const SectionWrapper = styled.section`
   }
 
   @media (max-width: 768px) {
-    padding: 40px 0 8px; // Reduced mobile bottom gap further
+    padding: 16px 0 0; // Minimal top padding, no bottom padding for mobile
 
     .carousel-container {
-      min-height: 440px;
+      min-height: 400px;
     }
 
     .modern-swiper {
-      padding-bottom: 45px;
+      padding-bottom: 35px;
     }
   }
 `;

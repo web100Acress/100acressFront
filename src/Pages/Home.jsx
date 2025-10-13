@@ -445,23 +445,26 @@ const Home = () => {
       
   {/* <PopupForm onPopupVisibilityChange={handlePopupVisibilityChange} />  */}
 
-   {/* This is the div whose background you want to blur more */}
-    <div
-      className={`
-        transition-filter duration-300 ease-in-out
-        ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
-      `}
-    >
-  {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
+   {/* Hero Banner Section with Search Bar Overlay */}
+    <HeroBannerWrapper>
+      {/* This is the div whose background you want to blur more */}
+      <div
+        className={`
+          transition-filter duration-300 ease-in-out
+          ${isPopupActive ? 'blur-sm pointer-events-none select-none' : ''}
+        `}
+      >
+    {/* uper wala backgroiund blur krne ke liye hai yaha se ham background kam ya jada blur manage kr sakte hai */}
 
-        {/* Dynamic Hero Banner */}
-        <DynamicHeroBanner />
-    </div>
+          {/* Dynamic Hero Banner */}
+          <DynamicHeroBanner />
+      </div>
 
-    {/* SearchBar should NOT be blurred */}
-    <div className="relative w-full max-w-6xl mx-auto px-4 pb-1 py-8 z-10" style={{ marginTop: '0px' }}>
-      <SearchBar />
-    </div>
+      {/* SearchBar should NOT be blurred */}
+      <SearchBarContainer>
+        <SearchBar />
+      </SearchBarContainer>
+    </HeroBannerWrapper>
 
     {/* Reopen blurred wrapper for the rest of the content */}
     <div
@@ -547,7 +550,7 @@ const Home = () => {
                           setAuthOpen(true);
                         }
                       }}
-                      className="inline-flex px-5 md:px-6 py-2.5 md:py-3 rounded-xl bg-red-600 text-white text-xs md:text-sm font-semibold shadow hover:bg-red-700"
+                      className="inline-flex px-5 md:px-6 py-2.5 md:py-3 rounded-xl bg-red-600 text-white text-xs md:text-sm font-semibold shadow hover:bg-gray-800"
                     >
                       Post Property FREE
                     </button>
@@ -806,6 +809,44 @@ const Home = () => {
  }
  
  export default Home;
+
+const HeroBannerWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  
+  @media (max-width: 768px) {
+    margin-bottom: 20px; /* Space for tablet search bar */
+  }
+
+  @media (max-width: 640px) {
+    margin-bottom: 325px; /* Extra space for mobile search bar that extends below banner */
+  }
+`;
+
+const SearchBarContainer = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1rem 0.25rem;
+  z-index: 10;
+  margin-top: 0;
+
+  @media (max-width: 768px) {
+    position: absolute;
+    bottom: 20px; /* Position inside the hero banner - ADJUST THIS VALUE to move up/down */
+    left: 0;
+    right: 0;
+    padding: 0 1rem;
+    margin-top: 0;
+    z-index: 100;
+    transform: none;
+  }
+
+  @media (max-width: 640px) {
+    bottom: -325px; /* ADJUST THIS VALUE for smaller screens */
+  }
+`;
  
  const Wrapper = styled.div`
   /* Neutral background */

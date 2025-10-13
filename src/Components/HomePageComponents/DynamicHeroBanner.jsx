@@ -262,7 +262,7 @@ const HeroWrapper = styled.div`
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%;
     animation: none;
-    margin-top: 76px;
+    margin-top: 64px;
     position: relative;
     overflow: hidden;
   }
@@ -284,7 +284,7 @@ const HeroWrapper = styled.div`
   .hero-strip-99-default {
     width: 100%;
     height: 340px;
-    margin-top: 76px;
+    margin-top: 64px;
     position: relative;
     overflow: hidden;
     transition: none;
@@ -322,7 +322,7 @@ const HeroWrapper = styled.div`
   @media (max-width: 640px) {
     .hero-strip-99-loading,
     .hero-strip-99-dynamic {
-      margin-top: 72px;
+      margin-top: 52px;
     }
   }
 `;
