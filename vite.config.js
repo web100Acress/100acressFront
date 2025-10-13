@@ -90,7 +90,8 @@ export default defineConfig(() => {
         'country-state-city',
         '@tanstack/react-query',
         'react-lazyload',
-        'animate.css'
+        'animate.css',
+        'dompurify'
       ],
       exclude: [
         // Exclude large dependencies that should be lazy loaded

@@ -43,7 +43,12 @@ root.render(
     <Provider store={AppStore}>
       <ChakraProvider>
         <HelmetProvider>
-          <BrowserRouter>
+          <BrowserRouter
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true
+            }}
+          >
             <ScrollToTop>
               <Suspense fallback={<div><CustomSkeleton/></div>}>
                 <App />
