@@ -333,28 +333,7 @@ const CareerWithUs = () => {
         </section>
 
         {/* Stats Section */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 mb-20">
-          {[
-            { number: "200+", label: "Team Members", icon: Users },
-            { number: "50+", label: "Open Positions", icon: Briefcase },
-            { number: "1+", label: "Office Locations", icon: Building2 },
-            { number: "24/7", label: "Support", icon: Clock }
-          ].map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              className="bg-white/70 backdrop-blur-sm rounded-3xl p-6 text-center border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-lg"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-            >
-              <div className="w-12 h-12 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primaryRed/10 to-red-100 flex items-center justify-center">
-                <stat.icon size={24} className="text-primaryRed" />
-              </div>
-              <h3 className="text-2xl lg:text-3xl font-bold text-gray-900">{stat.number}</h3>
-              <p className="text-gray-600 font-medium">{stat.label}</p>
-            </motion.div>
-          ))}
-        </section>
+       
 
         {/* Open Positions Section */}
         <section id="openings" className="space-y-8">
@@ -378,7 +357,7 @@ const CareerWithUs = () => {
           </div>
 
           {/* Results Summary */}
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white/60 backdrop-blur-sm rounded-2xl p-4">
+          {/* <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white/60 backdrop-blur-sm rounded-2xl p-4">
             <div className="flex items-center gap-4">
               <div className="text-sm text-gray-600">
                 <span className="font-bold text-gray-900 text-lg">{total}</span> positions found
@@ -386,9 +365,9 @@ const CareerWithUs = () => {
               <div className="text-sm text-gray-500">
                 Page {currentPage} of {totalPages}
               </div>
-            </div>
+            </div> */}
             
-            {(locationFilter !== 'all' || experienceFilter !== 'all' || debouncedSearch) && (
+            {/* {(locationFilter !== 'all' || experienceFilter !== 'all' || debouncedSearch) && (
               <div className="flex flex-wrap gap-2">
                 {debouncedSearch && (
                   <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-blue-100 text-blue-800 text-sm">
@@ -410,11 +389,11 @@ const CareerWithUs = () => {
                 )}
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* Quick Filters */}
-          <div className="flex flex-wrap gap-3">
-            {/* Experience filters */}
+          {/* <div className="flex flex-wrap gap-3">
+          
             {['all', '0-1', '2-4', '5+'].map(exp => (
               <motion.button
                 key={`exp-${exp}`}
@@ -431,7 +410,7 @@ const CareerWithUs = () => {
               </motion.button>
             ))}
             
-            {/* Top location filters */}
+            
             {locations.filter(l => l !== 'all').slice(0, 4).map(loc => (
               <motion.button
                 key={`loc-${loc}`}
@@ -447,10 +426,10 @@ const CareerWithUs = () => {
                 {loc}
               </motion.button>
             ))}
-          </div>
+          </div> */}
 
-          {/* Mobile Filters Toggle */}
-          <div className="lg:hidden">
+       
+          {/* <div className="lg:hidden">
             <motion.button
               onClick={() => setShowFilters(true)}
               className="inline-flex items-center gap-3 px-6 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-2xl text-gray-700 font-medium hover:bg-white hover:shadow-md transition-all duration-300"
@@ -460,14 +439,14 @@ const CareerWithUs = () => {
               <Filter size={20} />
               Advanced Filters
             </motion.button>
-          </div>
+          </div> */}
 
-          {/* Desktop Filters */}
-          <div className="hidden lg:block sticky top-4 z-30">
-            <div className="bg-white/80 backdrop-blur-xl border border-gray-200 rounded-3xl p-6 shadow-lg">
-              <div className="grid grid-cols-12 gap-4 items-center">
-                {/* Search */}
-                <div className="col-span-4">
+     
+          {/* <div className="hidden lg:block sticky top-4 z-30"> */}
+            {/* <div className="bg-white/80 backdrop-blur-xl border border-gray-200 rounded-3xl p-6 shadow-lg"> */}
+              {/* <div className="grid grid-cols-12 gap-4 items-center"> */}
+          
+                {/* <div className="col-span-4">
                   <div className="relative">
                     <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
@@ -477,9 +456,9 @@ const CareerWithUs = () => {
                       placeholder="Search positions, skills, locations..."
                     />
                   </div>
-                </div>
+                </div> */}
 
-                {/* Location */}
+{/*              
                 <div className="col-span-3">
                   <select
                     value={locationFilter}
@@ -492,9 +471,9 @@ const CareerWithUs = () => {
                       </option>
                     ))}
                   </select>
-                </div>
+                </div> */}
 
-                {/* Experience */}
+{/*                
                 <div className="col-span-2">
                   <select
                     value={experienceFilter}
@@ -506,10 +485,10 @@ const CareerWithUs = () => {
                     <option value="2-4">2-4 years</option>
                     <option value="5+">5+ years</option>
                   </select>
-                </div>
+                </div> */}
 
                 {/* Sort */}
-                <div className="col-span-2">
+                {/* <div className="col-span-2">
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
@@ -518,10 +497,10 @@ const CareerWithUs = () => {
                     <option value="newest">Newest First</option>
                     <option value="oldest">Oldest First</option>
                   </select>
-                </div>
+                </div> */}
 
                 {/* Clear */}
-                <div className="col-span-1">
+                {/* <div className="col-span-1">
                   <motion.button
                     onClick={() => {
                       setSearch('');
@@ -536,10 +515,10 @@ const CareerWithUs = () => {
                   >
                     Clear
                   </motion.button>
-                </div>
-              </div>
-            </div>
-          </div>
+                </div> */}
+              {/* </div> */}
+            {/* </div> */}
+          {/* </div> */}
 
           {/* Mobile Filter Modal */}
           <AnimatePresence>
