@@ -178,7 +178,7 @@ const ModernRecommendedSection = () => {
             slidesPerView={1}
             slidesPerGroup={1}
             spaceBetween={12}
-            loop={true}
+            loop={displayData.length > 4}
             allowTouchMove={true}
             simulateTouch={true}
             autoplay={false}
