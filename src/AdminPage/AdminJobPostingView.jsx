@@ -132,14 +132,7 @@ const AdminJobPostingView = () => {
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="flex justify-end gap-3">
-            <Link to={`/Admin/jobposting/edit/${id}`}>
-              <button className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 dark:bg-blue-700 dark:hover:bg-blue-800">
-                Edit Job Posting
-              </button>
-            </Link>
-          </div>
+
         </div>
       </div>
     </div>

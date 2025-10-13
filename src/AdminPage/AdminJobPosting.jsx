@@ -179,11 +179,12 @@ const AdminJobPosting = () => {
   };
 
   const exportApplicantsToCsv = () => {
-    const headers = ["#", "Candidate Name", "Email", "Phone", "Applied On"];
+    const headers = ["#", "Candidate Name", "Email", "Resume", "Phone", "Applied On"];
     const rows = applicants.map((a, idx) => [
       idx + 1,
       (a?.name || "").replace(/\n|\r/g, " "),
       (a?.email || "").replace(/\n|\r/g, " "),
+      (a?.resumeUrl || "").replace(/\n|\r/g, " "),
       (a?.phone || "").toString().replace(/\n|\r/g, " "),
       a?.createdAt ? new Date(a.createdAt).toLocaleString() : "-",
     ]);
@@ -444,6 +445,7 @@ const AdminJobPosting = () => {
                           <th className="px-6 py-3">#</th>
                           <th className="px-6 py-3">Candidate Name</th>
                           <th className="px-6 py-3">Email</th>
+                          <th className="px-6 py-3">Resume</th>
                           <th className="px-6 py-3">Phone</th>
                           <th className="px-6 py-3">Applied On</th>
                         </tr>
@@ -452,7 +454,7 @@ const AdminJobPosting = () => {
                         {applicantsLoading ? (
                           <tr>
                             <td
-                              colSpan="5"
+                              colSpan="6"
                               className="text-center py-8 text-gray-500 dark:text-gray-400"
                             >
                               Loading...
@@ -471,6 +473,20 @@ const AdminJobPosting = () => {
                               <td className="px-6 py-3" title={a.email}>
                                 {truncate(a.email, 40)}
                               </td>
+                              <td className="px-6 py-3">
+                                {a.resumeUrl ? (
+                                  <a
+                                    href={a.resumeUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline"
+                                  >
+                                    View Resume
+                                  </a>
+                                ) : (
+                                  <span className="text-gray-500">No Resume</span>
+                                )}
+                              </td>
                               <td className="px-6 py-3" title={a.phone}>
                                 {truncate(a.phone, 20)}
                               </td>
@@ -484,7 +500,7 @@ const AdminJobPosting = () => {
                         ) : (
                           <tr>
                             <td
-                              colSpan="5"
+                              colSpan="6"
                               className="text-center py-8 text-gray-500 dark:text-gray-400"
                             >
                               No applicants yet.
