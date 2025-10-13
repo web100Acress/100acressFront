@@ -472,32 +472,40 @@ export const staticData = {
   status: {
     upcoming: {
       title: "Upcoming Projects in Gurgaon with Luxury & Comfort",
-      description: "Find luxury homes in Gurgaon’s upcoming projects featuring spacious apartments, designer villas, and world-class facilities for families and investors.",
-      metaTitle: "Upcoming Projects in India - New Launch Properties | 100acress",
+      description: "Find luxury homes in Gurgaon's upcoming projects featuring spacious apartments, designer villas, and world-class facilities for families and investors.",
+      metaTitle: "Upcoming Projects in Gurgaon with Luxury & Comfort | 100acress",
       canonical: "https://www.100acress.com/projects/upcoming-projects-in-gurgaon/",
-      keywords: "upcoming projects, new launch projects, upcoming residential projects, upcoming commercial projects, property launches",
+      keywords: "upcoming projects, upcoming projects in gurgaon, upcoming residential projects, upcoming commercial projects, property launches",
       heroTitle: "Explore Upcoming Projects with High Investment Potential",
       heroSubtitle: "From premium apartments to budget-friendly homes, Gurgaon has it all in upcoming projects.",
       faqs: [
         {
-          question: "What new projects are launching soon in Gurgaon?",
-          answer: "Check out the latest projects by Oberoi Realty, Central Park, DLF, M3M, Signature Global, and Elan Group in Gurgaon. Dwarka Expressway and New Gurgaon are hotspots for new residential and commercial launches."
+          question: "What are the top upcoming projects in Gurgaon?",
+          answer: "Some of the most sought-after upcoming projects in Gurgaon include Trident Realty 104, Satya Group 104, Central Park 104, AIPL Lake City, ArtTech The Story House, Max Estate 361, and Elan Sohna Road."
         },
         {
-          question: "Which upcoming projects in Gurgaon have the best amenities?",
-          answer: "Projects like Elan Sohna Road, Indiabulls Height, Rof Pravasa, DLF Privana South and M3M Golf Estate offer luxury amenities, including clubhouses, pools, and sports facilities for a premium lifestyle."
+          question: "Which locations in Gurgaon are best for upcoming residential projects?",
+          answer: "Prime locations for upcoming projects include Dwarka Expressway, Southern Peripheral Road (SPR), Golf Course Extension Road, Sohna Road, and New Gurgaon, all offering strong connectivity and growth potential."
         },
         {
-          question: "Are there any affordable upcoming housing projects?",
-          answer: "Yes, several developers are launching projects under the Deen Dayal Jan Awas Yojna. Look for options in Sohna and the newer sectors of Gurgaon."
+          question: "Are there affordable options among Gurgaon's upcoming projects?",
+          answer: "Yes, projects like Satya Group 104, ArtTech The Story House, and Wal Pravah Senior Living provide budget-friendly housing options while maintaining modern amenities."
         },
         {
-          question: "What is the expected possession date for top upcoming projects?",
-          answer: "Most upcoming projects aim for possession within 3-4 years of their launch. Always verify the RERA-approved completion date before investing."
+          question: "What amenities do upcoming projects in Gurgaon usually offer?",
+          answer: "Most new launches come with swimming pools, clubhouses, gyms, landscaped gardens, sports courts, children's play areas, 24x7 security, and parking facilities, ensuring a premium lifestyle."
         },
         {
-          question: "Which locations in Gurgaon are best for future investment?",
-          answer: "Dwarka Expressway, Southern Peripheral Road (SPR), and Golf Course Extension Road are prime locations with high appreciation potential due to infrastructure."
+          question: "Which upcoming projects in Gurgaon offer luxury living?",
+          answer: "Luxury options include Trident Realty 104, Central Park 104, Elan Sohna Road, and Oberoi Realty Gurgaon, featuring spacious layouts, high-end amenities, and premium architecture."
+        },
+        {
+          question: "What is the typical possession timeline for upcoming projects in Gurgaon?",
+          answer: "Most projects aim for possession within 3–4 years of launch. Buyers should always check the RERA-approved completion date before investing."
+        },
+        {
+          question: "Why invest in upcoming projects in Gurgaon?",
+          answer: "Investing in upcoming projects in Gurgaon offers pre-launch pricing, modern amenities, strong connectivity, and excellent long-term appreciation, making them ideal for both homebuyers and investors."
         }
       ],
       trustBoosters: [
@@ -520,31 +528,31 @@ export const staticData = {
     },
     underconstruction: {
       title: "Secure Your Future with Top Under-Construction Projects.",
-      description: "Premium under-construction homes crafted for modern lifestyles, featuring advanced amenities, smart layouts, and strong returns on investment",
-      metaTitle: "Premium Under-Construction Homes for Smart Investors",
+      description: "Premium under-construction homes crafted for modern lifestyles, featuring advanced amenities, smart layouts, and strong returns on investment.",
+      metaTitle: "Premium Under-Construction Homes for Smart Investors | 100acress",
       canonical: "https://www.100acress.com/project-in-underconstruction/",
-      keywords: "under construction properties, ongoing projects, construction status, property development, under construction homes",
-      heroTitle: "Premium Under-Construction Homes for Smart Investors",
-      heroSubtitle: "Discover under-construction projects with modern designs, premium amenities, and strong investment returns. Secure your future with smart real estate choices.",
+      keywords: "under construction properties, under construction projects in gurgaon, ongoing projects, construction status, property development, under construction homes",
+      heroTitle: "Secure Your Future with Top Under-Construction Projects.",
+      heroSubtitle: "Premium under-construction homes crafted for modern lifestyles, featuring advanced amenities, smart layouts, and strong returns on investment.",
       faqs: [
         {
           question: "Q.1 Which are the top under-construction projects in Gurgaon?",
           answer: "Leading projects include DLF Privana South, Godrej Miraya, Elan The Presidential, M3M Mansion, Krisumi Waterfall, Signature Global Twin Tower, and Keystone Seasons."
         },
         {
-          question: "Q.2 What are the top under-construction properties in Gurgaon?",
+          question: "Q2: What are the top luxury under-construction properties?",
           answer: "Luxury projects feature smart layouts, wellness amenities, and include developments on Golf Course Road, Southern Peripheral Road, and Dwarka Expressway."
         },
         {
-          question: "Q.3 Is it cheaper to buy an under-construction property?",
+          question: "Q3: Is it cheaper to buy an under-construction property in Gurgaon?",
           answer: "Yes, early-phase properties are more economical with lower prices, flexible payment plans, and potential capital appreciation."
         },
         {
-          question: "Q.4 What legal checks are necessary before buying an under-construction property?",
-          answer: "Verify RERA registration, clear land titles, approved plans, commencement certificate, and the developer’s track record."
+          question: "Q4: What legal checks should I do before booking?",
+          answer: "Verify RERA registration, clear land titles, approved plans, commencement certificate, and the developer's track record."
         },
         {
-          question: "Q5:Why is RERA registration important?",
+          question: "Q5: Why is RERA registration important?",
           answer: "RERA ensures legal transparency, protects buyer investments, and enforces builder commitments on delivery and amenities."
         },
         {
@@ -554,7 +562,7 @@ export const staticData = {
         {
           question: "Q7: Can buyers customize units in under-construction projects?",
           answer: "Yes, many luxury projects allow customization of layouts, interiors, and finishes during early development."
-        },
+        }
       ],
       trustBoosters: [
         {
@@ -577,41 +585,40 @@ export const staticData = {
     readytomove: {
       title: "Ready To Move Projects | Instant Possession Homes",
       description: "Find the best RERA-registered ready to move projects in Gurugram with premium features and prime locations. Start living your dream lifestyle now.",
-      metaTitle: "Ready to Move Properties - Immediate Possession | 100acress",
+      metaTitle: "Ready to Move Projects | Instant Possession Homes | 100acress",
       canonical: "https://www.100acress.com/projects-in-gurugram/property-ready-to-move/",
-      keywords: "ready to move properties, immediate possession, completed projects, ready homes, move in ready",
-      heroTitle: "Ready to Move Properties Available Now",
-      heroSubtitle: "Move in immediately and start living your dream lifestyle",
+      keywords: "ready to move properties, ready to move projects in gurugram, immediate possession, completed projects, ready homes, move in ready",
+      heroTitle: "Ready To Move Projects | Instant Possession Homes",
+      heroSubtitle: "Find the best RERA-registered ready to move projects in Gurugram with premium features and prime locations. Start living your dream lifestyle now.",
       faqs: [
         {
-          question: "Q1: Which are the best ready-to-move projects in Gurugram?",
-          answer: "ETop projects include M3M St Andrews, Greenopolis, AMB Selfie Street, and Raheja Sampada offering premium amenities and immediate possession."
+          question: "Which are the best ready-to-move projects in Gurugram?",
+          answer: "Top projects include M3M St Andrews, Greenopolis, AMB Selfie Street, and Raheja Sampada offering premium amenities and immediate possession."
         },
         {
-          question: "Q2: Where can I find affordable ready-to-move flats in Gurugram?",
+          question: "Where can I find affordable ready-to-move flats in Gurugram?",
           answer: "Affordable options are available in sectors like Dwarka Expressway, New Gurgaon, and Sohna Road with good amenities and prices under ₹2 Cr."
         },
         {
-          question: "Q3: What benefits come with buying ready-to-move properties?",
+          question: "What benefits come with buying ready-to-move properties?",
           answer: "Immediate possession, no construction delays, GST savings on property price, and potential for instant rental income."
         },
         {
-          question: "Q4: Are ready-to-move commercial properties available in Gurugram?",
+          question: "Are ready-to-move commercial properties available in Gurugram?",
           answer: "Yes, projects like AIPL Joy Street and Trehan IRIS Broadway provide ready shops and office spaces for business use."
         },
         {
-          question: "Q5: How do I verify the legal status of ready-to-move projects?",
-          answer: "Check the project’s RERA registration and possession certificate on official state RERA websites for secure purchases."
+          question: "How do I verify the legal status of ready-to-move projects?",
+          answer: "Check the project's RERA registration and possession certificate on official state RERA websites for secure purchases."
         },
         {
-          question: "Q6: Can I get home loans on ready-to-move properties?",
+          question: "Can I get home loans on ready-to-move properties?",
           answer: "Yes, legally clear ready-to-move properties are eligible for home loans from banks and financial institutions."
         },
         {
-          question: "Q7:What amenities are commonly included in ready-to-move projects?",
+          question: "What amenities are commonly included in ready-to-move projects?",
           answer: "Swimming pools, gyms, parks, clubhouse, 24/7 security, and landscaped gardens are standard features in premium ready-to-move projects."
         }
-       
       ],
       trustBoosters: [
         {
@@ -632,41 +639,41 @@ export const staticData = {
       ]
     },
     newlaunch: {
-      title: "Find Premium Homes Designed for Your Lifestyle",
-      description: "Experience luxury living with modern amenities and prime locations. Explore new launch projects with the latest features and contemporary designs.",
-      metaTitle: "New Launch Projects - Latest Property Launches | 100acress",
+      title: "Explore the Latest New Launch Projects in Gurgaon",
+      description: "Discover the latest new launch projects in Gurgaon with modern apartments, villas, and premium amenities for a luxurious lifestyle.",
+      metaTitle: "Explore the Latest New Launch Projects in Gurgaon | 100acress",
       canonical: "https://www.100acress.com/projects-in-newlaunch/",
-      keywords: "new launch projects, latest projects, new residential projects, property launches, new property launches",
-      heroTitle: "Find Premium Homes Designed for Your Lifestyle",
-      heroSubtitle: "Experience luxury living with modern amenities and prime locations",
+      keywords: "new launch projects in gurgaon, new launch projects, latest projects, new residential projects, property launches, new property launches",
+      heroTitle: "Luxury Awaits in Gurgaon's Latest New Launch Projects",
+      heroSubtitle: "Experience modern living with new launch projects in Gurgaon crafted for your lifestyle and future growth.",
       faqs: [
         {
-          question: "What are the best newly launched residential projects in Gurgaon?",
-          answer: "Consider top projects like Smart World One DXP and Godrej Aristocrat, M3M Mansion. They feature modern designs and are strategically located in rapidly developing sectors."
+          question: "What makes new launch projects in Gurgaon a good investment?",
+          answer: "They offer lower prices, modern features, and great value growth thanks to Gurgaon's rapid development and strong business presence."
         },
         {
-          question: "What is the starting price for a new 3BHK flat in Gurgaon?",
-          answer: "Prices for newly launched 3BHK flats generally start from ₹3.5 Crore. The final cost varies based on location, developer reputation, and amenities."
+          question: "Which are the best areas to buy new launch projects in Gurgaon?",
+          answer: "Top localities include Dwarka Expressway, Golf Course Extension Road, Sohna Road, and New Gurgaon, known for premium developments and excellent connectivity."
         },
         {
-          question: "Which new launches are near the Dwarka Expressway?",
-          answer: "Leading builders like M3M, Sobha, Puri, and Emaar have significant new projects along the Dwarka Expressway, offering superior connectivity and modern homes."
+          question: "How can I find RERA-approved new launch projects in Gurgaon?",
+          answer: "You can visit trusted real estate platforms like 100acress.com to explore verified, RERA-registered new launch projects with complete details."
         },
         {
-          question: "Are there any new luxury apartment projects available?",
-          answer: "Yes, premier developers such as DLF and M3M Or Signature Global have recently launched luxury projects with world-class amenities and premium specifications in prime locations."
+          question: "What are the typical payment plans for new launch projects in Gurgaon?",
+          answer: "Most developers offer construction-linked plans or flexible installment options, letting you pay in stages as the project progresses, making it easier to manage finances."
         },
         {
-          question: "What are the typical payment plans for new launch projects?",
-          answer: "Most developers offer construction-linked payment plans (e.g., 25:25:25:25). This structure links payments to construction milestones, easing financing."
+          question: "Are new launch projects in Gurgaon suitable for end-users or investors?",
+          answer: "Both! End-users get modern, comfortable homes, while investors benefit from high ROI and rental demand in Gurgaon's fast-developing areas."
         },
         {
-          question: "Which newly launched projects offer good rental returns?",
-          answer: "For high rental yields, target projects near major business hubs like Cyber City, Golf Course Road, and Sohna Road, which attract strong professional demand."
+          question: "What amenities can I expect in Gurgaon's new launch projects?",
+          answer: "Most projects offer clubhouses, swimming pools, gyms, landscaped gardens, and smart home features, ensuring a premium living experience."
         },
         {
-          question: "How can I verify the credibility of a new project?",
-          answer: "Check the project's RERA registration number, review the developer's delivery track record, and read customer reviews to ensure a safe investment."
+          question: "How do I choose the right new launch project in Gurgaon?",
+          answer: "Check the builder's reputation, location, RERA status, amenities, and future development plans around the area before investing."
         }
       ],
       trustBoosters: [
@@ -1217,7 +1224,297 @@ export const staticData = {
     }
   },
 
-  // Common FAQ sections
+  // Budget Pages Data
+  budget: {
+    under1cr: {
+      title: "Properties Under 1 Cr - Affordable Homes in Gurgaon",
+      description: "Find the best properties under 1 crore in Gurgaon with modern amenities, excellent connectivity, and great investment potential. Perfect for first-time buyers and budget-conscious investors.",
+      metaTitle: "Properties Under 1 Cr in Gurgaon - Affordable Homes | 100acress",
+      canonical: "https://www.100acress.com/budget-properties/under-1-cr/",
+      keywords: "properties under 1 cr, affordable homes gurgaon, budget properties, under 1 crore properties",
+      heroTitle: "Properties Under 1 Cr in Gurgaon",
+      heroSubtitle: "Affordable homes with modern amenities and excellent connectivity",
+      faqs: [
+        {
+          question: "What types of properties are available under 1 Cr in Gurgaon?",
+          answer: "Under 1 Cr, you can find studio apartments, 1BHK apartments, and small 2BHK apartments in developing areas of Gurgaon like Sohna, New Gurgaon, and some parts of Dwarka Expressway."
+        },
+        {
+          question: "Are properties under 1 Cr a good investment?",
+          answer: "Yes, properties under 1 Cr in Gurgaon offer excellent investment potential due to the city's rapid development, infrastructure growth, and increasing demand for affordable housing."
+        },
+        {
+          question: "Which areas in Gurgaon offer properties under 1 Cr?",
+          answer: "Areas like Sohna, New Gurgaon sectors, and some parts of Dwarka Expressway offer properties under 1 Cr. These areas have good connectivity and are witnessing rapid development."
+        },
+        {
+          question: "What amenities can I expect in budget properties?",
+          answer: "Budget properties under 1 Cr typically offer essential amenities like 24/7 security, power backup, parking, and basic community facilities. Some projects also include swimming pools and gyms."
+        },
+        {
+          question: "How can I finance a property under 1 Cr?",
+          answer: "Most banks offer home loans for properties under 1 Cr with competitive interest rates. You can get up to 80-90% loan depending on your eligibility and the property value."
+        }
+      ],
+      trustBoosters: [
+        {
+          icon: "💰",
+          title: "Budget Friendly",
+          description: "Quality properties within your budget range"
+        },
+        {
+          icon: "📈",
+          title: "High Appreciation",
+          description: "Excellent potential for property value appreciation"
+        },
+        {
+          icon: "🏠",
+          title: "Modern Amenities",
+          description: "Contemporary amenities at affordable prices"
+        }
+      ]
+    },
+    "1to5cr": {
+      title: "Properties Between 1-5 Cr - Mid-Range Homes in Gurgaon",
+      description: "Discover premium properties between 1-5 crore in Gurgaon with modern amenities, excellent locations, and great investment potential. Perfect for growing families and smart investors.",
+      metaTitle: "Properties 1-5 Cr in Gurgaon - Mid-Range Homes | 100acress",
+      canonical: "https://www.100acress.com/budget-properties/1-5-cr/",
+      keywords: "properties 1-5 cr, mid range homes gurgaon, 1-5 crore properties",
+      heroTitle: "Properties Between 1-5 Cr in Gurgaon",
+      heroSubtitle: "Premium mid-range homes with modern amenities and excellent locations",
+      faqs: [
+        {
+          question: "What types of properties are available between 1-5 Cr in Gurgaon?",
+          answer: "Between 1-5 Cr, you can find 2BHK, 3BHK, and 4BHK apartments, builder floors, and villas in prime locations like Golf Course Road, Sohna Road, and Dwarka Expressway."
+        },
+        {
+          question: "Which are the best locations for 1-5 Cr properties in Gurgaon?",
+          answer: "Prime locations include Golf Course Extension Road, Sohna Road, Southern Peripheral Road, and New Gurgaon sectors. These areas offer excellent connectivity and infrastructure."
+        },
+        {
+          question: "What amenities come with 1-5 Cr properties?",
+          answer: "Properties in this range typically offer swimming pools, gyms, clubhouses, landscaped gardens, 24/7 security, power backup, and children's play areas."
+        },
+        {
+          question: "Are 1-5 Cr properties good for investment?",
+          answer: "Yes, these properties offer excellent rental yields and appreciation potential due to Gurgaon's growing commercial importance and infrastructure development."
+        },
+        {
+          question: "What is the average size of 1-5 Cr apartments?",
+          answer: "Apartments in this range typically vary from 1,200 sq ft for 2BHK to 2,500 sq ft for 4BHK, offering spacious and comfortable living spaces."
+        }
+      ],
+      trustBoosters: [
+        {
+          icon: "🏠",
+          title: "Spacious Homes",
+          description: "Comfortable and spacious living spaces for families"
+        },
+        {
+          icon: "🏊‍♀️",
+          title: "Premium Amenities",
+          description: "World-class amenities and facilities"
+        },
+        {
+          icon: "📈",
+          title: "Smart Investment",
+          description: "Excellent appreciation and rental potential"
+        }
+      ]
+    },
+    "5to10cr": {
+      title: "Properties Between 5-10 Cr - Luxury Homes in Gurgaon",
+      description: "Explore luxury properties between 5-10 crore in Gurgaon with premium amenities, prime locations, and exceptional lifestyle features. Perfect for discerning buyers seeking quality and exclusivity.",
+      metaTitle: "Properties 5-10 Cr in Gurgaon - Luxury Homes | 100acress",
+      canonical: "https://www.100acress.com/budget-properties/5-10-cr/",
+      keywords: "properties 5-10 cr, luxury homes gurgaon, 5-10 crore properties",
+      heroTitle: "Properties Between 5-10 Cr in Gurgaon",
+      heroSubtitle: "Luxury homes with premium amenities and prime locations",
+      faqs: [
+        {
+          question: "What types of luxury properties are available between 5-10 Cr?",
+          answer: "Between 5-10 Cr, you can find premium 3BHK and 4BHK apartments, penthouses, and luxury villas in upscale areas like Golf Course Road, DLF Phase 1-5, and Southern Peripheral Road."
+        },
+        {
+          question: "Which are the most prestigious areas for 5-10 Cr properties?",
+          answer: "Prestigious locations include Golf Course Road, DLF Phase 1-5, Southern Peripheral Road, and MG Road. These areas offer luxury living with excellent connectivity."
+        },
+        {
+          question: "What luxury amenities come with 5-10 Cr properties?",
+          answer: "Luxury properties in this range offer concierge services, private elevators, rooftop pools, spa facilities, home automation, and exclusive club memberships."
+        },
+        {
+          question: "Are these properties good for high-net-worth individuals?",
+          answer: "Yes, these luxury properties cater to high-net-worth individuals seeking exclusive lifestyles, privacy, and premium amenities in Gurgaon's most sought-after locations."
+        },
+        {
+          question: "What is the average size of luxury apartments in this range?",
+          answer: "Luxury apartments between 5-10 Cr typically range from 2,500 sq ft to 4,000 sq ft, offering spacious layouts with premium finishes and modern architecture."
+        }
+      ],
+      trustBoosters: [
+        {
+          icon: "👑",
+          title: "Luxury Living",
+          description: "Experience the pinnacle of luxury and exclusivity"
+        },
+        {
+          icon: "🏆",
+          title: "Prime Locations",
+          description: "Properties in the most prestigious neighborhoods"
+        },
+        {
+          icon: "⭐",
+          title: "Premium Quality",
+          description: "Highest standards of construction and finishing"
+        }
+      ]
+    },
+    "10to20cr": {
+      title: "Properties Between 10-20 Cr - Ultra Luxury Homes in Gurgaon",
+      description: "Discover ultra-luxury properties between 10-20 crore in Gurgaon with exceptional amenities, exclusive locations, and unparalleled lifestyle features. For those who demand the extraordinary.",
+      metaTitle: "Properties 10-20 Cr in Gurgaon - Ultra Luxury Homes | 100acress",
+      canonical: "https://www.100acress.com/budget-properties/10-20-cr/",
+      keywords: "properties 10-20 cr, ultra luxury homes gurgaon, 10-20 crore properties",
+      heroTitle: "Properties Between 10-20 Cr in Gurgaon",
+      heroSubtitle: "Ultra-luxury homes with exceptional amenities and exclusive locations",
+      faqs: [
+        {
+          question: "What defines ultra-luxury properties between 10-20 Cr?",
+          answer: "Ultra-luxury properties in this range feature penthouses, luxury villas, and premium apartments with bespoke designs, imported materials, and world-class amenities."
+        },
+        {
+          question: "Which are the most exclusive areas for 10-20 Cr properties?",
+          answer: "Exclusive areas include DLF Phase 1-5, Golf Course Road, MG Road, and select gated communities. These locations offer privacy, security, and proximity to business districts."
+        },
+        {
+          question: "What ultra-luxury amenities are included?",
+          answer: "Ultra-luxury properties offer private pools, personal gyms, wine cellars, home theaters, smart home automation, concierge services, and exclusive club access."
+        },
+        {
+          question: "Who typically buys 10-20 Cr properties in Gurgaon?",
+          answer: "These properties attract successful entrepreneurs, top executives, celebrities, and high-net-worth individuals seeking the ultimate in luxury living and investment."
+        },
+        {
+          question: "What is the appreciation potential for ultra-luxury properties?",
+          answer: "Ultra-luxury properties in prime locations offer excellent appreciation potential due to limited supply, high demand, and Gurgaon's status as a business and luxury destination."
+        }
+      ],
+      trustBoosters: [
+        {
+          icon: "👑",
+          title: "Ultra Luxury",
+          description: "The pinnacle of luxury living and exclusivity"
+        },
+        {
+          icon: "🏆",
+          title: "Exclusive Locations",
+          description: "Properties in the most prestigious and secure neighborhoods"
+        },
+        {
+          icon: "💎",
+          title: "Premium Investment",
+          description: "Exceptional appreciation and rental yield potential"
+        }
+      ]
+    },
+    "20to50cr": {
+      title: "Properties Between 20-50 Cr - Elite Luxury Homes in Gurgaon",
+      description: "Explore elite luxury properties between 20-50 crore in Gurgaon with extraordinary amenities, ultra-exclusive locations, and unmatched sophistication. For the discerning few.",
+      metaTitle: "Properties 20-50 Cr in Gurgaon - Elite Luxury Homes | 100acress",
+      canonical: "https://www.100acress.com/budget-properties/20-50-cr/",
+      keywords: "properties 20-50 cr, elite luxury homes gurgaon, 20-50 crore properties",
+      heroTitle: "Properties Between 20-50 Cr in Gurgaon",
+      heroSubtitle: "Elite luxury homes with extraordinary amenities and ultra-exclusive locations",
+      faqs: [
+        {
+          question: "What makes properties between 20-50 Cr elite luxury?",
+          answer: "Elite luxury properties feature palatial villas, premium penthouses, and bespoke homes with exceptional architecture, imported materials, and unparalleled amenities."
+        },
+        {
+          question: "Where are the most exclusive 20-50 Cr properties located?",
+          answer: "Exclusive locations include ultra-premium gated communities, private estates, and select areas in DLF Phase 1-5 and Golf Course Road with maximum privacy and security."
+        },
+        {
+          question: "What extraordinary amenities do these properties offer?",
+          answer: "Elite properties offer private elevators, personal spas, wine tasting rooms, home offices, multiple parking spaces, private gardens, and access to exclusive clubs and services."
+        },
+        {
+          question: "Who invests in 20-50 Cr properties in Gurgaon?",
+          answer: "These properties attract ultra-high-net-worth individuals, successful business leaders, international investors, and those seeking the ultimate in luxury and exclusivity."
+        },
+        {
+          question: "What is the investment potential for elite luxury properties?",
+          answer: "Elite luxury properties offer exceptional appreciation potential due to their rarity, prime locations, and the growing demand for ultra-luxury living in Gurgaon."
+        }
+      ],
+      trustBoosters: [
+        {
+          icon: "👑",
+          title: "Elite Luxury",
+          description: "The ultimate expression of luxury and exclusivity"
+        },
+        {
+          icon: "🏰",
+          title: "Private Estates",
+          description: "Exclusive properties with maximum privacy and security"
+        },
+        {
+          icon: "💎",
+          title: "Exceptional Value",
+          description: "Outstanding appreciation and investment potential"
+        }
+      ]
+    },
+    above50cr: {
+      title: "Properties Above 50 Cr - Ultra Elite Luxury Homes in Gurgaon",
+      description: "Discover ultra-elite luxury properties above 50 crore in Gurgaon with palatial designs, extraordinary amenities, and unmatched exclusivity. For those who seek perfection.",
+      metaTitle: "Properties Above 50 Cr in Gurgaon - Ultra Elite Luxury | 100acress",
+      canonical: "https://www.100acress.com/budget-properties/above-50-cr/",
+      keywords: "properties above 50 cr, ultra elite luxury homes gurgaon, above 50 crore properties",
+      heroTitle: "Properties Above 50 Cr in Gurgaon",
+      heroSubtitle: "Ultra-elite luxury homes with palatial designs and unmatched exclusivity",
+      faqs: [
+        {
+          question: "What defines ultra-elite properties above 50 Cr?",
+          answer: "Ultra-elite properties feature palatial mansions, premium estates, and bespoke luxury homes with architectural masterpieces, rare materials, and extraordinary craftsmanship."
+        },
+        {
+          question: "Where are the most exclusive above 50 Cr properties located?",
+          answer: "Exclusive locations include ultra-premium gated communities, private estates in DLF Phase 1-5, and select areas offering maximum privacy, security, and prestige."
+        },
+        {
+          question: "What palatial amenities do these properties offer?",
+          answer: "Palatial properties offer grand ballrooms, private theaters, multiple swimming pools, spa retreats, wine cellars, art galleries, and access to world-class concierge services."
+        },
+        {
+          question: "Who typically purchases above 50 Cr properties?",
+          answer: "These properties attract global business leaders, international investors, celebrities, and ultra-high-net-worth individuals seeking the pinnacle of luxury living."
+        },
+        {
+          question: "What makes these properties exceptional investments?",
+          answer: "Ultra-elite properties offer unmatched prestige, limited availability, and exceptional appreciation potential in Gurgaon's luxury real estate market."
+        }
+      ],
+      trustBoosters: [
+        {
+          icon: "👑",
+          title: "Ultra Elite",
+          description: "The absolute pinnacle of luxury and exclusivity"
+        },
+        {
+          icon: "🏰",
+          title: "Palatial Estates",
+          description: "Magnificent properties with extraordinary architecture"
+        },
+        {
+          icon: "💎",
+          title: "Prestigious Investment",
+          description: "Exceptional value appreciation and global appeal"
+        }
+      ]
+    }
+  },
   commonFAQs: [
     {
       question: "How do I verify the authenticity of a project?",
@@ -1320,6 +1617,24 @@ export const getTrustBoosters = (pageType, specificKey = null) => {
     staticData.trustIndicators.trusted,
     staticData.trustIndicators.premium
   ];
+};
+
+// Helper function to get budget page data
+export const getBudgetPageData = (budgetRange) => {
+  console.log('getBudgetPageData called with budgetRange:', budgetRange);
+  const budgetData = getStaticData('budget', budgetRange);
+  console.log('Budget data retrieved:', budgetData);
+  return {
+    title: budgetData?.title || "Properties by Budget",
+    description: budgetData?.description || "Find properties within your budget",
+    metaTitle: budgetData?.metaTitle || "Budget Properties - 100acress",
+    canonical: budgetData?.canonical || "https://www.100acress.com/",
+    keywords: budgetData?.keywords || "budget properties, affordable homes",
+    heroTitle: budgetData?.heroTitle || "Properties by Budget",
+    heroSubtitle: budgetData?.heroSubtitle || "Find properties within your budget",
+    faqs: getFAQData('budget', budgetRange),
+    trustBoosters: getTrustBoosters('budget', budgetRange)
+  };
 };
 
 export default staticData;

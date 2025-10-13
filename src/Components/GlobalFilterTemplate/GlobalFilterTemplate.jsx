@@ -315,6 +315,9 @@ const GlobalFilterTemplate = ({
     if (resetPagination) {
       setCurrentPage(1);
       updateDisplayedProjects(filtered, 1);
+    } else {
+      // Always update displayed projects when filtering, but keep current page
+      updateDisplayedProjects(filtered, currentPage);
     }
   };
 
@@ -346,9 +349,23 @@ const GlobalFilterTemplate = ({
     const projectsToShow = projectsToDisplay.slice(startIndex, endIndex);
     
     console.log('updateDisplayedProjects - projectsToShow length:', projectsToShow.length);
+    console.log('updateDisplayedProjects - startIndex:', startIndex, 'endIndex:', endIndex);
     
     setDisplayedProjects(projectsToShow);
     setTotalPages(Math.ceil(projectsToDisplay.length / itemsPerPage));
+    
+    // If current page has no projects to show, go to last available page
+    if (projectsToShow.length === 0 && projectsToDisplay.length > 0) {
+      const lastPage = Math.ceil(projectsToDisplay.length / itemsPerPage);
+      if (lastPage > 0 && page !== lastPage) {
+        console.log('Current page empty, moving to last page:', lastPage);
+        setCurrentPage(lastPage);
+        const lastStartIndex = (lastPage - 1) * itemsPerPage;
+        const lastEndIndex = lastStartIndex + itemsPerPage;
+        const lastProjectsToShow = projectsToDisplay.slice(lastStartIndex, lastEndIndex);
+        setDisplayedProjects(lastProjectsToShow);
+      }
+    }
   };
 
   // Handle page change
