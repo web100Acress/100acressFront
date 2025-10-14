@@ -24,19 +24,25 @@ const HrSidebar = () => {
       path: '/hr/jobposting',
       icon: <FaTachometerAlt className="text-xl" />
     },
-    {
-      name: 'Employee',
-      path: '/hr/employee',
-      icon: <FaTachometerAlt className="text-xl" />
-    },
-    {
-      name: 'Leave',
-      path: '/hr/leave',
-      icon: <FaTachometerAlt className="text-xl" />
-    },
+   
     {
       name: 'Onboarding',
       path: '/hr/onboarding',
+      icon: <BiSolidGraduation className="text-xl" />
+    },
+    {
+      name: 'Offboarding',
+      path: '/hr/offboarding',
+      icon: <BiSolidGraduation className="text-xl" />
+    },
+    {
+      name: 'IT Dashboard',
+      path: '/hr/it',
+      icon: <FaTachometerAlt className="text-xl" />
+    },
+    {
+      name: 'Accounts Dashboard',
+      path: '/hr/accounts',
       icon: <FaTachometerAlt className="text-xl" />
     }
   ];
